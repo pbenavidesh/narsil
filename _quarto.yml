@@ -2,18 +2,54 @@ project:
   type: website
 
 website:
-  title: "narsil"
+  title: "Time Series Forecasting"
+  
+  page-navigation: true
+  back-to-top-navigation: true
+  reader-mode: true
+  
+  repo-url: https://github.com/pbenavidesh/narsil
+  repo-actions: [edit, issue]
+  
+  twitter-card:
+    creator: "@PabsBenavides"
+  
   navbar:
+    background: primary
+    search: true
     left:
       - href: index.qmd
         text: Home
+      - sidebar:forecasting
+      - sidebar:models
       - about.qmd
+  
+  sidebar: 
+   - id: forecasting
+     title: "Forecasting"
+     style: docked
+     contents: 
+      - forecasting.qmd
+   
+   - id: models
+     title: "Models"
+     style: floating
+     contents: 
+      - section: "Univariate models"
+        contents: 
+         - ets.qmd
+      
 
 format:
   html:
-    theme: cosmo
+    theme:
+     light: zephyr
+     dark: vapor
     css: styles.css
     toc: true
+    code-link: true
+    link-external-newwindow: true
+    df-print: paged
 
 
 
