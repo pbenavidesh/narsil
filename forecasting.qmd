@@ -1,0 +1,62 @@
+---
+title: "Forecasting workflow"
+---
+
+# H1
+
+forecasting
+
+## H2
+
+forecasting again
+
+## model
+
+::: {.panel-tabset group="pkg"}
+
+## fable
+
+```{r}
+#| eval: false
+
+library(tsibble)
+library(feasts)
+library(fable)
+```
+
+
+
+## modeltime
+
+```{r}
+#| eval: false
+
+library(timetk)
+library(modeltime)
+```
+
+:::
+
+
+::: {.panel-tabset group="pkg"}
+
+## fable
+
+```{r}
+#| eval: false
+
+data_tsbl |> 
+  index_by() |> 
+  summarise()
+```
+
+
+## modeltime
+
+```{r}
+#| eval: false
+
+data_tbl |> 
+  summarise_by_time()
+```
+:::
