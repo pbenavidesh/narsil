@@ -1,0 +1,33 @@
+---
+title: "presentation_dummy"
+date-modified: today
+format: 
+  html: default
+  revealjs:
+    output-file: dummy_pres.html
+  pdf: default
+---
+
+## First slide
+
+Just as a tutorial
+
+```{{r}}
+1 + 1
+```
+
+
+## Code with annotations
+
+```{r}
+#| message: false
+
+library(tidyverse) # <1>
+library(fpp3)      # <2>
+
+aus_production |>  # <3> 
+  autoplot(Beer)   # <3>
+```
+1. Meta-package for data-science analysis
+2. Meta-package for time series forecasting
+3. Time plot of Beer production
