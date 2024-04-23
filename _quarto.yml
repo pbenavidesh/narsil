@@ -16,29 +16,34 @@ website:
   
   navbar:
     background: primary
+    logo: images/iteso_logo_blanco.png
     search: true
     left:
-      - href: index.qmd
-        text: Home
-      - sidebar:forecasting
-      - sidebar:models
+      - text: "Home"
+        href: index.qmd
+      - text: "Forecasting"
+        href: forecasting.qmd
+      - text: "Models"
+        href: ets.qmd
       - about.qmd
   
   sidebar: 
    - id: forecasting
      title: "Forecasting"
-     style: docked
+     style: "floating"
      contents: 
-      - forecasting.qmd
+      - text: "Forecasting principles"
+        href: forecasting.qmd
    
    - id: models
      title: "Models"
-     style: floating
      contents: 
       - section: "Univariate models"
         contents: 
-         - ets.qmd
-         - dummy_file.qmd
+         - text: "Exponential Smoothing"
+           href: ets.qmd
+         - text: "Dummy file"
+           href: dummy_file.qmd
       
 
 format:
