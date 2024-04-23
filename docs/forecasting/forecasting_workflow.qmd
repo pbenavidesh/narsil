@@ -1,0 +1,434 @@
+---
+title: "The Forecasting Workflow using `fable`"
+author: "Pablo Benavides"
+date: 2022-09-30
+date-modified: last-modified
+format: 
+  html: default
+  revealjs:
+    output-file: forecasting_pres.html
+  pdf: default
+---
+
+![](https://tidyverts.org/images/fable.png){fig-align="center"}
+
+# Introduction {.unnumbered}
+
+## Packages
+
+It is recommended to load all the packages at the beginning of your file. We will be using the `tidyverts` ecosystem for the whole forecasting workflow.
+
+```{r}
+#| message: false
+#| warning: false
+library(tidyverse)
+library(tsibble)
+library(feasts)
+library(fable)
+library(tsibbledata)
+library(fpp3)
+library(plotly)
+```
+
+:::{.callout-warning}
+Do not load unnecesary packages into your environment. It could lead to conflicts between functions and unwanted results.
+:::
+
+
+# Forecasting Workflow
+
+## Data
+
+We will work with the Real Gross Domestic Product (GDP) for Mexico. The data is downloaded from [FRED](https://fred.stlouisfed.org/series/NGDPRNSAXDCMXQ). The time series id is `NGDPRNSAXDCMXQ`.
+
+### Import data
+
+```{r}
+#| message: false
+gdp <- tidyquant::tq_get(
+  x    = "NGDPRNSAXDCMXQ",
+  get  = "economic.data",
+  from = "1997-01-01"
+)
+
+gdp
+```
+
+### Wrangle data
+
+There are some issues with our data:
+
+1. It is loaded into a `tibble` object. We need to convert it to a **`tsibble`**.
+
+:::{.callout-tip collapse="true"}
+We can use `as_tsibble()` to do so.
+:::
+
+2. Our data is **quarterly**, but it is loaded in a `YYYY-MM-DD` format. We need to change it to a `YYYY QQ` format.
+
+:::{.callout-tip collapse="true"}
+There are some functions that help us achieve this, such as
+
+* `yearquarter()`
+* `yearmonth()`
+* `yearweek()`
+* `year()`
+
+depending on the time series' period.
+:::
+
+We will overwrite our data:
+
+```{r}
+gdp <- gdp |> 
+  mutate(date = yearquarter(date)) |> 
+  as_tsibble(
+    index = date,
+    key   = symbol
+  )
+
+gdp
+```
+
+:::{.callout-tip collapse="true"}
+* We always need to specify the `index` argument, as it is our **date** variable. 
+
+* The `key` argument is necessary whenever we have more than one time series in our data frame and is made up of **one or more columns** that uniquely identify each time series        .
+:::
+
+## Train/Test Split
+
+We will split our data in two sets: a training set, and a test set, in order to evaluate our forecasts' accuracy.
+
+```{r}
+gdp_train <- gdp |> 
+  filter_index(. ~ "2020 Q4")
+
+gdp_train
+```
+
+:::{.callout-note}
+For all our variables, it is strongly recommended to follow the same notation process, and write our code using [**snake_case**](https://en.wikipedia.org/wiki/Snake_case). Here, we called our data `gdp`, therefore, all the following variables will be called starting with **`gdp_`**[^notation], such as `gdp_train` for our training set.
+:::
+
+[^notation]: This will make it very convenient when calling your variables. RStudio will display all the options starting with `gdp_`. We will usually use the following suffixes:
+
+    * `_train`: training set
+    * `_fit`: the `mable` (table of models)
+    * `_aug`: the augmented table with fitted values and residuals
+    * `_dcmp`: for the `dable` (decomposition table), containing the components and the seasonally adjusted series of a TS decomposition.
+    * `_fc` or `_fcst`: for the `fable` (forecasts table) that has our forecasts.
+    ![](https://c.tenor.com/qjBICGJwxgIAAAAC/convenient-thats-convenient.gif){fig-aling="center"}
+
+## Visualization and EDA
+
+When performing time series analysis/forecasting, one of the first things to do is to create a time series plot.
+
+```{r}
+p <- gdp_train |> 
+  autoplot(price) +
+  labs(
+    title = "Time series plot of the Real GDP for Mexico",
+    y = "GDP"
+  )
+ 
+ggplotly(p, dynamicTicks = TRUE) |> 
+  rangeslider()
+```
+
+:::{.callout-important appearance="minimal"}
+
+Our data exhibits an upward *linear trend* (with some economic cycles), and strong *yearly seasonality*.
+
+:::
+
+We will explore it further with a season plot.
+
+```{r}
+gdp_train |> 
+  gg_season(price) |> 
+  ggplotly()
+```
+
+### TS Decomposition
+
+```{r}
+gdp_train |> 
+  model(stl = STL(price, robust = TRUE)) |> 
+  components() |> 
+  autoplot() |> 
+  ggplotly()
+```
+
+:::{.callout-important appearance="minimal"}
+
+The STL decomposition shows that the variance of the seasonal component has been increasing. We could try using a **log transformation** to counter this.
+
+:::
+
+```{r}
+gdp_train |> 
+  autoplot(log(price)) +
+  ggtitle("Log of the Real GDP of Mexico")
+```
+
+```{r}
+gdp_train |> 
+  model(stl = STL(log(price) ~ season(window = "periodic"), robust = TRUE)) |> 
+  components() |> 
+  autoplot() |> 
+  ggplotly()
+```
+
+## Model Specification
+
+We will **fit** two models to our time series: *Seasonal Naïve*, and the *Drift* model. We will also use the log transformation.
+
+```{r}
+gdp_fit <- gdp_train |> 
+  model(
+    snaive = SNAIVE(log(price)),
+    drift  = RW(log(price) ~ drift())
+  )
+```
+
+:::{.callout-tip collapse="true"}
+## Benchmark models
+We have four different benchmark models that we'll use to compare against the rest of  the more complex models:
+- Mean (`MEAN( <.y> )`)
+- Naïve (`NAIVE( <.y> )`)
+- Seasonal Naïve (`SNAIVE( <.y> )`)
+- Drift (`RW( <.y> ~ drift())`)
+
+where `<.y>` is just a placeholder for the variable to model.
+
+Choose wisely which of these to use in each case, according to the exploratory analysis performed.
+:::
+
+## Residuals Diagnostics
+
+### Visual analysis
+
+```{r}
+#| warning: false
+gdp_fit |> 
+  select(snaive) |> 
+  gg_tsresiduals() +
+  ggtitle("Residuals Diagnostics for the Seasonal Naïve Model")
+
+gdp_fit |> 
+  select(drift) |> 
+  gg_tsresiduals() +
+  ggtitle("Residuals Diagnostics for the Drift Model")
+```
+
+:::{.callout-tip collapse="true"}
+Here we expect to see:
+
+- A time series with no apparent patterns (no trend and/or seasonality), with a mean close to zero.
+- In the **ACF**, we'd expect no lags with significant autocorrelation.
+- Normally distributed residuals.
+:::
+
+### Portmanteau tests of autocorrelation
+
+```{r}
+gdp_fit |> 
+  augment() |> 
+  features(.innov, ljung_box, lag = 24, dof = 0)
+```
+
+:::{.callout-caution}
+## Residuals interpretation
+Both models produce sub optimal residuals:
+
+* The SNAIVE correctly detects the seasonality, however, its residuals are still autocorrelated. Moreover, the residuals are not normally distributed.
+
+* The drift model doesn't account for the seasonality, and their distribution is a little bit skewed.
+
+
+Hence, we will perform our forecasts using the **bootstrapping** method.
+:::
+
+We can compute some error metrics on the training set using the `accuracy()` function:
+
+```{r}
+gdp_train_accu <- accuracy(gdp_fit) |> 
+  arrange(MAPE)
+gdp_train_accu |> 
+  select(symbol:.type, MAPE, RMSE, MAE, MASE)
+```
+
+```{r}
+#| include: false
+mape_drift <- gdp_train_accu |> 
+  filter(.model == "drift") |> 
+  pull(MAPE)/100
+
+mape_snaive <- gdp_train_accu |> 
+  filter(.model == "snaive") |> 
+  pull(MAPE)/100
+```
+
+:::{.callout-tip collapse="true"}
+## The `accuracy()` function
+
+The `accuracy()` function can be used to compute error metrics in the training data, or in the test set. What differs is the data that is given to it:
+
+* For the training metrics, you need to use the **`mable`** (the table of models, that we usually store in `_fit`).
+
+* For the forecasting error metrics, we need the **`fable`** (the forecasts table, usually stored as `_fc` or `_fcst`), and the **complete set of data** (both the training and test set together).
+
+![](https://media.tenor.com/dp_hQBGT0rIAAAAM/think-smart.gif){fig-align="center"}
+:::
+
+:::{.callout-important appearance="minimal"}
+
+For this analysis, we are focusing on the **MAPE**[^mape] metric. The drift model **(`r mape_drift |> scales::percent(accuracy = 0.01)`)** seems to have a better fit with the training set than the snaive model **(`r mape_snaive |> scales::percent(accuracy = 0.01)`)**.
+
+:::
+
+
+[^mape]: The Mean Absolute Percentage Error is a percentage error metric widely used in professional environments. 
+
+    Let
+    
+    $$
+    e_t = y_t - \hat{y}_t
+    $$ 
+    
+    be the error or residual. 
+  
+    Then the MAPE would be computed as 
+    
+    $$
+    MAPE = \frac{1}{T}\sum_{t=1}^T|\frac{e_t}{y_t}|
+    $$.
+    
+    ![](https://media.tenor.com/tqERWt8lBYEAAAAM/calculating-puzzled.gif){fig-align="center"}
+
+
+## Modeling using decomposition
+
+We will perform a forecast using decomposition, to see if we can improve our results so far.
+
+```{r}
+gdp_fit_dcmp <- gdp_train |> 
+      model(
+        stlf = decomposition_model(
+          STL(log(price) ~ season(window = "periodic"), robust = TRUE),
+          RW(season_adjust ~ drift())
+        )
+      )
+
+gdp_fit_dcmp
+```
+
+:::{.callout-note collapse="true"}
+## Note on `decomposition_model()`
+
+Remember, when using decomposition models, we need to do the following:
+
+1. Specify what type of decomposition we want to use and customize it as needed.
+
+2. Fit a model for the seasonally adjusted data; `season_adjust`.
+
+3. Fit a model for the seasonal component. **R** uses a `SNAIVE()` model by default to model the seasonality. If you wish to model it using a different model, you have specify it.
+
+* The name of the seasonal component depends on the type of seasonality present in the time series. If it has a yearly seasonality, the component is called `season_year`. It could also be called `season_week`, `season_day`, and so on.
+
+:::
+
+We can join this new model with the models we trained before. This way we can have them all in the same `mable`.
+
+```{r}
+gdp_fit <- gdp_fit |> 
+  left_join(gdp_fit_dcmp)
+```
+
+### Residuals diagnostics
+
+```{r}
+gdp_fit |> 
+  accuracy() |> 
+  select(symbol:.type, MAPE, RMSE, MAE, MASE) |> 
+  arrange(MAPE)
+```
+
+```{r}
+#| warning: false
+gdp_fit |> 
+  select(stlf) |> 
+  gg_tsresiduals()
+```
+
+```{r}
+gdp_fit |> 
+  augment() |> 
+  features(.innov, ljung_box)
+```
+
+
+:::{.callout-important appearance="minimal"}
+
+The MAPE seems to improve with this decomposition model. Also, the residual diagnostics do not show any seasonality present in them. However, the residuals are still autocorrelated, as the *Ljung-Box* test suggests.
+
+:::
+
+## Forecasting on the test set
+
+Once we have our models, we can produce forecasts. We will forecast our test data and check our forecasts' performance.
+
+```{r}
+gdp_fc <- gdp_fit |> 
+  forecast(h = 6) 
+
+gdp_fc
+```
+
+```{r}
+gdp_fc |> 
+  autoplot(gdp) +
+  facet_wrap(~.model, ncol = 1)
+
+gdp_fc |> 
+  filter(.model == "stlf") |> 
+  autoplot(gdp)
+```
+
+We now estimate the forecast errors:
+
+```{r}
+gdp_fc |> 
+  accuracy(gdp) |> 
+  select(.model:.type, MAPE, RMSE, MAE, MASE) |> 
+  arrange(MAPE)
+```
+
+## Forecasting the future
+
+We now refit our model using the whole dataset. We will only model the STL decomposition model, because the other two didn't get a strong fit.
+
+```{r}
+gdp_fit2 <- gdp |> 
+  model(
+    stlf = decomposition_model(
+          STL(log(price) ~ season(window = "periodic"), robust = TRUE),
+          RW(season_adjust ~ drift())
+        )
+  )
+gdp_fit2
+```
+```{r}
+gdp_fc_fut <- gdp_fit2 |> 
+  forecast(h = "3 years")
+gdp_fc_fut
+gdp_fc_fut |> 
+  autoplot(gdp)
+```
+
+```{r}
+# save(gdp_fc_fut, file = "equipo1.RData")
+```
+
+
