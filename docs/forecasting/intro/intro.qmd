@@ -1,0 +1,252 @@
+---
+title: "Series de tiempo"
+author: "Pablo Benavides Herrera"
+date-modified: today
+format: 
+  revealjs:
+    transition: zoom
+    logo: iteso.png
+    footer: "Series de tiempo"
+    scrollable: true
+    theme: league
+    embed-resources: false
+    execute:
+      echo: false
+---
+
+
+# ¿Qué es una serie de tiempo? {backgroung-color="black" background-image="dark.jpg"}
+
+```{r}
+#| label: pkgs
+library(pacman)
+p_load(tidyverse, plotly, patchwork, timetk, modeltime, tidyquant, tsibble, feasts, fable, tsibbledata, fpp3, ggpubr, jpeg)
+```
+
+## {}
+
+```{r}
+#| label: gapminder
+p <- gapminder::gapminder |> 
+  ggplot(aes(x = gdpPercap, y = lifeExp, color = country,
+                       size = pop, label = country)) +
+  geom_point(aes(frame = year)) + 
+  scale_x_log10() + 
+  ylab("Esperanza de vida (años)") +
+  xlab("PIB per cápita (USD, deflactado)") +
+  theme(legend.position = "none")
+
+ggplotly(p)
+```
+
+
+## {background-image="doge.jpg"}
+
+## ![](fragua.png){fig-align="center"} {background-color="white"}
+
+```{r}
+#| label: fragua
+#| warning: false
+
+fragua <- tq_get("FRAGUAB.MX", from = "2021-01-01")
+
+fragua |> 
+  ggplot(aes(x = date, open = open, high = high, low = low, close = close)) +
+  geom_barchart(size = 1) +
+  geom_bbands(ma_fun = SMA, sd = 2, n = 20) +
+  theme_tq() +
+  labs(x = "")
+```
+
+
+## ¿Qué es un pronóstico?{backgroung-color="black" background-image="walter2.jpeg"}
+
+## {background-image="dr_strange.jpg"}
+
+## {background-image="dr_strange_math.jpg"}
+
+## {background-image="eclipse.jpg"}
+
+## Existen infinitas posibilidades {background-image="google.jpg"}
+
+```{r}
+#| label: google_2
+google_stock <- tsibbledata::gafa_stock %>%
+  filter(Symbol == "GOOG") %>%
+  mutate(day = row_number()) %>%
+  tsibble::update_tsibble(index = day, regular = TRUE)
+
+# Filter the year of interest
+google_2015 <- google_stock %>% filter(year(Date) == 2015)
+
+fit <- google_2015 %>%
+  model(NAIVE(Close))
+
+sim <- fit %>%  generate(h = 30, times = 10, bootstrap = TRUE, seed = 123)
+
+p <- google_2015 %>%
+  ggplot(aes(x = day)) +
+  geom_line(aes(y = Close), size = 1) +
+  geom_line(aes(y = .sim, colour = as.factor(.rep)), data = sim, size = 1) +
+  ggtitle("Google closing stock price") +
+  guides(col = "none") +
+  theme(legend.position = "none")
+
+ggplotly(p, dynamicTicks = TRUE) |> rangeslider()
+```
+
+## Pronóstico de la producción de cerveza
+
+::: {.columns}
+
+::: {.column width="70%"}
+
+```{r}
+#| label: beer
+
+aus_production |> 
+  model(arima = ARIMA(Beer)) |> 
+  forecast(h = "5 years") |> 
+  autoplot(aus_production |> filter_index("1990 Q1" ~ .), size = 1) +
+  labs(title = "Producción de cerveza",
+       x = "Trimestre",
+       y = "Megalitros")
+```
+
+:::
+
+::: {.column width="30%"}
+![](homer.png)
+:::
+
+::::
+
+## Energía eléctrica
+
+```{r}
+#| label: energy
+vic_elec_daily <- vic_elec %>%
+  # filter(year(Time) == 2014) %>%
+  index_by(Date = date(Time)) %>%
+  summarise(
+    Demand = sum(Demand)/1e3,
+    Temperature = max(Temperature),
+    Holiday = any(Holiday)
+  ) %>%
+  mutate(Day_Type = case_when(
+    Holiday ~ "Holiday",
+    wday(Date) %in% 2:6 ~ "Weekday",
+    TRUE ~ "Weekend"
+  ))
+
+vic_elec_daily |> 
+  ggplot(aes(x = Date, y = Demand)) +
+  background_image(readJPEG("rick.jpg")) +
+  annotate("rect", xmin = min(vic_elec_daily$Date), xmax = max(vic_elec_daily$Date), ymin = -Inf, ymax = Inf, fill = "black", alpha = 0.5) +
+  geom_line(color = "yellow2") + theme_dark()
+```
+
+## Demanda de energía eléctrica {}
+
+```{r}
+#| label: energy_plotly
+p <- vic_elec_daily |> 
+  ggplot(aes(x = Date, y = Demand)) +
+  geom_line(color = "yellow2", size = 1) +
+  theme_dark() +
+  labs(x = "Fecha", y = "Demanda")
+
+p
+# ggplotly(p, dynamicTicks = TRUE) |> rangeslider()
+```
+
+## Empleo {auto-animate="true"}
+
+```{r}
+us_retail_employment <- us_employment %>%
+  filter(year(Month) >= 1990, Title == "Retail Trade")
+
+p <- us_retail_employment |> 
+  ggplot(aes(x = Month, y = Employed)) +
+  geom_line(size = 1, color = "purple") +
+  labs(x = "Mes", y = "Empleados") + 
+  theme_pubclean()
+
+p
+# ggplotly(p, dynamicTicks = TRUE) |> 
+#   rangeslider()
+```
+
+## Empleo {auto-animate="true"}
+
+```{r}
+us_retail_employment |> 
+  model(ets = ARIMA(Employed)) |> 
+  forecast(h = "6 years") |> 
+  autoplot(color = "purple", size = 1) +
+  autolayer(us_retail_employment, Employed, color = "purple", size = 1) +
+  theme_pubclean() +
+  labs(x = "Mes", y = "Empleos")
+```
+
+
+## {background-iframe="https://pbenavides.shinyapps.io/04_covid_forecasts_google/" background-interactive=true}
+
+
+
+
+# El turismo en México
+
+## 
+
+```{r}
+turismo <- readxl::read_excel("evi_01.xlsx", skip = 10, col_names = TRUE) |> 
+  slice(1:6) |> 
+  janitor::remove_empty()
+```
+
+```{r}
+turismo_long <- turismo |> 
+  rename(tipo_turismo = ...1) |> 
+  select(tipo_turismo, starts_with("Entradas")) |> 
+  pivot_longer(cols = - tipo_turismo) |> 
+  select(-name) |> 
+  group_by(tipo_turismo) |> 
+  mutate(date = seq(as.Date("2018-08-01"), as.Date("2023-04-01"), by = "month")) |> 
+  relocate(date) |> 
+  ungroup()
+```
+
+```{r}
+turismo_tsbl <- turismo_long |> 
+  mutate(date = yearmonth(date)) |> 
+  as_tsibble(index = date, key = tipo_turismo)
+```
+
+```{r}
+p <- turismo_tsbl |> 
+  autoplot(value) +
+  facet_wrap(~ factor(tipo_turismo, levels = c("Turistas de internación", "Vía aérea", "Vía terrestre", 
+                                               "Turistas fronterizos", "En automóviles", "Peatones")), ncol = 3) +
+  theme(legend.position = "none")
+
+p
+# ggplotly(p)
+```
+
+```{r}
+# turismo_long |> 
+#   filter(tipo_turismo == "Turistas de internación") |> 
+#   select(-tipo_turismo) |> 
+#   write_csv("turismo.csv")
+
+turismo_tsbl |> 
+  filter(tipo_turismo == "Turistas de internación") |> 
+  # filter(tipo_turismo %in% c("Vía aérea", "Vía terrestre")) |> 
+  model(
+    arima = ETS(value)
+  ) |> 
+  forecast(h = "3 years") |> 
+  autoplot(turismo_tsbl)
+```
+
