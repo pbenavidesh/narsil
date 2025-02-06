@@ -3,15 +3,13 @@ title: "Series de tiempo"
 author: "Pablo Benavides Herrera"
 date-modified: today
 format: 
+  html: default
   revealjs:
-    transition: zoom
-    logo: iteso.png
-    footer: "Series de tiempo"
-    scrollable: true
-    theme: league
-    embed-resources: false
     execute:
       echo: false
+      message: false
+      warning: false
+    output-file: intro_pres.html
 ---
 
 
@@ -25,6 +23,8 @@ p_load(tidyverse, plotly, patchwork, timetk, modeltime, tidyquant, tsibble, feas
 
 ## {}
 
+
+
 ```{r}
 #| label: gapminder
 p <- gapminder::gapminder |> 
@@ -35,14 +35,31 @@ p <- gapminder::gapminder |>
   ylab("Esperanza de vida (años)") +
   xlab("PIB per cápita (USD, deflactado)") +
   theme(legend.position = "none")
+```
 
+:::{.content-visible unless-format="pdf"}
+
+```{r}
 ggplotly(p)
 ```
+
+:::
+
+:::{.content-visible when-format="pdf"}
+
+```{r}
+p
+```
+
+:::
+
 
 
 ## {background-image="doge.jpg"}
 
-## ![](fragua.png){fig-align="center"} {background-color="white"}
+## 
+
+![](fragua.png){fig-align="center"} {background-color="white"}
 
 ```{r}
 #| label: fragua
@@ -67,7 +84,7 @@ fragua |>
 
 ## {background-image="eclipse.jpg"}
 
-## Existen infinitas posibilidades {background-image="google.jpg"}
+## {background-image="google.jpg"}
 
 ```{r}
 #| label: google_2
@@ -190,63 +207,5 @@ us_retail_employment |>
 ```
 
 
-## {background-iframe="https://pbenavides.shinyapps.io/04_covid_forecasts_google/" background-interactive=true}
 
-
-
-
-# El turismo en México
-
-## 
-
-```{r}
-turismo <- readxl::read_excel("evi_01.xlsx", skip = 10, col_names = TRUE) |> 
-  slice(1:6) |> 
-  janitor::remove_empty()
-```
-
-```{r}
-turismo_long <- turismo |> 
-  rename(tipo_turismo = ...1) |> 
-  select(tipo_turismo, starts_with("Entradas")) |> 
-  pivot_longer(cols = - tipo_turismo) |> 
-  select(-name) |> 
-  group_by(tipo_turismo) |> 
-  mutate(date = seq(as.Date("2018-08-01"), as.Date("2023-04-01"), by = "month")) |> 
-  relocate(date) |> 
-  ungroup()
-```
-
-```{r}
-turismo_tsbl <- turismo_long |> 
-  mutate(date = yearmonth(date)) |> 
-  as_tsibble(index = date, key = tipo_turismo)
-```
-
-```{r}
-p <- turismo_tsbl |> 
-  autoplot(value) +
-  facet_wrap(~ factor(tipo_turismo, levels = c("Turistas de internación", "Vía aérea", "Vía terrestre", 
-                                               "Turistas fronterizos", "En automóviles", "Peatones")), ncol = 3) +
-  theme(legend.position = "none")
-
-p
-# ggplotly(p)
-```
-
-```{r}
-# turismo_long |> 
-#   filter(tipo_turismo == "Turistas de internación") |> 
-#   select(-tipo_turismo) |> 
-#   write_csv("turismo.csv")
-
-turismo_tsbl |> 
-  filter(tipo_turismo == "Turistas de internación") |> 
-  # filter(tipo_turismo %in% c("Vía aérea", "Vía terrestre")) |> 
-  model(
-    arima = ETS(value)
-  ) |> 
-  forecast(h = "3 years") |> 
-  autoplot(turismo_tsbl)
-```
 
