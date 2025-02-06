@@ -65,7 +65,13 @@ p
 
 ## Stocks
 
+:::{.columns}
+
+:::{.column width="30%"}
 ![](fragua.png){fig-align="center"}
+:::
+
+:::{.column width="70%"}
 
 ```{r}
 #| label: fragua
@@ -80,6 +86,7 @@ fragua |>
   theme_tq() +
   labs(x = "")
 ```
+:::
 
 ## Cryptos {background-image="doge.jpg" data-hide-slide-number="true"}
 
@@ -90,9 +97,7 @@ fragua |>
 ## What are forecasts?{backgroung-color="black" background-image="walter2.jpeg" data-hide-slide-number="true"}
 
 :::{.content-hidden when-format="revealjs"}
-
 ![]("walter2.jpeg"){width=100%}
-
 :::
 
 ## {background-image="dr_strange.jpg" data-hide-slide-number="true"}
@@ -101,9 +106,15 @@ fragua |>
 
 # Can all variables be predicted with the same accuracy?
 
-## {background-image="eclipse.jpg" data-hide-slide-number="true"}
+## Eclipses {background-image="eclipse.jpg" data-hide-slide-number="true"}
 
-## {background-image="google.jpg" data-hide-slide-number="true"}
+:::{.content-hidden when-format="revealjs"}
+
+![]("eclipse.jpeg"){width=100%}
+
+:::
+
+##  {background-image="google.jpg" data-hide-slide-number="true"}
 
 ```{r}
 #| label: google_2
@@ -131,7 +142,7 @@ p <- google_2015 %>%
 ggplotly(p, dynamicTicks = TRUE) |> rangeslider()
 ```
 
-## Pronóstico de la producción de cerveza
+## Beer Production Forecasts
 
 ::: {.columns}
 
@@ -157,7 +168,7 @@ aus_production |>
 
 ::::
 
-## Energía eléctrica
+## Electricity Demand
 
 ```{r}
 #| label: energy
@@ -174,15 +185,7 @@ vic_elec_daily <- vic_elec %>%
     wday(Date) %in% 2:6 ~ "Weekday",
     TRUE ~ "Weekend"
   ))
-
-vic_elec_daily |> 
-  ggplot(aes(x = Date, y = Demand)) +
-  background_image(readJPEG("rick.jpg")) +
-  annotate("rect", xmin = min(vic_elec_daily$Date), xmax = max(vic_elec_daily$Date), ymin = -Inf, ymax = Inf, fill = "black", alpha = 0.5) +
-  geom_line(color = "yellow2") + theme_dark()
 ```
-
-## Demanda de energía eléctrica {}
 
 ```{r}
 #| label: energy_plotly
@@ -195,27 +198,15 @@ p <- vic_elec_daily |>
 ggplotly(p, dynamicTicks = TRUE) |> rangeslider()
 ```
 
-## Empleo {auto-animate="true"}
+## Employment
 
 ```{r}
 #| label: empleo
 
 us_retail_employment <- us_employment %>%
   filter(year(Month) >= 1990, Title == "Retail Trade")
-
-p <- us_retail_employment |> 
-  ggplot(aes(x = Month, y = Employed)) +
-  geom_line(size = 1, color = "purple") +
-  labs(x = "Mes", y = "Empleados") + 
-  theme_pubclean()
-
-p
-
-# ggplotly(p, dynamicTicks = TRUE) |>
-#   rangeslider()
 ```
 
-## Empleo {auto-animate="true"}
 
 ```{r}
 #| label: empleo_fcst
