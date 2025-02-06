@@ -364,7 +364,7 @@
     "href": "docs/forecasting/intro/intro_pres.html#section",
     "title": "Series de tiempo",
     "section": "1.1 ",
-    "text": "1.1 \n\np &lt;- gapminder::gapminder |&gt; \n  ggplot(aes(x = gdpPercap, y = lifeExp, color = country,\n                       size = pop, label = country)) +\n  geom_point(aes(frame = year)) + \n  scale_x_log10() + \n  ylab(\"Esperanza de vida (años)\") +\n  xlab(\"PIB per cápita (USD, deflactado)\") +\n  theme(legend.position = \"none\")\n\nWarning in geom_point(aes(frame = year)): Ignoring unknown aesthetics: frame\n\n\n\nggplotly(p)"
+    "text": "1.1 \n\n\nWarning in geom_point(aes(frame = year)): Ignoring unknown aesthetics: frame"
   },
   {
     "objectID": "docs/forecasting/intro/intro_pres.html#section-1",
@@ -378,7 +378,7 @@
     "href": "docs/forecasting/intro/intro_pres.html#section-2",
     "title": "Series de tiempo",
     "section": "1.3 ",
-    "text": "1.3 \n\n\n\n\n\n\nfragua &lt;- tq_get(\"FRAGUAB.MX\", from = \"2021-01-01\")\n\nfragua |&gt; \n  ggplot(aes(x = date, open = open, high = high, low = low, close = close)) +\n  geom_barchart(size = 1) +\n  geom_bbands(ma_fun = SMA, sd = 2, n = 20) +\n  theme_tq() +\n  labs(x = \"\")"
+    "text": "1.3"
   },
   {
     "objectID": "docs/forecasting/intro/intro_pres.html#qué-es-un-pronóstico",
@@ -413,49 +413,49 @@
     "href": "docs/forecasting/intro/intro_pres.html#section-6",
     "title": "Series de tiempo",
     "section": "1.8 ",
-    "text": "1.8 \n\ngoogle_stock &lt;- tsibbledata::gafa_stock %&gt;%\n  filter(Symbol == \"GOOG\") %&gt;%\n  mutate(day = row_number()) %&gt;%\n  tsibble::update_tsibble(index = day, regular = TRUE)\n\n# Filter the year of interest\ngoogle_2015 &lt;- google_stock %&gt;% filter(year(Date) == 2015)\n\nfit &lt;- google_2015 %&gt;%\n  model(NAIVE(Close))\n\nsim &lt;- fit %&gt;%  generate(h = 30, times = 10, bootstrap = TRUE, seed = 123)\n\np &lt;- google_2015 %&gt;%\n  ggplot(aes(x = day)) +\n  geom_line(aes(y = Close), size = 1) +\n  geom_line(aes(y = .sim, colour = as.factor(.rep)), data = sim, size = 1) +\n  ggtitle(\"Google closing stock price\") +\n  guides(col = \"none\") +\n  theme(legend.position = \"none\")\n\nggplotly(p, dynamicTicks = TRUE) |&gt; rangeslider()"
+    "text": "1.8"
   },
   {
     "objectID": "docs/forecasting/intro/intro_pres.html#pronóstico-de-la-producción-de-cerveza",
     "href": "docs/forecasting/intro/intro_pres.html#pronóstico-de-la-producción-de-cerveza",
     "title": "Series de tiempo",
     "section": "1.9 Pronóstico de la producción de cerveza",
-    "text": "1.9 Pronóstico de la producción de cerveza\n\n\n\naus_production |&gt; \n  model(arima = ARIMA(Beer)) |&gt; \n  forecast(h = \"5 years\") |&gt; \n  autoplot(aus_production |&gt; filter_index(\"1990 Q1\" ~ .), size = 1) +\n  labs(title = \"Producción de cerveza\",\n       x = \"Trimestre\",\n       y = \"Megalitros\")"
+    "text": "1.9 Pronóstico de la producción de cerveza"
   },
   {
     "objectID": "docs/forecasting/intro/intro_pres.html#energía-eléctrica",
     "href": "docs/forecasting/intro/intro_pres.html#energía-eléctrica",
     "title": "Series de tiempo",
     "section": "1.10 Energía eléctrica",
-    "text": "1.10 Energía eléctrica\n\nvic_elec_daily &lt;- vic_elec %&gt;%\n  # filter(year(Time) == 2014) %&gt;%\n  index_by(Date = date(Time)) %&gt;%\n  summarise(\n    Demand = sum(Demand)/1e3,\n    Temperature = max(Temperature),\n    Holiday = any(Holiday)\n  ) %&gt;%\n  mutate(Day_Type = case_when(\n    Holiday ~ \"Holiday\",\n    wday(Date) %in% 2:6 ~ \"Weekday\",\n    TRUE ~ \"Weekend\"\n  ))\n\nvic_elec_daily |&gt; \n  ggplot(aes(x = Date, y = Demand)) +\n  background_image(readJPEG(\"rick.jpg\")) +\n  annotate(\"rect\", xmin = min(vic_elec_daily$Date), xmax = max(vic_elec_daily$Date), ymin = -Inf, ymax = Inf, fill = \"black\", alpha = 0.5) +\n  geom_line(color = \"yellow2\") + theme_dark()"
+    "text": "1.10 Energía eléctrica"
   },
   {
     "objectID": "docs/forecasting/intro/intro_pres.html#demanda-de-energía-eléctrica",
     "href": "docs/forecasting/intro/intro_pres.html#demanda-de-energía-eléctrica",
     "title": "Series de tiempo",
     "section": "1.11 Demanda de energía eléctrica",
-    "text": "1.11 Demanda de energía eléctrica\n\np &lt;- vic_elec_daily |&gt; \n  ggplot(aes(x = Date, y = Demand)) +\n  geom_line(color = \"yellow2\", size = 1) +\n  theme_dark() +\n  labs(x = \"Fecha\", y = \"Demanda\")\n\np\n\n# ggplotly(p, dynamicTicks = TRUE) |&gt; rangeslider()"
+    "text": "1.11 Demanda de energía eléctrica"
   },
   {
     "objectID": "docs/forecasting/intro/intro_pres.html#empleo",
     "href": "docs/forecasting/intro/intro_pres.html#empleo",
     "title": "Series de tiempo",
     "section": "1.12 Empleo",
-    "text": "1.12 Empleo\n\nus_retail_employment &lt;- us_employment %&gt;%\n  filter(year(Month) &gt;= 1990, Title == \"Retail Trade\")\n\np &lt;- us_retail_employment |&gt; \n  ggplot(aes(x = Month, y = Employed)) +\n  geom_line(size = 1, color = \"purple\") +\n  labs(x = \"Mes\", y = \"Empleados\") + \n  theme_pubclean()\n\np\n\n# ggplotly(p, dynamicTicks = TRUE) |&gt; \n#   rangeslider()"
+    "text": "1.12 Empleo"
   },
   {
     "objectID": "docs/forecasting/intro/intro_pres.html#empleo-1",
     "href": "docs/forecasting/intro/intro_pres.html#empleo-1",
     "title": "Series de tiempo",
     "section": "1.13 Empleo",
-    "text": "1.13 Empleo\n\nus_retail_employment |&gt; \n  model(ets = ARIMA(Employed)) |&gt; \n  forecast(h = \"6 years\") |&gt; \n  autoplot(color = \"purple\", size = 1) +\n  autolayer(us_retail_employment, Employed, color = \"purple\", size = 1) +\n  theme_pubclean() +\n  labs(x = \"Mes\", y = \"Empleos\")"
+    "text": "1.13 Empleo"
   },
   {
     "objectID": "docs/forecasting/intro/intro.html",
     "href": "docs/forecasting/intro/intro.html",
     "title": "Series de tiempo",
     "section": "",
-    "text": "library(pacman)\np_load(tidyverse, plotly, patchwork, timetk, modeltime, tidyquant, tsibble, feasts, fable, tsibbledata, fpp3, ggpubr, jpeg)\n\n\n\n\np &lt;- gapminder::gapminder |&gt; \n  ggplot(aes(x = gdpPercap, y = lifeExp, color = country,\n                       size = pop, label = country)) +\n  geom_point(aes(frame = year)) + \n  scale_x_log10() + \n  ylab(\"Esperanza de vida (años)\") +\n  xlab(\"PIB per cápita (USD, deflactado)\") +\n  theme(legend.position = \"none\")\n\nWarning in geom_point(aes(frame = year)): Ignoring unknown aesthetics: frame\n\n\n\nggplotly(p)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nfragua &lt;- tq_get(\"FRAGUAB.MX\", from = \"2021-01-01\")\n\nfragua |&gt; \n  ggplot(aes(x = date, open = open, high = high, low = low, close = close)) +\n  geom_barchart(size = 1) +\n  geom_bbands(ma_fun = SMA, sd = 2, n = 20) +\n  theme_tq() +\n  labs(x = \"\")\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\ngoogle_stock &lt;- tsibbledata::gafa_stock %&gt;%\n  filter(Symbol == \"GOOG\") %&gt;%\n  mutate(day = row_number()) %&gt;%\n  tsibble::update_tsibble(index = day, regular = TRUE)\n\n# Filter the year of interest\ngoogle_2015 &lt;- google_stock %&gt;% filter(year(Date) == 2015)\n\nfit &lt;- google_2015 %&gt;%\n  model(NAIVE(Close))\n\nsim &lt;- fit %&gt;%  generate(h = 30, times = 10, bootstrap = TRUE, seed = 123)\n\np &lt;- google_2015 %&gt;%\n  ggplot(aes(x = day)) +\n  geom_line(aes(y = Close), size = 1) +\n  geom_line(aes(y = .sim, colour = as.factor(.rep)), data = sim, size = 1) +\n  ggtitle(\"Google closing stock price\") +\n  guides(col = \"none\") +\n  theme(legend.position = \"none\")\n\nggplotly(p, dynamicTicks = TRUE) |&gt; rangeslider()\n\n\n\n\n\n\n\n\n\n\n\naus_production |&gt; \n  model(arima = ARIMA(Beer)) |&gt; \n  forecast(h = \"5 years\") |&gt; \n  autoplot(aus_production |&gt; filter_index(\"1990 Q1\" ~ .), size = 1) +\n  labs(title = \"Producción de cerveza\",\n       x = \"Trimestre\",\n       y = \"Megalitros\")\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nvic_elec_daily &lt;- vic_elec %&gt;%\n  # filter(year(Time) == 2014) %&gt;%\n  index_by(Date = date(Time)) %&gt;%\n  summarise(\n    Demand = sum(Demand)/1e3,\n    Temperature = max(Temperature),\n    Holiday = any(Holiday)\n  ) %&gt;%\n  mutate(Day_Type = case_when(\n    Holiday ~ \"Holiday\",\n    wday(Date) %in% 2:6 ~ \"Weekday\",\n    TRUE ~ \"Weekend\"\n  ))\n\nvic_elec_daily |&gt; \n  ggplot(aes(x = Date, y = Demand)) +\n  background_image(readJPEG(\"rick.jpg\")) +\n  annotate(\"rect\", xmin = min(vic_elec_daily$Date), xmax = max(vic_elec_daily$Date), ymin = -Inf, ymax = Inf, fill = \"black\", alpha = 0.5) +\n  geom_line(color = \"yellow2\") + theme_dark()\n\n\n\n\n\n\n\n\n\n\n\n\np &lt;- vic_elec_daily |&gt; \n  ggplot(aes(x = Date, y = Demand)) +\n  geom_line(color = \"yellow2\", size = 1) +\n  theme_dark() +\n  labs(x = \"Fecha\", y = \"Demanda\")\n\np\n\n\n\n\n\n\n\n# ggplotly(p, dynamicTicks = TRUE) |&gt; rangeslider()\n\n\n\n\n\nus_retail_employment &lt;- us_employment %&gt;%\n  filter(year(Month) &gt;= 1990, Title == \"Retail Trade\")\n\np &lt;- us_retail_employment |&gt; \n  ggplot(aes(x = Month, y = Employed)) +\n  geom_line(size = 1, color = \"purple\") +\n  labs(x = \"Mes\", y = \"Empleados\") + \n  theme_pubclean()\n\np\n\n\n\n\n\n\n\n# ggplotly(p, dynamicTicks = TRUE) |&gt; \n#   rangeslider()\n\n\n\n\n\nus_retail_employment |&gt; \n  model(ets = ARIMA(Employed)) |&gt; \n  forecast(h = \"6 years\") |&gt; \n  autoplot(color = \"purple\", size = 1) +\n  autolayer(us_retail_employment, Employed, color = \"purple\", size = 1) +\n  theme_pubclean() +\n  labs(x = \"Mes\", y = \"Empleos\")",
+    "text": "Warning in geom_point(aes(frame = year)): Ignoring unknown aesthetics: frame",
     "crumbs": [
       "Forecasting",
       "Introduction"
@@ -466,84 +466,7 @@
     "href": "docs/forecasting/intro/intro.html#section",
     "title": "Series de tiempo",
     "section": "",
-    "text": "p &lt;- gapminder::gapminder |&gt; \n  ggplot(aes(x = gdpPercap, y = lifeExp, color = country,\n                       size = pop, label = country)) +\n  geom_point(aes(frame = year)) + \n  scale_x_log10() + \n  ylab(\"Esperanza de vida (años)\") +\n  xlab(\"PIB per cápita (USD, deflactado)\") +\n  theme(legend.position = \"none\")\n\nWarning in geom_point(aes(frame = year)): Ignoring unknown aesthetics: frame\n\n\n\nggplotly(p)",
-    "crumbs": [
-      "Forecasting",
-      "Introduction"
-    ]
-  },
-  {
-    "objectID": "docs/forecasting/intro/intro.html#section-2",
-    "href": "docs/forecasting/intro/intro.html#section-2",
-    "title": "Series de tiempo",
-    "section": "",
-    "text": "fragua &lt;- tq_get(\"FRAGUAB.MX\", from = \"2021-01-01\")\n\nfragua |&gt; \n  ggplot(aes(x = date, open = open, high = high, low = low, close = close)) +\n  geom_barchart(size = 1) +\n  geom_bbands(ma_fun = SMA, sd = 2, n = 20) +\n  theme_tq() +\n  labs(x = \"\")",
-    "crumbs": [
-      "Forecasting",
-      "Introduction"
-    ]
-  },
-  {
-    "objectID": "docs/forecasting/intro/intro.html#section-6",
-    "href": "docs/forecasting/intro/intro.html#section-6",
-    "title": "Series de tiempo",
-    "section": "",
-    "text": "google_stock &lt;- tsibbledata::gafa_stock %&gt;%\n  filter(Symbol == \"GOOG\") %&gt;%\n  mutate(day = row_number()) %&gt;%\n  tsibble::update_tsibble(index = day, regular = TRUE)\n\n# Filter the year of interest\ngoogle_2015 &lt;- google_stock %&gt;% filter(year(Date) == 2015)\n\nfit &lt;- google_2015 %&gt;%\n  model(NAIVE(Close))\n\nsim &lt;- fit %&gt;%  generate(h = 30, times = 10, bootstrap = TRUE, seed = 123)\n\np &lt;- google_2015 %&gt;%\n  ggplot(aes(x = day)) +\n  geom_line(aes(y = Close), size = 1) +\n  geom_line(aes(y = .sim, colour = as.factor(.rep)), data = sim, size = 1) +\n  ggtitle(\"Google closing stock price\") +\n  guides(col = \"none\") +\n  theme(legend.position = \"none\")\n\nggplotly(p, dynamicTicks = TRUE) |&gt; rangeslider()",
-    "crumbs": [
-      "Forecasting",
-      "Introduction"
-    ]
-  },
-  {
-    "objectID": "docs/forecasting/intro/intro.html#pronóstico-de-la-producción-de-cerveza",
-    "href": "docs/forecasting/intro/intro.html#pronóstico-de-la-producción-de-cerveza",
-    "title": "Series de tiempo",
-    "section": "",
-    "text": "aus_production |&gt; \n  model(arima = ARIMA(Beer)) |&gt; \n  forecast(h = \"5 years\") |&gt; \n  autoplot(aus_production |&gt; filter_index(\"1990 Q1\" ~ .), size = 1) +\n  labs(title = \"Producción de cerveza\",\n       x = \"Trimestre\",\n       y = \"Megalitros\")",
-    "crumbs": [
-      "Forecasting",
-      "Introduction"
-    ]
-  },
-  {
-    "objectID": "docs/forecasting/intro/intro.html#energía-eléctrica",
-    "href": "docs/forecasting/intro/intro.html#energía-eléctrica",
-    "title": "Series de tiempo",
-    "section": "",
-    "text": "vic_elec_daily &lt;- vic_elec %&gt;%\n  # filter(year(Time) == 2014) %&gt;%\n  index_by(Date = date(Time)) %&gt;%\n  summarise(\n    Demand = sum(Demand)/1e3,\n    Temperature = max(Temperature),\n    Holiday = any(Holiday)\n  ) %&gt;%\n  mutate(Day_Type = case_when(\n    Holiday ~ \"Holiday\",\n    wday(Date) %in% 2:6 ~ \"Weekday\",\n    TRUE ~ \"Weekend\"\n  ))\n\nvic_elec_daily |&gt; \n  ggplot(aes(x = Date, y = Demand)) +\n  background_image(readJPEG(\"rick.jpg\")) +\n  annotate(\"rect\", xmin = min(vic_elec_daily$Date), xmax = max(vic_elec_daily$Date), ymin = -Inf, ymax = Inf, fill = \"black\", alpha = 0.5) +\n  geom_line(color = \"yellow2\") + theme_dark()",
-    "crumbs": [
-      "Forecasting",
-      "Introduction"
-    ]
-  },
-  {
-    "objectID": "docs/forecasting/intro/intro.html#demanda-de-energía-eléctrica",
-    "href": "docs/forecasting/intro/intro.html#demanda-de-energía-eléctrica",
-    "title": "Series de tiempo",
-    "section": "",
-    "text": "p &lt;- vic_elec_daily |&gt; \n  ggplot(aes(x = Date, y = Demand)) +\n  geom_line(color = \"yellow2\", size = 1) +\n  theme_dark() +\n  labs(x = \"Fecha\", y = \"Demanda\")\n\np\n\n\n\n\n\n\n\n# ggplotly(p, dynamicTicks = TRUE) |&gt; rangeslider()",
-    "crumbs": [
-      "Forecasting",
-      "Introduction"
-    ]
-  },
-  {
-    "objectID": "docs/forecasting/intro/intro.html#empleo",
-    "href": "docs/forecasting/intro/intro.html#empleo",
-    "title": "Series de tiempo",
-    "section": "",
-    "text": "us_retail_employment &lt;- us_employment %&gt;%\n  filter(year(Month) &gt;= 1990, Title == \"Retail Trade\")\n\np &lt;- us_retail_employment |&gt; \n  ggplot(aes(x = Month, y = Employed)) +\n  geom_line(size = 1, color = \"purple\") +\n  labs(x = \"Mes\", y = \"Empleados\") + \n  theme_pubclean()\n\np\n\n\n\n\n\n\n\n# ggplotly(p, dynamicTicks = TRUE) |&gt; \n#   rangeslider()",
-    "crumbs": [
-      "Forecasting",
-      "Introduction"
-    ]
-  },
-  {
-    "objectID": "docs/forecasting/intro/intro.html#empleo-1",
-    "href": "docs/forecasting/intro/intro.html#empleo-1",
-    "title": "Series de tiempo",
-    "section": "",
-    "text": "us_retail_employment |&gt; \n  model(ets = ARIMA(Employed)) |&gt; \n  forecast(h = \"6 years\") |&gt; \n  autoplot(color = \"purple\", size = 1) +\n  autolayer(us_retail_employment, Employed, color = \"purple\", size = 1) +\n  theme_pubclean() +\n  labs(x = \"Mes\", y = \"Empleos\")",
+    "text": "Warning in geom_point(aes(frame = year)): Ignoring unknown aesthetics: frame",
     "crumbs": [
       "Forecasting",
       "Introduction"
