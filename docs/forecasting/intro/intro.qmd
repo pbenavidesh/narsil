@@ -1,5 +1,5 @@
 ---
-title: "Series de tiempo"
+title: "Time Series Forecasting"
 author: "Pablo Benavides Herrera"
 date: 2024-12-03
 format: 
@@ -33,6 +33,7 @@ p_load(tidyverse, plotly, patchwork, timetk, modeltime, tidyquant, tsibble, feas
 
 ```{r}
 #| label: gapminder
+#| fig-cap: Life expectancy & GDP per Capita across countries
 p <- gapminder::gapminder |> 
   ggplot(aes(x = gdpPercap, y = lifeExp, color = country,
                        size = pop, label = country)) +
@@ -97,7 +98,7 @@ fragua |>
 ## What are forecasts?{backgroung-color="black" background-image="walter2.jpeg" data-hide-slide-number="true"}
 
 :::{.content-hidden when-format="revealjs"}
-![]("walter2.jpeg"){width=100%}
+![](walter2.jpeg){width=100%}
 :::
 
 ## {background-image="dr_strange.jpg" data-hide-slide-number="true"}
@@ -110,7 +111,7 @@ fragua |>
 
 :::{.content-hidden when-format="revealjs"}
 
-![]("eclipse.jpeg"){width=100%}
+![](eclipse.jpeg){width=100%}
 
 :::
 
