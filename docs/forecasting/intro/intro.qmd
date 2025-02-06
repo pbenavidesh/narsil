@@ -6,7 +6,11 @@ format:
   html:
     execute:
       echo: false
+      warning: false
+      message: false
   revealjs:
+    toc: false
+    theme: league
     execute:
       echo: false
       message: false
@@ -15,7 +19,7 @@ format:
 ---
 
 
-# ¿Qué es una serie de tiempo? {backgroung-color="black" background-image="dark.jpg"}
+# What is a time series? {background-image="dark.jpg"}
 
 ```{r}
 #| label: pkgs
@@ -23,7 +27,7 @@ library(pacman)
 p_load(tidyverse, plotly, patchwork, timetk, modeltime, tidyquant, tsibble, feasts, fable, tsibbledata, fpp3, ggpubr, jpeg)
 ```
 
-## {}
+## Is this a time series? {}
 
 
 
@@ -57,9 +61,9 @@ p
 
 
 
-## {background-image="doge.jpg"}
+## Cryptos {background-image="doge.jpg" data-hide-slide-number="true"}
 
-## 
+## Series financieras
 
 ![](fragua.png){fig-align="center"}
 
@@ -78,15 +82,15 @@ fragua |>
 ```
 
 
-## ¿Qué es un pronóstico?{backgroung-color="black" background-image="walter2.jpeg"}
+## ¿Qué es un pronóstico?{backgroung-color="black" background-image="walter2.jpeg" data-hide-slide-number="true"}
 
-## {background-image="dr_strange.jpg"}
+## {background-image="dr_strange.jpg" data-hide-slide-number="true"}
 
-## {background-image="dr_strange_math.jpg"}
+## {background-image="dr_strange_math.jpg" data-hide-slide-number="true"}
 
-## {background-image="eclipse.jpg"}
+## {background-image="eclipse.jpg" data-hide-slide-number="true"}
 
-## {background-image="google.jpg"}
+## {background-image="google.jpg" data-hide-slide-number="true"}
 
 ```{r}
 #| label: google_2
@@ -175,8 +179,7 @@ p <- vic_elec_daily |>
   theme_dark() +
   labs(x = "Fecha", y = "Demanda")
 
-p
-# ggplotly(p, dynamicTicks = TRUE) |> rangeslider()
+ggplotly(p, dynamicTicks = TRUE) |> rangeslider()
 ```
 
 ## Empleo {auto-animate="true"}
@@ -194,7 +197,8 @@ p <- us_retail_employment |>
   theme_pubclean()
 
 p
-# ggplotly(p, dynamicTicks = TRUE) |> 
+
+# ggplotly(p, dynamicTicks = TRUE) |>
 #   rangeslider()
 ```
 
