@@ -7,7 +7,10 @@
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-57476271c5f0467c372e20ff5d25630e.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-57476271c5f0467c372e20ff5d25630e.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.6.40">
 
   <meta name="author" content="Pablo Benavides">
@@ -263,8 +266,12 @@ Pablo Benavides
 </section>
 <section class="slide level2">
 
-
-<img data-src="https://tidyverts.org/images/fable.png" class="quarto-figure quarto-figure-center r-stretch"></section>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><a href="https://tidyverts.org/images/fable.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img data-src="https://tidyverts.org/images/fable.png" class="quarto-figure quarto-figure-center"></a></p>
+</figure>
+</div>
+</section>
 <section>
 <section id="introduction" class="title-slide slide level1 unnumbered center">
 <h1>Introduction</h1>
@@ -493,9 +500,15 @@ Pablo Benavides
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>gdp_train <span class="sc">|&gt;</span> </span>
 <span id="cb8-2"><a></a>  <span class="fu">autoplot</span>(<span class="fu">log</span>(price)) <span class="sc">+</span></span>
 <span id="cb8-3"><a></a>  <span class="fu">ggtitle</span>(<span class="st">"Log of the Real GDP of Mexico"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="forecasting_workflow_files/figure-html/unnamed-chunk-8-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img data-src="forecasting_workflow_files/figure-html/unnamed-chunk-8-1.png" width="672"></a></p>
+</figure>
 </div>
-<img data-src="forecasting_workflow_files/figure-html/unnamed-chunk-8-1.png" width="672" class="r-stretch"><div class="cell">
+</div>
+</div>
+<div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a>gdp_train <span class="sc">|&gt;</span> </span>
 <span id="cb9-2"><a></a>  <span class="fu">model</span>(<span class="at">stl =</span> <span class="fu">STL</span>(<span class="fu">log</span>(price) <span class="sc">~</span> <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>), <span class="at">robust =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span> </span>
 <span id="cb9-3"><a></a>  <span class="fu">components</span>() <span class="sc">|&gt;</span> </span>
@@ -544,7 +557,7 @@ Pablo Benavides
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="forecasting_workflow_files/figure-html/unnamed-chunk-11-1.png" width="672"></p>
+<p><a href="forecasting_workflow_files/figure-html/unnamed-chunk-11-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img data-src="forecasting_workflow_files/figure-html/unnamed-chunk-11-1.png" width="672"></a></p>
 </figure>
 </div>
 </div>
@@ -555,7 +568,7 @@ Pablo Benavides
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="forecasting_workflow_files/figure-html/unnamed-chunk-11-2.png" width="672"></p>
+<p><a href="forecasting_workflow_files/figure-html/unnamed-chunk-11-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img data-src="forecasting_workflow_files/figure-html/unnamed-chunk-11-2.png" width="672"></a></p>
 </figure>
 </div>
 </div>
@@ -639,7 +652,7 @@ Pablo Benavides
 </ul>
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="https://media.tenor.com/dp_hQBGT0rIAAAAM/think-smart.gif" class="quarto-figure quarto-figure-center"></p>
+<p><a href="https://media.tenor.com/dp_hQBGT0rIAAAAM/think-smart.gif" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img data-src="https://media.tenor.com/dp_hQBGT0rIAAAAM/think-smart.gif" class="quarto-figure quarto-figure-center"></a></p>
 </figure>
 </div>
 </div>
@@ -664,7 +677,7 @@ MAPE = \frac{1}{T}\sum_{t=1}^T|\frac{e_t}{y_t}|
 \]</span>.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="https://media.tenor.com/tqERWt8lBYEAAAAM/calculating-puzzled.gif" class="quarto-figure quarto-figure-center"></p>
+<p><a href="https://media.tenor.com/tqERWt8lBYEAAAAM/calculating-puzzled.gif" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img data-src="https://media.tenor.com/tqERWt8lBYEAAAAM/calculating-puzzled.gif" class="quarto-figure quarto-figure-center"></a></p>
 </figure>
 </div>
 </li></ol></aside></section>
@@ -736,9 +749,15 @@ MAPE = \frac{1}{T}\sum_{t=1}^T|\frac{e_t}{y_t}|
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a>gdp_fit <span class="sc">|&gt;</span> </span>
 <span id="cb19-2"><a></a>  <span class="fu">select</span>(stlf) <span class="sc">|&gt;</span> </span>
 <span id="cb19-3"><a></a>  <span class="fu">gg_tsresiduals</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="forecasting_workflow_files/figure-html/unnamed-chunk-18-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7"><img data-src="forecasting_workflow_files/figure-html/unnamed-chunk-18-1.png" width="672"></a></p>
+</figure>
 </div>
-<img data-src="forecasting_workflow_files/figure-html/unnamed-chunk-18-1.png" width="672" class="r-stretch"><div class="cell">
+</div>
+</div>
+<div class="cell">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a></a>gdp_fit <span class="sc">|&gt;</span> </span>
 <span id="cb20-2"><a></a>  <span class="fu">augment</span>() <span class="sc">|&gt;</span> </span>
 <span id="cb20-3"><a></a>  <span class="fu">features</span>(.innov, ljung_box)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -781,7 +800,7 @@ MAPE = \frac{1}{T}\sum_{t=1}^T|\frac{e_t}{y_t}|
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="forecasting_workflow_files/figure-html/unnamed-chunk-21-1.png" width="672"></p>
+<p><a href="forecasting_workflow_files/figure-html/unnamed-chunk-21-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8"><img data-src="forecasting_workflow_files/figure-html/unnamed-chunk-21-1.png" width="672"></a></p>
 </figure>
 </div>
 </div>
@@ -791,7 +810,7 @@ MAPE = \frac{1}{T}\sum_{t=1}^T|\frac{e_t}{y_t}|
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="forecasting_workflow_files/figure-html/unnamed-chunk-21-2.png" width="672"></p>
+<p><a href="forecasting_workflow_files/figure-html/unnamed-chunk-21-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9"><img data-src="forecasting_workflow_files/figure-html/unnamed-chunk-21-2.png" width="672"></a></p>
 </figure>
 </div>
 </div>
@@ -844,9 +863,15 @@ MAPE = \frac{1}{T}\sum_{t=1}^T|\frac{e_t}{y_t}|
 </div>
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a></a>gdp_fc_fut <span class="sc">|&gt;</span> </span>
 <span id="cb27-2"><a></a>  <span class="fu">autoplot</span>(gdp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="forecasting_workflow_files/figure-html/unnamed-chunk-24-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10"><img data-src="forecasting_workflow_files/figure-html/unnamed-chunk-24-1.png" width="672"></a></p>
+</figure>
 </div>
-<img data-src="forecasting_workflow_files/figure-html/unnamed-chunk-24-1.png" width="672" class="r-stretch"><div class="cell">
+</div>
+</div>
+<div class="cell">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a></a><span class="co"># save(gdp_fc_fut, file = "equipo1.RData")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
@@ -1413,6 +1438,38 @@ MAPE = \frac{1}{T}\sum_{t=1}^T|\frac{e_t}{y_t}|
       }
     });
     </script>
+    <script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+    (function() {
+      let previousOnload = window.onload;
+      window.onload = () => {
+        if (previousOnload) {
+          previousOnload();
+        }
+        lightboxQuarto.on('slide_before_load', (data) => {
+          const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+          const href = trigger.getAttribute('href');
+          if (href !== null) {
+            const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+            if (imgEl !== null) {
+              const srcAttr = imgEl.getAttribute("src");
+              if (srcAttr && srcAttr.startsWith("data:")) {
+                slideConfig.href = srcAttr;
+              }
+            }
+          } 
+        });
+      
+        lightboxQuarto.on('slide_after_load', (data) => {
+          const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(slideNode);
+          }
+        });
+      
+      };
+      
+    })();
+              </script>
     
 
 </body></html>
