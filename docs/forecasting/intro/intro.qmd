@@ -181,6 +181,8 @@ p
 ## Empleo {auto-animate="true"}
 
 ```{r}
+#| label: empleo
+
 us_retail_employment <- us_employment %>%
   filter(year(Month) >= 1990, Title == "Retail Trade")
 
@@ -198,6 +200,8 @@ p
 ## Empleo {auto-animate="true"}
 
 ```{r}
+#| label: empleo_fcst
+
 us_retail_employment |> 
   model(ets = ARIMA(Employed)) |> 
   forecast(h = "6 years") |> 
@@ -206,7 +210,5 @@ us_retail_employment |>
   theme_pubclean() +
   labs(x = "Mes", y = "Empleos")
 ```
-
-Prueba
 
 
