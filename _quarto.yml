@@ -23,26 +23,60 @@ website:
     left:
       - text: "Home"
         href: index.qmd
-      - text: "Forecasting"
-        href: docs/forecasting/intro/intro.qmd
-      - text: "Models"
-        href: docs/models/ets.qmd
+      - text: "Modules"
+        href: docs/modules/intro/intro.qmd
+      - text: "More"
+        href: docs/more/ets.qmd
       - about.qmd
   
   sidebar: 
-   - id: forecasting
-     title: "Forecasting"
+   - id: modules
+     title: "Modules"
      style: "floating"
-     contents: 
-      - text: "Introduction"
-        href: docs/forecasting/intro/intro.qmd
-      - text: "Forecasting principles"
-        href: docs/forecasting/forecasting.qmd
-      - text: "The Forecasting Workflow"
-        href: docs/forecasting/forecasting_workflow.qmd
+     contents:
+      - section: "Forecasting models based on decomposition methods"
+        contents: 
+         - text: "Introduction"
+           href: docs/modules/intro/intro.qmd
+         - text: "Forecasting principles"
+           href: docs/modules/forecasting.qmd
+         - text: "The Forecasting Workflow"
+           href: docs/modules/forecasting_workflow.qmd
+           
+      - section: "Adding ETS and ARIMA filters"
+        contents: 
+         - text: "Exponential Smoothing"
+         
+         - text: "Identifying Stationarity"
+         
+         - text: "ARIMA models"
+         
+         - text: "Decomposition & ETS/ARIMA"
       
-   - id: models
-     title: "Models"
+      
+      - section: "Adding exogenous variables to the model"
+        contents:
+         - text: "Identifying correlation and causation"
+         
+         - text: "Build dynamic regressions"
+         
+         - text: "Analyze the model's performance"
+         
+         - text: "Choose the best variables for the model"
+         
+         
+      - section: "Forecasting at scale"
+        contents: 
+         - text: "Understanding the challenges and approaches when dealing with multiple time series"
+         
+         - text: "Applying hierarchical and reconciliation models"
+         
+         - text: "Efficient forecasting workflow"
+         
+         - text: "Evaluation of the global performance"
+      
+   - id: more
+     title: "More"
      contents: 
       - section: "Univariate models"
         contents: 
