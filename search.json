@@ -411,32 +411,32 @@
     "text": "1.8 Forecasting the future\nWe now refit our model using the whole dataset. We will only model the STL decomposition model, because the other two didn’t get a strong fit.\n\ngdp_fit2 &lt;- gdp |&gt; \n  model(\n    stlf = decomposition_model(\n          STL(log(price) ~ season(window = \"periodic\"), robust = TRUE),\n          RW(season_adjust ~ drift())\n        )\n  )\ngdp_fit2\n\n\n  \n\n\n\n\ngdp_fc_fut &lt;- gdp_fit2 |&gt; \n  forecast(h = \"3 years\")\ngdp_fc_fut\n\n\n  \n\n\ngdp_fc_fut |&gt; \n  autoplot(gdp)\n\n\n\n\n\n\n\n\n\n# save(gdp_fc_fut, file = \"equipo1.RData\")"
   },
   {
-    "objectID": "docs/more/ets.html",
-    "href": "docs/more/ets.html",
-    "title": "Exponential Smoothing",
-    "section": "",
-    "text": "ETS models.\n\n\nthere and back again.\n\n\n\n\n\n\n# Fill in the spot we created for a plot\noutput$phonePlot &lt;- renderPlot({\n  # Render a barplot\n})\n\n\n\n# Fill in the spot we created for a plot\noutput$phonePlot &lt;- renderPlot({\n  # Render a barplot\n  barplot(WorldPhones[,input$region]*1000, \n          main=input$region,\n          ylab=\"Number of Telephones\",\n          xlab=\"Year\")\n})"
-  },
-  {
     "objectID": "docs/more/ets.html#h2-header",
     "href": "docs/more/ets.html#h2-header",
     "title": "Exponential Smoothing",
-    "section": "",
-    "text": "there and back again."
+    "section": "1.1 H2 header",
+    "text": "1.1 H2 header\nthere and back again."
+  },
+  {
+    "objectID": "docs/more/ets.html#code-animation",
+    "href": "docs/more/ets.html#code-animation",
+    "title": "Exponential Smoothing",
+    "section": "1.2 Code animation",
+    "text": "1.2 Code animation"
   },
   {
     "objectID": "docs/more/ets.html#section",
     "href": "docs/more/ets.html#section",
     "title": "Exponential Smoothing",
-    "section": "",
-    "text": "# Fill in the spot we created for a plot\noutput$phonePlot &lt;- renderPlot({\n  # Render a barplot\n})"
+    "section": "1.3 ",
+    "text": "1.3 \n# Fill in the spot we created for a plot\noutput$phonePlot &lt;- renderPlot({\n  # Render a barplot\n})"
   },
   {
     "objectID": "docs/more/ets.html#section-1",
     "href": "docs/more/ets.html#section-1",
     "title": "Exponential Smoothing",
-    "section": "",
-    "text": "# Fill in the spot we created for a plot\noutput$phonePlot &lt;- renderPlot({\n  # Render a barplot\n  barplot(WorldPhones[,input$region]*1000, \n          main=input$region,\n          ylab=\"Number of Telephones\",\n          xlab=\"Year\")\n})"
+    "section": "1.4 ",
+    "text": "1.4 \n# Fill in the spot we created for a plot\noutput$phonePlot &lt;- renderPlot({\n  # Render a barplot\n  barplot(WorldPhones[,input$region]*1000, \n          main=input$region,\n          ylab=\"Number of Telephones\",\n          xlab=\"Year\")\n})"
   },
   {
     "objectID": "docs/more/ets_pres.html#h2-header",
@@ -471,7 +471,7 @@
     "href": "about.html",
     "title": "About",
     "section": "",
-    "text": "About this site\n\n1 + 1\n\n[1] 2\n\n\n\n\n\n Back to top"
+    "text": "Back to top"
   },
   {
     "objectID": "index.html",
