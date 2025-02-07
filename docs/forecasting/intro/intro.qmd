@@ -90,6 +90,8 @@ fragua |>
 ```
 :::
 
+:::
+
 ## Cryptos {background-image="doge.jpg" data-hide-slide-number="true"}
 
 :::{.content-hidden when-format="revealjs"}
@@ -102,8 +104,33 @@ fragua |>
 ![](walter2.jpeg){width=100%}
 :::
 
-## There are two types of Data Scientists
+## {auto-animate=true}
 
+```{.mermaid}
+flowchart TD
+    A(("There are two types of Data Scientists"))
+
+```
+
+## {auto-animate=true}
+
+```{.mermaid}
+flowchart TD
+    A(("There are two types of Data Scientists")) --> D@{ label: "Those who can't predict the future" } 
+
+    D@{ shape: stadium}
+```
+
+## {auto-animate=true}
+
+```{.mermaid}
+flowchart TD
+    A(("There are two types of Data Scientists")) --> D@{ label: "Those who can't predict the future" } & E@{ label: "Those who don't know that they can't predict the future" }
+
+    D@{ shape: stadium}
+    E@{ shape: stadium}
+
+```
 
 
 ## {background-image="dr_strange.jpg" data-hide-slide-number="true"}
@@ -116,7 +143,7 @@ fragua |>
 
 :::{.content-hidden when-format="revealjs"}
 
-![](eclipse.jpg){width=100%}
+![We can predict eclipses with complete certainty](eclipse.jpg){width=100%}
 
 :::
 
@@ -124,6 +151,8 @@ fragua |>
 
 ```{r}
 #| label: google_2
+#| fig-cap: It's not so easy to predict stock prices
+
 google_stock <- tsibbledata::gafa_stock %>%
   filter(Symbol == "GOOG") %>%
   mutate(day = row_number()) %>%
@@ -135,7 +164,7 @@ google_2015 <- google_stock %>% filter(year(Date) == 2015)
 fit <- google_2015 %>%
   model(NAIVE(Close))
 
-sim <- fit %>%  generate(h = 30, times = 10, bootstrap = TRUE, seed = 123)
+sim <- fit %>%  generate(h = 30, times = 50, bootstrap = TRUE, seed = 123)
 
 p <- google_2015 %>%
   ggplot(aes(x = day)) +
@@ -145,7 +174,7 @@ p <- google_2015 %>%
   guides(col = "none") +
   theme(legend.position = "none")
 
-ggplotly(p, dynamicTicks = TRUE) |> rangeslider()
+p
 ```
 
 ## Beer Production Forecasts
@@ -156,6 +185,7 @@ ggplotly(p, dynamicTicks = TRUE) |> rangeslider()
 
 ```{r}
 #| label: beer
+#| fig-cap: Can you observe any strange patterns?
 
 aus_production |> 
   model(arima = ARIMA(Beer)) |> 
@@ -216,6 +246,7 @@ us_retail_employment <- us_employment %>%
 
 ```{r}
 #| label: empleo_fcst
+#| fig-cap: US Retail Employment
 
 us_retail_employment |> 
   model(ets = ARIMA(Employed)) |> 
