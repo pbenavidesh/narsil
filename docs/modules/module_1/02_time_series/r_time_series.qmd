@@ -1,0 +1,147 @@
+---
+title: "RStudio, R, and Time Series"
+---
+
+# Packages
+
+## The `tidyverse`
+
+```{r}
+#| label: pkg_tidyverse
+#| message: true
+
+library(tidyverse)
+```
+
+- `tidyverse` is a meta-package that loads the core packages of the [tidyverse](https://tidyverse.org/).
+
+:::{.notes}
+
+We will always load all the required packages a the beginning of the document. When loading the `tidyverse`, it shows which packages are being attached, as well as any conflicts with previously loaded packages.
+
+:::{.callout-note collapse="true"}
+## Core packages
+
+- [`dplyr`](https://dplyr.tidyverse.org/) is the core package for **data transformation**. It is paired up with the following packages for specific column types:
+  - [`stringr`](https://stringr.tidyverse.org/) for strings.
+  - [`forcats`](https://forcats.tidyverse.org/) for **factors** (R's categorical data type).
+  - [`lubridate`](https://lubridate.tidyverse.org/) for dates and date-times.
+  - [`ggplot2`](https://ggplot2.tidyverse.org/) is the primary package for visualization.
+
+:::
+
+:::
+
+## The `tidyverts`
+
+```{r}
+#| label: pkg_fpp3
+#| message: true
+
+library(fpp3)
+```
+
+- `fpp3` is also a meta-package that load the [tidyverts](https://tidyverts.org/) ecosystem for time series analysis and forecasting. 
+
+:::{.notes}
+
+The `tidyverts` packages are made to work seamlessly with the `tidyverse`.
+
+:::{.callout-note collapse="true"}
+ 
+- [`tsibble`](https://tsibble.tidyverts.org/) is the main data structure we will use to analyze and model time series. It is a **t**ime **series** t**ibble**.
+- [`feasts`](https://feasts.tidyverts.org/) provides many functions and tools for feature and statistics extraction for time series.
+- [`fable`](https://fable.tidyverts.org/) is the core package for modeling and foreasting time series.
+
+:::
+
+:::
+
+# Time Series
+
+## Tourism in Australia
+
+```{r}
+#| label: tourism_tsibble
+tourism
+```
+
+:::{.notes}
+
+The `tsibble` shows quarterly data on tourism across Australia. It's divided by Region, State, and purspose of the trip. How many different states are there?
+
+:::
+
+## Australian States
+
+```{r}
+#| label: distinct_states
+
+distinct(tourism, State)
+```
+
+## Which regions are located in Tasmania?
+
+```{r}
+#| label: distinct_regions
+
+distinct(filter(tourism, State == "Tasmania"),Region)
+```
+
+## Average trips (i)
+
+To get the average trips by purpose, we need to do the following:
+
+:::{.incremental}
+
+1) Filter the original `tsibble` to get only the data from East Coast, Tasmania.
+1) Convert the data to a `tibble`.
+1) Group by purpose.
+1) Summarise by getting the mean of the trips.
+
+:::
+
+## Average trips (ii)
+
+With traditional code, this would look something like:
+
+```{r}
+#| label: no_pipe_summarise
+
+summarise(group_by(as_tibble(filter(tourism, State == "Tasmania", Region == "East Coast")), Purpose), mean_trips = mean(Trips))
+```
+
+:::{.notes}
+:::{.callout-note collapse="true"}
+## Order of code execution
+Note that this code must be read inside-out. This makes it harder to understand, and debug.
+:::
+:::
+
+. . . 
+
+Using the native pipe operator; ` |> `, we can improve the same code:
+
+:::{.callout-tip collapse="true"}
+## The pipe operator |> 
+
+The pipe is read as "then", and it allows us to write code in the order it's supposed to be run.
+:::
+
+```{r}
+#| label: pipe_summarise
+
+tourism |>                            # <1>
+  filter(State == "Tasmania",         # <2>
+         Region == "East Coast") |>   # <2>
+  as_tibble() |>                      # <3>
+  group_by(Purpose) |>                # <4>
+  summarise(mean_trips = mean(Trips)) # <5>
+```
+
+1. Take the tsibble `tourism`, *then*
+2. filter by State and Region, *then*
+3. convert to a `tibble`, *then*
+4. group the tibble by purpose, *then*
+5. summarise by taking the mean trips
+
