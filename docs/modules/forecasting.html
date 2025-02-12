@@ -6,6 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="pbenavides">
 
 <title>Forecasting workflow – Time Series Forecasting</title>
 <style>
@@ -65,7 +66,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
 <link href="../../docs/modules/forecasting_workflow.html" rel="next">
-<link href="../../docs/modules/intro/intro.html" rel="prev">
+<link href="../../docs/modules/module_1/02_time_series/r_time_series.html" rel="prev">
 <link href="../../logo.png" rel="icon" type="image/png">
 <script src="../../site_libs/quarto-html/quarto.js"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
@@ -76,8 +77,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-391c4f7f0df7475a7487d1067a5e1fc7.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-8af9c02af42022eae5ca4bfff9dfc401.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-177b4aa69c345cc7728b0bc4f1efa90d.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-3fb1021a273c36153f9d0e2740f2c596.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-a11c347329b2136720a8a9d626cdbb4d.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -144,7 +145,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="../../docs/modules/intro/intro.html" aria-current="page"> 
+    <a class="nav-link active" href="../../docs/modules/module_1/01_intro/intro.html" aria-current="page"> 
 <span class="menu-text">Modules</span></a>
   </li>  
   <li class="nav-item">
@@ -172,7 +173,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../docs/modules/intro/intro.html">Forecasting models based on decomposition methods</a></li><li class="breadcrumb-item"><a href="../../docs/modules/forecasting.html">Forecasting principles</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../docs/modules/module_1/01_intro/intro.html">Forecasting models based on decomposition methods</a></li><li class="breadcrumb-item"><a href="../../docs/modules/forecasting.html">Forecasting principles</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -198,8 +199,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../docs/modules/intro/intro.html" class="sidebar-item-text sidebar-link">
+  <a href="../../docs/modules/module_1/01_intro/intro.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Introduction</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../docs/modules/module_1/02_time_series/r_time_series.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">RStudio, R, and Time Series</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -306,7 +313,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../docs/modules/intro/intro.html">Forecasting models based on decomposition methods</a></li><li class="breadcrumb-item"><a href="../../docs/modules/forecasting.html">Forecasting principles</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../docs/modules/module_1/01_intro/intro.html">Forecasting models based on decomposition methods</a></li><li class="breadcrumb-item"><a href="../../docs/modules/forecasting.html">Forecasting principles</a></li></ol></nav>
 <div class="quarto-title">
 <h1 class="title">Forecasting workflow</h1>
 </div>
@@ -315,12 +322,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>pbenavides </p>
+          </div>
+  </div>
     
   
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">February 7, 2025</p>
+      <p class="date-modified">February 12, 2025</p>
     </div>
   </div>
     
@@ -991,8 +1004,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../../docs/modules/intro/intro.html" class="pagination-link" aria-label="Introduction">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Introduction</span>
+      <a href="../../docs/modules/module_1/02_time_series/r_time_series.html" class="pagination-link" aria-label="RStudio, R, and Time Series">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">RStudio, R, and Time Series</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
