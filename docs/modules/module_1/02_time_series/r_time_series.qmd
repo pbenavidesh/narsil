@@ -3,7 +3,6 @@ title: "RStudio, R, and Time Series"
 format:
   html: default
   revealjs:
-    number-sections: false
     output-file: r_time_series_pres.html
 ---
 
@@ -264,11 +263,34 @@ It also helps to debug code easier, because you can run each function in order a
 ## TS Visualization
 
 ```{r}
+#| label: ts_viz
+
 tourism |> 
   filter(State == "Tasmania",
          Region == "East Coast") |> 
-  autoplot(Trips) +
-  facet_wrap(vars(Purpose), scale = "free_y") +
-  theme(legend.position = "none")
+  autoplot(Trips) +                             # <1>
+  facet_wrap(vars(Purpose), scale = "free_y") + # <2>
+  theme(legend.position = "none")               # <3>
 ```
+
+1. `autoplot()` detects the data automatically and proposes a plot accordingly.
+2. `facet_wrap()` Divides a plot into subplots (facets).
+3. you can customize endless feautres using `theme()`. Here, we remove the legend, as it's redudant.
+
+## Exporting data to .csv
+
+```{r}
+#| label: write_csv
+#| eval: false
+
+tourism |> 
+  filter(State == "Tasmania",
+         Region == "East Coast") |> 
+  mutate(Quarter = as.Date(Quarter)) |> 
+  write_csv("./datos/tasmania.csv")
+```
+
+:::{.notes}
+You can export to .csv by providing a `tsibble` or `tibble` (or any other type of data frame), by calling **`write_csv()`**, and specifying the output file's name.
+:::
 
