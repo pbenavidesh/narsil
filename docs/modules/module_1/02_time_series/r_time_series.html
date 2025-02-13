@@ -115,12 +115,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <link rel="stylesheet" href="../../../../styles.css">
 <meta property="og:title" content="RStudio, R, and Time Series – Time Series Forecasting">
-<meta property="og:image" content="https://pbenavidesh.github.io/narsil/docs/modules/module_1/02_time_series/r_time_series_files/figure-html/unnamed-chunk-15-1.png">
+<meta property="og:image" content="https://pbenavidesh.github.io/narsil/docs/modules/module_1/02_time_series/r_time_series_files/figure-html/ts_viz-1.png">
 <meta property="og:site_name" content="Time Series Forecasting">
 <meta property="og:image:height" content="960">
 <meta property="og:image:width" content="1344">
 <meta name="twitter:title" content="RStudio, R, and Time Series – Time Series Forecasting">
-<meta name="twitter:image" content="https://pbenavidesh.github.io/narsil/docs/modules/module_1/02_time_series/r_time_series_files/figure-html/unnamed-chunk-15-1.png">
+<meta name="twitter:image" content="https://pbenavidesh.github.io/narsil/docs/modules/module_1/02_time_series/r_time_series_files/figure-html/ts_viz-1.png">
 <meta name="twitter:creator" content="@PabsBenavides">
 <meta name="twitter:image-height" content="960">
 <meta name="twitter:image-width" content="1344">
@@ -309,20 +309,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#packages" id="toc-packages" class="nav-link active" data-scroll-target="#packages"><span class="header-section-number">1</span> Packages</a>
+  <li><a href="#packages" id="toc-packages" class="nav-link active" data-scroll-target="#packages">Packages</a>
   <ul class="collapse">
-  <li><a href="#the-tidyverse" id="toc-the-tidyverse" class="nav-link" data-scroll-target="#the-tidyverse"><span class="header-section-number">1.1</span> The <code>tidyverse</code></a></li>
-  <li><a href="#the-tidyverts" id="toc-the-tidyverts" class="nav-link" data-scroll-target="#the-tidyverts"><span class="header-section-number">1.2</span> The <code>tidyverts</code></a></li>
+  <li><a href="#the-tidyverse" id="toc-the-tidyverse" class="nav-link" data-scroll-target="#the-tidyverse">The <code>tidyverse</code></a></li>
+  <li><a href="#the-tidyverts" id="toc-the-tidyverts" class="nav-link" data-scroll-target="#the-tidyverts">The <code>tidyverts</code></a></li>
   </ul></li>
-  <li><a href="#time-series" id="toc-time-series" class="nav-link" data-scroll-target="#time-series"><span class="header-section-number">2</span> Time Series</a>
+  <li><a href="#time-series" id="toc-time-series" class="nav-link" data-scroll-target="#time-series">Time Series</a>
   <ul class="collapse">
-  <li><a href="#tourism-in-australia" id="toc-tourism-in-australia" class="nav-link" data-scroll-target="#tourism-in-australia"><span class="header-section-number">2.1</span> Tourism in Australia</a></li>
-  <li><a href="#australian-states" id="toc-australian-states" class="nav-link" data-scroll-target="#australian-states"><span class="header-section-number">2.2</span> Australian States</a></li>
-  <li><a href="#which-regions-are-located-in-tasmania" id="toc-which-regions-are-located-in-tasmania" class="nav-link" data-scroll-target="#which-regions-are-located-in-tasmania"><span class="header-section-number">2.3</span> Which regions are located in Tasmania?</a></li>
-  <li><a href="#data-transformation-average-trips" id="toc-data-transformation-average-trips" class="nav-link" data-scroll-target="#data-transformation-average-trips"><span class="header-section-number">2.4</span> Data Transformation: Average trips</a></li>
-  <li><a href="#section" id="toc-section" class="nav-link" data-scroll-target="#section"><span class="header-section-number">2.5</span> </a></li>
-  <li><a href="#section-8" id="toc-section-8" class="nav-link" data-scroll-target="#section-8"><span class="header-section-number">2.6</span> </a></li>
-  <li><a href="#ts-visualization" id="toc-ts-visualization" class="nav-link" data-scroll-target="#ts-visualization"><span class="header-section-number">2.7</span> TS Visualization</a></li>
+  <li><a href="#tourism-in-australia" id="toc-tourism-in-australia" class="nav-link" data-scroll-target="#tourism-in-australia">Tourism in Australia</a></li>
+  <li><a href="#australian-states" id="toc-australian-states" class="nav-link" data-scroll-target="#australian-states">Australian States</a></li>
+  <li><a href="#which-regions-are-located-in-tasmania" id="toc-which-regions-are-located-in-tasmania" class="nav-link" data-scroll-target="#which-regions-are-located-in-tasmania">Which regions are located in Tasmania?</a></li>
+  <li><a href="#data-transformation-average-trips" id="toc-data-transformation-average-trips" class="nav-link" data-scroll-target="#data-transformation-average-trips">Data Transformation: Average trips</a></li>
+  <li><a href="#section" id="toc-section" class="nav-link" data-scroll-target="#section"></a></li>
+  <li><a href="#section-8" id="toc-section-8" class="nav-link" data-scroll-target="#section-8"></a></li>
+  <li><a href="#ts-visualization" id="toc-ts-visualization" class="nav-link" data-scroll-target="#ts-visualization">TS Visualization</a></li>
+  <li><a href="#exporting-data-to-.csv" id="toc-exporting-data-to-.csv" class="nav-link" data-scroll-target="#exporting-data-to-.csv">Exporting data to .csv</a></li>
   </ul></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/pbenavidesh/narsil/edit/main/docs/modules/module_1/02_time_series/r_time_series.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/pbenavidesh/narsil/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div><div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="r_time_series_pres.html"><i class="bi bi-file-slides"></i>RevealJS</a></li></ul></div></nav>
@@ -361,10 +362,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="packages" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> Packages</h1>
-<section id="the-tidyverse" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="the-tidyverse"><span class="header-section-number">1.1</span> The <code>tidyverse</code></h2>
+<section id="packages" class="level1">
+<h1>Packages</h1>
+<section id="the-tidyverse" class="level2">
+<h2 class="anchored" data-anchor-id="the-tidyverse">The <code>tidyverse</code></h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
@@ -411,8 +412,8 @@ Core packages
 </div>
 </div>
 </section>
-<section id="the-tidyverts" class="level2" data-number="1.2">
-<h2 data-number="1.2" class="anchored" data-anchor-id="the-tidyverts"><span class="header-section-number">1.2</span> The <code>tidyverts</code></h2>
+<section id="the-tidyverts" class="level2">
+<h2 class="anchored" data-anchor-id="the-tidyverts">The <code>tidyverts</code></h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fpp3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
@@ -466,10 +467,10 @@ Note
 </div>
 </section>
 </section>
-<section id="time-series" class="level1" data-number="2">
-<h1 data-number="2"><span class="header-section-number">2</span> Time Series</h1>
-<section id="tourism-in-australia" class="level2" data-number="2.1">
-<h2 data-number="2.1" class="anchored" data-anchor-id="tourism-in-australia"><span class="header-section-number">2.1</span> Tourism in Australia</h2>
+<section id="time-series" class="level1">
+<h1>Time Series</h1>
+<section id="tourism-in-australia" class="level2">
+<h2 class="anchored" data-anchor-id="tourism-in-australia">Tourism in Australia</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>tourism</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -484,8 +485,8 @@ Note
 <p>The <code>tsibble</code> shows quarterly data on tourism across Australia. It’s divided by Region, State, and purspose of the trip. How many different states are there?</p>
 </div>
 </section>
-<section id="australian-states" class="level2" data-number="2.2">
-<h2 data-number="2.2" class="anchored" data-anchor-id="australian-states"><span class="header-section-number">2.2</span> Australian States</h2>
+<section id="australian-states" class="level2">
+<h2 class="anchored" data-anchor-id="australian-states">Australian States</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">distinct</span>(tourism, State)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -497,8 +498,8 @@ Note
 </div>
 </div>
 </section>
-<section id="which-regions-are-located-in-tasmania" class="level2" data-number="2.3">
-<h2 data-number="2.3" class="anchored" data-anchor-id="which-regions-are-located-in-tasmania"><span class="header-section-number">2.3</span> Which regions are located in Tasmania?</h2>
+<section id="which-regions-are-located-in-tasmania" class="level2">
+<h2 class="anchored" data-anchor-id="which-regions-are-located-in-tasmania">Which regions are located in Tasmania?</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">distinct</span>(<span class="fu">filter</span>(tourism, State <span class="sc">==</span> <span class="st">"Tasmania"</span>),Region)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -510,8 +511,8 @@ Note
 </div>
 </div>
 </section>
-<section id="data-transformation-average-trips" class="level2" data-number="2.4">
-<h2 data-number="2.4" class="anchored" data-anchor-id="data-transformation-average-trips"><span class="header-section-number">2.4</span> Data Transformation: Average trips</h2>
+<section id="data-transformation-average-trips" class="level2">
+<h2 class="anchored" data-anchor-id="data-transformation-average-trips">Data Transformation: Average trips</h2>
 <p>To get the average trips by purpose, we need to do the following:</p>
 <div class="incremental">
 <ol class="incremental" type="1">
@@ -522,8 +523,8 @@ Note
 </ol>
 </div>
 </section>
-<section id="section" class="level2" data-auto-animate="true" data-number="2.5">
-<h2 data-auto-animate="true" data-number="2.5" class="anchored" data-anchor-id="section"><span class="header-section-number">2.5</span> </h2>
+<section id="section" class="level2" data-auto-animate="true">
+<h2 data-auto-animate="true" class="anchored" data-anchor-id="section"></h2>
 <p>With traditional code, this would look something like:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summarise</span>(<span class="fu">group_by</span>(<span class="fu">as_tibble</span>(<span class="fu">filter</span>(tourism, State <span class="sc">==</span> <span class="st">"Tasmania"</span>, </span>
@@ -549,8 +550,8 @@ Order of code execution
 </div>
 </div>
 </section>
-<section id="section-8" class="level2" data-auto-animate="true" data-number="2.6">
-<h2 data-auto-animate="true" data-number="2.6" class="anchored" data-anchor-id="section-8"><span class="header-section-number">2.6</span> </h2>
+<section id="section-8" class="level2" data-auto-animate="true">
+<h2 data-auto-animate="true" class="anchored" data-anchor-id="section-8"></h2>
 <p>Using the native pipe operator; <code>|&gt;</code>, we can improve the same code:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="annotated-cell-7"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="1">1</button><span id="annotated-cell-7-1" class="code-annotation-target"><a href="#annotated-cell-7-1" aria-hidden="true" tabindex="-1"></a>tourism <span class="sc">|&gt;</span></span>
@@ -611,22 +612,51 @@ The pipe operator |&gt;
 </div>
 </div>
 </section>
-<section id="ts-visualization" class="level2" data-number="2.7">
-<h2 data-number="2.7" class="anchored" data-anchor-id="ts-visualization"><span class="header-section-number">2.7</span> TS Visualization</h2>
+<section id="ts-visualization" class="level2">
+<h2 class="anchored" data-anchor-id="ts-visualization">TS Visualization</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="annotated-cell-8"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-8-1"><a href="#annotated-cell-8-1" aria-hidden="true" tabindex="-1"></a>tourism <span class="sc">|&gt;</span> </span>
+<span id="annotated-cell-8-2"><a href="#annotated-cell-8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(State <span class="sc">==</span> <span class="st">"Tasmania"</span>,</span>
+<span id="annotated-cell-8-3"><a href="#annotated-cell-8-3" aria-hidden="true" tabindex="-1"></a>         Region <span class="sc">==</span> <span class="st">"East Coast"</span>) <span class="sc">|&gt;</span> </span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-8" data-target-annotation="1">1</button><span id="annotated-cell-8-4" class="code-annotation-target"><a href="#annotated-cell-8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(Trips) <span class="sc">+</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-8" data-target-annotation="2">2</button><span id="annotated-cell-8-5" class="code-annotation-target"><a href="#annotated-cell-8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(Purpose), <span class="at">scale =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-8" data-target-annotation="3">3</button><span id="annotated-cell-8-6" class="code-annotation-target"><a href="#annotated-cell-8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-8" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-8" data-code-lines="4" data-code-annotation="1"><code>autoplot()</code> detects the data automatically and proposes a plot accordingly.</span>
+</dd>
+<dt data-target-cell="annotated-cell-8" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-8" data-code-lines="5" data-code-annotation="2"><code>facet_wrap()</code> Divides a plot into subplots (facets).</span>
+</dd>
+<dt data-target-cell="annotated-cell-8" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-8" data-code-lines="6" data-code-annotation="3">you can customize endless feautres using <code>theme()</code>. Here, we remove the legend, as it’s redudant.</span>
+</dd>
+</dl>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="r_time_series_files/figure-html/ts_viz-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="r_time_series_files/figure-html/ts_viz-1.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="exporting-data-to-.csv" class="level2">
+<h2 class="anchored" data-anchor-id="exporting-data-to-.csv">Exporting data to .csv</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>tourism <span class="sc">|&gt;</span> </span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(State <span class="sc">==</span> <span class="st">"Tasmania"</span>,</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>         Region <span class="sc">==</span> <span class="st">"East Coast"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(Trips) <span class="sc">+</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(Purpose), <span class="at">scale =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><a href="r_time_series_files/figure-html/unnamed-chunk-15-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="r_time_series_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></a></p>
-</figure>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Quarter =</span> <span class="fu">as.Date</span>(Quarter)) <span class="sc">|&gt;</span> </span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write_csv</span>(<span class="st">"./datos/tasmania.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</div>
+<div class="notes">
+<p>You can export to .csv by providing a <code>tsibble</code> or <code>tibble</code> (or any other type of data frame), by calling <strong><code>write_csv()</code></strong>, and specifying the output file’s name.</p>
 </div>
 
 

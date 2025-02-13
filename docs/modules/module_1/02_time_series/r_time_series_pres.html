@@ -241,6 +241,7 @@ pbenavides
 
 
 <li><a href="#/ts-visualization" id="/toc-ts-visualization">TS Visualization</a></li>
+<li><a href="#/exporting-data-to-.csv" id="/toc-exporting-data-to-.csv">Exporting data to .csv</a></li>
 </ul></li>
 </ul>
 </nav>
@@ -614,20 +615,59 @@ pbenavides
 <section id="ts-visualization" class="slide level2">
 <h2>TS Visualization</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a>tourism <span class="sc">|&gt;</span> </span>
-<span id="cb19-2"><a></a>  <span class="fu">filter</span>(State <span class="sc">==</span> <span class="st">"Tasmania"</span>,</span>
-<span id="cb19-3"><a></a>         Region <span class="sc">==</span> <span class="st">"East Coast"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb19-4"><a></a>  <span class="fu">autoplot</span>(Trips) <span class="sc">+</span></span>
-<span id="cb19-5"><a></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(Purpose), <span class="at">scale =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
-<span id="cb19-6"><a></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="annotated-cell-8"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-8-1"><a href="#annotated-cell-8-1"></a>tourism <span class="sc">|&gt;</span> </span>
+<span id="annotated-cell-8-2"><a href="#annotated-cell-8-2"></a>  <span class="fu">filter</span>(State <span class="sc">==</span> <span class="st">"Tasmania"</span>,</span>
+<span id="annotated-cell-8-3"><a href="#annotated-cell-8-3"></a>         Region <span class="sc">==</span> <span class="st">"East Coast"</span>) <span class="sc">|&gt;</span> </span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-8" data-target-annotation="1">1</button><span id="annotated-cell-8-4" class="code-annotation-target"><a href="#annotated-cell-8-4"></a>  <span class="fu">autoplot</span>(Trips) <span class="sc">+</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-8" data-target-annotation="2">2</button><span id="annotated-cell-8-5" class="code-annotation-target"><a href="#annotated-cell-8-5"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(Purpose), <span class="at">scale =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-8" data-target-annotation="3">3</button><span id="annotated-cell-8-6" class="code-annotation-target"><a href="#annotated-cell-8-6"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-8" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-8" data-code-lines="4" data-code-annotation="1"><code>autoplot()</code> detects the data automatically and proposes a plot accordingly.</span>
+</dd>
+<dt data-target-cell="annotated-cell-8" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-8" data-code-lines="5" data-code-annotation="2"><code>facet_wrap()</code> Divides a plot into subplots (facets).</span>
+</dd>
+<dt data-target-cell="annotated-cell-8" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-8" data-code-lines="6" data-code-annotation="3">you can customize endless feautres using <code>theme()</code>. Here, we remove the legend, as it’s redudant.</span>
+</dd>
+</dl>
+</div>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><a href="r_time_series_files/figure-html/unnamed-chunk-15-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img data-src="r_time_series_files/figure-html/unnamed-chunk-15-1.png" width="672"></a></p>
+<p><a href="r_time_series_files/figure-html/ts_viz-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img data-src="r_time_series_files/figure-html/ts_viz-1.png" width="672"></a></p>
 </figure>
 </div>
 </div>
 </div>
+</section>
+<section id="exporting-data-to-.csv" class="slide level2">
+<h2>Exporting data to .csv</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a>tourism <span class="sc">|&gt;</span> </span>
+<span id="cb19-2"><a></a>  <span class="fu">filter</span>(State <span class="sc">==</span> <span class="st">"Tasmania"</span>,</span>
+<span id="cb19-3"><a></a>         Region <span class="sc">==</span> <span class="st">"East Coast"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb19-4"><a></a>  <span class="fu">mutate</span>(<span class="at">Quarter =</span> <span class="fu">as.Date</span>(Quarter)) <span class="sc">|&gt;</span> </span>
+<span id="cb19-5"><a></a>  <span class="fu">write_csv</span>(<span class="st">"./datos/tasmania.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<aside class="notes">
+<p>You can export to .csv by providing a <code>tsibble</code> or <code>tibble</code> (or any other type of data frame), by calling <strong><code>write_csv()</code></strong>, and specifying the output file’s name.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 
 
 </section></section>
