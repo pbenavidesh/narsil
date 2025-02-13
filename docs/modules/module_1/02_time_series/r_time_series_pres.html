@@ -7,7 +7,10 @@
 <script src="../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../../../../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-57476271c5f0467c372e20ff5d25630e.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-57476271c5f0467c372e20ff5d25630e.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.6.40">
 
   <meta name="author" content="pbenavides">
@@ -217,29 +220,38 @@ pbenavides
 <nav role="doc-toc"> 
 <h2 id="toc-title">Table of contents</h2>
 <ul>
-<li><a href="#/packages" id="/toc-packages"><span class="header-section-number">1</span> Packages</a>
+<li><a href="#/packages" id="/toc-packages">Packages</a>
 <ul>
-<li><a href="#/the-tidyverse" id="/toc-the-tidyverse"><span class="header-section-number">1.1</span> The <code>tidyverse</code></a></li>
-<li><a href="#/the-tidyverts" id="/toc-the-tidyverts"><span class="header-section-number">1.2</span> The <code>tidyverts</code></a></li>
+<li><a href="#/the-tidyverse" id="/toc-the-tidyverse">The <code>tidyverse</code></a></li>
+<li><a href="#/the-tidyverts" id="/toc-the-tidyverts">The <code>tidyverts</code></a></li>
 </ul></li>
-<li><a href="#/time-series" id="/toc-time-series"><span class="header-section-number">2</span> Time Series</a>
+<li><a href="#/time-series" id="/toc-time-series">Time Series</a>
 <ul>
-<li><a href="#/tourism-in-australia" id="/toc-tourism-in-australia"><span class="header-section-number">2.1</span> Tourism in Australia</a></li>
-<li><a href="#/australian-states" id="/toc-australian-states"><span class="header-section-number">2.2</span> Australian States</a></li>
-<li><a href="#/which-regions-are-located-in-tasmania" id="/toc-which-regions-are-located-in-tasmania"><span class="header-section-number">2.3</span> Which regions are located in Tasmania?</a></li>
-<li><a href="#/average-trips-i" id="/toc-average-trips-i"><span class="header-section-number">2.4</span> Average trips (i)</a></li>
-<li><a href="#/average-trips-ii" id="/toc-average-trips-ii"><span class="header-section-number">2.5</span> Average trips (ii)</a></li>
+<li><a href="#/tourism-in-australia" id="/toc-tourism-in-australia">Tourism in Australia</a></li>
+<li><a href="#/australian-states" id="/toc-australian-states">Australian States</a></li>
+<li><a href="#/which-regions-are-located-in-tasmania" id="/toc-which-regions-are-located-in-tasmania">Which regions are located in Tasmania?</a></li>
+<li><a href="#/data-transformation-average-trips" id="/toc-data-transformation-average-trips">Data Transformation: Average trips</a></li>
+
+
+
+
+
+
+
+
+
+<li><a href="#/ts-visualization" id="/toc-ts-visualization">TS Visualization</a></li>
 </ul></li>
 </ul>
 </nav>
 </section>
 <section>
-<section id="packages" class="title-slide slide level1 center" data-number="1">
-<h1><span class="header-section-number">1</span> Packages</h1>
+<section id="packages" class="title-slide slide level1 center">
+<h1>Packages</h1>
 
 </section>
-<section id="the-tidyverse" class="slide level2" data-number="1.1">
-<h2><span class="header-section-number">1.1</span> The <code>tidyverse</code></h2>
+<section id="the-tidyverse" class="slide level2">
+<h2>The <code>tidyverse</code></h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
@@ -293,8 +305,8 @@ pbenavides
           display:block!important;
       }</style></aside>
 </section>
-<section id="the-tidyverts" class="slide level2" data-number="1.2">
-<h2><span class="header-section-number">1.2</span> The <code>tidyverts</code></h2>
+<section id="the-tidyverts" class="slide level2">
+<h2>The <code>tidyverts</code></h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="fu">library</span>(fpp3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
@@ -355,12 +367,12 @@ pbenavides
       }</style></aside>
 </section></section>
 <section>
-<section id="time-series" class="title-slide slide level1 center" data-number="2">
-<h1><span class="header-section-number">2</span> Time Series</h1>
+<section id="time-series" class="title-slide slide level1 center">
+<h1>Time Series</h1>
 
 </section>
-<section id="tourism-in-australia" class="slide level2" data-number="2.1">
-<h2><span class="header-section-number">2.1</span> Tourism in Australia</h2>
+<section id="tourism-in-australia" class="slide level2">
+<h2>Tourism in Australia</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>tourism</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -385,8 +397,8 @@ pbenavides
           display:block!important;
       }</style></aside>
 </section>
-<section id="australian-states" class="slide level2" data-number="2.2">
-<h2><span class="header-section-number">2.2</span> Australian States</h2>
+<section id="australian-states" class="slide level2">
+<h2>Australian States</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a><span class="fu">distinct</span>(tourism, State)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -398,8 +410,8 @@ pbenavides
 </div>
 </div>
 </section>
-<section id="which-regions-are-located-in-tasmania" class="slide level2" data-number="2.3">
-<h2><span class="header-section-number">2.3</span> Which regions are located in Tasmania?</h2>
+<section id="which-regions-are-located-in-tasmania" class="slide level2">
+<h2>Which regions are located in Tasmania?</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a><span class="fu">distinct</span>(<span class="fu">filter</span>(tourism, State <span class="sc">==</span> <span class="st">"Tasmania"</span>),Region)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -411,8 +423,8 @@ pbenavides
 </div>
 </div>
 </section>
-<section id="average-trips-i" class="slide level2 scrollable" data-number="2.4">
-<h2><span class="header-section-number">2.4</span> Average trips (i)</h2>
+<section id="data-transformation-average-trips" class="slide level2 scrollable">
+<h2>Data Transformation: Average trips</h2>
 <p>To get the average trips by purpose, we need to do the following:</p>
 <div>
 <ol type="1">
@@ -423,18 +435,13 @@ pbenavides
 </ol>
 </div>
 </section>
-<section id="average-trips-ii" class="slide level2" data-number="2.5">
-<h2><span class="header-section-number">2.5</span> Average trips (ii)</h2>
+<section id="section" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title"></h2>
 <p>With traditional code, this would look something like:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a><span class="fu">summarise</span>(<span class="fu">group_by</span>(<span class="fu">as_tibble</span>(<span class="fu">filter</span>(tourism, State <span class="sc">==</span> <span class="st">"Tasmania"</span>, Region <span class="sc">==</span> <span class="st">"East Coast"</span>)), Purpose), <span class="at">mean_trips =</span> <span class="fu">mean</span>(Trips))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div data-pagedtable="false">
-  <script data-pagedtable-source="" type="application/json">
-{"columns":[{"label":["Purpose"],"name":[1],"type":["chr"],"align":["left"]},{"label":["mean_trips"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"Business","2":"4.239487"},{"1":"Holiday","2":"69.013337"},{"1":"Other","2":"1.341834"},{"1":"Visiting","2":"9.186627"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
-</div>
-</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb11-1" class="hljs-ln-code"><a></a><span class="fu">summarise</span>(<span class="fu">group_by</span>(<span class="fu">as_tibble</span>(<span class="fu">filter</span>(tourism, State <span class="sc">==</span> <span class="st">"Tasmania"</span>, </span>
+<span id="cb11-2" class="hljs-ln-code"><a></a>                                    Region <span class="sc">==</span> <span class="st">"East Coast"</span>)), Purpose),</span>
+<span id="cb11-3" class="hljs-ln-code"><a></a>          <span class="at">mean_trips =</span> <span class="fu">mean</span>(Trips))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <aside class="notes">
 <div class="callout callout-note callout-titled callout-style-default">
@@ -446,7 +453,7 @@ pbenavides
 <p><strong>Order of code execution</strong></p>
 </div>
 <div class="callout-content">
-<p>Note that this code must be read inside-out. This makes it harder to understand, and debug.</p>
+<p>Note that this code must be read inside-out. This makes it harder to understand, and also harder to debug.</p>
 </div>
 </div>
 </div>
@@ -461,28 +468,90 @@ pbenavides
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
-<div class="fragment">
+</section>
+<section id="section-1" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title"></h2>
 <p>Using the native pipe operator; <code>|&gt;</code>, we can improve the same code:</p>
-<div class="callout callout-tip callout-titled callout-style-default">
-<div class="callout-body">
-<div class="callout-title">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<p><strong>The pipe operator |&gt;</strong></p>
-</div>
-<div class="callout-content">
-<p>The pipe is read as “then”, and it allows us to write code in the order it’s supposed to be run.</p>
-</div>
-</div>
-</div>
 <div class="cell">
-<div class="sourceCode cell-code" id="annotated-cell-7"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="1">1</button><span id="annotated-cell-7-1" class="code-annotation-target"><a href="#annotated-cell-7-1"></a>tourism <span class="sc">|&gt;</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="2">2</button><span id="annotated-cell-7-2" class="code-annotation-target"><a href="#annotated-cell-7-2"></a>  <span class="fu">filter</span>(State <span class="sc">==</span> <span class="st">"Tasmania"</span>,</span>
-<span id="annotated-cell-7-3"><a href="#annotated-cell-7-3"></a>         Region <span class="sc">==</span> <span class="st">"East Coast"</span>) <span class="sc">|&gt;</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="3">3</button><span id="annotated-cell-7-4" class="code-annotation-target"><a href="#annotated-cell-7-4"></a>  <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="4">4</button><span id="annotated-cell-7-5" class="code-annotation-target"><a href="#annotated-cell-7-5"></a>  <span class="fu">group_by</span>(Purpose) <span class="sc">|&gt;</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="5">5</button><span id="annotated-cell-7-6" class="code-annotation-target"><a href="#annotated-cell-7-6"></a>  <span class="fu">summarise</span>(<span class="at">mean_trips =</span> <span class="fu">mean</span>(Trips))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb12-1" class="hljs-ln-code"><a></a>tourism <span class="sc">|&gt;</span>                          </span>
+<span id="cb12-2" class="hljs-ln-code"><a></a>  <span class="fu">filter</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="section-2" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title"></h2>
+<p>Using the native pipe operator; <code>|&gt;</code>, we can improve the same code:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb13-1" class="hljs-ln-code"><a></a>tourism <span class="sc">|&gt;</span>                          </span>
+<span id="cb13-2" class="hljs-ln-code"><a></a>  <span class="fu">filter</span>(State <span class="sc">==</span> <span class="st">"Tasmania"</span>,       </span>
+<span id="cb13-3" class="hljs-ln-code"><a></a>         Region <span class="sc">==</span> <span class="st">"East Coast"</span>) <span class="sc">|&gt;</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="section-3" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title"></h2>
+<p>Using the native pipe operator; <code>|&gt;</code>, we can improve the same code:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb14-1" class="hljs-ln-code"><a></a>tourism <span class="sc">|&gt;</span>                          </span>
+<span id="cb14-2" class="hljs-ln-code"><a></a>  <span class="fu">filter</span>(State <span class="sc">==</span> <span class="st">"Tasmania"</span>,       </span>
+<span id="cb14-3" class="hljs-ln-code"><a></a>         Region <span class="sc">==</span> <span class="st">"East Coast"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb14-4" class="hljs-ln-code"><a></a>  <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="section-4" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title"></h2>
+<p>Using the native pipe operator; <code>|&gt;</code>, we can improve the same code:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb15-1" class="hljs-ln-code"><a></a>tourism <span class="sc">|&gt;</span>                          </span>
+<span id="cb15-2" class="hljs-ln-code"><a></a>  <span class="fu">filter</span>(State <span class="sc">==</span> <span class="st">"Tasmania"</span>,       </span>
+<span id="cb15-3" class="hljs-ln-code"><a></a>         Region <span class="sc">==</span> <span class="st">"East Coast"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb15-4" class="hljs-ln-code"><a></a>  <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span>                    </span>
+<span id="cb15-5" class="hljs-ln-code"><a></a>  <span class="fu">group_by</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="section-5" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title"></h2>
+<p>Using the native pipe operator; <code>|&gt;</code>, we can improve the same code:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb16-1" class="hljs-ln-code"><a></a>tourism <span class="sc">|&gt;</span>                          </span>
+<span id="cb16-2" class="hljs-ln-code"><a></a>  <span class="fu">filter</span>(State <span class="sc">==</span> <span class="st">"Tasmania"</span>,       </span>
+<span id="cb16-3" class="hljs-ln-code"><a></a>         Region <span class="sc">==</span> <span class="st">"East Coast"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb16-4" class="hljs-ln-code"><a></a>  <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span>                    </span>
+<span id="cb16-5" class="hljs-ln-code"><a></a>  <span class="fu">group_by</span>(Purpose) <span class="sc">|&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="section-6" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title"></h2>
+<p>Using the native pipe operator; <code>|&gt;</code>, we can improve the same code:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb17-1" class="hljs-ln-code"><a></a>tourism <span class="sc">|&gt;</span>                          </span>
+<span id="cb17-2" class="hljs-ln-code"><a></a>  <span class="fu">filter</span>(State <span class="sc">==</span> <span class="st">"Tasmania"</span>,       </span>
+<span id="cb17-3" class="hljs-ln-code"><a></a>         Region <span class="sc">==</span> <span class="st">"East Coast"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb17-4" class="hljs-ln-code"><a></a>  <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span>                    </span>
+<span id="cb17-5" class="hljs-ln-code"><a></a>  <span class="fu">group_by</span>(Purpose) <span class="sc">|&gt;</span>              </span>
+<span id="cb17-6" class="hljs-ln-code"><a></a>  <span class="fu">summarise</span>(<span class="at">mean_trips =</span> )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="section-7" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title"></h2>
+<p>Using the native pipe operator; <code>|&gt;</code>, we can improve the same code:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb18-1" class="hljs-ln-code"><a></a>tourism <span class="sc">|&gt;</span>                          </span>
+<span id="cb18-2" class="hljs-ln-code"><a></a>  <span class="fu">filter</span>(State <span class="sc">==</span> <span class="st">"Tasmania"</span>,       </span>
+<span id="cb18-3" class="hljs-ln-code"><a></a>         Region <span class="sc">==</span> <span class="st">"East Coast"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb18-4" class="hljs-ln-code"><a></a>  <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span>                    </span>
+<span id="cb18-5" class="hljs-ln-code"><a></a>  <span class="fu">group_by</span>(Purpose) <span class="sc">|&gt;</span>              </span>
+<span id="cb18-6" class="hljs-ln-code"><a></a>  <span class="fu">summarise</span>(<span class="at">mean_trips =</span> <span class="fu">mean</span>(Trips))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="section-8" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title"></h2>
+<p>Using the native pipe operator; <code>|&gt;</code>, we can improve the same code:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="annotated-cell-7"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-7" data-target-annotation="1">1</button><span id="annotated-cell-7-1" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-7-1"></a>tourism <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-7" data-target-annotation="2">2</button><span id="annotated-cell-7-2" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-7-2"></a>  <span class="fu">filter</span>(State <span class="sc">==</span> <span class="st">"Tasmania"</span>,</span>
+<span id="annotated-cell-7-3" class="hljs-ln-code"><a href="#annotated-cell-7-3"></a>         Region <span class="sc">==</span> <span class="st">"East Coast"</span>) <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-7" data-target-annotation="3">3</button><span id="annotated-cell-7-4" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-7-4"></a>  <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-7" data-target-annotation="4">4</button><span id="annotated-cell-7-5" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-7-5"></a>  <span class="fu">group_by</span>(Purpose) <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-7" data-target-annotation="5">5</button><span id="annotated-cell-7-6" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-7-6"></a>  <span class="fu">summarise</span>(<span class="at">mean_trips =</span> <span class="fu">mean</span>(Trips))</span><div class="code-annotation-gutter-bg hljs-ln-code"></div><div class="code-annotation-gutter hljs-ln-code"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-7" data-target-annotation="1">1</dt>
@@ -515,9 +584,52 @@ pbenavides
 </div>
 </div>
 </div>
-
-
+<aside class="notes">
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
 </div>
+<p><strong>The pipe operator |&gt;</strong></p>
+</div>
+<div class="callout-content">
+<p>The pipe is read as “<strong>then</strong>”, and it allows us to write code in the order it’s supposed to be run.</p>
+<p>It also helps to debug code easier, because you can run each function in order and see where the error is.</p>
+</div>
+</div>
+</div>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="ts-visualization" class="slide level2">
+<h2>TS Visualization</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a>tourism <span class="sc">|&gt;</span> </span>
+<span id="cb19-2"><a></a>  <span class="fu">filter</span>(State <span class="sc">==</span> <span class="st">"Tasmania"</span>,</span>
+<span id="cb19-3"><a></a>         Region <span class="sc">==</span> <span class="st">"East Coast"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb19-4"><a></a>  <span class="fu">autoplot</span>(Trips) <span class="sc">+</span></span>
+<span id="cb19-5"><a></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(Purpose), <span class="at">scale =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
+<span id="cb19-6"><a></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="r_time_series_files/figure-html/unnamed-chunk-15-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img data-src="r_time_series_files/figure-html/unnamed-chunk-15-1.png" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+
+
 </section></section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
@@ -578,7 +690,7 @@ pbenavides
         progress: true,
 
         // Display the page number of the current slide
-        slideNumber: false,
+        slideNumber: 'c/t',
 
         // 'all', 'print', or 'speaker'
         showSlideNumber: 'all',
@@ -1079,6 +1191,38 @@ pbenavides
       }
     });
     </script>
+    <script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+    (function() {
+      let previousOnload = window.onload;
+      window.onload = () => {
+        if (previousOnload) {
+          previousOnload();
+        }
+        lightboxQuarto.on('slide_before_load', (data) => {
+          const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+          const href = trigger.getAttribute('href');
+          if (href !== null) {
+            const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+            if (imgEl !== null) {
+              const srcAttr = imgEl.getAttribute("src");
+              if (srcAttr && srcAttr.startsWith("data:")) {
+                slideConfig.href = srcAttr;
+              }
+            }
+          } 
+        });
+      
+        lightboxQuarto.on('slide_after_load', (data) => {
+          const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(slideNode);
+          }
+        });
+      
+      };
+      
+    })();
+              </script>
     
 
 </body></html>
