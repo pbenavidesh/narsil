@@ -1,0 +1,187 @@
+---
+title: "Time Series Decomposition"
+draft: true
+format:
+  html: default
+  revealjs:
+    output-file: r_time_series_pres.html
+---
+
+:::{.content-visible unless-format="revealjs"}
+
+```{r}
+#| label: pkgs
+#| message: false
+
+library(tidyverse)
+library(fpp3)
+library(tidyquant)
+library(plotly)
+```
+
+:::
+
+# TS Features & Patterns
+
+## 
+
+```{r}
+#| label: ts-examples
+#| echo: false
+#| message: false
+#| layout-ncol: 2
+
+p1 <- tq_get("FARTCOIN-USD", from = "2024-01-01") |> 
+  as_tsibble(index = date) |>
+  autoplot(close, color = "navyblue") +
+  labs(
+    title = "Fartcoin",
+    y = "USD",
+    caption = "Source: Yahoo Finance"
+  )
+
+ggplotly(p1)  
+
+p2 <- tq_get(
+  "MEXLOCOEMORSTM",
+  get = "economic.data",
+  from = "1985-01-01"
+) |>
+  mutate(date = yearmonth(date)) |> 
+  as_tsibble(index = date) |> 
+  autoplot(price, color = "orchid") +
+  labs(
+    title = "Employment and Unemployment: Original Series for Mexico",
+    y = "Percent",
+    caption = "Source: Organization for Economic Co-operation and Development via FRED"
+  ) +
+  scale_y_continuous(labels = scales::percent_format(scale = 1)) 
+ 
+ggplotly(p2, dynamicTicks = TRUE)
+
+p3 <- us_employment |>
+  filter_index("1960 Jan." ~ .) |> 
+  filter(Title == "Mining and Logging") |> 
+  autoplot(color = "indianred1") +
+  labs(
+    title = "Mining and Logging Employment in the US",
+    y = "Thousands of persons employed",
+    caption = "Source = U.S. Bureau of Labor Statistics"
+  )
+
+ggplotly(p3, dynamicTicks = TRUE)
+
+p4 <- tq_get(
+  "MEXSLRTTO01IXOBM",
+  get = "economic.data",
+  from = "1985-01-01"
+) |>
+  mutate(date = yearmonth(date)) |> 
+  as_tsibble(index = date) |> 
+  autoplot(price, color = "springgreen4") +
+  labs(
+    title = "Retail Trade, Except of Motor Vehicles and Motorcycles for Mexico",
+    y = "Index 2015=100",
+    caption = "Organization for Economic Co-operation and Development via FRED"
+  ) 
+ 
+ggplotly(p4, dynamicTicks = TRUE)  
+```
+
+# Time Series Visualization
+
+## Time plots
+
+```{r}
+#| label: time_plot
+
+aus_production |> 
+  autoplot(Gas) +
+  geom_point()
+```
+
+:::{.notes}
+
+
+
+:::
+
+## Seasonal Plots
+
+```{r}
+#| label: gg_season
+
+aus_production |> 
+  gg_season(Gas)
+```
+
+:::{.notes}
+
+
+
+:::
+
+Removing the trend from the data:
+
+```{r}
+#| label: gg_season2
+#| echo: false
+
+aus_production |> 
+  model(STL(Gas, robust = TRUE)) |> 
+  components() |>
+  mutate(sin_tend = season_year + remainder) |> 
+  gg_season(sin_tend)
+```
+
+:::{.notes}
+
+
+
+:::
+
+## Seasonal Subseries Plots
+
+```{r}
+#| label: gg_subseries
+
+aus_production |> 
+  gg_subseries(Gas)
+```
+
+:::{.notes}
+
+
+
+:::
+
+## `gg_tsdisplay()`
+
+```{r}
+#| label: gg_tsdisplay
+
+aus_production |> 
+  gg_tsdisplay(Gas, plot_type = "season")
+```
+
+:::{.notes}
+
+:::{.callout-tip collapse="true"}
+## `plot_type` options
+
+- "auto", 
+- "partial", 
+- "season", 
+- "histogram", 
+- "scatter", 
+- "spectrum"
+
+:::
+
+# Benchmark Forecasting Methods
+
+# Residual Diagnostics
+
+
+
+## Portmanteau Tests of Autocorrelation
