@@ -88,6 +88,21 @@ p4 <- tq_get(
 ggplotly(p4, dynamicTicks = TRUE)  
 ```
 
+:::{.notes}
+All these time series have different shapes, patterns, and so on. 
+
+:::
+
+## TS Patterns
+
+Time series can have distinct patterns:
+
+- **Trend:** A long-term increase/decrease in the data.
+
+- **Seasonal:** Fluctuations in the time series with a fixed and known period^[A time series can have multiple seasonal patterns.].
+
+- **Cycles:** More commonly known as "Business cycles", refer to rises and falls that are not of a fixed frequency^[They usually last at least 2 years.].
+
 
 
 # Time Series Visualization
@@ -96,6 +111,7 @@ ggplotly(p4, dynamicTicks = TRUE)
 
 ```{r}
 #| label: time_plot
+#| code-line-numbers: "2-3"
 
 aus_production |> 
   autoplot(Gas) +
@@ -104,7 +120,7 @@ aus_production |>
 
 :::{.notes}
 
-
+These are the most basic type of plots. We have the time variable in the $x$-axis, and our forecast variable in the $y$-axis. Time plots should be line plots, and can include or not points.
 
 :::
 
@@ -112,6 +128,7 @@ aus_production |>
 
 ```{r}
 #| label: gg_season
+#| code-line-numbers: "2"
 
 aus_production |> 
   gg_season(Gas)
@@ -119,7 +136,7 @@ aus_production |>
 
 :::{.notes}
 
-
+The data here are plotted against a single "season". It's useful in identifying years with changes in patterns. 
 
 :::
 
@@ -136,16 +153,12 @@ aus_production |>
   gg_season(sin_tend)
 ```
 
-:::{.notes}
-
-
-
-:::
 
 ## Seasonal Subseries Plots
 
 ```{r}
 #| label: gg_subseries
+#| code-line-numbers: "2"
 
 aus_production |> 
   gg_subseries(Gas)
@@ -153,7 +166,7 @@ aus_production |>
 
 :::{.notes}
 
-
+Here we split the plot into many subplots, one for each season. This helps us see clearly the underlying seasonal pattern. The mean for each season is represented as the blue horizontal line.
 
 :::
 
@@ -161,12 +174,15 @@ aus_production |>
 
 ```{r}
 #| label: gg_tsdisplay
+#| code-line-numbers: "2"
 
 aus_production |> 
   gg_tsdisplay(Gas, plot_type = "season")
 ```
 
 :::{.notes}
+
+This function provides a convenient way to have 3 plots: a time plot, an ACF plot, and a third option that can be customized with one of the following plot types:
 
 :::{.callout-tip collapse="true"}
 ## `plot_type` options
