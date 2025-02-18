@@ -22,10 +22,6 @@ It is recommended to load all the packages at the beginning of your file. We wil
 #| message: false
 #| warning: false
 library(tidyverse)
-library(tsibble)
-library(feasts)
-library(fable)
-library(tsibbledata)
 library(fpp3)
 library(plotly)
 ```
@@ -90,6 +86,13 @@ gdp <- gdp |>
 gdp
 ```
 
+```{r}
+#| include: false
+
+gdp_n_obs <- nrow(gdp)
+```
+
+
 :::{.callout-tip collapse="true"}
 * We always need to specify the `index` argument, as it is our **date** variable. 
 
@@ -102,10 +105,19 @@ We will split our data in two sets: a training set, and a test set, in order to 
 
 ```{r}
 gdp_train <- gdp |> 
-  filter_index(. ~ "2020 Q4")
+  filter_index(. ~ "2021 Q4")
 
 gdp_train
 ```
+
+```{r}
+#| include: false
+
+gdp_train_n_obs <- nrow(gdp_train)
+
+gdp_h_fc <- gdp_n_obs - gdp_train_n_obs
+```
+
 
 :::{.callout-note}
 For all our variables, it is strongly recommended to follow the same notation process, and write our code using [**snake_case**](https://en.wikipedia.org/wiki/Snake_case). Here, we called our data `gdp`, therefore, all the following variables will be called starting with **`gdp_`**[^notation], such as `gdp_train` for our training set.
@@ -194,7 +206,9 @@ gdp_fit <- gdp_train |>
 
 :::{.callout-tip collapse="true"}
 ## Benchmark models
+
 We have four different benchmark models that we'll use to compare against the rest of  the more complex models:
+
 - Mean (`MEAN( <.y> )`)
 - Naïve (`NAIVE( <.y> )`)
 - Seasonal Naïve (`SNAIVE( <.y> )`)
@@ -203,6 +217,7 @@ We have four different benchmark models that we'll use to compare against the re
 where `<.y>` is just a placeholder for the variable to model.
 
 Choose wisely which of these to use in each case, according to the exploratory analysis performed.
+
 :::
 
 ## Residuals Diagnostics
@@ -381,7 +396,7 @@ Once we have our models, we can produce forecasts. We will forecast our test dat
 
 ```{r}
 gdp_fc <- gdp_fit |> 
-  forecast(h = 6) 
+  forecast(h = gdp_h_fc) 
 
 gdp_fc
 ```
@@ -421,7 +436,7 @@ gdp_fit2
 ```
 ```{r}
 gdp_fc_fut <- gdp_fit2 |> 
-  forecast(h = "3 years")
+  forecast(h = gdp_h_fc)
 gdp_fc_fut
 gdp_fc_fut |> 
   autoplot(gdp)
