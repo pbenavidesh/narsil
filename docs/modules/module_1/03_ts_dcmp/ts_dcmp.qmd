@@ -104,7 +104,64 @@ Time series can have distinct patterns:
 
 
 
-# Transformations & Adjustments
+# Mathematical Transformations
+
+## Log transformations
+
+:::{.panel-tabset}
+
+### Series in levels
+
+```{r}
+#| label: jj_levels
+#| echo: false
+#| message: false
+
+jj <- JohnsonJohnson |> 
+  as_tsibble()
+
+jj |> 
+  autoplot() +
+    ggtitle("J&J - Quarterly Sales")
+```
+
+:::{.notes}
+
+:::{.callout-note appearance="simple"}
+
+Transformations and adjustments help us simplify the patterns in our data, and can improve our forecasts' accuracy.
+
+:::
+
+:::
+
+### Log
+
+
+```{r}
+#| label: jj_log
+#| echo: false
+#| message: false
+
+jj |> 
+  autoplot(log(value)) +
+  ggtitle("J&J - Quarterly Sales")
+```
+
+:::{.notes}
+
+Log transformations are often useful when the data presents an increasing/decreasing variation with the level of the series.
+
+:::
+
+
+:::
+
+## Box-Cox transformations
+
+
+
+## Calendar adjustments
 
 
 
