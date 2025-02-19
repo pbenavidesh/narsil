@@ -228,6 +228,182 @@
     "text": "Employment\n\n\n\n\n\nUS Retail Employment"
   },
   {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#section",
+    "href": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#section",
+    "title": "Time Series Decomposition",
+    "section": "",
+    "text": "All these time series have different shapes, patterns, and so on."
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#ts-patterns",
+    "href": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#ts-patterns",
+    "title": "Time Series Decomposition",
+    "section": "TS Patterns",
+    "text": "TS Patterns\nTime series can have distinct patterns:\n\nTrend: A long-term increase/decrease in the data.\nSeasonal: Fluctuations in the time series with a fixed and known period1.\nCycles: More commonly known as “Business cycles”, refer to rises and falls that are not of a fixed frequency2.\n\nA time series can have multiple seasonal patterns.They usually last at least 2 years."
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#time-plots",
+    "href": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#time-plots",
+    "title": "Time Series Decomposition",
+    "section": "Time plots",
+    "text": "Time plots\n\naus_production |&gt; \n  autoplot(Gas) +\n  geom_point()\n\n\n\n\n\n\n\n\n\nThese are the most basic type of plots. We have the time variable in the \\(x\\)-axis, and our forecast variable in the \\(y\\)-axis. Time plots should be line plots, and can include or not points."
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#seasonal-plots",
+    "href": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#seasonal-plots",
+    "title": "Time Series Decomposition",
+    "section": "Seasonal Plots",
+    "text": "Seasonal Plots\n\naus_production |&gt; \n  gg_season(Gas)\n\n\n\n\n\n\n\n\n\nThe data here are plotted against a single “season”. It’s useful in identifying years with changes in patterns.\n\nRemoving the trend from the data:"
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#seasonal-subseries-plots",
+    "href": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#seasonal-subseries-plots",
+    "title": "Time Series Decomposition",
+    "section": "Seasonal Subseries Plots",
+    "text": "Seasonal Subseries Plots\n\naus_production |&gt; \n  gg_subseries(Gas)\n\n\n\n\n\n\n\n\n\nHere we split the plot into many subplots, one for each season. This helps us see clearly the underlying seasonal pattern. The mean for each season is represented as the blue horizontal line."
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#gg_tsdisplay",
+    "href": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#gg_tsdisplay",
+    "title": "Time Series Decomposition",
+    "section": "gg_tsdisplay()",
+    "text": "gg_tsdisplay()\n\naus_production |&gt; \n  gg_tsdisplay(Gas, plot_type = \"season\")\n\n\n\n\n\n\n\n\n\nThis function provides a convenient way to have 3 plots: a time plot, an ACF plot, and a third option that can be customized with one of the following plot types:\n\n\n\n\n\n\nplot_type options\n\n\n\n“auto”,\n“partial”,\n“season”,\n“histogram”,\n“scatter”,\n“spectrum”\n\n\n\n\n\nTime Series Decomposition\n\n\n\nTypes of Decompositions\n\nA decomposition splits the time series into its underlying components:\n\nTrend-cycle\nSeasonal pattern(s)\n\nAnd what’s left of it we simply call it a “remainder component”.\nIn general, there are two types of decompositions:\n\nAdditive decomposition\n\\[\nY_t = T_t + S_t + R_t\n\\]\nMultiplicative decomposition\n\\[\nY_t = T_t \\times S_t \\times R_t \\\\\n\\]\n\n\n\nBenchmark Forecasting Methods\n\n\n\n\nResidual Diagnostics\n\n\n\nPortmanteau Tests of Autocorrelation"
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#types-of-decompositions",
+    "href": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#types-of-decompositions",
+    "title": "Time Series Decomposition",
+    "section": "Types of Decompositions",
+    "text": "Types of Decompositions\n\nA decomposition splits the time series into its underlying components:\n\nTrend-cycle\nSeasonal pattern(s)\n\nAnd what’s left of it we simply call it a “remainder component”.\nIn general, there are two types of decompositions:\n\nAdditive decomposition\n\\[\nY_t = T_t + S_t + R_t\n\\]\nMultiplicative decomposition\n\\[\nY_t = T_t \\times S_t \\times R_t \\\\\n\\]"
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#portmanteau-tests-of-autocorrelation",
+    "href": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#portmanteau-tests-of-autocorrelation",
+    "title": "Time Series Decomposition",
+    "section": "Portmanteau Tests of Autocorrelation",
+    "text": "Portmanteau Tests of Autocorrelation"
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html",
+    "title": "Time Series Decomposition",
+    "section": "",
+    "text": "library(tidyverse)\nlibrary(fpp3)\nlibrary(tidyquant)\nlibrary(plotly)",
+    "crumbs": [
+      "Modules",
+      "Forecasting models based on decomposition methods",
+      "Time Series Decomposition"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#section",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#section",
+    "title": "Time Series Decomposition",
+    "section": "1.1 ",
+    "text": "1.1 \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAll these time series have different shapes, patterns, and so on.",
+    "crumbs": [
+      "Modules",
+      "Forecasting models based on decomposition methods",
+      "Time Series Decomposition"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#ts-patterns",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#ts-patterns",
+    "title": "Time Series Decomposition",
+    "section": "1.2 TS Patterns",
+    "text": "1.2 TS Patterns\nTime series can have distinct patterns:\n\nTrend: A long-term increase/decrease in the data.\nSeasonal: Fluctuations in the time series with a fixed and known period1.\nCycles: More commonly known as “Business cycles”, refer to rises and falls that are not of a fixed frequency2.",
+    "crumbs": [
+      "Modules",
+      "Forecasting models based on decomposition methods",
+      "Time Series Decomposition"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#time-plots",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#time-plots",
+    "title": "Time Series Decomposition",
+    "section": "2.1 Time plots",
+    "text": "2.1 Time plots\n\naus_production |&gt; \n  autoplot(Gas) +\n  geom_point()\n\n\n\n\n\n\n\n\n\nThese are the most basic type of plots. We have the time variable in the \\(x\\)-axis, and our forecast variable in the \\(y\\)-axis. Time plots should be line plots, and can include or not points.",
+    "crumbs": [
+      "Modules",
+      "Forecasting models based on decomposition methods",
+      "Time Series Decomposition"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#seasonal-plots",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#seasonal-plots",
+    "title": "Time Series Decomposition",
+    "section": "2.2 Seasonal Plots",
+    "text": "2.2 Seasonal Plots\n\naus_production |&gt; \n  gg_season(Gas)\n\n\n\n\n\n\n\n\n\nThe data here are plotted against a single “season”. It’s useful in identifying years with changes in patterns.\n\nRemoving the trend from the data:",
+    "crumbs": [
+      "Modules",
+      "Forecasting models based on decomposition methods",
+      "Time Series Decomposition"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#seasonal-subseries-plots",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#seasonal-subseries-plots",
+    "title": "Time Series Decomposition",
+    "section": "2.3 Seasonal Subseries Plots",
+    "text": "2.3 Seasonal Subseries Plots\n\naus_production |&gt; \n  gg_subseries(Gas)\n\n\n\n\n\n\n\n\n\nHere we split the plot into many subplots, one for each season. This helps us see clearly the underlying seasonal pattern. The mean for each season is represented as the blue horizontal line.",
+    "crumbs": [
+      "Modules",
+      "Forecasting models based on decomposition methods",
+      "Time Series Decomposition"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#gg_tsdisplay",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#gg_tsdisplay",
+    "title": "Time Series Decomposition",
+    "section": "2.4 gg_tsdisplay()",
+    "text": "2.4 gg_tsdisplay()\n\naus_production |&gt; \n  gg_tsdisplay(Gas, plot_type = \"season\")\n\n\n\n\n\n\n\n\n\nThis function provides a convenient way to have 3 plots: a time plot, an ACF plot, and a third option that can be customized with one of the following plot types:\n\n\n\n\n\n\nplot_type options\n\n\n\n\n\n\n“auto”,\n“partial”,\n“season”,\n“histogram”,\n“scatter”,\n“spectrum”\n\n\n\n\n\n3 Time Series Decomposition\n\n3.1 Types of Decompositions\n\nA decomposition splits the time series into its underlying components:\n\nTrend-cycle\nSeasonal pattern(s)\n\nAnd what’s left of it we simply call it a “remainder component”.\nIn general, there are two types of decompositions:\n\n\n3.1.1 Additive decomposition\n\\[\nY_t = T_t + S_t + R_t\n\\]\n\n\n3.1.2 Multiplicative decomposition\n\\[\nY_t = T_t \\times S_t \\times R_t \\\\\n\\]\n\n\n\n\n4 Benchmark Forecasting Methods\n\n\n5 Residual Diagnostics\n\n5.1 Portmanteau Tests of Autocorrelation",
+    "crumbs": [
+      "Modules",
+      "Forecasting models based on decomposition methods",
+      "Time Series Decomposition"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#types-of-decompositions",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#types-of-decompositions",
+    "title": "Time Series Decomposition",
+    "section": "3.1 Types of Decompositions",
+    "text": "3.1 Types of Decompositions\n\nA decomposition splits the time series into its underlying components:\n\nTrend-cycle\nSeasonal pattern(s)\n\nAnd what’s left of it we simply call it a “remainder component”.\nIn general, there are two types of decompositions:\n\n\n3.1.1 Additive decomposition\n\\[\nY_t = T_t + S_t + R_t\n\\]\n\n\n3.1.2 Multiplicative decomposition\n\\[\nY_t = T_t \\times S_t \\times R_t \\\\\n\\]",
+    "crumbs": [
+      "Modules",
+      "Forecasting models based on decomposition methods",
+      "Time Series Decomposition"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#portmanteau-tests-of-autocorrelation",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#portmanteau-tests-of-autocorrelation",
+    "title": "Time Series Decomposition",
+    "section": "5.1 Portmanteau Tests of Autocorrelation",
+    "text": "5.1 Portmanteau Tests of Autocorrelation",
+    "crumbs": [
+      "Modules",
+      "Forecasting models based on decomposition methods",
+      "Time Series Decomposition"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#footnotes",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#footnotes",
+    "title": "Time Series Decomposition",
+    "section": "Footnotes",
+    "text": "Footnotes\n\n\nA time series can have multiple seasonal patterns.↩︎\nThey usually last at least 2 years.↩︎",
+    "crumbs": [
+      "Modules",
+      "Forecasting models based on decomposition methods",
+      "Time Series Decomposition"
+    ]
+  },
+  {
     "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#the-tidyverse",
     "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#the-tidyverse",
     "title": "RStudio, R, and Time Series",
