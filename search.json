@@ -242,34 +242,6 @@
     "text": "TS Patterns\nTime series can have distinct patterns:\n\nTrend: A long-term increase/decrease in the data.\nSeasonal: Fluctuations in the time series with a fixed and known period1.\nCycles: More commonly known as “Business cycles”, refer to rises and falls that are not of a fixed frequency2.\n\nA time series can have multiple seasonal patterns.They usually last at least 2 years."
   },
   {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#time-plots",
-    "href": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#time-plots",
-    "title": "Time Series Decomposition",
-    "section": "Time plots",
-    "text": "Time plots\n\naus_production |&gt; \n  autoplot(Gas) +\n  geom_point()\n\n\n\n\n\n\n\n\n\nThese are the most basic type of plots. We have the time variable in the \\(x\\)-axis, and our forecast variable in the \\(y\\)-axis. Time plots should be line plots, and can include or not points."
-  },
-  {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#seasonal-plots",
-    "href": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#seasonal-plots",
-    "title": "Time Series Decomposition",
-    "section": "Seasonal Plots",
-    "text": "Seasonal Plots\n\naus_production |&gt; \n  gg_season(Gas)\n\n\n\n\n\n\n\n\n\nThe data here are plotted against a single “season”. It’s useful in identifying years with changes in patterns.\n\nRemoving the trend from the data:"
-  },
-  {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#seasonal-subseries-plots",
-    "href": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#seasonal-subseries-plots",
-    "title": "Time Series Decomposition",
-    "section": "Seasonal Subseries Plots",
-    "text": "Seasonal Subseries Plots\n\naus_production |&gt; \n  gg_subseries(Gas)\n\n\n\n\n\n\n\n\n\nHere we split the plot into many subplots, one for each season. This helps us see clearly the underlying seasonal pattern. The mean for each season is represented as the blue horizontal line."
-  },
-  {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#gg_tsdisplay",
-    "href": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#gg_tsdisplay",
-    "title": "Time Series Decomposition",
-    "section": "gg_tsdisplay()",
-    "text": "gg_tsdisplay()\n\naus_production |&gt; \n  gg_tsdisplay(Gas, plot_type = \"season\")\n\n\n\n\n\n\n\n\n\nThis function provides a convenient way to have 3 plots: a time plot, an ACF plot, and a third option that can be customized with one of the following plot types:\n\n\n\n\n\n\nplot_type options\n\n\n\n“auto”,\n“partial”,\n“season”,\n“histogram”,\n“scatter”,\n“spectrum”\n\n\n\n\n\nTime Series Decomposition\n\n\n\nTypes of Decompositions\n\nA decomposition splits the time series into its underlying components:\n\nTrend-cycle\nSeasonal pattern(s)\n\nAnd what’s left of it we simply call it a “remainder component”.\nIn general, there are two types of decompositions:\n\nAdditive decomposition\n\\[\nY_t = T_t + S_t + R_t\n\\]\nMultiplicative decomposition\n\\[\nY_t = T_t \\times S_t \\times R_t \\\\\n\\]\n\n\n\nBenchmark Forecasting Methods\n\n\n\n\nResidual Diagnostics\n\n\n\nPortmanteau Tests of Autocorrelation"
-  },
-  {
     "objectID": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#types-of-decompositions",
     "href": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#types-of-decompositions",
     "title": "Time Series Decomposition",
@@ -313,54 +285,6 @@
     "title": "Time Series Decomposition",
     "section": "1.2 TS Patterns",
     "text": "1.2 TS Patterns\nTime series can have distinct patterns:\n\nTrend: A long-term increase/decrease in the data.\nSeasonal: Fluctuations in the time series with a fixed and known period1.\nCycles: More commonly known as “Business cycles”, refer to rises and falls that are not of a fixed frequency2.",
-    "crumbs": [
-      "Modules",
-      "Forecasting models based on decomposition methods",
-      "Time Series Decomposition"
-    ]
-  },
-  {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#time-plots",
-    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#time-plots",
-    "title": "Time Series Decomposition",
-    "section": "2.1 Time plots",
-    "text": "2.1 Time plots\n\naus_production |&gt; \n  autoplot(Gas) +\n  geom_point()\n\n\n\n\n\n\n\n\n\nThese are the most basic type of plots. We have the time variable in the \\(x\\)-axis, and our forecast variable in the \\(y\\)-axis. Time plots should be line plots, and can include or not points.",
-    "crumbs": [
-      "Modules",
-      "Forecasting models based on decomposition methods",
-      "Time Series Decomposition"
-    ]
-  },
-  {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#seasonal-plots",
-    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#seasonal-plots",
-    "title": "Time Series Decomposition",
-    "section": "2.2 Seasonal Plots",
-    "text": "2.2 Seasonal Plots\n\naus_production |&gt; \n  gg_season(Gas)\n\n\n\n\n\n\n\n\n\nThe data here are plotted against a single “season”. It’s useful in identifying years with changes in patterns.\n\nRemoving the trend from the data:",
-    "crumbs": [
-      "Modules",
-      "Forecasting models based on decomposition methods",
-      "Time Series Decomposition"
-    ]
-  },
-  {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#seasonal-subseries-plots",
-    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#seasonal-subseries-plots",
-    "title": "Time Series Decomposition",
-    "section": "2.3 Seasonal Subseries Plots",
-    "text": "2.3 Seasonal Subseries Plots\n\naus_production |&gt; \n  gg_subseries(Gas)\n\n\n\n\n\n\n\n\n\nHere we split the plot into many subplots, one for each season. This helps us see clearly the underlying seasonal pattern. The mean for each season is represented as the blue horizontal line.",
-    "crumbs": [
-      "Modules",
-      "Forecasting models based on decomposition methods",
-      "Time Series Decomposition"
-    ]
-  },
-  {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#gg_tsdisplay",
-    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#gg_tsdisplay",
-    "title": "Time Series Decomposition",
-    "section": "2.4 gg_tsdisplay()",
-    "text": "2.4 gg_tsdisplay()\n\naus_production |&gt; \n  gg_tsdisplay(Gas, plot_type = \"season\")\n\n\n\n\n\n\n\n\n\nThis function provides a convenient way to have 3 plots: a time plot, an ACF plot, and a third option that can be customized with one of the following plot types:\n\n\n\n\n\n\nplot_type options\n\n\n\n\n\n\n“auto”,\n“partial”,\n“season”,\n“histogram”,\n“scatter”,\n“spectrum”\n\n\n\n\n\n3 Time Series Decomposition\n\n3.1 Types of Decompositions\n\nA decomposition splits the time series into its underlying components:\n\nTrend-cycle\nSeasonal pattern(s)\n\nAnd what’s left of it we simply call it a “remainder component”.\nIn general, there are two types of decompositions:\n\n\n3.1.1 Additive decomposition\n\\[\nY_t = T_t + S_t + R_t\n\\]\n\n\n3.1.2 Multiplicative decomposition\n\\[\nY_t = T_t \\times S_t \\times R_t \\\\\n\\]\n\n\n\n\n4 Benchmark Forecasting Methods\n\n\n5 Residual Diagnostics\n\n5.1 Portmanteau Tests of Autocorrelation",
     "crumbs": [
       "Modules",
       "Forecasting models based on decomposition methods",
@@ -418,11 +342,11 @@
     "text": "The tidyverts\n\nlibrary(fpp3)\n\nRegistered S3 method overwritten by 'tsibble':\n  method               from \n  as_tibble.grouped_df dplyr\n\n\n── Attaching packages ──────────────────────────────────────────── fpp3 1.0.1 ──\n\n\n✔ tsibble     1.1.6     ✔ feasts      0.4.1\n✔ tsibbledata 0.4.1     ✔ fable       0.4.1\n\n\n── Conflicts ───────────────────────────────────────────────── fpp3_conflicts ──\n✖ lubridate::date()    masks base::date()\n✖ dplyr::filter()      masks stats::filter()\n✖ tsibble::intersect() masks base::intersect()\n✖ tsibble::interval()  masks lubridate::interval()\n✖ dplyr::lag()         masks stats::lag()\n✖ tsibble::setdiff()   masks base::setdiff()\n✖ tsibble::union()     masks base::union()\n\n\n\nfpp3 is also a meta-package that load the tidyverts ecosystem for time series analysis and forecasting.\n\n\nThe tidyverts packages are made to work seamlessly with the tidyverse.\n\n\n\n\n\n\nNote\n\n\n\ntsibble is the main data structure we will use to analyze and model time series. It is a time series tibble.\nfeasts provides many functions and tools for feature and statistics extraction for time series.\nfable is the core package for modeling and foreasting time series."
   },
   {
-    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#tourism-in-australia",
-    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#tourism-in-australia",
+    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#tsibble-objects",
+    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#tsibble-objects",
     "title": "RStudio, R, and Time Series",
-    "section": "Tourism in Australia",
-    "text": "Tourism in Australia\n\ntourism\n\n\n  \n\n\n\n\nThe tsibble shows quarterly data on tourism across Australia. It’s divided by Region, State, and purspose of the trip. How many different states are there?"
+    "section": "tsibble objects",
+    "text": "tsibble objects\nLet’s take a look at tourism in Australia:\n\ntourism\n\n# A tsibble: 24,320 x 5 [1Q]\n# Key:       Region, State, Purpose [304]\n   Quarter Region   State           Purpose  Trips\n     &lt;qtr&gt; &lt;chr&gt;    &lt;chr&gt;           &lt;chr&gt;    &lt;dbl&gt;\n 1 1998 Q1 Adelaide South Australia Business  135.\n 2 1998 Q2 Adelaide South Australia Business  110.\n 3 1998 Q3 Adelaide South Australia Business  166.\n 4 1998 Q4 Adelaide South Australia Business  127.\n 5 1999 Q1 Adelaide South Australia Business  137.\n 6 1999 Q2 Adelaide South Australia Business  200.\n 7 1999 Q3 Adelaide South Australia Business  169.\n 8 1999 Q4 Adelaide South Australia Business  134.\n 9 2000 Q1 Adelaide South Australia Business  154.\n10 2000 Q2 Adelaide South Australia Business  169.\n# ℹ 24,310 more rows\n\n\n\nA tsibble is a modified version of a tibble as to\n\n\nkey_vars(tourism)\n\n[1] \"Region\"  \"State\"   \"Purpose\"\n\nkey_data(tourism)\n\n\n  \n\n\n\n\nThe tsibble has 24320 rows and 5 columns. It shows quarterly data1 on tourism across Australia. It’s divided by Region, State, and purspose of the trip2. How many different states are there?\n\nshown besides the tsibble dimension as [1Q]these are specified in the key argument. This tsibble contains"
   },
   {
     "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#australian-states",
@@ -509,11 +433,39 @@
     "text": "Using the native pipe operator; |&gt;, we can improve the same code:\n\n1tourism |&gt;\n2  filter(State == \"Tasmania\",\n         Region == \"East Coast\") |&gt;\n3  as_tibble() |&gt;\n4  group_by(Purpose) |&gt;\n5  summarise(mean_trips = mean(Trips))\n\n\n1\n\nTake the tsibble tourism, then\n\n2\n\nfilter by State and Region, then\n\n3\n\nconvert to a tibble, then\n\n4\n\ngroup the tibble by purpose, then\n\n5\n\nsummarise by taking the mean trips\n\n\n\n\n\n  \n\n\n\n\n\n\n\n\n\n\nThe pipe operator |&gt;\n\n\nThe pipe is read as “then”, and it allows us to write code in the order it’s supposed to be run.\nIt also helps to debug code easier, because you can run each function in order and see where the error is."
   },
   {
-    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#ts-visualization",
-    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#ts-visualization",
+    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#plotting-tourism-across-time",
+    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#plotting-tourism-across-time",
     "title": "RStudio, R, and Time Series",
-    "section": "TS Visualization",
-    "text": "TS Visualization\n\ntourism |&gt; \n  filter(State == \"Tasmania\",\n         Region == \"East Coast\") |&gt; \n1  autoplot(Trips) +\n2  facet_wrap(vars(Purpose), scale = \"free_y\") +\n3  theme(legend.position = \"none\")\n\n\n1\n\nautoplot() detects the data automatically and proposes a plot accordingly.\n\n2\n\nfacet_wrap() Divides a plot into subplots (facets).\n\n3\n\nyou can customize endless feautres using theme(). Here, we remove the legend, as it’s redudant."
+    "section": "Plotting tourism across time",
+    "text": "Plotting tourism across time\n\ntourism |&gt; \n  filter(State == \"Tasmania\",\n         Region == \"East Coast\") |&gt; \n1  autoplot(Trips) +\n2  facet_wrap(vars(Purpose), scale = \"free_y\") +\n3  theme(legend.position = \"none\")\n\n\n1\n\nautoplot() detects the data automatically and proposes a plot accordingly.\n\n2\n\nfacet_wrap() Divides a plot into subplots (facets).\n\n3\n\nyou can customize endless feautres using theme(). Here, we remove the legend, as it’s redudant."
+  },
+  {
+    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#time-plots",
+    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#time-plots",
+    "title": "RStudio, R, and Time Series",
+    "section": "Time plots",
+    "text": "Time plots\n\naus_production |&gt; \n  autoplot(Gas) +\n  geom_point()\n\n\n\n\n\n\n\n\n\nThese are the most basic type of plots. We have the time variable in the \\(x\\)-axis, and our forecast variable in the \\(y\\)-axis. Time plots should be line plots, and can include or not points."
+  },
+  {
+    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#seasonal-plots",
+    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#seasonal-plots",
+    "title": "RStudio, R, and Time Series",
+    "section": "Seasonal Plots",
+    "text": "Seasonal Plots\n\naus_production |&gt; \n  gg_season(Gas)\n\n\n\n\n\n\n\n\n\nThe data here are plotted against a single “season”. It’s useful in identifying years with changes in patterns.\n\nRemoving the trend from the data:"
+  },
+  {
+    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#seasonal-subseries-plots",
+    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#seasonal-subseries-plots",
+    "title": "RStudio, R, and Time Series",
+    "section": "Seasonal Subseries Plots",
+    "text": "Seasonal Subseries Plots\n\naus_production |&gt; \n  gg_subseries(Gas)\n\n\n\n\n\n\n\n\n\nHere we split the plot into many subplots, one for each season. This helps us see clearly the underlying seasonal pattern. The mean for each season is represented as the blue horizontal line."
+  },
+  {
+    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#gg_tsdisplay",
+    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#gg_tsdisplay",
+    "title": "RStudio, R, and Time Series",
+    "section": "gg_tsdisplay()",
+    "text": "gg_tsdisplay()\n\naus_production |&gt; \n  gg_tsdisplay(Gas, plot_type = \"season\")\n\n\n\n\n\n\n\n\n\nThis function provides a convenient way to have 3 plots: a time plot, an ACF plot, and a third option that can be customized with one of the following plot types:\n\n\n\n\n\n\nplot_type options\n\n\n\n“auto”,\n“partial”,\n“season”,\n“histogram”,\n“scatter”,\n“spectrum”\n\n\n\n\n\nExporting data to .csv\n\ntourism |&gt; \n  filter(State == \"Tasmania\",\n         Region == \"East Coast\") |&gt; \n  mutate(Quarter = as.Date(Quarter)) |&gt; \n  write_csv(\"./datos/tasmania.csv\")\n\n\nYou can export to .csv by providing a tsibble or tibble (or any other type of data frame), by calling write_csv(), and specifying the output file’s name."
   },
   {
     "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#exporting-data-to-.csv",
@@ -559,11 +511,11 @@
     ]
   },
   {
-    "objectID": "docs/modules/module_1/02_time_series/r_time_series.html#tourism-in-australia",
-    "href": "docs/modules/module_1/02_time_series/r_time_series.html#tourism-in-australia",
+    "objectID": "docs/modules/module_1/02_time_series/r_time_series.html#tsibble-objects",
+    "href": "docs/modules/module_1/02_time_series/r_time_series.html#tsibble-objects",
     "title": "RStudio, R, and Time Series",
-    "section": "2.1 Tourism in Australia",
-    "text": "2.1 Tourism in Australia\n\ntourism\n\n\n  \n\n\n\n\nThe tsibble shows quarterly data on tourism across Australia. It’s divided by Region, State, and purspose of the trip. How many different states are there?",
+    "section": "2.1 tsibble objects",
+    "text": "2.1 tsibble objects\nLet’s take a look at tourism in Australia:\n\ntourism\n\n# A tsibble: 24,320 x 5 [1Q]\n# Key:       Region, State, Purpose [304]\n   Quarter Region   State           Purpose  Trips\n     &lt;qtr&gt; &lt;chr&gt;    &lt;chr&gt;           &lt;chr&gt;    &lt;dbl&gt;\n 1 1998 Q1 Adelaide South Australia Business  135.\n 2 1998 Q2 Adelaide South Australia Business  110.\n 3 1998 Q3 Adelaide South Australia Business  166.\n 4 1998 Q4 Adelaide South Australia Business  127.\n 5 1999 Q1 Adelaide South Australia Business  137.\n 6 1999 Q2 Adelaide South Australia Business  200.\n 7 1999 Q3 Adelaide South Australia Business  169.\n 8 1999 Q4 Adelaide South Australia Business  134.\n 9 2000 Q1 Adelaide South Australia Business  154.\n10 2000 Q2 Adelaide South Australia Business  169.\n# ℹ 24,310 more rows\n\n\n\nA tsibble is a modified version of a tibble as to\n\n\nkey_vars(tourism)\n\n[1] \"Region\"  \"State\"   \"Purpose\"\n\nkey_data(tourism)\n\n\n  \n\n\n\n\nThe tsibble has 24320 rows and 5 columns. It shows quarterly data1 on tourism across Australia. It’s divided by Region, State, and purspose of the trip2. How many different states are there?",
     "crumbs": [
       "Modules",
       "Forecasting models based on decomposition methods",
@@ -631,11 +583,59 @@
     ]
   },
   {
-    "objectID": "docs/modules/module_1/02_time_series/r_time_series.html#ts-visualization",
-    "href": "docs/modules/module_1/02_time_series/r_time_series.html#ts-visualization",
+    "objectID": "docs/modules/module_1/02_time_series/r_time_series.html#plotting-tourism-across-time",
+    "href": "docs/modules/module_1/02_time_series/r_time_series.html#plotting-tourism-across-time",
     "title": "RStudio, R, and Time Series",
-    "section": "2.7 TS Visualization",
-    "text": "2.7 TS Visualization\n\ntourism |&gt; \n  filter(State == \"Tasmania\",\n         Region == \"East Coast\") |&gt; \n1  autoplot(Trips) +\n2  facet_wrap(vars(Purpose), scale = \"free_y\") +\n3  theme(legend.position = \"none\")\n\n\n1\n\nautoplot() detects the data automatically and proposes a plot accordingly.\n\n2\n\nfacet_wrap() Divides a plot into subplots (facets).\n\n3\n\nyou can customize endless feautres using theme(). Here, we remove the legend, as it’s redudant.",
+    "section": "3.1 Plotting tourism across time",
+    "text": "3.1 Plotting tourism across time\n\ntourism |&gt; \n  filter(State == \"Tasmania\",\n         Region == \"East Coast\") |&gt; \n1  autoplot(Trips) +\n2  facet_wrap(vars(Purpose), scale = \"free_y\") +\n3  theme(legend.position = \"none\")\n\n\n1\n\nautoplot() detects the data automatically and proposes a plot accordingly.\n\n2\n\nfacet_wrap() Divides a plot into subplots (facets).\n\n3\n\nyou can customize endless feautres using theme(). Here, we remove the legend, as it’s redudant.",
+    "crumbs": [
+      "Modules",
+      "Forecasting models based on decomposition methods",
+      "RStudio, R, and Time Series"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_1/02_time_series/r_time_series.html#time-plots",
+    "href": "docs/modules/module_1/02_time_series/r_time_series.html#time-plots",
+    "title": "RStudio, R, and Time Series",
+    "section": "3.2 Time plots",
+    "text": "3.2 Time plots\n\naus_production |&gt; \n  autoplot(Gas) +\n  geom_point()\n\n\n\n\n\n\n\n\n\nThese are the most basic type of plots. We have the time variable in the \\(x\\)-axis, and our forecast variable in the \\(y\\)-axis. Time plots should be line plots, and can include or not points.",
+    "crumbs": [
+      "Modules",
+      "Forecasting models based on decomposition methods",
+      "RStudio, R, and Time Series"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_1/02_time_series/r_time_series.html#seasonal-plots",
+    "href": "docs/modules/module_1/02_time_series/r_time_series.html#seasonal-plots",
+    "title": "RStudio, R, and Time Series",
+    "section": "3.3 Seasonal Plots",
+    "text": "3.3 Seasonal Plots\n\naus_production |&gt; \n  gg_season(Gas)\n\n\n\n\n\n\n\n\n\nThe data here are plotted against a single “season”. It’s useful in identifying years with changes in patterns.\n\nRemoving the trend from the data:",
+    "crumbs": [
+      "Modules",
+      "Forecasting models based on decomposition methods",
+      "RStudio, R, and Time Series"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_1/02_time_series/r_time_series.html#seasonal-subseries-plots",
+    "href": "docs/modules/module_1/02_time_series/r_time_series.html#seasonal-subseries-plots",
+    "title": "RStudio, R, and Time Series",
+    "section": "3.4 Seasonal Subseries Plots",
+    "text": "3.4 Seasonal Subseries Plots\n\naus_production |&gt; \n  gg_subseries(Gas)\n\n\n\n\n\n\n\n\n\nHere we split the plot into many subplots, one for each season. This helps us see clearly the underlying seasonal pattern. The mean for each season is represented as the blue horizontal line.",
+    "crumbs": [
+      "Modules",
+      "Forecasting models based on decomposition methods",
+      "RStudio, R, and Time Series"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_1/02_time_series/r_time_series.html#gg_tsdisplay",
+    "href": "docs/modules/module_1/02_time_series/r_time_series.html#gg_tsdisplay",
+    "title": "RStudio, R, and Time Series",
+    "section": "3.5 gg_tsdisplay()",
+    "text": "3.5 gg_tsdisplay()\n\naus_production |&gt; \n  gg_tsdisplay(Gas, plot_type = \"season\")\n\n\n\n\n\n\n\n\n\nThis function provides a convenient way to have 3 plots: a time plot, an ACF plot, and a third option that can be customized with one of the following plot types:\n\n\n\n\n\n\nplot_type options\n\n\n\n\n\n\n“auto”,\n“partial”,\n“season”,\n“histogram”,\n“scatter”,\n“spectrum”\n\n\n\n\n\n3.6 Exporting data to .csv\n\ntourism |&gt; \n  filter(State == \"Tasmania\",\n         Region == \"East Coast\") |&gt; \n  mutate(Quarter = as.Date(Quarter)) |&gt; \n  write_csv(\"./datos/tasmania.csv\")\n\n\nYou can export to .csv by providing a tsibble or tibble (or any other type of data frame), by calling write_csv(), and specifying the output file’s name.",
     "crumbs": [
       "Modules",
       "Forecasting models based on decomposition methods",
@@ -646,8 +646,20 @@
     "objectID": "docs/modules/module_1/02_time_series/r_time_series.html#exporting-data-to-.csv",
     "href": "docs/modules/module_1/02_time_series/r_time_series.html#exporting-data-to-.csv",
     "title": "RStudio, R, and Time Series",
-    "section": "2.8 Exporting data to .csv",
-    "text": "2.8 Exporting data to .csv\n\ntourism |&gt; \n  filter(State == \"Tasmania\",\n         Region == \"East Coast\") |&gt; \n  mutate(Quarter = as.Date(Quarter)) |&gt; \n  write_csv(\"./datos/tasmania.csv\")\n\n\nYou can export to .csv by providing a tsibble or tibble (or any other type of data frame), by calling write_csv(), and specifying the output file’s name.",
+    "section": "3.6 Exporting data to .csv",
+    "text": "3.6 Exporting data to .csv\n\ntourism |&gt; \n  filter(State == \"Tasmania\",\n         Region == \"East Coast\") |&gt; \n  mutate(Quarter = as.Date(Quarter)) |&gt; \n  write_csv(\"./datos/tasmania.csv\")\n\n\nYou can export to .csv by providing a tsibble or tibble (or any other type of data frame), by calling write_csv(), and specifying the output file’s name.",
+    "crumbs": [
+      "Modules",
+      "Forecasting models based on decomposition methods",
+      "RStudio, R, and Time Series"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_1/02_time_series/r_time_series.html#footnotes",
+    "href": "docs/modules/module_1/02_time_series/r_time_series.html#footnotes",
+    "title": "RStudio, R, and Time Series",
+    "section": "Footnotes",
+    "text": "Footnotes\n\n\nshown besides the tsibble dimension as [1Q]↩︎\nthese are specified in the key argument. This tsibble contains ↩︎",
     "crumbs": [
       "Modules",
       "Forecasting models based on decomposition methods",
