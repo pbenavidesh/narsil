@@ -63,16 +63,31 @@ The `tidyverts` packages are made to work seamlessly with the `tidyverse`.
 
 # Time Series
 
-## Tourism in Australia
+## `tsibble` objects
+
+Let's take a look at tourism in Australia:
 
 ```{r}
 #| label: tourism_tsibble
+#| paged-print: false
 tourism
 ```
 
 :::{.notes}
 
-The `tsibble` shows quarterly data on tourism across Australia. It's divided by Region, State, and purspose of the trip. How many different states are there?
+A `tsibble` is a modified version of a [`tibble`](https://tibble.tidyverse.org/index.html) as to 
+
+:::
+
+```{r}
+key_vars(tourism)
+key_data(tourism)
+```
+
+
+:::{.notes}
+
+The `tsibble` has `{r} nrow(tourism)` rows and `{r} ncol(tourism)` columns. It shows quarterly data^[shown besides the tsibble dimension as `[1Q]`] on tourism across Australia. It's divided by Region, State, and purspose of the trip^[these are specified in the `key` argument. This tsibble contains ]. How many different states are there?
 
 :::
 
@@ -260,7 +275,9 @@ The pipe is read as "**then**", and it allows us to write code in the order it's
 It also helps to debug code easier, because you can run each function in order and see where the error is.
 :::
 :::
-## TS Visualization
+# TS Visualization
+
+## Plotting tourism across time
 
 ```{r}
 #| label: ts_viz
@@ -276,6 +293,96 @@ tourism |>
 1. `autoplot()` detects the data automatically and proposes a plot accordingly.
 2. `facet_wrap()` Divides a plot into subplots (facets).
 3. you can customize endless feautres using `theme()`. Here, we remove the legend, as it's redudant.
+
+## Time plots
+
+```{r}
+#| label: time_plot
+#| code-line-numbers: "2-3"
+
+aus_production |> 
+  autoplot(Gas) +
+  geom_point()
+```
+
+:::{.notes}
+
+These are the most basic type of plots. We have the time variable in the $x$-axis, and our forecast variable in the $y$-axis. Time plots should be line plots, and can include or not points.
+
+:::
+
+## Seasonal Plots
+
+```{r}
+#| label: gg_season
+#| code-line-numbers: "2"
+
+aus_production |> 
+  gg_season(Gas)
+```
+
+:::{.notes}
+
+The data here are plotted against a single "season". It's useful in identifying years with changes in patterns. 
+
+:::
+
+Removing the trend from the data:
+
+```{r}
+#| label: gg_season2
+#| echo: false
+
+aus_production |> 
+  model(STL(Gas, robust = TRUE)) |> 
+  components() |>
+  mutate(sin_tend = season_year + remainder) |> 
+  gg_season(sin_tend)
+```
+
+
+## Seasonal Subseries Plots
+
+```{r}
+#| label: gg_subseries
+#| code-line-numbers: "2"
+
+aus_production |> 
+  gg_subseries(Gas)
+```
+
+:::{.notes}
+
+Here we split the plot into many subplots, one for each season. This helps us see clearly the underlying seasonal pattern. The mean for each season is represented as the blue horizontal line.
+
+:::
+
+## `gg_tsdisplay()`
+
+```{r}
+#| label: gg_tsdisplay
+#| code-line-numbers: "2"
+
+aus_production |> 
+  gg_tsdisplay(Gas, plot_type = "season")
+```
+
+:::{.notes}
+
+This function provides a convenient way to have 3 plots: a time plot, an ACF plot, and a third option that can be customized with one of the following plot types:
+
+:::{.callout-tip collapse="true"}
+## `plot_type` options
+
+- "auto", 
+- "partial", 
+- "season", 
+- "histogram", 
+- "scatter", 
+- "spectrum"
+
+:::
+
 
 ## Exporting data to .csv
 

@@ -104,96 +104,9 @@ Time series can have distinct patterns:
 
 
 
-# Time Series Visualization
-
-## Time plots
-
-```{r}
-#| label: time_plot
-#| code-line-numbers: "2-3"
-
-aus_production |> 
-  autoplot(Gas) +
-  geom_point()
-```
-
-:::{.notes}
-
-These are the most basic type of plots. We have the time variable in the $x$-axis, and our forecast variable in the $y$-axis. Time plots should be line plots, and can include or not points.
-
-:::
-
-## Seasonal Plots
-
-```{r}
-#| label: gg_season
-#| code-line-numbers: "2"
-
-aus_production |> 
-  gg_season(Gas)
-```
-
-:::{.notes}
-
-The data here are plotted against a single "season". It's useful in identifying years with changes in patterns. 
-
-:::
-
-Removing the trend from the data:
-
-```{r}
-#| label: gg_season2
-#| echo: false
-
-aus_production |> 
-  model(STL(Gas, robust = TRUE)) |> 
-  components() |>
-  mutate(sin_tend = season_year + remainder) |> 
-  gg_season(sin_tend)
-```
+# Transformations & Adjustments
 
 
-## Seasonal Subseries Plots
-
-```{r}
-#| label: gg_subseries
-#| code-line-numbers: "2"
-
-aus_production |> 
-  gg_subseries(Gas)
-```
-
-:::{.notes}
-
-Here we split the plot into many subplots, one for each season. This helps us see clearly the underlying seasonal pattern. The mean for each season is represented as the blue horizontal line.
-
-:::
-
-## `gg_tsdisplay()`
-
-```{r}
-#| label: gg_tsdisplay
-#| code-line-numbers: "2"
-
-aus_production |> 
-  gg_tsdisplay(Gas, plot_type = "season")
-```
-
-:::{.notes}
-
-This function provides a convenient way to have 3 plots: a time plot, an ACF plot, and a third option that can be customized with one of the following plot types:
-
-:::{.callout-tip collapse="true"}
-## `plot_type` options
-
-- "auto", 
-- "partial", 
-- "season", 
-- "histogram", 
-- "scatter", 
-- "spectrum"
-
-:::
 
 # Time Series Decomposition
 
