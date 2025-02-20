@@ -1,7 +1,10 @@
 ---
 title: "Time Series Decomposition"
 format:
-  html: default
+  html:
+    other-links: 
+      - text: Guerrero feature
+        href: docs/bib/guerrero1993.pdf
   revealjs:
     output-file: r_time_series_pres.html
 ---
@@ -177,6 +180,22 @@ What happens when $\lambda = 1$?
 :::{.callout-tip appearance="simple"}
 You should choose a value of $\lambda$ that makes the size of the seasonal variation the same throughout the series.
 :::
+
+## How can we choose the value of $\lambda$?
+
+We can use the `guerrero` feature to choose an optimal lambda.
+
+```{r}
+#| label: lambda_guerrero
+#| code-line-numbers: "2"
+#| paged-print: false
+
+aus_production |> 
+  features(Gas, features = guerrero)
+```
+
+
+
 
 ## Calendar adjustments
 
