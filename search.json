@@ -256,6 +256,13 @@
     "text": "Box-Cox transformations\n\\[\nw_t= \\begin{cases}\\log \\left(y_t\\right) & \\text { if } \\lambda=0 \\\\ \\left(\\operatorname{sign}\\left(y_t\\right)\\left|y_t\\right|^\\lambda-1\\right) / \\lambda & \\text { otherwise }\\end{cases}\n\\] :::{.notes}\nIn a Box-Cox transformation, the log is always a natural logarithm. The other case is just a power transformation with scaling.\n:::\nWhat happens when \\(\\lambda = 1\\)?\n\n\n\n\n\n\nYou should choose a value of \\(\\lambda\\) that makes the size of the seasonal variation the same throughout the series."
   },
   {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#how-can-we-choose-the-value-of-lambda",
+    "href": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#how-can-we-choose-the-value-of-lambda",
+    "title": "Time Series Decomposition",
+    "section": "How can we choose the value of \\(\\lambda\\)?",
+    "text": "How can we choose the value of \\(\\lambda\\)?\nWe can use the guerrero feature to choose an optimal lambda.\n\naus_production |&gt; \n  features(Gas, features = guerrero)\n\n# A tibble: 1 × 1\n  lambda_guerrero\n            &lt;dbl&gt;\n1           0.110"
+  },
+  {
     "objectID": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#calendar-adjustments",
     "href": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#calendar-adjustments",
     "title": "Time Series Decomposition",
@@ -337,11 +344,23 @@
     ]
   },
   {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#how-can-we-choose-the-value-of-lambda",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#how-can-we-choose-the-value-of-lambda",
+    "title": "Time Series Decomposition",
+    "section": "2.3 How can we choose the value of \\(\\lambda\\)?",
+    "text": "2.3 How can we choose the value of \\(\\lambda\\)?\nWe can use the guerrero feature to choose an optimal lambda.\n\naus_production |&gt; \n  features(Gas, features = guerrero)\n\n# A tibble: 1 × 1\n  lambda_guerrero\n            &lt;dbl&gt;\n1           0.110",
+    "crumbs": [
+      "Modules",
+      "Forecasting models based on decomposition methods",
+      "Time Series Decomposition"
+    ]
+  },
+  {
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#calendar-adjustments",
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#calendar-adjustments",
     "title": "Time Series Decomposition",
-    "section": "2.3 Calendar adjustments",
-    "text": "2.3 Calendar adjustments",
+    "section": "2.4 Calendar adjustments",
+    "text": "2.4 Calendar adjustments",
     "crumbs": [
       "Modules",
       "Forecasting models based on decomposition methods",
