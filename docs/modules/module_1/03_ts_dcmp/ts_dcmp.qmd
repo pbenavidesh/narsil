@@ -150,7 +150,9 @@ jj |>
 
 :::{.notes}
 
-Log transformations are often useful when the data presents an increasing/decreasing variation with the level of the series.
+- Log transformations are often useful when the data presents an increasing/decreasing variation with the level of the series.
+
+- Log transformations are very interpretable: changes in a log value are percent changes on the original scale.
 
 :::
 
@@ -160,6 +162,21 @@ Log transformations are often useful when the data presents an increasing/decrea
 ## Box-Cox transformations
 
 
+$$
+w_t= \begin{cases}\log \left(y_t\right) & \text { if } \lambda=0 \\ \left(\operatorname{sign}\left(y_t\right)\left|y_t\right|^\lambda-1\right) / \lambda & \text { otherwise }\end{cases}
+$$
+:::{.notes}
+
+In a Box-Cox transformation, the log is always a natural logarithm. The other case is just a power transformation with scaling.
+
+:::
+
+
+What happens when $\lambda = 1$?
+
+:::{.callout-tip appearance="simple"}
+You should choose a value of $\lambda$ that makes the size of the seasonal variation the same throughout the series.
+:::
 
 ## Calendar adjustments
 
