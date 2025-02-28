@@ -698,6 +698,13 @@
     "text": "Forecasting the future\nWe now refit our model using the whole dataset. We will only model the STL decomposition model, because the other two didn’t get a strong fit.\n\ngdp_fit2 &lt;- gdp |&gt; \n  model(\n    stlf = decomposition_model(\n          STL(log(price) ~ season(window = \"periodic\"), robust = TRUE),\n          RW(season_adjust ~ drift())\n        )\n  )\ngdp_fit2\n\n\n  \n\n\n\n\ngdp_fc_fut &lt;- gdp_fit2 |&gt; \n  forecast(h = gdp_h_fc)\ngdp_fc_fut\n\n\n  \n\n\ngdp_fc_fut |&gt; \n  autoplot(gdp)\n\n\n\n\n\n\n\n\n\n# save(gdp_fc_fut, file = \"equipo1.RData\")"
   },
   {
+    "objectID": "docs/index.html",
+    "href": "docs/index.html",
+    "title": "Time Series Forecasting",
+    "section": "",
+    "text": "Back to top"
+  },
+  {
     "objectID": "docs/modules/module_1/01_intro/intro_pres.html#is-this-a-time-series",
     "href": "docs/modules/module_1/01_intro/intro_pres.html#is-this-a-time-series",
     "title": "Time Series Forecasting",
