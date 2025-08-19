@@ -233,7 +233,7 @@ p <- vic_elec_daily |>
   ggplot(aes(x = Date, y = Demand)) +
   geom_line(color = "yellow2", size = 1) +
   theme_dark() +
-  labs(x = "Fecha", y = "Demand")
+  labs(x = "", y = "Demand")
 
 ggplotly(p, dynamicTicks = TRUE) |> rangeslider()
 ```
@@ -256,7 +256,7 @@ aus_production |>
   forecast(h = "5 years") |> 
   autoplot(aus_production |> filter_index("1990 Q1" ~ .), size = 1) +
   labs(title = "Beer Production in Australia",
-       x = "Trimester",
+       x = "",
        y = "Megaliters")
 ```
 
@@ -292,7 +292,7 @@ us_retail_employment |>
   autoplot(color = "purple", size = 1) +
   autolayer(us_retail_employment, Employed, color = "purple", size = 1) +
   theme_pubclean() +
-  labs(x = "Month", y = "Employed")
+  labs(x = "", y = "Employed")
 ```
 
 :::
@@ -309,7 +309,7 @@ us_retail_employment |>
   autoplot(color = "purple", size = 1) +
   autolayer(us_retail_employment, Employed, color = "purple", size = 1) +
   theme_pubclean() +
-  labs(x = "Month", y = "Employed")
+  labs(x = "", y = "Employed")
 ```
 
 :::
@@ -329,5 +329,5 @@ us_retail_employment |>
   autoplot(color = "purple", size = 1) +
   autolayer(us_retail_employment, Employed, color = "purple", size = 1) +
   theme_pubclean() +
-  labs(x = "Month", y = "Employed")
+  labs(x = "", y = "Employed")
 ```
