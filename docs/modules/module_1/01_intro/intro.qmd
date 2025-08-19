@@ -23,7 +23,8 @@ format:
 ```{r}
 #| label: pkgs
 library(pacman)
-p_load(tidyverse, plotly, patchwork, timetk, modeltime, tidyquant, tsibble, feasts, fable, tsibbledata, fpp3, ggpubr, jpeg)
+p_load(tidyverse, plotly, patchwork, timetk, modeltime, tidyquant, tsibble, 
+       feasts, fable, tsibbledata, fpp3, ggpubr, jpeg)
 ```
 
 ## Is this a time series? {}
@@ -207,34 +208,6 @@ Other variables can't be predicted that easily. What does it depend on?
 
 ## 
 
-
-## Beer Production Forecasts
-
-::: {.columns}
-
-::: {.column width="70%"}
-
-```{r}
-#| label: beer
-#| fig-cap: Can you observe any strange patterns?
-
-aus_production |> 
-  model(arima = ARIMA(Beer)) |> 
-  forecast(h = "5 years") |> 
-  autoplot(aus_production |> filter_index("1990 Q1" ~ .), size = 1) +
-  labs(title = "Producción de cerveza",
-       x = "Trimestre",
-       y = "Megalitros")
-```
-
-:::
-
-::: {.column width="30%"}
-![](homer.png)
-:::
-
-::::
-
 ## Electricity Demand
 
 ```{r}
@@ -260,12 +233,43 @@ p <- vic_elec_daily |>
   ggplot(aes(x = Date, y = Demand)) +
   geom_line(color = "yellow2", size = 1) +
   theme_dark() +
-  labs(x = "Fecha", y = "Demanda")
+  labs(x = "Fecha", y = "Demand")
 
 ggplotly(p, dynamicTicks = TRUE) |> rangeslider()
 ```
 
-## Employment
+
+# Forecasts
+
+## Beer Production Forecasts
+
+::: {.columns}
+
+::: {.column width="70%"}
+
+```{r}
+#| label: beer
+#| fig-cap: Can you observe any strange patterns?
+
+aus_production |> 
+  model(arima = ARIMA(Beer)) |> 
+  forecast(h = "5 years") |> 
+  autoplot(aus_production |> filter_index("1990 Q1" ~ .), size = 1) +
+  labs(title = "Beer Production in Australia",
+       x = "Trimester",
+       y = "Megaliters")
+```
+
+:::
+
+::: {.column width="30%"}
+![](homer.png)
+:::
+
+::::
+
+
+## Which US Employment forecast is best?
 
 ```{r}
 #| label: empleo
@@ -274,10 +278,50 @@ us_retail_employment <- us_employment %>%
   filter(year(Month) >= 1990, Title == "Retail Trade")
 ```
 
+::: {.columns}
+
+::: {.column width="50%"}
 
 ```{r}
-#| label: empleo_fcst
-#| fig-cap: US Retail Employment
+#| label: empleo_fcst_drift
+#| fig-cap: Forecasting US Retail Employment using the Drift method
+
+us_retail_employment |> 
+  model(ets = RW(Employed ~ drift())) |> 
+  forecast(h = "6 years") |> 
+  autoplot(color = "purple", size = 1) +
+  autolayer(us_retail_employment, Employed, color = "purple", size = 1) +
+  theme_pubclean() +
+  labs(x = "Mes", y = "Employed")
+```
+
+:::
+
+::: {.column width="50%"}
+
+```{r}
+#| label: empleo_fcst_snaive
+#| fig-cap: Forecasting US Retail Employment using the Seasonal Naive method
+
+us_retail_employment |> 
+  model(ets = SNAIVE(Employed)) |> 
+  forecast(h = "6 years") |> 
+  autoplot(color = "purple", size = 1) +
+  autolayer(us_retail_employment, Employed, color = "purple", size = 1) +
+  theme_pubclean() +
+  labs(x = "Mes", y = "Employed")
+```
+
+:::
+
+:::
+
+
+##
+
+```{r}
+#| label: empleo_fcst_arima
+#| fig-cap: Forecasting US Retail Employment using ARIMA
 
 us_retail_employment |> 
   model(ets = ARIMA(Employed)) |> 
@@ -285,7 +329,5 @@ us_retail_employment |>
   autoplot(color = "purple", size = 1) +
   autolayer(us_retail_employment, Employed, color = "purple", size = 1) +
   theme_pubclean() +
-  labs(x = "Mes", y = "Empleos")
+  labs(x = "Mes", y = "Employed")
 ```
-
-
