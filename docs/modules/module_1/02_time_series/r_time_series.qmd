@@ -277,10 +277,59 @@ It also helps to debug code easier, because you can run each function in order a
 :::
 # TS Visualization
 
-## Plotting tourism across time
+:::{.content-hidden unless-format="revealjs"}
+
+## Plotting tourism across time {auto-animate="true"}
 
 ```{r}
-#| label: ts_viz
+#| label: ts_viz_1
+#| eval: true
+
+tourism
+```
+
+## Plotting tourism across time {auto-animate="true"}
+
+```{r}
+#| label: ts_viz_2
+#| eval: true
+
+tourism |> 
+  filter(State == "Tasmania",
+         Region == "East Coast")               
+```
+
+## Plotting tourism across time {auto-animate="true"}
+
+```{r}
+#| label: ts_viz_3
+#| eval: true
+
+tourism |> 
+  filter(State == "Tasmania",
+         Region == "East Coast") |> 
+  autoplot(Trips)                
+```
+
+## Plotting tourism across time {auto-animate="true"}
+
+```{r}
+#| label: ts_viz_4
+#| eval: true
+
+tourism |> 
+  filter(State == "Tasmania",
+         Region == "East Coast") |> 
+  autoplot(Trips) +
+  facet_wrap(vars(Purpose), scale = "free_y")                
+```
+
+:::
+
+## Plotting tourism across time {auto-animate="true"}
+
+```{r}
+#| label: ts_viz_full
 
 tourism |> 
   filter(State == "Tasmania",
