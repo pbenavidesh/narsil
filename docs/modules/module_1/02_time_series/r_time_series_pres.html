@@ -271,8 +271,12 @@ pbenavides
 <li><a href="https://stringr.tidyverse.org/"><code>stringr</code></a> for strings.</li>
 <li><a href="https://forcats.tidyverse.org/"><code>forcats</code></a> for <strong>factors</strong> (R’s categorical data type).</li>
 <li><a href="https://lubridate.tidyverse.org/"><code>lubridate</code></a> for dates and date-times.</li>
-<li><a href="https://ggplot2.tidyverse.org/"><code>ggplot2</code></a> is the primary package for visualization.</li>
 </ul></li>
+<li><a href="https://ggplot2.tidyverse.org/"><code>ggplot2</code></a> is the primary package for visualization.</li>
+<li><a href="https://readr.tidyverse.org/"><code>readr</code></a> is used to <strong>import data</strong> from delimited files (CSV, TSV, …).</li>
+<li><a href="https://tibble.tidyverse.org/"><code>tibble</code></a> is a modern reimagining of the data frame, keeping what time has proven to be effective, and throwing out what is not.</li>
+<li><a href="https://tidyr.tidyverse.org/"><code>tidyr</code></a> is used to <strong>tidy</strong> data, i.e.&nbsp;to ensure that each variable is in its own column, each observation is in its own row, and each value is in its own cell.</li>
+<li><a href="https://purrr.tidyverse.org/"><code>purrr</code></a> is used for functional programming with R.</li>
 </ul>
 </div>
 </div>
@@ -652,7 +656,7 @@ pbenavides
 <section id="plotting-tourism-across-time-1" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Plotting tourism across time</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb24-1" class="hljs-ln-code"><a></a>tourism <span class="sc">|&gt;</span> </span>
+<div class="sourceCode cell-code" id="cb24" data-code-line-numbers="2-3"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb24-1" class="hljs-ln-code"><a></a>tourism <span class="sc">|&gt;</span> </span>
 <span id="cb24-2" class="hljs-ln-code"><a></a>  <span class="fu">filter</span>(State <span class="sc">==</span> <span class="st">"Tasmania"</span>,</span>
 <span id="cb24-3" class="hljs-ln-code"><a></a>         Region <span class="sc">==</span> <span class="st">"East Coast"</span>)               </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -667,14 +671,14 @@ pbenavides
 <section id="plotting-tourism-across-time-2" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Plotting tourism across time</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb25-1" class="hljs-ln-code"><a></a>tourism <span class="sc">|&gt;</span> </span>
+<div class="sourceCode cell-code" id="cb25" data-code-line-numbers="4"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb25-1" class="hljs-ln-code"><a></a>tourism <span class="sc">|&gt;</span> </span>
 <span id="cb25-2" class="hljs-ln-code"><a></a>  <span class="fu">filter</span>(State <span class="sc">==</span> <span class="st">"Tasmania"</span>,</span>
 <span id="cb25-3" class="hljs-ln-code"><a></a>         Region <span class="sc">==</span> <span class="st">"East Coast"</span>) <span class="sc">|&gt;</span> </span>
 <span id="cb25-4" class="hljs-ln-code"><a></a>  <span class="fu">autoplot</span>(Trips)                </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><a href="r_time_series_files/figure-html/ts_viz_3-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img data-src="r_time_series_files/figure-html/ts_viz_3-1.png" width="672"></a></p>
+<p><a href="r_time_series_files/figure-revealjs/ts_viz_3-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img data-src="r_time_series_files/figure-revealjs/ts_viz_3-1.png" width="960"></a></p>
 </figure>
 </div>
 </div>
@@ -683,7 +687,7 @@ pbenavides
 <section id="plotting-tourism-across-time-3" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Plotting tourism across time</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb26-1" class="hljs-ln-code"><a></a>tourism <span class="sc">|&gt;</span> </span>
+<div class="sourceCode cell-code" id="cb26" data-code-line-numbers="5"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb26-1" class="hljs-ln-code"><a></a>tourism <span class="sc">|&gt;</span> </span>
 <span id="cb26-2" class="hljs-ln-code"><a></a>  <span class="fu">filter</span>(State <span class="sc">==</span> <span class="st">"Tasmania"</span>,</span>
 <span id="cb26-3" class="hljs-ln-code"><a></a>         Region <span class="sc">==</span> <span class="st">"East Coast"</span>) <span class="sc">|&gt;</span> </span>
 <span id="cb26-4" class="hljs-ln-code"><a></a>  <span class="fu">autoplot</span>(Trips) <span class="sc">+</span></span>
@@ -691,7 +695,7 @@ pbenavides
 <div class="cell-output-display">
 <div>
 <figure>
-<p><a href="r_time_series_files/figure-html/ts_viz_4-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img data-src="r_time_series_files/figure-html/ts_viz_4-1.png" width="672"></a></p>
+<p><a href="r_time_series_files/figure-revealjs/ts_viz_4-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img data-src="r_time_series_files/figure-revealjs/ts_viz_4-1.png" width="960"></a></p>
 </figure>
 </div>
 </div>
@@ -725,7 +729,7 @@ pbenavides
 <div class="cell-output-display">
 <div>
 <figure>
-<p><a href="r_time_series_files/figure-html/ts_viz_full-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img data-src="r_time_series_files/figure-html/ts_viz_full-1.png" width="672"></a></p>
+<p><a href="r_time_series_files/figure-revealjs/ts_viz_full-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img data-src="r_time_series_files/figure-revealjs/ts_viz_full-1.png" width="960"></a></p>
 </figure>
 </div>
 </div>
@@ -733,18 +737,33 @@ pbenavides
 </section>
 <section id="time-plots" class="slide level2">
 <h2>Time plots</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb27" data-code-line-numbers="2-3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a></a>aus_production <span class="sc">|&gt;</span> </span>
-<span id="cb27-2"><a></a>  <span class="fu">autoplot</span>(Gas) <span class="sc">+</span></span>
-<span id="cb27-3"><a></a>  <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a></a>aus_production <span class="sc">|&gt;</span> </span>
+<span id="cb27-2"><a></a>  <span class="fu">autoplot</span>(Gas)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><a href="r_time_series_files/figure-html/time_plot-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img data-src="r_time_series_files/figure-html/time_plot-1.png" width="672"></a></p>
+<p><a href="r_time_series_files/figure-revealjs/time_plot_1-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img data-src="r_time_series_files/figure-revealjs/time_plot_1-1.png" width="960"></a></p>
 </figure>
 </div>
 </div>
 </div>
+</div><div class="column" style="width:50%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28" data-code-line-numbers="2-3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a></a>aus_production <span class="sc">|&gt;</span> </span>
+<span id="cb28-2"><a></a>  <span class="fu">autoplot</span>(Gas) <span class="sc">+</span></span>
+<span id="cb28-3"><a></a>  <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="r_time_series_files/figure-revealjs/time_plot_2-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img data-src="r_time_series_files/figure-revealjs/time_plot_2-1.png" width="960"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
 <aside class="notes">
 <p>These are the most basic type of plots. We have the time variable in the <span class="math inline">\(x\)</span>-axis, and our forecast variable in the <span class="math inline">\(y\)</span>-axis. Time plots should be line plots, and can include or not points.</p>
 <style type="text/css">
@@ -762,12 +781,12 @@ pbenavides
 <section id="seasonal-plots" class="slide level2">
 <h2>Seasonal Plots</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb28" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a></a>aus_production <span class="sc">|&gt;</span> </span>
-<span id="cb28-2"><a></a>  <span class="fu">gg_season</span>(Gas)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a></a>aus_production <span class="sc">|&gt;</span> </span>
+<span id="cb29-2"><a></a>  <span class="fu">gg_season</span>(Gas)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><a href="r_time_series_files/figure-html/gg_season-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img data-src="r_time_series_files/figure-html/gg_season-1.png" width="672"></a></p>
+<p><a href="r_time_series_files/figure-revealjs/gg_season-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img data-src="r_time_series_files/figure-revealjs/gg_season-1.png" width="960"></a></p>
 </figure>
 </div>
 </div>
@@ -790,7 +809,7 @@ pbenavides
 <div class="cell-output-display">
 <div>
 <figure>
-<p><a href="r_time_series_files/figure-html/gg_season2-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img data-src="r_time_series_files/figure-html/gg_season2-1.png" width="672"></a></p>
+<p><a href="r_time_series_files/figure-revealjs/gg_season2-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7"><img data-src="r_time_series_files/figure-revealjs/gg_season2-1.png" width="960"></a></p>
 </figure>
 </div>
 </div>
@@ -799,12 +818,12 @@ pbenavides
 <section id="seasonal-subseries-plots" class="slide level2">
 <h2>Seasonal Subseries Plots</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a></a>aus_production <span class="sc">|&gt;</span> </span>
-<span id="cb29-2"><a></a>  <span class="fu">gg_subseries</span>(Gas)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a></a>aus_production <span class="sc">|&gt;</span> </span>
+<span id="cb30-2"><a></a>  <span class="fu">gg_subseries</span>(Gas)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><a href="r_time_series_files/figure-html/gg_subseries-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7"><img data-src="r_time_series_files/figure-html/gg_subseries-1.png" width="672"></a></p>
+<p><a href="r_time_series_files/figure-revealjs/gg_subseries-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8"><img data-src="r_time_series_files/figure-revealjs/gg_subseries-1.png" width="960"></a></p>
 </figure>
 </div>
 </div>
@@ -826,12 +845,12 @@ pbenavides
 <section id="gg_tsdisplay" class="slide level2">
 <h2><code>gg_tsdisplay()</code></h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb30" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a></a>aus_production <span class="sc">|&gt;</span> </span>
-<span id="cb30-2"><a></a>  <span class="fu">gg_tsdisplay</span>(Gas, <span class="at">plot_type =</span> <span class="st">"season"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a></a>aus_production <span class="sc">|&gt;</span> </span>
+<span id="cb31-2"><a></a>  <span class="fu">gg_tsdisplay</span>(Gas, <span class="at">plot_type =</span> <span class="st">"season"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><a href="r_time_series_files/figure-html/gg_tsdisplay-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8"><img data-src="r_time_series_files/figure-html/gg_tsdisplay-1.png" width="672"></a></p>
+<p><a href="r_time_series_files/figure-revealjs/gg_tsdisplay-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9"><img data-src="r_time_series_files/figure-revealjs/gg_tsdisplay-1.png" width="960"></a></p>
 </figure>
 </div>
 </div>
@@ -858,14 +877,26 @@ pbenavides
 </div>
 </div>
 </div>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
 <section id="exporting-data-to-.csv" class="slide level2">
 <h2>Exporting data to .csv</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a></a>tourism <span class="sc">|&gt;</span> </span>
-<span id="cb31-2"><a></a>  <span class="fu">filter</span>(State <span class="sc">==</span> <span class="st">"Tasmania"</span>,</span>
-<span id="cb31-3"><a></a>         Region <span class="sc">==</span> <span class="st">"East Coast"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb31-4"><a></a>  <span class="fu">mutate</span>(<span class="at">Quarter =</span> <span class="fu">as.Date</span>(Quarter)) <span class="sc">|&gt;</span> </span>
-<span id="cb31-5"><a></a>  <span class="fu">write_csv</span>(<span class="st">"./datos/tasmania.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32" data-code-line-numbers="5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a></a>tourism <span class="sc">|&gt;</span> </span>
+<span id="cb32-2"><a></a>  <span class="fu">filter</span>(State <span class="sc">==</span> <span class="st">"Tasmania"</span>,</span>
+<span id="cb32-3"><a></a>         Region <span class="sc">==</span> <span class="st">"East Coast"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb32-4"><a></a>  <span class="fu">mutate</span>(<span class="at">Quarter =</span> <span class="fu">as.Date</span>(Quarter)) <span class="sc">|&gt;</span> </span>
+<span id="cb32-5"><a></a>  <span class="fu">write_csv</span>(<span class="st">"./datos/tasmania.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <aside class="notes">
 <p>You can export to .csv by providing a <code>tsibble</code> or <code>tibble</code> (or any other type of data frame), by calling <strong><code>write_csv()</code></strong>, and specifying the output file’s name.</p>
@@ -882,18 +913,6 @@ pbenavides
       }</style></aside>
 
 
-</section>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
 </section></section>
 
     </div>
@@ -1114,6 +1133,44 @@ pbenavides
         ]
       });
     </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
     <script id="quarto-html-after-body" type="application/javascript">
       window.document.addEventListener("DOMContentLoaded", function (event) {
         const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
