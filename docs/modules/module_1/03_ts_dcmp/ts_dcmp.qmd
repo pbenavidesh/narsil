@@ -42,7 +42,8 @@ p1 <- tq_get("FARTCOIN-USD", from = "2024-01-01") |>
     caption = "Source: Yahoo Finance"
   )
 
-ggplotly(p1)  
+ggplotly(p1) |> 
+  bslib::card(full_screen = TRUE)
 
 p2 <- tq_get(
   "MEXLOCOEMORSTM",
@@ -59,7 +60,8 @@ p2 <- tq_get(
   ) +
   scale_y_continuous(labels = scales::percent_format(scale = 1)) 
  
-ggplotly(p2, dynamicTicks = TRUE)
+ggplotly(p2, dynamicTicks = TRUE) |> 
+  bslib::card(full_screen = TRUE)
 
 p3 <- us_employment |>
   filter_index("1960 Jan." ~ .) |> 
@@ -71,7 +73,8 @@ p3 <- us_employment |>
     caption = "Source = U.S. Bureau of Labor Statistics"
   )
 
-ggplotly(p3, dynamicTicks = TRUE)
+ggplotly(p3, dynamicTicks = TRUE) |> 
+  bslib::card(full_screen = TRUE)
 
 p4 <- tq_get(
   "MEXSLRTTO01IXOBM",
@@ -87,7 +90,8 @@ p4 <- tq_get(
     caption = "Organization for Economic Co-operation and Development via FRED"
   ) 
  
-ggplotly(p4, dynamicTicks = TRUE)  
+ggplotly(p4, dynamicTicks = TRUE)  |> 
+  bslib::card(full_screen = TRUE)
 ```
 
 :::{.notes}
@@ -147,6 +151,7 @@ p <- jj |>
     ggtitle("J&J - Quarterly Sales")
 
 ggplotly(p)
+
 ```
 
 :::{.notes}
