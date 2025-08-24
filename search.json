@@ -272,7 +272,7 @@
     "href": "docs/modules/forecasting_wf_pres.html#traintest-split",
     "title": "The Forecasting Workflow using fable\n",
     "section": "Train/Test Split",
-    "text": "Train/Test Split\nWe will split our data in two sets: a training set, and a test set, in order to evaluate our forecasts’ accuracy.\n\ngdp_train &lt;- gdp |&gt; \n  filter_index(. ~ \"2021 Q4\")\n\ngdp_train\n\n\n  \n\n\n\n\n\n\n\n\n\nNote\n\n\nFor all our variables, it is strongly recommended to follow the same notation process, and write our code using snake_case. Here, we called our data gdp, therefore, all the following variables will be called starting with gdp_1, such as gdp_train for our training set.\n\n\n\n\nThis will make it very convenient when calling your variables. RStudio will display all the options starting with gdp_. We will usually use the following suffixes:\n\n\n_train: training set\n\n_fit: the mable (table of models)\n\n_aug: the augmented table with fitted values and residuals\n\n_dcmp: for the dable (decomposition table), containing the components and the seasonally adjusted series of a TS decomposition.\n\n_fc or _fcst: for the fable (forecasts table) that has our forecasts."
+    "text": "Train/Test Split\nWe will split our data in two sets: a training set, and a test set, in order to evaluate our forecasts’ accuracy.\n\ngdp_train &lt;- gdp |&gt; \n  filter_index(. ~ \"2021 Q4\")\n\ngdp_train\n\n\n  \n\n\n\n\n\n\n\n\n\nNote\n\n\nFor all our variables, it is strongly recommended to follow the same notation process, and write our code using snake_case. Here, we called our data gdp, therefore, all the following variables will be called starting with gdp_1, such as gdp_train for our training set."
   },
   {
     "objectID": "docs/modules/forecasting_wf_pres.html#visualization-and-eda",
@@ -293,7 +293,7 @@
     "href": "docs/modules/forecasting_wf_pres.html#residuals-diagnostics",
     "title": "The Forecasting Workflow using fable\n",
     "section": "Residuals Diagnostics",
-    "text": "Residuals Diagnostics\nVisual analysis\n\ngdp_fit |&gt; \n  select(snaive) |&gt; \n  gg_tsresiduals() +\n  ggtitle(\"Residuals Diagnostics for the Seasonal Naïve Model\")\n\n\n\n\n\n\ngdp_fit |&gt; \n  select(drift) |&gt; \n  gg_tsresiduals() +\n  ggtitle(\"Residuals Diagnostics for the Drift Model\")\n\n\n\n\n\n\n\n\n\n\n\n\n\nTip\n\n\nHere we expect to see:\n\nA time series with no apparent patterns (no trend and/or seasonality), with a mean close to zero.\nIn the ACF, we’d expect no lags with significant autocorrelation.\nNormally distributed residuals.\n\n\n\n\nPortmanteau tests of autocorrelation\n\ngdp_fit |&gt; \n  augment() |&gt; \n  features(.innov, ljung_box, lag = 24, dof = 0)\n\n\n  \n\n\n\n\n\n\n\n\n\nResiduals interpretation\n\n\nBoth models produce sub optimal residuals:\n\nThe SNAIVE correctly detects the seasonality, however, its residuals are still autocorrelated. Moreover, the residuals are not normally distributed.\nThe drift model doesn’t account for the seasonality, and their distribution is a little bit skewed.\n\nHence, we will perform our forecasts using the bootstrapping method.\n\n\n\nWe can compute some error metrics on the training set using the accuracy() function:\n\ngdp_train_accu &lt;- accuracy(gdp_fit) |&gt; \n  arrange(MAPE)\ngdp_train_accu |&gt; \n  select(symbol:.type, MAPE, RMSE, MAE, MASE)\n\n\n  \n\n\n\n\n\n\n\n\n\nThe accuracy() function\n\n\nThe accuracy() function can be used to compute error metrics in the training data, or in the test set. What differs is the data that is given to it:\n\nFor the training metrics, you need to use the mable (the table of models, that we usually store in _fit).\nFor the forecasting error metrics, we need the fable (the forecasts table, usually stored as _fc or _fcst), and the complete set of data (both the training and test set together).\n\n\n\n\n\n\n\n\n\n\n\nFor this analysis, we are focusing on the MAPE1 metric. The drift model (2.47%) seems to have a better fit with the training set than the snaive model (3.24%).\n\n\n\n\nThe Mean Absolute Percentage Error is a percentage error metric widely used in professional environments.\nLet\n\\[\ne_t = y_t - \\hat{y}_t\n\\]\nbe the error or residual.\nThen the MAPE would be computed as\n\\[\nMAPE = \\frac{1}{T}\\sum_{t=1}^T|\\frac{e_t}{y_t}|\n\\]."
+    "text": "Residuals Diagnostics\nVisual analysis\n\ngdp_fit |&gt; \n  select(snaive) |&gt; \n  gg_tsresiduals() +\n  ggtitle(\"Residuals Diagnostics for the Seasonal Naïve Model\")\n\n\n\n\n\n\ngdp_fit |&gt; \n  select(drift) |&gt; \n  gg_tsresiduals() +\n  ggtitle(\"Residuals Diagnostics for the Drift Model\")\n\n\n\n\n\n\n\n\n\n\n\n\n\nTip\n\n\nHere we expect to see:\n\nA time series with no apparent patterns (no trend and/or seasonality), with a mean close to zero.\nIn the ACF, we’d expect no lags with significant autocorrelation.\nNormally distributed residuals.\n\n\n\n\nPortmanteau tests of autocorrelation\n\ngdp_fit |&gt; \n  augment() |&gt; \n  features(.innov, ljung_box, lag = 24, dof = 0)\n\n\n  \n\n\n\n\n\n\n\n\n\nResiduals interpretation\n\n\nBoth models produce sub optimal residuals:\n\nThe SNAIVE correctly detects the seasonality, however, its residuals are still autocorrelated. Moreover, the residuals are not normally distributed.\nThe drift model doesn’t account for the seasonality, and their distribution is a little bit skewed.\n\nHence, we will perform our forecasts using the bootstrapping method.\n\n\n\nWe can compute some error metrics on the training set using the accuracy() function:\n\ngdp_train_accu &lt;- accuracy(gdp_fit) |&gt; \n  arrange(MAPE)\ngdp_train_accu |&gt; \n  select(symbol:.type, MAPE, RMSE, MAE, MASE)\n\n\n  \n\n\n\n\n\n\n\n\n\nThe accuracy() function\n\n\nThe accuracy() function can be used to compute error metrics in the training data, or in the test set. What differs is the data that is given to it:\n\nFor the training metrics, you need to use the mable (the table of models, that we usually store in _fit).\nFor the forecasting error metrics, we need the fable (the forecasts table, usually stored as _fc or _fcst), and the complete set of data (both the training and test set together).\n\n\n\n\n\n\n\n\n\n\n\nFor this analysis, we are focusing on the MAPE2 metric. The drift model (2.47%) seems to have a better fit with the training set than the snaive model (3.24%)."
   },
   {
     "objectID": "docs/modules/forecasting_wf_pres.html#modeling-using-decomposition",
@@ -315,6 +315,13 @@
     "title": "The Forecasting Workflow using fable\n",
     "section": "Forecasting the future",
     "text": "Forecasting the future\nWe now refit our model using the whole dataset. We will only model the STL decomposition model, because the other two didn’t get a strong fit.\n\ngdp_fit2 &lt;- gdp |&gt; \n  model(\n    stlf = decomposition_model(\n          STL(log(price) ~ season(window = \"periodic\"), robust = TRUE),\n          RW(season_adjust ~ drift())\n        )\n  )\ngdp_fit2\n\n\n  \n\n\n\n\ngdp_fc_fut &lt;- gdp_fit2 |&gt; \n  forecast(h = gdp_h_fc)\ngdp_fc_fut\n\n\n  \n\n\ngdp_fc_fut |&gt; \n  autoplot(gdp)\n\n\n\n\n\n\n\n\n# save(gdp_fc_fut, file = \"equipo1.RData\")"
+  },
+  {
+    "objectID": "docs/modules/forecasting_wf_pres.html#footnotes",
+    "href": "docs/modules/forecasting_wf_pres.html#footnotes",
+    "title": "The Forecasting Workflow using fable\n",
+    "section": "Footnotes",
+    "text": "Footnotes\n\n\nThis will make it very convenient when calling your variables. RStudio will display all the options starting with gdp_. We will usually use the following suffixes:\n\n\n_train: training set\n\n_fit: the mable (table of models)\n\n_aug: the augmented table with fitted values and residuals\n\n_dcmp: for the dable (decomposition table), containing the components and the seasonally adjusted series of a TS decomposition.\n\n_fc or _fcst: for the fable (forecasts table) that has our forecasts. \n\n\n\n\n\nThe Mean Absolute Percentage Error is a percentage error metric widely used in professional environments.\nLet\n\\[\ne_t = y_t - \\hat{y}_t\n\\]\nbe the error or residual.\nThen the MAPE would be computed as\n\\[\nMAPE = \\frac{1}{T}\\sum_{t=1}^T|\\frac{e_t}{y_t}|\n\\]."
   },
   {
     "objectID": "docs/modules/forecasting_workflow.html#packages",
@@ -448,7 +455,7 @@
     "href": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#ts-patterns",
     "title": "Time Series Decomposition",
     "section": "TS Patterns",
-    "text": "TS Patterns\nTime series can have distinct patterns:\n\nTrend: A long-term increase/decrease in the data.\nSeasonal: Fluctuations in the time series with a fixed and known period1.\nCycles: More commonly known as “Business cycles”, refer to rises and falls that are not of a fixed frequency2.\nA time series can have multiple seasonal patterns.They usually last at least 2 years."
+    "text": "TS Patterns\nTime series can have distinct patterns:\n\nTrend: A long-term increase/decrease in the data.\nSeasonal: Fluctuations in the time series with a fixed and known period1.\nCycles: More commonly known as “Business cycles”, refer to rises and falls that are not of a fixed frequency2."
   },
   {
     "objectID": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#log-transformations",
@@ -491,6 +498,13 @@
     "title": "Time Series Decomposition",
     "section": "Portmanteau Tests of Autocorrelation",
     "text": "Portmanteau Tests of Autocorrelation"
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#footnotes",
+    "href": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#footnotes",
+    "title": "Time Series Decomposition",
+    "section": "Footnotes",
+    "text": "Footnotes\n\nA time series can have multiple seasonal patterns.\nThey usually last at least 2 years."
   },
   {
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html",
@@ -631,7 +645,7 @@
     "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#tsibble-objects",
     "title": "RStudio, R, and Time Series",
     "section": "tsibble objects",
-    "text": "tsibble objects\nLet’s take a look at tourism in Australia:\n\ntourism\n\n# A tsibble: 24,320 x 5 [1Q]\n# Key:       Region, State, Purpose [304]\n   Quarter Region   State           Purpose  Trips\n     &lt;qtr&gt; &lt;chr&gt;    &lt;chr&gt;           &lt;chr&gt;    &lt;dbl&gt;\n 1 1998 Q1 Adelaide South Australia Business  135.\n 2 1998 Q2 Adelaide South Australia Business  110.\n 3 1998 Q3 Adelaide South Australia Business  166.\n 4 1998 Q4 Adelaide South Australia Business  127.\n 5 1999 Q1 Adelaide South Australia Business  137.\n 6 1999 Q2 Adelaide South Australia Business  200.\n 7 1999 Q3 Adelaide South Australia Business  169.\n 8 1999 Q4 Adelaide South Australia Business  134.\n 9 2000 Q1 Adelaide South Australia Business  154.\n10 2000 Q2 Adelaide South Australia Business  169.\n# ℹ 24,310 more rows\n\n\n\nA tsibble is a modified version of a tibble as to\n\n\nkey_vars(tourism)\n\n[1] \"Region\"  \"State\"   \"Purpose\"\n\nkey_data(tourism)\n\n\n  \n\n\n\n\nThe tsibble has 24320 rows and 5 columns. It shows quarterly data1 on tourism across Australia. It’s divided by Region, State, and purspose of the trip2. How many different states are there?\n\nshown besides the tsibble dimension as [1Q]these are specified in the key argument. This tsibble contains"
+    "text": "tsibble objects\nLet’s take a look at tourism in Australia:\n\ntourism\n\n# A tsibble: 24,320 x 5 [1Q]\n# Key:       Region, State, Purpose [304]\n   Quarter Region   State           Purpose  Trips\n     &lt;qtr&gt; &lt;chr&gt;    &lt;chr&gt;           &lt;chr&gt;    &lt;dbl&gt;\n 1 1998 Q1 Adelaide South Australia Business  135.\n 2 1998 Q2 Adelaide South Australia Business  110.\n 3 1998 Q3 Adelaide South Australia Business  166.\n 4 1998 Q4 Adelaide South Australia Business  127.\n 5 1999 Q1 Adelaide South Australia Business  137.\n 6 1999 Q2 Adelaide South Australia Business  200.\n 7 1999 Q3 Adelaide South Australia Business  169.\n 8 1999 Q4 Adelaide South Australia Business  134.\n 9 2000 Q1 Adelaide South Australia Business  154.\n10 2000 Q2 Adelaide South Australia Business  169.\n# ℹ 24,310 more rows\n\n\n\nA tsibble is a modified version of a tibble as to\n\n\nkey_vars(tourism)\n\n[1] \"Region\"  \"State\"   \"Purpose\"\n\nkey_data(tourism)\n\n\n  \n\n\n\n\nThe tsibble has 24320 rows and 5 columns. It shows quarterly data1 on tourism across Australia. It’s divided by Region, State, and purspose of the trip2. How many different states are there?"
   },
   {
     "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#australian-states",
@@ -786,6 +800,13 @@
     "title": "RStudio, R, and Time Series",
     "section": "Exporting data to .csv",
     "text": "Exporting data to .csv\n\ntourism |&gt; \n  filter(State == \"Tasmania\",\n         Region == \"East Coast\") |&gt; \n  mutate(Quarter = as.Date(Quarter)) |&gt; \n  write_csv(\"./datos/tasmania.csv\")\n\n\nYou can export to .csv by providing a tsibble or tibble (or any other type of data frame), by calling write_csv(), and specifying the output file’s name."
+  },
+  {
+    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#footnotes",
+    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#footnotes",
+    "title": "RStudio, R, and Time Series",
+    "section": "Footnotes",
+    "text": "Footnotes\n\n\nshown besides the tsibble dimension as [1Q]\nthese are specified in the key argument. This tsibble contains"
   },
   {
     "objectID": "docs/modules/module_1/02_time_series/r_time_series.html",
