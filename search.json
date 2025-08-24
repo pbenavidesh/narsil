@@ -444,64 +444,71 @@
     ]
   },
   {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#section",
-    "href": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#section",
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#section",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#section",
     "title": "Time Series Decomposition",
     "section": "",
     "text": "All these time series have different shapes, patterns, and so on."
   },
   {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#ts-patterns",
-    "href": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#ts-patterns",
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#ts-patterns",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#ts-patterns",
     "title": "Time Series Decomposition",
     "section": "TS Patterns",
-    "text": "TS Patterns\nTime series can have distinct patterns:\n\nTrend: A long-term increase/decrease in the data.\nSeasonal: Fluctuations in the time series with a fixed and known period1.\nCycles: More commonly known as “Business cycles”, refer to rises and falls that are not of a fixed frequency2."
+    "text": "TS Patterns\nTime series can have distinct patterns:\n\nTrend: A long-term increase/decrease in the data.\nSeasonal: Fluctuations in the time series with a fixed and known period1.\nCycles: More commonly known as “Business cycles”, refer to rises and falls that are not of a fixed frequency2.\nChanges in variability: Changes in the spread of the data over time, i. e., an increase/decrease in the variance as the level of the series increases/decreases."
   },
   {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#log-transformations",
-    "href": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#log-transformations",
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#components-of-a-time-series",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#components-of-a-time-series",
+    "title": "Time Series Decomposition",
+    "section": "Components of a Time Series",
+    "text": "Components of a Time Series\nA time series can be decomposed into the following components:\n\nSeasonal component (S): The repeating short-term cycle in the series.\nTrend-cycle component (T): The long-term progression of the series.\nResidual component (R): The residuals or “noise” left after removing the seasonal and trend-cycle components."
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#log-transformations",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#log-transformations",
     "title": "Time Series Decomposition",
     "section": "Log transformations",
-    "text": "Log transformations\n\n\nSeries in levels\nLog\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nTransformations and adjustments help us simplify the patterns in our data, and can improve our forecasts’ accuracy.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLog transformations are often useful when the data presents an increasing/decreasing variation with the level of the series.\nLog transformations are very interpretable: changes in a log value are percent changes on the original scale."
+    "text": "Log transformations\n\n\nSeries in levels\nLog\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nTransformations and adjustments help us simplify the patterns in our data, and can improve our forecasts’ accuracy.\n\n\n\n\n\n\n\n\n\n\n\n\n\nLog transformations are often useful when the data presents an increasing/decreasing variation with the level of the series.\nLog transformations are very interpretable: changes in a log value are percent changes on the original scale."
   },
   {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#box-cox-transformations",
-    "href": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#box-cox-transformations",
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#box-cox-transformations",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#box-cox-transformations",
     "title": "Time Series Decomposition",
     "section": "Box-Cox transformations",
     "text": "Box-Cox transformations\n\\[\nw_t= \\begin{cases}\\log \\left(y_t\\right) & \\text { if } \\lambda=0 \\\\ \\left(\\operatorname{sign}\\left(y_t\\right)\\left|y_t\\right|^\\lambda-1\\right) / \\lambda & \\text { otherwise }\\end{cases}\n\\]\nIn a Box-Cox transformation, the log is always a natural logarithm. The other case is just a power transformation with scaling.\nWhat happens when \\(\\lambda = 1\\)?\n\n\n\n\n\n\nYou should choose a value of \\(\\lambda\\) that makes the size of the seasonal variation the same throughout the series."
   },
   {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#how-can-we-choose-the-value-of-lambda",
-    "href": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#how-can-we-choose-the-value-of-lambda",
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#how-can-we-choose-the-value-of-lambda",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#how-can-we-choose-the-value-of-lambda",
     "title": "Time Series Decomposition",
     "section": "How can we choose the value of \\(\\lambda\\)?",
     "text": "How can we choose the value of \\(\\lambda\\)?\nWe can use the guerrero feature to choose an optimal lambda.\n\naus_production |&gt; \n  features(Gas, features = guerrero)\n\n# A tibble: 1 × 1\n  lambda_guerrero\n            &lt;dbl&gt;\n1           0.110"
   },
   {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#calendar-adjustments",
-    "href": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#calendar-adjustments",
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#calendar-adjustments",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#calendar-adjustments",
     "title": "Time Series Decomposition",
     "section": "Calendar adjustments",
     "text": "Calendar adjustments"
   },
   {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#types-of-decompositions",
-    "href": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#types-of-decompositions",
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#types-of-decompositions",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#types-of-decompositions",
     "title": "Time Series Decomposition",
     "section": "Types of Decompositions",
     "text": "Types of Decompositions\nA decomposition splits the time series into its underlying components:\n\nTrend-cycle\nSeasonal pattern(s)\n\nAnd what’s left of it we simply call it a “remainder component”.\nIn general, there are two types of decompositions:\nAdditive decomposition\n\\[\nY_t = T_t + S_t + R_t\n\\]\nMultiplicative decomposition\n\\[\nY_t = T_t \\times S_t \\times R_t \\\\\n\\]\n\nWhich one should you use?"
   },
   {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#portmanteau-tests-of-autocorrelation",
-    "href": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#portmanteau-tests-of-autocorrelation",
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#portmanteau-tests-of-autocorrelation",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#portmanteau-tests-of-autocorrelation",
     "title": "Time Series Decomposition",
     "section": "Portmanteau Tests of Autocorrelation",
     "text": "Portmanteau Tests of Autocorrelation"
   },
   {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#footnotes",
-    "href": "docs/modules/module_1/03_ts_dcmp/r_time_series_pres.html#footnotes",
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#footnotes",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#footnotes",
     "title": "Time Series Decomposition",
     "section": "Footnotes",
     "text": "Footnotes\n\nA time series can have multiple seasonal patterns.\nThey usually last at least 2 years."
@@ -535,7 +542,19 @@
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#ts-patterns",
     "title": "Time Series Decomposition",
     "section": "\n1.2 TS Patterns",
-    "text": "1.2 TS Patterns\nTime series can have distinct patterns:\n\n\nTrend: A long-term increase/decrease in the data.\nSeasonal: Fluctuations in the time series with a fixed and known period1.\nCycles: More commonly known as “Business cycles”, refer to rises and falls that are not of a fixed frequency2.",
+    "text": "1.2 TS Patterns\nTime series can have distinct patterns:\n\n\nTrend: A long-term increase/decrease in the data.\nSeasonal: Fluctuations in the time series with a fixed and known period1.\nCycles: More commonly known as “Business cycles”, refer to rises and falls that are not of a fixed frequency2.\nChanges in variability: Changes in the spread of the data over time, i. e., an increase/decrease in the variance as the level of the series increases/decreases.",
+    "crumbs": [
+      "Modules",
+      "Forecasting models based on decomposition methods",
+      "Time Series Decomposition"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#components-of-a-time-series",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#components-of-a-time-series",
+    "title": "Time Series Decomposition",
+    "section": "\n1.3 Components of a Time Series",
+    "text": "1.3 Components of a Time Series\nA time series can be decomposed into the following components:\n\n\nSeasonal component (S): The repeating short-term cycle in the series.\nTrend-cycle component (T): The long-term progression of the series.\nResidual component (R): The residuals or “noise” left after removing the seasonal and trend-cycle components.",
     "crumbs": [
       "Modules",
       "Forecasting models based on decomposition methods",
@@ -547,7 +566,7 @@
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#log-transformations",
     "title": "Time Series Decomposition",
     "section": "\n2.1 Log transformations",
-    "text": "2.1 Log transformations\n\n\nSeries in levels\nLog\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nTransformations and adjustments help us simplify the patterns in our data, and can improve our forecasts’ accuracy.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLog transformations are often useful when the data presents an increasing/decreasing variation with the level of the series.\nLog transformations are very interpretable: changes in a log value are percent changes on the original scale.",
+    "text": "2.1 Log transformations\n\n\nSeries in levels\nLog\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nTransformations and adjustments help us simplify the patterns in our data, and can improve our forecasts’ accuracy.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLog transformations are often useful when the data presents an increasing/decreasing variation with the level of the series.\nLog transformations are very interpretable: changes in a log value are percent changes on the original scale.",
     "crumbs": [
       "Modules",
       "Forecasting models based on decomposition methods",
