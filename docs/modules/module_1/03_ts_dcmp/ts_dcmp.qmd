@@ -6,7 +6,7 @@ format:
       - text: Guerrero feature
         href: https://github.com/pbenavidesh/narsil/blob/main/docs/bib/guerrero1993.pdf
   revealjs:
-    output-file: r_time_series_pres.html
+    output-file: ts_dcmp_pres.html
 ---
 
 :::{.content-visible unless-format="revealjs"}
@@ -107,6 +107,23 @@ Time series can have distinct patterns:
 
 - **Cycles:** More commonly known as "Business cycles", refer to rises and falls that are not of a fixed frequency^[They usually last at least 2 years.].
 
+- **Changes in variability:** Changes in the spread of the data over time, i. e., an increase/decrease in the variance as the level of the series increases/decreases.
+
+:::
+
+
+## Components of a Time Series
+
+A time series can be decomposed into the following components:
+
+:::{.incremental}
+
+- **Seasonal component (S):** The repeating short-term cycle in the series.
+
+- **Trend-cycle component (T):** The long-term progression of the series.
+
+- **Residual component (R):** The residuals or "noise" left after removing the seasonal and trend-cycle components.
+
 :::
 
 # Mathematical Transformations
@@ -125,9 +142,11 @@ Time series can have distinct patterns:
 jj <- JohnsonJohnson |> 
   as_tsibble()
 
-jj |> 
+p <- jj |> 
   autoplot() +
     ggtitle("J&J - Quarterly Sales")
+
+ggplotly(p)
 ```
 
 :::{.notes}
@@ -148,9 +167,11 @@ Transformations and adjustments help us simplify the patterns in our data, and c
 #| echo: false
 #| message: false
 
-jj |> 
+p <- jj |> 
   autoplot(log(value)) +
   ggtitle("J&J - Quarterly Sales")
+
+ggplotly(p)
 ```
 
 :::{.notes}
