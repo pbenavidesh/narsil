@@ -228,11 +228,149 @@ aus_production |>
 ```
 
 
-
+# Time Series Adjustments
 
 ## Calendar adjustments
 
+::: {.panel-tabset}
 
+### Closing price and volume
+
+```{r}
+#| label: calendar_google
+#| echo: false
+
+google <- tq_get("GOOG", from = "2018-01-01") |> 
+  as_tsibble(index = date) 
+
+p <- google |>
+  select(date, close, volume) |> 
+  pivot_longer(-date) |>
+  autoplot(value) +
+  facet_wrap(vars(name), scales = "free_y", ncol = 1) +
+  theme(legend.position = "none") +
+  ggtitle("Google: Daily Closing Price and Volume")
+
+ggplotly(p, dynamicTicks = TRUE)
+```
+
+### Monthly aggregation
+
+```{r}
+#| label: google_monthly_data
+google_month <- google |> 
+  index_by(month = yearmonth(date)) |> 
+  summarise(
+    trading_days = n(),
+    monthly_volume = sum(volume),
+    mean_volume = mean(volume)
+  )
+
+google_month
+```
+
+
+### Monthly total and mean and volume
+
+```{r}
+#| label: google_monthly_vol
+#| echo: false
+
+p <- google_month |> 
+  pivot_longer(-c(month:trading_days)) |>
+  autoplot(value)  +
+  facet_wrap(vars(name), scales = "free_y", ncol = 1) +
+  theme(legend.position = "none")
+  
+ggplotly(p, dynamicTicks = TRUE) |> 
+  rangeslider() |> 
+  layout(yaxis = list(fixedrange = FALSE))
+```
+
+:::
+
+::: {.notes}
+
+- The number of trading days in a month can vary due to weekends and holidays, and not because of any economic reason.
+- Using the monthly total volume can be misleading, as months with more trading days will naturally have higher total volumes.
+- Using the mean volume per trading day helps to standardize the data, making it easier to compare across months.
+
+:::
+## Population adjustments
+
+```{r}
+#| label: global_economy
+#| echo: false
+
+ge <- global_economy |> 
+  filter(Country %in% c("Mexico", "Iceland", "Australia"))
+
+p <- ge |> 
+  autoplot(GDP, size = 1) +
+  labs(
+    title = "GDP: Mexico, Iceland, and Australia"
+    )
+
+ggplotly(p, dynamicTicks = TRUE)
+```
+
+Is the Mexican economy really that similar Australia's economy? Is Iceland's economy really that small?
+
+::: {.notes}
+
+- A greater GDP can be interpreted as having a larger economy, and a better life standard, but this is not always the case.
+- Comparing GDP across countries with different population sizes can be misleading.
+- GDP is often used to measure the economic performance of a country, but it doesn't account for population size.
+- The higher the population, the higher the GDP tends to be, simply because there are more people contributing to the economy.
+- A more meaningful comparison can be made by looking at *GDP per capita*, which divides the GDP by the population size.
+
+:::
+
+##
+
+::: {.panel-tabset}
+
+### Population
+
+```{r}
+#| label: population
+#| echo: false
+
+p <- ge |> 
+  autoplot(Population, size = 1) +
+  labs(
+    title = "Population: Mexico, Iceland, and Australia"
+    )
+
+ggplotly(p, dynamicTicks = TRUE)
+```
+
+The population sizes of these countries are very different.
+
+
+### GDP per capita
+
+```{r}
+#| label: gdp_per_capita
+#| echo: false
+
+p <- ge |> 
+  mutate(GDP_per_capita = GDP / Population) |> 
+  autoplot(GDP_per_capita, size = 1) +
+  labs(
+    title = "GDP per capita: Mexico, Iceland, and Australia"
+    )
+
+ggplotly(p, dynamicTicks = TRUE)
+```
+
+
+::: {.notes}
+
+- GDP per capita provides a more accurate representation of the economic well-being of individuals in a country.
+- It is clear now that Iceland and Australia have a much higher GDP per capita compared to Mexico, indicating a higher standard of living for its residents.
+
+:::
 
 # Time Series Decomposition
 
