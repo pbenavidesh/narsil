@@ -365,11 +365,13 @@ ggplotly(p, dynamicTicks = TRUE)
 ```
 
 
+
 ::: {.notes}
 
 - GDP per capita provides a more accurate representation of the economic well-being of individuals in a country.
 - It is clear now that Iceland and Australia have a much higher GDP per capita compared to Mexico, indicating a higher standard of living for its residents.
 
+:::
 :::
 
 ## Inflation adjustments
@@ -455,6 +457,7 @@ p <- print_retail |>
 ggplotly(p, dynamicTicks = TRUE)
 ```
 
+:::
 
 # Time Series Decomposition
 
@@ -470,6 +473,7 @@ A decomposition splits the time series into its underlying components:
 And what's left of it we simply call it a "remainder component".
 
 In general, there are two types of decompositions:
+
 :::
 
 :::{.incremental}
@@ -489,10 +493,30 @@ $$
 
 - *Which one should you use?*
 
-
+:::{.notes}
+- If the seasonal variation is roughly constant over time, use an additive decomposition.
+- If the seasonal variation increases or decreases with the level of the series, use a multiplicative decomposition.
+- If you're unsure, you can try both and see which one provides a better fit.
 
 :::
 
+## 
+
+A multiplicative decomposition is equivalent to an additive decomposition of the log-transformed series:
+
+$$
+
+Y_t = T_t \times S_t \times R_t
+
+$$
+
+is equivalent to
+
+$$
+
+\log(Y_t) = \log(T_t) + \log(S_t) + \log(R_t)
+
+$$
 
 
 # Benchmark Forecasting Methods
