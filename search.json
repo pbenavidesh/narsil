@@ -490,7 +490,42 @@
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#calendar-adjustments",
     "title": "Time Series Decomposition",
     "section": "Calendar adjustments",
-    "text": "Calendar adjustments"
+    "text": "Calendar adjustments\n\n\nClosing price and volume\nMonthly aggregation\nMonthly total and mean and volume\n\n\n\n\n\n\n\n\n\n\n\n\ngoogle_month &lt;- google |&gt; \n  index_by(month = yearmonth(date)) |&gt; \n  summarise(\n    trading_days = n(),\n    monthly_volume = sum(volume),\n    mean_volume = mean(volume)\n  )\n\ngoogle_month\n\n\n  \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nThe number of trading days in a month can vary due to weekends and holidays, and not because of any economic reason.\nUsing the monthly total volume can be misleading, as months with more trading days will naturally have higher total volumes.\nUsing the mean volume per trading day helps to standardize the data, making it easier to compare across months."
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#population-adjustments",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#population-adjustments",
+    "title": "Time Series Decomposition",
+    "section": "Population adjustments",
+    "text": "Population adjustments\n\n\n\n\n\n\nIs the Mexican economy really that similar Australia’s economy? Is Iceland’s economy really that small?\n\nA greater GDP can be interpreted as having a larger economy, and a better life standard, but this is not always the case.\nComparing GDP across countries with different population sizes can be misleading.\nGDP is often used to measure the economic performance of a country, but it doesn’t account for population size.\nThe higher the population, the higher the GDP tends to be, simply because there are more people contributing to the economy.\nA more meaningful comparison can be made by looking at GDP per capita, which divides the GDP by the population size."
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#section-1",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#section-1",
+    "title": "Time Series Decomposition",
+    "section": "",
+    "text": "Population\nGDP per capita\n\n\n\n\n\n\n\n\n\nThe population sizes of these countries are very different.\n\n\n\n\n\n\n\n\n\nGDP per capita provides a more accurate representation of the economic well-being of individuals in a country.\nIt is clear now that Iceland and Australia have a much higher GDP per capita compared to Mexico, indicating a higher standard of living for its residents.\nInflation adjustments\n\nInflation is the rate at which the general level of prices for goods and services is rising, and subsequently, purchasing power is falling.\nTo make meaningful comparisons of economic data over time, it is essential to adjust for inflation.\nThis adjustment is typically done using a price index, such as the Consumer Price Index (CPI). In Mexico, the National Consumer Price Index (INPC) is used. INEGI provides this data.\nInflation adjustment formula\n\\[\nx_t = \\frac{y_t}{z_t} * z_{2010}\n\\] ::: {.notes}\nwhere: - \\(y_t\\) is the original value at time \\(t\\) (nominal value). - \\(z_t\\) is the price index at time \\(t\\) (e.g., INPC). - \\(z_{2010}\\) is the price index in the base year (2010 in this case). - \\(x_t\\) is the inflation-adjusted value at time \\(t\\) (real value)."
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#inflation-adjustments",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#inflation-adjustments",
+    "title": "Time Series Decomposition",
+    "section": "Inflation adjustments",
+    "text": "Inflation adjustments\n\nInflation is the rate at which the general level of prices for goods and services is rising, and subsequently, purchasing power is falling.\nTo make meaningful comparisons of economic data over time, it is essential to adjust for inflation.\nThis adjustment is typically done using a price index, such as the Consumer Price Index (CPI). In Mexico, the National Consumer Price Index (INPC) is used. INEGI provides this data."
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#inflation-adjustment-formula",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#inflation-adjustment-formula",
+    "title": "Time Series Decomposition",
+    "section": "Inflation adjustment formula",
+    "text": "Inflation adjustment formula\n\\[\nx_t = \\frac{y_t}{z_t} * z_{2010}\n\\] ::: {.notes}\nwhere: - \\(y_t\\) is the original value at time \\(t\\) (nominal value). - \\(z_t\\) is the price index at time \\(t\\) (e.g., INPC). - \\(z_{2010}\\) is the price index in the base year (2010 in this case). - \\(x_t\\) is the inflation-adjusted value at time \\(t\\) (real value)."
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#inflation-adjustment-example",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#inflation-adjustment-example",
+    "title": "Time Series Decomposition",
+    "section": "Inflation adjustment example",
+    "text": "Inflation adjustment example\n\n\nNominal values\nReal values\nNominal vs. Real values\n\n\n\n\n\n\n\n\n\n\n\n\n\n\naus_economy &lt;- global_economy |&gt;\n  filter(Code == \"AUS\")\n\n\nprint_retail &lt;- print_retail |&gt; \n  left_join(aus_economy, by = \"Year\") |&gt;\n  mutate(Adjusted_turnover = Turnover / CPI) \n\n\n\n\n\n\n\n\n\nTime Series Decomposition\n\nTypes of Decompositions\nA decomposition splits the time series into its underlying components:\n\nTrend-cycle\nSeasonal pattern(s)\n\nAnd what’s left of it we simply call it a “remainder component”.\nIn general, there are two types of decompositions:\nAdditive decomposition\n\\[\nY_t = T_t + S_t + R_t\n\\]\nMultiplicative decomposition\n\\[\nY_t = T_t \\times S_t \\times R_t \\\\\n\\]\n\nWhich one should you use?\nBenchmark Forecasting Methods\n\nResidual Diagnostics\n\nPortmanteau Tests of Autocorrelation"
   },
   {
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#types-of-decompositions",
@@ -589,8 +624,68 @@
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#calendar-adjustments",
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#calendar-adjustments",
     "title": "Time Series Decomposition",
-    "section": "\n2.4 Calendar adjustments",
-    "text": "2.4 Calendar adjustments",
+    "section": "\n3.1 Calendar adjustments",
+    "text": "3.1 Calendar adjustments\n\n\nClosing price and volume\nMonthly aggregation\nMonthly total and mean and volume\n\n\n\n\n\n\n\n\n\n\n\n\ngoogle_month &lt;- google |&gt; \n  index_by(month = yearmonth(date)) |&gt; \n  summarise(\n    trading_days = n(),\n    monthly_volume = sum(volume),\n    mean_volume = mean(volume)\n  )\n\ngoogle_month\n\n\n  \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nThe number of trading days in a month can vary due to weekends and holidays, and not because of any economic reason.\nUsing the monthly total volume can be misleading, as months with more trading days will naturally have higher total volumes.\nUsing the mean volume per trading day helps to standardize the data, making it easier to compare across months.",
+    "crumbs": [
+      "Modules",
+      "Forecasting models based on decomposition methods",
+      "Time Series Decomposition"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#population-adjustments",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#population-adjustments",
+    "title": "Time Series Decomposition",
+    "section": "\n3.2 Population adjustments",
+    "text": "3.2 Population adjustments\n\n\n\n\n\n\nIs the Mexican economy really that similar Australia’s economy? Is Iceland’s economy really that small?\n\n\nA greater GDP can be interpreted as having a larger economy, and a better life standard, but this is not always the case.\nComparing GDP across countries with different population sizes can be misleading.\nGDP is often used to measure the economic performance of a country, but it doesn’t account for population size.\nThe higher the population, the higher the GDP tends to be, simply because there are more people contributing to the economy.\nA more meaningful comparison can be made by looking at GDP per capita, which divides the GDP by the population size.",
+    "crumbs": [
+      "Modules",
+      "Forecasting models based on decomposition methods",
+      "Time Series Decomposition"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#section-1",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#section-1",
+    "title": "Time Series Decomposition",
+    "section": "\n3.3 ",
+    "text": "3.3 \n\n\nPopulation\nGDP per capita\n\n\n\n\n\n\n\n\n\nThe population sizes of these countries are very different.\n\n\n\n\n\n\n\n\n\n\nGDP per capita provides a more accurate representation of the economic well-being of individuals in a country.\nIt is clear now that Iceland and Australia have a much higher GDP per capita compared to Mexico, indicating a higher standard of living for its residents.\n\n\n\n3.4 Inflation adjustments\n\n\nInflation is the rate at which the general level of prices for goods and services is rising, and subsequently, purchasing power is falling.\nTo make meaningful comparisons of economic data over time, it is essential to adjust for inflation.\nThis adjustment is typically done using a price index, such as the Consumer Price Index (CPI). In Mexico, the National Consumer Price Index (INPC) is used. INEGI provides this data.\n\n\n\n3.5 Inflation adjustment formula\n\\[\nx_t = \\frac{y_t}{z_t} * z_{2010}\n\\] ::: {.notes}\nwhere: - \\(y_t\\) is the original value at time \\(t\\) (nominal value). - \\(z_t\\) is the price index at time \\(t\\) (e.g., INPC). - \\(z_{2010}\\) is the price index in the base year (2010 in this case). - \\(x_t\\) is the inflation-adjusted value at time \\(t\\) (real value).",
+    "crumbs": [
+      "Modules",
+      "Forecasting models based on decomposition methods",
+      "Time Series Decomposition"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#inflation-adjustments",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#inflation-adjustments",
+    "title": "Time Series Decomposition",
+    "section": "\n3.4 Inflation adjustments",
+    "text": "3.4 Inflation adjustments\n\n\nInflation is the rate at which the general level of prices for goods and services is rising, and subsequently, purchasing power is falling.\nTo make meaningful comparisons of economic data over time, it is essential to adjust for inflation.\nThis adjustment is typically done using a price index, such as the Consumer Price Index (CPI). In Mexico, the National Consumer Price Index (INPC) is used. INEGI provides this data.",
+    "crumbs": [
+      "Modules",
+      "Forecasting models based on decomposition methods",
+      "Time Series Decomposition"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#inflation-adjustment-formula",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#inflation-adjustment-formula",
+    "title": "Time Series Decomposition",
+    "section": "\n3.5 Inflation adjustment formula",
+    "text": "3.5 Inflation adjustment formula\n\\[\nx_t = \\frac{y_t}{z_t} * z_{2010}\n\\] ::: {.notes}\nwhere: - \\(y_t\\) is the original value at time \\(t\\) (nominal value). - \\(z_t\\) is the price index at time \\(t\\) (e.g., INPC). - \\(z_{2010}\\) is the price index in the base year (2010 in this case). - \\(x_t\\) is the inflation-adjusted value at time \\(t\\) (real value).",
+    "crumbs": [
+      "Modules",
+      "Forecasting models based on decomposition methods",
+      "Time Series Decomposition"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#inflation-adjustment-example",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#inflation-adjustment-example",
+    "title": "Time Series Decomposition",
+    "section": "\n3.6 Inflation adjustment example",
+    "text": "3.6 Inflation adjustment example\n\n\nNominal values\nReal values\nNominal vs. Real values\n\n\n\n\n\n\n\n\n\n\n\n\n\n\naus_economy &lt;- global_economy |&gt;\n  filter(Code == \"AUS\")\n\n\nprint_retail &lt;- print_retail |&gt; \n  left_join(aus_economy, by = \"Year\") |&gt;\n  mutate(Adjusted_turnover = Turnover / CPI) \n\n\n\n\n\n\n\n\n\n\n4 Time Series Decomposition\n\n4.1 Types of Decompositions\n\nA decomposition splits the time series into its underlying components:\n\nTrend-cycle\nSeasonal pattern(s)\n\nAnd what’s left of it we simply call it a “remainder component”.\nIn general, there are two types of decompositions:\n\n\n\n4.1.1 Additive decomposition\n\\[\nY_t = T_t + S_t + R_t\n\\]\n\n4.1.2 Multiplicative decomposition\n\\[\nY_t = T_t \\times S_t \\times R_t \\\\\n\\]\n\nWhich one should you use?\n\n\n\n5 Benchmark Forecasting Methods\n\n6 Residual Diagnostics\n\n6.1 Portmanteau Tests of Autocorrelation",
     "crumbs": [
       "Modules",
       "Forecasting models based on decomposition methods",
@@ -601,8 +696,8 @@
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#types-of-decompositions",
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#types-of-decompositions",
     "title": "Time Series Decomposition",
-    "section": "\n3.1 Types of Decompositions",
-    "text": "3.1 Types of Decompositions\n\nA decomposition splits the time series into its underlying components:\n\nTrend-cycle\nSeasonal pattern(s)\n\nAnd what’s left of it we simply call it a “remainder component”.\nIn general, there are two types of decompositions:\n\n\n\n3.1.1 Additive decomposition\n\\[\nY_t = T_t + S_t + R_t\n\\]\n\n3.1.2 Multiplicative decomposition\n\\[\nY_t = T_t \\times S_t \\times R_t \\\\\n\\]\n\nWhich one should you use?",
+    "section": "\n4.1 Types of Decompositions",
+    "text": "4.1 Types of Decompositions\n\nA decomposition splits the time series into its underlying components:\n\nTrend-cycle\nSeasonal pattern(s)\n\nAnd what’s left of it we simply call it a “remainder component”.\nIn general, there are two types of decompositions:\n\n\n\n4.1.1 Additive decomposition\n\\[\nY_t = T_t + S_t + R_t\n\\]\n\n4.1.2 Multiplicative decomposition\n\\[\nY_t = T_t \\times S_t \\times R_t \\\\\n\\]\n\nWhich one should you use?",
     "crumbs": [
       "Modules",
       "Forecasting models based on decomposition methods",
@@ -613,8 +708,8 @@
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#portmanteau-tests-of-autocorrelation",
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#portmanteau-tests-of-autocorrelation",
     "title": "Time Series Decomposition",
-    "section": "\n5.1 Portmanteau Tests of Autocorrelation",
-    "text": "5.1 Portmanteau Tests of Autocorrelation",
+    "section": "\n6.1 Portmanteau Tests of Autocorrelation",
+    "text": "6.1 Portmanteau Tests of Autocorrelation",
     "crumbs": [
       "Modules",
       "Forecasting models based on decomposition methods",
