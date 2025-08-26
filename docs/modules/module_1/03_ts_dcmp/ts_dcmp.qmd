@@ -372,6 +372,90 @@ ggplotly(p, dynamicTicks = TRUE)
 
 :::
 
+## Inflation adjustments
+
+::: {.incremental}
+
+- Inflation is the rate at which the general level of prices for goods and services is rising, and subsequently, purchasing power is falling.
+- To make meaningful comparisons of economic data over time, it is essential to adjust for inflation.
+- This adjustment is typically done using a price index, such as the Consumer Price Index (CPI). In Mexico, the National Consumer Price Index (INPC) is used. INEGI provides this data.
+
+:::
+
+## Inflation adjustment formula
+
+$$
+x_t = \frac{y_t}{z_t} * z_{2010}
+$$
+::: {.notes}
+
+where:
+- $y_t$ is the original value at time $t$ (nominal value).
+- $z_t$ is the price index at time $t$ (e.g., INPC).
+- $z_{2010}$ is the price index in the base year (2010 in this case).
+- $x_t$ is the inflation-adjusted value at time $t$ (real value).
+
+:::
+
+## Inflation adjustment example
+
+:::{.panel-tabset}
+
+### Nominal values
+
+```{r}
+#| label: inflation_adjustment
+#| echo: false
+
+print_retail <- aus_retail  |> 
+  filter(Industry == "Newspaper and book retailing") |>
+  group_by(Industry) |>
+  index_by(Year = year(Month)) |>
+  summarise(Turnover = sum(Turnover))
+
+print_retail |> 
+  autoplot(Turnover) +
+  labs(
+    title = "Turnover: Newspaper and book retailing"
+  )
+```
+### Real values
+
+```{r}
+#| label: inflation_adjustment_real
+
+aus_economy <- global_economy |>
+  filter(Code == "AUS")
+
+
+print_retail <- print_retail |> 
+  left_join(aus_economy, by = "Year") |>
+  mutate(Adjusted_turnover = Turnover / CPI) 
+```
+
+### Nominal vs. Real values
+
+```{r}
+#| label: inflation_adjustment_compare
+#| echo: false
+#| warning: false
+
+p <- print_retail |> 
+  pivot_longer(
+    cols            = c(Turnover, Adjusted_turnover),
+    names_to        = "Type",
+    values_to       = "Turnover",
+    names_transform = list(Type = as_factor) 
+  ) |>
+  autoplot(Turnover) +
+  facet_wrap(vars(Type), scales = "free_y", ncol = 1) +
+  theme(legend.position = "none") +
+  ggtitle("Turnover: Newspaper and book retailing (Nominal vs. Real)")
+
+ggplotly(p, dynamicTicks = TRUE)
+```
+
+
 # Time Series Decomposition
 
 ## Types of Decompositions
