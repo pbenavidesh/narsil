@@ -254,682 +254,6 @@
     "text": "Forecasting US Retail Employment using ARIMA"
   },
   {
-    "objectID": "docs/modules/forecasting_wf_pres.html#packages",
-    "href": "docs/modules/forecasting_wf_pres.html#packages",
-    "title": "The Forecasting Workflow using fable\n",
-    "section": "Packages",
-    "text": "Packages\nIt is recommended to load all the packages at the beginning of your file. We will be using the tidyverts ecosystem for the whole forecasting workflow.\n\nlibrary(tidyverse)\nlibrary(fpp3)\nlibrary(plotly)\n\n\n\n\n\n\n\nWarning\n\n\nDo not load unnecesary packages into your environment. It could lead to conflicts between functions and unwanted results."
-  },
-  {
-    "objectID": "docs/modules/forecasting_wf_pres.html#data",
-    "href": "docs/modules/forecasting_wf_pres.html#data",
-    "title": "The Forecasting Workflow using fable\n",
-    "section": "Data",
-    "text": "Data\nWe will work with the Real Gross Domestic Product (GDP) for Mexico. The data is downloaded from FRED. The time series id is NGDPRNSAXDCMXQ.\nImport data\n\ngdp &lt;- tidyquant::tq_get(\n  x    = \"NGDPRNSAXDCMXQ\",\n  get  = \"economic.data\",\n  from = \"1997-01-01\"\n)\n\ngdp\n\n# A tibble: 113 × 3\n   symbol         date          price\n   &lt;chr&gt;          &lt;date&gt;        &lt;dbl&gt;\n 1 NGDPRNSAXDCMXQ 1997-01-01 3702398.\n 2 NGDPRNSAXDCMXQ 1997-04-01 3896084.\n 3 NGDPRNSAXDCMXQ 1997-07-01 3906063 \n 4 NGDPRNSAXDCMXQ 1997-10-01 4038358.\n 5 NGDPRNSAXDCMXQ 1998-01-01 4084304.\n 6 NGDPRNSAXDCMXQ 1998-04-01 4134899.\n 7 NGDPRNSAXDCMXQ 1998-07-01 4138200.\n 8 NGDPRNSAXDCMXQ 1998-10-01 4146841.\n 9 NGDPRNSAXDCMXQ 1999-01-01 4176243.\n10 NGDPRNSAXDCMXQ 1999-04-01 4232280.\n# ℹ 103 more rows\n\n\nWrangle data\nThere are some issues with our data:\n\nIt is loaded into a tibble object. We need to convert it to a tsibble.\n\n\n\n\n\n\n\nTip\n\n\nWe can use as_tsibble() to do so.\n\n\n\n\nOur data is quarterly, but it is loaded in a YYYY-MM-DD format. We need to change it to a YYYY QQ format.\n\n\n\n\n\n\n\nTip\n\n\nThere are some functions that help us achieve this, such as\n\nyearquarter()\nyearmonth()\nyearweek()\nyear()\n\ndepending on the time series’ period.\n\n\n\nWe will overwrite our data:\n\ngdp &lt;- gdp |&gt; \n  mutate(date = yearquarter(date)) |&gt; \n  as_tsibble(\n    index = date,\n    key   = symbol\n  )\n\ngdp\n\n\n  \n\n\n\n\n\n\n\n\n\nTip\n\n\n\nWe always need to specify the index argument, as it is our date variable.\nThe key argument is necessary whenever we have more than one time series in our data frame and is made up of one or more columns that uniquely identify each time series ."
-  },
-  {
-    "objectID": "docs/modules/forecasting_wf_pres.html#traintest-split",
-    "href": "docs/modules/forecasting_wf_pres.html#traintest-split",
-    "title": "The Forecasting Workflow using fable\n",
-    "section": "Train/Test Split",
-    "text": "Train/Test Split\nWe will split our data in two sets: a training set, and a test set, in order to evaluate our forecasts’ accuracy.\n\ngdp_train &lt;- gdp |&gt; \n  filter_index(. ~ \"2021 Q4\")\n\ngdp_train\n\n\n  \n\n\n\n\n\n\n\n\n\nNote\n\n\nFor all our variables, it is strongly recommended to follow the same notation process, and write our code using snake_case. Here, we called our data gdp, therefore, all the following variables will be called starting with gdp_1, such as gdp_train for our training set."
-  },
-  {
-    "objectID": "docs/modules/forecasting_wf_pres.html#visualization-and-eda",
-    "href": "docs/modules/forecasting_wf_pres.html#visualization-and-eda",
-    "title": "The Forecasting Workflow using fable\n",
-    "section": "Visualization and EDA",
-    "text": "Visualization and EDA\nWhen performing time series analysis/forecasting, one of the first things to do is to create a time series plot.\n\np &lt;- gdp_train |&gt; \n  autoplot(price) +\n  labs(\n    title = \"Time series plot of the Real GDP for Mexico\",\n    y = \"GDP\"\n  )\n \nggplotly(p, dynamicTicks = TRUE) |&gt; \n  rangeslider()\n\n\n\n\n\n\n\n\nOur data exhibits an upward linear trend (with some economic cycles), and strong yearly seasonality.\n\n\n\nWe will explore it further with a season plot.\n\ngdp_train |&gt; \n  gg_season(price) |&gt; \n  ggplotly()\n\n\n\n\n\nTS Decomposition\n\ngdp_train |&gt; \n  model(stl = STL(price, robust = TRUE)) |&gt; \n  components() |&gt; \n  autoplot() |&gt; \n  ggplotly()\n\n\n\n\n\n\n\n\nThe STL decomposition shows that the variance of the seasonal component has been increasing. We could try using a log transformation to counter this.\n\n\n\n\ngdp_train |&gt; \n  autoplot(log(price)) +\n  ggtitle(\"Log of the Real GDP of Mexico\")\n\n\n\n\n\n\n\n\ngdp_train |&gt; \n  model(stl = STL(log(price) ~ season(window = \"periodic\"), robust = TRUE)) |&gt; \n  components() |&gt; \n  autoplot() |&gt; \n  ggplotly()"
-  },
-  {
-    "objectID": "docs/modules/forecasting_wf_pres.html#model-specification",
-    "href": "docs/modules/forecasting_wf_pres.html#model-specification",
-    "title": "The Forecasting Workflow using fable\n",
-    "section": "Model Specification",
-    "text": "Model Specification\nWe will fit two models to our time series: Seasonal Naïve, and the Drift model. We will also use the log transformation.\n\ngdp_fit &lt;- gdp_train |&gt; \n  model(\n    snaive = SNAIVE(log(price)),\n    drift  = RW(log(price) ~ drift())\n  )\n\n\n\n\n\n\n\nBenchmark models\n\n\nWe have four different benchmark models that we’ll use to compare against the rest of the more complex models:\n\nMean (MEAN( &lt;.y&gt; ))\nNaïve (NAIVE( &lt;.y&gt; ))\nSeasonal Naïve (SNAIVE( &lt;.y&gt; ))\nDrift (RW( &lt;.y&gt; ~ drift()))\n\nwhere &lt;.y&gt; is just a placeholder for the variable to model.\nChoose wisely which of these to use in each case, according to the exploratory analysis performed."
-  },
-  {
-    "objectID": "docs/modules/forecasting_wf_pres.html#residuals-diagnostics",
-    "href": "docs/modules/forecasting_wf_pres.html#residuals-diagnostics",
-    "title": "The Forecasting Workflow using fable\n",
-    "section": "Residuals Diagnostics",
-    "text": "Residuals Diagnostics\nVisual analysis\n\ngdp_fit |&gt; \n  select(snaive) |&gt; \n  gg_tsresiduals() +\n  ggtitle(\"Residuals Diagnostics for the Seasonal Naïve Model\")\n\n\n\n\n\n\ngdp_fit |&gt; \n  select(drift) |&gt; \n  gg_tsresiduals() +\n  ggtitle(\"Residuals Diagnostics for the Drift Model\")\n\n\n\n\n\n\n\n\n\n\n\n\n\nTip\n\n\nHere we expect to see:\n\nA time series with no apparent patterns (no trend and/or seasonality), with a mean close to zero.\nIn the ACF, we’d expect no lags with significant autocorrelation.\nNormally distributed residuals.\n\n\n\n\nPortmanteau tests of autocorrelation\n\ngdp_fit |&gt; \n  augment() |&gt; \n  features(.innov, ljung_box, lag = 24, dof = 0)\n\n\n  \n\n\n\n\n\n\n\n\n\nResiduals interpretation\n\n\nBoth models produce sub optimal residuals:\n\nThe SNAIVE correctly detects the seasonality, however, its residuals are still autocorrelated. Moreover, the residuals are not normally distributed.\nThe drift model doesn’t account for the seasonality, and their distribution is a little bit skewed.\n\nHence, we will perform our forecasts using the bootstrapping method.\n\n\n\nWe can compute some error metrics on the training set using the accuracy() function:\n\ngdp_train_accu &lt;- accuracy(gdp_fit) |&gt; \n  arrange(MAPE)\ngdp_train_accu |&gt; \n  select(symbol:.type, MAPE, RMSE, MAE, MASE)\n\n\n  \n\n\n\n\n\n\n\n\n\nThe accuracy() function\n\n\nThe accuracy() function can be used to compute error metrics in the training data, or in the test set. What differs is the data that is given to it:\n\nFor the training metrics, you need to use the mable (the table of models, that we usually store in _fit).\nFor the forecasting error metrics, we need the fable (the forecasts table, usually stored as _fc or _fcst), and the complete set of data (both the training and test set together).\n\n\n\n\n\n\n\n\n\n\n\nFor this analysis, we are focusing on the MAPE2 metric. The drift model (2.47%) seems to have a better fit with the training set than the snaive model (3.24%)."
-  },
-  {
-    "objectID": "docs/modules/forecasting_wf_pres.html#modeling-using-decomposition",
-    "href": "docs/modules/forecasting_wf_pres.html#modeling-using-decomposition",
-    "title": "The Forecasting Workflow using fable\n",
-    "section": "Modeling using decomposition",
-    "text": "Modeling using decomposition\nWe will perform a forecast using decomposition, to see if we can improve our results so far.\n\ngdp_fit_dcmp &lt;- gdp_train |&gt; \n      model(\n        stlf = decomposition_model(\n          STL(log(price) ~ season(window = \"periodic\"), robust = TRUE),\n          RW(season_adjust ~ drift())\n        )\n      )\n\ngdp_fit_dcmp\n\n\n  \n\n\n\n\n\n\n\n\n\nNote on decomposition_model()\n\n\nRemember, when using decomposition models, we need to do the following:\n\nSpecify what type of decomposition we want to use and customize it as needed.\nFit a model for the seasonally adjusted data; season_adjust.\nFit a model for the seasonal component. R uses a SNAIVE() model by default to model the seasonality. If you wish to model it using a different model, you have specify it.\n\n\nThe name of the seasonal component depends on the type of seasonality present in the time series. If it has a yearly seasonality, the component is called season_year. It could also be called season_week, season_day, and so on.\n\n\n\n\nWe can join this new model with the models we trained before. This way we can have them all in the same mable.\n\ngdp_fit &lt;- gdp_fit |&gt; \n  left_join(gdp_fit_dcmp)\n\nResiduals diagnostics\n\ngdp_fit |&gt; \n  accuracy() |&gt; \n  select(symbol:.type, MAPE, RMSE, MAE, MASE) |&gt; \n  arrange(MAPE)\n\n\n  \n\n\n\n\ngdp_fit |&gt; \n  select(stlf) |&gt; \n  gg_tsresiduals()\n\n\n\n\n\n\n\n\ngdp_fit |&gt; \n  augment() |&gt; \n  features(.innov, ljung_box)\n\n\n  \n\n\n\n\n\n\nThe MAPE seems to improve with this decomposition model. Also, the residual diagnostics do not show any seasonality present in them. However, the residuals are still autocorrelated, as the Ljung-Box test suggests."
-  },
-  {
-    "objectID": "docs/modules/forecasting_wf_pres.html#forecasting-on-the-test-set",
-    "href": "docs/modules/forecasting_wf_pres.html#forecasting-on-the-test-set",
-    "title": "The Forecasting Workflow using fable\n",
-    "section": "Forecasting on the test set",
-    "text": "Forecasting on the test set\nOnce we have our models, we can produce forecasts. We will forecast our test data and check our forecasts’ performance.\n\ngdp_fc &lt;- gdp_fit |&gt; \n  forecast(h = gdp_h_fc) \n\ngdp_fc\n\n\n  \n\n\n\n\ngdp_fc |&gt; \n  autoplot(gdp) +\n  facet_wrap(~.model, ncol = 1)\n\n\n\n\n\n\ngdp_fc |&gt; \n  filter(.model == \"stlf\") |&gt; \n  autoplot(gdp)\n\n\n\n\n\n\n\nWe now estimate the forecast errors:\n\ngdp_fc |&gt; \n  accuracy(gdp) |&gt; \n  select(.model:.type, MAPE, RMSE, MAE, MASE) |&gt; \n  arrange(MAPE)"
-  },
-  {
-    "objectID": "docs/modules/forecasting_wf_pres.html#forecasting-the-future",
-    "href": "docs/modules/forecasting_wf_pres.html#forecasting-the-future",
-    "title": "The Forecasting Workflow using fable\n",
-    "section": "Forecasting the future",
-    "text": "Forecasting the future\nWe now refit our model using the whole dataset. We will only model the STL decomposition model, because the other two didn’t get a strong fit.\n\ngdp_fit2 &lt;- gdp |&gt; \n  model(\n    stlf = decomposition_model(\n          STL(log(price) ~ season(window = \"periodic\"), robust = TRUE),\n          RW(season_adjust ~ drift())\n        )\n  )\ngdp_fit2\n\n\n  \n\n\n\n\ngdp_fc_fut &lt;- gdp_fit2 |&gt; \n  forecast(h = gdp_h_fc)\ngdp_fc_fut\n\n\n  \n\n\ngdp_fc_fut |&gt; \n  autoplot(gdp)\n\n\n\n\n\n\n\n\n# save(gdp_fc_fut, file = \"equipo1.RData\")"
-  },
-  {
-    "objectID": "docs/modules/forecasting_wf_pres.html#footnotes",
-    "href": "docs/modules/forecasting_wf_pres.html#footnotes",
-    "title": "The Forecasting Workflow using fable\n",
-    "section": "Footnotes",
-    "text": "Footnotes\n\n\nThis will make it very convenient when calling your variables. RStudio will display all the options starting with gdp_. We will usually use the following suffixes:\n\n\n_train: training set\n\n_fit: the mable (table of models)\n\n_aug: the augmented table with fitted values and residuals\n\n_dcmp: for the dable (decomposition table), containing the components and the seasonally adjusted series of a TS decomposition.\n\n_fc or _fcst: for the fable (forecasts table) that has our forecasts. \n\n\n\n\n\nThe Mean Absolute Percentage Error is a percentage error metric widely used in professional environments.\nLet\n\\[\ne_t = y_t - \\hat{y}_t\n\\]\nbe the error or residual.\nThen the MAPE would be computed as\n\\[\nMAPE = \\frac{1}{T}\\sum_{t=1}^T|\\frac{e_t}{y_t}|\n\\]."
-  },
-  {
-    "objectID": "docs/modules/forecasting_workflow.html#packages",
-    "href": "docs/modules/forecasting_workflow.html#packages",
-    "title": "The Forecasting Workflow using fable\n",
-    "section": "\n0.1 Packages",
-    "text": "0.1 Packages\nIt is recommended to load all the packages at the beginning of your file. We will be using the tidyverts ecosystem for the whole forecasting workflow.\n\nlibrary(tidyverse)\nlibrary(fpp3)\nlibrary(plotly)\n\n\n\n\n\n\n\nWarning\n\n\n\nDo not load unnecesary packages into your environment. It could lead to conflicts between functions and unwanted results.",
-    "crumbs": [
-      "Modules",
-      "Forecasting models based on decomposition methods",
-      "The Forecasting Workflow"
-    ]
-  },
-  {
-    "objectID": "docs/modules/forecasting_workflow.html#data",
-    "href": "docs/modules/forecasting_workflow.html#data",
-    "title": "The Forecasting Workflow using fable\n",
-    "section": "\n1.1 Data",
-    "text": "1.1 Data\nWe will work with the Real Gross Domestic Product (GDP) for Mexico. The data is downloaded from FRED. The time series id is NGDPRNSAXDCMXQ.\n\n1.1.1 Import data\n\ngdp &lt;- tidyquant::tq_get(\n  x    = \"NGDPRNSAXDCMXQ\",\n  get  = \"economic.data\",\n  from = \"1997-01-01\"\n)\n\ngdp\n\n# A tibble: 113 × 3\n   symbol         date          price\n   &lt;chr&gt;          &lt;date&gt;        &lt;dbl&gt;\n 1 NGDPRNSAXDCMXQ 1997-01-01 3702398.\n 2 NGDPRNSAXDCMXQ 1997-04-01 3896084.\n 3 NGDPRNSAXDCMXQ 1997-07-01 3906063 \n 4 NGDPRNSAXDCMXQ 1997-10-01 4038358.\n 5 NGDPRNSAXDCMXQ 1998-01-01 4084304.\n 6 NGDPRNSAXDCMXQ 1998-04-01 4134899.\n 7 NGDPRNSAXDCMXQ 1998-07-01 4138200.\n 8 NGDPRNSAXDCMXQ 1998-10-01 4146841.\n 9 NGDPRNSAXDCMXQ 1999-01-01 4176243.\n10 NGDPRNSAXDCMXQ 1999-04-01 4232280.\n# ℹ 103 more rows\n\n\n\n1.1.2 Wrangle data\nThere are some issues with our data:\n\nIt is loaded into a tibble object. We need to convert it to a tsibble.\n\n\n\n\n\n\n\nTip\n\n\n\n\n\nWe can use as_tsibble() to do so.\n\n\n\n\nOur data is quarterly, but it is loaded in a YYYY-MM-DD format. We need to change it to a YYYY QQ format.\n\n\n\n\n\n\n\nTip\n\n\n\n\n\nThere are some functions that help us achieve this, such as\n\nyearquarter()\nyearmonth()\nyearweek()\nyear()\n\ndepending on the time series’ period.\n\n\n\nWe will overwrite our data:\n\ngdp &lt;- gdp |&gt; \n  mutate(date = yearquarter(date)) |&gt; \n  as_tsibble(\n    index = date,\n    key   = symbol\n  )\n\ngdp\n\n\n  \n\n\n\n\n\n\n\n\n\nTip\n\n\n\n\n\n\nWe always need to specify the index argument, as it is our date variable.\nThe key argument is necessary whenever we have more than one time series in our data frame and is made up of one or more columns that uniquely identify each time series .",
-    "crumbs": [
-      "Modules",
-      "Forecasting models based on decomposition methods",
-      "The Forecasting Workflow"
-    ]
-  },
-  {
-    "objectID": "docs/modules/forecasting_workflow.html#traintest-split",
-    "href": "docs/modules/forecasting_workflow.html#traintest-split",
-    "title": "The Forecasting Workflow using fable\n",
-    "section": "\n1.2 Train/Test Split",
-    "text": "1.2 Train/Test Split\nWe will split our data in two sets: a training set, and a test set, in order to evaluate our forecasts’ accuracy.\n\ngdp_train &lt;- gdp |&gt; \n  filter_index(. ~ \"2021 Q4\")\n\ngdp_train\n\n\n  \n\n\n\n\n\n\n\n\n\nNote\n\n\n\nFor all our variables, it is strongly recommended to follow the same notation process, and write our code using snake_case. Here, we called our data gdp, therefore, all the following variables will be called starting with gdp_1, such as gdp_train for our training set.",
-    "crumbs": [
-      "Modules",
-      "Forecasting models based on decomposition methods",
-      "The Forecasting Workflow"
-    ]
-  },
-  {
-    "objectID": "docs/modules/forecasting_workflow.html#visualization-and-eda",
-    "href": "docs/modules/forecasting_workflow.html#visualization-and-eda",
-    "title": "The Forecasting Workflow using fable\n",
-    "section": "\n1.3 Visualization and EDA",
-    "text": "1.3 Visualization and EDA\nWhen performing time series analysis/forecasting, one of the first things to do is to create a time series plot.\n\np &lt;- gdp_train |&gt; \n  autoplot(price) +\n  labs(\n    title = \"Time series plot of the Real GDP for Mexico\",\n    y = \"GDP\"\n  )\n \nggplotly(p, dynamicTicks = TRUE) |&gt; \n  rangeslider()\n\n\n\n\n\n\n\n\n\n\n\nOur data exhibits an upward linear trend (with some economic cycles), and strong yearly seasonality.\n\n\n\nWe will explore it further with a season plot.\n\ngdp_train |&gt; \n  gg_season(price) |&gt; \n  ggplotly()\n\n\n\n\n\n\n1.3.1 TS Decomposition\n\ngdp_train |&gt; \n  model(stl = STL(price, robust = TRUE)) |&gt; \n  components() |&gt; \n  autoplot() |&gt; \n  ggplotly()\n\n\n\n\n\n\n\n\n\n\n\nThe STL decomposition shows that the variance of the seasonal component has been increasing. We could try using a log transformation to counter this.\n\n\n\n\ngdp_train |&gt; \n  autoplot(log(price)) +\n  ggtitle(\"Log of the Real GDP of Mexico\")\n\n\n\n\n\n\n\n\ngdp_train |&gt; \n  model(stl = STL(log(price) ~ season(window = \"periodic\"), robust = TRUE)) |&gt; \n  components() |&gt; \n  autoplot() |&gt; \n  ggplotly()",
-    "crumbs": [
-      "Modules",
-      "Forecasting models based on decomposition methods",
-      "The Forecasting Workflow"
-    ]
-  },
-  {
-    "objectID": "docs/modules/forecasting_workflow.html#model-specification",
-    "href": "docs/modules/forecasting_workflow.html#model-specification",
-    "title": "The Forecasting Workflow using fable\n",
-    "section": "\n1.4 Model Specification",
-    "text": "1.4 Model Specification\nWe will fit two models to our time series: Seasonal Naïve, and the Drift model. We will also use the log transformation.\n\ngdp_fit &lt;- gdp_train |&gt; \n  model(\n    snaive = SNAIVE(log(price)),\n    drift  = RW(log(price) ~ drift())\n  )\n\n\n\n\n\n\n\nBenchmark models\n\n\n\n\n\nWe have four different benchmark models that we’ll use to compare against the rest of the more complex models:\n\nMean (MEAN( &lt;.y&gt; ))\nNaïve (NAIVE( &lt;.y&gt; ))\nSeasonal Naïve (SNAIVE( &lt;.y&gt; ))\nDrift (RW( &lt;.y&gt; ~ drift()))\n\nwhere &lt;.y&gt; is just a placeholder for the variable to model.\nChoose wisely which of these to use in each case, according to the exploratory analysis performed.",
-    "crumbs": [
-      "Modules",
-      "Forecasting models based on decomposition methods",
-      "The Forecasting Workflow"
-    ]
-  },
-  {
-    "objectID": "docs/modules/forecasting_workflow.html#residuals-diagnostics",
-    "href": "docs/modules/forecasting_workflow.html#residuals-diagnostics",
-    "title": "The Forecasting Workflow using fable\n",
-    "section": "\n1.5 Residuals Diagnostics",
-    "text": "1.5 Residuals Diagnostics\n\n1.5.1 Visual analysis\n\ngdp_fit |&gt; \n  select(snaive) |&gt; \n  gg_tsresiduals() +\n  ggtitle(\"Residuals Diagnostics for the Seasonal Naïve Model\")\n\n\n\n\n\n\ngdp_fit |&gt; \n  select(drift) |&gt; \n  gg_tsresiduals() +\n  ggtitle(\"Residuals Diagnostics for the Drift Model\")\n\n\n\n\n\n\n\n\n\n\n\n\n\nTip\n\n\n\n\n\nHere we expect to see:\n\nA time series with no apparent patterns (no trend and/or seasonality), with a mean close to zero.\nIn the ACF, we’d expect no lags with significant autocorrelation.\nNormally distributed residuals.\n\n\n\n\n\n1.5.2 Portmanteau tests of autocorrelation\n\ngdp_fit |&gt; \n  augment() |&gt; \n  features(.innov, ljung_box, lag = 24, dof = 0)\n\n\n  \n\n\n\n\n\n\n\n\n\nResiduals interpretation\n\n\n\nBoth models produce sub optimal residuals:\n\nThe SNAIVE correctly detects the seasonality, however, its residuals are still autocorrelated. Moreover, the residuals are not normally distributed.\nThe drift model doesn’t account for the seasonality, and their distribution is a little bit skewed.\n\nHence, we will perform our forecasts using the bootstrapping method.\n\n\nWe can compute some error metrics on the training set using the accuracy() function:\n\ngdp_train_accu &lt;- accuracy(gdp_fit) |&gt; \n  arrange(MAPE)\ngdp_train_accu |&gt; \n  select(symbol:.type, MAPE, RMSE, MAE, MASE)\n\n\n  \n\n\n\n\n\n\n\n\n\nThe accuracy() function\n\n\n\n\n\nThe accuracy() function can be used to compute error metrics in the training data, or in the test set. What differs is the data that is given to it:\n\nFor the training metrics, you need to use the mable (the table of models, that we usually store in _fit).\nFor the forecasting error metrics, we need the fable (the forecasts table, usually stored as _fc or _fcst), and the complete set of data (both the training and test set together).\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nFor this analysis, we are focusing on the MAPE2 metric. The drift model (2.47%) seems to have a better fit with the training set than the snaive model (3.24%).",
-    "crumbs": [
-      "Modules",
-      "Forecasting models based on decomposition methods",
-      "The Forecasting Workflow"
-    ]
-  },
-  {
-    "objectID": "docs/modules/forecasting_workflow.html#modeling-using-decomposition",
-    "href": "docs/modules/forecasting_workflow.html#modeling-using-decomposition",
-    "title": "The Forecasting Workflow using fable\n",
-    "section": "\n1.6 Modeling using decomposition",
-    "text": "1.6 Modeling using decomposition\nWe will perform a forecast using decomposition, to see if we can improve our results so far.\n\ngdp_fit_dcmp &lt;- gdp_train |&gt; \n      model(\n        stlf = decomposition_model(\n          STL(log(price) ~ season(window = \"periodic\"), robust = TRUE),\n          RW(season_adjust ~ drift())\n        )\n      )\n\ngdp_fit_dcmp\n\n\n  \n\n\n\n\n\n\n\n\n\nNote on decomposition_model()\n\n\n\n\n\nRemember, when using decomposition models, we need to do the following:\n\nSpecify what type of decomposition we want to use and customize it as needed.\nFit a model for the seasonally adjusted data; season_adjust.\nFit a model for the seasonal component. R uses a SNAIVE() model by default to model the seasonality. If you wish to model it using a different model, you have specify it.\n\n\nThe name of the seasonal component depends on the type of seasonality present in the time series. If it has a yearly seasonality, the component is called season_year. It could also be called season_week, season_day, and so on.\n\n\n\n\nWe can join this new model with the models we trained before. This way we can have them all in the same mable.\n\ngdp_fit &lt;- gdp_fit |&gt; \n  left_join(gdp_fit_dcmp)\n\nJoining with `by = join_by(symbol)`\n\n\n\n1.6.1 Residuals diagnostics\n\ngdp_fit |&gt; \n  accuracy() |&gt; \n  select(symbol:.type, MAPE, RMSE, MAE, MASE) |&gt; \n  arrange(MAPE)\n\n\n  \n\n\n\n\ngdp_fit |&gt; \n  select(stlf) |&gt; \n  gg_tsresiduals()\n\n\n\n\n\n\n\n\ngdp_fit |&gt; \n  augment() |&gt; \n  features(.innov, ljung_box)\n\n\n  \n\n\n\n\n\n\n\n\n\nThe MAPE seems to improve with this decomposition model. Also, the residual diagnostics do not show any seasonality present in them. However, the residuals are still autocorrelated, as the Ljung-Box test suggests.",
-    "crumbs": [
-      "Modules",
-      "Forecasting models based on decomposition methods",
-      "The Forecasting Workflow"
-    ]
-  },
-  {
-    "objectID": "docs/modules/forecasting_workflow.html#forecasting-on-the-test-set",
-    "href": "docs/modules/forecasting_workflow.html#forecasting-on-the-test-set",
-    "title": "The Forecasting Workflow using fable\n",
-    "section": "\n1.7 Forecasting on the test set",
-    "text": "1.7 Forecasting on the test set\nOnce we have our models, we can produce forecasts. We will forecast our test data and check our forecasts’ performance.\n\ngdp_fc &lt;- gdp_fit |&gt; \n  forecast(h = gdp_h_fc) \n\ngdp_fc\n\n\n  \n\n\n\n\ngdp_fc |&gt; \n  autoplot(gdp) +\n  facet_wrap(~.model, ncol = 1)\n\n\n\n\n\n\ngdp_fc |&gt; \n  filter(.model == \"stlf\") |&gt; \n  autoplot(gdp)\n\n\n\n\n\n\n\nWe now estimate the forecast errors:\n\ngdp_fc |&gt; \n  accuracy(gdp) |&gt; \n  select(.model:.type, MAPE, RMSE, MAE, MASE) |&gt; \n  arrange(MAPE)",
-    "crumbs": [
-      "Modules",
-      "Forecasting models based on decomposition methods",
-      "The Forecasting Workflow"
-    ]
-  },
-  {
-    "objectID": "docs/modules/forecasting_workflow.html#forecasting-the-future",
-    "href": "docs/modules/forecasting_workflow.html#forecasting-the-future",
-    "title": "The Forecasting Workflow using fable\n",
-    "section": "\n1.8 Forecasting the future",
-    "text": "1.8 Forecasting the future\nWe now refit our model using the whole dataset. We will only model the STL decomposition model, because the other two didn’t get a strong fit.\n\ngdp_fit2 &lt;- gdp |&gt; \n  model(\n    stlf = decomposition_model(\n          STL(log(price) ~ season(window = \"periodic\"), robust = TRUE),\n          RW(season_adjust ~ drift())\n        )\n  )\ngdp_fit2\n\n\n  \n\n\n\n\ngdp_fc_fut &lt;- gdp_fit2 |&gt; \n  forecast(h = gdp_h_fc)\ngdp_fc_fut\n\n\n  \n\n\ngdp_fc_fut |&gt; \n  autoplot(gdp)\n\n\n\n\n\n\n\n\n# save(gdp_fc_fut, file = \"equipo1.RData\")",
-    "crumbs": [
-      "Modules",
-      "Forecasting models based on decomposition methods",
-      "The Forecasting Workflow"
-    ]
-  },
-  {
-    "objectID": "docs/modules/forecasting_workflow.html#footnotes",
-    "href": "docs/modules/forecasting_workflow.html#footnotes",
-    "title": "The Forecasting Workflow using fable\n",
-    "section": "Footnotes",
-    "text": "Footnotes\n\n\nThis will make it very convenient when calling your variables. RStudio will display all the options starting with gdp_. We will usually use the following suffixes:\n\n\n_train: training set\n\n_fit: the mable (table of models)\n\n_aug: the augmented table with fitted values and residuals\n\n_dcmp: for the dable (decomposition table), containing the components and the seasonally adjusted series of a TS decomposition.\n\n_fc or _fcst: for the fable (forecasts table) that has our forecasts. \n\n\n↩︎\n\n\nThe Mean Absolute Percentage Error is a percentage error metric widely used in professional environments.\nLet\n\\[\ne_t = y_t - \\hat{y}_t\n\\]\nbe the error or residual.\nThen the MAPE would be computed as\n\\[\nMAPE = \\frac{1}{T}\\sum_{t=1}^T|\\frac{e_t}{y_t}|\n\\].\n\n\n\n\n↩︎",
-    "crumbs": [
-      "Modules",
-      "Forecasting models based on decomposition methods",
-      "The Forecasting Workflow"
-    ]
-  },
-  {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#section",
-    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#section",
-    "title": "Time Series Decomposition",
-    "section": "",
-    "text": "All these time series have different shapes, patterns, and so on."
-  },
-  {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#ts-patterns",
-    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#ts-patterns",
-    "title": "Time Series Decomposition",
-    "section": "TS Patterns",
-    "text": "TS Patterns\nTime series can have distinct patterns:\n\nTrend: A long-term increase/decrease in the data.\nSeasonal: Fluctuations in the time series with a fixed and known period1.\nCycles: More commonly known as “Business cycles”, refer to rises and falls that are not of a fixed frequency2.\nChanges in variability: Changes in the spread of the data over time, i. e., an increase/decrease in the variance as the level of the series increases/decreases."
-  },
-  {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#components-of-a-time-series",
-    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#components-of-a-time-series",
-    "title": "Time Series Decomposition",
-    "section": "Components of a Time Series",
-    "text": "Components of a Time Series\nA time series can be decomposed into the following components:\n\nSeasonal component (S): The repeating short-term cycle in the series.\nTrend-cycle component (T): The long-term progression of the series.\nResidual component (R): The residuals or “noise” left after removing the seasonal and trend-cycle components."
-  },
-  {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#log-transformations",
-    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#log-transformations",
-    "title": "Time Series Decomposition",
-    "section": "Log transformations",
-    "text": "Log transformations\n\n\nSeries in levels\nLog\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nTransformations and adjustments help us simplify the patterns in our data, and can improve our forecasts’ accuracy.\n\n\n\n\n\n\n\n\n\n\n\n\n\nLog transformations are often useful when the data presents an increasing/decreasing variation with the level of the series.\nLog transformations are very interpretable: changes in a log value are percent changes on the original scale."
-  },
-  {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#box-cox-transformations",
-    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#box-cox-transformations",
-    "title": "Time Series Decomposition",
-    "section": "Box-Cox transformations",
-    "text": "Box-Cox transformations\n\\[\nw_t= \\begin{cases}\\log \\left(y_t\\right) & \\text { if } \\lambda=0 \\\\ \\left(\\operatorname{sign}\\left(y_t\\right)\\left|y_t\\right|^\\lambda-1\\right) / \\lambda & \\text { otherwise }\\end{cases}\n\\]\nIn a Box-Cox transformation, the log is always a natural logarithm. The other case is just a power transformation with scaling.\nWhat happens when \\(\\lambda = 1\\)?\n\n\n\n\n\n\nYou should choose a value of \\(\\lambda\\) that makes the size of the seasonal variation the same throughout the series."
-  },
-  {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#how-can-we-choose-the-value-of-lambda",
-    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#how-can-we-choose-the-value-of-lambda",
-    "title": "Time Series Decomposition",
-    "section": "How can we choose the value of \\(\\lambda\\)?",
-    "text": "How can we choose the value of \\(\\lambda\\)?\nWe can use the guerrero feature to choose an optimal lambda.\n\naus_production |&gt; \n  features(Gas, features = guerrero)\n\n# A tibble: 1 × 1\n  lambda_guerrero\n            &lt;dbl&gt;\n1           0.110"
-  },
-  {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#calendar-adjustments",
-    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#calendar-adjustments",
-    "title": "Time Series Decomposition",
-    "section": "Calendar adjustments",
-    "text": "Calendar adjustments\n\n\nClosing price and volume\nMonthly aggregation\nMonthly total and mean and volume\n\n\n\n\n\n\n\n\n\n\n\n\ngoogle_month &lt;- google |&gt; \n  index_by(month = yearmonth(date)) |&gt; \n  summarise(\n    trading_days = n(),\n    monthly_volume = sum(volume),\n    mean_volume = mean(volume)\n  )\n\ngoogle_month\n\n\n  \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nThe number of trading days in a month can vary due to weekends and holidays, and not because of any economic reason.\nUsing the monthly total volume can be misleading, as months with more trading days will naturally have higher total volumes.\nUsing the mean volume per trading day helps to standardize the data, making it easier to compare across months."
-  },
-  {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#population-adjustments",
-    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#population-adjustments",
-    "title": "Time Series Decomposition",
-    "section": "Population adjustments",
-    "text": "Population adjustments\n\n\n\n\n\n\nIs the Mexican economy really that similar Australia’s economy? Is Iceland’s economy really that small?\n\nA greater GDP can be interpreted as having a larger economy, and a better life standard, but this is not always the case.\nComparing GDP across countries with different population sizes can be misleading.\nGDP is often used to measure the economic performance of a country, but it doesn’t account for population size.\nThe higher the population, the higher the GDP tends to be, simply because there are more people contributing to the economy.\nA more meaningful comparison can be made by looking at GDP per capita, which divides the GDP by the population size."
-  },
-  {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#section-1",
-    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#section-1",
-    "title": "Time Series Decomposition",
-    "section": "",
-    "text": "Population\nGDP per capita\n\n\n\n\n\n\n\n\n\nThe population sizes of these countries are very different.\n\n\n\n\n\n\n\n\n\nGDP per capita provides a more accurate representation of the economic well-being of individuals in a country.\nIt is clear now that Iceland and Australia have a much higher GDP per capita compared to Mexico, indicating a higher standard of living for its residents."
-  },
-  {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#inflation-adjustments",
-    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#inflation-adjustments",
-    "title": "Time Series Decomposition",
-    "section": "Inflation adjustments",
-    "text": "Inflation adjustments\n\nInflation is the rate at which the general level of prices for goods and services is rising, and subsequently, purchasing power is falling.\nTo make meaningful comparisons of economic data over time, it is essential to adjust for inflation.\nThis adjustment is typically done using a price index, such as the Consumer Price Index (CPI). In Mexico, the National Consumer Price Index (INPC) is used. INEGI provides this data."
-  },
-  {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#inflation-adjustment-formula",
-    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#inflation-adjustment-formula",
-    "title": "Time Series Decomposition",
-    "section": "Inflation adjustment formula",
-    "text": "Inflation adjustment formula\n\\[\nx_t = \\frac{y_t}{z_t} * z_{2010}\n\\] ::: {.notes}\nwhere: - \\(y_t\\) is the original value at time \\(t\\) (nominal value). - \\(z_t\\) is the price index at time \\(t\\) (e.g., INPC). - \\(z_{2010}\\) is the price index in the base year (2010 in this case). - \\(x_t\\) is the inflation-adjusted value at time \\(t\\) (real value).\n:::"
-  },
-  {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#inflation-adjustment-example",
-    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#inflation-adjustment-example",
-    "title": "Time Series Decomposition",
-    "section": "Inflation adjustment example",
-    "text": "Inflation adjustment example\n\n\nNominal values\nReal values\nNominal vs. Real values\n\n\n\n\n\n\n\n\n\n\n\n\n\n\naus_economy &lt;- global_economy |&gt;\n  filter(Code == \"AUS\")\n\n\nprint_retail &lt;- print_retail |&gt; \n  left_join(aus_economy, by = \"Year\") |&gt;\n  mutate(Adjusted_turnover = Turnover / CPI)"
-  },
-  {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#types-of-decompositions",
-    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#types-of-decompositions",
-    "title": "Time Series Decomposition",
-    "section": "Types of Decompositions",
-    "text": "Types of Decompositions\nA decomposition splits the time series into its underlying components:\n\nTrend-cycle\nSeasonal pattern(s)\n\nAnd what’s left of it we simply call it a “remainder component”.\nIn general, there are two types of decompositions:\nAdditive decomposition\n\\[\nY_t = T_t + S_t + R_t\n\\]\nMultiplicative decomposition\n\\[\nY_t = T_t \\times S_t \\times R_t \\\\\n\\]\n\nWhich one should you use?\n\n\nIf the seasonal variation is roughly constant over time, use an additive decomposition.\nIf the seasonal variation increases or decreases with the level of the series, use a multiplicative decomposition.\nIf you’re unsure, you can try both and see which one provides a better fit.\n\nA multiplicative decomposition is equivalent to an additive decomposition of the log-transformed series:\n$$\nY_t = T_t S_t R_t\n$$\nis equivalent to\n$$\n(Y_t) = (T_t) + (S_t) + (R_t)\n$$\nBenchmark Forecasting Methods\n\nResidual Diagnostics\n\nPortmanteau Tests of Autocorrelation"
-  },
-  {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#section-2",
-    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#section-2",
-    "title": "Time Series Decomposition",
-    "section": "",
-    "text": "A multiplicative decomposition is equivalent to an additive decomposition of the log-transformed series:\n$$\nY_t = T_t S_t R_t\n$$\nis equivalent to\n$$\n(Y_t) = (T_t) + (S_t) + (R_t)\n$$"
-  },
-  {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#portmanteau-tests-of-autocorrelation",
-    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#portmanteau-tests-of-autocorrelation",
-    "title": "Time Series Decomposition",
-    "section": "Portmanteau Tests of Autocorrelation",
-    "text": "Portmanteau Tests of Autocorrelation"
-  },
-  {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#footnotes",
-    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#footnotes",
-    "title": "Time Series Decomposition",
-    "section": "Footnotes",
-    "text": "Footnotes\n\nA time series can have multiple seasonal patterns.\nThey usually last at least 2 years."
-  },
-  {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html",
-    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html",
-    "title": "Time Series Decomposition",
-    "section": "",
-    "text": "library(tidyverse)\nlibrary(fpp3)\nlibrary(tidyquant)\nlibrary(plotly)",
-    "crumbs": [
-      "Modules",
-      "Forecasting models based on decomposition methods",
-      "Time Series Decomposition"
-    ]
-  },
-  {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#ts-patterns",
-    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#ts-patterns",
-    "title": "Time Series Decomposition",
-    "section": "\n1.1 TS Patterns",
-    "text": "1.1 TS Patterns\nTime series can have distinct patterns:\n\n\nTrend: A long-term increase/decrease in the data.\nSeasonal: Fluctuations in the time series with a fixed and known period1.\nCycles: More commonly known as “Business cycles”, refer to rises and falls that are not of a fixed frequency2.\nChanges in variability: Changes in the spread of the data over time, i. e., an increase/decrease in the variance as the level of the series increases/decreases.",
-    "crumbs": [
-      "Modules",
-      "Forecasting models based on decomposition methods",
-      "Time Series Decomposition"
-    ]
-  },
-  {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#components-of-a-time-series",
-    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#components-of-a-time-series",
-    "title": "Time Series Decomposition",
-    "section": "\n1.2 Components of a Time Series",
-    "text": "1.2 Components of a Time Series\nA time series can be decomposed into the following components:\n\n\nSeasonal component (S): The repeating short-term cycle in the series.\nTrend-cycle component (T): The long-term progression of the series.\nResidual component (R): The residuals or “noise” left after removing the seasonal and trend-cycle components.",
-    "crumbs": [
-      "Modules",
-      "Forecasting models based on decomposition methods",
-      "Time Series Decomposition"
-    ]
-  },
-  {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#log-transformations",
-    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#log-transformations",
-    "title": "Time Series Decomposition",
-    "section": "\n2.1 Log transformations",
-    "text": "2.1 Log transformations\n\n\nSeries in levels\nLog\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nTransformations and adjustments help us simplify the patterns in our data, and can improve our forecasts’ accuracy.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLog transformations are often useful when the data presents an increasing/decreasing variation with the level of the series.\nLog transformations are very interpretable: changes in a log value are percent changes on the original scale.",
-    "crumbs": [
-      "Modules",
-      "Forecasting models based on decomposition methods",
-      "Time Series Decomposition"
-    ]
-  },
-  {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#box-cox-transformations",
-    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#box-cox-transformations",
-    "title": "Time Series Decomposition",
-    "section": "\n2.2 Box-Cox transformations",
-    "text": "2.2 Box-Cox transformations\n\\[\nw_t= \\begin{cases}\\log \\left(y_t\\right) & \\text { if } \\lambda=0 \\\\ \\left(\\operatorname{sign}\\left(y_t\\right)\\left|y_t\\right|^\\lambda-1\\right) / \\lambda & \\text { otherwise }\\end{cases}\n\\]\n\nIn a Box-Cox transformation, the log is always a natural logarithm. The other case is just a power transformation with scaling.\n\nWhat happens when \\(\\lambda = 1\\)?\n\n\n\n\n\n\nYou should choose a value of \\(\\lambda\\) that makes the size of the seasonal variation the same throughout the series.",
-    "crumbs": [
-      "Modules",
-      "Forecasting models based on decomposition methods",
-      "Time Series Decomposition"
-    ]
-  },
-  {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#how-can-we-choose-the-value-of-lambda",
-    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#how-can-we-choose-the-value-of-lambda",
-    "title": "Time Series Decomposition",
-    "section": "\n2.3 How can we choose the value of \\(\\lambda\\)?",
-    "text": "2.3 How can we choose the value of \\(\\lambda\\)?\nWe can use the guerrero feature to choose an optimal lambda.\n\naus_production |&gt; \n  features(Gas, features = guerrero)\n\n# A tibble: 1 × 1\n  lambda_guerrero\n            &lt;dbl&gt;\n1           0.110",
-    "crumbs": [
-      "Modules",
-      "Forecasting models based on decomposition methods",
-      "Time Series Decomposition"
-    ]
-  },
-  {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#calendar-adjustments",
-    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#calendar-adjustments",
-    "title": "Time Series Decomposition",
-    "section": "\n3.1 Calendar adjustments",
-    "text": "3.1 Calendar adjustments\n\n\nClosing price and volume\nMonthly aggregation\nMonthly total and mean and volume\n\n\n\n\n\n\n\n\n\n\n\n\ngoogle_month &lt;- google |&gt; \n  index_by(month = yearmonth(date)) |&gt; \n  summarise(\n    trading_days = n(),\n    monthly_volume = sum(volume),\n    mean_volume = mean(volume)\n  )\n\ngoogle_month\n\n\n  \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nThe number of trading days in a month can vary due to weekends and holidays, and not because of any economic reason.\nUsing the monthly total volume can be misleading, as months with more trading days will naturally have higher total volumes.\nUsing the mean volume per trading day helps to standardize the data, making it easier to compare across months.",
-    "crumbs": [
-      "Modules",
-      "Forecasting models based on decomposition methods",
-      "Time Series Decomposition"
-    ]
-  },
-  {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#population-adjustments",
-    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#population-adjustments",
-    "title": "Time Series Decomposition",
-    "section": "\n3.2 Population adjustments",
-    "text": "3.2 Population adjustments\n\n\n\n\n\n\nIs the Mexican economy really that similar Australia’s economy? Is Iceland’s economy really that small?\n\n\nA greater GDP can be interpreted as having a larger economy, and a better life standard, but this is not always the case.\nComparing GDP across countries with different population sizes can be misleading.\nGDP is often used to measure the economic performance of a country, but it doesn’t account for population size.\nThe higher the population, the higher the GDP tends to be, simply because there are more people contributing to the economy.\nA more meaningful comparison can be made by looking at GDP per capita, which divides the GDP by the population size.",
-    "crumbs": [
-      "Modules",
-      "Forecasting models based on decomposition methods",
-      "Time Series Decomposition"
-    ]
-  },
-  {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#section-1",
-    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#section-1",
-    "title": "Time Series Decomposition",
-    "section": "\n3.3 ",
-    "text": "3.3 \n\n\nPopulation\nGDP per capita\n\n\n\n\n\n\n\n\n\nThe population sizes of these countries are very different.\n\n\n\n\n\n\n\n\n\n\nGDP per capita provides a more accurate representation of the economic well-being of individuals in a country.\nIt is clear now that Iceland and Australia have a much higher GDP per capita compared to Mexico, indicating a higher standard of living for its residents.",
-    "crumbs": [
-      "Modules",
-      "Forecasting models based on decomposition methods",
-      "Time Series Decomposition"
-    ]
-  },
-  {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#inflation-adjustments",
-    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#inflation-adjustments",
-    "title": "Time Series Decomposition",
-    "section": "\n3.4 Inflation adjustments",
-    "text": "3.4 Inflation adjustments\n\n\nInflation is the rate at which the general level of prices for goods and services is rising, and subsequently, purchasing power is falling.\nTo make meaningful comparisons of economic data over time, it is essential to adjust for inflation.\nThis adjustment is typically done using a price index, such as the Consumer Price Index (CPI). In Mexico, the National Consumer Price Index (INPC) is used. INEGI provides this data.",
-    "crumbs": [
-      "Modules",
-      "Forecasting models based on decomposition methods",
-      "Time Series Decomposition"
-    ]
-  },
-  {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#inflation-adjustment-formula",
-    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#inflation-adjustment-formula",
-    "title": "Time Series Decomposition",
-    "section": "\n3.5 Inflation adjustment formula",
-    "text": "3.5 Inflation adjustment formula\n\\[\nx_t = \\frac{y_t}{z_t} * z_{2010}\n\\] ::: {.notes}\nwhere: - \\(y_t\\) is the original value at time \\(t\\) (nominal value). - \\(z_t\\) is the price index at time \\(t\\) (e.g., INPC). - \\(z_{2010}\\) is the price index in the base year (2010 in this case). - \\(x_t\\) is the inflation-adjusted value at time \\(t\\) (real value).\n:::",
-    "crumbs": [
-      "Modules",
-      "Forecasting models based on decomposition methods",
-      "Time Series Decomposition"
-    ]
-  },
-  {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#inflation-adjustment-example",
-    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#inflation-adjustment-example",
-    "title": "Time Series Decomposition",
-    "section": "\n3.6 Inflation adjustment example",
-    "text": "3.6 Inflation adjustment example\n\n\nNominal values\nReal values\nNominal vs. Real values\n\n\n\n\n\n\n\n\n\n\n\n\n\n\naus_economy &lt;- global_economy |&gt;\n  filter(Code == \"AUS\")\n\n\nprint_retail &lt;- print_retail |&gt; \n  left_join(aus_economy, by = \"Year\") |&gt;\n  mutate(Adjusted_turnover = Turnover / CPI)",
-    "crumbs": [
-      "Modules",
-      "Forecasting models based on decomposition methods",
-      "Time Series Decomposition"
-    ]
-  },
-  {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#types-of-decompositions",
-    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#types-of-decompositions",
-    "title": "Time Series Decomposition",
-    "section": "\n4.1 Types of Decompositions",
-    "text": "4.1 Types of Decompositions\n\nA decomposition splits the time series into its underlying components:\n\nTrend-cycle\nSeasonal pattern(s)\n\nAnd what’s left of it we simply call it a “remainder component”.\nIn general, there are two types of decompositions:\n\n\n\n4.1.1 Additive decomposition\n\\[\nY_t = T_t + S_t + R_t\n\\]\n\n4.1.2 Multiplicative decomposition\n\\[\nY_t = T_t \\times S_t \\times R_t \\\\\n\\]\n\nWhich one should you use?\n\n\n\nIf the seasonal variation is roughly constant over time, use an additive decomposition.\nIf the seasonal variation increases or decreases with the level of the series, use a multiplicative decomposition.\nIf you’re unsure, you can try both and see which one provides a better fit.\n\n\n\n4.2 \nA multiplicative decomposition is equivalent to an additive decomposition of the log-transformed series:\n$$\nY_t = T_t S_t R_t\n$$\nis equivalent to\n$$\n(Y_t) = (T_t) + (S_t) + (R_t)\n$$\n\n5 Benchmark Forecasting Methods\n\n6 Residual Diagnostics\n\n6.1 Portmanteau Tests of Autocorrelation",
-    "crumbs": [
-      "Modules",
-      "Forecasting models based on decomposition methods",
-      "Time Series Decomposition"
-    ]
-  },
-  {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#section-2",
-    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#section-2",
-    "title": "Time Series Decomposition",
-    "section": "\n4.2 ",
-    "text": "4.2 \nA multiplicative decomposition is equivalent to an additive decomposition of the log-transformed series:\n$$\nY_t = T_t S_t R_t\n$$\nis equivalent to\n$$\n(Y_t) = (T_t) + (S_t) + (R_t)\n$$",
-    "crumbs": [
-      "Modules",
-      "Forecasting models based on decomposition methods",
-      "Time Series Decomposition"
-    ]
-  },
-  {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#portmanteau-tests-of-autocorrelation",
-    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#portmanteau-tests-of-autocorrelation",
-    "title": "Time Series Decomposition",
-    "section": "\n6.1 Portmanteau Tests of Autocorrelation",
-    "text": "6.1 Portmanteau Tests of Autocorrelation",
-    "crumbs": [
-      "Modules",
-      "Forecasting models based on decomposition methods",
-      "Time Series Decomposition"
-    ]
-  },
-  {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#footnotes",
-    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#footnotes",
-    "title": "Time Series Decomposition",
-    "section": "Footnotes",
-    "text": "Footnotes\n\nA time series can have multiple seasonal patterns.↩︎\nThey usually last at least 2 years.↩︎",
-    "crumbs": [
-      "Modules",
-      "Forecasting models based on decomposition methods",
-      "Time Series Decomposition"
-    ]
-  },
-  {
-    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#the-tidyverse",
-    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#the-tidyverse",
-    "title": "RStudio, R, and Time Series",
-    "section": "The tidyverse",
-    "text": "The tidyverse\n\nlibrary(tidyverse)\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.1.4     ✔ readr     2.1.5\n✔ forcats   1.0.0     ✔ stringr   1.5.1\n✔ ggplot2   3.5.2     ✔ tibble    3.3.0\n✔ lubridate 1.9.4     ✔ tidyr     1.3.1\n✔ purrr     1.1.0     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\n\n\ntidyverse is a meta-package that loads the core packages of the tidyverse.\n\n\nWe will always load all the required packages a the beginning of the document. When loading the tidyverse, it shows which packages are being attached, as well as any conflicts with previously loaded packages.\n\n\n\n\n\n\nCore packages\n\n\n\ndplyr is the core package for data transformation. It is paired up with the following packages for specific column types:\n\nstringr for strings.\nforcats for factors (R’s categorical data type).\nlubridate for dates and date-times.\n\nggplot2 is the primary package for visualization.\nreadr is used to import data from delimited files (CSV, TSV, …).\ntibble is a modern reimagining of the data frame, keeping what time has proven to be effective, and throwing out what is not.\ntidyr is used to tidy data, i.e. to ensure that each variable is in its own column, each observation is in its own row, and each value is in its own cell.\npurrr is used for functional programming with R."
-  },
-  {
-    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#the-tidyverts",
-    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#the-tidyverts",
-    "title": "RStudio, R, and Time Series",
-    "section": "The tidyverts",
-    "text": "The tidyverts\n\nlibrary(fpp3)\n\nRegistered S3 method overwritten by 'tsibble':\n  method               from \n  as_tibble.grouped_df dplyr\n\n\n── Attaching packages ──────────────────────────────────────────── fpp3 1.0.1 ──\n\n\n✔ tsibble     1.1.6     ✔ feasts      0.4.1\n✔ tsibbledata 0.4.1     ✔ fable       0.4.1\n\n\n── Conflicts ───────────────────────────────────────────────── fpp3_conflicts ──\n✖ lubridate::date()    masks base::date()\n✖ dplyr::filter()      masks stats::filter()\n✖ tsibble::intersect() masks base::intersect()\n✖ tsibble::interval()  masks lubridate::interval()\n✖ dplyr::lag()         masks stats::lag()\n✖ tsibble::setdiff()   masks base::setdiff()\n✖ tsibble::union()     masks base::union()\n\n\n\nfpp3 is also a meta-package that load the tidyverts ecosystem for time series analysis and forecasting.\n\n\nThe tidyverts packages are made to work seamlessly with the tidyverse.\n\n\n\n\n\n\nNote\n\n\n\ntsibble is the main data structure we will use to analyze and model time series. It is a time series tibble.\nfeasts provides many functions and tools for feature and statistics extraction for time series.\nfable is the core package for modeling and foreasting time series."
-  },
-  {
-    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#tsibble-objects",
-    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#tsibble-objects",
-    "title": "RStudio, R, and Time Series",
-    "section": "tsibble objects",
-    "text": "tsibble objects\nLet’s take a look at tourism in Australia:\n\ntourism\n\n# A tsibble: 24,320 x 5 [1Q]\n# Key:       Region, State, Purpose [304]\n   Quarter Region   State           Purpose  Trips\n     &lt;qtr&gt; &lt;chr&gt;    &lt;chr&gt;           &lt;chr&gt;    &lt;dbl&gt;\n 1 1998 Q1 Adelaide South Australia Business  135.\n 2 1998 Q2 Adelaide South Australia Business  110.\n 3 1998 Q3 Adelaide South Australia Business  166.\n 4 1998 Q4 Adelaide South Australia Business  127.\n 5 1999 Q1 Adelaide South Australia Business  137.\n 6 1999 Q2 Adelaide South Australia Business  200.\n 7 1999 Q3 Adelaide South Australia Business  169.\n 8 1999 Q4 Adelaide South Australia Business  134.\n 9 2000 Q1 Adelaide South Australia Business  154.\n10 2000 Q2 Adelaide South Australia Business  169.\n# ℹ 24,310 more rows\n\n\n\nA tsibble is a modified version of a tibble as to\n\n\nkey_vars(tourism)\n\n[1] \"Region\"  \"State\"   \"Purpose\"\n\nkey_data(tourism)\n\n\n  \n\n\n\n\nThe tsibble has 24320 rows and 5 columns. It shows quarterly data1 on tourism across Australia. It’s divided by Region, State, and purspose of the trip2. How many different states are there?"
-  },
-  {
-    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#australian-states",
-    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#australian-states",
-    "title": "RStudio, R, and Time Series",
-    "section": "Australian States",
-    "text": "Australian States\n\ndistinct(tourism, State)"
-  },
-  {
-    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#which-regions-are-located-in-tasmania",
-    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#which-regions-are-located-in-tasmania",
-    "title": "RStudio, R, and Time Series",
-    "section": "Which regions are located in Tasmania?",
-    "text": "Which regions are located in Tasmania?\n\ndistinct(filter(tourism, State == \"Tasmania\"),Region)"
-  },
-  {
-    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#data-transformation-average-trips",
-    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#data-transformation-average-trips",
-    "title": "RStudio, R, and Time Series",
-    "section": "Data Transformation: Average trips",
-    "text": "Data Transformation: Average trips\nTo get the average trips by purpose, we need to do the following:\n\nFilter the original tsibble to get only the data from East Coast, Tasmania.\nConvert the data to a tibble.\nGroup by purpose.\nSummarise by getting the mean of the trips."
-  },
-  {
-    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#section",
-    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#section",
-    "title": "RStudio, R, and Time Series",
-    "section": "",
-    "text": "With traditional code, this would look something like:\n\nsummarise(group_by(as_tibble(filter(tourism, State == \"Tasmania\", \n                                    Region == \"East Coast\")), Purpose),\n          mean_trips = mean(Trips))\n\n\n\n\n\n\n\n\nOrder of code execution\n\n\nNote that this code must be read inside-out. This makes it harder to understand, and also harder to debug."
-  },
-  {
-    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#section-1",
-    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#section-1",
-    "title": "RStudio, R, and Time Series",
-    "section": "",
-    "text": "Using the native pipe operator; |&gt;, we can improve the same code:\n\ntourism |&gt;                          \n  filter()"
-  },
-  {
-    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#section-2",
-    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#section-2",
-    "title": "RStudio, R, and Time Series",
-    "section": "",
-    "text": "Using the native pipe operator; |&gt;, we can improve the same code:\n\ntourism |&gt;                          \n  filter(State == \"Tasmania\",       \n         Region == \"East Coast\") |&gt;"
-  },
-  {
-    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#section-3",
-    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#section-3",
-    "title": "RStudio, R, and Time Series",
-    "section": "",
-    "text": "Using the native pipe operator; |&gt;, we can improve the same code:\n\ntourism |&gt;                          \n  filter(State == \"Tasmania\",       \n         Region == \"East Coast\") |&gt; \n  as_tibble() |&gt;"
-  },
-  {
-    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#section-4",
-    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#section-4",
-    "title": "RStudio, R, and Time Series",
-    "section": "",
-    "text": "Using the native pipe operator; |&gt;, we can improve the same code:\n\ntourism |&gt;                          \n  filter(State == \"Tasmania\",       \n         Region == \"East Coast\") |&gt; \n  as_tibble() |&gt;                    \n  group_by()"
-  },
-  {
-    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#section-5",
-    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#section-5",
-    "title": "RStudio, R, and Time Series",
-    "section": "",
-    "text": "Using the native pipe operator; |&gt;, we can improve the same code:\n\ntourism |&gt;                          \n  filter(State == \"Tasmania\",       \n         Region == \"East Coast\") |&gt; \n  as_tibble() |&gt;                    \n  group_by(Purpose) |&gt;"
-  },
-  {
-    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#section-6",
-    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#section-6",
-    "title": "RStudio, R, and Time Series",
-    "section": "",
-    "text": "Using the native pipe operator; |&gt;, we can improve the same code:\n\ntourism |&gt;                          \n  filter(State == \"Tasmania\",       \n         Region == \"East Coast\") |&gt; \n  as_tibble() |&gt;                    \n  group_by(Purpose) |&gt;              \n  summarise(mean_trips = )"
-  },
-  {
-    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#section-7",
-    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#section-7",
-    "title": "RStudio, R, and Time Series",
-    "section": "",
-    "text": "Using the native pipe operator; |&gt;, we can improve the same code:\n\ntourism |&gt;                          \n  filter(State == \"Tasmania\",       \n         Region == \"East Coast\") |&gt; \n  as_tibble() |&gt;                    \n  group_by(Purpose) |&gt;              \n  summarise(mean_trips = mean(Trips))"
-  },
-  {
-    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#section-8",
-    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#section-8",
-    "title": "RStudio, R, and Time Series",
-    "section": "",
-    "text": "Using the native pipe operator; |&gt;, we can improve the same code:\n\n1tourism |&gt;\n2  filter(State == \"Tasmania\",\n         Region == \"East Coast\") |&gt;\n3  as_tibble() |&gt;\n4  group_by(Purpose) |&gt;\n5  summarise(mean_trips = mean(Trips))\n\n\n1\n\nTake the tsibble tourism, then\n\n2\n\nfilter by State and Region, then\n\n3\n\nconvert to a tibble, then\n\n4\n\ngroup the tibble by purpose, then\n\n5\n\nsummarise by taking the mean trips\n\n\n\n\n\n  \n\n\n\n\n\n\n\n\n\n\nThe pipe operator |&gt;\n\n\nThe pipe is read as “then”, and it allows us to write code in the order it’s supposed to be run.\nIt also helps to debug code easier, because you can run each function in order and see where the error is."
-  },
-  {
-    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#plotting-tourism-across-time",
-    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#plotting-tourism-across-time",
-    "title": "RStudio, R, and Time Series",
-    "section": "Plotting tourism across time",
-    "text": "Plotting tourism across time\n\ntourism"
-  },
-  {
-    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#plotting-tourism-across-time-1",
-    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#plotting-tourism-across-time-1",
-    "title": "RStudio, R, and Time Series",
-    "section": "Plotting tourism across time",
-    "text": "Plotting tourism across time\n\ntourism |&gt; \n  filter(State == \"Tasmania\",\n         Region == \"East Coast\")"
-  },
-  {
-    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#plotting-tourism-across-time-2",
-    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#plotting-tourism-across-time-2",
-    "title": "RStudio, R, and Time Series",
-    "section": "Plotting tourism across time",
-    "text": "Plotting tourism across time\n\ntourism |&gt; \n  filter(State == \"Tasmania\",\n         Region == \"East Coast\") |&gt; \n  autoplot(Trips)"
-  },
-  {
-    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#plotting-tourism-across-time-3",
-    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#plotting-tourism-across-time-3",
-    "title": "RStudio, R, and Time Series",
-    "section": "Plotting tourism across time",
-    "text": "Plotting tourism across time\n\ntourism |&gt; \n  filter(State == \"Tasmania\",\n         Region == \"East Coast\") |&gt; \n  autoplot(Trips) +\n  facet_wrap(vars(Purpose), scale = \"free_y\")"
-  },
-  {
-    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#plotting-tourism-across-time-4",
-    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#plotting-tourism-across-time-4",
-    "title": "RStudio, R, and Time Series",
-    "section": "Plotting tourism across time",
-    "text": "Plotting tourism across time\n\ntourism |&gt; \n  filter(State == \"Tasmania\",\n         Region == \"East Coast\") |&gt; \n1  autoplot(Trips) +\n2  facet_wrap(vars(Purpose), scale = \"free_y\") +\n3  theme(legend.position = \"none\")\n\n\n1\n\nautoplot() detects the data automatically and proposes a plot accordingly.\n\n2\n\nfacet_wrap() Divides a plot into subplots (facets).\n\n3\n\nyou can customize endless feautres using theme(). Here, we remove the legend, as it’s redudant."
-  },
-  {
-    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#time-plots",
-    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#time-plots",
-    "title": "RStudio, R, and Time Series",
-    "section": "Time plots",
-    "text": "Time plots\n\n\n\naus_production |&gt; \n  autoplot(Gas)\n\n\n\n\n\n\n\n\n\n\naus_production |&gt; \n  autoplot(Gas) +\n  geom_point()\n\n\n\n\n\n\n\n\n\n\nThese are the most basic type of plots. We have the time variable in the \\(x\\)-axis, and our forecast variable in the \\(y\\)-axis. Time plots should be line plots, and can include or not points."
-  },
-  {
-    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#seasonal-plots",
-    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#seasonal-plots",
-    "title": "RStudio, R, and Time Series",
-    "section": "Seasonal Plots",
-    "text": "Seasonal Plots\n\naus_production |&gt; \n  gg_season(Gas)\n\n\n\n\n\n\n\n\n\nThe data here are plotted against a single “season”. It’s useful in identifying years with changes in patterns.\n\nRemoving the trend from the data:"
-  },
-  {
-    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#seasonal-subseries-plots",
-    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#seasonal-subseries-plots",
-    "title": "RStudio, R, and Time Series",
-    "section": "Seasonal Subseries Plots",
-    "text": "Seasonal Subseries Plots\n\naus_production |&gt; \n  gg_subseries(Gas)\n\n\n\n\n\n\n\n\n\nHere we split the plot into many subplots, one for each season. This helps us see clearly the underlying seasonal pattern. The mean for each season is represented as the blue horizontal line."
-  },
-  {
-    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#gg_tsdisplay",
-    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#gg_tsdisplay",
-    "title": "RStudio, R, and Time Series",
-    "section": "gg_tsdisplay()",
-    "text": "gg_tsdisplay()\n\naus_production |&gt; \n  gg_tsdisplay(Gas, plot_type = \"season\")\n\n\n\n\n\n\n\n\n\nThis function provides a convenient way to have 3 plots: a time plot, an ACF plot, and a third option that can be customized with one of the following plot types:\n\n\n\n\n\n\nplot_type options\n\n\n\n“auto”,\n“partial”,\n“season”,\n“histogram”,\n“scatter”,\n“spectrum”"
-  },
-  {
-    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#exporting-data-to-.csv",
-    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#exporting-data-to-.csv",
-    "title": "RStudio, R, and Time Series",
-    "section": "Exporting data to .csv",
-    "text": "Exporting data to .csv\n\ntourism |&gt; \n  filter(State == \"Tasmania\",\n         Region == \"East Coast\") |&gt; \n  mutate(Quarter = as.Date(Quarter)) |&gt; \n  write_csv(\"./datos/tasmania.csv\")\n\n\nYou can export to .csv by providing a tsibble or tibble (or any other type of data frame), by calling write_csv(), and specifying the output file’s name."
-  },
-  {
-    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#footnotes",
-    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#footnotes",
-    "title": "RStudio, R, and Time Series",
-    "section": "Footnotes",
-    "text": "Footnotes\n\n\nshown besides the tsibble dimension as [1Q]\nthese are specified in the key argument. This tsibble contains"
-  },
-  {
     "objectID": "docs/modules/module_1/02_time_series/r_time_series.html",
     "href": "docs/modules/module_1/02_time_series/r_time_series.html",
     "title": "RStudio, R, and Time Series",
@@ -1119,6 +443,663 @@
       "Modules",
       "Forecasting models based on decomposition methods",
       "RStudio, R, and Time Series"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#the-tidyverse",
+    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#the-tidyverse",
+    "title": "RStudio, R, and Time Series",
+    "section": "The tidyverse",
+    "text": "The tidyverse\n\nlibrary(tidyverse)\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.1.4     ✔ readr     2.1.5\n✔ forcats   1.0.0     ✔ stringr   1.5.1\n✔ ggplot2   3.5.2     ✔ tibble    3.3.0\n✔ lubridate 1.9.4     ✔ tidyr     1.3.1\n✔ purrr     1.1.0     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\n\n\ntidyverse is a meta-package that loads the core packages of the tidyverse.\n\n\nWe will always load all the required packages a the beginning of the document. When loading the tidyverse, it shows which packages are being attached, as well as any conflicts with previously loaded packages.\n\n\n\n\n\n\nCore packages\n\n\n\ndplyr is the core package for data transformation. It is paired up with the following packages for specific column types:\n\nstringr for strings.\nforcats for factors (R’s categorical data type).\nlubridate for dates and date-times.\n\nggplot2 is the primary package for visualization.\nreadr is used to import data from delimited files (CSV, TSV, …).\ntibble is a modern reimagining of the data frame, keeping what time has proven to be effective, and throwing out what is not.\ntidyr is used to tidy data, i.e. to ensure that each variable is in its own column, each observation is in its own row, and each value is in its own cell.\npurrr is used for functional programming with R."
+  },
+  {
+    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#the-tidyverts",
+    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#the-tidyverts",
+    "title": "RStudio, R, and Time Series",
+    "section": "The tidyverts",
+    "text": "The tidyverts\n\nlibrary(fpp3)\n\nRegistered S3 method overwritten by 'tsibble':\n  method               from \n  as_tibble.grouped_df dplyr\n\n\n── Attaching packages ──────────────────────────────────────────── fpp3 1.0.1 ──\n\n\n✔ tsibble     1.1.6     ✔ feasts      0.4.1\n✔ tsibbledata 0.4.1     ✔ fable       0.4.1\n\n\n── Conflicts ───────────────────────────────────────────────── fpp3_conflicts ──\n✖ lubridate::date()    masks base::date()\n✖ dplyr::filter()      masks stats::filter()\n✖ tsibble::intersect() masks base::intersect()\n✖ tsibble::interval()  masks lubridate::interval()\n✖ dplyr::lag()         masks stats::lag()\n✖ tsibble::setdiff()   masks base::setdiff()\n✖ tsibble::union()     masks base::union()\n\n\n\nfpp3 is also a meta-package that load the tidyverts ecosystem for time series analysis and forecasting.\n\n\nThe tidyverts packages are made to work seamlessly with the tidyverse.\n\n\n\n\n\n\nNote\n\n\n\ntsibble is the main data structure we will use to analyze and model time series. It is a time series tibble.\nfeasts provides many functions and tools for feature and statistics extraction for time series.\nfable is the core package for modeling and foreasting time series."
+  },
+  {
+    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#tsibble-objects",
+    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#tsibble-objects",
+    "title": "RStudio, R, and Time Series",
+    "section": "tsibble objects",
+    "text": "tsibble objects\nLet’s take a look at tourism in Australia:\n\ntourism\n\n# A tsibble: 24,320 x 5 [1Q]\n# Key:       Region, State, Purpose [304]\n   Quarter Region   State           Purpose  Trips\n     &lt;qtr&gt; &lt;chr&gt;    &lt;chr&gt;           &lt;chr&gt;    &lt;dbl&gt;\n 1 1998 Q1 Adelaide South Australia Business  135.\n 2 1998 Q2 Adelaide South Australia Business  110.\n 3 1998 Q3 Adelaide South Australia Business  166.\n 4 1998 Q4 Adelaide South Australia Business  127.\n 5 1999 Q1 Adelaide South Australia Business  137.\n 6 1999 Q2 Adelaide South Australia Business  200.\n 7 1999 Q3 Adelaide South Australia Business  169.\n 8 1999 Q4 Adelaide South Australia Business  134.\n 9 2000 Q1 Adelaide South Australia Business  154.\n10 2000 Q2 Adelaide South Australia Business  169.\n# ℹ 24,310 more rows\n\n\n\nA tsibble is a modified version of a tibble as to\n\n\nkey_vars(tourism)\n\n[1] \"Region\"  \"State\"   \"Purpose\"\n\nkey_data(tourism)\n\n\n  \n\n\n\n\nThe tsibble has 24320 rows and 5 columns. It shows quarterly data1 on tourism across Australia. It’s divided by Region, State, and purspose of the trip2. How many different states are there?"
+  },
+  {
+    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#australian-states",
+    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#australian-states",
+    "title": "RStudio, R, and Time Series",
+    "section": "Australian States",
+    "text": "Australian States\n\ndistinct(tourism, State)"
+  },
+  {
+    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#which-regions-are-located-in-tasmania",
+    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#which-regions-are-located-in-tasmania",
+    "title": "RStudio, R, and Time Series",
+    "section": "Which regions are located in Tasmania?",
+    "text": "Which regions are located in Tasmania?\n\ndistinct(filter(tourism, State == \"Tasmania\"),Region)"
+  },
+  {
+    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#data-transformation-average-trips",
+    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#data-transformation-average-trips",
+    "title": "RStudio, R, and Time Series",
+    "section": "Data Transformation: Average trips",
+    "text": "Data Transformation: Average trips\nTo get the average trips by purpose, we need to do the following:\n\nFilter the original tsibble to get only the data from East Coast, Tasmania.\nConvert the data to a tibble.\nGroup by purpose.\nSummarise by getting the mean of the trips."
+  },
+  {
+    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#section",
+    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#section",
+    "title": "RStudio, R, and Time Series",
+    "section": "",
+    "text": "With traditional code, this would look something like:\n\nsummarise(group_by(as_tibble(filter(tourism, State == \"Tasmania\", \n                                    Region == \"East Coast\")), Purpose),\n          mean_trips = mean(Trips))\n\n\n\n\n\n\n\n\nOrder of code execution\n\n\nNote that this code must be read inside-out. This makes it harder to understand, and also harder to debug."
+  },
+  {
+    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#section-1",
+    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#section-1",
+    "title": "RStudio, R, and Time Series",
+    "section": "",
+    "text": "Using the native pipe operator; |&gt;, we can improve the same code:\n\ntourism |&gt;                          \n  filter()"
+  },
+  {
+    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#section-2",
+    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#section-2",
+    "title": "RStudio, R, and Time Series",
+    "section": "",
+    "text": "Using the native pipe operator; |&gt;, we can improve the same code:\n\ntourism |&gt;                          \n  filter(State == \"Tasmania\",       \n         Region == \"East Coast\") |&gt;"
+  },
+  {
+    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#section-3",
+    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#section-3",
+    "title": "RStudio, R, and Time Series",
+    "section": "",
+    "text": "Using the native pipe operator; |&gt;, we can improve the same code:\n\ntourism |&gt;                          \n  filter(State == \"Tasmania\",       \n         Region == \"East Coast\") |&gt; \n  as_tibble() |&gt;"
+  },
+  {
+    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#section-4",
+    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#section-4",
+    "title": "RStudio, R, and Time Series",
+    "section": "",
+    "text": "Using the native pipe operator; |&gt;, we can improve the same code:\n\ntourism |&gt;                          \n  filter(State == \"Tasmania\",       \n         Region == \"East Coast\") |&gt; \n  as_tibble() |&gt;                    \n  group_by()"
+  },
+  {
+    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#section-5",
+    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#section-5",
+    "title": "RStudio, R, and Time Series",
+    "section": "",
+    "text": "Using the native pipe operator; |&gt;, we can improve the same code:\n\ntourism |&gt;                          \n  filter(State == \"Tasmania\",       \n         Region == \"East Coast\") |&gt; \n  as_tibble() |&gt;                    \n  group_by(Purpose) |&gt;"
+  },
+  {
+    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#section-6",
+    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#section-6",
+    "title": "RStudio, R, and Time Series",
+    "section": "",
+    "text": "Using the native pipe operator; |&gt;, we can improve the same code:\n\ntourism |&gt;                          \n  filter(State == \"Tasmania\",       \n         Region == \"East Coast\") |&gt; \n  as_tibble() |&gt;                    \n  group_by(Purpose) |&gt;              \n  summarise(mean_trips = )"
+  },
+  {
+    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#section-7",
+    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#section-7",
+    "title": "RStudio, R, and Time Series",
+    "section": "",
+    "text": "Using the native pipe operator; |&gt;, we can improve the same code:\n\ntourism |&gt;                          \n  filter(State == \"Tasmania\",       \n         Region == \"East Coast\") |&gt; \n  as_tibble() |&gt;                    \n  group_by(Purpose) |&gt;              \n  summarise(mean_trips = mean(Trips))"
+  },
+  {
+    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#section-8",
+    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#section-8",
+    "title": "RStudio, R, and Time Series",
+    "section": "",
+    "text": "Using the native pipe operator; |&gt;, we can improve the same code:\n\n1tourism |&gt;\n2  filter(State == \"Tasmania\",\n         Region == \"East Coast\") |&gt;\n3  as_tibble() |&gt;\n4  group_by(Purpose) |&gt;\n5  summarise(mean_trips = mean(Trips))\n\n\n1\n\nTake the tsibble tourism, then\n\n2\n\nfilter by State and Region, then\n\n3\n\nconvert to a tibble, then\n\n4\n\ngroup the tibble by purpose, then\n\n5\n\nsummarise by taking the mean trips\n\n\n\n\n\n  \n\n\n\n\n\n\n\n\n\n\nThe pipe operator |&gt;\n\n\nThe pipe is read as “then”, and it allows us to write code in the order it’s supposed to be run.\nIt also helps to debug code easier, because you can run each function in order and see where the error is."
+  },
+  {
+    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#plotting-tourism-across-time",
+    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#plotting-tourism-across-time",
+    "title": "RStudio, R, and Time Series",
+    "section": "Plotting tourism across time",
+    "text": "Plotting tourism across time\n\ntourism"
+  },
+  {
+    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#plotting-tourism-across-time-1",
+    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#plotting-tourism-across-time-1",
+    "title": "RStudio, R, and Time Series",
+    "section": "Plotting tourism across time",
+    "text": "Plotting tourism across time\n\ntourism |&gt; \n  filter(State == \"Tasmania\",\n         Region == \"East Coast\")"
+  },
+  {
+    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#plotting-tourism-across-time-2",
+    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#plotting-tourism-across-time-2",
+    "title": "RStudio, R, and Time Series",
+    "section": "Plotting tourism across time",
+    "text": "Plotting tourism across time\n\ntourism |&gt; \n  filter(State == \"Tasmania\",\n         Region == \"East Coast\") |&gt; \n  autoplot(Trips)"
+  },
+  {
+    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#plotting-tourism-across-time-3",
+    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#plotting-tourism-across-time-3",
+    "title": "RStudio, R, and Time Series",
+    "section": "Plotting tourism across time",
+    "text": "Plotting tourism across time\n\ntourism |&gt; \n  filter(State == \"Tasmania\",\n         Region == \"East Coast\") |&gt; \n  autoplot(Trips) +\n  facet_wrap(vars(Purpose), scale = \"free_y\")"
+  },
+  {
+    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#plotting-tourism-across-time-4",
+    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#plotting-tourism-across-time-4",
+    "title": "RStudio, R, and Time Series",
+    "section": "Plotting tourism across time",
+    "text": "Plotting tourism across time\n\ntourism |&gt; \n  filter(State == \"Tasmania\",\n         Region == \"East Coast\") |&gt; \n1  autoplot(Trips) +\n2  facet_wrap(vars(Purpose), scale = \"free_y\") +\n3  theme(legend.position = \"none\")\n\n\n1\n\nautoplot() detects the data automatically and proposes a plot accordingly.\n\n2\n\nfacet_wrap() Divides a plot into subplots (facets).\n\n3\n\nyou can customize endless feautres using theme(). Here, we remove the legend, as it’s redudant."
+  },
+  {
+    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#time-plots",
+    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#time-plots",
+    "title": "RStudio, R, and Time Series",
+    "section": "Time plots",
+    "text": "Time plots\n\n\n\naus_production |&gt; \n  autoplot(Gas)\n\n\n\n\n\n\n\n\n\n\naus_production |&gt; \n  autoplot(Gas) +\n  geom_point()\n\n\n\n\n\n\n\n\n\n\nThese are the most basic type of plots. We have the time variable in the \\(x\\)-axis, and our forecast variable in the \\(y\\)-axis. Time plots should be line plots, and can include or not points."
+  },
+  {
+    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#seasonal-plots",
+    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#seasonal-plots",
+    "title": "RStudio, R, and Time Series",
+    "section": "Seasonal Plots",
+    "text": "Seasonal Plots\n\naus_production |&gt; \n  gg_season(Gas)\n\n\n\n\n\n\n\n\n\nThe data here are plotted against a single “season”. It’s useful in identifying years with changes in patterns.\n\nRemoving the trend from the data:"
+  },
+  {
+    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#seasonal-subseries-plots",
+    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#seasonal-subseries-plots",
+    "title": "RStudio, R, and Time Series",
+    "section": "Seasonal Subseries Plots",
+    "text": "Seasonal Subseries Plots\n\naus_production |&gt; \n  gg_subseries(Gas)\n\n\n\n\n\n\n\n\n\nHere we split the plot into many subplots, one for each season. This helps us see clearly the underlying seasonal pattern. The mean for each season is represented as the blue horizontal line."
+  },
+  {
+    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#gg_tsdisplay",
+    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#gg_tsdisplay",
+    "title": "RStudio, R, and Time Series",
+    "section": "gg_tsdisplay()",
+    "text": "gg_tsdisplay()\n\naus_production |&gt; \n  gg_tsdisplay(Gas, plot_type = \"season\")\n\n\n\n\n\n\n\n\n\nThis function provides a convenient way to have 3 plots: a time plot, an ACF plot, and a third option that can be customized with one of the following plot types:\n\n\n\n\n\n\nplot_type options\n\n\n\n“auto”,\n“partial”,\n“season”,\n“histogram”,\n“scatter”,\n“spectrum”"
+  },
+  {
+    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#exporting-data-to-.csv",
+    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#exporting-data-to-.csv",
+    "title": "RStudio, R, and Time Series",
+    "section": "Exporting data to .csv",
+    "text": "Exporting data to .csv\n\ntourism |&gt; \n  filter(State == \"Tasmania\",\n         Region == \"East Coast\") |&gt; \n  mutate(Quarter = as.Date(Quarter)) |&gt; \n  write_csv(\"./datos/tasmania.csv\")\n\n\nYou can export to .csv by providing a tsibble or tibble (or any other type of data frame), by calling write_csv(), and specifying the output file’s name."
+  },
+  {
+    "objectID": "docs/modules/module_1/02_time_series/r_time_series_pres.html#footnotes",
+    "href": "docs/modules/module_1/02_time_series/r_time_series_pres.html#footnotes",
+    "title": "RStudio, R, and Time Series",
+    "section": "Footnotes",
+    "text": "Footnotes\n\n\nshown besides the tsibble dimension as [1Q]\nthese are specified in the key argument. This tsibble contains"
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#section",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#section",
+    "title": "Time Series Decomposition",
+    "section": "",
+    "text": "All these time series have different shapes, patterns, and so on. When modeling them, we need to take these characteristics into account. We seek to understand the underlying patterns in the data to make better forecasts."
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#ts-patterns",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#ts-patterns",
+    "title": "Time Series Decomposition",
+    "section": "TS Patterns",
+    "text": "TS Patterns\nTime series can have distinct patterns:\n\nTrend: A long-term increase/decrease in the data.\nSeasonal: Fluctuations in the time series with a fixed and known period1.\nCycles: More commonly known as “Business cycles”, refer to rises and falls that are not of a fixed frequency2.\nChanges in variability: Changes in the spread of the data over time, i. e., an increase/decrease in the variance as the level of the series increases/decreases."
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#components-of-a-time-series",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#components-of-a-time-series",
+    "title": "Time Series Decomposition",
+    "section": "Components of a Time Series",
+    "text": "Components of a Time Series\nA time series can be decomposed into the following components:\n\nSeasonal component (S): The repeating short-term cycle in the series.\nTrend-cycle component (T): The long-term progression of the series.\nResidual component (R): The residuals or “noise” left after removing the seasonal and trend-cycle components."
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#log-transformations",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#log-transformations",
+    "title": "Time Series Decomposition",
+    "section": "Log transformations",
+    "text": "Log transformations\n\n\nSeries in levels\nLog\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nTransformations and adjustments help us simplify the patterns in our data, and can improve our forecasts’ accuracy.\n\n\n\n\n\n\n\n\n\n\n\n\n\nLog transformations are often useful when the data presents an increasing/decreasing variation with the level of the series.\nLog transformations are very interpretable: changes in a log value are percent changes on the original scale."
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#box-cox-transformations",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#box-cox-transformations",
+    "title": "Time Series Decomposition",
+    "section": "Box-Cox transformations",
+    "text": "Box-Cox transformations\n\\[\nw_t= \\begin{cases}\\log \\left(y_t\\right) & \\text { if } \\lambda=0 \\\\ \\left(\\operatorname{sign}\\left(y_t\\right)\\left|y_t\\right|^\\lambda-1\\right) / \\lambda & \\text { otherwise }\\end{cases}\n\\]\nIn a Box-Cox transformation, the log is always a natural logarithm. The other case is just a power transformation with scaling.\nWhat happens when \\(\\lambda = 1\\)?\n\n\n\n\n\n\nYou should choose a value of \\(\\lambda\\) that makes the size of the seasonal variation the same throughout the series."
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#how-can-we-choose-the-value-of-lambda",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#how-can-we-choose-the-value-of-lambda",
+    "title": "Time Series Decomposition",
+    "section": "How can we choose the value of \\(\\lambda\\)?",
+    "text": "How can we choose the value of \\(\\lambda\\)?\nWe can use the guerrero feature to choose an optimal lambda.\n\naus_production |&gt; \n  features(Gas, features = guerrero)\n\n# A tibble: 1 × 1\n  lambda_guerrero\n            &lt;dbl&gt;\n1           0.110"
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#calendar-adjustments",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#calendar-adjustments",
+    "title": "Time Series Decomposition",
+    "section": "Calendar adjustments",
+    "text": "Calendar adjustments\n\n\nClosing price and volume\nMonthly aggregation\nMonthly total and mean and volume\n\n\n\n\n\n\n\n\n\n\n\n\ngoogle_month &lt;- google |&gt; \n  index_by(month = yearmonth(date)) |&gt; \n  summarise(\n    trading_days = n(),\n    monthly_volume = sum(volume),\n    mean_volume = mean(volume)\n  )\n\ngoogle_month\n\n\n  \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nThe number of trading days in a month can vary due to weekends and holidays, and not because of any economic reason.\nUsing the monthly total volume can be misleading, as months with more trading days will naturally have higher total volumes.\nUsing the mean volume per trading day helps to standardize the data, making it easier to compare across months."
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#population-adjustments",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#population-adjustments",
+    "title": "Time Series Decomposition",
+    "section": "Population adjustments",
+    "text": "Population adjustments\n\n\n\n\n\n\nIs the Mexican economy really that similar Australia’s economy? Is Iceland’s economy really that small?\n\nA greater GDP can be interpreted as having a larger economy, and a better life standard, but this is not always the case.\nComparing GDP across countries with different population sizes can be misleading.\nGDP is often used to measure the economic performance of a country, but it doesn’t account for population size.\nThe higher the population, the higher the GDP tends to be, simply because there are more people contributing to the economy.\nA more meaningful comparison can be made by looking at GDP per capita, which divides the GDP by the population size."
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#section-1",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#section-1",
+    "title": "Time Series Decomposition",
+    "section": "",
+    "text": "Population\nGDP per capita\n\n\n\n\n\n\n\n\n\nThe population sizes of these countries are very different.\n\n\n\n\n\n\n\n\n\nGDP per capita provides a more accurate representation of the economic well-being of individuals in a country.\nIt is clear now that Iceland and Australia have a much higher GDP per capita compared to Mexico, indicating a higher standard of living for its residents."
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#inflation-adjustments",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#inflation-adjustments",
+    "title": "Time Series Decomposition",
+    "section": "Inflation adjustments",
+    "text": "Inflation adjustments\n\nInflation is the rate at which the general level of prices for goods and services is rising, and subsequently, purchasing power is falling.\nTo make meaningful comparisons of economic data over time, it is essential to adjust for inflation.\nThis adjustment is typically done using a price index, such as the Consumer Price Index (CPI). In Mexico, the National Consumer Price Index (INPC) is used. INEGI provides this data."
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#inflation-adjustment-formula",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#inflation-adjustment-formula",
+    "title": "Time Series Decomposition",
+    "section": "Inflation adjustment formula",
+    "text": "Inflation adjustment formula\n\\[\nx_t = \\frac{y_t}{z_t} * z_{2010}\n\\] ::: {.notes}\nwhere: - \\(y_t\\) is the original value at time \\(t\\) (nominal value). - \\(z_t\\) is the price index at time \\(t\\) (e.g., INPC). - \\(z_{2010}\\) is the price index in the base year (2010 in this case). - \\(x_t\\) is the inflation-adjusted value at time \\(t\\) (real value).\n:::"
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#inflation-adjustment-example",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#inflation-adjustment-example",
+    "title": "Time Series Decomposition",
+    "section": "Inflation adjustment example",
+    "text": "Inflation adjustment example\n\n\nNominal values\nReal values\nNominal vs. Real values\n\n\n\n\n\n\n\n\n\n\n\n\n\n\naus_economy &lt;- global_economy |&gt;\n  filter(Code == \"AUS\")\n\n\nprint_retail &lt;- print_retail |&gt; \n  left_join(aus_economy, by = \"Year\") |&gt;\n  mutate(Adjusted_turnover = Turnover / CPI)"
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#types-of-decompositions",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#types-of-decompositions",
+    "title": "Time Series Decomposition",
+    "section": "Types of Decompositions",
+    "text": "Types of Decompositions\nA decomposition splits the time series into its underlying components:\n\nTrend-cycle\nSeasonal pattern(s)\n\nAnd what’s left of it we simply call it a “remainder component”.\nIn general, there are two types of decompositions:\nAdditive decomposition\n\\[\nY_t = T_t + S_t + R_t\n\\]\nMultiplicative decomposition\n\\[\nY_t = T_t \\times S_t \\times R_t \\\\\n\\]\n\nWhich one should you use?\n\n\nIf the seasonal variation is roughly constant over time, use an additive decomposition.\nIf the seasonal variation increases or decreases with the level of the series, use a multiplicative decomposition.\nIf you’re unsure, you can try both and see which one provides a better fit.\n\nA multiplicative decomposition is equivalent to an additive decomposition of the log-transformed series:\n$$\nY_t = T_t S_t R_t\n$$\nis equivalent to\n$$\n(Y_t) = (T_t) + (S_t) + (R_t)\n$$"
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#section-2",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#section-2",
+    "title": "Time Series Decomposition",
+    "section": "",
+    "text": "A multiplicative decomposition is equivalent to an additive decomposition of the log-transformed series:\n$$\nY_t = T_t S_t R_t\n$$\nis equivalent to\n$$\n(Y_t) = (T_t) + (S_t) + (R_t)\n$$"
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#footnotes",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#footnotes",
+    "title": "Time Series Decomposition",
+    "section": "Footnotes",
+    "text": "Footnotes\n\nA time series can have multiple seasonal patterns.\nThey usually last at least 2 years."
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html",
+    "title": "Time Series Decomposition",
+    "section": "",
+    "text": "library(tidyverse)\nlibrary(fpp3)\nlibrary(tidyquant)\nlibrary(plotly)",
+    "crumbs": [
+      "Modules",
+      "Forecasting models based on decomposition methods",
+      "Time Series Decomposition"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#ts-patterns",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#ts-patterns",
+    "title": "Time Series Decomposition",
+    "section": "\n1.1 TS Patterns",
+    "text": "1.1 TS Patterns\nTime series can have distinct patterns:\n\n\nTrend: A long-term increase/decrease in the data.\nSeasonal: Fluctuations in the time series with a fixed and known period1.\nCycles: More commonly known as “Business cycles”, refer to rises and falls that are not of a fixed frequency2.\nChanges in variability: Changes in the spread of the data over time, i. e., an increase/decrease in the variance as the level of the series increases/decreases.",
+    "crumbs": [
+      "Modules",
+      "Forecasting models based on decomposition methods",
+      "Time Series Decomposition"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#components-of-a-time-series",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#components-of-a-time-series",
+    "title": "Time Series Decomposition",
+    "section": "\n1.2 Components of a Time Series",
+    "text": "1.2 Components of a Time Series\nA time series can be decomposed into the following components:\n\n\nSeasonal component (S): The repeating short-term cycle in the series.\nTrend-cycle component (T): The long-term progression of the series.\nResidual component (R): The residuals or “noise” left after removing the seasonal and trend-cycle components.",
+    "crumbs": [
+      "Modules",
+      "Forecasting models based on decomposition methods",
+      "Time Series Decomposition"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#log-transformations",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#log-transformations",
+    "title": "Time Series Decomposition",
+    "section": "\n2.1 Log transformations",
+    "text": "2.1 Log transformations\n\n\nSeries in levels\nLog\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nTransformations and adjustments help us simplify the patterns in our data, and can improve our forecasts’ accuracy.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLog transformations are often useful when the data presents an increasing/decreasing variation with the level of the series.\nLog transformations are very interpretable: changes in a log value are percent changes on the original scale.",
+    "crumbs": [
+      "Modules",
+      "Forecasting models based on decomposition methods",
+      "Time Series Decomposition"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#box-cox-transformations",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#box-cox-transformations",
+    "title": "Time Series Decomposition",
+    "section": "\n2.2 Box-Cox transformations",
+    "text": "2.2 Box-Cox transformations\n\\[\nw_t= \\begin{cases}\\log \\left(y_t\\right) & \\text { if } \\lambda=0 \\\\ \\left(\\operatorname{sign}\\left(y_t\\right)\\left|y_t\\right|^\\lambda-1\\right) / \\lambda & \\text { otherwise }\\end{cases}\n\\]\n\nIn a Box-Cox transformation, the log is always a natural logarithm. The other case is just a power transformation with scaling.\n\nWhat happens when \\(\\lambda = 1\\)?\n\n\n\n\n\n\nYou should choose a value of \\(\\lambda\\) that makes the size of the seasonal variation the same throughout the series.",
+    "crumbs": [
+      "Modules",
+      "Forecasting models based on decomposition methods",
+      "Time Series Decomposition"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#how-can-we-choose-the-value-of-lambda",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#how-can-we-choose-the-value-of-lambda",
+    "title": "Time Series Decomposition",
+    "section": "\n2.3 How can we choose the value of \\(\\lambda\\)?",
+    "text": "2.3 How can we choose the value of \\(\\lambda\\)?\nWe can use the guerrero feature to choose an optimal lambda.\n\naus_production |&gt; \n  features(Gas, features = guerrero)\n\n# A tibble: 1 × 1\n  lambda_guerrero\n            &lt;dbl&gt;\n1           0.110",
+    "crumbs": [
+      "Modules",
+      "Forecasting models based on decomposition methods",
+      "Time Series Decomposition"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#calendar-adjustments",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#calendar-adjustments",
+    "title": "Time Series Decomposition",
+    "section": "\n3.1 Calendar adjustments",
+    "text": "3.1 Calendar adjustments\n\n\nClosing price and volume\nMonthly aggregation\nMonthly total and mean and volume\n\n\n\n\n\n\n\n\n\n\n\n\ngoogle_month &lt;- google |&gt; \n  index_by(month = yearmonth(date)) |&gt; \n  summarise(\n    trading_days = n(),\n    monthly_volume = sum(volume),\n    mean_volume = mean(volume)\n  )\n\ngoogle_month\n\n\n  \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nThe number of trading days in a month can vary due to weekends and holidays, and not because of any economic reason.\nUsing the monthly total volume can be misleading, as months with more trading days will naturally have higher total volumes.\nUsing the mean volume per trading day helps to standardize the data, making it easier to compare across months.",
+    "crumbs": [
+      "Modules",
+      "Forecasting models based on decomposition methods",
+      "Time Series Decomposition"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#population-adjustments",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#population-adjustments",
+    "title": "Time Series Decomposition",
+    "section": "\n3.2 Population adjustments",
+    "text": "3.2 Population adjustments\n\n\n\n\n\n\nIs the Mexican economy really that similar Australia’s economy? Is Iceland’s economy really that small?\n\n\nA greater GDP can be interpreted as having a larger economy, and a better life standard, but this is not always the case.\nComparing GDP across countries with different population sizes can be misleading.\nGDP is often used to measure the economic performance of a country, but it doesn’t account for population size.\nThe higher the population, the higher the GDP tends to be, simply because there are more people contributing to the economy.\nA more meaningful comparison can be made by looking at GDP per capita, which divides the GDP by the population size.",
+    "crumbs": [
+      "Modules",
+      "Forecasting models based on decomposition methods",
+      "Time Series Decomposition"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#section-1",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#section-1",
+    "title": "Time Series Decomposition",
+    "section": "\n3.3 ",
+    "text": "3.3 \n\n\nPopulation\nGDP per capita\n\n\n\n\n\n\n\n\n\nThe population sizes of these countries are very different.\n\n\n\n\n\n\n\n\n\n\nGDP per capita provides a more accurate representation of the economic well-being of individuals in a country.\nIt is clear now that Iceland and Australia have a much higher GDP per capita compared to Mexico, indicating a higher standard of living for its residents.",
+    "crumbs": [
+      "Modules",
+      "Forecasting models based on decomposition methods",
+      "Time Series Decomposition"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#inflation-adjustments",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#inflation-adjustments",
+    "title": "Time Series Decomposition",
+    "section": "\n3.4 Inflation adjustments",
+    "text": "3.4 Inflation adjustments\n\n\nInflation is the rate at which the general level of prices for goods and services is rising, and subsequently, purchasing power is falling.\nTo make meaningful comparisons of economic data over time, it is essential to adjust for inflation.\nThis adjustment is typically done using a price index, such as the Consumer Price Index (CPI). In Mexico, the National Consumer Price Index (INPC) is used. INEGI provides this data.",
+    "crumbs": [
+      "Modules",
+      "Forecasting models based on decomposition methods",
+      "Time Series Decomposition"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#inflation-adjustment-formula",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#inflation-adjustment-formula",
+    "title": "Time Series Decomposition",
+    "section": "\n3.5 Inflation adjustment formula",
+    "text": "3.5 Inflation adjustment formula\n\\[\nx_t = \\frac{y_t}{z_t} * z_{2010}\n\\] ::: {.notes}\nwhere: - \\(y_t\\) is the original value at time \\(t\\) (nominal value). - \\(z_t\\) is the price index at time \\(t\\) (e.g., INPC). - \\(z_{2010}\\) is the price index in the base year (2010 in this case). - \\(x_t\\) is the inflation-adjusted value at time \\(t\\) (real value).\n:::",
+    "crumbs": [
+      "Modules",
+      "Forecasting models based on decomposition methods",
+      "Time Series Decomposition"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#inflation-adjustment-example",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#inflation-adjustment-example",
+    "title": "Time Series Decomposition",
+    "section": "\n3.6 Inflation adjustment example",
+    "text": "3.6 Inflation adjustment example\n\n\nNominal values\nReal values\nNominal vs. Real values\n\n\n\n\n\n\n\n\n\n\n\n\n\n\naus_economy &lt;- global_economy |&gt;\n  filter(Code == \"AUS\")\n\n\nprint_retail &lt;- print_retail |&gt; \n  left_join(aus_economy, by = \"Year\") |&gt;\n  mutate(Adjusted_turnover = Turnover / CPI)",
+    "crumbs": [
+      "Modules",
+      "Forecasting models based on decomposition methods",
+      "Time Series Decomposition"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#types-of-decompositions",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#types-of-decompositions",
+    "title": "Time Series Decomposition",
+    "section": "\n4.1 Types of Decompositions",
+    "text": "4.1 Types of Decompositions\n\nA decomposition splits the time series into its underlying components:\n\nTrend-cycle\nSeasonal pattern(s)\n\nAnd what’s left of it we simply call it a “remainder component”.\nIn general, there are two types of decompositions:\n\n\n\n4.1.1 Additive decomposition\n\\[\nY_t = T_t + S_t + R_t\n\\]\n\n4.1.2 Multiplicative decomposition\n\\[\nY_t = T_t \\times S_t \\times R_t \\\\\n\\]\n\nWhich one should you use?\n\n\n\nIf the seasonal variation is roughly constant over time, use an additive decomposition.\nIf the seasonal variation increases or decreases with the level of the series, use a multiplicative decomposition.\nIf you’re unsure, you can try both and see which one provides a better fit.\n\n\n\n4.2 \nA multiplicative decomposition is equivalent to an additive decomposition of the log-transformed series:\n$$\nY_t = T_t S_t R_t\n$$\nis equivalent to\n$$\n(Y_t) = (T_t) + (S_t) + (R_t)\n$$",
+    "crumbs": [
+      "Modules",
+      "Forecasting models based on decomposition methods",
+      "Time Series Decomposition"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#section-2",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#section-2",
+    "title": "Time Series Decomposition",
+    "section": "\n4.2 ",
+    "text": "4.2 \nA multiplicative decomposition is equivalent to an additive decomposition of the log-transformed series:\n$$\nY_t = T_t S_t R_t\n$$\nis equivalent to\n$$\n(Y_t) = (T_t) + (S_t) + (R_t)\n$$",
+    "crumbs": [
+      "Modules",
+      "Forecasting models based on decomposition methods",
+      "Time Series Decomposition"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#footnotes",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#footnotes",
+    "title": "Time Series Decomposition",
+    "section": "Footnotes",
+    "text": "Footnotes\n\nA time series can have multiple seasonal patterns.↩︎\nThey usually last at least 2 years.↩︎",
+    "crumbs": [
+      "Modules",
+      "Forecasting models based on decomposition methods",
+      "Time Series Decomposition"
+    ]
+  },
+  {
+    "objectID": "docs/modules/forecasting_wf_pres.html#packages",
+    "href": "docs/modules/forecasting_wf_pres.html#packages",
+    "title": "The Forecasting Workflow using fable\n",
+    "section": "Packages",
+    "text": "Packages\nIt is recommended to load all the packages at the beginning of your file. We will be using the tidyverts ecosystem for the whole forecasting workflow.\n\nlibrary(tidyverse)\nlibrary(fpp3)\nlibrary(plotly)\n\n\n\n\n\n\n\nWarning\n\n\nDo not load unnecesary packages into your environment. It could lead to conflicts between functions and unwanted results."
+  },
+  {
+    "objectID": "docs/modules/forecasting_wf_pres.html#data",
+    "href": "docs/modules/forecasting_wf_pres.html#data",
+    "title": "The Forecasting Workflow using fable\n",
+    "section": "Data",
+    "text": "Data\nWe will work with the Real Gross Domestic Product (GDP) for Mexico. The data is downloaded from FRED. The time series id is NGDPRNSAXDCMXQ.\nImport data\n\ngdp &lt;- tidyquant::tq_get(\n  x    = \"NGDPRNSAXDCMXQ\",\n  get  = \"economic.data\",\n  from = \"1997-01-01\"\n)\n\ngdp\n\n# A tibble: 113 × 3\n   symbol         date          price\n   &lt;chr&gt;          &lt;date&gt;        &lt;dbl&gt;\n 1 NGDPRNSAXDCMXQ 1997-01-01 3702398.\n 2 NGDPRNSAXDCMXQ 1997-04-01 3896084.\n 3 NGDPRNSAXDCMXQ 1997-07-01 3906063 \n 4 NGDPRNSAXDCMXQ 1997-10-01 4038358.\n 5 NGDPRNSAXDCMXQ 1998-01-01 4084304.\n 6 NGDPRNSAXDCMXQ 1998-04-01 4134899.\n 7 NGDPRNSAXDCMXQ 1998-07-01 4138200.\n 8 NGDPRNSAXDCMXQ 1998-10-01 4146841.\n 9 NGDPRNSAXDCMXQ 1999-01-01 4176243.\n10 NGDPRNSAXDCMXQ 1999-04-01 4232280.\n# ℹ 103 more rows\n\n\nWrangle data\nThere are some issues with our data:\n\nIt is loaded into a tibble object. We need to convert it to a tsibble.\n\n\n\n\n\n\n\nTip\n\n\nWe can use as_tsibble() to do so.\n\n\n\n\nOur data is quarterly, but it is loaded in a YYYY-MM-DD format. We need to change it to a YYYY QQ format.\n\n\n\n\n\n\n\nTip\n\n\nThere are some functions that help us achieve this, such as\n\nyearquarter()\nyearmonth()\nyearweek()\nyear()\n\ndepending on the time series’ period.\n\n\n\nWe will overwrite our data:\n\ngdp &lt;- gdp |&gt; \n  mutate(date = yearquarter(date)) |&gt; \n  as_tsibble(\n    index = date,\n    key   = symbol\n  )\n\ngdp\n\n\n  \n\n\n\n\n\n\n\n\n\nTip\n\n\n\nWe always need to specify the index argument, as it is our date variable.\nThe key argument is necessary whenever we have more than one time series in our data frame and is made up of one or more columns that uniquely identify each time series ."
+  },
+  {
+    "objectID": "docs/modules/forecasting_wf_pres.html#traintest-split",
+    "href": "docs/modules/forecasting_wf_pres.html#traintest-split",
+    "title": "The Forecasting Workflow using fable\n",
+    "section": "Train/Test Split",
+    "text": "Train/Test Split\nWe will split our data in two sets: a training set, and a test set, in order to evaluate our forecasts’ accuracy.\n\ngdp_train &lt;- gdp |&gt; \n  filter_index(. ~ \"2021 Q4\")\n\ngdp_train\n\n\n  \n\n\n\n\n\n\n\n\n\nNote\n\n\nFor all our variables, it is strongly recommended to follow the same notation process, and write our code using snake_case. Here, we called our data gdp, therefore, all the following variables will be called starting with gdp_1, such as gdp_train for our training set."
+  },
+  {
+    "objectID": "docs/modules/forecasting_wf_pres.html#visualization-and-eda",
+    "href": "docs/modules/forecasting_wf_pres.html#visualization-and-eda",
+    "title": "The Forecasting Workflow using fable\n",
+    "section": "Visualization and EDA",
+    "text": "Visualization and EDA\nWhen performing time series analysis/forecasting, one of the first things to do is to create a time series plot.\n\np &lt;- gdp_train |&gt; \n  autoplot(price) +\n  labs(\n    title = \"Time series plot of the Real GDP for Mexico\",\n    y = \"GDP\"\n  )\n \nggplotly(p, dynamicTicks = TRUE) |&gt; \n  rangeslider()\n\n\n\n\n\n\n\n\nOur data exhibits an upward linear trend (with some economic cycles), and strong yearly seasonality.\n\n\n\nWe will explore it further with a season plot.\n\ngdp_train |&gt; \n  gg_season(price) |&gt; \n  ggplotly()\n\n\n\n\n\nTS Decomposition\n\ngdp_train |&gt; \n  model(stl = STL(price, robust = TRUE)) |&gt; \n  components() |&gt; \n  autoplot() |&gt; \n  ggplotly()\n\n\n\n\n\n\n\n\nThe STL decomposition shows that the variance of the seasonal component has been increasing. We could try using a log transformation to counter this.\n\n\n\n\ngdp_train |&gt; \n  autoplot(log(price)) +\n  ggtitle(\"Log of the Real GDP of Mexico\")\n\n\n\n\n\n\n\n\ngdp_train |&gt; \n  model(stl = STL(log(price) ~ season(window = \"periodic\"), robust = TRUE)) |&gt; \n  components() |&gt; \n  autoplot() |&gt; \n  ggplotly()"
+  },
+  {
+    "objectID": "docs/modules/forecasting_wf_pres.html#model-specification",
+    "href": "docs/modules/forecasting_wf_pres.html#model-specification",
+    "title": "The Forecasting Workflow using fable\n",
+    "section": "Model Specification",
+    "text": "Model Specification\nWe will fit two models to our time series: Seasonal Naïve, and the Drift model. We will also use the log transformation.\n\ngdp_fit &lt;- gdp_train |&gt; \n  model(\n    snaive = SNAIVE(log(price)),\n    drift  = RW(log(price) ~ drift())\n  )\n\n\n\n\n\n\n\nBenchmark models\n\n\nWe have four different benchmark models that we’ll use to compare against the rest of the more complex models:\n\nMean (MEAN( &lt;.y&gt; ))\nNaïve (NAIVE( &lt;.y&gt; ))\nSeasonal Naïve (SNAIVE( &lt;.y&gt; ))\nDrift (RW( &lt;.y&gt; ~ drift()))\n\nwhere &lt;.y&gt; is just a placeholder for the variable to model.\nChoose wisely which of these to use in each case, according to the exploratory analysis performed."
+  },
+  {
+    "objectID": "docs/modules/forecasting_wf_pres.html#residuals-diagnostics",
+    "href": "docs/modules/forecasting_wf_pres.html#residuals-diagnostics",
+    "title": "The Forecasting Workflow using fable\n",
+    "section": "Residuals Diagnostics",
+    "text": "Residuals Diagnostics\nVisual analysis\n\ngdp_fit |&gt; \n  select(snaive) |&gt; \n  gg_tsresiduals() +\n  ggtitle(\"Residuals Diagnostics for the Seasonal Naïve Model\")\n\n\n\n\n\n\ngdp_fit |&gt; \n  select(drift) |&gt; \n  gg_tsresiduals() +\n  ggtitle(\"Residuals Diagnostics for the Drift Model\")\n\n\n\n\n\n\n\n\n\n\n\n\n\nTip\n\n\nHere we expect to see:\n\nA time series with no apparent patterns (no trend and/or seasonality), with a mean close to zero.\nIn the ACF, we’d expect no lags with significant autocorrelation.\nNormally distributed residuals.\n\n\n\n\nPortmanteau tests of autocorrelation\n\ngdp_fit |&gt; \n  augment() |&gt; \n  features(.innov, ljung_box, lag = 24, dof = 0)\n\n\n  \n\n\n\n\n\n\n\n\n\nResiduals interpretation\n\n\nBoth models produce sub optimal residuals:\n\nThe SNAIVE correctly detects the seasonality, however, its residuals are still autocorrelated. Moreover, the residuals are not normally distributed.\nThe drift model doesn’t account for the seasonality, and their distribution is a little bit skewed.\n\nHence, we will perform our forecasts using the bootstrapping method.\n\n\n\nWe can compute some error metrics on the training set using the accuracy() function:\n\ngdp_train_accu &lt;- accuracy(gdp_fit) |&gt; \n  arrange(MAPE)\ngdp_train_accu |&gt; \n  select(symbol:.type, MAPE, RMSE, MAE, MASE)\n\n\n  \n\n\n\n\n\n\n\n\n\nThe accuracy() function\n\n\nThe accuracy() function can be used to compute error metrics in the training data, or in the test set. What differs is the data that is given to it:\n\nFor the training metrics, you need to use the mable (the table of models, that we usually store in _fit).\nFor the forecasting error metrics, we need the fable (the forecasts table, usually stored as _fc or _fcst), and the complete set of data (both the training and test set together).\n\n\n\n\n\n\n\n\n\n\n\nFor this analysis, we are focusing on the MAPE2 metric. The drift model (2.47%) seems to have a better fit with the training set than the snaive model (3.24%)."
+  },
+  {
+    "objectID": "docs/modules/forecasting_wf_pres.html#modeling-using-decomposition",
+    "href": "docs/modules/forecasting_wf_pres.html#modeling-using-decomposition",
+    "title": "The Forecasting Workflow using fable\n",
+    "section": "Modeling using decomposition",
+    "text": "Modeling using decomposition\nWe will perform a forecast using decomposition, to see if we can improve our results so far.\n\ngdp_fit_dcmp &lt;- gdp_train |&gt; \n      model(\n        stlf = decomposition_model(\n          STL(log(price) ~ season(window = \"periodic\"), robust = TRUE),\n          RW(season_adjust ~ drift())\n        )\n      )\n\ngdp_fit_dcmp\n\n\n  \n\n\n\n\n\n\n\n\n\nNote on decomposition_model()\n\n\nRemember, when using decomposition models, we need to do the following:\n\nSpecify what type of decomposition we want to use and customize it as needed.\nFit a model for the seasonally adjusted data; season_adjust.\nFit a model for the seasonal component. R uses a SNAIVE() model by default to model the seasonality. If you wish to model it using a different model, you have specify it.\n\n\nThe name of the seasonal component depends on the type of seasonality present in the time series. If it has a yearly seasonality, the component is called season_year. It could also be called season_week, season_day, and so on.\n\n\n\n\nWe can join this new model with the models we trained before. This way we can have them all in the same mable.\n\ngdp_fit &lt;- gdp_fit |&gt; \n  left_join(gdp_fit_dcmp)\n\nResiduals diagnostics\n\ngdp_fit |&gt; \n  accuracy() |&gt; \n  select(symbol:.type, MAPE, RMSE, MAE, MASE) |&gt; \n  arrange(MAPE)\n\n\n  \n\n\n\n\ngdp_fit |&gt; \n  select(stlf) |&gt; \n  gg_tsresiduals()\n\n\n\n\n\n\n\n\ngdp_fit |&gt; \n  augment() |&gt; \n  features(.innov, ljung_box)\n\n\n  \n\n\n\n\n\n\nThe MAPE seems to improve with this decomposition model. Also, the residual diagnostics do not show any seasonality present in them. However, the residuals are still autocorrelated, as the Ljung-Box test suggests."
+  },
+  {
+    "objectID": "docs/modules/forecasting_wf_pres.html#forecasting-on-the-test-set",
+    "href": "docs/modules/forecasting_wf_pres.html#forecasting-on-the-test-set",
+    "title": "The Forecasting Workflow using fable\n",
+    "section": "Forecasting on the test set",
+    "text": "Forecasting on the test set\nOnce we have our models, we can produce forecasts. We will forecast our test data and check our forecasts’ performance.\n\ngdp_fc &lt;- gdp_fit |&gt; \n  forecast(h = gdp_h_fc) \n\ngdp_fc\n\n\n  \n\n\n\n\ngdp_fc |&gt; \n  autoplot(gdp) +\n  facet_wrap(~.model, ncol = 1)\n\n\n\n\n\n\ngdp_fc |&gt; \n  filter(.model == \"stlf\") |&gt; \n  autoplot(gdp)\n\n\n\n\n\n\n\nWe now estimate the forecast errors:\n\ngdp_fc |&gt; \n  accuracy(gdp) |&gt; \n  select(.model:.type, MAPE, RMSE, MAE, MASE) |&gt; \n  arrange(MAPE)"
+  },
+  {
+    "objectID": "docs/modules/forecasting_wf_pres.html#forecasting-the-future",
+    "href": "docs/modules/forecasting_wf_pres.html#forecasting-the-future",
+    "title": "The Forecasting Workflow using fable\n",
+    "section": "Forecasting the future",
+    "text": "Forecasting the future\nWe now refit our model using the whole dataset. We will only model the STL decomposition model, because the other two didn’t get a strong fit.\n\ngdp_fit2 &lt;- gdp |&gt; \n  model(\n    stlf = decomposition_model(\n          STL(log(price) ~ season(window = \"periodic\"), robust = TRUE),\n          RW(season_adjust ~ drift())\n        )\n  )\ngdp_fit2\n\n\n  \n\n\n\n\ngdp_fc_fut &lt;- gdp_fit2 |&gt; \n  forecast(h = gdp_h_fc)\ngdp_fc_fut\n\n\n  \n\n\ngdp_fc_fut |&gt; \n  autoplot(gdp)\n\n\n\n\n\n\n\n\n# save(gdp_fc_fut, file = \"equipo1.RData\")"
+  },
+  {
+    "objectID": "docs/modules/forecasting_wf_pres.html#footnotes",
+    "href": "docs/modules/forecasting_wf_pres.html#footnotes",
+    "title": "The Forecasting Workflow using fable\n",
+    "section": "Footnotes",
+    "text": "Footnotes\n\n\nThis will make it very convenient when calling your variables. RStudio will display all the options starting with gdp_. We will usually use the following suffixes:\n\n\n_train: training set\n\n_fit: the mable (table of models)\n\n_aug: the augmented table with fitted values and residuals\n\n_dcmp: for the dable (decomposition table), containing the components and the seasonally adjusted series of a TS decomposition.\n\n_fc or _fcst: for the fable (forecasts table) that has our forecasts. \n\n\n\n\n\nThe Mean Absolute Percentage Error is a percentage error metric widely used in professional environments.\nLet\n\\[\ne_t = y_t - \\hat{y}_t\n\\]\nbe the error or residual.\nThen the MAPE would be computed as\n\\[\nMAPE = \\frac{1}{T}\\sum_{t=1}^T|\\frac{e_t}{y_t}|\n\\]."
+  },
+  {
+    "objectID": "docs/modules/forecasting_workflow.html#packages",
+    "href": "docs/modules/forecasting_workflow.html#packages",
+    "title": "The Forecasting Workflow using fable\n",
+    "section": "\n0.1 Packages",
+    "text": "0.1 Packages\nIt is recommended to load all the packages at the beginning of your file. We will be using the tidyverts ecosystem for the whole forecasting workflow.\n\nlibrary(tidyverse)\nlibrary(fpp3)\nlibrary(plotly)\n\n\n\n\n\n\n\nWarning\n\n\n\nDo not load unnecesary packages into your environment. It could lead to conflicts between functions and unwanted results.",
+    "crumbs": [
+      "Modules",
+      "Forecasting models based on decomposition methods",
+      "The Forecasting Workflow"
+    ]
+  },
+  {
+    "objectID": "docs/modules/forecasting_workflow.html#data",
+    "href": "docs/modules/forecasting_workflow.html#data",
+    "title": "The Forecasting Workflow using fable\n",
+    "section": "\n1.1 Data",
+    "text": "1.1 Data\nWe will work with the Real Gross Domestic Product (GDP) for Mexico. The data is downloaded from FRED. The time series id is NGDPRNSAXDCMXQ.\n\n1.1.1 Import data\n\ngdp &lt;- tidyquant::tq_get(\n  x    = \"NGDPRNSAXDCMXQ\",\n  get  = \"economic.data\",\n  from = \"1997-01-01\"\n)\n\ngdp\n\n# A tibble: 113 × 3\n   symbol         date          price\n   &lt;chr&gt;          &lt;date&gt;        &lt;dbl&gt;\n 1 NGDPRNSAXDCMXQ 1997-01-01 3702398.\n 2 NGDPRNSAXDCMXQ 1997-04-01 3896084.\n 3 NGDPRNSAXDCMXQ 1997-07-01 3906063 \n 4 NGDPRNSAXDCMXQ 1997-10-01 4038358.\n 5 NGDPRNSAXDCMXQ 1998-01-01 4084304.\n 6 NGDPRNSAXDCMXQ 1998-04-01 4134899.\n 7 NGDPRNSAXDCMXQ 1998-07-01 4138200.\n 8 NGDPRNSAXDCMXQ 1998-10-01 4146841.\n 9 NGDPRNSAXDCMXQ 1999-01-01 4176243.\n10 NGDPRNSAXDCMXQ 1999-04-01 4232280.\n# ℹ 103 more rows\n\n\n\n1.1.2 Wrangle data\nThere are some issues with our data:\n\nIt is loaded into a tibble object. We need to convert it to a tsibble.\n\n\n\n\n\n\n\nTip\n\n\n\n\n\nWe can use as_tsibble() to do so.\n\n\n\n\nOur data is quarterly, but it is loaded in a YYYY-MM-DD format. We need to change it to a YYYY QQ format.\n\n\n\n\n\n\n\nTip\n\n\n\n\n\nThere are some functions that help us achieve this, such as\n\nyearquarter()\nyearmonth()\nyearweek()\nyear()\n\ndepending on the time series’ period.\n\n\n\nWe will overwrite our data:\n\ngdp &lt;- gdp |&gt; \n  mutate(date = yearquarter(date)) |&gt; \n  as_tsibble(\n    index = date,\n    key   = symbol\n  )\n\ngdp\n\n\n  \n\n\n\n\n\n\n\n\n\nTip\n\n\n\n\n\n\nWe always need to specify the index argument, as it is our date variable.\nThe key argument is necessary whenever we have more than one time series in our data frame and is made up of one or more columns that uniquely identify each time series .",
+    "crumbs": [
+      "Modules",
+      "Forecasting models based on decomposition methods",
+      "The Forecasting Workflow"
+    ]
+  },
+  {
+    "objectID": "docs/modules/forecasting_workflow.html#traintest-split",
+    "href": "docs/modules/forecasting_workflow.html#traintest-split",
+    "title": "The Forecasting Workflow using fable\n",
+    "section": "\n1.2 Train/Test Split",
+    "text": "1.2 Train/Test Split\nWe will split our data in two sets: a training set, and a test set, in order to evaluate our forecasts’ accuracy.\n\ngdp_train &lt;- gdp |&gt; \n  filter_index(. ~ \"2021 Q4\")\n\ngdp_train\n\n\n  \n\n\n\n\n\n\n\n\n\nNote\n\n\n\nFor all our variables, it is strongly recommended to follow the same notation process, and write our code using snake_case. Here, we called our data gdp, therefore, all the following variables will be called starting with gdp_1, such as gdp_train for our training set.",
+    "crumbs": [
+      "Modules",
+      "Forecasting models based on decomposition methods",
+      "The Forecasting Workflow"
+    ]
+  },
+  {
+    "objectID": "docs/modules/forecasting_workflow.html#visualization-and-eda",
+    "href": "docs/modules/forecasting_workflow.html#visualization-and-eda",
+    "title": "The Forecasting Workflow using fable\n",
+    "section": "\n1.3 Visualization and EDA",
+    "text": "1.3 Visualization and EDA\nWhen performing time series analysis/forecasting, one of the first things to do is to create a time series plot.\n\np &lt;- gdp_train |&gt; \n  autoplot(price) +\n  labs(\n    title = \"Time series plot of the Real GDP for Mexico\",\n    y = \"GDP\"\n  )\n \nggplotly(p, dynamicTicks = TRUE) |&gt; \n  rangeslider()\n\n\n\n\n\n\n\n\n\n\n\nOur data exhibits an upward linear trend (with some economic cycles), and strong yearly seasonality.\n\n\n\nWe will explore it further with a season plot.\n\ngdp_train |&gt; \n  gg_season(price) |&gt; \n  ggplotly()\n\n\n\n\n\n\n1.3.1 TS Decomposition\n\ngdp_train |&gt; \n  model(stl = STL(price, robust = TRUE)) |&gt; \n  components() |&gt; \n  autoplot() |&gt; \n  ggplotly()\n\n\n\n\n\n\n\n\n\n\n\nThe STL decomposition shows that the variance of the seasonal component has been increasing. We could try using a log transformation to counter this.\n\n\n\n\ngdp_train |&gt; \n  autoplot(log(price)) +\n  ggtitle(\"Log of the Real GDP of Mexico\")\n\n\n\n\n\n\n\n\ngdp_train |&gt; \n  model(stl = STL(log(price) ~ season(window = \"periodic\"), robust = TRUE)) |&gt; \n  components() |&gt; \n  autoplot() |&gt; \n  ggplotly()",
+    "crumbs": [
+      "Modules",
+      "Forecasting models based on decomposition methods",
+      "The Forecasting Workflow"
+    ]
+  },
+  {
+    "objectID": "docs/modules/forecasting_workflow.html#model-specification",
+    "href": "docs/modules/forecasting_workflow.html#model-specification",
+    "title": "The Forecasting Workflow using fable\n",
+    "section": "\n1.4 Model Specification",
+    "text": "1.4 Model Specification\nWe will fit two models to our time series: Seasonal Naïve, and the Drift model. We will also use the log transformation.\n\ngdp_fit &lt;- gdp_train |&gt; \n  model(\n    snaive = SNAIVE(log(price)),\n    drift  = RW(log(price) ~ drift())\n  )\n\n\n\n\n\n\n\nBenchmark models\n\n\n\n\n\nWe have four different benchmark models that we’ll use to compare against the rest of the more complex models:\n\nMean (MEAN( &lt;.y&gt; ))\nNaïve (NAIVE( &lt;.y&gt; ))\nSeasonal Naïve (SNAIVE( &lt;.y&gt; ))\nDrift (RW( &lt;.y&gt; ~ drift()))\n\nwhere &lt;.y&gt; is just a placeholder for the variable to model.\nChoose wisely which of these to use in each case, according to the exploratory analysis performed.",
+    "crumbs": [
+      "Modules",
+      "Forecasting models based on decomposition methods",
+      "The Forecasting Workflow"
+    ]
+  },
+  {
+    "objectID": "docs/modules/forecasting_workflow.html#residuals-diagnostics",
+    "href": "docs/modules/forecasting_workflow.html#residuals-diagnostics",
+    "title": "The Forecasting Workflow using fable\n",
+    "section": "\n1.5 Residuals Diagnostics",
+    "text": "1.5 Residuals Diagnostics\n\n1.5.1 Visual analysis\n\ngdp_fit |&gt; \n  select(snaive) |&gt; \n  gg_tsresiduals() +\n  ggtitle(\"Residuals Diagnostics for the Seasonal Naïve Model\")\n\n\n\n\n\n\ngdp_fit |&gt; \n  select(drift) |&gt; \n  gg_tsresiduals() +\n  ggtitle(\"Residuals Diagnostics for the Drift Model\")\n\n\n\n\n\n\n\n\n\n\n\n\n\nTip\n\n\n\n\n\nHere we expect to see:\n\nA time series with no apparent patterns (no trend and/or seasonality), with a mean close to zero.\nIn the ACF, we’d expect no lags with significant autocorrelation.\nNormally distributed residuals.\n\n\n\n\n\n1.5.2 Portmanteau tests of autocorrelation\n\ngdp_fit |&gt; \n  augment() |&gt; \n  features(.innov, ljung_box, lag = 24, dof = 0)\n\n\n  \n\n\n\n\n\n\n\n\n\nResiduals interpretation\n\n\n\nBoth models produce sub optimal residuals:\n\nThe SNAIVE correctly detects the seasonality, however, its residuals are still autocorrelated. Moreover, the residuals are not normally distributed.\nThe drift model doesn’t account for the seasonality, and their distribution is a little bit skewed.\n\nHence, we will perform our forecasts using the bootstrapping method.\n\n\nWe can compute some error metrics on the training set using the accuracy() function:\n\ngdp_train_accu &lt;- accuracy(gdp_fit) |&gt; \n  arrange(MAPE)\ngdp_train_accu |&gt; \n  select(symbol:.type, MAPE, RMSE, MAE, MASE)\n\n\n  \n\n\n\n\n\n\n\n\n\nThe accuracy() function\n\n\n\n\n\nThe accuracy() function can be used to compute error metrics in the training data, or in the test set. What differs is the data that is given to it:\n\nFor the training metrics, you need to use the mable (the table of models, that we usually store in _fit).\nFor the forecasting error metrics, we need the fable (the forecasts table, usually stored as _fc or _fcst), and the complete set of data (both the training and test set together).\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nFor this analysis, we are focusing on the MAPE2 metric. The drift model (2.47%) seems to have a better fit with the training set than the snaive model (3.24%).",
+    "crumbs": [
+      "Modules",
+      "Forecasting models based on decomposition methods",
+      "The Forecasting Workflow"
+    ]
+  },
+  {
+    "objectID": "docs/modules/forecasting_workflow.html#modeling-using-decomposition",
+    "href": "docs/modules/forecasting_workflow.html#modeling-using-decomposition",
+    "title": "The Forecasting Workflow using fable\n",
+    "section": "\n1.6 Modeling using decomposition",
+    "text": "1.6 Modeling using decomposition\nWe will perform a forecast using decomposition, to see if we can improve our results so far.\n\ngdp_fit_dcmp &lt;- gdp_train |&gt; \n      model(\n        stlf = decomposition_model(\n          STL(log(price) ~ season(window = \"periodic\"), robust = TRUE),\n          RW(season_adjust ~ drift())\n        )\n      )\n\ngdp_fit_dcmp\n\n\n  \n\n\n\n\n\n\n\n\n\nNote on decomposition_model()\n\n\n\n\n\nRemember, when using decomposition models, we need to do the following:\n\nSpecify what type of decomposition we want to use and customize it as needed.\nFit a model for the seasonally adjusted data; season_adjust.\nFit a model for the seasonal component. R uses a SNAIVE() model by default to model the seasonality. If you wish to model it using a different model, you have specify it.\n\n\nThe name of the seasonal component depends on the type of seasonality present in the time series. If it has a yearly seasonality, the component is called season_year. It could also be called season_week, season_day, and so on.\n\n\n\n\nWe can join this new model with the models we trained before. This way we can have them all in the same mable.\n\ngdp_fit &lt;- gdp_fit |&gt; \n  left_join(gdp_fit_dcmp)\n\nJoining with `by = join_by(symbol)`\n\n\n\n1.6.1 Residuals diagnostics\n\ngdp_fit |&gt; \n  accuracy() |&gt; \n  select(symbol:.type, MAPE, RMSE, MAE, MASE) |&gt; \n  arrange(MAPE)\n\n\n  \n\n\n\n\ngdp_fit |&gt; \n  select(stlf) |&gt; \n  gg_tsresiduals()\n\n\n\n\n\n\n\n\ngdp_fit |&gt; \n  augment() |&gt; \n  features(.innov, ljung_box)\n\n\n  \n\n\n\n\n\n\n\n\n\nThe MAPE seems to improve with this decomposition model. Also, the residual diagnostics do not show any seasonality present in them. However, the residuals are still autocorrelated, as the Ljung-Box test suggests.",
+    "crumbs": [
+      "Modules",
+      "Forecasting models based on decomposition methods",
+      "The Forecasting Workflow"
+    ]
+  },
+  {
+    "objectID": "docs/modules/forecasting_workflow.html#forecasting-on-the-test-set",
+    "href": "docs/modules/forecasting_workflow.html#forecasting-on-the-test-set",
+    "title": "The Forecasting Workflow using fable\n",
+    "section": "\n1.7 Forecasting on the test set",
+    "text": "1.7 Forecasting on the test set\nOnce we have our models, we can produce forecasts. We will forecast our test data and check our forecasts’ performance.\n\ngdp_fc &lt;- gdp_fit |&gt; \n  forecast(h = gdp_h_fc) \n\ngdp_fc\n\n\n  \n\n\n\n\ngdp_fc |&gt; \n  autoplot(gdp) +\n  facet_wrap(~.model, ncol = 1)\n\n\n\n\n\n\ngdp_fc |&gt; \n  filter(.model == \"stlf\") |&gt; \n  autoplot(gdp)\n\n\n\n\n\n\n\nWe now estimate the forecast errors:\n\ngdp_fc |&gt; \n  accuracy(gdp) |&gt; \n  select(.model:.type, MAPE, RMSE, MAE, MASE) |&gt; \n  arrange(MAPE)",
+    "crumbs": [
+      "Modules",
+      "Forecasting models based on decomposition methods",
+      "The Forecasting Workflow"
+    ]
+  },
+  {
+    "objectID": "docs/modules/forecasting_workflow.html#forecasting-the-future",
+    "href": "docs/modules/forecasting_workflow.html#forecasting-the-future",
+    "title": "The Forecasting Workflow using fable\n",
+    "section": "\n1.8 Forecasting the future",
+    "text": "1.8 Forecasting the future\nWe now refit our model using the whole dataset. We will only model the STL decomposition model, because the other two didn’t get a strong fit.\n\ngdp_fit2 &lt;- gdp |&gt; \n  model(\n    stlf = decomposition_model(\n          STL(log(price) ~ season(window = \"periodic\"), robust = TRUE),\n          RW(season_adjust ~ drift())\n        )\n  )\ngdp_fit2\n\n\n  \n\n\n\n\ngdp_fc_fut &lt;- gdp_fit2 |&gt; \n  forecast(h = gdp_h_fc)\ngdp_fc_fut\n\n\n  \n\n\ngdp_fc_fut |&gt; \n  autoplot(gdp)\n\n\n\n\n\n\n\n\n# save(gdp_fc_fut, file = \"equipo1.RData\")",
+    "crumbs": [
+      "Modules",
+      "Forecasting models based on decomposition methods",
+      "The Forecasting Workflow"
+    ]
+  },
+  {
+    "objectID": "docs/modules/forecasting_workflow.html#footnotes",
+    "href": "docs/modules/forecasting_workflow.html#footnotes",
+    "title": "The Forecasting Workflow using fable\n",
+    "section": "Footnotes",
+    "text": "Footnotes\n\n\nThis will make it very convenient when calling your variables. RStudio will display all the options starting with gdp_. We will usually use the following suffixes:\n\n\n_train: training set\n\n_fit: the mable (table of models)\n\n_aug: the augmented table with fitted values and residuals\n\n_dcmp: for the dable (decomposition table), containing the components and the seasonally adjusted series of a TS decomposition.\n\n_fc or _fcst: for the fable (forecasts table) that has our forecasts. \n\n\n↩︎\n\n\nThe Mean Absolute Percentage Error is a percentage error metric widely used in professional environments.\nLet\n\\[\ne_t = y_t - \\hat{y}_t\n\\]\nbe the error or residual.\nThen the MAPE would be computed as\n\\[\nMAPE = \\frac{1}{T}\\sum_{t=1}^T|\\frac{e_t}{y_t}|\n\\].\n\n\n\n\n↩︎",
+    "crumbs": [
+      "Modules",
+      "Forecasting models based on decomposition methods",
+      "The Forecasting Workflow"
     ]
   }
 ]
