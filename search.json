@@ -822,14 +822,28 @@
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#types-of-decompositions",
     "title": "Time Series Decomposition",
     "section": "Types of Decompositions",
-    "text": "Types of Decompositions\nA decomposition splits the time series into its underlying components:\n\nTrend-cycle\nSeasonal pattern(s)\n\nAnd what’s left of it we simply call it a “remainder component”.\nIn general, there are two types of decompositions:\nAdditive decomposition\n\\[\nY_t = T_t + S_t + R_t\n\\]\nMultiplicative decomposition\n\\[\nY_t = T_t \\times S_t \\times R_t \\\\\n\\]\n\nWhich one should you use?\n\n\nIf the seasonal variation is roughly constant over time, use an additive decomposition.\nIf the seasonal variation increases or decreases with the level of the series, use a multiplicative decomposition.\nIf you’re unsure, you can try both and see which one provides a better fit.\n\n\nA multiplicative decomposition is equivalent to an additive decomposition of the log-transformed series:\n\\[\nY_t = T_t \\times S_t \\times R_t\n\\]\nis equivalent to\n\\[\n\\log(Y_t) = \\log(T_t) + \\log(S_t) + \\log(R_t)\n\\]"
+    "text": "Types of Decompositions\nA decomposition splits the time series into its underlying components:\n\nTrend-cycle\nSeasonal pattern(s)\n\nAnd what’s left of it we simply call it a “remainder component”.\nIn general, there are two types of decompositions:\nAdditive decomposition\n\\[\nY_t = T_t + S_t + R_t\n\\]\nMultiplicative decomposition\n\\[\nY_t = T_t \\times S_t \\times R_t \\\\\n\\]\n\nWhich one should you use?\n\n\nIf the seasonal variation is roughly constant over time, use an additive decomposition.\nIf the seasonal variation increases or decreases with the level of the series, use a multiplicative decomposition.\nIf you’re unsure, you can try both and see which one provides a better fit.\n\nA multiplicative decomposition is equivalent to an additive decomposition of the log-transformed series:\n\\[\nY_t = T_t \\times S_t \\times R_t\n\\]\nis equivalent to\n\\[\n\\log(Y_t) = \\log(T_t) + \\log(S_t) + \\log(R_t)\n\\]"
   },
   {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#section-2",
-    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#section-2",
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#classical-decomposition",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#classical-decomposition",
     "title": "Time Series Decomposition",
-    "section": "",
-    "text": "A multiplicative decomposition is equivalent to an additive decomposition of the log-transformed series:\n\\[\nY_t = T_t \\times S_t \\times R_t\n\\]\nis equivalent to\n\\[\n\\log(Y_t) = \\log(T_t) + \\log(S_t) + \\log(R_t)\n\\]"
+    "section": "Classical decomposition",
+    "text": "Classical decomposition\nIn a classical decomposition, the trend-cycle component is estimated using a moving average. Then, the seasonal component is estimated by averaging the detrended values for each season. Finally, the remainder component is obtained by subtracting the trend-cycle and seasonal components from the original series.\nAn \\(m\\) order moving average is given by:\n\\[\n\\hat{T}_{t}=\\frac{1}{m} \\sum_{j=-k}^{k} y_{t+j}\n\\]\nwhere \\(k = (m-1)/2\\)."
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#problems-of-using-a-classical-decomposition",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#problems-of-using-a-classical-decomposition",
+    "title": "Time Series Decomposition",
+    "section": "Problems of using a Classical decomposition",
+    "text": "Problems of using a Classical decomposition\n\nThe trend-cycle component is not estimated at the beginning and end of the series. This can be problematic if you want to forecast the series.\nIt also tends to over-smooth rises and falls.\nIt assumes that the seasonal component is constant over time, which may not be the case in many real-world scenarios.\nIt is not robust to outliers, which can significantly affect the estimates of the components.\n\n\n\n\n\n\n\nNote\n\n\nBecause of all of this, it is not recommended to use classical decomposition for forecasting."
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#stl-decomposition",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#stl-decomposition",
+    "title": "Time Series Decomposition",
+    "section": "STL decomposition",
+    "text": "STL decomposition\nSTL (Seasonal and Trend decomposition using Loess) is a more advanced method for decomposing time series data. It uses locally weighted regression (loess) to estimate the trend-cycle and seasonal components. STL is more flexible than classical decomposition and can handle changes in the seasonal component over time.\n\nIt can handle any type of seasonality (not just fixed periods).\nIt can handle changes in the seasonal component over time.\nIt is robust to outliers.\nIt can be used for forecasting.\nIt provides a way to control the smoothness of the trend and seasonal components through parameters.\n\n\n\n\n\n\n\n\nSTL cannot automatically handle calendar or holiday variations.\nIt only provides methods for additive models. If your data has multiplicative seasonality, you should log-transform the data before applying STL."
   },
   {
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#footnotes",
@@ -987,7 +1001,7 @@
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#types-of-decompositions",
     "title": "Time Series Decomposition",
     "section": "\n4.1 Types of Decompositions",
-    "text": "4.1 Types of Decompositions\n\nA decomposition splits the time series into its underlying components:\n\nTrend-cycle\nSeasonal pattern(s)\n\nAnd what’s left of it we simply call it a “remainder component”.\nIn general, there are two types of decompositions:\n\n\n4.1.1 Additive decomposition\n\\[\nY_t = T_t + S_t + R_t\n\\]\n\n4.1.2 Multiplicative decomposition\n\\[\nY_t = T_t \\times S_t \\times R_t \\\\\n\\]\n\nWhich one should you use?\n\n\n\nIf the seasonal variation is roughly constant over time, use an additive decomposition.\nIf the seasonal variation increases or decreases with the level of the series, use a multiplicative decomposition.\nIf you’re unsure, you can try both and see which one provides a better fit.\n\n\n4.2 \nA multiplicative decomposition is equivalent to an additive decomposition of the log-transformed series:\n\\[\nY_t = T_t \\times S_t \\times R_t\n\\]\nis equivalent to\n\\[\n\\log(Y_t) = \\log(T_t) + \\log(S_t) + \\log(R_t)\n\\]",
+    "text": "4.1 Types of Decompositions\n\nA decomposition splits the time series into its underlying components:\n\nTrend-cycle\nSeasonal pattern(s)\n\nAnd what’s left of it we simply call it a “remainder component”.\nIn general, there are two types of decompositions:\n\n\n4.1.1 Additive decomposition\n\\[\nY_t = T_t + S_t + R_t\n\\]\n\n4.1.2 Multiplicative decomposition\n\\[\nY_t = T_t \\times S_t \\times R_t \\\\\n\\]\n\nWhich one should you use?\n\n\n\nIf the seasonal variation is roughly constant over time, use an additive decomposition.\nIf the seasonal variation increases or decreases with the level of the series, use a multiplicative decomposition.\nIf you’re unsure, you can try both and see which one provides a better fit.\n\nA multiplicative decomposition is equivalent to an additive decomposition of the log-transformed series:\n\\[\nY_t = T_t \\times S_t \\times R_t\n\\]\nis equivalent to\n\\[\n\\log(Y_t) = \\log(T_t) + \\log(S_t) + \\log(R_t)\n\\]",
     "crumbs": [
       "Modules",
       "1. Forecasting models based on decomposition methods",
@@ -995,11 +1009,35 @@
     ]
   },
   {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#section-2",
-    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#section-2",
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#classical-decomposition",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#classical-decomposition",
     "title": "Time Series Decomposition",
-    "section": "\n4.2 ",
-    "text": "4.2 \nA multiplicative decomposition is equivalent to an additive decomposition of the log-transformed series:\n\\[\nY_t = T_t \\times S_t \\times R_t\n\\]\nis equivalent to\n\\[\n\\log(Y_t) = \\log(T_t) + \\log(S_t) + \\log(R_t)\n\\]",
+    "section": "\n4.2 Classical decomposition",
+    "text": "4.2 Classical decomposition\nIn a classical decomposition, the trend-cycle component is estimated using a moving average. Then, the seasonal component is estimated by averaging the detrended values for each season. Finally, the remainder component is obtained by subtracting the trend-cycle and seasonal components from the original series.\nAn \\(m\\) order moving average is given by:\n\\[\n\\hat{T}_{t}=\\frac{1}{m} \\sum_{j=-k}^{k} y_{t+j}\n\\]\nwhere \\(k = (m-1)/2\\).",
+    "crumbs": [
+      "Modules",
+      "1. Forecasting models based on decomposition methods",
+      "1.2 Time Series Decomposition"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#problems-of-using-a-classical-decomposition",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#problems-of-using-a-classical-decomposition",
+    "title": "Time Series Decomposition",
+    "section": "\n4.3 Problems of using a Classical decomposition",
+    "text": "4.3 Problems of using a Classical decomposition\n\nThe trend-cycle component is not estimated at the beginning and end of the series. This can be problematic if you want to forecast the series.\nIt also tends to over-smooth rises and falls.\nIt assumes that the seasonal component is constant over time, which may not be the case in many real-world scenarios.\nIt is not robust to outliers, which can significantly affect the estimates of the components.\n\n\n\n\n\n\n\n\nNote\n\n\n\nBecause of all of this, it is not recommended to use classical decomposition for forecasting.",
+    "crumbs": [
+      "Modules",
+      "1. Forecasting models based on decomposition methods",
+      "1.2 Time Series Decomposition"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#stl-decomposition",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#stl-decomposition",
+    "title": "Time Series Decomposition",
+    "section": "\n4.4 STL decomposition",
+    "text": "4.4 STL decomposition\n\nSTL (Seasonal and Trend decomposition using Loess) is a more advanced method for decomposing time series data. It uses locally weighted regression (loess) to estimate the trend-cycle and seasonal components. STL is more flexible than classical decomposition and can handle changes in the seasonal component over time.\n\n\n\nIt can handle any type of seasonality (not just fixed periods).\nIt can handle changes in the seasonal component over time.\nIt is robust to outliers.\nIt can be used for forecasting.\nIt provides a way to control the smoothness of the trend and seasonal components through parameters.\n\n\n\n\n\n\n\n\nSTL cannot automatically handle calendar or holiday variations.\nIt only provides methods for additive models. If your data has multiplicative seasonality, you should log-transform the data before applying STL.",
     "crumbs": [
       "Modules",
       "1. Forecasting models based on decomposition methods",
