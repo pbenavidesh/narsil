@@ -488,13 +488,13 @@ In general, there are two types of decompositions:
 ### Additive decomposition
 
 $$
-Y_t = T_t + S_t + R_t
+y_t = T_t + S_t + R_t
 $$
 
 ### Multiplicative decomposition
 
 $$
-Y_t = T_t \times S_t \times R_t \\
+y_t = T_t \times S_t \times R_t \\
 $$
 
 
@@ -511,16 +511,37 @@ $$
 A multiplicative decomposition is equivalent to an additive decomposition of the log-transformed series:
 
 $$
-Y_t = T_t \times S_t \times R_t
+y_t = T_t \times S_t \times R_t
 $$
 
 is equivalent to
 
 $$
-\log(Y_t) = \log(T_t) + \log(S_t) + \log(R_t)
+\log(y_t) = \log(T_t) + \log(S_t) + \log(R_t)
 $$
 
 :::
+
+## Seasonally adjusted series
+
+:::{.notes}
+
+One use of decomposition is to obtain a seasonally adjusted series, which is the original series with the seasonal component removed.
+
+Seasonally adjusted series can be useful for:
+- Identifying and analyzing the trend-cycle component without the influence of seasonal fluctuations.
+- Making comparisons across different time periods without seasonal effects.
+
+:::
+
+- For an additive decomposition, the seasonally adjusted series is given by:
+$$
+y_t - S_t
+$$
+- For a multiplicative decomposition, the seasonally adjusted series is given by:
+$$
+\frac{y_t}{S_t}
+$$
 
 
 ## Classical decomposition
@@ -553,7 +574,6 @@ Because of all of this, it is not recommended to use classical decomposition for
 :::
 
 ## STL decomposition
-
 
 
 :::{.notes}
