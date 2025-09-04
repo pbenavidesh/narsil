@@ -537,6 +537,28 @@ Seasonally adjusted series can be useful for:
 
 :::
 
+```{r}
+#| label: seasonally_adjusted
+#| echo: false
+
+mexretail_stl <-  mexretail |>
+  model(stl = STL(y, robust = TRUE)) |> 
+  components()
+
+p <- mexretail_stl |>
+  ggplot(aes(x = date, y = y)) +
+  geom_line(color = "grey") +
+  geom_line(aes(y = season_adjust), color = "firebrick") + 
+  labs(
+    title = "Retail Trade, Except of Motor Vehicles and Motorcycles for Mexico",
+    y = "Index 2015=100",
+    x = ""
+  )
+
+ggplotly(p, dynamicTicks = TRUE)
+```
+
+
 - For an additive decomposition, the seasonally adjusted series is given by:
 $$
 y_t - S_t
@@ -545,6 +567,7 @@ $$
 $$
 \frac{y_t}{S_t}
 $$
+
 
 
 ## Classical decomposition
@@ -577,10 +600,10 @@ mexretail
 #| eval: false
 
 mexretail |> 
-  model() # <1>
+  model()
 ```
 
-1. The function `model()` is used to specify one or more models for the `tsibble`.
+
 
 ## Example of a classical decomposition {auto-animate="true"}
 
@@ -590,11 +613,11 @@ mexretail |>
 
 mexretail |> 
   model(
-    classical = classical_decomposition() # <2>
+    classical = classical_decomposition() 
   )
 ```
 
-2. Inside the `model()` function, we specify the type of models we want to use. 
+
 
 ## Example of a classical decomposition {auto-animate="true"}
 
@@ -605,11 +628,11 @@ mexretail |>
 
 mexretail |> 
   model(
-    classical = classical_decomposition(y, type = "additive") # <2>
+    classical = classical_decomposition(y, type = "additive") 
   )
 ```
 
-2. In any model used, the first thing we need to specify is our forecast variable. Then, depending on the model used, we can specify additional parameters. The `model()` function yields a `mable`^[short for "model table"], which is a table that contains the fitted models for each time series in the `tsibble`.
+
 
 ## Example of a classical decomposition {auto-animate="true"}
 
@@ -621,10 +644,10 @@ mexretail |>
   model(
     classical = classical_decomposition(y, type = "additive") 
   ) |> 
-  components() # <3>
+  components()
 ```
 
-3. The `components()` function is used to extract the components of the decomposition (trend-cycle, seasonal, and remainder) from the fitted models in the `mable`. It also provides the seasonally adjusted series.
+
 
 :::
 
@@ -679,6 +702,8 @@ It is not recommended to use classical decomposition for forecasting because of 
 :::
 
 :::
+
+# STL decomposition
 
 ## STL decomposition
 
