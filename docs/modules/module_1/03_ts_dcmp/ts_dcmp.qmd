@@ -608,9 +608,7 @@ mexretail |>
   )
 ```
 
-2. In any model used, the first thing we need to specify is our forecast variable. Then, depending on the model used, we can specify additional parameters.
-
-The `model()` function yields a `mable`^[short for "model table"], which is a table that contains the fitted models for each time series in the `tsibble`.
+2. In any model used, the first thing we need to specify is our forecast variable. Then, depending on the model used, we can specify additional parameters. The `model()` function yields a `mable`^[short for "model table"], which is a table that contains the fitted models for each time series in the `tsibble`.
 
 ## Example of a classical decomposition {auto-animate="true"}
 
@@ -632,14 +630,33 @@ mexretail |>
 ## Example of a classical decomposition {auto-animate="true"}
 
 ```{r}
-#| label: classical_decomp_1
+#| label: classical_decomp_full
 
-mexretail_dcmp <- mexretail |> 
-  model(
-    classical = classical_decomposition(y, type = "additive")
+mexretail_dcmp <- mexretail |>                                # <1>
+  model(                                                      # <2>
+    classical = classical_decomposition(y, type = "additive") # <3>
   ) |> 
-  components()
+  components()                                                # <4>
+
+mexretail_dcmp                                                # <5>
 ```
+
+1. We start with our original `tsibble`.
+2. Inside the `model()` function, we specify the type of models we want to use. 
+3. In any model used, the first thing we need to specify is our forecast variable. Then, depending on the model used, we can specify additional parameters. The `model()` function yields a `mable`^[short for "model table"], which is a table that contains the fitted models for each time series in the `tsibble`.
+4. The `components()` function is used to extract the components of the decomposition (trend-cycle, seasonal, and remainder) from the fitted models in the `mable`. It also provides the seasonally adjusted series.
+5. Finally, we store the result.
+
+
+## Example of a classical decomposition {auto-animate="true"}
+
+```{r}
+#| label: classical_decomp_full
+
+mexretail_dcmp |> 
+  autoplot()
+```
+
 
 ## Problems of using a Classical decomposition
 
