@@ -906,7 +906,28 @@
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#stl-in-r-using-fable",
     "title": "Time Series Decomposition",
     "section": "STL in R using fable",
-    "text": "STL in R using fable"
+    "text": "STL in R using fable\n\nmexretail_stl &lt;- mexretail |&gt;                                \n  model(                                                      \n    stl = STL(y)\n  ) |&gt; \n  components()"
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#stl-in-r-using-fable-1",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#stl-in-r-using-fable-1",
+    "title": "Time Series Decomposition",
+    "section": "STL in R using fable",
+    "text": "STL in R using fable\n\nmexretail_stl &lt;- mexretail |&gt;                                \n  model(                                                      \n    stl = STL(y ~ trend(window = NULL))\n  ) |&gt; \n  components()"
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#stl-in-r-using-fable-2",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#stl-in-r-using-fable-2",
+    "title": "Time Series Decomposition",
+    "section": "STL in R using fable",
+    "text": "STL in R using fable\n\nmexretail_stl &lt;- mexretail |&gt;                                \n  model(                                                      \n    stl = STL(y ~ trend()) \n  ) |&gt; \n  components()"
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#stl-in-r-using-fable-3",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#stl-in-r-using-fable-3",
+    "title": "Time Series Decomposition",
+    "section": "STL in R using fable",
+    "text": "STL in R using fable\n\nThe code is basically the same as for the classical decomposition. We just need to change the model used inside the model() function.\n\n\nmexretail |&gt;                                \n  model(                                                      \n1    stl = STL(y ~\n2                trend(window = NULL) +\n3                season(window = \"periodic\"),\n4              robust = TRUE)\n  ) |&gt; \n  components() |&gt; \n  autoplot()\n\n\n1\n\nInside the STL() function, we can specify the formula for the decomposition, or don’t specify it at all. See ?STL for more details.\n\n2\n\nThe trend() function is used to specify the trend component of the decomposition. The window argument controls the smoothness of the trend component. A larger window results in a smoother trend.\n\n3\n\nThe season() function is used to specify the seasonal component of the decomposition. The window argument controls the smoothness of the seasonal component. Setting it to “periodic” means that the seasonal component will be fixed over time.\n\n4\n\nThe robust argument, when set to TRUE, makes the STL decomposition more robust to outliers in the data, so the effect of such values is sent to the residual component.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nWriting formulas in R\n\n\nIn R, we use “\\(\\sim\\)” instead of “\\(=\\)” in formula specification, i.e., \\(y \\sim mx + b\\)."
   },
   {
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#footnotes",
@@ -1144,11 +1165,11 @@
     ]
   },
   {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#stl-in-r-using-fable",
-    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#stl-in-r-using-fable",
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#stl-in-r-using-fable-3",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#stl-in-r-using-fable-3",
     "title": "Time Series Decomposition",
     "section": "4.8 STL in R using fable",
-    "text": "4.8 STL in R using fable",
+    "text": "4.8 STL in R using fable\n\nThe code is basically the same as for the classical decomposition. We just need to change the model used inside the model() function.\n\n\nmexretail |&gt;                                \n  model(                                                      \n1    stl = STL(y ~\n2                trend(window = NULL) +\n3                season(window = \"periodic\"),\n4              robust = TRUE)\n  ) |&gt; \n  components() |&gt; \n  autoplot()\n\n\n1\n\nInside the STL() function, we can specify the formula for the decomposition, or don’t specify it at all. See ?STL for more details.\n\n2\n\nThe trend() function is used to specify the trend component of the decomposition. The window argument controls the smoothness of the trend component. A larger window results in a smoother trend.\n\n3\n\nThe season() function is used to specify the seasonal component of the decomposition. The window argument controls the smoothness of the seasonal component. Setting it to “periodic” means that the seasonal component will be fixed over time.\n\n4\n\nThe robust argument, when set to TRUE, makes the STL decomposition more robust to outliers in the data, so the effect of such values is sent to the residual component.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nWriting formulas in R\n\n\n\n\n\nIn R, we use “\\(\\sim\\)” instead of “\\(=\\)” in formula specification, i.e., \\(y \\sim mx + b\\).",
     "crumbs": [
       "Modules",
       "1. Forecasting models based on decomposition methods",
