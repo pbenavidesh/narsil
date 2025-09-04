@@ -80,14 +80,17 @@ p3 <- us_employment |>
 ggplotly(p3, dynamicTicks = TRUE) |> 
   bslib::card(full_screen = TRUE)
 
-p4 <- tq_get(
+mexretail <- tq_get(
   "MEXSLRTTO01IXOBM",
   get = "economic.data",
   from = "1985-01-01"
 ) |>
   mutate(date = yearmonth(date)) |> 
-  as_tsibble(index = date) |> 
-  autoplot(price, color = "springgreen4") +
+  rename(y = price) |>
+  as_tsibble(index = date) 
+
+p4 <- mexretail |> 
+  autoplot(y, color = "springgreen4") +
   labs(
     title = "Retail Trade, Except of Motor Vehicles and Motorcycles for Mexico",
     y = "Index 2015=100",
@@ -554,8 +557,89 @@ $$
 \hat{T}_{t}=\frac{1}{m} \sum_{j=-k}^{k} y_{t+j}
 $$
 
-where $k = (m-1)/2$.
+where $k = (m-1)/2$^[In R, you can compute any moving average by using the `slider::slide_dbl()` function].
 
+
+:::{.content-hidden unless-format="revealjs"}
+
+## Example of a classical decomposition {auto-animate="true"}
+
+```{r}
+#| label: classical_decomp_1
+
+mexretail
+```
+
+## Example of a classical decomposition {auto-animate="true"}
+
+```{r}
+#| label: classical_decomp_2
+#| eval: false
+
+mexretail |> 
+  model() # <1>
+```
+
+1. The function `model()` is used to specify one or more models for the `tsibble`.
+
+## Example of a classical decomposition {auto-animate="true"}
+
+```{r}
+#| label: classical_decomp_3
+#| eval: false
+
+mexretail |> 
+  model(
+    classical = classical_decomposition() # <2>
+  )
+```
+
+2. Inside the `model()` function, we specify the type of models we want to use. 
+
+## Example of a classical decomposition {auto-animate="true"}
+
+```{r}
+#| label: classical_decomp_4
+#| eval: true
+
+mexretail |> 
+  model(
+    classical = classical_decomposition(y, type = "additive") # <2>
+  )
+```
+
+2. In any model used, the first thing we need to specify is our forecast variable. Then, depending on the model used, we can specify additional parameters.
+
+The `model()` function yields a `mable`^[short for "model table"], which is a table that contains the fitted models for each time series in the `tsibble`.
+
+## Example of a classical decomposition {auto-animate="true"}
+
+```{r}
+#| label: classical_decomp_5
+#| eval: true
+
+mexretail |> 
+  model(
+    classical = classical_decomposition(y, type = "additive") 
+  ) |> 
+  components() # <3>
+```
+
+3. The `components()` function is used to extract the components of the decomposition (trend-cycle, seasonal, and remainder) from the fitted models in the `mable`. It also provides the seasonally adjusted series.
+
+:::
+
+## Example of a classical decomposition {auto-animate="true"}
+
+```{r}
+#| label: classical_decomp_1
+
+mexretail_dcmp <- mexretail |> 
+  model(
+    classical = classical_decomposition(y, type = "additive")
+  ) |> 
+  components()
+```
 
 ## Problems of using a Classical decomposition
 
@@ -566,8 +650,8 @@ where $k = (m-1)/2$.
 
 :::{.notes}
 
-:::{.callout-note}
-Because of all of this, it is not recommended to use classical decomposition for forecasting.
+:::{.callout-warning}
+It is not recommended to use classical decomposition for forecasting because of these issues.
 
 :::
 
@@ -577,7 +661,8 @@ Because of all of this, it is not recommended to use classical decomposition for
 
 
 :::{.notes}
-STL (Seasonal and Trend decomposition using Loess) is a more advanced method for decomposing time series data. It uses locally weighted regression (loess) to estimate the trend-cycle and seasonal components. STL is more flexible than classical decomposition and can handle changes in the seasonal component over time.
+STL (Seasonal and Trend decomposition using Loess) is a more advanced method for decomposing time series data^[There are other decomposition methods primarily used by official statistics agencies, such as X-11, X-12-ARIMA, and TRAMO/SEATS. However, these methods are not as widely used in the forecasting community as STL. For more on these, see [this](https://otexts.com/fpp3/methods-used-by-official-statistics-agencies.html).]. It uses locally weighted regression (loess) to estimate the trend-cycle and seasonal components. STL is more flexible than classical decomposition and can handle changes in the seasonal component over time.
+
 :::
 ::: {.incremental}
 
@@ -595,4 +680,6 @@ STL (Seasonal and Trend decomposition using Loess) is a more advanced method for
 :::
 
 :::
+
+## STL in R using `fable`
 
