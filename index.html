@@ -46,6 +46,9 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/bootstrap/bootstrap-8d5be931b26d8efe42c07b0e1450e452.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="site_libs/bootstrap/bootstrap-dark-ec48e2d3937798141a7b5c1a711c74f0.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <link href="site_libs/bootstrap/bootstrap-8d5be931b26d8efe42c07b0e1450e452.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -329,7 +332,10 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<p><img src="images/narsil_cover.webp" class="img-fluid" style="width:100.0%"> <img src="images/under_construction.jpg" class="img-fluid"></p>
+<p><a href="images/narsil_cover.webp" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="images/narsil_cover.webp" class="img-fluid" style="width:100.0%"></a></p>
+<p>Welcome to the Time Series Forecasting course at ITESO. Here you will find all the materials and resources needed for the course.</p>
+<p>In the <a href="intro.qmd">Modules</a> section, you will find all the theory and practical examples to help you understand the concepts of time series forecasting. In each document you will find attached the presentations as seen in class.</p>
+<p><a href="images/under_construction.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="images/under_construction.jpg" class="img-fluid"></a></p>
 
 
 
@@ -791,9 +797,41 @@ ul.task-list li input[type="checkbox"] {
   });
   </script>
 </div> <!-- /content -->
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions"><ul><li><a href="https://github.com/pbenavidesh/narsil/edit/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/pbenavidesh/narsil/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
 
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions"><ul><li><a href="https://github.com/pbenavidesh/narsil/edit/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/pbenavidesh/narsil/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="site_libs/quarto-html/zenscroll-min.js"></script>
+<script src="site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>
