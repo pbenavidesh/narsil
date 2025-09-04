@@ -557,7 +557,7 @@ $$
 \hat{T}_{t}=\frac{1}{m} \sum_{j=-k}^{k} y_{t+j}
 $$
 
-where $k = (m-1)/2$^[In R, you can compute any moving average by using the `slider::slide_dbl()` function].
+where $k = (m-1)/2$^[In R, you can compute any moving average by using the `slider::slide_dbl()` function.].
 
 
 :::{.content-hidden unless-format="revealjs"}
@@ -601,6 +601,7 @@ mexretail |>
 ```{r}
 #| label: classical_decomp_4
 #| eval: true
+#| df-print: tibble
 
 mexretail |> 
   model(
@@ -652,6 +653,7 @@ mexretail_dcmp                                                # <5>
 
 ```{r}
 #| label: classical_decomp_plot
+#| warning: false
 
 mexretail_dcmp |> 
   autoplot()
@@ -660,10 +662,14 @@ mexretail_dcmp |>
 
 ## Problems of using a Classical decomposition
 
+:::{.incremental}
+
 - The trend-cycle component is not estimated at the beginning and end of the series. This can be problematic if you want to forecast the series.
 - It also tends to over-smooth rises and falls.
 - It assumes that the seasonal component is constant over time, which may not be the case in many real-world scenarios.
 - It is not robust to outliers, which can significantly affect the estimates of the components.
+
+:::
 
 :::{.notes}
 
