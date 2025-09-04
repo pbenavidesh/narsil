@@ -759,14 +759,14 @@
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#log-transformations",
     "title": "Time Series Decomposition",
     "section": "Log transformations",
-    "text": "Log transformations\n\n\nSeries in levels\nLog\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nTransformations and adjustments help us simplify the patterns in our data, and can improve our forecasts’ accuracy.\n\n\n\n\n\n\n\n\n\n\n\n\n\nLog transformations are often useful when the data presents an increasing/decreasing variation with the level of the series.\nLog transformations are very interpretable: changes in a log value are percent changes on the original scale."
+    "text": "Log transformations\n\nSeries in levelsLog\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nTransformations and adjustments help us simplify the patterns in our data, and can improve our forecasts’ accuracy.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLog transformations are often useful when the data presents an increasing/decreasing variation with the level of the series.\nLog transformations are very interpretable: changes in a log value are percent changes on the original scale."
   },
   {
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#box-cox-transformations",
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#box-cox-transformations",
     "title": "Time Series Decomposition",
     "section": "Box-Cox transformations",
-    "text": "Box-Cox transformations\n\\[\nw_t= \\begin{cases}\\log \\left(y_t\\right) & \\text { if } \\lambda=0 \\\\ \\left(\\operatorname{sign}\\left(y_t\\right)\\left|y_t\\right|^\\lambda-1\\right) / \\lambda & \\text { otherwise }\\end{cases}\n\\]\nIn a Box-Cox transformation, the log is always a natural logarithm. The other case is just a power transformation with scaling.\nWhat happens when \\(\\lambda = 1\\)?\n\n\n\n\n\n\nYou should choose a value of \\(\\lambda\\) that makes the size of the seasonal variation the same throughout the series."
+    "text": "Box-Cox transformations\n\\[\nw_t= \\begin{cases}\\log \\left(y_t\\right) & \\text { if } \\lambda=0 \\\\ \\left(\\operatorname{sign}\\left(y_t\\right)\\left|y_t\\right|^\\lambda-1\\right) / \\lambda & \\text { otherwise }\\end{cases}\n\\]\n\nIn a Box-Cox transformation, the log is always a natural logarithm. The other case is just a power transformation with scaling.\n\nWhat happens when \\(\\lambda = 1\\)?\n\n\n\n\n\n\nYou should choose a value of \\(\\lambda\\) that makes the size of the seasonal variation the same throughout the series."
   },
   {
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#how-can-we-choose-the-value-of-lambda",
@@ -780,21 +780,21 @@
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#calendar-adjustments",
     "title": "Time Series Decomposition",
     "section": "Calendar adjustments",
-    "text": "Calendar adjustments\n\n\nClosing price and volume\nMonthly aggregation\nMonthly total and mean and volume\n\n\n\n\n\n\n\n\n\n\n\n\ngoogle_month &lt;- google |&gt; \n  index_by(month = yearmonth(date)) |&gt; \n  summarise(\n    trading_days = n(),\n    monthly_volume = sum(volume),\n    mean_volume = mean(volume)\n  )\n\ngoogle_month\n\n\n  \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nThe number of trading days in a month can vary due to weekends and holidays, and not because of any economic reason.\nUsing the monthly total volume can be misleading, as months with more trading days will naturally have higher total volumes.\nUsing the mean volume per trading day helps to standardize the data, making it easier to compare across months."
+    "text": "Calendar adjustments\n\nClosing price and volumeMonthly aggregationMonthly total and mean and volume\n\n\n\n\n\n\n\n\n\n\n\ngoogle_month &lt;- google |&gt; \n  index_by(month = yearmonth(date)) |&gt; \n  summarise(\n    trading_days = n(),\n    monthly_volume = sum(volume),\n    mean_volume = mean(volume)\n  )\n\ngoogle_month\n\n\n  \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nThe number of trading days in a month can vary due to weekends and holidays, and not because of any economic reason.\nUsing the monthly total volume can be misleading, as months with more trading days will naturally have higher total volumes.\nUsing the mean volume per trading day helps to standardize the data, making it easier to compare across months."
   },
   {
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#population-adjustments",
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#population-adjustments",
     "title": "Time Series Decomposition",
     "section": "Population adjustments",
-    "text": "Population adjustments\n\n\n\n\n\n\nIs the Mexican economy really that similar Australia’s economy? Is Iceland’s economy really that small?\n\nA greater GDP can be interpreted as having a larger economy, and a better life standard, but this is not always the case.\nComparing GDP across countries with different population sizes can be misleading.\nGDP is often used to measure the economic performance of a country, but it doesn’t account for population size.\nThe higher the population, the higher the GDP tends to be, simply because there are more people contributing to the economy.\nA more meaningful comparison can be made by looking at GDP per capita, which divides the GDP by the population size."
+    "text": "Population adjustments\n\n\n\n\n\n\nIs the Mexican economy really that similar Australia’s economy? Is Iceland’s economy really that small?\n\n\nA greater GDP can be interpreted as having a larger economy, and a better life standard, but this is not always the case.\nComparing GDP across countries with different population sizes can be misleading.\nGDP is often used to measure the economic performance of a country, but it doesn’t account for population size.\nThe higher the population, the higher the GDP tends to be, simply because there are more people contributing to the economy.\nA more meaningful comparison can be made by looking at GDP per capita, which divides the GDP by the population size."
   },
   {
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#section-1",
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#section-1",
     "title": "Time Series Decomposition",
     "section": "",
-    "text": "Population\nGDP per capita\n\n\n\n\n\n\n\n\n\nThe population sizes of these countries are very different.\n\n\n\n\n\n\n\n\n\nGDP per capita provides a more accurate representation of the economic well-being of individuals in a country.\nIt is clear now that Iceland and Australia have a much higher GDP per capita compared to Mexico, indicating a higher standard of living for its residents."
+    "text": "PopulationGDP per capita\n\n\n\n\n\n\n\n\nThe population sizes of these countries are very different.\n\n\n\n\n\n\n\n\n\n\nGDP per capita provides a more accurate representation of the economic well-being of individuals in a country.\nIt is clear now that Iceland and Australia have a much higher GDP per capita compared to Mexico, indicating a higher standard of living for its residents."
   },
   {
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#inflation-adjustments",
@@ -808,56 +808,112 @@
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#inflation-adjustment-formula",
     "title": "Time Series Decomposition",
     "section": "Inflation adjustment formula",
-    "text": "Inflation adjustment formula\n\\[\nx_t = \\frac{y_t}{z_t} * z_{2010}\n\\]\nwhere:\n\n\n\\(y_t\\) is the original value at time \\(t\\) (nominal value).\n\n\\(z_t\\) is the price index at time \\(t\\) (e.g., INPC).\n\n\\(z_{2010}\\) is the price index in the base year (2010 in this case).\n\n\\(x_t\\) is the inflation-adjusted value at time \\(t\\) (real value)."
+    "text": "Inflation adjustment formula\n\\[\nx_t = \\frac{y_t}{z_t} * z_{2010}\n\\]\n\nwhere:\n\n\\(y_t\\) is the original value at time \\(t\\) (nominal value).\n\\(z_t\\) is the price index at time \\(t\\) (e.g., INPC).\n\\(z_{2010}\\) is the price index in the base year (2010 in this case).\n\\(x_t\\) is the inflation-adjusted value at time \\(t\\) (real value)."
   },
   {
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#inflation-adjustment-example",
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#inflation-adjustment-example",
     "title": "Time Series Decomposition",
     "section": "Inflation adjustment example",
-    "text": "Inflation adjustment example\n\n\nNominal values\nReal values\nNominal vs. Real values\n\n\n\n\n\n\n\n\n\n\n\n\n\n\naus_economy &lt;- global_economy |&gt;\n  filter(Code == \"AUS\")\n\n\nprint_retail &lt;- print_retail |&gt; \n  left_join(aus_economy, by = \"Year\") |&gt;\n  mutate(Adjusted_turnover = Turnover / CPI)"
+    "text": "Inflation adjustment example\n\nNominal valuesReal valuesNominal vs. Real values\n\n\n\n\n\n\n\n\n\n\n\n\n\n\naus_economy &lt;- global_economy |&gt;\n  filter(Code == \"AUS\")\n\n\nprint_retail &lt;- print_retail |&gt; \n  left_join(aus_economy, by = \"Year\") |&gt;\n  mutate(Adjusted_turnover = Turnover / CPI)"
   },
   {
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#types-of-decompositions",
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#types-of-decompositions",
     "title": "Time Series Decomposition",
     "section": "Types of Decompositions",
-    "text": "Types of Decompositions\nA decomposition splits the time series into its underlying components:\n\nTrend-cycle\nSeasonal pattern(s)\n\nAnd what’s left of it we simply call it a “remainder component”.\nIn general, there are two types of decompositions:\nAdditive decomposition\n\\[\ny_t = T_t + S_t + R_t\n\\]\nMultiplicative decomposition\n\\[\ny_t = T_t \\times S_t \\times R_t \\\\\n\\]\n\nWhich one should you use?\n\n\nIf the seasonal variation is roughly constant over time, use an additive decomposition.\nIf the seasonal variation increases or decreases with the level of the series, use a multiplicative decomposition.\nIf you’re unsure, you can try both and see which one provides a better fit.\n\nA multiplicative decomposition is equivalent to an additive decomposition of the log-transformed series:\n\\[\ny_t = T_t \\times S_t \\times R_t\n\\]\nis equivalent to\n\\[\n\\log(y_t) = \\log(T_t) + \\log(S_t) + \\log(R_t)\n\\]"
+    "text": "Types of Decompositions\n\nA decomposition splits the time series into its underlying components:\n\nTrend-cycle\nSeasonal pattern(s)\n\nAnd what’s left of it we simply call it a “remainder component”.\nIn general, there are two types of decompositions:\n\nAdditive decomposition\n\\[\ny_t = T_t + S_t + R_t\n\\]\nMultiplicative decomposition\n\\[\ny_t = T_t \\times S_t \\times R_t \\\\\n\\]\n\nWhich one should you use?\n\n\n\nIf the seasonal variation is roughly constant over time, use an additive decomposition.\nIf the seasonal variation increases or decreases with the level of the series, use a multiplicative decomposition.\nIf you’re unsure, you can try both and see which one provides a better fit.\n\nA multiplicative decomposition is equivalent to an additive decomposition of the log-transformed series:\n\\[\ny_t = T_t \\times S_t \\times R_t\n\\]\nis equivalent to\n\\[\n\\log(y_t) = \\log(T_t) + \\log(S_t) + \\log(R_t)\n\\]"
   },
   {
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#seasonally-adjusted-series",
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#seasonally-adjusted-series",
     "title": "Time Series Decomposition",
     "section": "Seasonally adjusted series",
-    "text": "Seasonally adjusted series\nOne use of decomposition is to obtain a seasonally adjusted series, which is the original series with the seasonal component removed.\nSeasonally adjusted series can be useful for: - Identifying and analyzing the trend-cycle component without the influence of seasonal fluctuations. - Making comparisons across different time periods without seasonal effects.\n\nFor an additive decomposition, the seasonally adjusted series is given by: \\[\ny_t - S_t\n\\]\n\nFor a multiplicative decomposition, the seasonally adjusted series is given by: \\[\n\\frac{y_t}{S_t}\n\\]"
+    "text": "Seasonally adjusted series\n\nOne use of decomposition is to obtain a seasonally adjusted series, which is the original series with the seasonal component removed.\nSeasonally adjusted series can be useful for: - Identifying and analyzing the trend-cycle component without the influence of seasonal fluctuations. - Making comparisons across different time periods without seasonal effects.\n\n\nFor an additive decomposition, the seasonally adjusted series is given by: \\[\ny_t - S_t\n\\]\nFor a multiplicative decomposition, the seasonally adjusted series is given by: \\[\n\\frac{y_t}{S_t}\n\\]"
   },
   {
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#classical-decomposition",
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#classical-decomposition",
     "title": "Time Series Decomposition",
     "section": "Classical decomposition",
-    "text": "Classical decomposition\nIn a classical decomposition, the trend-cycle component is estimated using a moving average. Then, the seasonal component is estimated by averaging the detrended values for each season. Finally, the remainder component is obtained by subtracting the trend-cycle and seasonal components from the original series.\nAn \\(m\\) order moving average is given by:\n\\[\n\\hat{T}_{t}=\\frac{1}{m} \\sum_{j=-k}^{k} y_{t+j}\n\\]\nwhere \\(k = (m-1)/2\\)."
+    "text": "Classical decomposition\nIn a classical decomposition, the trend-cycle component is estimated using a moving average. Then, the seasonal component is estimated by averaging the detrended values for each season. Finally, the remainder component is obtained by subtracting the trend-cycle and seasonal components from the original series.\nAn \\(m\\) order moving average is given by:\n\\[\n\\hat{T}_{t}=\\frac{1}{m} \\sum_{j=-k}^{k} y_{t+j}\n\\]\nwhere \\(k = (m-1)/2\\)3."
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#example-of-a-classical-decomposition",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#example-of-a-classical-decomposition",
+    "title": "Time Series Decomposition",
+    "section": "Example of a classical decomposition",
+    "text": "Example of a classical decomposition\n\nmexretail"
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#example-of-a-classical-decomposition-1",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#example-of-a-classical-decomposition-1",
+    "title": "Time Series Decomposition",
+    "section": "Example of a classical decomposition",
+    "text": "Example of a classical decomposition\n\nmexretail |&gt; \n1  model()\n\n\n1\n\nThe function model() is used to specify one or more models for the tsibble."
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#example-of-a-classical-decomposition-2",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#example-of-a-classical-decomposition-2",
+    "title": "Time Series Decomposition",
+    "section": "Example of a classical decomposition",
+    "text": "Example of a classical decomposition\n\nmexretail |&gt; \n  model(\n2    classical = classical_decomposition()\n  )\n\n\n2\n\nInside the model() function, we specify the type of models we want to use."
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#example-of-a-classical-decomposition-3",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#example-of-a-classical-decomposition-3",
+    "title": "Time Series Decomposition",
+    "section": "Example of a classical decomposition",
+    "text": "Example of a classical decomposition\n\nmexretail |&gt; \n  model(\n2    classical = classical_decomposition(y, type = \"additive\")\n  )\n\n\n2\n\nIn any model used, the first thing we need to specify is our forecast variable. Then, depending on the model used, we can specify additional parameters. The model() function yields a mable4, which is a table that contains the fitted models for each time series in the tsibble."
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#example-of-a-classical-decomposition-4",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#example-of-a-classical-decomposition-4",
+    "title": "Time Series Decomposition",
+    "section": "Example of a classical decomposition",
+    "text": "Example of a classical decomposition\n\nmexretail |&gt; \n  model(\n    classical = classical_decomposition(y, type = \"additive\") \n  ) |&gt; \n3  components()\n\n\n3\n\nThe components() function is used to extract the components of the decomposition (trend-cycle, seasonal, and remainder) from the fitted models in the mable. It also provides the seasonally adjusted series."
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#example-of-a-classical-decomposition-5",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#example-of-a-classical-decomposition-5",
+    "title": "Time Series Decomposition",
+    "section": "Example of a classical decomposition",
+    "text": "Example of a classical decomposition\n\n1mexretail_dcmp &lt;- mexretail |&gt;\n2  model(\n3    classical = classical_decomposition(y, type = \"additive\")\n  ) |&gt; \n4  components()\n\n5mexretail_dcmp\n\n\n1\n\nWe start with our original tsibble.\n\n2\n\nInside the model() function, we specify the type of models we want to use.\n\n3\n\nIn any model used, the first thing we need to specify is our forecast variable. Then, depending on the model used, we can specify additional parameters. The model() function yields a mable5, which is a table that contains the fitted models for each time series in the tsibble.\n\n4\n\nThe components() function is used to extract the components of the decomposition (trend-cycle, seasonal, and remainder) from the fitted models in the mable. It also provides the seasonally adjusted series.\n\n5\n\nFinally, we store the result."
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#example-of-a-classical-decomposition-6",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#example-of-a-classical-decomposition-6",
+    "title": "Time Series Decomposition",
+    "section": "Example of a classical decomposition",
+    "text": "Example of a classical decomposition\n\nmexretail_dcmp |&gt; \n  autoplot()"
   },
   {
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#problems-of-using-a-classical-decomposition",
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#problems-of-using-a-classical-decomposition",
     "title": "Time Series Decomposition",
     "section": "Problems of using a Classical decomposition",
-    "text": "Problems of using a Classical decomposition\n\nThe trend-cycle component is not estimated at the beginning and end of the series. This can be problematic if you want to forecast the series.\nIt also tends to over-smooth rises and falls.\nIt assumes that the seasonal component is constant over time, which may not be the case in many real-world scenarios.\nIt is not robust to outliers, which can significantly affect the estimates of the components.\n\n\n\n\n\n\n\nNote\n\n\nBecause of all of this, it is not recommended to use classical decomposition for forecasting."
+    "text": "Problems of using a Classical decomposition\n\nThe trend-cycle component is not estimated at the beginning and end of the series. This can be problematic if you want to forecast the series.\nIt also tends to over-smooth rises and falls.\nIt assumes that the seasonal component is constant over time, which may not be the case in many real-world scenarios.\nIt is not robust to outliers, which can significantly affect the estimates of the components.\n\n\n\n\n\n\n\n\nWarning\n\n\nIt is not recommended to use classical decomposition for forecasting because of these issues."
   },
   {
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#stl-decomposition",
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#stl-decomposition",
     "title": "Time Series Decomposition",
     "section": "STL decomposition",
-    "text": "STL decomposition\nSTL (Seasonal and Trend decomposition using Loess) is a more advanced method for decomposing time series data. It uses locally weighted regression (loess) to estimate the trend-cycle and seasonal components. STL is more flexible than classical decomposition and can handle changes in the seasonal component over time.\n\nIt can handle any type of seasonality (not just fixed periods).\nIt can handle changes in the seasonal component over time.\nIt is robust to outliers.\nIt can be used for forecasting.\nIt provides a way to control the smoothness of the trend and seasonal components through parameters.\n\n\n\n\n\n\n\n\nSTL cannot automatically handle calendar or holiday variations.\nIt only provides methods for additive models. If your data has multiplicative seasonality, you should log-transform the data before applying STL."
+    "text": "STL decomposition\n\nSTL (Seasonal and Trend decomposition using Loess) is a more advanced method for decomposing time series data6. It uses locally weighted regression (loess) to estimate the trend-cycle and seasonal components. STL is more flexible than classical decomposition and can handle changes in the seasonal component over time.\n\n\nIt can handle any type of seasonality (not just fixed periods).\nIt can handle changes in the seasonal component over time.\nIt is robust to outliers.\nIt can be used for forecasting.\nIt provides a way to control the smoothness of the trend and seasonal components through parameters.\n\n\n\n\n\n\n\n\nSTL cannot automatically handle calendar or holiday variations.\nIt only provides methods for additive models. If your data has multiplicative seasonality, you should log-transform the data before applying STL."
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#stl-in-r-using-fable",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#stl-in-r-using-fable",
+    "title": "Time Series Decomposition",
+    "section": "STL in R using fable",
+    "text": "STL in R using fable"
   },
   {
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#footnotes",
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#footnotes",
     "title": "Time Series Decomposition",
     "section": "Footnotes",
-    "text": "Footnotes\n\nA time series can have multiple seasonal patterns.\nThey usually last at least 2 years."
+    "text": "Footnotes\n\n\nA time series can have multiple seasonal patterns.\nThey usually last at least 2 years.\nIn R, you can compute any moving average by using the slider::slide_dbl() function\nshort for “model table”\nshort for “model table”\nThere are other decomposition methods primarily used by official statistics agencies, such as X-11, X-12-ARIMA, and TRAMO/SEATS. However, these methods are not as widely used in the forecasting community as STL. For more on these, see this."
   },
   {
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html",
@@ -875,7 +931,7 @@
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#ts-patterns",
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#ts-patterns",
     "title": "Time Series Decomposition",
-    "section": "\n1.1 TS Patterns",
+    "section": "1.1 TS Patterns",
     "text": "1.1 TS Patterns\nTime series can have distinct patterns:\n\n\nTrend: A long-term increase/decrease in the data.\nSeasonal: Fluctuations in the time series with a fixed and known period1.\nCycles: More commonly known as “Business cycles”, refer to rises and falls that are not of a fixed frequency2.\nChanges in variability: Changes in the spread of the data over time, i. e., an increase/decrease in the variance as the level of the series increases/decreases.",
     "crumbs": [
       "Modules",
@@ -887,7 +943,7 @@
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#components-of-a-time-series",
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#components-of-a-time-series",
     "title": "Time Series Decomposition",
-    "section": "\n1.2 Components of a Time Series",
+    "section": "1.2 Components of a Time Series",
     "text": "1.2 Components of a Time Series\nA time series can be decomposed into the following components:\n\n\nSeasonal component (S): The repeating short-term cycle in the series.\nTrend-cycle component (T): The long-term progression of the series.\nResidual component (R): The residuals or “noise” left after removing the seasonal and trend-cycle components.",
     "crumbs": [
       "Modules",
@@ -899,8 +955,8 @@
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#log-transformations",
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#log-transformations",
     "title": "Time Series Decomposition",
-    "section": "\n2.1 Log transformations",
-    "text": "2.1 Log transformations\n\n\nSeries in levels\nLog\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nTransformations and adjustments help us simplify the patterns in our data, and can improve our forecasts’ accuracy.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLog transformations are often useful when the data presents an increasing/decreasing variation with the level of the series.\nLog transformations are very interpretable: changes in a log value are percent changes on the original scale.",
+    "section": "2.1 Log transformations",
+    "text": "2.1 Log transformations\n\nSeries in levelsLog\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nTransformations and adjustments help us simplify the patterns in our data, and can improve our forecasts’ accuracy.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLog transformations are often useful when the data presents an increasing/decreasing variation with the level of the series.\nLog transformations are very interpretable: changes in a log value are percent changes on the original scale.",
     "crumbs": [
       "Modules",
       "1. Forecasting models based on decomposition methods",
@@ -911,7 +967,7 @@
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#box-cox-transformations",
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#box-cox-transformations",
     "title": "Time Series Decomposition",
-    "section": "\n2.2 Box-Cox transformations",
+    "section": "2.2 Box-Cox transformations",
     "text": "2.2 Box-Cox transformations\n\\[\nw_t= \\begin{cases}\\log \\left(y_t\\right) & \\text { if } \\lambda=0 \\\\ \\left(\\operatorname{sign}\\left(y_t\\right)\\left|y_t\\right|^\\lambda-1\\right) / \\lambda & \\text { otherwise }\\end{cases}\n\\]\n\nIn a Box-Cox transformation, the log is always a natural logarithm. The other case is just a power transformation with scaling.\n\nWhat happens when \\(\\lambda = 1\\)?\n\n\n\n\n\n\nYou should choose a value of \\(\\lambda\\) that makes the size of the seasonal variation the same throughout the series.",
     "crumbs": [
       "Modules",
@@ -923,7 +979,7 @@
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#how-can-we-choose-the-value-of-lambda",
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#how-can-we-choose-the-value-of-lambda",
     "title": "Time Series Decomposition",
-    "section": "\n2.3 How can we choose the value of \\(\\lambda\\)?",
+    "section": "2.3 How can we choose the value of \\(\\lambda\\)?",
     "text": "2.3 How can we choose the value of \\(\\lambda\\)?\nWe can use the guerrero feature to choose an optimal lambda.\n\naus_production |&gt; \n  features(Gas, features = guerrero)\n\n# A tibble: 1 × 1\n  lambda_guerrero\n            &lt;dbl&gt;\n1           0.110",
     "crumbs": [
       "Modules",
@@ -935,8 +991,8 @@
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#calendar-adjustments",
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#calendar-adjustments",
     "title": "Time Series Decomposition",
-    "section": "\n3.1 Calendar adjustments",
-    "text": "3.1 Calendar adjustments\n\n\nClosing price and volume\nMonthly aggregation\nMonthly total and mean and volume\n\n\n\n\n\n\n\n\n\n\n\n\ngoogle_month &lt;- google |&gt; \n  index_by(month = yearmonth(date)) |&gt; \n  summarise(\n    trading_days = n(),\n    monthly_volume = sum(volume),\n    mean_volume = mean(volume)\n  )\n\ngoogle_month\n\n\n  \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nThe number of trading days in a month can vary due to weekends and holidays, and not because of any economic reason.\nUsing the monthly total volume can be misleading, as months with more trading days will naturally have higher total volumes.\nUsing the mean volume per trading day helps to standardize the data, making it easier to compare across months.",
+    "section": "3.1 Calendar adjustments",
+    "text": "3.1 Calendar adjustments\n\nClosing price and volumeMonthly aggregationMonthly total and mean and volume\n\n\n\n\n\n\n\n\n\n\n\ngoogle_month &lt;- google |&gt; \n  index_by(month = yearmonth(date)) |&gt; \n  summarise(\n    trading_days = n(),\n    monthly_volume = sum(volume),\n    mean_volume = mean(volume)\n  )\n\ngoogle_month\n\n\n  \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nThe number of trading days in a month can vary due to weekends and holidays, and not because of any economic reason.\nUsing the monthly total volume can be misleading, as months with more trading days will naturally have higher total volumes.\nUsing the mean volume per trading day helps to standardize the data, making it easier to compare across months.",
     "crumbs": [
       "Modules",
       "1. Forecasting models based on decomposition methods",
@@ -947,7 +1003,7 @@
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#population-adjustments",
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#population-adjustments",
     "title": "Time Series Decomposition",
-    "section": "\n3.2 Population adjustments",
+    "section": "3.2 Population adjustments",
     "text": "3.2 Population adjustments\n\n\n\n\n\n\nIs the Mexican economy really that similar Australia’s economy? Is Iceland’s economy really that small?\n\n\nA greater GDP can be interpreted as having a larger economy, and a better life standard, but this is not always the case.\nComparing GDP across countries with different population sizes can be misleading.\nGDP is often used to measure the economic performance of a country, but it doesn’t account for population size.\nThe higher the population, the higher the GDP tends to be, simply because there are more people contributing to the economy.\nA more meaningful comparison can be made by looking at GDP per capita, which divides the GDP by the population size.",
     "crumbs": [
       "Modules",
@@ -959,8 +1015,8 @@
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#section-1",
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#section-1",
     "title": "Time Series Decomposition",
-    "section": "\n3.3 ",
-    "text": "3.3 \n\n\nPopulation\nGDP per capita\n\n\n\n\n\n\n\n\n\nThe population sizes of these countries are very different.\n\n\n\n\n\n\n\n\n\n\nGDP per capita provides a more accurate representation of the economic well-being of individuals in a country.\nIt is clear now that Iceland and Australia have a much higher GDP per capita compared to Mexico, indicating a higher standard of living for its residents.",
+    "section": "3.3 ",
+    "text": "3.3 \n\nPopulationGDP per capita\n\n\n\n\n\n\n\n\nThe population sizes of these countries are very different.\n\n\n\n\n\n\n\n\n\n\nGDP per capita provides a more accurate representation of the economic well-being of individuals in a country.\nIt is clear now that Iceland and Australia have a much higher GDP per capita compared to Mexico, indicating a higher standard of living for its residents.",
     "crumbs": [
       "Modules",
       "1. Forecasting models based on decomposition methods",
@@ -971,7 +1027,7 @@
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#inflation-adjustments",
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#inflation-adjustments",
     "title": "Time Series Decomposition",
-    "section": "\n3.4 Inflation adjustments",
+    "section": "3.4 Inflation adjustments",
     "text": "3.4 Inflation adjustments\n\n\nInflation is the rate at which the general level of prices for goods and services is rising, and subsequently, purchasing power is falling.\nTo make meaningful comparisons of economic data over time, it is essential to adjust for inflation.\nThis adjustment is typically done using a price index, such as the Consumer Price Index (CPI). In Mexico, the National Consumer Price Index (INPC) is used. INEGI provides this data.",
     "crumbs": [
       "Modules",
@@ -983,8 +1039,8 @@
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#inflation-adjustment-formula",
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#inflation-adjustment-formula",
     "title": "Time Series Decomposition",
-    "section": "\n3.5 Inflation adjustment formula",
-    "text": "3.5 Inflation adjustment formula\n\\[\nx_t = \\frac{y_t}{z_t} * z_{2010}\n\\]\n\nwhere:\n\n\n\\(y_t\\) is the original value at time \\(t\\) (nominal value).\n\n\\(z_t\\) is the price index at time \\(t\\) (e.g., INPC).\n\n\\(z_{2010}\\) is the price index in the base year (2010 in this case).\n\n\\(x_t\\) is the inflation-adjusted value at time \\(t\\) (real value).",
+    "section": "3.5 Inflation adjustment formula",
+    "text": "3.5 Inflation adjustment formula\n\\[\nx_t = \\frac{y_t}{z_t} * z_{2010}\n\\]\n\nwhere:\n\n\\(y_t\\) is the original value at time \\(t\\) (nominal value).\n\\(z_t\\) is the price index at time \\(t\\) (e.g., INPC).\n\\(z_{2010}\\) is the price index in the base year (2010 in this case).\n\\(x_t\\) is the inflation-adjusted value at time \\(t\\) (real value).",
     "crumbs": [
       "Modules",
       "1. Forecasting models based on decomposition methods",
@@ -995,8 +1051,8 @@
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#inflation-adjustment-example",
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#inflation-adjustment-example",
     "title": "Time Series Decomposition",
-    "section": "\n3.6 Inflation adjustment example",
-    "text": "3.6 Inflation adjustment example\n\n\nNominal values\nReal values\nNominal vs. Real values\n\n\n\n\n\n\n\n\n\n\n\n\n\n\naus_economy &lt;- global_economy |&gt;\n  filter(Code == \"AUS\")\n\n\nprint_retail &lt;- print_retail |&gt; \n  left_join(aus_economy, by = \"Year\") |&gt;\n  mutate(Adjusted_turnover = Turnover / CPI)",
+    "section": "3.6 Inflation adjustment example",
+    "text": "3.6 Inflation adjustment example\n\nNominal valuesReal valuesNominal vs. Real values\n\n\n\n\n\n\n\n\n\n\n\n\n\n\naus_economy &lt;- global_economy |&gt;\n  filter(Code == \"AUS\")\n\n\nprint_retail &lt;- print_retail |&gt; \n  left_join(aus_economy, by = \"Year\") |&gt;\n  mutate(Adjusted_turnover = Turnover / CPI)",
     "crumbs": [
       "Modules",
       "1. Forecasting models based on decomposition methods",
@@ -1007,8 +1063,8 @@
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#types-of-decompositions",
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#types-of-decompositions",
     "title": "Time Series Decomposition",
-    "section": "\n4.1 Types of Decompositions",
-    "text": "4.1 Types of Decompositions\n\nA decomposition splits the time series into its underlying components:\n\nTrend-cycle\nSeasonal pattern(s)\n\nAnd what’s left of it we simply call it a “remainder component”.\nIn general, there are two types of decompositions:\n\n\n4.1.1 Additive decomposition\n\\[\ny_t = T_t + S_t + R_t\n\\]\n\n4.1.2 Multiplicative decomposition\n\\[\ny_t = T_t \\times S_t \\times R_t \\\\\n\\]\n\nWhich one should you use?\n\n\n\nIf the seasonal variation is roughly constant over time, use an additive decomposition.\nIf the seasonal variation increases or decreases with the level of the series, use a multiplicative decomposition.\nIf you’re unsure, you can try both and see which one provides a better fit.\n\nA multiplicative decomposition is equivalent to an additive decomposition of the log-transformed series:\n\\[\ny_t = T_t \\times S_t \\times R_t\n\\]\nis equivalent to\n\\[\n\\log(y_t) = \\log(T_t) + \\log(S_t) + \\log(R_t)\n\\]",
+    "section": "4.1 Types of Decompositions",
+    "text": "4.1 Types of Decompositions\n\nA decomposition splits the time series into its underlying components:\n\nTrend-cycle\nSeasonal pattern(s)\n\nAnd what’s left of it we simply call it a “remainder component”.\nIn general, there are two types of decompositions:\n\n\n4.1.1 Additive decomposition\n\\[\ny_t = T_t + S_t + R_t\n\\]\n\n\n4.1.2 Multiplicative decomposition\n\\[\ny_t = T_t \\times S_t \\times R_t \\\\\n\\]\n\nWhich one should you use?\n\n\n\nIf the seasonal variation is roughly constant over time, use an additive decomposition.\nIf the seasonal variation increases or decreases with the level of the series, use a multiplicative decomposition.\nIf you’re unsure, you can try both and see which one provides a better fit.\n\nA multiplicative decomposition is equivalent to an additive decomposition of the log-transformed series:\n\\[\ny_t = T_t \\times S_t \\times R_t\n\\]\nis equivalent to\n\\[\n\\log(y_t) = \\log(T_t) + \\log(S_t) + \\log(R_t)\n\\]",
     "crumbs": [
       "Modules",
       "1. Forecasting models based on decomposition methods",
@@ -1019,8 +1075,8 @@
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#seasonally-adjusted-series",
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#seasonally-adjusted-series",
     "title": "Time Series Decomposition",
-    "section": "\n4.2 Seasonally adjusted series",
-    "text": "4.2 Seasonally adjusted series\n\nOne use of decomposition is to obtain a seasonally adjusted series, which is the original series with the seasonal component removed.\nSeasonally adjusted series can be useful for: - Identifying and analyzing the trend-cycle component without the influence of seasonal fluctuations. - Making comparisons across different time periods without seasonal effects.\n\n\nFor an additive decomposition, the seasonally adjusted series is given by: \\[\ny_t - S_t\n\\]\n\nFor a multiplicative decomposition, the seasonally adjusted series is given by: \\[\n\\frac{y_t}{S_t}\n\\]",
+    "section": "4.2 Seasonally adjusted series",
+    "text": "4.2 Seasonally adjusted series\n\nOne use of decomposition is to obtain a seasonally adjusted series, which is the original series with the seasonal component removed.\nSeasonally adjusted series can be useful for: - Identifying and analyzing the trend-cycle component without the influence of seasonal fluctuations. - Making comparisons across different time periods without seasonal effects.\n\n\nFor an additive decomposition, the seasonally adjusted series is given by: \\[\ny_t - S_t\n\\]\nFor a multiplicative decomposition, the seasonally adjusted series is given by: \\[\n\\frac{y_t}{S_t}\n\\]",
     "crumbs": [
       "Modules",
       "1. Forecasting models based on decomposition methods",
@@ -1031,8 +1087,32 @@
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#classical-decomposition",
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#classical-decomposition",
     "title": "Time Series Decomposition",
-    "section": "\n4.3 Classical decomposition",
-    "text": "4.3 Classical decomposition\nIn a classical decomposition, the trend-cycle component is estimated using a moving average. Then, the seasonal component is estimated by averaging the detrended values for each season. Finally, the remainder component is obtained by subtracting the trend-cycle and seasonal components from the original series.\nAn \\(m\\) order moving average is given by:\n\\[\n\\hat{T}_{t}=\\frac{1}{m} \\sum_{j=-k}^{k} y_{t+j}\n\\]\nwhere \\(k = (m-1)/2\\).",
+    "section": "4.3 Classical decomposition",
+    "text": "4.3 Classical decomposition\nIn a classical decomposition, the trend-cycle component is estimated using a moving average. Then, the seasonal component is estimated by averaging the detrended values for each season. Finally, the remainder component is obtained by subtracting the trend-cycle and seasonal components from the original series.\nAn \\(m\\) order moving average is given by:\n\\[\n\\hat{T}_{t}=\\frac{1}{m} \\sum_{j=-k}^{k} y_{t+j}\n\\]\nwhere \\(k = (m-1)/2\\)3.",
+    "crumbs": [
+      "Modules",
+      "1. Forecasting models based on decomposition methods",
+      "1.2 Time Series Decomposition"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#example-of-a-classical-decomposition-5",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#example-of-a-classical-decomposition-5",
+    "title": "Time Series Decomposition",
+    "section": "4.4 Example of a classical decomposition",
+    "text": "4.4 Example of a classical decomposition\n\n1mexretail_dcmp &lt;- mexretail |&gt;\n2  model(\n3    classical = classical_decomposition(y, type = \"additive\")\n  ) |&gt; \n4  components()\n\n5mexretail_dcmp\n\n\n1\n\nWe start with our original tsibble.\n\n2\n\nInside the model() function, we specify the type of models we want to use.\n\n3\n\nIn any model used, the first thing we need to specify is our forecast variable. Then, depending on the model used, we can specify additional parameters. The model() function yields a mable4, which is a table that contains the fitted models for each time series in the tsibble.\n\n4\n\nThe components() function is used to extract the components of the decomposition (trend-cycle, seasonal, and remainder) from the fitted models in the mable. It also provides the seasonally adjusted series.\n\n5\n\nFinally, we store the result.",
+    "crumbs": [
+      "Modules",
+      "1. Forecasting models based on decomposition methods",
+      "1.2 Time Series Decomposition"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#example-of-a-classical-decomposition-6",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#example-of-a-classical-decomposition-6",
+    "title": "Time Series Decomposition",
+    "section": "4.5 Example of a classical decomposition",
+    "text": "4.5 Example of a classical decomposition\n\nmexretail_dcmp |&gt; \n  autoplot()\n\nWarning: Removed 6 rows containing missing values or values outside the scale range\n(`geom_line()`).",
     "crumbs": [
       "Modules",
       "1. Forecasting models based on decomposition methods",
@@ -1043,8 +1123,8 @@
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#problems-of-using-a-classical-decomposition",
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#problems-of-using-a-classical-decomposition",
     "title": "Time Series Decomposition",
-    "section": "\n4.4 Problems of using a Classical decomposition",
-    "text": "4.4 Problems of using a Classical decomposition\n\nThe trend-cycle component is not estimated at the beginning and end of the series. This can be problematic if you want to forecast the series.\nIt also tends to over-smooth rises and falls.\nIt assumes that the seasonal component is constant over time, which may not be the case in many real-world scenarios.\nIt is not robust to outliers, which can significantly affect the estimates of the components.\n\n\n\n\n\n\n\n\nNote\n\n\n\nBecause of all of this, it is not recommended to use classical decomposition for forecasting.",
+    "section": "4.6 Problems of using a Classical decomposition",
+    "text": "4.6 Problems of using a Classical decomposition\n\nThe trend-cycle component is not estimated at the beginning and end of the series. This can be problematic if you want to forecast the series.\nIt also tends to over-smooth rises and falls.\nIt assumes that the seasonal component is constant over time, which may not be the case in many real-world scenarios.\nIt is not robust to outliers, which can significantly affect the estimates of the components.\n\n\n\n\n\n\n\n\nWarning\n\n\n\nIt is not recommended to use classical decomposition for forecasting because of these issues.",
     "crumbs": [
       "Modules",
       "1. Forecasting models based on decomposition methods",
@@ -1055,8 +1135,20 @@
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#stl-decomposition",
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#stl-decomposition",
     "title": "Time Series Decomposition",
-    "section": "\n4.5 STL decomposition",
-    "text": "4.5 STL decomposition\n\nSTL (Seasonal and Trend decomposition using Loess) is a more advanced method for decomposing time series data. It uses locally weighted regression (loess) to estimate the trend-cycle and seasonal components. STL is more flexible than classical decomposition and can handle changes in the seasonal component over time.\n\n\n\nIt can handle any type of seasonality (not just fixed periods).\nIt can handle changes in the seasonal component over time.\nIt is robust to outliers.\nIt can be used for forecasting.\nIt provides a way to control the smoothness of the trend and seasonal components through parameters.\n\n\n\n\n\n\n\n\nSTL cannot automatically handle calendar or holiday variations.\nIt only provides methods for additive models. If your data has multiplicative seasonality, you should log-transform the data before applying STL.",
+    "section": "4.7 STL decomposition",
+    "text": "4.7 STL decomposition\n\nSTL (Seasonal and Trend decomposition using Loess) is a more advanced method for decomposing time series data5. It uses locally weighted regression (loess) to estimate the trend-cycle and seasonal components. STL is more flexible than classical decomposition and can handle changes in the seasonal component over time.\n\n\n\nIt can handle any type of seasonality (not just fixed periods).\nIt can handle changes in the seasonal component over time.\nIt is robust to outliers.\nIt can be used for forecasting.\nIt provides a way to control the smoothness of the trend and seasonal components through parameters.\n\n\n\n\n\n\n\n\nSTL cannot automatically handle calendar or holiday variations.\nIt only provides methods for additive models. If your data has multiplicative seasonality, you should log-transform the data before applying STL.",
+    "crumbs": [
+      "Modules",
+      "1. Forecasting models based on decomposition methods",
+      "1.2 Time Series Decomposition"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#stl-in-r-using-fable",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#stl-in-r-using-fable",
+    "title": "Time Series Decomposition",
+    "section": "4.8 STL in R using fable",
+    "text": "4.8 STL in R using fable",
     "crumbs": [
       "Modules",
       "1. Forecasting models based on decomposition methods",
@@ -1068,7 +1160,7 @@
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#footnotes",
     "title": "Time Series Decomposition",
     "section": "Footnotes",
-    "text": "Footnotes\n\nA time series can have multiple seasonal patterns.↩︎\nThey usually last at least 2 years.↩︎",
+    "text": "Footnotes\n\n\nA time series can have multiple seasonal patterns.↩︎\nThey usually last at least 2 years.↩︎\nIn R, you can compute any moving average by using the slider::slide_dbl() function↩︎\nshort for “model table”↩︎\nThere are other decomposition methods primarily used by official statistics agencies, such as X-11, X-12-ARIMA, and TRAMO/SEATS. However, these methods are not as widely used in the forecasting community as STL. For more on these, see this.↩︎",
     "crumbs": [
       "Modules",
       "1. Forecasting models based on decomposition methods",
