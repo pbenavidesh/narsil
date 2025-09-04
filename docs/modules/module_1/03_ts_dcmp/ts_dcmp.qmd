@@ -704,5 +704,84 @@ STL (Seasonal and Trend decomposition using Loess) is a more advanced method for
 
 :::
 
-## STL in R using `fable`
+:::{.content-hidden unless-format="revealjs"}
+
+## STL in R using `fable` {auto-animate="true"}
+
+
+```{r}
+#| label: stl_decomp_1
+
+mexretail_stl <- mexretail |>                                
+  model(                                                      
+    stl = STL(y)
+  ) |> 
+  components()
+```
+
+
+
+## STL in R using `fable` {auto-animate="true"}
+
+
+```{r}
+#| label: stl_decomp_2
+
+mexretail_stl <- mexretail |>                                
+  model(                                                      
+    stl = STL(y ~ trend(window = NULL))
+  ) |> 
+  components()
+```
+
+
+## STL in R using `fable` {auto-animate="true"}
+
+
+```{r}
+#| label: stl_decomp_3
+
+mexretail_stl <- mexretail |>                                
+  model(                                                      
+    stl = STL(y ~ trend()) 
+  ) |> 
+  components()
+```
+
+
+:::
+
+## STL in R using `fable`{auto-animate="true"}
+
+::: {.notes}
+
+The code is basically the same as for the classical decomposition. We just need to change the model used inside the `model()` function.
+
+:::
+
+```{r}
+#| label: stl_decomp_full
+
+mexretail |>                                
+  model(                                                      
+    stl = STL(y ~                            # <1>
+                trend(window = NULL) +       # <2>
+                season(window = "periodic"), # <3>
+              robust = TRUE)                 # <4> 
+  ) |> 
+  components() |> 
+  autoplot()
+```
+
+1. Inside the `STL()` function, we can specify the formula for the decomposition, or don't specify it at all. See [`?STL`](https://feasts.tidyverts.org/reference/STL.html) for more details.
+2. The `trend()` function is used to specify the trend component of the decomposition. The `window` argument controls the smoothness of the trend component. A larger window results in a smoother trend.
+3. The `season()` function is used to specify the seasonal component of the decomposition. The `window` argument controls the smoothness of the seasonal component. Setting it to "periodic" means that the seasonal component will be fixed over time.
+4. The `robust` argument, when set to `TRUE`, makes the STL decomposition more robust to outliers in the data, so the effect of such values is sent to the residual component.
+
+
+::: {.callout-tip collapse="true"}
+## Writing formulas in R
+
+In R, we use "$\sim$" instead of "$=$" in formula specification, i.e., $y \sim mx + b$.
+:::
 
