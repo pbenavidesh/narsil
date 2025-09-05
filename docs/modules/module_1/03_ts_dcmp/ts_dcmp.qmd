@@ -224,7 +224,13 @@ In a Box-Cox transformation, the log is always a natural logarithm. The other ca
 You should choose a value of $\lambda$ that makes the size of the seasonal variation the same throughout the series.
 :::
 
+:::{.content-hidden unless-format="revealjs"}
 ## How can we choose the value of $\lambda$?
+:::
+
+:::{.content-hidden unless-format="html"}
+### How can we choose the value of $\lambda$?
+:::
 
 We can use the `guerrero` feature to choose an optimal lambda.
 
@@ -394,7 +400,13 @@ ggplotly(p, dynamicTicks = TRUE)
 
 :::
 
+:::{.content-hidden unless-format="revealjs"}
 ## Inflation adjustment formula
+:::
+
+:::{.content-hidden unless-format="html"}
+### Inflation adjustment formula
+:::
 
 $$
 x_t = \frac{y_t}{z_t} * z_{2010}
@@ -410,7 +422,17 @@ where:
 
 :::
 
+:::{.content-hidden unless-format="revealjs"}
+
 ## Inflation adjustment example
+
+:::
+
+:::{.content-hidden unless-format="html"}
+
+### Inflation adjustment example
+
+:::
 
 :::{.panel-tabset}
 
@@ -705,8 +727,11 @@ It is not recommended to use classical decomposition for forecasting because of 
 
 # STL decomposition
 
+:::{.content-hidden unless-format="revealjs"}
+
 ## STL decomposition
 
+:::
 
 :::{.notes}
 STL (Seasonal and Trend decomposition using Loess) is a more advanced method for decomposing time series data^[There are other decomposition methods primarily used by official statistics agencies, such as X-11, X-12-ARIMA, and TRAMO/SEATS. However, these methods are not as widely used in the forecasting community as STL. For more on these, see [this](https://otexts.com/fpp3/methods-used-by-official-statistics-agencies.html).]. It uses locally weighted regression (loess) to estimate the trend-cycle and seasonal components. STL is more flexible than classical decomposition and can handle changes in the seasonal component over time.
@@ -773,7 +798,17 @@ mexretail_stl <- mexretail |>
 
 :::
 
+:::{.content-hidden unless-format="revealjs"}
+
 ## STL in R using `fable`{auto-animate="true"}
+
+:::
+
+:::{.content-hidden unless-format="html"}
+
+### STL in R using `fable`{auto-animate="true"}
+
+:::
 
 ::: {.notes}
 
