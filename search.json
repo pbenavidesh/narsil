@@ -829,7 +829,7 @@
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#seasonally-adjusted-series",
     "title": "Time Series Decomposition",
     "section": "Seasonally adjusted series",
-    "text": "Seasonally adjusted series\n\nOne use of decomposition is to obtain a seasonally adjusted series, which is the original series with the seasonal component removed.\nSeasonally adjusted series can be useful for: - Identifying and analyzing the trend-cycle component without the influence of seasonal fluctuations. - Making comparisons across different time periods without seasonal effects.\n\n\nFor an additive decomposition, the seasonally adjusted series is given by: \\[\ny_t - S_t\n\\]\nFor a multiplicative decomposition, the seasonally adjusted series is given by: \\[\n\\frac{y_t}{S_t}\n\\]"
+    "text": "Seasonally adjusted series\n\nOne use of decomposition is to obtain a seasonally adjusted series, which is the original series with the seasonal component removed.\nSeasonally adjusted series can be useful for: - Identifying and analyzing the trend-cycle component without the influence of seasonal fluctuations. - Making comparisons across different time periods without seasonal effects.\n\n\n\n\n\n\n\n\nFor an additive decomposition, the seasonally adjusted series is given by: \\[\ny_t - S_t\n\\]\nFor a multiplicative decomposition, the seasonally adjusted series is given by: \\[\n\\frac{y_t}{S_t}\n\\]"
   },
   {
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#classical-decomposition",
@@ -850,35 +850,35 @@
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#example-of-a-classical-decomposition-1",
     "title": "Time Series Decomposition",
     "section": "Example of a classical decomposition",
-    "text": "Example of a classical decomposition\n\nmexretail |&gt; \n1  model()\n\n\n1\n\nThe function model() is used to specify one or more models for the tsibble."
+    "text": "Example of a classical decomposition\n\nmexretail |&gt; \n  model()"
   },
   {
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#example-of-a-classical-decomposition-2",
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#example-of-a-classical-decomposition-2",
     "title": "Time Series Decomposition",
     "section": "Example of a classical decomposition",
-    "text": "Example of a classical decomposition\n\nmexretail |&gt; \n  model(\n2    classical = classical_decomposition()\n  )\n\n\n2\n\nInside the model() function, we specify the type of models we want to use."
+    "text": "Example of a classical decomposition\n\nmexretail |&gt; \n  model(\n    classical = classical_decomposition() \n  )"
   },
   {
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#example-of-a-classical-decomposition-3",
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#example-of-a-classical-decomposition-3",
     "title": "Time Series Decomposition",
     "section": "Example of a classical decomposition",
-    "text": "Example of a classical decomposition\n\nmexretail |&gt; \n  model(\n2    classical = classical_decomposition(y, type = \"additive\")\n  )\n\n\n2\n\nIn any model used, the first thing we need to specify is our forecast variable. Then, depending on the model used, we can specify additional parameters. The model() function yields a mable4, which is a table that contains the fitted models for each time series in the tsibble."
+    "text": "Example of a classical decomposition\n\nmexretail |&gt; \n  model(\n    classical = classical_decomposition(y, type = \"additive\") \n  )"
   },
   {
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#example-of-a-classical-decomposition-4",
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#example-of-a-classical-decomposition-4",
     "title": "Time Series Decomposition",
     "section": "Example of a classical decomposition",
-    "text": "Example of a classical decomposition\n\nmexretail |&gt; \n  model(\n    classical = classical_decomposition(y, type = \"additive\") \n  ) |&gt; \n3  components()\n\n\n3\n\nThe components() function is used to extract the components of the decomposition (trend-cycle, seasonal, and remainder) from the fitted models in the mable. It also provides the seasonally adjusted series."
+    "text": "Example of a classical decomposition\n\nmexretail |&gt; \n  model(\n    classical = classical_decomposition(y, type = \"additive\") \n  ) |&gt; \n  components()"
   },
   {
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#example-of-a-classical-decomposition-5",
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#example-of-a-classical-decomposition-5",
     "title": "Time Series Decomposition",
     "section": "Example of a classical decomposition",
-    "text": "Example of a classical decomposition\n\n1mexretail_dcmp &lt;- mexretail |&gt;\n2  model(\n3    classical = classical_decomposition(y, type = \"additive\")\n  ) |&gt; \n4  components()\n\n5mexretail_dcmp\n\n\n1\n\nWe start with our original tsibble.\n\n2\n\nInside the model() function, we specify the type of models we want to use.\n\n3\n\nIn any model used, the first thing we need to specify is our forecast variable. Then, depending on the model used, we can specify additional parameters. The model() function yields a mable5, which is a table that contains the fitted models for each time series in the tsibble.\n\n4\n\nThe components() function is used to extract the components of the decomposition (trend-cycle, seasonal, and remainder) from the fitted models in the mable. It also provides the seasonally adjusted series.\n\n5\n\nFinally, we store the result."
+    "text": "Example of a classical decomposition\n\n1mexretail_dcmp &lt;- mexretail |&gt;\n2  model(\n3    classical = classical_decomposition(y, type = \"additive\")\n  ) |&gt; \n4  components()\n\n5mexretail_dcmp\n\n\n1\n\nWe start with our original tsibble.\n\n2\n\nInside the model() function, we specify the type of models we want to use.\n\n3\n\nIn any model used, the first thing we need to specify is our forecast variable. Then, depending on the model used, we can specify additional parameters. The model() function yields a mable4, which is a table that contains the fitted models for each time series in the tsibble.\n\n4\n\nThe components() function is used to extract the components of the decomposition (trend-cycle, seasonal, and remainder) from the fitted models in the mable. It also provides the seasonally adjusted series.\n\n5\n\nFinally, we store the result."
   },
   {
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#example-of-a-classical-decomposition-6",
@@ -895,32 +895,32 @@
     "text": "Problems of using a Classical decomposition\n\nThe trend-cycle component is not estimated at the beginning and end of the series. This can be problematic if you want to forecast the series.\nIt also tends to over-smooth rises and falls.\nIt assumes that the seasonal component is constant over time, which may not be the case in many real-world scenarios.\nIt is not robust to outliers, which can significantly affect the estimates of the components.\n\n\n\n\n\n\n\n\nWarning\n\n\nIt is not recommended to use classical decomposition for forecasting because of these issues."
   },
   {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#stl-decomposition",
-    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#stl-decomposition",
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#stl-decomposition-1",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#stl-decomposition-1",
     "title": "Time Series Decomposition",
     "section": "STL decomposition",
-    "text": "STL decomposition\n\nSTL (Seasonal and Trend decomposition using Loess) is a more advanced method for decomposing time series data6. It uses locally weighted regression (loess) to estimate the trend-cycle and seasonal components. STL is more flexible than classical decomposition and can handle changes in the seasonal component over time.\n\n\nIt can handle any type of seasonality (not just fixed periods).\nIt can handle changes in the seasonal component over time.\nIt is robust to outliers.\nIt can be used for forecasting.\nIt provides a way to control the smoothness of the trend and seasonal components through parameters.\n\n\n\n\n\n\n\n\nSTL cannot automatically handle calendar or holiday variations.\nIt only provides methods for additive models. If your data has multiplicative seasonality, you should log-transform the data before applying STL."
+    "text": "STL decomposition\n\nSTL (Seasonal and Trend decomposition using Loess) is a more advanced method for decomposing time series data5. It uses locally weighted regression (loess) to estimate the trend-cycle and seasonal components. STL is more flexible than classical decomposition and can handle changes in the seasonal component over time.\n\n\nIt can handle any type of seasonality (not just fixed periods).\nIt can handle changes in the seasonal component over time.\nIt is robust to outliers.\nIt can be used for forecasting.\nIt provides a way to control the smoothness of the trend and seasonal components through parameters.\n\n\n\n\n\n\n\n\nSTL cannot automatically handle calendar or holiday variations.\nIt only provides methods for additive models. If your data has multiplicative seasonality, you should log-transform the data before applying STL."
   },
   {
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#stl-in-r-using-fable",
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#stl-in-r-using-fable",
     "title": "Time Series Decomposition",
     "section": "STL in R using fable",
-    "text": "STL in R using fable\n\nmexretail_stl &lt;- mexretail |&gt;                                \n  model(                                                      \n    stl = STL(y)\n  ) |&gt; \n  components()"
+    "text": "STL in R using fable\n\nmexretail_stl &lt;- mexretail |&gt;                                \n  model(                                                      \n    stl = STL(y)\n  )"
   },
   {
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#stl-in-r-using-fable-1",
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#stl-in-r-using-fable-1",
     "title": "Time Series Decomposition",
     "section": "STL in R using fable",
-    "text": "STL in R using fable\n\nmexretail_stl &lt;- mexretail |&gt;                                \n  model(                                                      \n    stl = STL(y ~ trend(window = NULL))\n  ) |&gt; \n  components()"
+    "text": "STL in R using fable\n\nmexretail_stl &lt;- mexretail |&gt;                                \n  model(                                                      \n    stl = STL(y ~ trend(window = NULL))\n  )"
   },
   {
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#stl-in-r-using-fable-2",
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#stl-in-r-using-fable-2",
     "title": "Time Series Decomposition",
     "section": "STL in R using fable",
-    "text": "STL in R using fable\n\nmexretail_stl &lt;- mexretail |&gt;                                \n  model(                                                      \n    stl = STL(y ~ trend()) \n  ) |&gt; \n  components()"
+    "text": "STL in R using fable\n\nmexretail_stl &lt;- mexretail |&gt;                                \n  model(                                                      \n    stl = STL(y ~ trend()) \n  )"
   },
   {
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#stl-in-r-using-fable-3",
@@ -934,7 +934,7 @@
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#footnotes",
     "title": "Time Series Decomposition",
     "section": "Footnotes",
-    "text": "Footnotes\n\n\nA time series can have multiple seasonal patterns.\nThey usually last at least 2 years.\nIn R, you can compute any moving average by using the slider::slide_dbl() function.\nshort for “model table”\nshort for “model table”\nThere are other decomposition methods primarily used by official statistics agencies, such as X-11, X-12-ARIMA, and TRAMO/SEATS. However, these methods are not as widely used in the forecasting community as STL. For more on these, see this."
+    "text": "Footnotes\n\n\nA time series can have multiple seasonal patterns.\nThey usually last at least 2 years.\nIn R, you can compute any moving average by using the slider::slide_dbl() function.\nshort for “model table”\nThere are other decomposition methods primarily used by official statistics agencies, such as X-11, X-12-ARIMA, and TRAMO/SEATS. However, these methods are not as widely used in the forecasting community as STL. For more on these, see this."
   },
   {
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html",
@@ -1097,7 +1097,7 @@
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#seasonally-adjusted-series",
     "title": "Time Series Decomposition",
     "section": "4.2 Seasonally adjusted series",
-    "text": "4.2 Seasonally adjusted series\n\nOne use of decomposition is to obtain a seasonally adjusted series, which is the original series with the seasonal component removed.\nSeasonally adjusted series can be useful for: - Identifying and analyzing the trend-cycle component without the influence of seasonal fluctuations. - Making comparisons across different time periods without seasonal effects.\n\n\nFor an additive decomposition, the seasonally adjusted series is given by: \\[\ny_t - S_t\n\\]\nFor a multiplicative decomposition, the seasonally adjusted series is given by: \\[\n\\frac{y_t}{S_t}\n\\]",
+    "text": "4.2 Seasonally adjusted series\n\nOne use of decomposition is to obtain a seasonally adjusted series, which is the original series with the seasonal component removed.\nSeasonally adjusted series can be useful for: - Identifying and analyzing the trend-cycle component without the influence of seasonal fluctuations. - Making comparisons across different time periods without seasonal effects.\n\n\n\n\n\n\n\n\nFor an additive decomposition, the seasonally adjusted series is given by: \\[\ny_t - S_t\n\\]\nFor a multiplicative decomposition, the seasonally adjusted series is given by: \\[\n\\frac{y_t}{S_t}\n\\]",
     "crumbs": [
       "Modules",
       "1. Forecasting models based on decomposition methods",
@@ -1153,11 +1153,11 @@
     ]
   },
   {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#stl-decomposition",
-    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#stl-decomposition",
+    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#stl-decomposition-1",
+    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#stl-decomposition-1",
     "title": "Time Series Decomposition",
-    "section": "4.7 STL decomposition",
-    "text": "4.7 STL decomposition\n\nSTL (Seasonal and Trend decomposition using Loess) is a more advanced method for decomposing time series data5. It uses locally weighted regression (loess) to estimate the trend-cycle and seasonal components. STL is more flexible than classical decomposition and can handle changes in the seasonal component over time.\n\n\n\nIt can handle any type of seasonality (not just fixed periods).\nIt can handle changes in the seasonal component over time.\nIt is robust to outliers.\nIt can be used for forecasting.\nIt provides a way to control the smoothness of the trend and seasonal components through parameters.\n\n\n\n\n\n\n\n\nSTL cannot automatically handle calendar or holiday variations.\nIt only provides methods for additive models. If your data has multiplicative seasonality, you should log-transform the data before applying STL.",
+    "section": "5.1 STL decomposition",
+    "text": "5.1 STL decomposition\n\nSTL (Seasonal and Trend decomposition using Loess) is a more advanced method for decomposing time series data5. It uses locally weighted regression (loess) to estimate the trend-cycle and seasonal components. STL is more flexible than classical decomposition and can handle changes in the seasonal component over time.\n\n\n\nIt can handle any type of seasonality (not just fixed periods).\nIt can handle changes in the seasonal component over time.\nIt is robust to outliers.\nIt can be used for forecasting.\nIt provides a way to control the smoothness of the trend and seasonal components through parameters.\n\n\n\n\n\n\n\n\nSTL cannot automatically handle calendar or holiday variations.\nIt only provides methods for additive models. If your data has multiplicative seasonality, you should log-transform the data before applying STL.",
     "crumbs": [
       "Modules",
       "1. Forecasting models based on decomposition methods",
@@ -1168,8 +1168,8 @@
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#stl-in-r-using-fable-3",
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#stl-in-r-using-fable-3",
     "title": "Time Series Decomposition",
-    "section": "4.8 STL in R using fable",
-    "text": "4.8 STL in R using fable\n\nThe code is basically the same as for the classical decomposition. We just need to change the model used inside the model() function.\n\n\nmexretail |&gt;                                \n  model(                                                      \n1    stl = STL(y ~\n2                trend(window = NULL) +\n3                season(window = \"periodic\"),\n4              robust = TRUE)\n  ) |&gt; \n  components() |&gt; \n  autoplot()\n\n\n1\n\nInside the STL() function, we can specify the formula for the decomposition, or don’t specify it at all. See ?STL for more details.\n\n2\n\nThe trend() function is used to specify the trend component of the decomposition. The window argument controls the smoothness of the trend component. A larger window results in a smoother trend.\n\n3\n\nThe season() function is used to specify the seasonal component of the decomposition. The window argument controls the smoothness of the seasonal component. Setting it to “periodic” means that the seasonal component will be fixed over time.\n\n4\n\nThe robust argument, when set to TRUE, makes the STL decomposition more robust to outliers in the data, so the effect of such values is sent to the residual component.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nWriting formulas in R\n\n\n\n\n\nIn R, we use “\\(\\sim\\)” instead of “\\(=\\)” in formula specification, i.e., \\(y \\sim mx + b\\).",
+    "section": "5.2 STL in R using fable",
+    "text": "5.2 STL in R using fable\n\nThe code is basically the same as for the classical decomposition. We just need to change the model used inside the model() function.\n\n\nmexretail |&gt;                                \n  model(                                                      \n1    stl = STL(y ~\n2                trend(window = NULL) +\n3                season(window = \"periodic\"),\n4              robust = TRUE)\n  ) |&gt; \n  components() |&gt; \n  autoplot()\n\n\n1\n\nInside the STL() function, we can specify the formula for the decomposition, or don’t specify it at all. See ?STL for more details.\n\n2\n\nThe trend() function is used to specify the trend component of the decomposition. The window argument controls the smoothness of the trend component. A larger window results in a smoother trend.\n\n3\n\nThe season() function is used to specify the seasonal component of the decomposition. The window argument controls the smoothness of the seasonal component. Setting it to “periodic” means that the seasonal component will be fixed over time.\n\n4\n\nThe robust argument, when set to TRUE, makes the STL decomposition more robust to outliers in the data, so the effect of such values is sent to the residual component.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nWriting formulas in R\n\n\n\n\n\nIn R, we use “\\(\\sim\\)” instead of “\\(=\\)” in formula specification, i.e., \\(y \\sim mx + b\\).",
     "crumbs": [
       "Modules",
       "1. Forecasting models based on decomposition methods",
