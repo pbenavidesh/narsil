@@ -773,7 +773,7 @@
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#how-can-we-choose-the-value-of-lambda",
     "title": "Time Series Decomposition",
     "section": "How can we choose the value of \\(\\lambda\\)?",
-    "text": "How can we choose the value of \\(\\lambda\\)?\nWe can use the guerrero feature to choose an optimal lambda.\n\naus_production |&gt; \n  features(Gas, features = guerrero)\n\n# A tibble: 1 × 1\n  lambda_guerrero\n            &lt;dbl&gt;\n1           0.110"
+    "text": "How can we choose the value of \\(\\lambda\\)?\nHow can we choose the value of \\(\\lambda\\)?\nWe can use the guerrero feature to choose an optimal lambda.\n\naus_production |&gt; \n  features(Gas, features = guerrero)\n\n# A tibble: 1 × 1\n  lambda_guerrero\n            &lt;dbl&gt;\n1           0.110"
   },
   {
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#calendar-adjustments",
@@ -808,14 +808,14 @@
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#inflation-adjustment-formula",
     "title": "Time Series Decomposition",
     "section": "Inflation adjustment formula",
-    "text": "Inflation adjustment formula\n\\[\nx_t = \\frac{y_t}{z_t} * z_{2010}\n\\]\n\nwhere:\n\n\\(y_t\\) is the original value at time \\(t\\) (nominal value).\n\\(z_t\\) is the price index at time \\(t\\) (e.g., INPC).\n\\(z_{2010}\\) is the price index in the base year (2010 in this case).\n\\(x_t\\) is the inflation-adjusted value at time \\(t\\) (real value)."
+    "text": "Inflation adjustment formula\nInflation adjustment formula\n\\[\nx_t = \\frac{y_t}{z_t} * z_{2010}\n\\]\n\nwhere:\n\n\\(y_t\\) is the original value at time \\(t\\) (nominal value).\n\\(z_t\\) is the price index at time \\(t\\) (e.g., INPC).\n\\(z_{2010}\\) is the price index in the base year (2010 in this case).\n\\(x_t\\) is the inflation-adjusted value at time \\(t\\) (real value)."
   },
   {
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#inflation-adjustment-example",
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#inflation-adjustment-example",
     "title": "Time Series Decomposition",
     "section": "Inflation adjustment example",
-    "text": "Inflation adjustment example\n\nNominal valuesReal valuesNominal vs. Real values\n\n\n\n\n\n\n\n\n\n\n\n\n\n\naus_economy &lt;- global_economy |&gt;\n  filter(Code == \"AUS\")\n\n\nprint_retail &lt;- print_retail |&gt; \n  left_join(aus_economy, by = \"Year\") |&gt;\n  mutate(Adjusted_turnover = Turnover / CPI)"
+    "text": "Inflation adjustment example\nInflation adjustment example\n\nNominal valuesReal valuesNominal vs. Real values\n\n\n\n\n\n\n\n\n\n\n\n\n\n\naus_economy &lt;- global_economy |&gt;\n  filter(Code == \"AUS\")\n\n\nprint_retail &lt;- print_retail |&gt; \n  left_join(aus_economy, by = \"Year\") |&gt;\n  mutate(Adjusted_turnover = Turnover / CPI)"
   },
   {
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#types-of-decompositions",
@@ -927,7 +927,7 @@
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#stl-in-r-using-fable-3",
     "title": "Time Series Decomposition",
     "section": "STL in R using fable",
-    "text": "STL in R using fable\n\nThe code is basically the same as for the classical decomposition. We just need to change the model used inside the model() function.\n\n\nmexretail |&gt;                                \n  model(                                                      \n1    stl = STL(y ~\n2                trend(window = NULL) +\n3                season(window = \"periodic\"),\n4              robust = TRUE)\n  ) |&gt; \n  components() |&gt; \n  autoplot()\n\n\n1\n\nInside the STL() function, we can specify the formula for the decomposition, or don’t specify it at all. See ?STL for more details.\n\n2\n\nThe trend() function is used to specify the trend component of the decomposition. The window argument controls the smoothness of the trend component. A larger window results in a smoother trend.\n\n3\n\nThe season() function is used to specify the seasonal component of the decomposition. The window argument controls the smoothness of the seasonal component. Setting it to “periodic” means that the seasonal component will be fixed over time.\n\n4\n\nThe robust argument, when set to TRUE, makes the STL decomposition more robust to outliers in the data, so the effect of such values is sent to the residual component.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nWriting formulas in R\n\n\nIn R, we use “\\(\\sim\\)” instead of “\\(=\\)” in formula specification, i.e., \\(y \\sim mx + b\\)."
+    "text": "STL in R using fable\nSTL in R using fable\n\nThe code is basically the same as for the classical decomposition. We just need to change the model used inside the model() function.\n\n\nmexretail |&gt;                                \n  model(                                                      \n1    stl = STL(y ~\n2                trend(window = NULL) +\n3                season(window = \"periodic\"),\n4              robust = TRUE)\n  ) |&gt; \n  components() |&gt; \n  autoplot()\n\n\n1\n\nInside the STL() function, we can specify the formula for the decomposition, or don’t specify it at all. See ?STL for more details.\n\n2\n\nThe trend() function is used to specify the trend component of the decomposition. The window argument controls the smoothness of the trend component. A larger window results in a smoother trend.\n\n3\n\nThe season() function is used to specify the seasonal component of the decomposition. The window argument controls the smoothness of the seasonal component. Setting it to “periodic” means that the seasonal component will be fixed over time.\n\n4\n\nThe robust argument, when set to TRUE, makes the STL decomposition more robust to outliers in the data, so the effect of such values is sent to the residual component.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nWriting formulas in R\n\n\nIn R, we use “\\(\\sim\\)” instead of “\\(=\\)” in formula specification, i.e., \\(y \\sim mx + b\\)."
   },
   {
     "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp_pres.html#footnotes",
@@ -989,19 +989,7 @@
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#box-cox-transformations",
     "title": "Time Series Decomposition",
     "section": "2.2 Box-Cox transformations",
-    "text": "2.2 Box-Cox transformations\n\\[\nw_t= \\begin{cases}\\log \\left(y_t\\right) & \\text { if } \\lambda=0 \\\\ \\left(\\operatorname{sign}\\left(y_t\\right)\\left|y_t\\right|^\\lambda-1\\right) / \\lambda & \\text { otherwise }\\end{cases}\n\\]\n\nIn a Box-Cox transformation, the log is always a natural logarithm. The other case is just a power transformation with scaling.\n\nWhat happens when \\(\\lambda = 1\\)?\n\n\n\n\n\n\nYou should choose a value of \\(\\lambda\\) that makes the size of the seasonal variation the same throughout the series.",
-    "crumbs": [
-      "Modules",
-      "1. Forecasting models based on decomposition methods",
-      "1.2 Time Series Decomposition"
-    ]
-  },
-  {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#how-can-we-choose-the-value-of-lambda",
-    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#how-can-we-choose-the-value-of-lambda",
-    "title": "Time Series Decomposition",
-    "section": "2.3 How can we choose the value of \\(\\lambda\\)?",
-    "text": "2.3 How can we choose the value of \\(\\lambda\\)?\nWe can use the guerrero feature to choose an optimal lambda.\n\naus_production |&gt; \n  features(Gas, features = guerrero)\n\n# A tibble: 1 × 1\n  lambda_guerrero\n            &lt;dbl&gt;\n1           0.110",
+    "text": "2.2 Box-Cox transformations\n\\[\nw_t= \\begin{cases}\\log \\left(y_t\\right) & \\text { if } \\lambda=0 \\\\ \\left(\\operatorname{sign}\\left(y_t\\right)\\left|y_t\\right|^\\lambda-1\\right) / \\lambda & \\text { otherwise }\\end{cases}\n\\]\n\nIn a Box-Cox transformation, the log is always a natural logarithm. The other case is just a power transformation with scaling.\n\nWhat happens when \\(\\lambda = 1\\)?\n\n\n\n\n\n\nYou should choose a value of \\(\\lambda\\) that makes the size of the seasonal variation the same throughout the series.\n\n\n\n\n2.2.1 How can we choose the value of \\(\\lambda\\)?\nWe can use the guerrero feature to choose an optimal lambda.\n\naus_production |&gt; \n  features(Gas, features = guerrero)\n\n# A tibble: 1 × 1\n  lambda_guerrero\n            &lt;dbl&gt;\n1           0.110",
     "crumbs": [
       "Modules",
       "1. Forecasting models based on decomposition methods",
@@ -1049,31 +1037,7 @@
     "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#inflation-adjustments",
     "title": "Time Series Decomposition",
     "section": "3.4 Inflation adjustments",
-    "text": "3.4 Inflation adjustments\n\n\nInflation is the rate at which the general level of prices for goods and services is rising, and subsequently, purchasing power is falling.\nTo make meaningful comparisons of economic data over time, it is essential to adjust for inflation.\nThis adjustment is typically done using a price index, such as the Consumer Price Index (CPI). In Mexico, the National Consumer Price Index (INPC) is used. INEGI provides this data.",
-    "crumbs": [
-      "Modules",
-      "1. Forecasting models based on decomposition methods",
-      "1.2 Time Series Decomposition"
-    ]
-  },
-  {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#inflation-adjustment-formula",
-    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#inflation-adjustment-formula",
-    "title": "Time Series Decomposition",
-    "section": "3.5 Inflation adjustment formula",
-    "text": "3.5 Inflation adjustment formula\n\\[\nx_t = \\frac{y_t}{z_t} * z_{2010}\n\\]\n\nwhere:\n\n\\(y_t\\) is the original value at time \\(t\\) (nominal value).\n\\(z_t\\) is the price index at time \\(t\\) (e.g., INPC).\n\\(z_{2010}\\) is the price index in the base year (2010 in this case).\n\\(x_t\\) is the inflation-adjusted value at time \\(t\\) (real value).",
-    "crumbs": [
-      "Modules",
-      "1. Forecasting models based on decomposition methods",
-      "1.2 Time Series Decomposition"
-    ]
-  },
-  {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#inflation-adjustment-example",
-    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#inflation-adjustment-example",
-    "title": "Time Series Decomposition",
-    "section": "3.6 Inflation adjustment example",
-    "text": "3.6 Inflation adjustment example\n\nNominal valuesReal valuesNominal vs. Real values\n\n\n\n\n\n\n\n\n\n\n\n\n\n\naus_economy &lt;- global_economy |&gt;\n  filter(Code == \"AUS\")\n\n\nprint_retail &lt;- print_retail |&gt; \n  left_join(aus_economy, by = \"Year\") |&gt;\n  mutate(Adjusted_turnover = Turnover / CPI)",
+    "text": "3.4 Inflation adjustments\n\n\nInflation is the rate at which the general level of prices for goods and services is rising, and subsequently, purchasing power is falling.\nTo make meaningful comparisons of economic data over time, it is essential to adjust for inflation.\nThis adjustment is typically done using a price index, such as the Consumer Price Index (CPI). In Mexico, the National Consumer Price Index (INPC) is used. INEGI provides this data.\n\n\n\n3.4.1 Inflation adjustment formula\n\\[\nx_t = \\frac{y_t}{z_t} * z_{2010}\n\\]\n\nwhere:\n\n\\(y_t\\) is the original value at time \\(t\\) (nominal value).\n\\(z_t\\) is the price index at time \\(t\\) (e.g., INPC).\n\\(z_{2010}\\) is the price index in the base year (2010 in this case).\n\\(x_t\\) is the inflation-adjusted value at time \\(t\\) (real value).\n\n\n\n\n3.4.2 Inflation adjustment example\n\nNominal valuesReal valuesNominal vs. Real values\n\n\n\n\n\n\n\n\n\n\n\n\n\n\naus_economy &lt;- global_economy |&gt;\n  filter(Code == \"AUS\")\n\n\nprint_retail &lt;- print_retail |&gt; \n  left_join(aus_economy, by = \"Year\") |&gt;\n  mutate(Adjusted_turnover = Turnover / CPI)",
     "crumbs": [
       "Modules",
       "1. Forecasting models based on decomposition methods",
@@ -1146,30 +1110,6 @@
     "title": "Time Series Decomposition",
     "section": "4.6 Problems of using a Classical decomposition",
     "text": "4.6 Problems of using a Classical decomposition\n\n\nThe trend-cycle component is not estimated at the beginning and end of the series. This can be problematic if you want to forecast the series.\nIt also tends to over-smooth rises and falls.\nIt assumes that the seasonal component is constant over time, which may not be the case in many real-world scenarios.\nIt is not robust to outliers, which can significantly affect the estimates of the components.\n\n\n\n\n\n\n\n\n\nWarning\n\n\n\nIt is not recommended to use classical decomposition for forecasting because of these issues.",
-    "crumbs": [
-      "Modules",
-      "1. Forecasting models based on decomposition methods",
-      "1.2 Time Series Decomposition"
-    ]
-  },
-  {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#stl-decomposition-1",
-    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#stl-decomposition-1",
-    "title": "Time Series Decomposition",
-    "section": "5.1 STL decomposition",
-    "text": "5.1 STL decomposition\n\nSTL (Seasonal and Trend decomposition using Loess) is a more advanced method for decomposing time series data5. It uses locally weighted regression (loess) to estimate the trend-cycle and seasonal components. STL is more flexible than classical decomposition and can handle changes in the seasonal component over time.\n\n\n\nIt can handle any type of seasonality (not just fixed periods).\nIt can handle changes in the seasonal component over time.\nIt is robust to outliers.\nIt can be used for forecasting.\nIt provides a way to control the smoothness of the trend and seasonal components through parameters.\n\n\n\n\n\n\n\n\nSTL cannot automatically handle calendar or holiday variations.\nIt only provides methods for additive models. If your data has multiplicative seasonality, you should log-transform the data before applying STL.",
-    "crumbs": [
-      "Modules",
-      "1. Forecasting models based on decomposition methods",
-      "1.2 Time Series Decomposition"
-    ]
-  },
-  {
-    "objectID": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#stl-in-r-using-fable-3",
-    "href": "docs/modules/module_1/03_ts_dcmp/ts_dcmp.html#stl-in-r-using-fable-3",
-    "title": "Time Series Decomposition",
-    "section": "5.2 STL in R using fable",
-    "text": "5.2 STL in R using fable\n\nThe code is basically the same as for the classical decomposition. We just need to change the model used inside the model() function.\n\n\nmexretail |&gt;                                \n  model(                                                      \n1    stl = STL(y ~\n2                trend(window = NULL) +\n3                season(window = \"periodic\"),\n4              robust = TRUE)\n  ) |&gt; \n  components() |&gt; \n  autoplot()\n\n\n1\n\nInside the STL() function, we can specify the formula for the decomposition, or don’t specify it at all. See ?STL for more details.\n\n2\n\nThe trend() function is used to specify the trend component of the decomposition. The window argument controls the smoothness of the trend component. A larger window results in a smoother trend.\n\n3\n\nThe season() function is used to specify the seasonal component of the decomposition. The window argument controls the smoothness of the seasonal component. Setting it to “periodic” means that the seasonal component will be fixed over time.\n\n4\n\nThe robust argument, when set to TRUE, makes the STL decomposition more robust to outliers in the data, so the effect of such values is sent to the residual component.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nWriting formulas in R\n\n\n\n\n\nIn R, we use “\\(\\sim\\)” instead of “\\(=\\)” in formula specification, i.e., \\(y \\sim mx + b\\).",
     "crumbs": [
       "Modules",
       "1. Forecasting models based on decomposition methods",
