@@ -1,0 +1,82 @@
+---
+title: "Forecasting"
+---
+
+:::{.content-visible unless-format="revealjs"}
+
+```{r}
+#| label: pkgs
+#| message: false
+
+library(tidyverse)
+library(fpp3)
+```
+
+
+:::
+
+## A tidy forecasting workflow
+
+![](fcst_wf.png)
+
+:::{.content-visible unless-format="html"}
+
+## A tidy forecasting workflow
+
+:::
+
+:::{.incremental}
+
+### Tidy data
+
+Load the data into R, tidy it and transform it into a `tsibble`^[The `tsibble` should have the `index` (time) variable with the proper time format. The `key` argument is only necessary if the dataset contains more than one time series.].
+
+### Train-test split
+
+Split the data into a training set and a test set. The training set is used to estimate the model parameters, while the test set is used to evaluate the model's performance on unseen data.
+
+We can use `filter_index()` to create the training set.
+
+:::{callout-note collapse="true"}
+## Splitting the data
+
+In time series, the training set should always contain the earlier observations, while the test set should contain the later observations. This is because time series data is ordered in time, and we want to simulate the real-world scenario where we use past data to predict future values.
+:::
+
+### Visualize
+
+Plot the time series to identify patterns, such as trend and seasonality, and anomalies. This can help us choose an appropriate forecasting method. You can find many types of plots [here](docs/modules/module_1/01_time_series/r_time_series.qmd#TS Visualization).
+
+
+### Specify
+
+Decide whether any math transformations or adjustments are neccesary and choose a forecasting method based on the series' features.
+
+
+### Estimate
+
+
+
+### Evaluate
+
+
+
+### Refine
+
+
+
+### Forecast
+
+
+
+### Communicate
+
+
+
+:::
+
+:::{.notes}
+
+
+
+:::
