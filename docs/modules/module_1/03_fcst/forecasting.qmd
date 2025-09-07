@@ -35,7 +35,7 @@ Load the data into R, tidy it and transform it into a `tsibble`^[The `tsibble` s
 
 Split the data into a training set and a test set. The training set is used to estimate the model parameters, while the test set is used to evaluate the model's performance on unseen data.
 
-We can use `filter_index()` to create the training set.
+We can use `filter_index()` to create the training set^[and store it in a `*_train` object.].
 
 :::{callout-note collapse="true"}
 ## Splitting the data
@@ -55,9 +55,10 @@ Decide whether any math transformations or adjustments are neccesary and choose 
 
 ### Estimate
 
-
+Train the model specification on the training set. You can use the `model()` function to fit various forecasting models^[and store the model table in a `*_fit` object.].
 
 ### Evaluate
+
 
 
 
@@ -77,6 +78,6 @@ Decide whether any math transformations or adjustments are neccesary and choose 
 
 :::{.notes}
 
-
+This is a note.
 
 :::
