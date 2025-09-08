@@ -32,13 +32,8 @@ library(fpp3)
 
 
 
-:::{.content-hidden unless-format="revealjs"}
-## Tidy data
-:::
 
-:::{.content-visible unless-format="revealjs"}
-### Tidy data
-:::
+## Tidy data
 
 - Use `readr::read_csv()`,  `readxl::read_excel()`, or `tidyquant::tq_get()` to import the data into R. You can find more on this [here](https://r4ds.hadley.nz/import.html).
 
@@ -59,13 +54,8 @@ library(fpp3)
 
 
 
-:::{.content-hidden unless-format="revealjs"}
-## Train/test split
-:::
 
-:::{.content-visible unless-format="revealjs"}
-### Train/test split
-:::
+## Train/test split
 
 - Split the data into a **training set** and a **test set**^[Splitting the data into a training and test set is the minimum requirement for evaluating a forecasting model. If you want to avoid overfitting and get a more reliable estimate of the model's performance, you should consider splitting the data into 3 sets: **training, validation, and test sets**. The validation set is used to tune model hyperparameters and select the best model, while the test set is used for the final evaluation of the selected model. For a more robust evaluation of forecasting models, especially with limited data, consider using [**time series cross-validation**](https://otexts.com/fpp3/tscv.html) methods.]. The training set is used to estimate the model parameters, while the test set is used to evaluate the model's performance on unseen data.
 
@@ -94,13 +84,10 @@ In time series, the training set should always contain the earlier observations,
 
 :::
 
-:::{.content-hidden unless-format="revealjs"}
+
 ## Visualize
 :::
 
-:::{.content-visible unless-format="revealjs"}
-### Visualize
-:::
 
 Plot the time series to identify patterns, such as trend and seasonality, and anomalies. This can help us choose an appropriate forecasting method. You can find many types of plots [here](../01_time_series/r_time_series.qmd# TS Visualization).
 
@@ -113,13 +100,9 @@ aus_production |>
 ```
 
 
-:::{.content-hidden unless-format="revealjs"}
-## Specify & Estimate
-:::
 
-:::{.content-visible unless-format="revealjs"}
-### Specify & Estimate
-:::
+## Specify & Estimate
+
 
 Decide whether any math transformations or adjustments are neccesary and choose a forecasting method based on the series' features.
 
@@ -139,18 +122,6 @@ Train the model specification on the training set. You can use the `model()` fun
 1. Replace `model_function_1` with the desired forecasting method (e.g., `ARIMA()`, `ETS()`, `NAIVE()`, etc.). Replace `<y_t>` with the name of the forecast variable and `<predictor_variables>` with any predictor variables if applicable.
 2. If a transformation is needed, replace `transformation_function` with the appropriate function (e.g., `log`, `box_cox`, etc.) and include any specific arguments required by the model.
 
-:::{.content-hidden unless-format="revealjs"}
----
-
-## Estimate
-
-:::
-
-:::{.content-visible unless-format="revealjs"}
-### Estimate
-:::
-
-
 
 :::{.content-hidden unless-format="revealjs"}
 ## Evaluate
@@ -160,44 +131,31 @@ Train the model specification on the training set. You can use the `model()` fun
 ### Evaluate
 :::
 
-###
 
 
-:::{.content-hidden unless-format="revealjs"}
+
 ## Refine
-:::
-
-:::{.content-visible unless-format="revealjs"}
-### Refine
-:::
 
 
-:::{.content-hidden unless-format="revealjs"}
+
+
 ## Forecast on the test set
-:::
 
-:::{.content-visible unless-format="revealjs"}
-### Forecast on the test set
-:::
 
-:::{.content-hidden unless-format="revealjs"}
+
+
+
 ## Refit and forecast
-:::
-
-:::{.content-visible unless-format="revealjs"}
-### Refit and forecast
-:::
 
 
 
 
-:::{.content-hidden unless-format="revealjs"}
+
+
 ## Communicate
-:::
 
-:::{.content-visible unless-format="revealjs"}
-### Communicate
-:::
+
+
 
 
 :::{.notes}
