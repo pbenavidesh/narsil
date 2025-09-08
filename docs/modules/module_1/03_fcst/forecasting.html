@@ -496,17 +496,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#a-tidy-forecasting-workflow" id="toc-a-tidy-forecasting-workflow" class="nav-link active" data-scroll-target="#a-tidy-forecasting-workflow"><span class="header-section-number">1</span> A tidy forecasting workflow</a>
   <ul class="collapse">
-  <li><a href="#tidy-data" id="toc-tidy-data" class="nav-link" data-scroll-target="#tidy-data"><span class="header-section-number">1.1</span> Tidy data</a></li>
-  <li><a href="#traintest-split" id="toc-traintest-split" class="nav-link" data-scroll-target="#traintest-split"><span class="header-section-number">1.2</span> Train/test split</a></li>
-  <li><a href="#visualize" id="toc-visualize" class="nav-link" data-scroll-target="#visualize"><span class="header-section-number">1.3</span> Visualize</a></li>
-  <li><a href="#specify-estimate" id="toc-specify-estimate" class="nav-link" data-scroll-target="#specify-estimate"><span class="header-section-number">1.4</span> Specify &amp; Estimate</a>
+  <li><a href="#tidy-data" id="toc-tidy-data" class="nav-link" data-scroll-target="#tidy-data"><span class="header-section-number">1.1</span> Tidy data</a>
   <ul class="collapse">
-  <li><a href="#evaluate-1" id="toc-evaluate-1" class="nav-link" data-scroll-target="#evaluate-1"><span class="header-section-number">1.4.1</span> Evaluate</a></li>
+  <li><a href="#traintest-split-1" id="toc-traintest-split-1" class="nav-link" data-scroll-target="#traintest-split-1"><span class="header-section-number">1.1.1</span> Train/test split</a></li>
   </ul></li>
-  <li><a href="#refine" id="toc-refine" class="nav-link" data-scroll-target="#refine"><span class="header-section-number">1.5</span> Refine</a></li>
-  <li><a href="#forecast-on-the-test-set" id="toc-forecast-on-the-test-set" class="nav-link" data-scroll-target="#forecast-on-the-test-set"><span class="header-section-number">1.6</span> Forecast on the test set</a></li>
-  <li><a href="#refit-and-forecast" id="toc-refit-and-forecast" class="nav-link" data-scroll-target="#refit-and-forecast"><span class="header-section-number">1.7</span> Refit and forecast</a></li>
-  <li><a href="#communicate" id="toc-communicate" class="nav-link" data-scroll-target="#communicate"><span class="header-section-number">1.8</span> Communicate</a></li>
+  <li><a href="#visualize" id="toc-visualize" class="nav-link" data-scroll-target="#visualize"><span class="header-section-number">1.2</span> Visualize</a></li>
+  <li><a href="#specify-estimate" id="toc-specify-estimate" class="nav-link" data-scroll-target="#specify-estimate"><span class="header-section-number">1.3</span> Specify &amp; Estimate</a>
+  <ul class="collapse">
+  <li><a href="#evaluate-1" id="toc-evaluate-1" class="nav-link" data-scroll-target="#evaluate-1"><span class="header-section-number">1.3.1</span> Evaluate</a></li>
+  <li><a href="#refine-1" id="toc-refine-1" class="nav-link" data-scroll-target="#refine-1"><span class="header-section-number">1.3.2</span> Refine</a></li>
+  </ul></li>
+  <li><a href="#forecast-on-the-test-set" id="toc-forecast-on-the-test-set" class="nav-link" data-scroll-target="#forecast-on-the-test-set"><span class="header-section-number">1.4</span> Forecast on the test set</a></li>
+  <li><a href="#refit-and-forecast" id="toc-refit-and-forecast" class="nav-link" data-scroll-target="#refit-and-forecast"><span class="header-section-number">1.5</span> Refit and forecast</a></li>
+  <li><a href="#communicate" id="toc-communicate" class="nav-link" data-scroll-target="#communicate"><span class="header-section-number">1.6</span> Communicate</a></li>
   </ul></li>
   <li><a href="#benchmark-forecasting-methods" id="toc-benchmark-forecasting-methods" class="nav-link" data-scroll-target="#benchmark-forecasting-methods"><span class="header-section-number">2</span> Benchmark forecasting methods</a></li>
   </ul>
@@ -577,12 +579,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>The <code>key</code> argument is only necessary if the dataset contains more than one time series.</li>
 </ul></li>
 </ul>
-</section>
-<section id="traintest-split" class="level2" data-number="1.2">
-<h2 data-number="1.2" class="anchored" data-anchor-id="traintest-split"><span class="header-section-number">1.2</span> Train/test split</h2>
+<section id="traintest-split-1" class="level3" data-number="1.1.1">
+<h3 data-number="1.1.1" class="anchored" data-anchor-id="traintest-split-1"><span class="header-section-number">1.1.1</span> Train/test split</h3>
 <ul>
-<li><p>Split the data into a <strong>training set</strong> and a <strong>test set</strong><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>. The training set is used to estimate the model parameters, while the test set is used to evaluate the model’s performance on unseen data.</p></li>
-<li><p>We can use <code>filter_index()</code> to create the training set<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>:</p></li>
+<li>Split the data into a <strong>training set</strong> and a <strong>test set</strong>^[Splitting the data into a training and test set is the minimum requirement for evaluating a forecasting model. If you want to avoid overfitting and get a more reliable estimate of the model’s performance, you should consider splitting the data into 3 sets: <strong>training, validation, and test sets</strong>. The validation set is used to tune model hyperparameters and select the best model, while the test set is used for the final evaluation of the selected model.</li>
+</ul>
+<p>For an even more robust evaluation of forecasting models, consider using <a href="https://otexts.com/fpp3/tscv.html"><strong>time series cross-validation</strong></a> methods.]. The training set is used to estimate the model parameters, while the test set is used to evaluate the model’s performance on unseen data.</p>
+<ul>
+<li>We can use <code>filter_index()</code> to create the training set<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>:</li>
 </ul>
 <p>. . .</p>
 <div class="cell">
@@ -614,9 +618,9 @@ Splitting the data
 </div>
 </div>
 </section>
-<section id="visualize" class="level2" data-number="1.3">
-<h2 data-number="1.3" class="anchored" data-anchor-id="visualize"><span class="header-section-number">1.3</span> Visualize</h2>
-<p>:::</p>
+</section>
+<section id="visualize" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="visualize"><span class="header-section-number">1.2</span> Visualize</h2>
 <p>Plot the time series to identify patterns, such as trend and seasonality, and anomalies. This can help us choose an appropriate forecasting method. You can find many types of plots <a href="../../../../docs/modules/module_1/01_time_series/r_time_series.html# TS Visualization">here</a>.</p>
 <div class="cell">
 <div class="cell-output-display">
@@ -628,15 +632,15 @@ Splitting the data
 </div>
 </div>
 </section>
-<section id="specify-estimate" class="level2" data-number="1.4">
-<h2 data-number="1.4" class="anchored" data-anchor-id="specify-estimate"><span class="header-section-number">1.4</span> Specify &amp; Estimate</h2>
+<section id="specify-estimate" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="specify-estimate"><span class="header-section-number">1.3</span> Specify &amp; Estimate</h2>
 <p>Decide whether any math transformations or adjustments are neccesary and choose a forecasting method based on the series’ features.</p>
-<p>Train the model specification on the training set. You can use the <code>model()</code> function to fit various forecasting models<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>.</p>
+<p>Train the model specification on the training set. You can use the <code>model()</code> function to fit various forecasting models<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1" aria-hidden="true" tabindex="-1"></a><span class="sc">*</span>_fit <span class="ot">&lt;-</span> <span class="er">*</span>_train <span class="sc">|&gt;</span> </span>
 <span id="annotated-cell-2-2"><a href="#annotated-cell-2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(</span>
 <a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-2-3" class="code-annotation-target"><a href="#annotated-cell-2-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">model_1 =</span> <span class="sc">&lt;</span>model_function_1<span class="sc">&gt;</span>(<span class="sc">&lt;</span>y_t<span class="sc">&gt;</span> <span class="er">~</span> <span class="er">&lt;</span>predictor_variables<span class="sc">&gt;</span>),</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-2-4" class="code-annotation-target"><a href="#annotated-cell-2-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">model_2 =</span> <span class="sc">&lt;</span>model_function_2<span class="sc">&gt;</span>(<span class="sc">&lt;</span>transformation_function<span class="sc">&gt;</span>(<span class="sc">&lt;</span>y_t<span class="sc">&gt;</span>), <span class="sc">&lt;</span>specific_arguments<span class="sc">&gt;</span>)</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-2-4" class="code-annotation-target"><a href="#annotated-cell-2-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">model_2 =</span> <span class="sc">&lt;</span>model_function_2<span class="sc">&gt;</span>(<span class="sc">&lt;</span>transformation_function<span class="sc">&gt;</span>(<span class="sc">&lt;</span>y_t<span class="sc">&gt;</span>), <span class="sc">&lt;</span>args<span class="sc">&gt;</span>)</span>
 <span id="annotated-cell-2-5"><a href="#annotated-cell-2-5" aria-hidden="true" tabindex="-1"></a>  )</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-grid">
@@ -651,21 +655,21 @@ Splitting the data
 </dl>
 </div>
 </div>
-<section id="evaluate-1" class="level3" data-number="1.4.1">
-<h3 data-number="1.4.1" class="anchored" data-anchor-id="evaluate-1"><span class="header-section-number">1.4.1</span> Evaluate</h3>
+<section id="evaluate-1" class="level3" data-number="1.3.1">
+<h3 data-number="1.3.1" class="anchored" data-anchor-id="evaluate-1"><span class="header-section-number">1.3.1</span> Evaluate</h3>
+</section>
+<section id="refine-1" class="level3" data-number="1.3.2">
+<h3 data-number="1.3.2" class="anchored" data-anchor-id="refine-1"><span class="header-section-number">1.3.2</span> Refine</h3>
 </section>
 </section>
-<section id="refine" class="level2" data-number="1.5">
-<h2 data-number="1.5" class="anchored" data-anchor-id="refine"><span class="header-section-number">1.5</span> Refine</h2>
+<section id="forecast-on-the-test-set" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="forecast-on-the-test-set"><span class="header-section-number">1.4</span> Forecast on the test set</h2>
 </section>
-<section id="forecast-on-the-test-set" class="level2" data-number="1.6">
-<h2 data-number="1.6" class="anchored" data-anchor-id="forecast-on-the-test-set"><span class="header-section-number">1.6</span> Forecast on the test set</h2>
+<section id="refit-and-forecast" class="level2" data-number="1.5">
+<h2 data-number="1.5" class="anchored" data-anchor-id="refit-and-forecast"><span class="header-section-number">1.5</span> Refit and forecast</h2>
 </section>
-<section id="refit-and-forecast" class="level2" data-number="1.7">
-<h2 data-number="1.7" class="anchored" data-anchor-id="refit-and-forecast"><span class="header-section-number">1.7</span> Refit and forecast</h2>
-</section>
-<section id="communicate" class="level2" data-number="1.8">
-<h2 data-number="1.8" class="anchored" data-anchor-id="communicate"><span class="header-section-number">1.8</span> Communicate</h2>
+<section id="communicate" class="level2" data-number="1.6">
+<h2 data-number="1.6" class="anchored" data-anchor-id="communicate"><span class="header-section-number">1.6</span> Communicate</h2>
 <div class="notes">
 <p>This is a note.</p>
 </div>
@@ -682,9 +686,8 @@ Splitting the data
 
 <ol>
 <li id="fn1"><p>i.e., if the TS has a monthly frequency, the index variable should be in <code>yearmonth</code> format. Other formats coud be <code>yearweek</code>, <code>yearquarter</code>, <code>year</code>, <code>date</code>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>Splitting the data into a training and test set is the minimum requirement for evaluating a forecasting model. If you want to avoid overfitting and get a more reliable estimate of the model’s performance, you should consider splitting the data into 3 sets: <strong>training, validation, and test sets</strong>. The validation set is used to tune model hyperparameters and select the best model, while the test set is used for the final evaluation of the selected model. For a more robust evaluation of forecasting models, especially with limited data, consider using <a href="https://otexts.com/fpp3/tscv.html"><strong>time series cross-validation</strong></a> methods.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn3"><p>and store it in a <code>*_train</code> object.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn4"><p>and store the model table in a <code>*_fit</code> object.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>and store it in a <code>*_train</code> object.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>and store the model table in a <code>*_fit</code> object.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

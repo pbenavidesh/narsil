@@ -1239,21 +1239,21 @@
     "href": "docs/modules/module_1/03_fcst/forecasting_pres.html#traintest-split",
     "title": "Forecasting",
     "section": "Train/test split",
-    "text": "Train/test split\n\nSplit the data into a training set and a test set2. The training set is used to estimate the model parameters, while the test set is used to evaluate the model’s performance on unseen data.\nWe can use filter_index() to create the training set3:\n\n\n\n*_train &lt;- &lt;tsibble&gt; |&gt; \n1  filter_index(\"start_date\" ~ \"end_date\")\n\n\n1\n\nReplace start_date and end_date with the desired date range for the training set.You can also use . to indicate the start or end of the series: filter_index(. ~ \"end_date\") or filter_index(\"start_date\" ~ .)."
+    "text": "Train/test split\n\nSplit the data into a training set and a test set^[Splitting the data into a training and test set is the minimum requirement for evaluating a forecasting model. If you want to avoid overfitting and get a more reliable estimate of the model’s performance, you should consider splitting the data into 3 sets: training, validation, and test sets. The validation set is used to tune model hyperparameters and select the best model, while the test set is used for the final evaluation of the selected model.\n\nFor an even more robust evaluation of forecasting models, consider using time series cross-validation methods.]. The training set is used to estimate the model parameters, while the test set is used to evaluate the model’s performance on unseen data.\n\nWe can use filter_index() to create the training set2:\n\n\n\n*_train &lt;- &lt;tsibble&gt; |&gt; \n1  filter_index(\"start_date\" ~ \"end_date\")\n\n\n1\n\nReplace start_date and end_date with the desired date range for the training set.You can also use . to indicate the start or end of the series: filter_index(. ~ \"end_date\") or filter_index(\"start_date\" ~ .)."
   },
   {
     "objectID": "docs/modules/module_1/03_fcst/forecasting_pres.html#visualize",
     "href": "docs/modules/module_1/03_fcst/forecasting_pres.html#visualize",
     "title": "Forecasting",
     "section": "Visualize",
-    "text": "Visualize\n:::\nPlot the time series to identify patterns, such as trend and seasonality, and anomalies. This can help us choose an appropriate forecasting method. You can find many types of plots here."
+    "text": "Visualize\nPlot the time series to identify patterns, such as trend and seasonality, and anomalies. This can help us choose an appropriate forecasting method. You can find many types of plots here."
   },
   {
     "objectID": "docs/modules/module_1/03_fcst/forecasting_pres.html#specify-estimate",
     "href": "docs/modules/module_1/03_fcst/forecasting_pres.html#specify-estimate",
     "title": "Forecasting",
     "section": "Specify & Estimate",
-    "text": "Specify & Estimate\nDecide whether any math transformations or adjustments are neccesary and choose a forecasting method based on the series’ features.\nTrain the model specification on the training set. You can use the model() function to fit various forecasting models4.\n\n*_fit &lt;- *_train |&gt; \n  model(\n1    model_1 = &lt;model_function_1&gt;(&lt;y_t&gt; ~ &lt;predictor_variables&gt;),\n2    model_2 = &lt;model_function_2&gt;(&lt;transformation_function&gt;(&lt;y_t&gt;), &lt;specific_arguments&gt;)\n  )\n\n\n1\n\nReplace model_function_1 with the desired forecasting method (e.g., ARIMA(), ETS(), NAIVE(), etc.). Replace &lt;y_t&gt; with the name of the forecast variable and &lt;predictor_variables&gt; with any predictor variables if applicable.\n\n2\n\nIf a transformation is needed, replace transformation_function with the appropriate function (e.g., log, box_cox, etc.) and include any specific arguments required by the model."
+    "text": "Specify & Estimate\nDecide whether any math transformations or adjustments are neccesary and choose a forecasting method based on the series’ features.\nTrain the model specification on the training set. You can use the model() function to fit various forecasting models3.\n\n*_fit &lt;- *_train |&gt; \n  model(\n1    model_1 = &lt;model_function_1&gt;(&lt;y_t&gt; ~ &lt;predictor_variables&gt;),\n2    model_2 = &lt;model_function_2&gt;(&lt;transformation_function&gt;(&lt;y_t&gt;), &lt;args&gt;)\n  )\n\n\n1\n\nReplace model_function_1 with the desired forecasting method (e.g., ARIMA(), ETS(), NAIVE(), etc.). Replace &lt;y_t&gt; with the name of the forecast variable and &lt;predictor_variables&gt; with any predictor variables if applicable.\n\n2\n\nIf a transformation is needed, replace transformation_function with the appropriate function (e.g., log, box_cox, etc.) and include any specific arguments required by the model."
   },
   {
     "objectID": "docs/modules/module_1/03_fcst/forecasting_pres.html#evaluate",
@@ -1295,7 +1295,7 @@
     "href": "docs/modules/module_1/03_fcst/forecasting_pres.html#footnotes",
     "title": "Forecasting",
     "section": "Footnotes",
-    "text": "Footnotes\n\n\ni.e., if the TS has a monthly frequency, the index variable should be in yearmonth format. Other formats coud be yearweek, yearquarter, year, date.\nSplitting the data into a training and test set is the minimum requirement for evaluating a forecasting model. If you want to avoid overfitting and get a more reliable estimate of the model’s performance, you should consider splitting the data into 3 sets: training, validation, and test sets. The validation set is used to tune model hyperparameters and select the best model, while the test set is used for the final evaluation of the selected model. For a more robust evaluation of forecasting models, especially with limited data, consider using time series cross-validation methods.\nand store it in a *_train object.\nand store the model table in a *_fit object."
+    "text": "Footnotes\n\n\ni.e., if the TS has a monthly frequency, the index variable should be in yearmonth format. Other formats coud be yearweek, yearquarter, year, date.\nand store it in a *_train object.\nand store the model table in a *_fit object."
   },
   {
     "objectID": "docs/modules/module_1/03_fcst/forecasting.html",
@@ -1314,19 +1314,7 @@
     "href": "docs/modules/module_1/03_fcst/forecasting.html#tidy-data",
     "title": "Forecasting",
     "section": "1.1 Tidy data",
-    "text": "1.1 Tidy data\n\nUse readr::read_csv(), readxl::read_excel(), or tidyquant::tq_get() to import the data into R. You can find more on this here.\n\n\n\nYour data should be tidy. That means:\n\nEach variable should be in its own column.\nEach observation should be in its own row.\nEach value should be in its own cell.\n\n\n\n\nData tidying and transforming are covered in detail in R for Data Science.\nTransform the resulting tibble into a tsibble:\n\nIt should have an index (time) variable with the proper time format1.\nThe key argument is only necessary if the dataset contains more than one time series.",
-    "crumbs": [
-      "Modules",
-      "1. Forecasting models based on decomposition methods",
-      "1.3 Forecasting principles"
-    ]
-  },
-  {
-    "objectID": "docs/modules/module_1/03_fcst/forecasting.html#traintest-split",
-    "href": "docs/modules/module_1/03_fcst/forecasting.html#traintest-split",
-    "title": "Forecasting",
-    "section": "1.2 Train/test split",
-    "text": "1.2 Train/test split\n\nSplit the data into a training set and a test set2. The training set is used to estimate the model parameters, while the test set is used to evaluate the model’s performance on unseen data.\nWe can use filter_index() to create the training set3:\n\n. . .\n\n*_train &lt;- &lt;tsibble&gt; |&gt; \n1  filter_index(\"start_date\" ~ \"end_date\")\n\n\n1\n\nReplace start_date and end_date with the desired date range for the training set.You can also use . to indicate the start or end of the series: filter_index(. ~ \"end_date\") or filter_index(\"start_date\" ~ .).\n\n\n\n\n\n\n\n\n\n\nSplitting the data\n\n\n\n\n\nIn time series, the training set should always contain the earlier observations, while the test set should contain the later observations. This is because time series data is ordered in time, and we want to simulate the real-world scenario where we use past data to predict future values.",
+    "text": "1.1 Tidy data\n\nUse readr::read_csv(), readxl::read_excel(), or tidyquant::tq_get() to import the data into R. You can find more on this here.\n\n\n\nYour data should be tidy. That means:\n\nEach variable should be in its own column.\nEach observation should be in its own row.\nEach value should be in its own cell.\n\n\n\n\nData tidying and transforming are covered in detail in R for Data Science.\nTransform the resulting tibble into a tsibble:\n\nIt should have an index (time) variable with the proper time format1.\nThe key argument is only necessary if the dataset contains more than one time series.\n\n\n\n1.1.1 Train/test split\n\nSplit the data into a training set and a test set^[Splitting the data into a training and test set is the minimum requirement for evaluating a forecasting model. If you want to avoid overfitting and get a more reliable estimate of the model’s performance, you should consider splitting the data into 3 sets: training, validation, and test sets. The validation set is used to tune model hyperparameters and select the best model, while the test set is used for the final evaluation of the selected model.\n\nFor an even more robust evaluation of forecasting models, consider using time series cross-validation methods.]. The training set is used to estimate the model parameters, while the test set is used to evaluate the model’s performance on unseen data.\n\nWe can use filter_index() to create the training set2:\n\n. . .\n\n*_train &lt;- &lt;tsibble&gt; |&gt; \n1  filter_index(\"start_date\" ~ \"end_date\")\n\n\n1\n\nReplace start_date and end_date with the desired date range for the training set.You can also use . to indicate the start or end of the series: filter_index(. ~ \"end_date\") or filter_index(\"start_date\" ~ .).\n\n\n\n\n\n\n\n\n\n\nSplitting the data\n\n\n\n\n\nIn time series, the training set should always contain the earlier observations, while the test set should contain the later observations. This is because time series data is ordered in time, and we want to simulate the real-world scenario where we use past data to predict future values.",
     "crumbs": [
       "Modules",
       "1. Forecasting models based on decomposition methods",
@@ -1337,8 +1325,8 @@
     "objectID": "docs/modules/module_1/03_fcst/forecasting.html#visualize",
     "href": "docs/modules/module_1/03_fcst/forecasting.html#visualize",
     "title": "Forecasting",
-    "section": "1.3 Visualize",
-    "text": "1.3 Visualize\n:::\nPlot the time series to identify patterns, such as trend and seasonality, and anomalies. This can help us choose an appropriate forecasting method. You can find many types of plots here.",
+    "section": "1.2 Visualize",
+    "text": "1.2 Visualize\nPlot the time series to identify patterns, such as trend and seasonality, and anomalies. This can help us choose an appropriate forecasting method. You can find many types of plots here.",
     "crumbs": [
       "Modules",
       "1. Forecasting models based on decomposition methods",
@@ -1349,20 +1337,8 @@
     "objectID": "docs/modules/module_1/03_fcst/forecasting.html#specify-estimate",
     "href": "docs/modules/module_1/03_fcst/forecasting.html#specify-estimate",
     "title": "Forecasting",
-    "section": "1.4 Specify & Estimate",
-    "text": "1.4 Specify & Estimate\nDecide whether any math transformations or adjustments are neccesary and choose a forecasting method based on the series’ features.\nTrain the model specification on the training set. You can use the model() function to fit various forecasting models4.\n\n*_fit &lt;- *_train |&gt; \n  model(\n1    model_1 = &lt;model_function_1&gt;(&lt;y_t&gt; ~ &lt;predictor_variables&gt;),\n2    model_2 = &lt;model_function_2&gt;(&lt;transformation_function&gt;(&lt;y_t&gt;), &lt;specific_arguments&gt;)\n  )\n\n\n1\n\nReplace model_function_1 with the desired forecasting method (e.g., ARIMA(), ETS(), NAIVE(), etc.). Replace &lt;y_t&gt; with the name of the forecast variable and &lt;predictor_variables&gt; with any predictor variables if applicable.\n\n2\n\nIf a transformation is needed, replace transformation_function with the appropriate function (e.g., log, box_cox, etc.) and include any specific arguments required by the model.\n\n\n\n\n\n1.4.1 Evaluate",
-    "crumbs": [
-      "Modules",
-      "1. Forecasting models based on decomposition methods",
-      "1.3 Forecasting principles"
-    ]
-  },
-  {
-    "objectID": "docs/modules/module_1/03_fcst/forecasting.html#refine",
-    "href": "docs/modules/module_1/03_fcst/forecasting.html#refine",
-    "title": "Forecasting",
-    "section": "1.5 Refine",
-    "text": "1.5 Refine",
+    "section": "1.3 Specify & Estimate",
+    "text": "1.3 Specify & Estimate\nDecide whether any math transformations or adjustments are neccesary and choose a forecasting method based on the series’ features.\nTrain the model specification on the training set. You can use the model() function to fit various forecasting models3.\n\n*_fit &lt;- *_train |&gt; \n  model(\n1    model_1 = &lt;model_function_1&gt;(&lt;y_t&gt; ~ &lt;predictor_variables&gt;),\n2    model_2 = &lt;model_function_2&gt;(&lt;transformation_function&gt;(&lt;y_t&gt;), &lt;args&gt;)\n  )\n\n\n1\n\nReplace model_function_1 with the desired forecasting method (e.g., ARIMA(), ETS(), NAIVE(), etc.). Replace &lt;y_t&gt; with the name of the forecast variable and &lt;predictor_variables&gt; with any predictor variables if applicable.\n\n2\n\nIf a transformation is needed, replace transformation_function with the appropriate function (e.g., log, box_cox, etc.) and include any specific arguments required by the model.\n\n\n\n\n\n1.3.1 Evaluate\n\n\n1.3.2 Refine",
     "crumbs": [
       "Modules",
       "1. Forecasting models based on decomposition methods",
@@ -1373,8 +1349,8 @@
     "objectID": "docs/modules/module_1/03_fcst/forecasting.html#forecast-on-the-test-set",
     "href": "docs/modules/module_1/03_fcst/forecasting.html#forecast-on-the-test-set",
     "title": "Forecasting",
-    "section": "1.6 Forecast on the test set",
-    "text": "1.6 Forecast on the test set",
+    "section": "1.4 Forecast on the test set",
+    "text": "1.4 Forecast on the test set",
     "crumbs": [
       "Modules",
       "1. Forecasting models based on decomposition methods",
@@ -1385,8 +1361,8 @@
     "objectID": "docs/modules/module_1/03_fcst/forecasting.html#refit-and-forecast",
     "href": "docs/modules/module_1/03_fcst/forecasting.html#refit-and-forecast",
     "title": "Forecasting",
-    "section": "1.7 Refit and forecast",
-    "text": "1.7 Refit and forecast",
+    "section": "1.5 Refit and forecast",
+    "text": "1.5 Refit and forecast",
     "crumbs": [
       "Modules",
       "1. Forecasting models based on decomposition methods",
@@ -1397,8 +1373,8 @@
     "objectID": "docs/modules/module_1/03_fcst/forecasting.html#communicate",
     "href": "docs/modules/module_1/03_fcst/forecasting.html#communicate",
     "title": "Forecasting",
-    "section": "1.8 Communicate",
-    "text": "1.8 Communicate\n\nThis is a note.",
+    "section": "1.6 Communicate",
+    "text": "1.6 Communicate\n\nThis is a note.",
     "crumbs": [
       "Modules",
       "1. Forecasting models based on decomposition methods",
@@ -1410,7 +1386,7 @@
     "href": "docs/modules/module_1/03_fcst/forecasting.html#footnotes",
     "title": "Forecasting",
     "section": "Footnotes",
-    "text": "Footnotes\n\n\ni.e., if the TS has a monthly frequency, the index variable should be in yearmonth format. Other formats coud be yearweek, yearquarter, year, date.↩︎\nSplitting the data into a training and test set is the minimum requirement for evaluating a forecasting model. If you want to avoid overfitting and get a more reliable estimate of the model’s performance, you should consider splitting the data into 3 sets: training, validation, and test sets. The validation set is used to tune model hyperparameters and select the best model, while the test set is used for the final evaluation of the selected model. For a more robust evaluation of forecasting models, especially with limited data, consider using time series cross-validation methods.↩︎\nand store it in a *_train object.↩︎\nand store the model table in a *_fit object.↩︎",
+    "text": "Footnotes\n\n\ni.e., if the TS has a monthly frequency, the index variable should be in yearmonth format. Other formats coud be yearweek, yearquarter, year, date.↩︎\nand store it in a *_train object.↩︎\nand store the model table in a *_fit object.↩︎",
     "crumbs": [
       "Modules",
       "1. Forecasting models based on decomposition methods",

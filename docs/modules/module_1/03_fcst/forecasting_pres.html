@@ -271,8 +271,11 @@ pbenavides
 <section id="traintest-split" class="slide level2">
 <h2>Train/test split</h2>
 <ul>
-<li class="fragment"><p>Split the data into a <strong>training set</strong> and a <strong>test set</strong><a href="#/footnotes" class="footnote-ref" id="fnref2" role="doc-noteref" data-footnote-href="#/fn2" onclick=""><sup>2</sup></a>. The training set is used to estimate the model parameters, while the test set is used to evaluate the model’s performance on unseen data.</p></li>
-<li class="fragment"><p>We can use <code>filter_index()</code> to create the training set<a href="#/footnotes" class="footnote-ref" id="fnref3" role="doc-noteref" data-footnote-href="#/fn3" onclick=""><sup>3</sup></a>:</p></li>
+<li class="fragment">Split the data into a <strong>training set</strong> and a <strong>test set</strong>^[Splitting the data into a training and test set is the minimum requirement for evaluating a forecasting model. If you want to avoid overfitting and get a more reliable estimate of the model’s performance, you should consider splitting the data into 3 sets: <strong>training, validation, and test sets</strong>. The validation set is used to tune model hyperparameters and select the best model, while the test set is used for the final evaluation of the selected model.</li>
+</ul>
+<p>For an even more robust evaluation of forecasting models, consider using <a href="https://otexts.com/fpp3/tscv.html"><strong>time series cross-validation</strong></a> methods.]. The training set is used to estimate the model parameters, while the test set is used to evaluate the model’s performance on unseen data.</p>
+<ul>
+<li class="fragment">We can use <code>filter_index()</code> to create the training set<a href="#/footnotes" class="footnote-ref" id="fnref2" role="doc-noteref" data-footnote-href="#/fn2" onclick=""><sup>2</sup></a>:</li>
 </ul>
 <div class="fragment">
 <div class="cell">
@@ -291,7 +294,6 @@ pbenavides
 <aside></aside></section>
 <section id="visualize" class="slide level2">
 <h2>Visualize</h2>
-<p>:::</p>
 <p>Plot the time series to identify patterns, such as trend and seasonality, and anomalies. This can help us choose an appropriate forecasting method. You can find many types of plots <a href="../../../../docs/modules/module_1/01_time_series/r_time_series.html# TS Visualization">here</a>.</p>
 <div class="cell">
 <div class="cell-output-display">
@@ -306,12 +308,12 @@ pbenavides
 <section id="specify-estimate" class="slide level2">
 <h2>Specify &amp; Estimate</h2>
 <p>Decide whether any math transformations or adjustments are neccesary and choose a forecasting method based on the series’ features.</p>
-<p>Train the model specification on the training set. You can use the <code>model()</code> function to fit various forecasting models<a href="#/footnotes" class="footnote-ref" id="fnref4" role="doc-noteref" data-footnote-href="#/fn4" onclick=""><sup>4</sup></a>.</p>
+<p>Train the model specification on the training set. You can use the <code>model()</code> function to fit various forecasting models<a href="#/footnotes" class="footnote-ref" id="fnref3" role="doc-noteref" data-footnote-href="#/fn3" onclick=""><sup>3</sup></a>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1"></a><span class="sc">*</span>_fit <span class="ot">&lt;-</span> <span class="er">*</span>_train <span class="sc">|&gt;</span> </span>
 <span id="annotated-cell-2-2"><a href="#annotated-cell-2-2"></a>  <span class="fu">model</span>(</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1">1</button><span id="annotated-cell-2-3" class="code-annotation-target"><a href="#annotated-cell-2-3"></a>    <span class="at">model_1 =</span> <span class="sc">&lt;</span>model_function_1<span class="sc">&gt;</span>(<span class="sc">&lt;</span>y_t<span class="sc">&gt;</span> <span class="er">~</span> <span class="er">&lt;</span>predictor_variables<span class="sc">&gt;</span>),</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="2">2</button><span id="annotated-cell-2-4" class="code-annotation-target"><a href="#annotated-cell-2-4"></a>    <span class="at">model_2 =</span> <span class="sc">&lt;</span>model_function_2<span class="sc">&gt;</span>(<span class="sc">&lt;</span>transformation_function<span class="sc">&gt;</span>(<span class="sc">&lt;</span>y_t<span class="sc">&gt;</span>), <span class="sc">&lt;</span>specific_arguments<span class="sc">&gt;</span>)</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="2">2</button><span id="annotated-cell-2-4" class="code-annotation-target"><a href="#annotated-cell-2-4"></a>    <span class="at">model_2 =</span> <span class="sc">&lt;</span>model_function_2<span class="sc">&gt;</span>(<span class="sc">&lt;</span>transformation_function<span class="sc">&gt;</span>(<span class="sc">&lt;</span>y_t<span class="sc">&gt;</span>), <span class="sc">&lt;</span>args<span class="sc">&gt;</span>)</span>
 <span id="annotated-cell-2-5"><a href="#annotated-cell-2-5"></a>  )</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
@@ -365,9 +367,8 @@ pbenavides
 
 <ol>
 <li id="fn1"><p>i.e., if the TS has a monthly frequency, the index variable should be in <code>yearmonth</code> format. Other formats coud be <code>yearweek</code>, <code>yearquarter</code>, <code>year</code>, <code>date</code>.</p></li>
-<li id="fn2"><p>Splitting the data into a training and test set is the minimum requirement for evaluating a forecasting model. If you want to avoid overfitting and get a more reliable estimate of the model’s performance, you should consider splitting the data into 3 sets: <strong>training, validation, and test sets</strong>. The validation set is used to tune model hyperparameters and select the best model, while the test set is used for the final evaluation of the selected model. For a more robust evaluation of forecasting models, especially with limited data, consider using <a href="https://otexts.com/fpp3/tscv.html"><strong>time series cross-validation</strong></a> methods.</p></li>
-<li id="fn3"><p>and store it in a <code>*_train</code> object.</p></li>
-<li id="fn4"><p>and store the model table in a <code>*_fit</code> object.</p></li>
+<li id="fn2"><p>and store it in a <code>*_train</code> object.</p></li>
+<li id="fn3"><p>and store the model table in a <code>*_fit</code> object.</p></li>
 </ol>
 </section>
     </div>
