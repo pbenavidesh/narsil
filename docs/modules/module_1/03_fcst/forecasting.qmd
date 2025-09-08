@@ -19,15 +19,17 @@ library(fpp3)
 
 :::
 
-## A tidy forecasting workflow
-
-![](fcst_wf.png)
+# A tidy forecasting workflow
 
 :::{.content-visible unless-format="html"}
 
 ## A tidy forecasting workflow
 
 :::
+
+![](fcst_wf.png)
+
+
 
 
 :::{.content-hidden unless-format="revealjs"}
@@ -58,14 +60,14 @@ library(fpp3)
 
 
 :::{.content-hidden unless-format="revealjs"}
-## Train-test split
+## Train/test split
 :::
 
 :::{.content-visible unless-format="revealjs"}
-### Train-test split
+### Train/test split
 :::
 
-- Split the data into a training set and a test set. The training set is used to estimate the model parameters, while the test set is used to evaluate the model's performance on unseen data.
+- Split the data into a **training set** and a **test set**^[Splitting the data into a training and test set is the minimum requirement for evaluating a forecasting model. If you want to avoid overfitting and get a more reliable estimate of the model's performance, you should consider splitting the data into 3 sets: **training, validation, and test sets**. The validation set is used to tune model hyperparameters and select the best model, while the test set is used for the final evaluation of the selected model. For a more robust evaluation of forecasting models, especially with limited data, consider using [**time series cross-validation**](https://otexts.com/fpp3/tscv.html) methods.]. The training set is used to estimate the model parameters, while the test set is used to evaluate the model's performance on unseen data.
 
 - We can use `filter_index()` to create the training set^[and store it in a `*_train` object.]:
 
@@ -112,22 +114,14 @@ aus_production |>
 
 
 :::{.content-hidden unless-format="revealjs"}
-## Specify
+## Specify & Estimate
 :::
 
 :::{.content-visible unless-format="revealjs"}
-### Specify
+### Specify & Estimate
 :::
 
 Decide whether any math transformations or adjustments are neccesary and choose a forecasting method based on the series' features.
-
-:::{.content-hidden unless-format="revealjs"}
-## Estimate
-:::
-
-:::{.content-visible unless-format="revealjs"}
-### Estimate
-:::
 
 Train the model specification on the training set. You can use the `model()` function to fit various forecasting models^[and store the model table in a `*_fit` object.].
 
@@ -144,6 +138,19 @@ Train the model specification on the training set. You can use the `model()` fun
 
 1. Replace `model_function_1` with the desired forecasting method (e.g., `ARIMA()`, `ETS()`, `NAIVE()`, etc.). Replace `<y_t>` with the name of the forecast variable and `<predictor_variables>` with any predictor variables if applicable.
 2. If a transformation is needed, replace `transformation_function` with the appropriate function (e.g., `log`, `box_cox`, etc.) and include any specific arguments required by the model.
+
+:::{.content-hidden unless-format="revealjs"}
+---
+
+## Estimate
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+### Estimate
+:::
+
+
 
 :::{.content-hidden unless-format="revealjs"}
 ## Evaluate
