@@ -236,13 +236,29 @@ pbenavides
 <section id="tidy-data" class="slide level2">
 <h2>Tidy data</h2>
 <ul>
-<li class="fragment"><p>Use <code>readr::read_csv()</code>, <code>readxl::read_excel()</code>, or <code>tidyquant::tq_get()</code> to import the data into R. You can find more on this <a href="https://r4ds.hadley.nz/import.html">here</a>.</p></li>
-<li class="fragment"><p>Your data should be tidy. That means:</p>
+<li class="fragment">Use <code>readr::read_csv()</code>, <code>readxl::read_excel()</code>, or <code>tidyquant::tq_get()</code> to import the data into R. You can find more on this <a href="https://r4ds.hadley.nz/import.html">here</a>.</li>
+</ul>
+<aside class="notes">
 <ul>
-<li class="fragment">Each variable should be in its own column.</li>
-<li class="fragment">Each observation should be in its own row.</li>
-<li class="fragment">Each value should be in its own cell.</li>
+<li><p>Your data should be tidy. That means:</p>
+<ul>
+<li>Each variable should be in its own column.</li>
+<li>Each observation should be in its own row.</li>
+<li>Each value should be in its own cell.</li>
 </ul></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+<ul>
 <li class="fragment"><p><a href="https://r4ds.hadley.nz/data-tidy.html">Data tidying</a> and <a href="https://r4ds.hadley.nz/transform.html">transforming</a> are covered in detail in <a href="https://r4ds.hadley.nz/">R for Data Science</a>.</p></li>
 <li class="fragment"><p>Transform the resulting <code>tibble</code> into a <strong><code>tsibble</code></strong>:</p>
 <ul>
@@ -253,10 +269,13 @@ pbenavides
 <aside></aside></section>
 <section id="train-test-split" class="slide level2">
 <h2>Train-test split</h2>
-<p>Split the data into a training set and a test set. The training set is used to estimate the model parameters, while the test set is used to evaluate the model’s performance on unseen data.</p>
-<p>We can use <code>filter_index()</code> to create the training set<a href="#/footnotes" class="footnote-ref" id="fnref2" role="doc-noteref" data-footnote-href="#/fn2" onclick=""><sup>2</sup></a>:</p>
+<ul>
+<li class="fragment"><p>Split the data into a training set and a test set. The training set is used to estimate the model parameters, while the test set is used to evaluate the model’s performance on unseen data.</p></li>
+<li class="fragment"><p>We can use <code>filter_index()</code> to create the training set<a href="#/footnotes" class="footnote-ref" id="fnref2" role="doc-noteref" data-footnote-href="#/fn2" onclick=""><sup>2</sup></a>:</p></li>
+</ul>
+<div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1"></a><span class="sc">&lt;</span>tsibble<span class="sc">&gt;</span> <span class="er">|&gt;</span> </span>
+<div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1"></a><span class="sc">*</span>_train <span class="ot">&lt;-</span> <span class="er">&lt;</span>tsibble<span class="sc">&gt;</span> <span class="er">|&gt;</span> </span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1">1</button><span id="annotated-cell-1-2" class="code-annotation-target"><a href="#annotated-cell-1-2"></a>  <span class="fu">filter_index</span>(<span class="st">"start_date"</span> <span class="sc">~</span> <span class="st">"end_date"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
@@ -267,23 +286,20 @@ pbenavides
 </dl>
 </div>
 </div>
-<div class="callout callout-note callout-titled callout-style-default">
-<div class="callout-body">
-<div class="callout-title">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<p><strong>Splitting the data</strong></p>
-</div>
-<div class="callout-content">
-<p>In time series, the training set should always contain the earlier observations, while the test set should contain the later observations. This is because time series data is ordered in time, and we want to simulate the real-world scenario where we use past data to predict future values.</p>
-</div>
-</div>
 </div>
 <aside></aside></section>
 <section id="visualize" class="slide level2">
 <h2>Visualize</h2>
 <p>Plot the time series to identify patterns, such as trend and seasonality, and anomalies. This can help us choose an appropriate forecasting method. You can find many types of plots <a href="../../../../docs/modules/module_1/01_time_series/r_time_series.html# TS Visualization">here</a>.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="forecasting_files/figure-revealjs/ts_viz-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img data-src="forecasting_files/figure-revealjs/ts_viz-1.png" width="960"></a></p>
+</figure>
+</div>
+</div>
+</div>
 </section>
 <section id="specify" class="slide level2">
 <h2>Specify</h2>
@@ -292,15 +308,38 @@ pbenavides
 <section id="estimate" class="slide level2">
 <h2>Estimate</h2>
 <p>Train the model specification on the training set. You can use the <code>model()</code> function to fit various forecasting models<a href="#/footnotes" class="footnote-ref" id="fnref3" role="doc-noteref" data-footnote-href="#/fn3" onclick=""><sup>3</sup></a>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1"></a><span class="sc">*</span>_fit <span class="ot">&lt;-</span> <span class="er">*</span>_train <span class="sc">|&gt;</span> </span>
+<span id="annotated-cell-2-2"><a href="#annotated-cell-2-2"></a>  <span class="fu">model</span>(</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1">1</button><span id="annotated-cell-2-3" class="code-annotation-target"><a href="#annotated-cell-2-3"></a>    <span class="at">model_1 =</span> <span class="sc">&lt;</span>model_function_1<span class="sc">&gt;</span>(<span class="sc">&lt;</span>y_t<span class="sc">&gt;</span> <span class="er">~</span> <span class="er">&lt;</span>predictor_variables<span class="sc">&gt;</span>),</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="2">2</button><span id="annotated-cell-2-4" class="code-annotation-target"><a href="#annotated-cell-2-4"></a>    <span class="at">model_2 =</span> <span class="sc">&lt;</span>model_function_2<span class="sc">&gt;</span>(<span class="sc">&lt;</span>transformation_function<span class="sc">&gt;</span>(<span class="sc">&lt;</span>y_t<span class="sc">&gt;</span>), <span class="sc">&lt;</span>specific_arguments<span class="sc">&gt;</span>)</span>
+<span id="annotated-cell-2-5"><a href="#annotated-cell-2-5"></a>  )</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-2" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="3" data-code-annotation="1">Replace <code>model_function_1</code> with the desired forecasting method (e.g., <code>ARIMA()</code>, <code>ETS()</code>, <code>NAIVE()</code>, etc.). Replace <code>&lt;y_t&gt;</code> with the name of the forecast variable and <code>&lt;predictor_variables&gt;</code> with any predictor variables if applicable.</span>
+</dd>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="4" data-code-annotation="2">If a transformation is needed, replace <code>transformation_function</code> with the appropriate function (e.g., <code>log</code>, <code>box_cox</code>, etc.) and include any specific arguments required by the model.</span>
+</dd>
+</dl>
+</div>
+</div>
 <aside></aside></section>
 <section id="evaluate" class="slide level2">
 <h2>Evaluate</h2>
+<h3 id="section"></h3>
 </section>
 <section id="refine" class="slide level2">
 <h2>Refine</h2>
 </section>
-<section id="forecast" class="slide level2">
-<h2>Forecast</h2>
+<section id="forecast-on-the-test-set" class="slide level2">
+<h2>Forecast on the test set</h2>
+</section>
+<section id="refit-and-forecast" class="slide level2">
+<h2>Refit and forecast</h2>
 </section>
 <section id="communicate" class="slide level2">
 <h2>Communicate</h2>
@@ -317,9 +356,13 @@ pbenavides
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
+</section>
+<section id="benchmark-forecasting-methods" class="title-slide slide level1 center">
+<h1>Benchmark forecasting methods</h1>
 
 
 </section>
+
 <section id="footnotes" class="footnotes footnotes-end-of-document smaller scrollable" role="doc-endnotes"><h2>Footnotes</h2>
 
 <ol>

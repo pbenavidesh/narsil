@@ -1239,14 +1239,14 @@
     "href": "docs/modules/module_1/03_fcst/forecasting_pres.html#tidy-data",
     "title": "Forecasting",
     "section": "Tidy data",
-    "text": "Tidy data\n\nUse readr::read_csv(), readxl::read_excel(), or tidyquant::tq_get() to import the data into R. You can find more on this here.\nYour data should be tidy. That means:\n\nEach variable should be in its own column.\nEach observation should be in its own row.\nEach value should be in its own cell.\n\nData tidying and transforming are covered in detail in R for Data Science.\nTransform the resulting tibble into a tsibble:\n\nIt should have an index (time) variable with the proper time format1.\nThe key argument is only necessary if the dataset contains more than one time series."
+    "text": "Tidy data\n\nUse readr::read_csv(), readxl::read_excel(), or tidyquant::tq_get() to import the data into R. You can find more on this here.\n\n\n\nYour data should be tidy. That means:\n\nEach variable should be in its own column.\nEach observation should be in its own row.\nEach value should be in its own cell.\n\n\n\n\nData tidying and transforming are covered in detail in R for Data Science.\nTransform the resulting tibble into a tsibble:\n\nIt should have an index (time) variable with the proper time format1.\nThe key argument is only necessary if the dataset contains more than one time series."
   },
   {
     "objectID": "docs/modules/module_1/03_fcst/forecasting_pres.html#train-test-split",
     "href": "docs/modules/module_1/03_fcst/forecasting_pres.html#train-test-split",
     "title": "Forecasting",
     "section": "Train-test split",
-    "text": "Train-test split\nSplit the data into a training set and a test set. The training set is used to estimate the model parameters, while the test set is used to evaluate the model’s performance on unseen data.\nWe can use filter_index() to create the training set2:\n\n&lt;tsibble&gt; |&gt; \n1  filter_index(\"start_date\" ~ \"end_date\")\n\n\n1\n\nReplace start_date and end_date with the desired date range for the training set.You can also use . to indicate the start or end of the series: filter_index(. ~ \"end_date\") or filter_index(\"start_date\" ~ .).\n\n\n\n\n\n\n\n\n\n\nSplitting the data\n\n\nIn time series, the training set should always contain the earlier observations, while the test set should contain the later observations. This is because time series data is ordered in time, and we want to simulate the real-world scenario where we use past data to predict future values."
+    "text": "Train-test split\n\nSplit the data into a training set and a test set. The training set is used to estimate the model parameters, while the test set is used to evaluate the model’s performance on unseen data.\nWe can use filter_index() to create the training set2:\n\n\n\n*_train &lt;- &lt;tsibble&gt; |&gt; \n1  filter_index(\"start_date\" ~ \"end_date\")\n\n\n1\n\nReplace start_date and end_date with the desired date range for the training set.You can also use . to indicate the start or end of the series: filter_index(. ~ \"end_date\") or filter_index(\"start_date\" ~ .)."
   },
   {
     "objectID": "docs/modules/module_1/03_fcst/forecasting_pres.html#visualize",
@@ -1267,7 +1267,7 @@
     "href": "docs/modules/module_1/03_fcst/forecasting_pres.html#estimate",
     "title": "Forecasting",
     "section": "Estimate",
-    "text": "Estimate\nTrain the model specification on the training set. You can use the model() function to fit various forecasting models3."
+    "text": "Estimate\nTrain the model specification on the training set. You can use the model() function to fit various forecasting models3.\n\n*_fit &lt;- *_train |&gt; \n  model(\n1    model_1 = &lt;model_function_1&gt;(&lt;y_t&gt; ~ &lt;predictor_variables&gt;),\n2    model_2 = &lt;model_function_2&gt;(&lt;transformation_function&gt;(&lt;y_t&gt;), &lt;specific_arguments&gt;)\n  )\n\n\n1\n\nReplace model_function_1 with the desired forecasting method (e.g., ARIMA(), ETS(), NAIVE(), etc.). Replace &lt;y_t&gt; with the name of the forecast variable and &lt;predictor_variables&gt; with any predictor variables if applicable.\n\n2\n\nIf a transformation is needed, replace transformation_function with the appropriate function (e.g., log, box_cox, etc.) and include any specific arguments required by the model."
   },
   {
     "objectID": "docs/modules/module_1/03_fcst/forecasting_pres.html#evaluate",
@@ -1284,11 +1284,18 @@
     "text": "Refine"
   },
   {
-    "objectID": "docs/modules/module_1/03_fcst/forecasting_pres.html#forecast",
-    "href": "docs/modules/module_1/03_fcst/forecasting_pres.html#forecast",
+    "objectID": "docs/modules/module_1/03_fcst/forecasting_pres.html#forecast-on-the-test-set",
+    "href": "docs/modules/module_1/03_fcst/forecasting_pres.html#forecast-on-the-test-set",
     "title": "Forecasting",
-    "section": "Forecast",
-    "text": "Forecast"
+    "section": "Forecast on the test set",
+    "text": "Forecast on the test set"
+  },
+  {
+    "objectID": "docs/modules/module_1/03_fcst/forecasting_pres.html#refit-and-forecast",
+    "href": "docs/modules/module_1/03_fcst/forecasting_pres.html#refit-and-forecast",
+    "title": "Forecasting",
+    "section": "Refit and forecast",
+    "text": "Refit and forecast"
   },
   {
     "objectID": "docs/modules/module_1/03_fcst/forecasting_pres.html#communicate",
@@ -1320,8 +1327,8 @@
     "objectID": "docs/modules/module_1/03_fcst/forecasting.html#a-tidy-forecasting-workflow",
     "href": "docs/modules/module_1/03_fcst/forecasting.html#a-tidy-forecasting-workflow",
     "title": "Forecasting",
-    "section": "1 A tidy forecasting workflow",
-    "text": "1 A tidy forecasting workflow\n\n\n1.1 Tidy data\n\nUse readr::read_csv(), readxl::read_excel(), or tidyquant::tq_get() to import the data into R. You can find more on this here.\nYour data should be tidy. That means:\n\nEach variable should be in its own column.\nEach observation should be in its own row.\nEach value should be in its own cell.\n\nData tidying and transforming are covered in detail in R for Data Science.\nTransform the resulting tibble into a tsibble:\n\nIt should have an index (time) variable with the proper time format1.\nThe key argument is only necessary if the dataset contains more than one time series.\n\n\n\n\n1.2 Train-test split\nSplit the data into a training set and a test set. The training set is used to estimate the model parameters, while the test set is used to evaluate the model’s performance on unseen data.\nWe can use filter_index() to create the training set2:\n\n&lt;tsibble&gt; |&gt; \n1  filter_index(\"start_date\" ~ \"end_date\")\n\n\n1\n\nReplace start_date and end_date with the desired date range for the training set.You can also use . to indicate the start or end of the series: filter_index(. ~ \"end_date\") or filter_index(\"start_date\" ~ .).\n\n\n\n\n\n\n\n\n\n\nSplitting the data\n\n\n\n\n\nIn time series, the training set should always contain the earlier observations, while the test set should contain the later observations. This is because time series data is ordered in time, and we want to simulate the real-world scenario where we use past data to predict future values.\n\n\n\n\n\n1.3 Visualize\nPlot the time series to identify patterns, such as trend and seasonality, and anomalies. This can help us choose an appropriate forecasting method. You can find many types of plots here.\n\n\n1.4 Specify\nDecide whether any math transformations or adjustments are neccesary and choose a forecasting method based on the series’ features.\n\n\n1.5 Estimate\nTrain the model specification on the training set. You can use the model() function to fit various forecasting models3.\n\n\n1.6 Evaluate\n\n\n1.7 Refine\n\n\n1.8 Forecast\n\n\n1.9 Communicate\n\nThis is a note.",
+    "section": "0.1 A tidy forecasting workflow",
+    "text": "0.1 A tidy forecasting workflow\n\n\n0.1.1 Tidy data\n\nUse readr::read_csv(), readxl::read_excel(), or tidyquant::tq_get() to import the data into R. You can find more on this here.\n\n\n\nYour data should be tidy. That means:\n\nEach variable should be in its own column.\nEach observation should be in its own row.\nEach value should be in its own cell.\n\n\n\n\nData tidying and transforming are covered in detail in R for Data Science.\nTransform the resulting tibble into a tsibble:\n\nIt should have an index (time) variable with the proper time format1.\nThe key argument is only necessary if the dataset contains more than one time series.\n\n\n\n\n0.1.2 Train-test split\n\nSplit the data into a training set and a test set. The training set is used to estimate the model parameters, while the test set is used to evaluate the model’s performance on unseen data.\nWe can use filter_index() to create the training set2:\n\n. . .\n\n*_train &lt;- &lt;tsibble&gt; |&gt; \n1  filter_index(\"start_date\" ~ \"end_date\")\n\n\n1\n\nReplace start_date and end_date with the desired date range for the training set.You can also use . to indicate the start or end of the series: filter_index(. ~ \"end_date\") or filter_index(\"start_date\" ~ .).\n\n\n\n\n\n\n\n\n\n\nSplitting the data\n\n\n\n\n\nIn time series, the training set should always contain the earlier observations, while the test set should contain the later observations. This is because time series data is ordered in time, and we want to simulate the real-world scenario where we use past data to predict future values.\n\n\n\n\n\n0.1.3 Visualize\nPlot the time series to identify patterns, such as trend and seasonality, and anomalies. This can help us choose an appropriate forecasting method. You can find many types of plots here.\n\n\n\n\n\n\n\n\n\n\n\n0.1.4 Specify\nDecide whether any math transformations or adjustments are neccesary and choose a forecasting method based on the series’ features.\n\n\n0.1.5 Estimate\nTrain the model specification on the training set. You can use the model() function to fit various forecasting models3.\n\n*_fit &lt;- *_train |&gt; \n  model(\n1    model_1 = &lt;model_function_1&gt;(&lt;y_t&gt; ~ &lt;predictor_variables&gt;),\n2    model_2 = &lt;model_function_2&gt;(&lt;transformation_function&gt;(&lt;y_t&gt;), &lt;specific_arguments&gt;)\n  )\n\n\n1\n\nReplace model_function_1 with the desired forecasting method (e.g., ARIMA(), ETS(), NAIVE(), etc.). Replace &lt;y_t&gt; with the name of the forecast variable and &lt;predictor_variables&gt; with any predictor variables if applicable.\n\n2\n\nIf a transformation is needed, replace transformation_function with the appropriate function (e.g., log, box_cox, etc.) and include any specific arguments required by the model.\n\n\n\n\n\n\n0.1.6 Evaluate\n\n\n0.1.7 \n\n\n0.1.8 Refine\n\n\n0.1.9 Forecast on the test set\n\n\n0.1.10 Refit and forecast\n\n\n0.1.11 Communicate\n\nThis is a note.",
     "crumbs": [
       "Modules",
       "1. Forecasting models based on decomposition methods",
