@@ -38,7 +38,20 @@ library(fpp3)
 ### Tidy data
 :::
 
-Load the data into R, tidy it and transform it into a `tsibble`^[The `tsibble` should have the `index` (time) variable with the proper time format. The `key` argument is only necessary if the dataset contains more than one time series.].
+- Use `readr::read_csv()`,  `readxl::read_excel()`, or `tidyquant::tq_get()` to import the data into R. You can find more on this [here](https://r4ds.hadley.nz/import.html).
+
+- Your data should be tidy. That means:
+
+  - Each variable should be in its own column.
+  - Each observation should be in its own row.
+  - Each value should be in its own cell.
+  
+- [Data tidying](https://r4ds.hadley.nz/data-tidy.html) and [transforming](https://r4ds.hadley.nz/transform.html) are covered in detail in [R for Data Science](https://r4ds.hadley.nz/).
+
+- Transform the resulting `tibble` into a **`tsibble`**:
+  - It should have an `index` (time) variable with the proper time format^[i.e., if the TS has a monthly frequency, the index variable should be in `yearmonth` format. Other formats coud be `yearweek`, `yearquarter`, `year`, `date`.]. 
+  - The `key` argument is only necessary if the dataset contains more than one time series.
+
 
 
 :::{.content-hidden unless-format="revealjs"}
@@ -51,7 +64,19 @@ Load the data into R, tidy it and transform it into a `tsibble`^[The `tsibble` s
 
 Split the data into a training set and a test set. The training set is used to estimate the model parameters, while the test set is used to evaluate the model's performance on unseen data.
 
-We can use `filter_index()` to create the training set^[and store it in a `*_train` object.].
+We can use `filter_index()` to create the training set^[and store it in a `*_train` object.]:
+
+```{r}
+#| label: filter_index
+#| eval: false
+
+<tsibble> |> 
+  filter_index("start_date" ~ "end_date")  #<1>
+```
+
+1. Replace `start_date` and `end_date` with the desired date range for the training set.You can also use `.` to indicate the start or end of the series: `filter_index(. ~ "end_date")` or `filter_index("start_date" ~ .)`.
+
+
 
 :::{.callout-note collapse="true"}
 ## Splitting the data
