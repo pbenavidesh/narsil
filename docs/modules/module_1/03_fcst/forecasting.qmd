@@ -40,12 +40,15 @@ library(fpp3)
 
 - Use `readr::read_csv()`,  `readxl::read_excel()`, or `tidyquant::tq_get()` to import the data into R. You can find more on this [here](https://r4ds.hadley.nz/import.html).
 
+:::{.notes}
 - Your data should be tidy. That means:
 
   - Each variable should be in its own column.
   - Each observation should be in its own row.
   - Each value should be in its own cell.
-  
+
+:::
+
 - [Data tidying](https://r4ds.hadley.nz/data-tidy.html) and [transforming](https://r4ds.hadley.nz/transform.html) are covered in detail in [R for Data Science](https://r4ds.hadley.nz/).
 
 - Transform the resulting `tibble` into a **`tsibble`**:
@@ -62,26 +65,31 @@ library(fpp3)
 ### Train-test split
 :::
 
-Split the data into a training set and a test set. The training set is used to estimate the model parameters, while the test set is used to evaluate the model's performance on unseen data.
+- Split the data into a training set and a test set. The training set is used to estimate the model parameters, while the test set is used to evaluate the model's performance on unseen data.
 
-We can use `filter_index()` to create the training set^[and store it in a `*_train` object.]:
+- We can use `filter_index()` to create the training set^[and store it in a `*_train` object.]:
+
+. . .
 
 ```{r}
 #| label: filter_index
 #| eval: false
 
-<tsibble> |> 
+*_train <- <tsibble> |> 
   filter_index("start_date" ~ "end_date")  #<1>
 ```
 
 1. Replace `start_date` and `end_date` with the desired date range for the training set.You can also use `.` to indicate the start or end of the series: `filter_index(. ~ "end_date")` or `filter_index("start_date" ~ .)`.
 
 
+:::{.content-visible unless-format="revealjs"}
 
 :::{.callout-note collapse="true"}
 ## Splitting the data
 
 In time series, the training set should always contain the earlier observations, while the test set should contain the later observations. This is because time series data is ordered in time, and we want to simulate the real-world scenario where we use past data to predict future values.
+:::
+
 :::
 
 :::{.content-hidden unless-format="revealjs"}
@@ -93,6 +101,15 @@ In time series, the training set should always contain the earlier observations,
 :::
 
 Plot the time series to identify patterns, such as trend and seasonality, and anomalies. This can help us choose an appropriate forecasting method. You can find many types of plots [here](../01_time_series/r_time_series.qmd# TS Visualization).
+
+```{r}
+#| label: ts_viz
+#| echo: false
+
+aus_production |> 
+  gg_tsdisplay(log(Gas))
+```
+
 
 :::{.content-hidden unless-format="revealjs"}
 ## Specify
@@ -114,6 +131,20 @@ Decide whether any math transformations or adjustments are neccesary and choose 
 
 Train the model specification on the training set. You can use the `model()` function to fit various forecasting models^[and store the model table in a `*_fit` object.].
 
+```{r}
+#| label: model_estimation
+#| eval: false
+
+*_fit <- *_train |> 
+  model(
+    model_1 = <model_function_1>(<y_t> ~ <predictor_variables>),                           #<1>
+    model_2 = <model_function_2>(<transformation_function>(<y_t>), <specific_arguments>)   #<2>
+  )
+```
+
+1. Replace `model_function_1` with the desired forecasting method (e.g., `ARIMA()`, `ETS()`, `NAIVE()`, etc.). Replace `<y_t>` with the name of the forecast variable and `<predictor_variables>` with any predictor variables if applicable.
+2. If a transformation is needed, replace `transformation_function` with the appropriate function (e.g., `log`, `box_cox`, etc.) and include any specific arguments required by the model.
+
 :::{.content-hidden unless-format="revealjs"}
 ## Evaluate
 :::
@@ -121,6 +152,8 @@ Train the model specification on the training set. You can use the `model()` fun
 :::{.content-visible unless-format="revealjs"}
 ### Evaluate
 :::
+
+###
 
 
 :::{.content-hidden unless-format="revealjs"}
@@ -133,12 +166,23 @@ Train the model specification on the training set. You can use the `model()` fun
 
 
 :::{.content-hidden unless-format="revealjs"}
-## Forecast
+## Forecast on the test set
 :::
 
 :::{.content-visible unless-format="revealjs"}
-### Forecast
+### Forecast on the test set
 :::
+
+:::{.content-hidden unless-format="revealjs"}
+## Refit and forecast
+:::
+
+:::{.content-visible unless-format="revealjs"}
+### Refit and forecast
+:::
+
+
+
 
 :::{.content-hidden unless-format="revealjs"}
 ## Communicate
@@ -154,4 +198,6 @@ Train the model specification on the training set. You can use the `model()` fun
 This is a note.
 
 :::
+
+# Benchmark forecasting methods
 
