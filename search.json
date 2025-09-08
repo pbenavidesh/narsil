@@ -1246,7 +1246,7 @@
     "href": "docs/modules/module_1/03_fcst/forecasting_pres.html#visualize",
     "title": "Forecasting",
     "section": "Visualize",
-    "text": "Visualize\nPlot the time series to identify patterns, such as trend and seasonality, and anomalies. This can help us choose an appropriate forecasting method. You can find many types of plots here."
+    "text": "Visualize\n:::\nPlot the time series to identify patterns, such as trend and seasonality, and anomalies. This can help us choose an appropriate forecasting method. You can find many types of plots here."
   },
   {
     "objectID": "docs/modules/module_1/03_fcst/forecasting_pres.html#specify-estimate",
@@ -1254,13 +1254,6 @@
     "title": "Forecasting",
     "section": "Specify & Estimate",
     "text": "Specify & Estimate\nDecide whether any math transformations or adjustments are neccesary and choose a forecasting method based on the series’ features.\nTrain the model specification on the training set. You can use the model() function to fit various forecasting models4.\n\n*_fit &lt;- *_train |&gt; \n  model(\n1    model_1 = &lt;model_function_1&gt;(&lt;y_t&gt; ~ &lt;predictor_variables&gt;),\n2    model_2 = &lt;model_function_2&gt;(&lt;transformation_function&gt;(&lt;y_t&gt;), &lt;specific_arguments&gt;)\n  )\n\n\n1\n\nReplace model_function_1 with the desired forecasting method (e.g., ARIMA(), ETS(), NAIVE(), etc.). Replace &lt;y_t&gt; with the name of the forecast variable and &lt;predictor_variables&gt; with any predictor variables if applicable.\n\n2\n\nIf a transformation is needed, replace transformation_function with the appropriate function (e.g., log, box_cox, etc.) and include any specific arguments required by the model."
-  },
-  {
-    "objectID": "docs/modules/module_1/03_fcst/forecasting_pres.html#estimate",
-    "href": "docs/modules/module_1/03_fcst/forecasting_pres.html#estimate",
-    "title": "Forecasting",
-    "section": "Estimate",
-    "text": "Estimate"
   },
   {
     "objectID": "docs/modules/module_1/03_fcst/forecasting_pres.html#evaluate",
@@ -1310,6 +1303,102 @@
     "title": "Forecasting",
     "section": "",
     "text": "library(tidyverse)\nlibrary(fpp3)",
+    "crumbs": [
+      "Modules",
+      "1. Forecasting models based on decomposition methods",
+      "1.3 Forecasting principles"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_1/03_fcst/forecasting.html#tidy-data",
+    "href": "docs/modules/module_1/03_fcst/forecasting.html#tidy-data",
+    "title": "Forecasting",
+    "section": "1.1 Tidy data",
+    "text": "1.1 Tidy data\n\nUse readr::read_csv(), readxl::read_excel(), or tidyquant::tq_get() to import the data into R. You can find more on this here.\n\n\n\nYour data should be tidy. That means:\n\nEach variable should be in its own column.\nEach observation should be in its own row.\nEach value should be in its own cell.\n\n\n\n\nData tidying and transforming are covered in detail in R for Data Science.\nTransform the resulting tibble into a tsibble:\n\nIt should have an index (time) variable with the proper time format1.\nThe key argument is only necessary if the dataset contains more than one time series.",
+    "crumbs": [
+      "Modules",
+      "1. Forecasting models based on decomposition methods",
+      "1.3 Forecasting principles"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_1/03_fcst/forecasting.html#traintest-split",
+    "href": "docs/modules/module_1/03_fcst/forecasting.html#traintest-split",
+    "title": "Forecasting",
+    "section": "1.2 Train/test split",
+    "text": "1.2 Train/test split\n\nSplit the data into a training set and a test set2. The training set is used to estimate the model parameters, while the test set is used to evaluate the model’s performance on unseen data.\nWe can use filter_index() to create the training set3:\n\n. . .\n\n*_train &lt;- &lt;tsibble&gt; |&gt; \n1  filter_index(\"start_date\" ~ \"end_date\")\n\n\n1\n\nReplace start_date and end_date with the desired date range for the training set.You can also use . to indicate the start or end of the series: filter_index(. ~ \"end_date\") or filter_index(\"start_date\" ~ .).\n\n\n\n\n\n\n\n\n\n\nSplitting the data\n\n\n\n\n\nIn time series, the training set should always contain the earlier observations, while the test set should contain the later observations. This is because time series data is ordered in time, and we want to simulate the real-world scenario where we use past data to predict future values.",
+    "crumbs": [
+      "Modules",
+      "1. Forecasting models based on decomposition methods",
+      "1.3 Forecasting principles"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_1/03_fcst/forecasting.html#visualize",
+    "href": "docs/modules/module_1/03_fcst/forecasting.html#visualize",
+    "title": "Forecasting",
+    "section": "1.3 Visualize",
+    "text": "1.3 Visualize\n:::\nPlot the time series to identify patterns, such as trend and seasonality, and anomalies. This can help us choose an appropriate forecasting method. You can find many types of plots here.",
+    "crumbs": [
+      "Modules",
+      "1. Forecasting models based on decomposition methods",
+      "1.3 Forecasting principles"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_1/03_fcst/forecasting.html#specify-estimate",
+    "href": "docs/modules/module_1/03_fcst/forecasting.html#specify-estimate",
+    "title": "Forecasting",
+    "section": "1.4 Specify & Estimate",
+    "text": "1.4 Specify & Estimate\nDecide whether any math transformations or adjustments are neccesary and choose a forecasting method based on the series’ features.\nTrain the model specification on the training set. You can use the model() function to fit various forecasting models4.\n\n*_fit &lt;- *_train |&gt; \n  model(\n1    model_1 = &lt;model_function_1&gt;(&lt;y_t&gt; ~ &lt;predictor_variables&gt;),\n2    model_2 = &lt;model_function_2&gt;(&lt;transformation_function&gt;(&lt;y_t&gt;), &lt;specific_arguments&gt;)\n  )\n\n\n1\n\nReplace model_function_1 with the desired forecasting method (e.g., ARIMA(), ETS(), NAIVE(), etc.). Replace &lt;y_t&gt; with the name of the forecast variable and &lt;predictor_variables&gt; with any predictor variables if applicable.\n\n2\n\nIf a transformation is needed, replace transformation_function with the appropriate function (e.g., log, box_cox, etc.) and include any specific arguments required by the model.\n\n\n\n\n\n1.4.1 Evaluate",
+    "crumbs": [
+      "Modules",
+      "1. Forecasting models based on decomposition methods",
+      "1.3 Forecasting principles"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_1/03_fcst/forecasting.html#refine",
+    "href": "docs/modules/module_1/03_fcst/forecasting.html#refine",
+    "title": "Forecasting",
+    "section": "1.5 Refine",
+    "text": "1.5 Refine",
+    "crumbs": [
+      "Modules",
+      "1. Forecasting models based on decomposition methods",
+      "1.3 Forecasting principles"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_1/03_fcst/forecasting.html#forecast-on-the-test-set",
+    "href": "docs/modules/module_1/03_fcst/forecasting.html#forecast-on-the-test-set",
+    "title": "Forecasting",
+    "section": "1.6 Forecast on the test set",
+    "text": "1.6 Forecast on the test set",
+    "crumbs": [
+      "Modules",
+      "1. Forecasting models based on decomposition methods",
+      "1.3 Forecasting principles"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_1/03_fcst/forecasting.html#refit-and-forecast",
+    "href": "docs/modules/module_1/03_fcst/forecasting.html#refit-and-forecast",
+    "title": "Forecasting",
+    "section": "1.7 Refit and forecast",
+    "text": "1.7 Refit and forecast",
+    "crumbs": [
+      "Modules",
+      "1. Forecasting models based on decomposition methods",
+      "1.3 Forecasting principles"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_1/03_fcst/forecasting.html#communicate",
+    "href": "docs/modules/module_1/03_fcst/forecasting.html#communicate",
+    "title": "Forecasting",
+    "section": "1.8 Communicate",
+    "text": "1.8 Communicate\n\nThis is a note.",
     "crumbs": [
       "Modules",
       "1. Forecasting models based on decomposition methods",
