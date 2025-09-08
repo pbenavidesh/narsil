@@ -229,8 +229,9 @@ pbenavides
 </div>
 
 </section>
-<section id="a-tidy-forecasting-workflow" class="slide level2">
-<h2>A tidy forecasting workflow</h2>
+<section>
+<section id="a-tidy-forecasting-workflow" class="title-slide slide level1 center">
+<h1>A tidy forecasting workflow</h1>
 <p><a href="fcst_wf.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img data-src="fcst_wf.png"></a></p>
 </section>
 <section id="tidy-data" class="slide level2">
@@ -267,11 +268,11 @@ pbenavides
 </ul></li>
 </ul>
 <aside></aside></section>
-<section id="train-test-split" class="slide level2">
-<h2>Train-test split</h2>
+<section id="traintest-split" class="slide level2">
+<h2>Train/test split</h2>
 <ul>
-<li class="fragment"><p>Split the data into a training set and a test set. The training set is used to estimate the model parameters, while the test set is used to evaluate the model’s performance on unseen data.</p></li>
-<li class="fragment"><p>We can use <code>filter_index()</code> to create the training set<a href="#/footnotes" class="footnote-ref" id="fnref2" role="doc-noteref" data-footnote-href="#/fn2" onclick=""><sup>2</sup></a>:</p></li>
+<li class="fragment"><p>Split the data into a <strong>training set</strong> and a <strong>test set</strong><a href="#/footnotes" class="footnote-ref" id="fnref2" role="doc-noteref" data-footnote-href="#/fn2" onclick=""><sup>2</sup></a>. The training set is used to estimate the model parameters, while the test set is used to evaluate the model’s performance on unseen data.</p></li>
+<li class="fragment"><p>We can use <code>filter_index()</code> to create the training set<a href="#/footnotes" class="footnote-ref" id="fnref3" role="doc-noteref" data-footnote-href="#/fn3" onclick=""><sup>3</sup></a>:</p></li>
 </ul>
 <div class="fragment">
 <div class="cell">
@@ -301,13 +302,10 @@ pbenavides
 </div>
 </div>
 </section>
-<section id="specify" class="slide level2">
-<h2>Specify</h2>
+<section id="specify-estimate" class="slide level2">
+<h2>Specify &amp; Estimate</h2>
 <p>Decide whether any math transformations or adjustments are neccesary and choose a forecasting method based on the series’ features.</p>
-</section>
-<section id="estimate" class="slide level2">
-<h2>Estimate</h2>
-<p>Train the model specification on the training set. You can use the <code>model()</code> function to fit various forecasting models<a href="#/footnotes" class="footnote-ref" id="fnref3" role="doc-noteref" data-footnote-href="#/fn3" onclick=""><sup>3</sup></a>.</p>
+<p>Train the model specification on the training set. You can use the <code>model()</code> function to fit various forecasting models<a href="#/footnotes" class="footnote-ref" id="fnref4" role="doc-noteref" data-footnote-href="#/fn4" onclick=""><sup>4</sup></a>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1"></a><span class="sc">*</span>_fit <span class="ot">&lt;-</span> <span class="er">*</span>_train <span class="sc">|&gt;</span> </span>
 <span id="annotated-cell-2-2"><a href="#annotated-cell-2-2"></a>  <span class="fu">model</span>(</span>
@@ -328,6 +326,9 @@ pbenavides
 </div>
 </div>
 <aside></aside></section>
+<section id="estimate" class="slide level2">
+<h2>Estimate</h2>
+</section>
 <section id="evaluate" class="slide level2">
 <h2>Evaluate</h2>
 <h3 id="section"></h3>
@@ -356,7 +357,7 @@ pbenavides
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
-</section>
+</section></section>
 <section id="benchmark-forecasting-methods" class="title-slide slide level1 center">
 <h1>Benchmark forecasting methods</h1>
 
@@ -367,8 +368,9 @@ pbenavides
 
 <ol>
 <li id="fn1"><p>i.e., if the TS has a monthly frequency, the index variable should be in <code>yearmonth</code> format. Other formats coud be <code>yearweek</code>, <code>yearquarter</code>, <code>year</code>, <code>date</code>.</p></li>
-<li id="fn2"><p>and store it in a <code>*_train</code> object.</p></li>
-<li id="fn3"><p>and store the model table in a <code>*_fit</code> object.</p></li>
+<li id="fn2"><p>Splitting the data into a training and test set is the minimum requirement for evaluating a forecasting model. If you want to avoid overfitting and get a more reliable estimate of the model’s performance, you should consider splitting the data into 3 sets: <strong>training, validation, and test sets</strong>. The validation set is used to tune model hyperparameters and select the best model, while the test set is used for the final evaluation of the selected model. For a more robust evaluation of forecasting models, especially with limited data, consider using <a href="https://otexts.com/fpp3/tscv.html"><strong>time series cross-validation</strong></a> methods.</p></li>
+<li id="fn3"><p>and store it in a <code>*_train</code> object.</p></li>
+<li id="fn4"><p>and store the model table in a <code>*_fit</code> object.</p></li>
 </ol>
 </section>
     </div>
