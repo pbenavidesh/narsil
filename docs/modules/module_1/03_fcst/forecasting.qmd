@@ -54,10 +54,17 @@ library(fpp3)
 
 
 
-
+:::{.content-hidden unless-format="revealjs"}
 ## Train/test split
+:::
 
-- Split the data into a **training set** and a **test set**^[Splitting the data into a training and test set is the minimum requirement for evaluating a forecasting model. If you want to avoid overfitting and get a more reliable estimate of the model's performance, you should consider splitting the data into 3 sets: **training, validation, and test sets**. The validation set is used to tune model hyperparameters and select the best model, while the test set is used for the final evaluation of the selected model. For a more robust evaluation of forecasting models, especially with limited data, consider using [**time series cross-validation**](https://otexts.com/fpp3/tscv.html) methods.]. The training set is used to estimate the model parameters, while the test set is used to evaluate the model's performance on unseen data.
+:::{.content-visible unless-format="revealjs"}
+### Train/test split
+:::
+
+- Split the data into a **training set** and a **test set**^[Splitting the data into a training and test set is the minimum requirement for evaluating a forecasting model. If you want to avoid overfitting and get a more reliable estimate of the model's performance, you should consider splitting the data into 3 sets: **training, validation, and test sets**. The validation set is used to tune model hyperparameters and select the best model, while the test set is used for the final evaluation of the selected model. 
+
+For an even more robust evaluation of forecasting models, consider using [**time series cross-validation**](https://otexts.com/fpp3/tscv.html) methods.]. The training set is used to estimate the model parameters, while the test set is used to evaluate the model's performance on unseen data.
 
 - We can use `filter_index()` to create the training set^[and store it in a `*_train` object.]:
 
@@ -86,7 +93,7 @@ In time series, the training set should always contain the earlier observations,
 
 
 ## Visualize
-:::
+
 
 
 Plot the time series to identify patterns, such as trend and seasonality, and anomalies. This can help us choose an appropriate forecasting method. You can find many types of plots [here](../01_time_series/r_time_series.qmd# TS Visualization).
@@ -114,8 +121,8 @@ Train the model specification on the training set. You can use the `model()` fun
 
 *_fit <- *_train |> 
   model(
-    model_1 = <model_function_1>(<y_t> ~ <predictor_variables>),                           #<1>
-    model_2 = <model_function_2>(<transformation_function>(<y_t>), <specific_arguments>)   #<2>
+    model_1 = <model_function_1>(<y_t> ~ <predictor_variables>),             #<1>
+    model_2 = <model_function_2>(<transformation_function>(<y_t>), <args>)   #<2>
   )
 ```
 
@@ -133,10 +140,13 @@ Train the model specification on the training set. You can use the `model()` fun
 
 
 
-
+:::{.content-hidden unless-format="revealjs"}
 ## Refine
+:::
 
-
+:::{.content-visible unless-format="revealjs"}
+### Refine
+:::
 
 
 ## Forecast on the test set
