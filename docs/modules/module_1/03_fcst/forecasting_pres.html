@@ -10,17 +10,17 @@
 <link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-83aa21ed72f0068e2bb8f0090f02f802.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
-<link href="../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.34">
-<meta name="author" content="pbenavides">
-<title>Time Series Forecasting – Forecasting</title>
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-<link rel="stylesheet" href="../../../../site_libs/revealjs/dist/reset.css">
-<link rel="stylesheet" href="../../../../site_libs/revealjs/dist/reveal.css">
-<style>
+<link href="../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.7.34">
+
+  <meta name="author" content="pbenavides">
+  <title>Time Series Forecasting – Forecasting</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../../../../site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="../../../../site_libs/revealjs/dist/reveal.css">
+  <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
     div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -32,23 +32,92 @@
       margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+      }
+    pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+    div.sourceCode
+      { color: #383a42;  }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #383a42; } /* Normal */
+    code span.al { color: #95da4c; background-color: #4d1f24; font-weight: bold; } /* Alert */
+    code span.an { color: #50a14f; } /* Annotation */
+    code span.at { color: #a626a4; } /* Attribute */
+    code span.bn { color: #986801; } /* BaseN */
+    code span.bu { color: #a626a4; } /* BuiltIn */
+    code span.cf { color: #a626a4; } /* ControlFlow */
+    code span.ch { color: #50a14f; } /* Char */
+    code span.cn { color: #986801; } /* Constant */
+    code span.co { color: #a0a1a7; font-style: italic; } /* Comment */
+    code span.cv { color: #e45649; font-style: italic; } /* CommentVar */
+    code span.do { color: #e45649; } /* Documentation */
+    code span.dt { color: #a626a4; } /* DataType */
+    code span.dv { color: #986801; } /* DecVal */
+    code span.er { color: #f44747; text-decoration: underline; } /* Error */
+    code span.ex { color: #4078f2; font-weight: bold; } /* Extension */
+    code span.fl { color: #986801; } /* Float */
+    code span.fu { color: #4078f2; } /* Function */
+    code span.im { color: #50a14f; } /* Import */
+    code span.in { color: #c45b00; } /* Information */
+    code span.kw { color: #a626a4; } /* Keyword */
+    code span.op { color: #a626a4; } /* Operator */
+    code span.ot { color: #27ae60; } /* Other */
+    code span.pp { color: #a626a4; } /* Preprocessor */
+    code span.re { color: #2980b9; background-color: #153042; } /* RegionMarker */
+    code span.sc { color: #0184bc; } /* SpecialChar */
+    code span.ss { color: #da4453; } /* SpecialString */
+    code span.st { color: #50a14f; } /* String */
+    code span.va { color: #e45649; } /* Variable */
+    code span.vs { color: #da4453; } /* VerbatimString */
+    code span.wa { color: #da4453; } /* Warning */
   </style>
-<link rel="stylesheet" href="../../../../site_libs/revealjs/dist/theme/quarto-39d1eab08b8faec97b8adc39508066ea.css">
-<link href="../../../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
-<link href="../../../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
-<link href="../../../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
-<link href="../../../../site_libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
-<link href="../../../../site_libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
-<link href="../../../../site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
-<script type="application/json" class="js-hypothesis-config">
+  <link rel="stylesheet" href="../../../../site_libs/revealjs/dist/theme/quarto-39d1eab08b8faec97b8adc39508066ea.css">
+  <link href="../../../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="../../../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="../../../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="../../../../site_libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="../../../../site_libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
+  <link href="../../../../site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <script type="application/json" class="js-hypothesis-config">
   {
     "theme": "classic"
   }
-  </script><script async="" src="https://hypothes.is/embed.js"></script><script>
+  </script>
+  <script async="" src="https://hypothes.is/embed.js"></script>
+  <script>
     window.document.addEventListener("DOMContentLoaded", function (_event) {
       document.body.classList.add('hypothesis-enabled');
     });
-  </script><style type="text/css">
+  </script>
+  <style type="text/css">
     .reveal div.sourceCode {
       margin: 0;
       overflow: auto;
@@ -136,8 +205,8 @@
       margin-right: 0; 
     }
   </style>
-<link href="../../../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
-<script src="../../../../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+  <link href="../../../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+  <script src="../../../../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
 <meta property="og:title" content="Forecasting – Time Series Forecasting">
 <meta property="og:site_name" content="Time Series Forecasting">
 <meta name="twitter:title" content="Forecasting – Time Series Forecasting">
@@ -148,7 +217,8 @@
   <div class="reveal">
     <div class="slides">
 
-<section id="title-slide" class="quarto-title-block center"><h1 class="title">Forecasting</h1>
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Forecasting</h1>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
@@ -158,13 +228,45 @@ pbenavides
 </div>
 </div>
 
-</section><section id="a-tidy-forecasting-workflow" class="slide level2"><h2>A tidy forecasting workflow</h2>
+</section>
+<section id="a-tidy-forecasting-workflow" class="slide level2">
+<h2>A tidy forecasting workflow</h2>
 <p><a href="fcst_wf.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img data-src="fcst_wf.png"></a></p>
-</section><section id="tidy-data" class="slide level2"><h2>Tidy data</h2>
-<p>Load the data into R, tidy it and transform it into a <code>tsibble</code><a href="#/footnotes" class="footnote-ref" id="fnref1" role="doc-noteref" data-footnote-href="#/fn1" onclick=""><sup>1</sup></a>.</p>
-<aside></aside></section><section id="train-test-split" class="slide level2"><h2>Train-test split</h2>
+</section>
+<section id="tidy-data" class="slide level2">
+<h2>Tidy data</h2>
+<ul>
+<li class="fragment"><p>Use <code>readr::read_csv()</code>, <code>readxl::read_excel()</code>, or <code>tidyquant::tq_get()</code> to import the data into R. You can find more on this <a href="https://r4ds.hadley.nz/import.html">here</a>.</p></li>
+<li class="fragment"><p>Your data should be tidy. That means:</p>
+<ul>
+<li class="fragment">Each variable should be in its own column.</li>
+<li class="fragment">Each observation should be in its own row.</li>
+<li class="fragment">Each value should be in its own cell.</li>
+</ul></li>
+<li class="fragment"><p><a href="https://r4ds.hadley.nz/data-tidy.html">Data tidying</a> and <a href="https://r4ds.hadley.nz/transform.html">transforming</a> are covered in detail in <a href="https://r4ds.hadley.nz/">R for Data Science</a>.</p></li>
+<li class="fragment"><p>Transform the resulting <code>tibble</code> into a <strong><code>tsibble</code></strong>:</p>
+<ul>
+<li class="fragment">It should have an <code>index</code> (time) variable with the proper time format<a href="#/footnotes" class="footnote-ref" id="fnref1" role="doc-noteref" data-footnote-href="#/fn1" onclick=""><sup>1</sup></a>.</li>
+<li class="fragment">The <code>key</code> argument is only necessary if the dataset contains more than one time series.</li>
+</ul></li>
+</ul>
+<aside></aside></section>
+<section id="train-test-split" class="slide level2">
+<h2>Train-test split</h2>
 <p>Split the data into a training set and a test set. The training set is used to estimate the model parameters, while the test set is used to evaluate the model’s performance on unseen data.</p>
-<p>We can use <code>filter_index()</code> to create the training set<a href="#/footnotes" class="footnote-ref" id="fnref2" role="doc-noteref" data-footnote-href="#/fn2" onclick=""><sup>2</sup></a>.</p>
+<p>We can use <code>filter_index()</code> to create the training set<a href="#/footnotes" class="footnote-ref" id="fnref2" role="doc-noteref" data-footnote-href="#/fn2" onclick=""><sup>2</sup></a>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1"></a><span class="sc">&lt;</span>tsibble<span class="sc">&gt;</span> <span class="er">|&gt;</span> </span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1">1</button><span id="annotated-cell-1-2" class="code-annotation-target"><a href="#annotated-cell-1-2"></a>  <span class="fu">filter_index</span>(<span class="st">"start_date"</span> <span class="sc">~</span> <span class="st">"end_date"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-1" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-1" data-code-lines="2" data-code-annotation="1">Replace <code>start_date</code> and <code>end_date</code> with the desired date range for the training set.You can also use <code>.</code> to indicate the start or end of the series: <code>filter_index(. ~ "end_date")</code> or <code>filter_index("start_date" ~ .)</code>.</span>
+</dd>
+</dl>
+</div>
+</div>
 <div class="callout callout-note callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
@@ -178,17 +280,32 @@ pbenavides
 </div>
 </div>
 </div>
-<aside></aside></section><section id="visualize" class="slide level2"><h2>Visualize</h2>
+<aside></aside></section>
+<section id="visualize" class="slide level2">
+<h2>Visualize</h2>
 <p>Plot the time series to identify patterns, such as trend and seasonality, and anomalies. This can help us choose an appropriate forecasting method. You can find many types of plots <a href="../../../../docs/modules/module_1/01_time_series/r_time_series.html# TS Visualization">here</a>.</p>
-</section><section id="specify" class="slide level2"><h2>Specify</h2>
+</section>
+<section id="specify" class="slide level2">
+<h2>Specify</h2>
 <p>Decide whether any math transformations or adjustments are neccesary and choose a forecasting method based on the series’ features.</p>
-</section><section id="estimate" class="slide level2"><h2>Estimate</h2>
+</section>
+<section id="estimate" class="slide level2">
+<h2>Estimate</h2>
 <p>Train the model specification on the training set. You can use the <code>model()</code> function to fit various forecasting models<a href="#/footnotes" class="footnote-ref" id="fnref3" role="doc-noteref" data-footnote-href="#/fn3" onclick=""><sup>3</sup></a>.</p>
-<aside></aside></section><section id="evaluate" class="slide level2"><h2>Evaluate</h2>
-</section><section id="refine" class="slide level2"><h2>Refine</h2>
-</section><section id="forecast" class="slide level2"><h2>Forecast</h2>
-</section><section id="communicate" class="slide level2"><h2>Communicate</h2>
-<aside class="notes"><p>This is a note.</p>
+<aside></aside></section>
+<section id="evaluate" class="slide level2">
+<h2>Evaluate</h2>
+</section>
+<section id="refine" class="slide level2">
+<h2>Refine</h2>
+</section>
+<section id="forecast" class="slide level2">
+<h2>Forecast</h2>
+</section>
+<section id="communicate" class="slide level2">
+<h2>Communicate</h2>
+<aside class="notes">
+<p>This is a note.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -201,13 +318,17 @@ pbenavides
           display:block!important;
       }</style></aside>
 
-</section><section id="footnotes" class="footnotes footnotes-end-of-document smaller scrollable" role="doc-endnotes"><h2>Footnotes</h2>
+
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document smaller scrollable" role="doc-endnotes"><h2>Footnotes</h2>
+
 <ol>
-<li id="fn1"><p>The <code>tsibble</code> should have the <code>index</code> (time) variable with the proper time format. The <code>key</code> argument is only necessary if the dataset contains more than one time series.</p></li>
+<li id="fn1"><p>i.e., if the TS has a monthly frequency, the index variable should be in <code>yearmonth</code> format. Other formats coud be <code>yearweek</code>, <code>yearquarter</code>, <code>year</code>, <code>date</code>.</p></li>
 <li id="fn2"><p>and store it in a <code>*_train</code> object.</p></li>
 <li id="fn3"><p>and store the model table in a <code>*_fit</code> object.</p></li>
-</ol></section>
-</div>
+</ol>
+</section>
+    </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <p><img src="../../../../images/iteso_logo.png" class="slide-logo"></p>
 <div class="footer footer-default">
@@ -215,7 +336,24 @@ pbenavides
 </div>
 </div></div>
 
-  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="../../../../site_libs/revealjs/dist/reveal.js"></script><!-- reveal.js plugins --><script src="../../../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script><script src="../../../../site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script><script src="../../../../site_libs/revealjs/plugin/reveal-menu/menu.js"></script><script src="../../../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script><script src="../../../../site_libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script><script src="../../../../site_libs/revealjs/plugin/quarto-support/support.js"></script><script src="../../../../site_libs/revealjs/plugin/notes/notes.js"></script><script src="../../../../site_libs/revealjs/plugin/search/search.js"></script><script src="../../../../site_libs/revealjs/plugin/zoom/zoom.js"></script><script src="../../../../site_libs/revealjs/plugin/math/math.js"></script><script>window.define = window.backupDefine; window.backupDefine = undefined;</script><script>
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="../../../../site_libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="../../../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="../../../../site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="../../../../site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="../../../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="../../../../site_libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
+  <script src="../../../../site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="../../../../site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="../../../../site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="../../../../site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="../../../../site_libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
 
       // Full list of configuration options available at:
       // https://revealjs.com/config/
@@ -407,7 +545,9 @@ pbenavides
           RevealZoom
         ]
       });
-    </script><script>
+    </script>
+    
+    <script>
       // htmlwidgets need to know to resize themselves when slides are shown/hidden.
       // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
       // slide changes (different for each slide format).
@@ -442,7 +582,9 @@ pbenavides
         }
 
       })();
-    </script><script id="quarto-html-after-body" type="application/javascript">
+    </script>
+
+    <script id="quarto-html-after-body" type="application/javascript">
       window.document.addEventListener("DOMContentLoaded", function (event) {
         const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
         tabsets.forEach(function(tabset) {
@@ -765,7 +907,8 @@ pbenavides
           }
         }
       });
-      </script><script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+      </script>
+    <script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
     (function() {
       let previousOnload = window.onload;
       window.onload = () => {
@@ -797,6 +940,6 @@ pbenavides
       
     })();
               </script>
-
+    
 
 </body></html>
