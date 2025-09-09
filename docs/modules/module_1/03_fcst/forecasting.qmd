@@ -134,7 +134,12 @@ datos_fit <- datos_train |>
 ## Evaluate
 
 - **Fitted** values, $\hat{y}_t$: The values predicted by the model for the training set.
-- **residuals**, $e_t$: The difference between the actual values and the fitted values, calculated as $e_t = y_t - \hat{y}_t$.
+- **residuals**, $e_t$: The difference between the actual values and the fitted values, calculated as 
+
+$$
+e_t = y_t - \hat{y}_t
+$$.
+
 - **innovation residuals**: Residuals on the transformed scale^[We will focus on innovation residuals whenever a transformation is used in the model.].
 
 We can check if a model is capturing the patterns in the data by analyzing the residuals. Ideally, the residuals should resemble **white noise**.
@@ -155,13 +160,7 @@ The **fitted** values and **residuals** can be extracted from the model table us
 
 {{< video https://youtu.be/ubFq-wV3Eic?si=7So2aw3T-IkulZj6 >}}
 
-:::{.notes}
-White noise is a sequence of random variables that are:
-- **Uncorrelated**: There is no correlation between the values at different time points.
-- **Constant mean**: The average value of the series is constant over time (usually zero).
-- **Constant variance**: The variability of the series is constant over time.
-- **Normally distributed**: The values follow a normal distribution (this is not always required).
-:::
+
 
 :::{.content-hidden unless-format="revealjs"}
 ## Residual diagnostics
@@ -171,7 +170,19 @@ White noise is a sequence of random variables that are:
 ### Residual diagnostics
 :::
 
+We expect residuals to behave like white noise, thus having the following properties:
 
+The most important:
+1. **Uncorrelated**: There is no correlation between the values at different time points.
+2. **Zero mean**: The average value of the series is constant over time (and equal to zero).
+
+Nice to have:
+3. **Constant variance**: The variability of the series is constant over time.
+4. **Normally distributed**: The values follow a normal distribution (this is not always required).
+
+:::{.callout-tip appearance="simple"}
+If the residuals don't meet these properties, we could refine the model.
+:::
 
 :::{.content-hidden unless-format="revealjs"}
 ## Refine
