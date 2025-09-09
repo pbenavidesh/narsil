@@ -172,17 +172,17 @@ The **fitted** values and **residuals** can be extracted from the model table us
 
 We expect residuals to behave like white noise, thus having the following properties:
 
-The most important:
+*The most important:*
+
 1. **Uncorrelated**: There is no correlation between the values at different time points.
+
 2. **Zero mean**: The average value of the series is constant over time (and equal to zero).
 
-Nice to have:
-3. **Constant variance**: The variability of the series is constant over time.
-4. **Normally distributed**: The values follow a normal distribution (this is not always required).
+*Nice to have:*
 
-:::{.callout-tip appearance="simple"}
-If the residuals don't meet these properties, we could refine the model.
-:::
+3. **Constant variance**: The variability of the series is constant over time.
+
+4. **Normally distributed**: The values follow a normal distribution (this is not always required).
 
 :::{.content-hidden unless-format="revealjs"}
 ## Refine
@@ -191,6 +191,14 @@ If the residuals don't meet these properties, we could refine the model.
 :::{.content-visible unless-format="revealjs"}
 ### Refine
 :::
+
+
+If the residuals don't meet these properties, we could refine the model:
+
+- For the first 2: add predictors or change the model structure.
+- Apply a variance-stabilizing transformation (e.g., Box-Cox).
+- If the residuals are not normally distributed, only the prediction intervals are affected. 
+
 
 :::{.content-hidden unless-format="revealjs"}
 # Forecast
@@ -202,6 +210,7 @@ If the residuals don't meet these properties, we could refine the model.
 
 
 ### Forecast on the test set
+
 
 
 ## Refit and forecast
