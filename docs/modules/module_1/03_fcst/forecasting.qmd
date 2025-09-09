@@ -211,8 +211,66 @@ If the residuals don't meet these properties, we could refine the model:
 ## Forecast
 :::
 
+Once a satisfactory model is obtained, we can proceed to forecast^[and store the forecasts in a `*_fcst` object.]. Use the `forecast()` function to generate forecasts for a specified horizon `h`.:
 
-### Forecast on the test set
+```{r}
+#| label: forecast
+#| eval: false
+
+datos_fcst <- datos_fit |> 
+  forecast(h = <forecast_horizon>)  #<1>
+```
+
+1. Replace `<forecast_horizon>` with the desired number of periods to forecast (e.g., `12` for 12 months ahead), or you can write in text `"1 year"` for a one-year forecast.
+
+:::{.callout-note appearance="simple"}
+## Forecast horizon
+
+The forecast horizon should have the same length as the test set to evaluate the model's performance accurately.
+:::
+
+:::{.content-hidden unless-format="revealjs"}
+## Forecast accuracy
+:::
+
+:::{.content-visible unless-format="revealjs"}
+### Forecast accuracy
+:::
+
+We measure a forecast's accuracy by measuring the forecast error. Forecast errors are computed as:
+
+$$
+e_{T+h} = y_{T+h} - \hat{y}_{T+h|T}
+$$
+
+:::{.callout-warning appearance="simple"}
+These errors  depend on the scale of the data. Therefore, they are not suitable for comparing forecast accuracy across series with different scales or units.
+:::
+
+We can also measure errors as percentage errors^[Percentage errors are scale-independent, making them useful for comparing forecast accuracy across different series.]:
+
+$$
+p_t = \frac{e_{T+h}}{y_{T+h}} \times 100
+$$
+
+:::{.callout-warning appearance="simple"}
+Percentage errors can be problematic when the actual values are close to zero, leading to extremely high or undefined percentage errors.
+:::
+
+or scaled errors^[Scaled errors are also scale-independent and are useful for comparing forecast accuracy across different series.].:
+
+- For non-seasonal time series:
+
+$$
+q_{j}=\frac{e_{j}}{\frac{1}{T-1} \sum_{t=2}^{T}\left|y_{t}-y_{t-1}\right|},
+$$
+
+For seasonal time series:
+
+$$
+q_{j}=\frac{e_{j}}{\frac{1}{T-m} \sum_{t=m+1}^{T}\left|y_{t}-y_{t-m}\right|}.
+$$
+
 
 
 :::{.content-hidden unless-format="revealjs"}
