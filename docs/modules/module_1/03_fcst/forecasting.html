@@ -694,7 +694,12 @@ Splitting the data
 <h2 data-number="1.4" class="anchored" data-anchor-id="evaluate"><span class="header-section-number">1.4</span> Evaluate</h2>
 <ul>
 <li><strong>Fitted</strong> values, <span class="math inline">\(\hat{y}_t\)</span>: The values predicted by the model for the training set.</li>
-<li><strong>residuals</strong>, <span class="math inline">\(e_t\)</span>: The difference between the actual values and the fitted values, calculated as <span class="math inline">\(e_t = y_t - \hat{y}_t\)</span>.</li>
+<li><strong>residuals</strong>, <span class="math inline">\(e_t\)</span>: The difference between the actual values and the fitted values, calculated as</li>
+</ul>
+<p><span class="math display">\[
+e_t = y_t - \hat{y}_t
+\]</span>.</p>
+<ul>
 <li><strong>innovation residuals</strong>: Residuals on the transformed scale<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>.</li>
 </ul>
 <p>We can check if a model is capturing the patterns in the data by analyzing the residuals. Ideally, the residuals should resemble <strong>white noise</strong>.</p>
@@ -713,12 +718,22 @@ Splitting the data
 <section id="white-noise" class="level3" data-number="1.4.1">
 <h3 data-number="1.4.1" class="anchored" data-anchor-id="white-noise"><span class="header-section-number">1.4.1</span> White noise</h3>
 <div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/ubFq-wV3Eic?si=7So2aw3T-IkulZj6" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
-<div class="notes">
-<p>White noise is a sequence of random variables that are: - <strong>Uncorrelated</strong>: There is no correlation between the values at different time points. - <strong>Constant mean</strong>: The average value of the series is constant over time (usually zero). - <strong>Constant variance</strong>: The variability of the series is constant over time. - <strong>Normally distributed</strong>: The values follow a normal distribution (this is not always required).</p>
-</div>
 </section>
 <section id="residual-diagnostics-1" class="level3" data-number="1.4.2">
 <h3 data-number="1.4.2" class="anchored" data-anchor-id="residual-diagnostics-1"><span class="header-section-number">1.4.2</span> Residual diagnostics</h3>
+<p>We expect residuals to behave like white noise, thus having the following properties:</p>
+<p>The most important: 1. <strong>Uncorrelated</strong>: There is no correlation between the values at different time points. 2. <strong>Zero mean</strong>: The average value of the series is constant over time (and equal to zero).</p>
+<p>Nice to have: 3. <strong>Constant variance</strong>: The variability of the series is constant over time. 4. <strong>Normally distributed</strong>: The values follow a normal distribution (this is not always required).</p>
+<div class="callout callout-style-simple callout-tip">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>If the residuals don’t meet these properties, we could refine the model.</p>
+</div>
+</div>
+</div>
 </section>
 <section id="refine-1" class="level3" data-number="1.4.3">
 <h3 data-number="1.4.3" class="anchored" data-anchor-id="refine-1"><span class="header-section-number">1.4.3</span> Refine</h3>

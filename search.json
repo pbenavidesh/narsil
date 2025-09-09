@@ -1260,21 +1260,21 @@
     "href": "docs/modules/module_1/03_fcst/forecasting_pres.html#evaluate",
     "title": "Forecasting",
     "section": "Evaluate",
-    "text": "Evaluate\n\nFitted values, \\(\\hat{y}_t\\): The values predicted by the model for the training set.\nresiduals, \\(e_t\\): The difference between the actual values and the fitted values, calculated as \\(e_t = y_t - \\hat{y}_t\\).\ninnovation residuals: Residuals on the transformed scale4.\n\nWe can check if a model is capturing the patterns in the data by analyzing the residuals. Ideally, the residuals should resemble white noise.\n\n\n\n\n\n\n\nThe fitted values and residuals can be extracted from the model table using augment()."
+    "text": "Evaluate\n\nFitted values, \\(\\hat{y}_t\\): The values predicted by the model for the training set.\nresiduals, \\(e_t\\): The difference between the actual values and the fitted values, calculated as\n\n\\[\ne_t = y_t - \\hat{y}_t\n\\].\n\ninnovation residuals: Residuals on the transformed scale4.\n\nWe can check if a model is capturing the patterns in the data by analyzing the residuals. Ideally, the residuals should resemble white noise.\n\n\n\n\n\n\n\nThe fitted values and residuals can be extracted from the model table using augment()."
   },
   {
     "objectID": "docs/modules/module_1/03_fcst/forecasting_pres.html#what-is-white-noise",
     "href": "docs/modules/module_1/03_fcst/forecasting_pres.html#what-is-white-noise",
     "title": "Forecasting",
     "section": "What is white noise?",
-    "text": "What is white noise?\n\n\nWhite noise is a sequence of random variables that are: - Uncorrelated: There is no correlation between the values at different time points. - Constant mean: The average value of the series is constant over time (usually zero). - Constant variance: The variability of the series is constant over time. - Normally distributed: The values follow a normal distribution (this is not always required)."
+    "text": "What is white noise?"
   },
   {
     "objectID": "docs/modules/module_1/03_fcst/forecasting_pres.html#residual-diagnostics",
     "href": "docs/modules/module_1/03_fcst/forecasting_pres.html#residual-diagnostics",
     "title": "Forecasting",
     "section": "Residual diagnostics",
-    "text": "Residual diagnostics"
+    "text": "Residual diagnostics\nWe expect residuals to behave like white noise, thus having the following properties:\nThe most important: 1. Uncorrelated: There is no correlation between the values at different time points. 2. Zero mean: The average value of the series is constant over time (and equal to zero).\nNice to have: 3. Constant variance: The variability of the series is constant over time. 4. Normally distributed: The values follow a normal distribution (this is not always required).\n\n\n\n\n\n\nIf the residuals don’t meet these properties, we could refine the model."
   },
   {
     "objectID": "docs/modules/module_1/03_fcst/forecasting_pres.html#refine",
@@ -1357,7 +1357,7 @@
     "href": "docs/modules/module_1/03_fcst/forecasting.html#evaluate",
     "title": "Forecasting",
     "section": "1.4 Evaluate",
-    "text": "1.4 Evaluate\n\nFitted values, \\(\\hat{y}_t\\): The values predicted by the model for the training set.\nresiduals, \\(e_t\\): The difference between the actual values and the fitted values, calculated as \\(e_t = y_t - \\hat{y}_t\\).\ninnovation residuals: Residuals on the transformed scale4.\n\nWe can check if a model is capturing the patterns in the data by analyzing the residuals. Ideally, the residuals should resemble white noise.\n\n\n\n\n\n\n\nThe fitted values and residuals can be extracted from the model table using augment().\n\n\n\n\n\n1.4.1 White noise\n\n\nWhite noise is a sequence of random variables that are: - Uncorrelated: There is no correlation between the values at different time points. - Constant mean: The average value of the series is constant over time (usually zero). - Constant variance: The variability of the series is constant over time. - Normally distributed: The values follow a normal distribution (this is not always required).\n\n\n\n1.4.2 Residual diagnostics\n\n\n1.4.3 Refine",
+    "text": "1.4 Evaluate\n\nFitted values, \\(\\hat{y}_t\\): The values predicted by the model for the training set.\nresiduals, \\(e_t\\): The difference between the actual values and the fitted values, calculated as\n\n\\[\ne_t = y_t - \\hat{y}_t\n\\].\n\ninnovation residuals: Residuals on the transformed scale4.\n\nWe can check if a model is capturing the patterns in the data by analyzing the residuals. Ideally, the residuals should resemble white noise.\n\n\n\n\n\n\n\nThe fitted values and residuals can be extracted from the model table using augment().\n\n\n\n\n\n1.4.1 White noise\n\n\n\n1.4.2 Residual diagnostics\nWe expect residuals to behave like white noise, thus having the following properties:\nThe most important: 1. Uncorrelated: There is no correlation between the values at different time points. 2. Zero mean: The average value of the series is constant over time (and equal to zero).\nNice to have: 3. Constant variance: The variability of the series is constant over time. 4. Normally distributed: The values follow a normal distribution (this is not always required).\n\n\n\n\n\n\nIf the residuals don’t meet these properties, we could refine the model.\n\n\n\n\n\n1.4.3 Refine",
     "crumbs": [
       "Modules",
       "1. Forecasting models based on decomposition methods",
