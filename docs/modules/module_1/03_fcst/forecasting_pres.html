@@ -279,7 +279,7 @@ pbenavides
 </ul>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1"></a><span class="sc">*</span>_train <span class="ot">&lt;-</span> <span class="er">&lt;</span>tsibble<span class="sc">&gt;</span> <span class="er">|&gt;</span> </span>
+<div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1"></a>datos_train <span class="ot">&lt;-</span> <span class="er">&lt;</span>tsibble<span class="sc">&gt;</span> <span class="er">|&gt;</span> </span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1">1</button><span id="annotated-cell-1-2" class="code-annotation-target"><a href="#annotated-cell-1-2"></a>  <span class="fu">filter_index</span>(<span class="st">"start_date"</span> <span class="sc">~</span> <span class="st">"end_date"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
@@ -310,9 +310,9 @@ pbenavides
 <p>Decide whether any math transformations or adjustments are neccesary and choose a forecasting method based on the series’ features.</p>
 <p>Train the model specification on the training set. You can use the <code>model()</code> function to fit various forecasting models<a href="#/footnotes" class="footnote-ref" id="fnref3" role="doc-noteref" data-footnote-href="#/fn3" onclick=""><sup>3</sup></a>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1"></a><span class="sc">*</span>_fit <span class="ot">&lt;-</span> <span class="er">*</span>_train <span class="sc">|&gt;</span> </span>
+<div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1"></a>datos_fit <span class="ot">&lt;-</span> datos_train <span class="sc">|&gt;</span> </span>
 <span id="annotated-cell-2-2"><a href="#annotated-cell-2-2"></a>  <span class="fu">model</span>(</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1">1</button><span id="annotated-cell-2-3" class="code-annotation-target"><a href="#annotated-cell-2-3"></a>    <span class="at">model_1 =</span> <span class="sc">&lt;</span>model_function_1<span class="sc">&gt;</span>(<span class="sc">&lt;</span>y_t<span class="sc">&gt;</span> <span class="er">~</span> <span class="er">&lt;</span>predictor_variables<span class="sc">&gt;</span>),</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1">1</button><span id="annotated-cell-2-3" class="code-annotation-target"><a href="#annotated-cell-2-3"></a>    <span class="at">model_1 =</span> <span class="sc">&lt;</span>model_function_1<span class="sc">&gt;</span>(<span class="sc">&lt;</span>y_t<span class="sc">&gt;</span> <span class="er">~</span> x_t),</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="2">2</button><span id="annotated-cell-2-4" class="code-annotation-target"><a href="#annotated-cell-2-4"></a>    <span class="at">model_2 =</span> <span class="sc">&lt;</span>model_function_2<span class="sc">&gt;</span>(<span class="sc">&lt;</span>transformation_function<span class="sc">&gt;</span>(<span class="sc">&lt;</span>y_t<span class="sc">&gt;</span>), <span class="sc">&lt;</span>args<span class="sc">&gt;</span>)</span>
 <span id="annotated-cell-2-5"><a href="#annotated-cell-2-5"></a>  )</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
@@ -331,13 +331,64 @@ pbenavides
 <aside></aside></section>
 <section id="evaluate" class="slide level2">
 <h2>Evaluate</h2>
+<ul>
+<li class="fragment"><strong>Fitted</strong> values, <span class="math inline">\(\hat{y}_t\)</span>: The values predicted by the model for the training set.</li>
+<li class="fragment"><strong>residuals</strong>, <span class="math inline">\(e_t\)</span>: The difference between the actual values and the fitted values, calculated as <span class="math inline">\(e_t = y_t - \hat{y}_t\)</span>.</li>
+<li class="fragment"><strong>innovation residuals</strong>: Residuals on the transformed scale<a href="#/footnotes" class="footnote-ref" id="fnref4" role="doc-noteref" data-footnote-href="#/fn4" onclick=""><sup>4</sup></a>.</li>
+</ul>
+<p>We can check if a model is capturing the patterns in the data by analyzing the residuals. Ideally, the residuals should resemble <strong>white noise</strong>.</p>
+<aside class="notes">
+<div class="callout callout-tip callout-style-simple">
+<div class="callout-body">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-content">
+<p>The <strong>fitted</strong> values and <strong>residuals</strong> can be extracted from the model table using <code>augment()</code>.</p>
+</div>
+</div>
+</div>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+<aside></aside></section>
+<section id="what-is-white-noise" class="slide level2">
+<h2>What is white noise?</h2>
+<iframe data-external="1" src="https://www.youtube.com/embed/ubFq-wV3Eic?si=7So2aw3T-IkulZj6" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+<aside class="notes">
+<p>White noise is a sequence of random variables that are: - <strong>Uncorrelated</strong>: There is no correlation between the values at different time points. - <strong>Constant mean</strong>: The average value of the series is constant over time (usually zero). - <strong>Constant variance</strong>: The variability of the series is constant over time. - <strong>Normally distributed</strong>: The values follow a normal distribution (this is not always required).</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="residual-diagnostics" class="slide level2">
+<h2>Residual diagnostics</h2>
 </section>
 <section id="refine" class="slide level2">
 <h2>Refine</h2>
+</section></section>
+<section>
+<section id="forecast" class="title-slide slide level1 center">
+<h1>Forecast</h1>
+
 </section>
-<section id="forecast-on-the-test-set" class="slide level2">
-<h2>Forecast on the test set</h2>
-</section>
+<h3 id="forecast-on-the-test-set">Forecast on the test set</h3>
 <section id="refit-and-forecast" class="slide level2">
 <h2>Refit and forecast</h2>
 </section>
@@ -369,6 +420,7 @@ pbenavides
 <li id="fn1"><p>i.e., if the TS has a monthly frequency, the index variable should be in <code>yearmonth</code> format. Other formats coud be <code>yearweek</code>, <code>yearquarter</code>, <code>year</code>, <code>date</code>.</p></li>
 <li id="fn2"><p>and store it in a <code>*_train</code> object.</p></li>
 <li id="fn3"><p>and store the model table in a <code>*_fit</code> object.</p></li>
+<li id="fn4"><p>We will focus on innovation residuals whenever a transformation is used in the model.</p></li>
 </ol>
 </section>
     </div>

@@ -128,6 +128,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
 <script src="../../../../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../../../../styles.css">
 <meta property="og:title" content="Forecasting – Time Series Forecasting">
@@ -501,14 +530,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#traintest-split-1" id="toc-traintest-split-1" class="nav-link" data-scroll-target="#traintest-split-1"><span class="header-section-number">1.1.1</span> Train/test split</a></li>
   </ul></li>
   <li><a href="#visualize" id="toc-visualize" class="nav-link" data-scroll-target="#visualize"><span class="header-section-number">1.2</span> Visualize</a></li>
-  <li><a href="#specify-estimate" id="toc-specify-estimate" class="nav-link" data-scroll-target="#specify-estimate"><span class="header-section-number">1.3</span> Specify &amp; Estimate</a>
+  <li><a href="#specify-estimate" id="toc-specify-estimate" class="nav-link" data-scroll-target="#specify-estimate"><span class="header-section-number">1.3</span> Specify &amp; Estimate</a></li>
+  <li><a href="#evaluate" id="toc-evaluate" class="nav-link" data-scroll-target="#evaluate"><span class="header-section-number">1.4</span> Evaluate</a>
   <ul class="collapse">
-  <li><a href="#evaluate-1" id="toc-evaluate-1" class="nav-link" data-scroll-target="#evaluate-1"><span class="header-section-number">1.3.1</span> Evaluate</a></li>
-  <li><a href="#refine-1" id="toc-refine-1" class="nav-link" data-scroll-target="#refine-1"><span class="header-section-number">1.3.2</span> Refine</a></li>
+  <li><a href="#white-noise" id="toc-white-noise" class="nav-link" data-scroll-target="#white-noise"><span class="header-section-number">1.4.1</span> White noise</a></li>
+  <li><a href="#residual-diagnostics-1" id="toc-residual-diagnostics-1" class="nav-link" data-scroll-target="#residual-diagnostics-1"><span class="header-section-number">1.4.2</span> Residual diagnostics</a></li>
+  <li><a href="#refine-1" id="toc-refine-1" class="nav-link" data-scroll-target="#refine-1"><span class="header-section-number">1.4.3</span> Refine</a></li>
   </ul></li>
-  <li><a href="#forecast-on-the-test-set" id="toc-forecast-on-the-test-set" class="nav-link" data-scroll-target="#forecast-on-the-test-set"><span class="header-section-number">1.4</span> Forecast on the test set</a></li>
-  <li><a href="#refit-and-forecast" id="toc-refit-and-forecast" class="nav-link" data-scroll-target="#refit-and-forecast"><span class="header-section-number">1.5</span> Refit and forecast</a></li>
-  <li><a href="#communicate" id="toc-communicate" class="nav-link" data-scroll-target="#communicate"><span class="header-section-number">1.6</span> Communicate</a></li>
+  <li><a href="#forecast-1" id="toc-forecast-1" class="nav-link" data-scroll-target="#forecast-1"><span class="header-section-number">1.5</span> Forecast</a>
+  <ul class="collapse">
+  <li><a href="#forecast-on-the-test-set" id="toc-forecast-on-the-test-set" class="nav-link" data-scroll-target="#forecast-on-the-test-set"><span class="header-section-number">1.5.1</span> Forecast on the test set</a></li>
+  </ul></li>
+  <li><a href="#refit-and-forecast" id="toc-refit-and-forecast" class="nav-link" data-scroll-target="#refit-and-forecast"><span class="header-section-number">1.6</span> Refit and forecast</a></li>
+  <li><a href="#communicate" id="toc-communicate" class="nav-link" data-scroll-target="#communicate"><span class="header-section-number">1.7</span> Communicate</a></li>
   </ul></li>
   <li><a href="#benchmark-forecasting-methods" id="toc-benchmark-forecasting-methods" class="nav-link" data-scroll-target="#benchmark-forecasting-methods"><span class="header-section-number">2</span> Benchmark forecasting methods</a></li>
   </ul>
@@ -538,7 +572,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">September 8, 2025</p>
+      <p class="date-modified">September 9, 2025</p>
     </div>
   </div>
     
@@ -590,7 +624,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <p>. . .</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1" aria-hidden="true" tabindex="-1"></a><span class="sc">*</span>_train <span class="ot">&lt;-</span> <span class="er">&lt;</span>tsibble<span class="sc">&gt;</span> <span class="er">|&gt;</span> </span>
+<div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1" aria-hidden="true" tabindex="-1"></a>datos_train <span class="ot">&lt;-</span> <span class="er">&lt;</span>tsibble<span class="sc">&gt;</span> <span class="er">|&gt;</span> </span>
 <a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-1-2" class="code-annotation-target"><a href="#annotated-cell-1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter_index</span>(<span class="st">"start_date"</span> <span class="sc">~</span> <span class="st">"end_date"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-grid">
@@ -637,9 +671,9 @@ Splitting the data
 <p>Decide whether any math transformations or adjustments are neccesary and choose a forecasting method based on the series’ features.</p>
 <p>Train the model specification on the training set. You can use the <code>model()</code> function to fit various forecasting models<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1" aria-hidden="true" tabindex="-1"></a><span class="sc">*</span>_fit <span class="ot">&lt;-</span> <span class="er">*</span>_train <span class="sc">|&gt;</span> </span>
+<div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1" aria-hidden="true" tabindex="-1"></a>datos_fit <span class="ot">&lt;-</span> datos_train <span class="sc">|&gt;</span> </span>
 <span id="annotated-cell-2-2"><a href="#annotated-cell-2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-2-3" class="code-annotation-target"><a href="#annotated-cell-2-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">model_1 =</span> <span class="sc">&lt;</span>model_function_1<span class="sc">&gt;</span>(<span class="sc">&lt;</span>y_t<span class="sc">&gt;</span> <span class="er">~</span> <span class="er">&lt;</span>predictor_variables<span class="sc">&gt;</span>),</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-2-3" class="code-annotation-target"><a href="#annotated-cell-2-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">model_1 =</span> <span class="sc">&lt;</span>model_function_1<span class="sc">&gt;</span>(<span class="sc">&lt;</span>y_t<span class="sc">&gt;</span> <span class="er">~</span> x_t),</span>
 <a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-2-4" class="code-annotation-target"><a href="#annotated-cell-2-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">model_2 =</span> <span class="sc">&lt;</span>model_function_2<span class="sc">&gt;</span>(<span class="sc">&lt;</span>transformation_function<span class="sc">&gt;</span>(<span class="sc">&lt;</span>y_t<span class="sc">&gt;</span>), <span class="sc">&lt;</span>args<span class="sc">&gt;</span>)</span>
 <span id="annotated-cell-2-5"><a href="#annotated-cell-2-5" aria-hidden="true" tabindex="-1"></a>  )</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
@@ -655,21 +689,52 @@ Splitting the data
 </dl>
 </div>
 </div>
-<section id="evaluate-1" class="level3" data-number="1.3.1">
-<h3 data-number="1.3.1" class="anchored" data-anchor-id="evaluate-1"><span class="header-section-number">1.3.1</span> Evaluate</h3>
 </section>
-<section id="refine-1" class="level3" data-number="1.3.2">
-<h3 data-number="1.3.2" class="anchored" data-anchor-id="refine-1"><span class="header-section-number">1.3.2</span> Refine</h3>
+<section id="evaluate" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="evaluate"><span class="header-section-number">1.4</span> Evaluate</h2>
+<ul>
+<li><strong>Fitted</strong> values, <span class="math inline">\(\hat{y}_t\)</span>: The values predicted by the model for the training set.</li>
+<li><strong>residuals</strong>, <span class="math inline">\(e_t\)</span>: The difference between the actual values and the fitted values, calculated as <span class="math inline">\(e_t = y_t - \hat{y}_t\)</span>.</li>
+<li><strong>innovation residuals</strong>: Residuals on the transformed scale<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>.</li>
+</ul>
+<p>We can check if a model is capturing the patterns in the data by analyzing the residuals. Ideally, the residuals should resemble <strong>white noise</strong>.</p>
+<div class="notes">
+<div class="callout callout-style-simple callout-tip">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>The <strong>fitted</strong> values and <strong>residuals</strong> can be extracted from the model table using <code>augment()</code>.</p>
+</div>
+</div>
+</div>
+</div>
+<section id="white-noise" class="level3" data-number="1.4.1">
+<h3 data-number="1.4.1" class="anchored" data-anchor-id="white-noise"><span class="header-section-number">1.4.1</span> White noise</h3>
+<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/ubFq-wV3Eic?si=7So2aw3T-IkulZj6" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+<div class="notes">
+<p>White noise is a sequence of random variables that are: - <strong>Uncorrelated</strong>: There is no correlation between the values at different time points. - <strong>Constant mean</strong>: The average value of the series is constant over time (usually zero). - <strong>Constant variance</strong>: The variability of the series is constant over time. - <strong>Normally distributed</strong>: The values follow a normal distribution (this is not always required).</p>
+</div>
+</section>
+<section id="residual-diagnostics-1" class="level3" data-number="1.4.2">
+<h3 data-number="1.4.2" class="anchored" data-anchor-id="residual-diagnostics-1"><span class="header-section-number">1.4.2</span> Residual diagnostics</h3>
+</section>
+<section id="refine-1" class="level3" data-number="1.4.3">
+<h3 data-number="1.4.3" class="anchored" data-anchor-id="refine-1"><span class="header-section-number">1.4.3</span> Refine</h3>
 </section>
 </section>
-<section id="forecast-on-the-test-set" class="level2" data-number="1.4">
-<h2 data-number="1.4" class="anchored" data-anchor-id="forecast-on-the-test-set"><span class="header-section-number">1.4</span> Forecast on the test set</h2>
+<section id="forecast-1" class="level2" data-number="1.5">
+<h2 data-number="1.5" class="anchored" data-anchor-id="forecast-1"><span class="header-section-number">1.5</span> Forecast</h2>
+<section id="forecast-on-the-test-set" class="level3" data-number="1.5.1">
+<h3 data-number="1.5.1" class="anchored" data-anchor-id="forecast-on-the-test-set"><span class="header-section-number">1.5.1</span> Forecast on the test set</h3>
 </section>
-<section id="refit-and-forecast" class="level2" data-number="1.5">
-<h2 data-number="1.5" class="anchored" data-anchor-id="refit-and-forecast"><span class="header-section-number">1.5</span> Refit and forecast</h2>
 </section>
-<section id="communicate" class="level2" data-number="1.6">
-<h2 data-number="1.6" class="anchored" data-anchor-id="communicate"><span class="header-section-number">1.6</span> Communicate</h2>
+<section id="refit-and-forecast" class="level2" data-number="1.6">
+<h2 data-number="1.6" class="anchored" data-anchor-id="refit-and-forecast"><span class="header-section-number">1.6</span> Refit and forecast</h2>
+</section>
+<section id="communicate" class="level2" data-number="1.7">
+<h2 data-number="1.7" class="anchored" data-anchor-id="communicate"><span class="header-section-number">1.7</span> Communicate</h2>
 <div class="notes">
 <p>This is a note.</p>
 </div>
@@ -688,6 +753,7 @@ Splitting the data
 <li id="fn1"><p>i.e., if the TS has a monthly frequency, the index variable should be in <code>yearmonth</code> format. Other formats coud be <code>yearweek</code>, <code>yearquarter</code>, <code>year</code>, <code>date</code>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn2"><p>and store it in a <code>*_train</code> object.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn3"><p>and store the model table in a <code>*_fit</code> object.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>We will focus on innovation residuals whenever a transformation is used in the model.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
