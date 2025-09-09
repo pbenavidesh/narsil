@@ -74,7 +74,7 @@ For an even more robust evaluation of forecasting models, consider using [**time
 #| label: filter_index
 #| eval: false
 
-*_train <- <tsibble> |> 
+datos_train <- <tsibble> |> 
   filter_index("start_date" ~ "end_date")  #<1>
 ```
 
@@ -119,9 +119,9 @@ Train the model specification on the training set. You can use the `model()` fun
 #| label: model_estimation
 #| eval: false
 
-*_fit <- *_train |> 
+datos_fit <- datos_train |> 
   model(
-    model_1 = <model_function_1>(<y_t> ~ <predictor_variables>),             #<1>
+    model_1 = <model_function_1>(<y_t> ~ x_t),                               #<1>
     model_2 = <model_function_2>(<transformation_function>(<y_t>), <args>)   #<2>
   )
 ```
@@ -130,12 +130,45 @@ Train the model specification on the training set. You can use the `model()` fun
 2. If a transformation is needed, replace `transformation_function` with the appropriate function (e.g., `log`, `box_cox`, etc.) and include any specific arguments required by the model.
 
 
-:::{.content-hidden unless-format="revealjs"}
+
 ## Evaluate
+
+- **Fitted** values, $\hat{y}_t$: The values predicted by the model for the training set.
+- **residuals**, $e_t$: The difference between the actual values and the fitted values, calculated as $e_t = y_t - \hat{y}_t$.
+- **innovation residuals**: Residuals on the transformed scale^[We will focus on innovation residuals whenever a transformation is used in the model.].
+
+We can check if a model is capturing the patterns in the data by analyzing the residuals. Ideally, the residuals should resemble **white noise**.
+
+:::{.notes}
+:::{.callout-tip appearance="simple"}
+The **fitted** values and **residuals** can be extracted from the model table using `augment()`.
+:::
+:::
+
+:::{.content-hidden unless-format="revealjs"}
+## What is white noise?
 :::
 
 :::{.content-visible unless-format="revealjs"}
-### Evaluate
+### White noise
+:::
+
+{{< video https://youtu.be/ubFq-wV3Eic?si=7So2aw3T-IkulZj6 >}}
+
+:::{.notes}
+White noise is a sequence of random variables that are:
+- **Uncorrelated**: There is no correlation between the values at different time points.
+- **Constant mean**: The average value of the series is constant over time (usually zero).
+- **Constant variance**: The variability of the series is constant over time.
+- **Normally distributed**: The values follow a normal distribution (this is not always required).
+:::
+
+:::{.content-hidden unless-format="revealjs"}
+## Residual diagnostics
+:::
+
+:::{.content-visible unless-format="revealjs"}
+### Residual diagnostics
 :::
 
 
@@ -148,11 +181,16 @@ Train the model specification on the training set. You can use the `model()` fun
 ### Refine
 :::
 
+:::{.content-hidden unless-format="revealjs"}
+# Forecast
+:::
 
-## Forecast on the test set
+:::{.content-visible unless-format="revealjs"}
+## Forecast
+:::
 
 
-
+### Forecast on the test set
 
 
 ## Refit and forecast
