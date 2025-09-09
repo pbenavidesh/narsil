@@ -539,7 +539,7 @@ window.Quarto = {
   </ul></li>
   <li><a href="#forecast-1" id="toc-forecast-1" class="nav-link" data-scroll-target="#forecast-1"><span class="header-section-number">1.5</span> Forecast</a>
   <ul class="collapse">
-  <li><a href="#forecast-on-the-test-set" id="toc-forecast-on-the-test-set" class="nav-link" data-scroll-target="#forecast-on-the-test-set"><span class="header-section-number">1.5.1</span> Forecast on the test set</a></li>
+  <li><a href="#forecast-accuracy-1" id="toc-forecast-accuracy-1" class="nav-link" data-scroll-target="#forecast-accuracy-1"><span class="header-section-number">1.5.1</span> Forecast accuracy</a></li>
   <li><a href="#refit-and-forecast-1" id="toc-refit-and-forecast-1" class="nav-link" data-scroll-target="#refit-and-forecast-1"><span class="header-section-number">1.5.2</span> Refit and forecast</a></li>
   </ul></li>
   <li><a href="#communicate" id="toc-communicate" class="nav-link" data-scroll-target="#communicate"><span class="header-section-number">1.6</span> Communicate</a></li>
@@ -746,8 +746,73 @@ e_t = y_t - \hat{y}_t
 </section>
 <section id="forecast-1" class="level2" data-number="1.5">
 <h2 data-number="1.5" class="anchored" data-anchor-id="forecast-1"><span class="header-section-number">1.5</span> Forecast</h2>
-<section id="forecast-on-the-test-set" class="level3" data-number="1.5.1">
-<h3 data-number="1.5.1" class="anchored" data-anchor-id="forecast-on-the-test-set"><span class="header-section-number">1.5.1</span> Forecast on the test set</h3>
+<p>Once a satisfactory model is obtained, we can proceed to forecast<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>. Use the <code>forecast()</code> function to generate forecasts for a specified horizon <code>h</code>.:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1" aria-hidden="true" tabindex="-1"></a>datos_fcst <span class="ot">&lt;-</span> datos_fit <span class="sc">|&gt;</span> </span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-3-2" class="code-annotation-target"><a href="#annotated-cell-3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="sc">&lt;</span>forecast_horizon<span class="sc">&gt;</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-3" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-3" data-code-lines="2" data-code-annotation="1">Replace <code>&lt;forecast_horizon&gt;</code> with the desired number of periods to forecast (e.g., <code>12</code> for 12 months ahead), or you can write in text <code>"1 year"</code> for a one-year forecast.</span>
+</dd>
+</dl>
+</div>
+</div>
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Forecast horizon
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The forecast horizon should have the same length as the test set to evaluate the model’s performance accurately.</p>
+</div>
+</div>
+<section id="forecast-accuracy-1" class="level3" data-number="1.5.1">
+<h3 data-number="1.5.1" class="anchored" data-anchor-id="forecast-accuracy-1"><span class="header-section-number">1.5.1</span> Forecast accuracy</h3>
+<p>We measure a forecast’s accuracy by measuring the forecast error. Forecast errors are computed as:</p>
+<p><span class="math display">\[
+e_{T+h} = y_{T+h} - \hat{y}_{T+h|T}
+\]</span></p>
+<div class="callout callout-style-simple callout-warning">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>These errors depend on the scale of the data. Therefore, they are not suitable for comparing forecast accuracy across series with different scales or units.</p>
+</div>
+</div>
+</div>
+<p>We can also measure errors as percentage errors<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a>:</p>
+<p><span class="math display">\[
+p_t = \frac{e_{T+h}}{y_{T+h}} \times 100
+\]</span></p>
+<div class="callout callout-style-simple callout-warning">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>Percentage errors can be problematic when the actual values are close to zero, leading to extremely high or undefined percentage errors.</p>
+</div>
+</div>
+</div>
+<p>or scaled errors<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>.:</p>
+<ul>
+<li>For non-seasonal time series:</li>
+</ul>
+<p><span class="math display">\[
+q_{j}=\frac{e_{j}}{\frac{1}{T-1} \sum_{t=2}^{T}\left|y_{t}-y_{t-1}\right|},
+\]</span></p>
+<p>For seasonal time series:</p>
+<p><span class="math display">\[
+q_{j}=\frac{e_{j}}{\frac{1}{T-m} \sum_{t=m+1}^{T}\left|y_{t}-y_{t-m}\right|}.
+\]</span></p>
 </section>
 <section id="refit-and-forecast-1" class="level3" data-number="1.5.2">
 <h3 data-number="1.5.2" class="anchored" data-anchor-id="refit-and-forecast-1"><span class="header-section-number">1.5.2</span> Refit and forecast</h3>
@@ -775,6 +840,9 @@ e_t = y_t - \hat{y}_t
 <li id="fn3"><p>and store it in a <code>*_train</code> object.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn4"><p>and store the model table in a <code>*_fit</code> object.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn5"><p>We will focus on innovation residuals whenever a transformation is used in the model.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>and store the forecasts in a <code>*_fcst</code> object.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>Percentage errors are scale-independent, making them useful for comparing forecast accuracy across different series.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8"><p>Scaled errors are also scale-independent and are useful for comparing forecast accuracy across different series.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
