@@ -369,24 +369,28 @@ e_t = y_t - \hat{y}_t
 <h2>What is white noise?</h2>
 <iframe data-external="1" src="https://www.youtube.com/embed/ubFq-wV3Eic?si=7So2aw3T-IkulZj6" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
 </section>
-<section id="residual-diagnostics" class="slide level2">
+<section id="residual-diagnostics" class="slide level2 scrollable">
 <h2>Residual diagnostics</h2>
 <p>We expect residuals to behave like white noise, thus having the following properties:</p>
-<p>The most important: 1. <strong>Uncorrelated</strong>: There is no correlation between the values at different time points. 2. <strong>Zero mean</strong>: The average value of the series is constant over time (and equal to zero).</p>
-<p>Nice to have: 3. <strong>Constant variance</strong>: The variability of the series is constant over time. 4. <strong>Normally distributed</strong>: The values follow a normal distribution (this is not always required).</p>
-<div class="callout callout-tip callout-style-simple">
-<div class="callout-body">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-content">
-<p>If the residuals don’t meet these properties, we could refine the model.</p>
-</div>
-</div>
-</div>
+<p><em>The most important:</em></p>
+<ol type="1">
+<li class="fragment"><p><strong>Uncorrelated</strong>: There is no correlation between the values at different time points.</p></li>
+<li class="fragment"><p><strong>Zero mean</strong>: The average value of the series is constant over time (and equal to zero).</p></li>
+</ol>
+<p><em>Nice to have:</em></p>
+<ol start="3" type="1">
+<li class="fragment"><p><strong>Constant variance</strong>: The variability of the series is constant over time.</p></li>
+<li class="fragment"><p><strong>Normally distributed</strong>: The values follow a normal distribution (this is not always required).</p></li>
+</ol>
 </section>
 <section id="refine" class="slide level2">
 <h2>Refine</h2>
+<p>If the residuals don’t meet these properties, we could refine the model:</p>
+<ul>
+<li class="fragment">For the first 2: add predictors or change the model structure.</li>
+<li class="fragment">Apply a variance-stabilizing transformation (e.g., Box-Cox).</li>
+<li class="fragment">If the residuals are not normally distributed, only the prediction intervals are affected.</li>
+</ul>
 </section></section>
 <section>
 <section id="forecast" class="title-slide slide level1 center">
