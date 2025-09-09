@@ -62,13 +62,16 @@ library(fpp3)
 ### Train/test split
 :::
 
-- Split the data into a **training set** and a **test set**^[Splitting the data into a training and test set is the minimum requirement for evaluating a forecasting model. If you want to avoid overfitting and get a more reliable estimate of the model's performance, you should consider splitting the data into 3 sets: **training, validation, and test sets**. The validation set is used to tune model hyperparameters and select the best model, while the test set is used for the final evaluation of the selected model. 
+- Split the data into a **training set** and a **test set**^[Splitting the data into a training and test set is the minimum requirement for evaluating a forecasting model. If you want to avoid overfitting and get a more reliable estimate of the model's performance, you should consider splitting the data into 3 sets: **training, validation, and test sets**. The validation set is used to tune model hyperparameters and select the best model, while the test set is used for the final evaluation of the selected model. For an even more robust evaluation of forecasting models, consider using [**time series cross-validation**](https://otexts.com/fpp3/tscv.html) methods.]. The training set is used to estimate the model parameters, while the test set is used to evaluate the model's performance on unseen data.
 
-For an even more robust evaluation of forecasting models, consider using [**time series cross-validation**](https://otexts.com/fpp3/tscv.html) methods.]. The training set is used to estimate the model parameters, while the test set is used to evaluate the model's performance on unseen data.
-
+- The size of the training and test sets depends on the length of the time series and the forecasting horizon:
+  - If the forecast horizon is e. g.. 12 months, the test set should contain 12 months of data.
+  - Another common approach is to use the first 70-80% of the data for training and the remaining 20-30% for testing.
 - We can use `filter_index()` to create the training set^[and store it in a `*_train` object.]:
 
+:::{.content-hidden unless-format="revealjs"}
 . . .
+:::
 
 ```{r}
 #| label: filter_index
@@ -197,7 +200,7 @@ If the residuals don't meet these properties, we could refine the model:
 
 - For the first 2: add predictors or change the model structure.
 - Apply a variance-stabilizing transformation (e.g., Box-Cox).
-- If the residuals are not normally distributed, only the prediction intervals are affected. 
+- If the residuals are not normally distributed, only the prediction intervals are affected. We can deal with this by using bootstrap prediction intervals.
 
 
 :::{.content-hidden unless-format="revealjs"}
@@ -212,9 +215,11 @@ If the residuals don't meet these properties, we could refine the model:
 ### Forecast on the test set
 
 
-
+:::{.content-hidden unless-format="revealjs"}
 ## Refit and forecast
+:::
 
+### Refit and forecast
 
 
 
