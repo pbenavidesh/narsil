@@ -540,7 +540,8 @@ window.Quarto = {
   <li><a href="#forecast-1" id="toc-forecast-1" class="nav-link" data-scroll-target="#forecast-1"><span class="header-section-number">1.5</span> Forecast</a>
   <ul class="collapse">
   <li><a href="#forecast-accuracy-1" id="toc-forecast-accuracy-1" class="nav-link" data-scroll-target="#forecast-accuracy-1"><span class="header-section-number">1.5.1</span> Forecast accuracy</a></li>
-  <li><a href="#refit-and-forecast-1" id="toc-refit-and-forecast-1" class="nav-link" data-scroll-target="#refit-and-forecast-1"><span class="header-section-number">1.5.2</span> Refit and forecast</a></li>
+  <li><a href="#error-metrics" id="toc-error-metrics" class="nav-link" data-scroll-target="#error-metrics"><span class="header-section-number">1.5.2</span> Error metrics</a></li>
+  <li><a href="#refit-and-forecast-1" id="toc-refit-and-forecast-1" class="nav-link" data-scroll-target="#refit-and-forecast-1"><span class="header-section-number">1.5.3</span> Refit and forecast</a></li>
   </ul></li>
   <li><a href="#communicate" id="toc-communicate" class="nav-link" data-scroll-target="#communicate"><span class="header-section-number">1.6</span> Communicate</a></li>
   </ul></li>
@@ -572,7 +573,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">September 9, 2025</p>
+      <p class="date-modified">September 10, 2025</p>
     </div>
   </div>
     
@@ -777,31 +778,11 @@ Forecast horizon
 <p>We measure a forecast’s accuracy by measuring the forecast error. Forecast errors are computed as:</p>
 <p><span class="math display">\[
 e_{T+h} = y_{T+h} - \hat{y}_{T+h|T}
-\]</span></p>
-<div class="callout callout-style-simple callout-warning">
-<div class="callout-body d-flex">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-body-container">
-<p>These errors depend on the scale of the data. Therefore, they are not suitable for comparing forecast accuracy across series with different scales or units.</p>
-</div>
-</div>
-</div>
+\]</span> :::{.notes} :::{.callout-warning appearance=“simple”} These errors depend on the scale of the data. Therefore, they are not suitable for comparing forecast accuracy across series with different scales or units. ::: :::</p>
 <p>We can also measure errors as percentage errors<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a>:</p>
 <p><span class="math display">\[
 p_t = \frac{e_{T+h}}{y_{T+h}} \times 100
-\]</span></p>
-<div class="callout callout-style-simple callout-warning">
-<div class="callout-body d-flex">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-body-container">
-<p>Percentage errors can be problematic when the actual values are close to zero, leading to extremely high or undefined percentage errors.</p>
-</div>
-</div>
-</div>
+\]</span> :::{.notes} :::{.callout-warning appearance=“simple”} Percentage errors can be problematic when the actual values are close to zero, leading to extremely high or undefined percentage errors. ::: :::</p>
 <p>or scaled errors<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>.:</p>
 <ul>
 <li>For non-seasonal time series:</li>
@@ -812,10 +793,59 @@ q_{j}=\frac{e_{j}}{\frac{1}{T-1} \sum_{t=2}^{T}\left|y_{t}-y_{t-1}\right|},
 <p>For seasonal time series:</p>
 <p><span class="math display">\[
 q_{j}=\frac{e_{j}}{\frac{1}{T-m} \sum_{t=m+1}^{T}\left|y_{t}-y_{t-m}\right|}.
-\]</span></p>
+\]</span> :::{.content-hidden unless-format=“revealjs”} ## Error metrics :::</p>
 </section>
-<section id="refit-and-forecast-1" class="level3" data-number="1.5.2">
-<h3 data-number="1.5.2" class="anchored" data-anchor-id="refit-and-forecast-1"><span class="header-section-number">1.5.2</span> Refit and forecast</h3>
+<section id="error-metrics" class="level3" data-number="1.5.2">
+<h3 data-number="1.5.2" class="anchored" data-anchor-id="error-metrics"><span class="header-section-number">1.5.2</span> Error metrics</h3>
+<p>Using this errors, we can compute various error metrics to summarize the forecast accuracy:</p>
+<table class="caption-top table">
+<caption>Common error metrics</caption>
+<colgroup>
+<col style="width: 19%">
+<col style="width: 10%">
+<col style="width: 35%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Scale</th>
+<th>Metric</th>
+<th>Description</th>
+<th>Formula</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Scale-dependent</td>
+<td><ul>
+<li>RMSE</li>
+<li>MAE</li>
+</ul></td>
+<td><ul>
+<li>Root Mean Squared Error</li>
+<li>Mean Absolute Error</li>
+</ul></td>
+<td><span class="math inline">\(\sqrt{\text{mean}(e_{t}^{2})}\)</span> <span class="math inline">\(\text{mean}(|e_{t}|)\)</span></td>
+</tr>
+<tr class="even">
+<td>Scale-independent</td>
+<td><ul>
+<li>MAPE</li>
+<li>MASE</li>
+<li>RMMSE</li>
+</ul></td>
+<td><ul>
+<li>Mean Absolute Percentage Error</li>
+<li>Mean Absolute Scaled Error</li>
+<li>Root Mean Squared Scaled Error</li>
+</ul></td>
+<td><span class="math inline">\(\text{mean}(|p_{t}|)\)</span> <span class="math inline">\(\text{mean}(|q_{t}|)\)</span> <span class="math inline">\(\sqrt{\text{mean}(q_{t}^{2})}\)</span></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="refit-and-forecast-1" class="level3" data-number="1.5.3">
+<h3 data-number="1.5.3" class="anchored" data-anchor-id="refit-and-forecast-1"><span class="header-section-number">1.5.3</span> Refit and forecast</h3>
 </section>
 </section>
 <section id="communicate" class="level2" data-number="1.6">
