@@ -20,12 +20,6 @@ library(fpp3)
 ---
 
 
-
-
-:::{.notes}
-Exponential smoothing methods are still relatively simple: they're simply weighted averages from historical data. However, these forecasting methods are widely used in practice, and they can be very effective.
-:::
-
 :::{.content-hidden unless-format="revealjs"}
 
 ## {auto-animate=true}
@@ -84,5 +78,98 @@ $$
 :::
 
 :::{.notes}
-The exponential smoothing method is a compromise between the mean and naïve methods. It uses all historical data, but it assigns exponentially decreasing weights to older observations. The smoothing parameter $\alpha$ controls the rate of decrease: when $\alpha$ is close to 1, the method behaves like the naïve method, giving more weight to recent observations; when $\alpha$ is close to 0, it behaves like the mean method, giving more equal weight to all observations.
+
+- Exponential smoothing methods are still relatively simple: they're simply weighted averages from historical data. 
+  - However, these forecasting methods are widely used in practice, and they can be very effective.
+
+- The exponential smoothing method is a compromise between the mean and naïve methods. It uses all historical data, but it assigns exponentially decreasing weights to older observations. 
+
+- The smoothing parameter $\alpha$ controls the rate of decrease: 
+  - when $\alpha$ is close to 1, the method behaves like the naïve method, giving more weight to recent observations; 
+  - when $\alpha$ is close to 0, it behaves like the mean method, giving more equal weight to all observations.
+
 :::
+
+:::{.content-hidden unless-format="revealjs"}
+---
+:::
+
+$$
+\hat{y}_{T+1 | T}= \alpha y_{T} + \alpha(1-\alpha) y_{T-1} + \alpha(1-\alpha)^{2} y_{T-2} + \alpha(1-\alpha)^{3} y_{T-3} + \ldots
+$$
+
+where $0\leq \alpha \leq1$ is the smoothing parameter.
+
+$$
+\begin{array}{lllll}
+\hline & \alpha=0.2 & \alpha=0.4 & \alpha=0.6 & \alpha=0.8 \\
+\hline y_{T} & 0.2000 & 0.4000 & 0.6000 & 0.8000 \\
+\hline y_{T-1} & 0.1600 & 0.2400 & 0.2400 & 0.1600 \\
+\hline y_{T-2} & 0.1280 & 0.1440 & 0.0960 & 0.0320 \\
+\hline y_{T-3} & 0.1024 & 0.0864 & 0.0384 & 0.0064 \\
+\hline y_{T-4} & 0.0819 & 0.0518 & 0.0154 & 0.0013 \\
+\hline y_{T-5} & 0.0655 & 0.0311 & 0.0061 & 0.0003
+\end{array}
+$$
+
+::: {#tbl-weights tbl-cap="Weights for different values of $\\alpha$"}
+|              | $\alpha = 0.2$ | $\alpha = 0.4$ | $\alpha = 0.6$ | $\alpha = 0.8$ |
+|--------------|:--------------:|:--------------:|:--------------:|:--------------:|
+| $y_t$        | 0.2000         | 0.4000         | 0.6000         | 0.8000         |
+| $y_{t-1}$    | 0.1600         | 0.2400         | 0.2400         | 0.1600         |
+| $y_{t-2}$    | 0.1280         | 0.1440         | 0.0960         | 0.0320         |
+| $y_{t-3}$    | 0.1024         | 0.0864         | 0.0384         | 0.0064         |
+| $y_{t-4}$    | 0.0819         | 0.0518         | 0.0154         | 0.0013         |
+| $y_{t-5}$    | 0.0655         | 0.0311         | 0.0061         | 0.0003         |
+:::
+
+
+:::{.notes}
+- $\alpha$ can be thought of as the *memory* of the time series: The smaller the value of $\alpha$, the longer the memory (i.e., the more past observations are taken into account). 
+
+- Conversely, a larger value of $\alpha$ means a shorter memory, with more emphasis on recent observations.
+:::
+
+# Exponential smoothing methods
+
+## Simple exponential smoothing (SES)
+
+$$
+\begin{aligned}
+\text{Forecast equation} \quad & \hat{y}_{t+h|t} = \ell_t \\
+\text{Smoothing equation} \quad & \ell_t = \alpha y_t + (1-\alpha)\ell_{t-1}
+\end{aligned}
+$$
+
+where $\ell_t$ is the level at time $t$.
+
+:::{.callout-note appearance="simple"}
+SES has a flat forecast function, so it is appropriate for data with **no trend** or **seasonal** pattern.
+:::
+
+---
+
+```{r}
+#| label: ses
+
+algeria_economy <- global_economy |>
+  filter(Country == "Algeria")
+
+alg_fit <- algeria_economy |>
+  model(
+    ets = ETS(Exports ~ error("A") + trend("N") + season("N"))
+  )
+
+alg_fc <- alg_fit |>
+  forecast(h = 5)
+```
+
+```{r}
+#| label: ses-plot
+#| echo: false
+
+alg_fc |> 
+  autoplot()
+
+```
+
