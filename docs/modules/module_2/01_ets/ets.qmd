@@ -1,0 +1,84 @@
+---
+title: "Exponential smoothing"
+---
+
+::: {.content-visible unless-format="revealjs"}
+```{r}
+#| label: pkgs
+#| message: false
+
+library(tidyverse)
+library(fpp3)
+```
+
+:::
+
+---
+
+
+
+
+:::{.notes}
+Exponential smoothing methods are still relatively simple: they're simply weighted averages from historical data. However, these forecasting methods are widely used in practice, and they can be very effective.
+:::
+
+:::{.content-hidden unless-format="revealjs"}
+
+## {auto-animate=true}
+::: {.r-hstack style="justify-content:space-between; align-items:center; margin-top:50px;"}
+::: {data-id="mean"  style="background:#2F855A; color:white; padding:10px 14px; border-radius:12px;"}
+**Mean**  
+$$
+\hat y_{T+1\mid T}=\tfrac{1}{T}\sum_{i=1}^T y_i
+$$
+
+:::
+
+::: {data-id="axis" style="flex:1; height:10px; margin:0 16px; border-radius:6px; background: linear-gradient(90deg,#2F855A,#2CA1C2,#C0392B);"} 
+:::
+
+::: {data-id="naive" style="background:#C0392B; color:white; padding:10px 14px; border-radius:12px;"}
+**Naïve**  
+$$
+\hat y_{T+1\mid T}=y_T
+$$
+
+:::
+:::
+
+:::{.notes}
+In the *mean* method, all observations are weighted equally (all have the same importance), while in the *naïve  *method, only the most recent observation is used for forecasting. (we ignore all previous observations).
+:::
+
+## {auto-animate=true}
+::: {.r-hstack style="justify-content:space-between; align-items:center; margin-top:50px;"}
+::: {data-id="mean"  style="background:#2F855A; color:white; padding:10px 14px; border-radius:12px; opacity:.9;"}
+**Mean** 
+:::
+
+::: {data-id="axis" style="flex:1; height:10px; margin:0 16px; border-radius:6px; background: linear-gradient(90deg,#2F855A,#2CA1C2,#C0392B);"} 
+:::
+
+::: {data-id="naive" style="background:#C0392B; color:white; padding:10px 14px; border-radius:12px; opacity:.9;"} 
+**Naïve** 
+:::
+
+::: {data-id="ets" style="position:absolute; left:50%; transform:translateX(-50%); top:20%; background:#2CA1C2; color:white; padding:16px 20px; border-radius:14px; box-shadow:0 6px 18px #0006;"}
+**Exponential Smoothing**  
+$$
+\hat y_{T+1\mid T}=\alpha y_T +  \alpha(1-\alpha)y_{T-1} + \ldots 
+$$  
+
+- $\alpha \approx 1$: naïve-like
+
+- $\alpha \approx 0$: mean-like
+
+
+:::
+:::
+
+:::
+
+:::{.notes}
+The exponential smoothing method is a compromise between the mean and naïve methods. It uses all historical data, but it assigns exponentially decreasing weights to older observations. The smoothing parameter $\alpha$ controls the rate of decrease: when $\alpha$ is close to 1, the method behaves like the naïve method, giving more weight to recent observations; when $\alpha$ is close to 0, it behaves like the mean method, giving more equal weight to all observations.
+:::
