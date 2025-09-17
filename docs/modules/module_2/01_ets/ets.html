@@ -1,14 +1,11 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.8.24">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-
 <meta name="author" content="pbenavides">
-
-<title>Forecasting – Time Series Forecasting</title>
+<title>Exponential smoothing – Time Series Forecasting</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -58,7 +55,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }
 </style>
 
-
 <script src="../../../../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../../../../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../../../../site_libs/clipboard/clipboard.min.js"></script>
@@ -66,8 +62,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../../../">
-<link href="../../../../docs/modules/forecasting_workflow.html" rel="next">
-<link href="../../../../docs/modules/module_1/02_ts_dcmp/ts_dcmp.html" rel="prev">
+<link href="../../../../docs/modules/forecasting_workflow.html" rel="prev">
 <link href="../../../../images/narsil_logo.png" rel="icon" type="image/png">
 <script src="../../../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -83,11 +78,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../../../../site_libs/bootstrap/bootstrap-aef63bd183c74b825a915ea0848ede36.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="../../../../site_libs/bootstrap/bootstrap-dark-b2a5a62780e51fed18ebb7091888141f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../../../../site_libs/bootstrap/bootstrap-aef63bd183c74b825a915ea0848ede36.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
-<script src="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
-<link href="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
-<link href="../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
-<script id="quarto-search-options" type="application/json">{
+<link href="../../../../site_libs/bootstrap/bootstrap-aef63bd183c74b825a915ea0848ede36.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
@@ -113,26 +104,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
-}</script>
-<style>html{ scroll-behavior: smooth; }</style>
+}</script><style>html{ scroll-behavior: smooth; }</style>
 <script type="application/json" class="js-hypothesis-config">
 {
   "theme": "classic"
 }
-</script>
-<script async="" src="https://hypothes.is/embed.js"></script>
-<script>
+</script><script async="" src="https://hypothes.is/embed.js"></script><script>
   window.document.addEventListener("DOMContentLoaded", function (_event) {
     document.body.classList.add('hypothesis-enabled');
   });
-</script>
-<link href="../../../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
-<script src="../../../../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
-
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
+</script><link href="../../../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="../../../../site_libs/pagedtable-1.1/js/pagedtable.js"></script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
 const typesetMath = (el) => {
   if (window.MathJax) {
     // MathJax Typeset
@@ -157,22 +139,13 @@ const typesetMath = (el) => {
 window.Quarto = {
   typesetMath
 };
-</script>
-
-<link rel="stylesheet" href="../../../../styles.css">
-<meta property="og:title" content="Forecasting – Time Series Forecasting">
-<meta property="og:image" content="https://pbenavidesh.github.io/narsil/docs/modules/module_1/03_fcst/fcst_wf.png">
+</script><link rel="stylesheet" href="../../../../styles.css">
+<meta property="og:title" content="Exponential smoothing – Time Series Forecasting">
 <meta property="og:site_name" content="Time Series Forecasting">
-<meta property="og:image:height" content="671">
-<meta property="og:image:width" content="2033">
-<meta name="twitter:title" content="Forecasting – Time Series Forecasting">
-<meta name="twitter:image" content="https://pbenavidesh.github.io/narsil/docs/modules/module_1/03_fcst/fcst_wf.png">
+<meta name="twitter:title" content="Exponential smoothing – Time Series Forecasting">
 <meta name="twitter:creator" content="@PabsBenavides">
-<meta name="twitter:image-height" content="671">
-<meta name="twitter:image-width" content="2033">
-<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:card" content="summary">
 </head>
-
 <body class="nav-sidebar docked nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
     const toggleBodyColorMode = (bsSheetEl) => {
       const mode = bsSheetEl.getAttribute("data-mode");
@@ -338,14 +311,10 @@ window.Quarto = {
   </script>
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
-      <div class="navbar-container container-fluid">
+  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg " data-bs-theme="dark"><div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../../../../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../../../../images/iteso_logo_blanco.png" alt="" class="navbar-logo light-content">
-    <img src="../../../../images/iteso_logo_blanco.png" alt="" class="navbar-logo dark-content">
-    </a>
+    <img src="../../../../images/iteso_logo_blanco.png" alt="" class="navbar-logo light-content"><img src="../../../../images/iteso_logo_blanco.png" alt="" class="navbar-logo dark-content"></a>
     <a class="navbar-brand" href="../../../../index.html">
     <span class="navbar-title">Time Series Forecasting</span>
     </a>
@@ -356,7 +325,7 @@ window.Quarto = {
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
-  <li class="nav-item">
+<li class="nav-item">
     <a class="nav-link active" href="../../../../index.html" aria-current="page"> 
 <span class="menu-text">Home</span></a>
   </li>  
@@ -373,7 +342,7 @@ window.Quarto = {
 <span class="menu-text">About</span></a>
   </li>  
 </ul>
-          </div> <!-- /navcollapse -->
+</div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools tools-wide">
     <a href="https://github.com/pbenavidesh/narsil" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-github"></i></a>
   <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
@@ -384,41 +353,38 @@ window.Quarto = {
 </a>
 </div>
       </div> <!-- /container-fluid -->
-    </nav>
-  <nav class="quarto-secondary-nav">
-    <div class="container-fluid d-flex">
+    </nav><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../../docs/modules/module_1/00_intro/intro.html">1. Forecasting models based on decomposition methods</a></li><li class="breadcrumb-item"><a href="../../../../docs/modules/module_1/03_fcst/forecasting.html">1.3 Forecasting principles</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../../docs/modules/module_2/01_ets/ets.html">2. Adding ETS and ARIMA filters</a></li><li class="breadcrumb-item"><a href="../../../../docs/modules/module_2/01_ets/ets.html">2.1 Exponential Smoothing</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
-  </nav>
-  <div id="quarto-announcement" data-announcement-id="f7515ca3a679eca1904c4eeb50b2aff8" class="alert alert-primary hidden"><div class="quarto-announcement-content">
+  </nav><div id="quarto-announcement" data-announcement-id="f7515ca3a679eca1904c4eeb50b2aff8" class="alert alert-primary hidden">
+<div class="quarto-announcement-content">
 <p><strong>NEW</strong> - Module 1 - Forecasting is now up &amp; running</p>
-</div><i class="bi bi-x-lg quarto-announcement-action"></i></div>
-</header>
-<!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+</div>
+<i class="bi bi-x-lg quarto-announcement-action"></i>
+</div>
+</header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
-    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
       <a href="../../../../index.html" class="sidebar-logo-link">
       </a>
       </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
-        <li class="sidebar-item sidebar-item-section">
+<li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false">
  <span class="menu-text">1. Forecasting models based on decomposition methods</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../../../docs/modules/module_1/00_intro/intro.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">1.0 Introduction</span></a>
@@ -438,7 +404,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../../../docs/modules/module_1/03_fcst/forecasting.html" class="sidebar-item-text sidebar-link active">
+  <a href="../../../../docs/modules/module_1/03_fcst/forecasting.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">1.3 Forecasting principles</span></a>
   </div>
 </li>
@@ -449,19 +415,19 @@ window.Quarto = {
   </div>
 </li>
       </ul>
-  </li>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
  <span class="menu-text">2. Adding ETS and ARIMA filters</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../../../docs/modules/module_2/01_ets/ets.html" class="sidebar-item-text sidebar-link">
+  <a href="../../../../docs/modules/module_2/01_ets/ets.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">2.1 Exponential Smoothing</span></a>
   </div>
 </li>
@@ -475,7 +441,7 @@ window.Quarto = {
  <span class="menu-text">2.4 Decomposition &amp; ETS/ARIMA</span>
   </li>
       </ul>
-  </li>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false">
@@ -484,8 +450,8 @@ window.Quarto = {
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">
+<li class="sidebar-item">
  <span class="menu-text">3.1 Linear Regression Models</span>
   </li>
           <li class="sidebar-item">
@@ -498,7 +464,7 @@ window.Quarto = {
  <span class="menu-text">3.4 Choose the best variables for the model</span>
   </li>
       </ul>
-  </li>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false">
@@ -507,8 +473,8 @@ window.Quarto = {
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 ">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 ">
+<li class="sidebar-item">
  <span class="menu-text">4.1 Understanding the challenges and approaches when dealing with multiple time series</span>
   </li>
           <li class="sidebar-item">
@@ -521,50 +487,17 @@ window.Quarto = {
  <span class="menu-text">4.4 Evaluation of the global performance</span>
   </li>
       </ul>
-  </li>
+</li>
     </ul>
-    </div>
-</nav>
-<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
-   
-  <ul>
-  <li><a href="#a-tidy-forecasting-workflow" id="toc-a-tidy-forecasting-workflow" class="nav-link active" data-scroll-target="#a-tidy-forecasting-workflow"><span class="header-section-number">1</span> A tidy forecasting workflow</a>
-  <ul class="collapse">
-  <li><a href="#tidy-data" id="toc-tidy-data" class="nav-link" data-scroll-target="#tidy-data"><span class="header-section-number">1.1</span> Tidy data</a>
-  <ul class="collapse">
-  <li><a href="#traintest-split-1" id="toc-traintest-split-1" class="nav-link" data-scroll-target="#traintest-split-1"><span class="header-section-number">1.1.1</span> Train/test split</a></li>
-  </ul></li>
-  <li><a href="#visualize" id="toc-visualize" class="nav-link" data-scroll-target="#visualize"><span class="header-section-number">1.2</span> Visualize</a></li>
-  <li><a href="#specify-estimate" id="toc-specify-estimate" class="nav-link" data-scroll-target="#specify-estimate"><span class="header-section-number">1.3</span> Specify &amp; Estimate</a></li>
-  <li><a href="#evaluate" id="toc-evaluate" class="nav-link" data-scroll-target="#evaluate"><span class="header-section-number">1.4</span> Evaluate</a>
-  <ul class="collapse">
-  <li><a href="#white-noise" id="toc-white-noise" class="nav-link" data-scroll-target="#white-noise"><span class="header-section-number">1.4.1</span> White noise</a></li>
-  <li><a href="#residual-diagnostics-1" id="toc-residual-diagnostics-1" class="nav-link" data-scroll-target="#residual-diagnostics-1"><span class="header-section-number">1.4.2</span> Residual diagnostics</a></li>
-  <li><a href="#refine-1" id="toc-refine-1" class="nav-link" data-scroll-target="#refine-1"><span class="header-section-number">1.4.3</span> Refine</a></li>
-  </ul></li>
-  <li><a href="#forecast-1" id="toc-forecast-1" class="nav-link" data-scroll-target="#forecast-1"><span class="header-section-number">1.5</span> Forecast</a>
-  <ul class="collapse">
-  <li><a href="#forecast-accuracy-1" id="toc-forecast-accuracy-1" class="nav-link" data-scroll-target="#forecast-accuracy-1"><span class="header-section-number">1.5.1</span> Forecast accuracy</a></li>
-  <li><a href="#error-metrics-1" id="toc-error-metrics-1" class="nav-link" data-scroll-target="#error-metrics-1"><span class="header-section-number">1.5.2</span> Error metrics</a></li>
-  <li><a href="#refit-and-forecast-1" id="toc-refit-and-forecast-1" class="nav-link" data-scroll-target="#refit-and-forecast-1"><span class="header-section-number">1.5.3</span> Refit and forecast</a></li>
-  </ul></li>
-  <li><a href="#communicate" id="toc-communicate" class="nav-link" data-scroll-target="#communicate"><span class="header-section-number">1.6</span> Communicate</a></li>
-  </ul></li>
-  <li><a href="#benchmark-forecasting-methods" id="toc-benchmark-forecasting-methods" class="nav-link" data-scroll-target="#benchmark-forecasting-methods"><span class="header-section-number">2</span> Benchmark forecasting methods</a></li>
-  </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/pbenavidesh/narsil/edit/main/docs/modules/module_1/03_fcst/forecasting.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/pbenavidesh/narsil/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div><div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="forecasting_pres.html"><i class="bi bi-file-slides"></i>RevealJS</a></li></ul></div></nav>
-    </div>
+        
+    <div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="ets_pres.html"><i class="bi bi-file-slides"></i>RevealJS</a></li></ul></div></div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
-
-
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../../docs/modules/module_1/00_intro/intro.html">1. Forecasting models based on decomposition methods</a></li><li class="breadcrumb-item"><a href="../../../../docs/modules/module_1/03_fcst/forecasting.html">1.3 Forecasting principles</a></li></ol></nav>
-<div class="quarto-title">
-<h1 class="title">Forecasting</h1>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../../docs/modules/module_2/01_ets/ets.html">2. Adding ETS and ARIMA filters</a></li><li class="breadcrumb-item"><a href="../../../../docs/modules/module_2/01_ets/ets.html">2.1 Exponential Smoothing</a></li></ol></nav><div class="quarto-title">
+<h1 class="title">Exponential smoothing</h1>
 </div>
 
 
@@ -590,332 +523,21 @@ window.Quarto = {
   
 
 
-</header>
-
-
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fpp3)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</header><div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://pkg.robjhyndman.com/fpp3/">fpp3</a></span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<section id="a-tidy-forecasting-workflow" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> A tidy forecasting workflow</h1>
-<p><a href="fcst_wf.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="fcst_wf.png" class="img-fluid"></a></p>
-<section id="tidy-data" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="tidy-data"><span class="header-section-number">1.1</span> Tidy data</h2>
-<ul>
-<li>Use <code>readr::read_csv()</code>, <code>readxl::read_excel()</code>, or <code>tidyquant::tq_get()</code> to import the data into R. You can find more on this <a href="https://r4ds.hadley.nz/import.html">here</a>.</li>
-</ul>
+<hr>
 <div class="notes">
-<ul>
-<li><p>Your data should be tidy. That means:</p>
-<ul>
-<li>Each variable should be in its own column.</li>
-<li>Each observation should be in its own row.</li>
-<li>Each value should be in its own cell.</li>
-</ul></li>
-</ul>
+<p>Exponential smoothing methods are still relatively simple: they’re simply weighted averages from historical data. However, these forecasting methods are widely used in practice, and they can be very effective.</p>
 </div>
-<ul>
-<li><p><a href="https://r4ds.hadley.nz/data-tidy.html">Data tidying</a> and <a href="https://r4ds.hadley.nz/transform.html">transforming</a> are covered in detail in <a href="https://r4ds.hadley.nz/">R for Data Science</a>.</p></li>
-<li><p>Transform the resulting <code>tibble</code> into a <strong><code>tsibble</code></strong>:</p>
-<ul>
-<li>It should have an <code>index</code> (time) variable with the proper time format<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</li>
-<li>The <code>key</code> argument is only necessary if the dataset contains more than one time series.</li>
-</ul></li>
-</ul>
-<section id="traintest-split-1" class="level3" data-number="1.1.1">
-<h3 data-number="1.1.1" class="anchored" data-anchor-id="traintest-split-1"><span class="header-section-number">1.1.1</span> Train/test split</h3>
-<ul>
-<li><p>Split the data into a <strong>training set</strong> and a <strong>test set</strong><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>. The training set is used to estimate the model parameters, while the test set is used to evaluate the model’s performance on unseen data.</p></li>
-<li><p>The size of the training and test sets depends on the length of the time series and the forecasting horizon:</p>
-<ul>
-<li>If the forecast horizon is e. g.. 12 months, the test set should contain 12 months of data.</li>
-<li>Another common approach is to use the first 70-80% of the data for training and the remaining 20-30% for testing.</li>
-</ul></li>
-<li><p>We can use <code>filter_index()</code> to create the training set<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>:</p></li>
-</ul>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1" aria-hidden="true" tabindex="-1"></a>datos_train <span class="ot">&lt;-</span> <span class="er">&lt;</span>tsibble<span class="sc">&gt;</span> <span class="er">|&gt;</span> </span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-1-2" class="code-annotation-target"><a href="#annotated-cell-1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter_index</span>(<span class="st">"start_date"</span> <span class="sc">~</span> <span class="st">"end_date"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-annotation">
-<dl class="code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-1" data-target-annotation="1">1</dt>
-<dd>
-<span data-code-cell="annotated-cell-1" data-code-lines="2" data-code-annotation="1">Replace <code>start_date</code> and <code>end_date</code> with the desired date range for the training set.You can also use <code>.</code> to indicate the start or end of the series: <code>filter_index(. ~ "end_date")</code> or <code>filter_index("start_date" ~ .)</code>.</span>
-</dd>
-</dl>
-</div>
-</div>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Splitting the data
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-1" class="callout-1-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>In time series, the training set should always contain the earlier observations, while the test set should contain the later observations. This is because time series data is ordered in time, and we want to simulate the real-world scenario where we use past data to predict future values.</p>
-</div>
-</div>
-</div>
-</section>
-</section>
-<section id="visualize" class="level2" data-number="1.2">
-<h2 data-number="1.2" class="anchored" data-anchor-id="visualize"><span class="header-section-number">1.2</span> Visualize</h2>
-<p>Plot the time series to identify patterns, such as trend and seasonality, and anomalies. This can help us choose an appropriate forecasting method. You can find many types of plots <a href="../../../../docs/modules/module_1/01_time_series/r_time_series.html# TS Visualization">here</a>.</p>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><a href="forecasting_files/figure-html/ts_viz-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="forecasting_files/figure-html/ts_viz-1.png" class="img-fluid figure-img" width="672"></a></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="specify-estimate" class="level2" data-number="1.3">
-<h2 data-number="1.3" class="anchored" data-anchor-id="specify-estimate"><span class="header-section-number">1.3</span> Specify &amp; Estimate</h2>
-<p>Decide whether any math transformations or adjustments are neccesary and choose a forecasting method based on the series’ features.</p>
-<p>Train the model specification on the training set. You can use the <code>model()</code> function to fit various forecasting models<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>.</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1" aria-hidden="true" tabindex="-1"></a>datos_fit <span class="ot">&lt;-</span> datos_train <span class="sc">|&gt;</span> </span>
-<span id="annotated-cell-2-2"><a href="#annotated-cell-2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-2-3" class="code-annotation-target"><a href="#annotated-cell-2-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">model_1 =</span> <span class="sc">&lt;</span>model_function_1<span class="sc">&gt;</span>(<span class="sc">&lt;</span>y_t<span class="sc">&gt;</span> <span class="er">~</span> x_t),</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-2-4" class="code-annotation-target"><a href="#annotated-cell-2-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">model_2 =</span> <span class="sc">&lt;</span>model_function_2<span class="sc">&gt;</span>(<span class="sc">&lt;</span>transformation_function<span class="sc">&gt;</span>(<span class="sc">&lt;</span>y_t<span class="sc">&gt;</span>), <span class="sc">&lt;</span>args<span class="sc">&gt;</span>)</span>
-<span id="annotated-cell-2-5"><a href="#annotated-cell-2-5" aria-hidden="true" tabindex="-1"></a>  )</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-annotation">
-<dl class="code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-2" data-target-annotation="1">1</dt>
-<dd>
-<span data-code-cell="annotated-cell-2" data-code-lines="3" data-code-annotation="1">Replace <code>model_function_1</code> with the desired forecasting method (e.g., <code>ARIMA()</code>, <code>ETS()</code>, <code>NAIVE()</code>, etc.). Replace <code>&lt;y_t&gt;</code> with the name of the forecast variable and <code>&lt;predictor_variables&gt;</code> with any predictor variables if applicable.</span>
-</dd>
-<dt data-target-cell="annotated-cell-2" data-target-annotation="2">2</dt>
-<dd>
-<span data-code-cell="annotated-cell-2" data-code-lines="4" data-code-annotation="2">If a transformation is needed, replace <code>transformation_function</code> with the appropriate function (e.g., <code>log</code>, <code>box_cox</code>, etc.) and include any specific arguments required by the model.</span>
-</dd>
-</dl>
-</div>
-</div>
-</section>
-<section id="evaluate" class="level2" data-number="1.4">
-<h2 data-number="1.4" class="anchored" data-anchor-id="evaluate"><span class="header-section-number">1.4</span> Evaluate</h2>
-<ul>
-<li><strong>Fitted</strong> values, <span class="math inline">\(\hat{y}_t\)</span>: The values predicted by the model for the training set.</li>
-<li><strong>residuals</strong>, <span class="math inline">\(e_t\)</span>: The difference between the actual values and the fitted values, calculated as</li>
-</ul>
-<p><span class="math display">\[
-e_t = y_t - \hat{y}_t
-\]</span>.</p>
-<ul>
-<li><strong>innovation residuals</strong>: Residuals on the transformed scale<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>.</li>
-</ul>
-<p>We can check if a model is capturing the patterns in the data by analyzing the residuals. Ideally, the residuals should resemble <strong>white noise</strong>.</p>
 <div class="notes">
-<div class="callout callout-style-simple callout-tip">
-<div class="callout-body d-flex">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
+<p>The exponential smoothing method is a compromise between the mean and naïve methods. It uses all historical data, but it assigns exponentially decreasing weights to older observations. The smoothing parameter <span class="math inline">\(\alpha\)</span> controls the rate of decrease: when <span class="math inline">\(\alpha\)</span> is close to 1, the method behaves like the naïve method, giving more weight to recent observations; when <span class="math inline">\(\alpha\)</span> is close to 0, it behaves like the mean method, giving more equal weight to all observations.</p>
 </div>
-<div class="callout-body-container">
-<p>The <strong>fitted</strong> values and <strong>residuals</strong> can be extracted from the model table using <code>augment()</code>.</p>
-</div>
-</div>
-</div>
-</div>
-<section id="white-noise" class="level3" data-number="1.4.1">
-<h3 data-number="1.4.1" class="anchored" data-anchor-id="white-noise"><span class="header-section-number">1.4.1</span> White noise</h3>
-<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/ubFq-wV3Eic?si=7So2aw3T-IkulZj6" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
-</section>
-<section id="residual-diagnostics-1" class="level3" data-number="1.4.2">
-<h3 data-number="1.4.2" class="anchored" data-anchor-id="residual-diagnostics-1"><span class="header-section-number">1.4.2</span> Residual diagnostics</h3>
-<p>We expect residuals to behave like white noise, thus having the following properties:</p>
-<p><em>The most important:</em></p>
-<ol type="1">
-<li><p><strong>Uncorrelated</strong>: There is no correlation between the values at different time points.</p></li>
-<li><p><strong>Zero mean</strong>: The average value of the series is constant over time (and equal to zero).</p></li>
-</ol>
-<p><em>Nice to have:</em></p>
-<ol start="3" type="1">
-<li><p><strong>Constant variance</strong>: The variability of the series is constant over time.</p></li>
-<li><p><strong>Normally distributed</strong>: The values follow a normal distribution (this is not always required).</p></li>
-</ol>
-</section>
-<section id="refine-1" class="level3" data-number="1.4.3">
-<h3 data-number="1.4.3" class="anchored" data-anchor-id="refine-1"><span class="header-section-number">1.4.3</span> Refine</h3>
-<p>If the residuals don’t meet these properties, we could refine the model:</p>
-<ul>
-<li>For the first 2: add predictors or change the model structure.</li>
-<li>Apply a variance-stabilizing transformation (e.g., Box-Cox).</li>
-<li>If the residuals are not normally distributed, only the prediction intervals are affected. We can deal with this by using bootstrap prediction intervals.</li>
-</ul>
-</section>
-</section>
-<section id="forecast-1" class="level2" data-number="1.5">
-<h2 data-number="1.5" class="anchored" data-anchor-id="forecast-1"><span class="header-section-number">1.5</span> Forecast</h2>
-<p>Once a satisfactory model is obtained, we can proceed to forecast<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>. Use the <code>forecast()</code> function to generate forecasts for a specified horizon <code>h</code>.:</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1" aria-hidden="true" tabindex="-1"></a>datos_fcst <span class="ot">&lt;-</span> datos_fit <span class="sc">|&gt;</span> </span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-3-2" class="code-annotation-target"><a href="#annotated-cell-3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="sc">&lt;</span>forecast_horizon<span class="sc">&gt;</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-annotation">
-<dl class="code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-3" data-target-annotation="1">1</dt>
-<dd>
-<span data-code-cell="annotated-cell-3" data-code-lines="2" data-code-annotation="1">Replace <code>&lt;forecast_horizon&gt;</code> with the desired number of periods to forecast (e.g., <code>12</code> for 12 months ahead), or you can write in text <code>"1 year"</code> for a one-year forecast.</span>
-</dd>
-</dl>
-</div>
-</div>
-<div class="callout callout-style-simple callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Forecast horizon
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>The forecast horizon should have the same length as the test set to evaluate the model’s performance accurately.</p>
-</div>
-</div>
-<section id="forecast-accuracy-1" class="level3" data-number="1.5.1">
-<h3 data-number="1.5.1" class="anchored" data-anchor-id="forecast-accuracy-1"><span class="header-section-number">1.5.1</span> Forecast accuracy</h3>
-<p>We measure a forecast’s accuracy by measuring the forecast error. Forecast errors are computed as:</p>
-<p><span class="math display">\[
-e_{T+h} = y_{T+h} - \hat{y}_{T+h|T}
-\]</span></p>
-<div class="notes">
-<div class="callout callout-style-simple callout-warning">
-<div class="callout-body d-flex">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-body-container">
-<p>These errors depend on the scale of the data. Therefore, they are not suitable for comparing forecast accuracy across series with different scales or units.</p>
-</div>
-</div>
-</div>
-</div>
-<p>We can also measure errors as percentage errors<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a>:</p>
-<p><span class="math display">\[
-p_t = \frac{e_{T+h}}{y_{T+h}} \times 100
-\]</span></p>
-<div class="notes">
-<div class="callout callout-style-simple callout-warning">
-<div class="callout-body d-flex">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-body-container">
-<p>Percentage errors can be problematic when the actual values are close to zero, leading to extremely high or undefined percentage errors.</p>
-</div>
-</div>
-</div>
-</div>
-<p>or scaled errors<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>.:</p>
-<ul>
-<li>For non-seasonal time series:</li>
-</ul>
-<p><span class="math display">\[
-q_{j}=\frac{e_{j}}{\frac{1}{T-1} \sum_{t=2}^{T}\left|y_{t}-y_{t-1}\right|},
-\]</span></p>
-<p>For seasonal time series:</p>
-<p><span class="math display">\[
-q_{j}=\frac{e_{j}}{\frac{1}{T-m} \sum_{t=m+1}^{T}\left|y_{t}-y_{t-m}\right|}.
-\]</span></p>
-</section>
-<section id="error-metrics-1" class="level3" data-number="1.5.2">
-<h3 data-number="1.5.2" class="anchored" data-anchor-id="error-metrics-1"><span class="header-section-number">1.5.2</span> Error metrics</h3>
-<p>Using this errors, we can compute various error metrics to summarize the forecast accuracy:</p>
-<table class="caption-top table">
-<caption>Common error metrics</caption>
-<colgroup>
-<col style="width: 18%">
-<col style="width: 9%">
-<col style="width: 34%">
-<col style="width: 35%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Scale</th>
-<th>Metric</th>
-<th>Description</th>
-<th>Formula</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Scale-dependent</td>
-<td><ul>
-<li>RMSE</li>
-<li>MAE</li>
-</ul></td>
-<td><ul>
-<li>Root Mean Squared Error</li>
-<li>Mean Absolute Error</li>
-</ul></td>
-<td><ul>
-<li><span class="math inline">\(\sqrt{\text{mean}(e_{t}^{2})}\)</span></li>
-<li><span class="math inline">\(\text{mean}(|e_{t}|)\)</span></li>
-</ul></td>
-</tr>
-<tr class="even">
-<td>Scale-independent</td>
-<td><ul>
-<li>MAPE</li>
-<li>MASE</li>
-<li>RMMSE</li>
-</ul></td>
-<td><ul>
-<li>Mean Absolute Percentage Error</li>
-<li>Mean Absolute Scaled Error</li>
-<li>Root Mean Squared Scaled Error</li>
-</ul></td>
-<td><ul>
-<li><span class="math inline">\(\text{mean}(|p_{t}|)\)</span></li>
-<li><span class="math inline">\(\text{mean}(|q_{t}|)\)</span></li>
-<li><span class="math inline">\(\sqrt{\text{mean}(q_{t}^{2})}\)</span></li>
-</ul></td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="refit-and-forecast-1" class="level3" data-number="1.5.3">
-<h3 data-number="1.5.3" class="anchored" data-anchor-id="refit-and-forecast-1"><span class="header-section-number">1.5.3</span> Refit and forecast</h3>
-</section>
-</section>
-<section id="communicate" class="level2" data-number="1.6">
-<h2 data-number="1.6" class="anchored" data-anchor-id="communicate"><span class="header-section-number">1.6</span> Communicate</h2>
-<div class="notes">
-<p>This is a note.</p>
-</div>
-</section>
-</section>
-<section id="benchmark-forecasting-methods" class="level1" data-number="2">
-<h1 data-number="2"><span class="header-section-number">2</span> Benchmark forecasting methods</h1>
 
 
-</section>
 
-
-<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
-
-<ol>
-<li id="fn1"><p>i.e., if the TS has a monthly frequency, the index variable should be in <code>yearmonth</code> format. Other formats coud be <code>yearweek</code>, <code>yearquarter</code>, <code>year</code>, <code>date</code>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>Splitting the data into a training and test set is the minimum requirement for evaluating a forecasting model. If you want to avoid overfitting and get a more reliable estimate of the model’s performance, you should consider splitting the data into 3 sets: <strong>training, validation, and test sets</strong>. The validation set is used to tune model hyperparameters and select the best model, while the test set is used for the final evaluation of the selected model. For an even more robust evaluation of forecasting models, consider using <a href="https://otexts.com/fpp3/tscv.html"><strong>time series cross-validation</strong></a> methods.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn3"><p>and store it in a <code>*_train</code> object.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn4"><p>and store the model table in a <code>*_fit</code> object.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn5"><p>We will focus on innovation residuals whenever a transformation is used in the model.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn6"><p>and store the forecasts in a <code>*_fcst</code> object.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn7"><p>Percentage errors are scale-independent, making them useful for comparing forecast accuracy across different series.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn8"><p>Scaled errors are also scale-independent and are useful for comparing forecast accuracy across different series.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-</ol>
-</section></div></main> <!-- /main -->
-<script id="quarto-html-after-body" type="application/javascript">
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right
     if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
@@ -1332,55 +954,17 @@ q_{j}=\frac{e_{j}}{\frac{1}{T-m} \sum_{t=m+1}^{T}\left|y_{t}-y_{t-m}\right|}.
       }
     }
   });
-  </script>
-<nav class="page-navigation">
-  <div class="nav-page nav-page-previous">
-      <a href="../../../../docs/modules/module_1/02_ts_dcmp/ts_dcmp.html" class="pagination-link" aria-label="1.2 Time Series Decomposition">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">1.2 Time Series Decomposition</span>
+  </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="../../../../docs/modules/forecasting_workflow.html" class="pagination-link" aria-label="1.4 The Forecasting Workflow">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">1.4 The Forecasting Workflow</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../../../docs/modules/forecasting_workflow.html" class="pagination-link" aria-label="1.4 The Forecasting Workflow">
-        <span class="nav-page-text">1.4 The Forecasting Workflow</span> <i class="bi bi-arrow-right-short"></i>
-      </a>
   </div>
 </nav>
 </div> <!-- /content -->
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/pbenavidesh/narsil/edit/main/docs/modules/module_1/03_fcst/forecasting.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/pbenavidesh/narsil/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
-(function() {
-  let previousOnload = window.onload;
-  window.onload = () => {
-    if (previousOnload) {
-      previousOnload();
-    }
-    lightboxQuarto.on('slide_before_load', (data) => {
-      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
-      const href = trigger.getAttribute('href');
-      if (href !== null) {
-        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
-        if (imgEl !== null) {
-          const srcAttr = imgEl.getAttribute("src");
-          if (srcAttr && srcAttr.startsWith("data:")) {
-            slideConfig.href = srcAttr;
-          }
-        }
-      } 
-    });
-  
-    lightboxQuarto.on('slide_after_load', (data) => {
-      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
-      if (window.Quarto?.typesetMath) {
-        window.Quarto.typesetMath(slideNode);
-      }
-    });
-  
-  };
-  
-})();
-          </script>
 
 
 
-
-<script src="../../../../site_libs/quarto-html/zenscroll-min.js"></script>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions"><ul><li><a href="https://github.com/pbenavidesh/narsil/edit/main/docs/modules/module_2/01_ets/ets.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/pbenavidesh/narsil/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="../../../../site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>
