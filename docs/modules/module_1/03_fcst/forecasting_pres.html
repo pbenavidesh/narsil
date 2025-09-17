@@ -7,11 +7,11 @@
 <script src="../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../../../../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-83aa21ed72f0068e2bb8f0090f02f802.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-f16cd255ecb5ae9510f6a112aa2ee9ab.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.7.34">
+  <meta name="generator" content="quarto-1.8.24">
 
   <meta name="author" content="pbenavides">
   <title>Time Series Forecasting – Forecasting</title>
@@ -99,7 +99,7 @@
     code span.vs { color: #da4453; } /* VerbatimString */
     code span.wa { color: #da4453; } /* Warning */
   </style>
-  <link rel="stylesheet" href="../../../../site_libs/revealjs/dist/theme/quarto-39d1eab08b8faec97b8adc39508066ea.css">
+  <link rel="stylesheet" href="../../../../site_libs/revealjs/dist/theme/quarto-7aaf31681eed659f0200bcc8fe9a56fc.css">
   <link href="../../../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="../../../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="../../../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -281,8 +281,8 @@ pbenavides
 </ul>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1"></a>datos_train <span class="ot">&lt;-</span> <span class="er">&lt;</span>tsibble<span class="sc">&gt;</span> <span class="er">|&gt;</span> </span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1">1</button><span id="annotated-cell-1-2" class="code-annotation-target"><a href="#annotated-cell-1-2"></a>  <span class="fu">filter_index</span>(<span class="st">"start_date"</span> <span class="sc">~</span> <span class="st">"end_date"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1"></a>datos_train <span class="ot">&lt;-</span> <span class="er">&lt;</span>tsibble<span class="sc">&gt;</span> <span class="er">|&gt;</span> </span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1">1</button><span id="annotated-cell-1-2" class="code-annotation-target"><a href="#annotated-cell-1-2"></a>  <span class="fu">filter_index</span>(<span class="st">"start_date"</span> <span class="sc">~</span> <span class="st">"end_date"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-1" data-target-annotation="1">1</dt>
@@ -312,11 +312,11 @@ pbenavides
 <p>Decide whether any math transformations or adjustments are neccesary and choose a forecasting method based on the series’ features.</p>
 <p>Train the model specification on the training set. You can use the <code>model()</code> function to fit various forecasting models<a href="#/footnotes" class="footnote-ref" id="fnref4" role="doc-noteref" data-footnote-href="#/fn4" onclick=""><sup>4</sup></a>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1"></a>datos_fit <span class="ot">&lt;-</span> datos_train <span class="sc">|&gt;</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1"></a>datos_fit <span class="ot">&lt;-</span> datos_train <span class="sc">|&gt;</span> </span>
 <span id="annotated-cell-2-2"><a href="#annotated-cell-2-2"></a>  <span class="fu">model</span>(</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1">1</button><span id="annotated-cell-2-3" class="code-annotation-target"><a href="#annotated-cell-2-3"></a>    <span class="at">model_1 =</span> <span class="sc">&lt;</span>model_function_1<span class="sc">&gt;</span>(<span class="sc">&lt;</span>y_t<span class="sc">&gt;</span> <span class="er">~</span> x_t),</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="2">2</button><span id="annotated-cell-2-4" class="code-annotation-target"><a href="#annotated-cell-2-4"></a>    <span class="at">model_2 =</span> <span class="sc">&lt;</span>model_function_2<span class="sc">&gt;</span>(<span class="sc">&lt;</span>transformation_function<span class="sc">&gt;</span>(<span class="sc">&lt;</span>y_t<span class="sc">&gt;</span>), <span class="sc">&lt;</span>args<span class="sc">&gt;</span>)</span>
-<span id="annotated-cell-2-5"><a href="#annotated-cell-2-5"></a>  )</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="annotated-cell-2-5"><a href="#annotated-cell-2-5"></a>  )</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-2" data-target-annotation="1">1</dt>
@@ -399,8 +399,8 @@ e_t = y_t - \hat{y}_t
 <h1>Forecast</h1>
 <p>Once a satisfactory model is obtained, we can proceed to forecast<a href="#/footnotes" class="footnote-ref" id="fnref6" role="doc-noteref" data-footnote-href="#/fn6" onclick=""><sup>6</sup></a>. Use the <code>forecast()</code> function to generate forecasts for a specified horizon <code>h</code>.:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1"></a>datos_fcst <span class="ot">&lt;-</span> datos_fit <span class="sc">|&gt;</span> </span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1">1</button><span id="annotated-cell-3-2" class="code-annotation-target"><a href="#annotated-cell-3-2"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="sc">&lt;</span>forecast_horizon<span class="sc">&gt;</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1"></a>datos_fcst <span class="ot">&lt;-</span> datos_fit <span class="sc">|&gt;</span> </span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1">1</button><span id="annotated-cell-3-2" class="code-annotation-target"><a href="#annotated-cell-3-2"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="sc">&lt;</span>forecast_horizon<span class="sc">&gt;</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-3" data-target-annotation="1">1</dt>
@@ -493,10 +493,10 @@ q_{j}=\frac{e_{j}}{\frac{1}{T-m} \sum_{t=m+1}^{T}\left|y_{t}-y_{t-m}\right|}.
 <table class="caption-top" style="width:98%;">
 <caption>Common error metrics</caption>
 <colgroup>
-<col style="width: 19%">
-<col style="width: 10%">
-<col style="width: 35%">
+<col style="width: 18%">
+<col style="width: 9%">
 <col style="width: 34%">
+<col style="width: 35%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -517,7 +517,10 @@ q_{j}=\frac{e_{j}}{\frac{1}{T-m} \sum_{t=m+1}^{T}\left|y_{t}-y_{t-m}\right|}.
 <li class="fragment">Root Mean Squared Error</li>
 <li class="fragment">Mean Absolute Error</li>
 </ul></td>
-<td><span class="math inline">\(\sqrt{\text{mean}(e_{t}^{2})}\)</span> <span class="math inline">\(\text{mean}(|e_{t}|)\)</span></td>
+<td><ul>
+<li class="fragment"><span class="math inline">\(\sqrt{\text{mean}(e_{t}^{2})}\)</span></li>
+<li class="fragment"><span class="math inline">\(\text{mean}(|e_{t}|)\)</span></li>
+</ul></td>
 </tr>
 <tr class="even">
 <td>Scale-independent</td>
@@ -531,7 +534,11 @@ q_{j}=\frac{e_{j}}{\frac{1}{T-m} \sum_{t=m+1}^{T}\left|y_{t}-y_{t-m}\right|}.
 <li class="fragment">Mean Absolute Scaled Error</li>
 <li class="fragment">Root Mean Squared Scaled Error</li>
 </ul></td>
-<td><span class="math inline">\(\text{mean}(|p_{t}|)\)</span> <span class="math inline">\(\text{mean}(|q_{t}|)\)</span> <span class="math inline">\(\sqrt{\text{mean}(q_{t}^{2})}\)</span></td>
+<td><ul>
+<li class="fragment"><span class="math inline">\(\text{mean}(|p_{t}|)\)</span></li>
+<li class="fragment"><span class="math inline">\(\text{mean}(|q_{t}|)\)</span></li>
+<li class="fragment"><span class="math inline">\(\sqrt{\text{mean}(q_{t}^{2})}\)</span></li>
+</ul></td>
 </tr>
 </tbody>
 </table>
@@ -767,7 +774,7 @@ q_{j}=\frac{e_{j}}{\frac{1}{T-m} \sum_{t=m+1}^{T}\left|y_{t}-y_{t-m}\right|}.
         margin: 0.1,
 
         math: {
-          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js',
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
           config: 'TeX-AMS_HTML-full',
           tex2jax: {
             inlineMath: [['\\(','\\)']],
@@ -879,13 +886,14 @@ q_{j}=\frac{e_{j}}{\frac{1}{T-m} \sum_{t=m+1}^{T}\left|y_{t}-y_{t-m}\right|}.
           e.clearSelection();
         }
         const getTextToCopy = function(trigger) {
-            const codeEl = trigger.previousElementSibling.cloneNode(true);
-            for (const childEl of codeEl.children) {
-              if (isCodeAnnotation(childEl)) {
-                childEl.remove();
-              }
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
             }
-            return codeEl.innerText;
+          }
+          return codeEl.innerText;
         }
         const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
           text: getTextToCopy
