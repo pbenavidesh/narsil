@@ -112,7 +112,7 @@ $$
 \end{array}
 $$
 
-::: {#tbl-weights tbl-cap="Weights for different values of $\\alpha$"}
+::: {#tbl-weights tbl-cap="Weights for different values of $\alpha$"}
 |              | $\alpha = 0.2$ | $\alpha = 0.4$ | $\alpha = 0.6$ | $\alpha = 0.8$ |
 |--------------|:--------------:|:--------------:|:--------------:|:--------------:|
 | $y_t$        | 0.2000         | 0.4000         | 0.6000         | 0.8000         |
@@ -169,7 +169,10 @@ alg_fc <- alg_fit |>
 #| echo: false
 
 alg_fc |> 
-  autoplot()
-
+  autoplot(algeria_economy) +
+  geom_line(aes(y = .fitted), col="darkorange",
+            data = augment(alg_fit)) +
+  labs(y = "% of GDP", title = "Exports: Algeria") +
+  guides(colour = "none")
 ```
 
