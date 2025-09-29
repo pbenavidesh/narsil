@@ -76,9 +76,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-f16cd255ecb5ae9510f6a112aa2ee9ab.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../../../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../../../site_libs/bootstrap/bootstrap-aef63bd183c74b825a915ea0848ede36.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../../../site_libs/bootstrap/bootstrap-dark-b2a5a62780e51fed18ebb7091888141f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../../../../site_libs/bootstrap/bootstrap-aef63bd183c74b825a915ea0848ede36.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+<link href="../../../../site_libs/bootstrap/bootstrap-524790b0a7ee18005c3851d02937763f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../../../site_libs/bootstrap/bootstrap-dark-eee2d00aedcbe505dcabd4c64206c4cc.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../../../site_libs/bootstrap/bootstrap-524790b0a7ee18005c3851d02937763f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
@@ -141,10 +144,18 @@ window.Quarto = {
 };
 </script><link rel="stylesheet" href="../../../../styles.css">
 <meta property="og:title" content="Exponential smoothing – Time Series Forecasting">
+<meta property="og:description" content="">
+<meta property="og:image" content="https://pbenavidesh.github.io/narsil/docs/modules/module_2/01_ets/ets_files/figure-html/ses-plot-1.png">
 <meta property="og:site_name" content="Time Series Forecasting">
+<meta property="og:image:height" content="960">
+<meta property="og:image:width" content="1344">
 <meta name="twitter:title" content="Exponential smoothing – Time Series Forecasting">
+<meta name="twitter:description" content="">
+<meta name="twitter:image" content="https://pbenavidesh.github.io/narsil/docs/modules/module_2/01_ets/ets_files/figure-html/ses-plot-1.png">
 <meta name="twitter:creator" content="@PabsBenavides">
-<meta name="twitter:card" content="summary">
+<meta name="twitter:image-height" content="960">
+<meta name="twitter:image-width" content="1344">
+<meta name="twitter:card" content="summary_large_image">
 </head>
 <body class="nav-sidebar docked nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
     const toggleBodyColorMode = (bsSheetEl) => {
@@ -493,8 +504,17 @@ window.Quarto = {
 </nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
-    <div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="ets_pres.html"><i class="bi bi-file-slides"></i>RevealJS</a></li></ul></div></div>
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+   
+  <ul>
+<li>
+<a href="#exponential-smoothing-methods" id="toc-exponential-smoothing-methods" class="nav-link active" data-scroll-target="#exponential-smoothing-methods"><span class="header-section-number">1</span> Exponential smoothing methods</a>
+  <ul class="collapse">
+<li><a href="#simple-exponential-smoothing-ses" id="toc-simple-exponential-smoothing-ses" class="nav-link" data-scroll-target="#simple-exponential-smoothing-ses"><span class="header-section-number">1.1</span> Simple exponential smoothing (SES)</a></li>
+  </ul>
+</li>
+  </ul><div class="toc-actions"><ul><li><a href="https://github.com/pbenavidesh/narsil/edit/main/docs/modules/module_2/01_ets/ets.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/pbenavidesh/narsil/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div><div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="ets_pres.html"><i class="bi bi-file-slides"></i>RevealJS</a></li></ul></div></nav>
+    </div>
 <!-- main -->
 <main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../../docs/modules/module_2/01_ets/ets.html">2. Adding ETS and ARIMA filters</a></li><li class="breadcrumb-item"><a href="../../../../docs/modules/module_2/01_ets/ets.html">2.1 Exponential Smoothing</a></li></ol></nav><div class="quarto-title">
 <h1 class="title">Exponential smoothing</h1>
@@ -515,7 +535,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">September 17, 2025</p>
+      <p class="date-modified">September 29, 2025</p>
     </div>
   </div>
     
@@ -523,21 +543,148 @@ window.Quarto = {
   
 
 
-</header><div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://pkg.robjhyndman.com/fpp3/">fpp3</a></span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</header><div class="notes">
+<ul>
+<li>
+<p>Exponential smoothing methods are still relatively simple: they’re simply weighted averages from historical data.</p>
+<ul>
+<li>However, these forecasting methods are widely used in practice, and they can be very effective.</li>
+</ul>
+</li>
+<li><p>The exponential smoothing method is a compromise between the mean and naïve methods. It uses all historical data, but it assigns exponentially decreasing weights to older observations.</p></li>
+<li>
+<p>The smoothing parameter <span class="math inline">\(\alpha\)</span> controls the rate of decrease:</p>
+<ul>
+<li>when <span class="math inline">\(\alpha\)</span> is close to 1, the method behaves like the naïve method, giving more weight to recent observations;</li>
+<li>when <span class="math inline">\(\alpha\)</span> is close to 0, it behaves like the mean method, giving more equal weight to all observations.</li>
+</ul>
+</li>
+</ul>
+</div>
+<p><span class="math display">\[
+\hat{y}_{T+1 | T}= \alpha y_{T} + \alpha(1-\alpha) y_{T-1} + \alpha(1-\alpha)^{2} y_{T-2} + \alpha(1-\alpha)^{3} y_{T-3} + \ldots
+\]</span></p>
+<p>where <span class="math inline">\(0\leq \alpha \leq1\)</span> is the smoothing parameter.</p>
+<div id="tbl-ets_alpha_weights" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-ets_alpha_weights-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: Weights for different values of <span class="math inline">\(\alpha\)</span>
+</figcaption><div aria-describedby="tbl-ets_alpha_weights-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 17%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead><tr class="header">
+<th></th>
+<th style="text-align: center;"><span class="math inline">\(\alpha = 0.2\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(\alpha = 0.4\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(\alpha = 0.6\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(\alpha = 0.8\)</span></th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(y_t\)</span></td>
+<td style="text-align: center;">0.2000</td>
+<td style="text-align: center;">0.4000</td>
+<td style="text-align: center;">0.6000</td>
+<td style="text-align: center;">0.8000</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(y_{t-1}\)</span></td>
+<td style="text-align: center;">0.1600</td>
+<td style="text-align: center;">0.2400</td>
+<td style="text-align: center;">0.2400</td>
+<td style="text-align: center;">0.1600</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(y_{t-2}\)</span></td>
+<td style="text-align: center;">0.1280</td>
+<td style="text-align: center;">0.1440</td>
+<td style="text-align: center;">0.0960</td>
+<td style="text-align: center;">0.0320</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(y_{t-3}\)</span></td>
+<td style="text-align: center;">0.1024</td>
+<td style="text-align: center;">0.0864</td>
+<td style="text-align: center;">0.0384</td>
+<td style="text-align: center;">0.0064</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(y_{t-4}\)</span></td>
+<td style="text-align: center;">0.0819</td>
+<td style="text-align: center;">0.0518</td>
+<td style="text-align: center;">0.0154</td>
+<td style="text-align: center;">0.0013</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(y_{t-5}\)</span></td>
+<td style="text-align: center;">0.0655</td>
+<td style="text-align: center;">0.0311</td>
+<td style="text-align: center;">0.0061</td>
+<td style="text-align: center;">0.0003</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<div class="notes">
+<ul>
+<li><p><span class="math inline">\(\alpha\)</span> can be thought of as the <em>memory</em> of the time series: The smaller the value of <span class="math inline">\(\alpha\)</span>, the longer the memory (i.e., the more past observations are taken into account).</p></li>
+<li><p>Conversely, a larger value of <span class="math inline">\(\alpha\)</span> means a shorter memory, with more emphasis on recent observations. See <a href="#tbl-ets_alpha_weights" class="quarto-xref">Table&nbsp;1</a> for some examples.</p></li>
+</ul>
+</div>
+<section id="exponential-smoothing-methods" class="level1" data-number="1"><h1 data-number="1">
+<span class="header-section-number">1</span> Exponential smoothing methods</h1>
+<section id="simple-exponential-smoothing-ses" class="level2" data-number="1.1"><h2 data-number="1.1" class="anchored" data-anchor-id="simple-exponential-smoothing-ses">
+<span class="header-section-number">1.1</span> Simple exponential smoothing (SES)</h2>
+<p><span class="math display">\[
+\begin{aligned}
+\text{Forecast equation} \quad &amp; \hat{y}_{t+h|t} = \ell_t \\
+\text{Smoothing equation} \quad &amp; \ell_t = \alpha y_t + (1-\alpha)\ell_{t-1}
+\end{aligned}
+\]</span></p>
+<p>where <span class="math inline">\(\ell_t\)</span> is the level at time <span class="math inline">\(t\)</span>.</p>
+<div class="callout callout-style-simple callout-note">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>SES has a flat forecast function, so it is appropriate for data with <strong>no trend</strong> or <strong>seasonal</strong> pattern.</p>
+</div>
+</div>
 </div>
 <hr>
-<div class="notes">
-<p>Exponential smoothing methods are still relatively simple: they’re simply weighted averages from historical data. However, these forecasting methods are widely used in practice, and they can be very effective.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">algeria_economy</span> <span class="op">&lt;-</span> <span class="va">global_economy</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">Country</span> <span class="op">==</span> <span class="st">"Algeria"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">alg_fit</span> <span class="op">&lt;-</span> <span class="va">algeria_economy</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">model</span><span class="op">(</span></span>
+<span>    ets <span class="op">=</span> <span class="fu">ETS</span><span class="op">(</span><span class="va">Exports</span> <span class="op">~</span> <span class="fu">error</span><span class="op">(</span><span class="st">"A"</span><span class="op">)</span> <span class="op">+</span> <span class="fu">trend</span><span class="op">(</span><span class="st">"N"</span><span class="op">)</span> <span class="op">+</span> <span class="fu">season</span><span class="op">(</span><span class="st">"N"</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span><span class="va">alg_fc</span> <span class="op">&lt;-</span> <span class="va">alg_fit</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">forecast</span><span class="op">(</span>h <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div class="notes">
-<p>The exponential smoothing method is a compromise between the mean and naïve methods. It uses all historical data, but it assigns exponentially decreasing weights to older observations. The smoothing parameter <span class="math inline">\(\alpha\)</span> controls the rate of decrease: when <span class="math inline">\(\alpha\)</span> is close to 1, the method behaves like the naïve method, giving more weight to recent observations; when <span class="math inline">\(\alpha\)</span> is close to 0, it behaves like the mean method, giving more equal weight to all observations.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><a href="ets_files/figure-html/ses-plot-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="ets_files/figure-html/ses-plot-1.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
 </div>
+</div>
+</div>
+<p>::: {.content-hidden unless format=“revealjs”} # Methods with trend :::</p>
+<p>::: {.content-visible unless format=“revealjs”} ## Methods with trend :::</p>
 
 
-
-<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+</section></section><a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right
     if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
@@ -963,8 +1110,39 @@ window.Quarto = {
   </div>
 </nav>
 </div> <!-- /content -->
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/pbenavidesh/narsil/edit/main/docs/modules/module_2/01_ets/ets.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/pbenavidesh/narsil/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
 
 
-
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions"><ul><li><a href="https://github.com/pbenavidesh/narsil/edit/main/docs/modules/module_2/01_ets/ets.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/pbenavidesh/narsil/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="../../../../site_libs/quarto-html/zenscroll-min.js"></script>
+<script src="../../../../site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>
