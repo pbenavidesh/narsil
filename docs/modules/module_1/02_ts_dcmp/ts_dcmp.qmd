@@ -9,17 +9,26 @@ format:
     output-file: ts_dcmp_pres.html
 ---
 
-:::{.content-visible unless-format="revealjs"}
-
 ```{r}
 #| label: pkgs
 #| message: false
+#| include: false
 
 library(tidyverse)
 library(fpp3)
-library(tidyquant)
-library(plotly)
 ```
+
+:::{.content-visible unless-format="revealjs"}
+
+```{r}
+#| label: pkgs_special
+#| message: false
+
+library(tidyquant) #<1>
+library(plotly)    #<1>
+```
+
+1. In addition to the regular packages, here we'll use `tidyquant` and `plotly`
 
 :::
 
