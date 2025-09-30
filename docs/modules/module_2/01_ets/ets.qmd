@@ -252,8 +252,6 @@ alg_fc |>
 We can extend SES models to allow our forecasts to include trend in the data. We need to add a new smoothing parameter $\beta^*$, and its corresponding smoothing equation:
 :::
 
-::: {.stretch}
-
 $$
 \begin{aligned}
 \text{Forecast equation} \quad & \hat{y}_{t+h|t} = \ell_t \\
@@ -262,11 +260,48 @@ $$
 \end{aligned}
 $$
 
-:::
-
 where $b_t$ is the growth (or slope) at time $t$.
 
 :::{.callout-note appearance="simple"}
 Holt's linear trend method is appropriate for data with a **linear trend** but **no seasonal** pattern.
 :::
+
+::: {.notes}
+
+Let's see an example using Holt's linear trend method to forecast Australia's population.
+
+:::
+
+::: {.content-hidden unless-format="revealjs"}
+
+##
+
+:::
+
+```{r}
+#| label: holt
+
+aus_economy <- global_economy  |> 
+  filter(Code == "AUS") |> 
+  mutate(Pop = Population / 1e6)
+
+aus_economy |> 
+  autoplot(Pop)
+
+fit <- aus_economy  |> 
+  model(AAN   = ETS(Pop ~ error("A") + trend("A") + season("N")),
+        Drift = RW(Pop ~ drift()))
+
+fc <- fit  |>  forecast(h = 10)
+
+fc |> 
+  autoplot(aus_economy |>  filter_index("2000"~.), level = NULL)
+
+fit |>  
+  glance()
+
+fit |>  
+  select(AAN)  |>  
+  report()
+```
 
