@@ -822,11 +822,32 @@ Model: ETS(A,A,N)
 <p><span class="math display">
 \begin{aligned}
 \text{Forecast equation} \quad &amp; \hat{y}_{t+h|t} = (\ell_t + hb_t) s_{t+h-m(k+1)} \\
-\text{Level equation} \quad &amp; \ell_t = \alpha \frac{y_t}{s_{t-m}} + (\ell_{t-1} + \phi b_{t-1}) \\
-\text{Trend equation} \quad &amp; b_t = \beta^*(\ell_t-\ell_{t-1}) + (1-\beta^*)\phi b_{t-1} \\
+\text{Level equation} \quad &amp; \ell_t = \alpha \frac{y_t}{s_{t-m}} + (1 - \alpha)(\ell_{t-1} + b_{t-1}) \\
+\text{Trend equation} \quad &amp; b_t = \beta^*(\ell_t-\ell_{t-1}) + (1-\beta^*) b_{t-1} \\
 \text{Seasonal equation} \quad &amp; s_t = \gamma \frac{y_t}{\ell_{t-1} + b_{t-1}} + (1-\gamma)s_{t-m}
 \end{aligned}
 </span></p>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>When to use Holt-Winters methods</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li class="fragment">Holt-Winters methods are appropriate for data with a <strong>trend</strong> and <strong>seasonal</strong> pattern.</li>
+<li class="fragment">Use an <strong>additive model</strong> when the seasonal fluctuations are roughly constant over time.</li>
+<li class="fragment">Use a <strong>multiplicative model</strong> when the seasonal variation increase or decrease over time.</li>
+<li class="fragment">The proper benchmark method to compare against is the <strong>seasonal naïve</strong> method. for seasonal data.
+<ul>
+<li class="fragment">If the data contains both <strong>trend</strong> and <strong>seasonality</strong>, then A <strong>decomposition model</strong> using <strong>STL</strong><a href="#/footnotes" class="footnote-ref" id="fnref4" role="doc-noteref" data-footnote-href="#/fn4" onclick=""><sup>4</sup></a> + <strong>Drift</strong><a href="#/footnotes" class="footnote-ref" id="fnref5" role="doc-noteref" data-footnote-href="#/fn5" onclick=""><sup>5</sup></a> + <strong>SNAIVE</strong><a href="#/footnotes" class="footnote-ref" id="fnref6" role="doc-noteref" data-footnote-href="#/fn6" onclick=""><sup>6</sup></a> is often a strong competitor.</li>
+</ul></li>
+</ul>
+</div>
+</div>
+</div>
 
 
 <aside></aside></section></section>
@@ -836,6 +857,9 @@ Model: ETS(A,A,N)
 <li id="fn1"><p>(i.e., a <code>mable</code> containing only one model and one time series.)</p></li>
 <li id="fn2"><p>In practice, we restrict <span class="math inline">0.8 \leq \phi \leq 0.98</span> because the damping effect would be too great for smaller values than 0.8 and almost non distinguishable from a linear trend for greater values than 0.98.</p></li>
 <li id="fn3"><p>e.g., <span class="math inline">m=4</span> for quarterly data, <span class="math inline">m=12</span> for monthly data, …</p></li>
+<li id="fn4"><p>as the decomposition method</p></li>
+<li id="fn5"><p>for the seasonally adjusted series</p></li>
+<li id="fn6"><p>for the seasonal component</p></li>
 </ol>
 </section>
     </div>
