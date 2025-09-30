@@ -100,6 +100,22 @@
     code span.wa { color: #da4453; } /* Warning */
   </style>
   <link rel="stylesheet" href="../../../../site_libs/revealjs/dist/theme/quarto-7aaf31681eed659f0200bcc8fe9a56fc.css">
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
   <link href="../../../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="../../../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="../../../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -234,18 +250,18 @@ pbenavides
 <div class="r-hstack" style="justify-content:space-between; align-items:center; margin-top:50px;">
 <div data-id="mean" style="background:#2F855A; color:white; padding:10px 14px; border-radius:12px;">
 <p><strong>Mean</strong><br>
-<span class="math display">\[
+<span class="math display">
 \hat y_{T+1\mid T}=\tfrac{1}{T}\sum_{i=1}^T y_i
-\]</span></p>
+</span></p>
 </div>
 <div data-id="axis" style="flex:1; height:10px; margin:0 16px; border-radius:6px; background: linear-gradient(90deg,#2F855A,#2CA1C2,#C0392B);">
 
 </div>
 <div data-id="naive" style="background:#C0392B; color:white; padding:10px 14px; border-radius:12px;">
 <p><strong>Naïve</strong><br>
-<span class="math display">\[
+<span class="math display">
 \hat y_{T+1\mid T}=y_T
-\]</span></p>
+</span></p>
 </div>
 </div>
 </section>
@@ -263,12 +279,12 @@ pbenavides
 </div>
 <div data-id="ets" style="position:absolute; left:50%; transform:translateX(-50%); top:20%; background:#2CA1C2; color:white; padding:16px 20px; border-radius:14px; box-shadow:0 6px 18px #0006;">
 <p><strong>Exponential Smoothing</strong><br>
-<span class="math display">\[
+<span class="math display">
 \hat y_{T+1\mid T}=\alpha y_T +  \alpha(1-\alpha)y_{T-1} + \ldots
-\]</span></p>
+</span></p>
 <ul>
-<li class="fragment"><p><span class="math inline">\(\alpha \approx 1\)</span>: naïve-like</p></li>
-<li class="fragment"><p><span class="math inline">\(\alpha \approx 0\)</span>: mean-like</p></li>
+<li class="fragment"><p><span class="math inline">\alpha \approx 1</span>: naïve-like</p></li>
+<li class="fragment"><p><span class="math inline">\alpha \approx 0</span>: mean-like</p></li>
 </ul>
 </div>
 </div>
@@ -282,10 +298,10 @@ pbenavides
 <ul>
 <li>In the <em>mean</em> method, all observations are weighted equally (all have the same importance), while in the <em>naïve</em> method, only the most recent observation is used for forecasting. (we ignore all previous observations).</li>
 </ul></li>
-<li><p>The smoothing parameter <span class="math inline">\(\alpha\)</span> controls the rate of decrease:</p>
+<li><p>The smoothing parameter <span class="math inline">\alpha</span> controls the rate of decrease:</p>
 <ul>
-<li>when <span class="math inline">\(\alpha\)</span> is close to 1, the method behaves like the naïve method, giving more weight to recent observations;</li>
-<li>when <span class="math inline">\(\alpha\)</span> is close to 0, it behaves like the mean method, giving more equal weight to all observations.</li>
+<li>when <span class="math inline">\alpha</span> is close to 1, the method behaves like the naïve method, giving more weight to recent observations;</li>
+<li>when <span class="math inline">\alpha</span> is close to 0, it behaves like the mean method, giving more equal weight to all observations.</li>
 </ul></li>
 </ul>
 <style type="text/css">
@@ -302,14 +318,14 @@ pbenavides
 </section>
 <section id="section-2" class="slide level2">
 <h2></h2>
-<p><span class="math display">\[
+<p><span class="math display">
 \hat{y}_{T+1 | T}= \alpha y_{T} + \alpha(1-\alpha) y_{T-1} + \alpha(1-\alpha)^{2} y_{T-2} + \alpha(1-\alpha)^{3} y_{T-3} + \ldots
-\]</span></p>
-<p>where <span class="math inline">\(0\leq \alpha \leq1\)</span> is the smoothing parameter.</p>
+</span></p>
+<p>where <span class="math inline">0\leq \alpha \leq1</span> is the smoothing parameter.</p>
 <div id="tbl-ets_alpha_weights" class="quarto-float quarto-figure quarto-figure-center">
 <figure class="quarto-float quarto-float-tbl">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-ets_alpha_weights-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;1: Weights for different values of <span class="math inline">\(\alpha\)</span>
+Table&nbsp;1: Weights for different values of <span class="math inline">\alpha</span>
 </figcaption>
 <div aria-describedby="tbl-ets_alpha_weights-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <table class="caption-top" style="width:100%;">
@@ -323,50 +339,50 @@ Table&nbsp;1: Weights for different values of <span class="math inline">\(\alpha
 <thead>
 <tr class="header">
 <th></th>
-<th style="text-align: center;"><span class="math inline">\(\alpha = 0.2\)</span></th>
-<th style="text-align: center;"><span class="math inline">\(\alpha = 0.4\)</span></th>
-<th style="text-align: center;"><span class="math inline">\(\alpha = 0.6\)</span></th>
-<th style="text-align: center;"><span class="math inline">\(\alpha = 0.8\)</span></th>
+<th style="text-align: center;"><span class="math inline">\alpha = 0.2</span></th>
+<th style="text-align: center;"><span class="math inline">\alpha = 0.4</span></th>
+<th style="text-align: center;"><span class="math inline">\alpha = 0.6</span></th>
+<th style="text-align: center;"><span class="math inline">\alpha = 0.8</span></th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><span class="math inline">\(y_t\)</span></td>
+<td><span class="math inline">y_t</span></td>
 <td style="text-align: center;">0.2000</td>
 <td style="text-align: center;">0.4000</td>
 <td style="text-align: center;">0.6000</td>
 <td style="text-align: center;">0.8000</td>
 </tr>
 <tr class="even">
-<td><span class="math inline">\(y_{t-1}\)</span></td>
+<td><span class="math inline">y_{t-1}</span></td>
 <td style="text-align: center;">0.1600</td>
 <td style="text-align: center;">0.2400</td>
 <td style="text-align: center;">0.2400</td>
 <td style="text-align: center;">0.1600</td>
 </tr>
 <tr class="odd">
-<td><span class="math inline">\(y_{t-2}\)</span></td>
+<td><span class="math inline">y_{t-2}</span></td>
 <td style="text-align: center;">0.1280</td>
 <td style="text-align: center;">0.1440</td>
 <td style="text-align: center;">0.0960</td>
 <td style="text-align: center;">0.0320</td>
 </tr>
 <tr class="even">
-<td><span class="math inline">\(y_{t-3}\)</span></td>
+<td><span class="math inline">y_{t-3}</span></td>
 <td style="text-align: center;">0.1024</td>
 <td style="text-align: center;">0.0864</td>
 <td style="text-align: center;">0.0384</td>
 <td style="text-align: center;">0.0064</td>
 </tr>
 <tr class="odd">
-<td><span class="math inline">\(y_{t-4}\)</span></td>
+<td><span class="math inline">y_{t-4}</span></td>
 <td style="text-align: center;">0.0819</td>
 <td style="text-align: center;">0.0518</td>
 <td style="text-align: center;">0.0154</td>
 <td style="text-align: center;">0.0013</td>
 </tr>
 <tr class="even">
-<td><span class="math inline">\(y_{t-5}\)</span></td>
+<td><span class="math inline">y_{t-5}</span></td>
 <td style="text-align: center;">0.0655</td>
 <td style="text-align: center;">0.0311</td>
 <td style="text-align: center;">0.0061</td>
@@ -379,8 +395,8 @@ Table&nbsp;1: Weights for different values of <span class="math inline">\(\alpha
 </div>
 <aside class="notes">
 <ul>
-<li><p><span class="math inline">\(\alpha\)</span> can be thought of as the <em>memory</em> of the time series: The smaller the value of <span class="math inline">\(\alpha\)</span>, the longer the memory (i.e., the more past observations are taken into account).</p></li>
-<li><p>Conversely, a larger value of <span class="math inline">\(\alpha\)</span> means a shorter memory, with more emphasis on recent observations. See <a href="#/tbl-ets_alpha_weights" class="quarto-xref">Table&nbsp;1</a> for some examples.</p></li>
+<li><p><span class="math inline">\alpha</span> can be thought of as the <em>memory</em> of the time series: The smaller the value of <span class="math inline">\alpha</span>, the longer the memory (i.e., the more past observations are taken into account).</p></li>
+<li><p>Conversely, a larger value of <span class="math inline">\alpha</span> means a shorter memory, with more emphasis on recent observations. See <a href="#/tbl-ets_alpha_weights" class="quarto-xref">Table&nbsp;1</a> for some examples.</p></li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -401,13 +417,13 @@ Table&nbsp;1: Weights for different values of <span class="math inline">\(\alpha
 </section>
 <section id="simple-exponential-smoothing-ses" class="slide level2">
 <h2>Simple exponential smoothing (SES)</h2>
-<p><span class="math display">\[
+<p><span class="math display">
 \begin{aligned}
 \text{Forecast equation} \quad &amp; \hat{y}_{t+h|t} = \ell_t \\
 \text{Smoothing equation} \quad &amp; \ell_t = \alpha y_t + (1-\alpha)\ell_{t-1}
 \end{aligned}
-\]</span></p>
-<p>where <span class="math inline">\(\ell_t\)</span> is the level at time <span class="math inline">\(t\)</span>.</p>
+</span></p>
+<p>where <span class="math inline">\ell_t</span> is the level at time <span class="math inline">t</span>.</p>
 <div class="callout callout-note callout-style-simple">
 <div class="callout-body">
 <div class="callout-icon-container">
@@ -442,7 +458,7 @@ Table&nbsp;1: Weights for different values of <span class="math inline">\(\alpha
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-2" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-2" data-code-lines="3" data-code-annotation="1">The <code>report()</code> function allows us to see a model’s report (the time series modeled, the model used, the estimated parameters, and more). It needs a <span class="math inline">\(1 \times 1\)</span> dimension <code>mable</code><a href="#/footnotes" class="footnote-ref" id="fnref1" role="doc-noteref" data-footnote-href="#/fn1" onclick=""><sup>1</sup></a>.</span>
+<span data-code-cell="annotated-cell-2" data-code-lines="3" data-code-annotation="1">The <code>report()</code> function allows us to see a model’s report (the time series modeled, the model used, the estimated parameters, and more). It needs a <span class="math inline">1 \times 1</span> dimension <code>mable</code><a href="#/footnotes" class="footnote-ref" id="fnref1" role="doc-noteref" data-footnote-href="#/fn1" onclick=""><sup>1</sup></a>.</span>
 </dd>
 </dl>
 </div>
@@ -503,7 +519,7 @@ Model: ETS(A,N,N)
 <section id="holts-linear-trend" class="slide level2">
 <h2>Holt’s linear trend</h2>
 <aside class="notes">
-<p>We can extend SES models to allow our forecasts to include trend in the data. We need to add a new smoothing parameter <span class="math inline">\(\beta^*\)</span>, and its corresponding smoothing equation:</p>
+<p>We can extend SES models to allow our forecasts to include trend in the data. We need to add a new smoothing parameter <span class="math inline">\beta^*</span>, and its corresponding smoothing equation:</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -515,13 +531,13 @@ Model: ETS(A,N,N)
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
-<p><span class="math display">\[
+<p><span class="math display">
 \begin{aligned}
 \text{Forecast equation} \quad &amp; \hat{y}_{t+h|t} = \ell_t \\
 \text{Level equation} \quad &amp; \ell_t = \alpha y_t + (1-\alpha)\ell_{t-1}\\
 \text{Trend equation} \quad &amp; b_t = \beta^*(l_t-l_{t-1}) + (1-\beta^*)b_{t-1}
 \end{aligned}
-\]</span></p>
+</span></p>
 
 
 </section></section>
@@ -553,7 +569,6 @@ Model: ETS(A,N,N)
   <script src="../../../../site_libs/revealjs/plugin/notes/notes.js"></script>
   <script src="../../../../site_libs/revealjs/plugin/search/search.js"></script>
   <script src="../../../../site_libs/revealjs/plugin/zoom/zoom.js"></script>
-  <script src="../../../../site_libs/revealjs/plugin/math/math.js"></script>
   <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
 
   <script>
@@ -722,27 +737,9 @@ Model: ETS(A,N,N)
         // Factor of the display size that should remain empty around the content
         margin: 0.1,
 
-        math: {
-          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
-          config: 'TeX-AMS_HTML-full',
-          tex2jax: {
-            inlineMath: [['\\(','\\)']],
-            displayMath: [['\\[','\\]']],
-            balanceBraces: true,
-            processEscapes: false,
-            processRefs: true,
-            processEnvironments: true,
-            preview: 'TeX',
-            skipTags: ['script','noscript','style','textarea','pre','code'],
-            ignoreClass: 'tex2jax_ignore',
-            processClass: 'tex2jax_process'
-          },
-        },
-
         // reveal.js plugins
         plugins: [QuartoLineHighlight, PdfExport, RevealMenu, RevealChalkboard, QuartoSupport,
 
-          RevealMath,
           RevealNotes,
           RevealSearch,
           RevealZoom
