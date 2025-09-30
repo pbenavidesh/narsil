@@ -319,7 +319,7 @@ pbenavides
 <section id="section-2" class="slide level2">
 <h2></h2>
 <p><span class="math display">
-\hat{y}_{T+1 | T}= \alpha y_{T} + \alpha(1-\alpha) y_{T-1} + \alpha(1-\alpha)^{2} y_{T-2} + \alpha(1-\alpha)^{3} y_{T-3} + \ldots
+\hat{y}_{T+1 | T}= \alpha y_{T} + \alpha(1-\alpha) y_{T-1} + \alpha(1-\alpha)^{2} y_{T-2}  + \ldots
 </span></p>
 <p>where <span class="math inline">0\leq \alpha \leq1</span> is the smoothing parameter.</p>
 <div id="tbl-ets_alpha_weights" class="quarto-float quarto-figure quarto-figure-center">
@@ -493,19 +493,12 @@ Model: ETS(A,N,N)
 </section>
 <section id="section-5" class="slide level2">
 <h2></h2>
+<p>Comparing the SES and Naive forecasts:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>alg_fc <span class="sc">|&gt;</span> </span>
-<span id="cb3-2"><a></a>  <span class="fu">autoplot</span>(algeria_economy <span class="sc">|&gt;</span> <span class="fu">filter_index</span>(<span class="dv">2005</span> <span class="sc">~</span> .), <span class="at">level =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
-<span id="cb3-3"><a></a>  <span class="fu">labs</span>(</span>
-<span id="cb3-4"><a></a>    <span class="at">x =</span> <span class="st">""</span>,</span>
-<span id="cb3-5"><a></a>    <span class="at">y =</span> <span class="st">"% of GDP"</span>,</span>
-<span id="cb3-6"><a></a>    <span class="at">title =</span> <span class="st">"Forecasting using SES vs. Naive"</span>,</span>
-<span id="cb3-7"><a></a>    <span class="at">caption =</span> <span class="st">"Why is the SES forecast below the Naive here?"</span></span>
-<span id="cb3-8"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><a href="ets_files/figure-revealjs/unnamed-chunk-1-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img data-src="ets_files/figure-revealjs/unnamed-chunk-1-1.png" width="960"></a></p>
+<p><a href="ets_files/figure-revealjs/ses-v-naive-plot-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img data-src="ets_files/figure-revealjs/ses-v-naive-plot-1.png" width="960"></a></p>
 </figure>
 </div>
 </div>
@@ -531,6 +524,7 @@ Model: ETS(A,N,N)
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
+<div class="stretch">
 <p><span class="math display">
 \begin{aligned}
 \text{Forecast equation} \quad &amp; \hat{y}_{t+h|t} = \ell_t \\
@@ -538,6 +532,18 @@ Model: ETS(A,N,N)
 \text{Trend equation} \quad &amp; b_t = \beta^*(l_t-l_{t-1}) + (1-\beta^*)b_{t-1}
 \end{aligned}
 </span></p>
+</div>
+<p>where <span class="math inline">b_t</span> is the growth (or slope) at time <span class="math inline">t</span>.</p>
+<div class="callout callout-note callout-style-simple">
+<div class="callout-body">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-content">
+<p>Holt’s linear trend method is appropriate for data with a <strong>linear trend</strong> but <strong>no seasonal</strong> pattern.</p>
+</div>
+</div>
+</div>
 
 
 </section></section>
@@ -730,12 +736,12 @@ Model: ETS(A,N,N)
         // The "normal" size of the presentation, aspect ratio will be preserved
         // when the presentation is scaled to fit different resolutions. Can be
         // specified using percentage units.
-        width: 1050,
+        width: 1600,
 
-        height: 700,
+        height: 900,
 
         // Factor of the display size that should remain empty around the content
-        margin: 0.1,
+        margin: 2.0e-2,
 
         // reveal.js plugins
         plugins: [QuartoLineHighlight, PdfExport, RevealMenu, RevealChalkboard, QuartoSupport,

@@ -611,7 +611,7 @@ window.Quarto = {
 </ul>
 </div>
 <p><span class="math display">
-\hat{y}_{T+1 | T}= \alpha y_{T} + \alpha(1-\alpha) y_{T-1} + \alpha(1-\alpha)^{2} y_{T-2} + \alpha(1-\alpha)^{3} y_{T-3} + \ldots
+\hat{y}_{T+1 | T}= \alpha y_{T} + \alpha(1-\alpha) y_{T-1} + \alpha(1-\alpha)^{2} y_{T-2}  + \ldots
 </span></p>
 <p>where <span class="math inline">0\leq \alpha \leq1</span> is the smoothing parameter.</p>
 <div id="tbl-ets_alpha_weights" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -735,7 +735,7 @@ Table&nbsp;1: Weights for different values of <span class="math inline">\alpha</
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The <strong>mean</strong> and <strong>naïve</strong> methods are regularly the best fit as benchmark methods when using SES.</p>
+<p>The <strong>mean</strong> and <strong>naïve</strong> methods are typically the best fit as benchmark methods when using SES.</p>
 </div>
 </div>
 <div class="cell">
@@ -775,19 +775,12 @@ Model: ETS(A,N,N)
 </div>
 </div>
 </div>
+<p>Comparing the SES and Naive forecasts:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>alg_fc <span class="sc">|&gt;</span> </span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(algeria_economy <span class="sc">|&gt;</span> <span class="fu">filter_index</span>(<span class="dv">2005</span> <span class="sc">~</span> .), <span class="at">level =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">""</span>,</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"% of GDP"</span>,</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Forecasting using SES vs. Naive"</span>,</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"Why is the SES forecast below the Naive here?"</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><a href="ets_files/figure-html/unnamed-chunk-1-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="ets_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></a></p>
+<p><a href="ets_files/figure-html/ses-v-naive-plot-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="ets_files/figure-html/ses-v-naive-plot-1.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
 </div>
@@ -800,6 +793,7 @@ Model: ETS(A,N,N)
 <div class="notes">
 <p>We can extend SES models to allow our forecasts to include trend in the data. We need to add a new smoothing parameter <span class="math inline">\beta^*</span>, and its corresponding smoothing equation:</p>
 </div>
+<div class="stretch">
 <p><span class="math display">
 \begin{aligned}
 \text{Forecast equation} \quad &amp; \hat{y}_{t+h|t} = \ell_t \\
@@ -807,6 +801,18 @@ Model: ETS(A,N,N)
 \text{Trend equation} \quad &amp; b_t = \beta^*(l_t-l_{t-1}) + (1-\beta^*)b_{t-1}
 \end{aligned}
 </span></p>
+</div>
+<p>where <span class="math inline">b_t</span> is the growth (or slope) at time <span class="math inline">t</span>.</p>
+<div class="callout callout-style-simple callout-note">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>Holt’s linear trend method is appropriate for data with a <strong>linear trend</strong> but <strong>no seasonal</strong> pattern.</p>
+</div>
+</div>
+</div>
 
 
 </section>
