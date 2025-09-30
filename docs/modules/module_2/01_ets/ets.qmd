@@ -544,9 +544,19 @@ where $s_t$ is the seasonal component at time $t$, $m$ is the period of the seas
 $$
 \begin{aligned}
 \text{Forecast equation} \quad & \hat{y}_{t+h|t} = (\ell_t + hb_t) s_{t+h-m(k+1)} \\
-\text{Level equation} \quad & \ell_t = \alpha \frac{y_t}{s_{t-m}} + (\ell_{t-1} + \phi b_{t-1}) \\
-\text{Trend equation} \quad & b_t = \beta^*(\ell_t-\ell_{t-1}) + (1-\beta^*)\phi b_{t-1} \\
+\text{Level equation} \quad & \ell_t = \alpha \frac{y_t}{s_{t-m}} + (1 - \alpha)(\ell_{t-1} + b_{t-1}) \\
+\text{Trend equation} \quad & b_t = \beta^*(\ell_t-\ell_{t-1}) + (1-\beta^*) b_{t-1} \\
 \text{Seasonal equation} \quad & s_t = \gamma \frac{y_t}{\ell_{t-1} + b_{t-1}} + (1-\gamma)s_{t-m}
 \end{aligned}
 $$
+
+::: {.callout-tip collapse="true"}
+## When to use Holt-Winters methods
+- Holt-Winters methods are appropriate for data with a **trend** and **seasonal** pattern.
+- Use an **additive model** when the seasonal fluctuations are roughly constant over time.
+- Use a **multiplicative model** when the seasonal variation increase or decrease over time.
+- The proper benchmark method to compare against is the **seasonal naïve** method. for seasonal data.
+  - If the data contains both **trend** and **seasonality**, then A **decomposition model** using **STL**^[as the decomposition method] + **Drift**^[for the seasonally adjusted series] + **SNAIVE**^[for the seasonal component] is often a strong competitor.
+
+:::
 
