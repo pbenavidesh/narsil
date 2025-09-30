@@ -553,8 +553,8 @@ window.Quarto = {
   <li><a href="#methods-with-trend-1" id="toc-methods-with-trend-1" class="nav-link" data-scroll-target="#methods-with-trend-1"><span class="header-section-number">1.2</span> Methods with trend</a>
   <ul class="collapse">
   <li><a href="#holts-linear-trend-1" id="toc-holts-linear-trend-1" class="nav-link" data-scroll-target="#holts-linear-trend-1"><span class="header-section-number">1.2.1</span> Holt’s linear trend</a></li>
+  <li><a href="#damped-trend-1" id="toc-damped-trend-1" class="nav-link" data-scroll-target="#damped-trend-1"><span class="header-section-number">1.2.2</span> Damped trend</a></li>
   </ul></li>
-  <li><a href="#forecasting-brazils-population-4" id="toc-forecasting-brazils-population-4" class="nav-link" data-scroll-target="#forecasting-brazils-population-4"><span class="header-section-number">1.3</span> Forecasting Brazil’s population</a></li>
   </ul></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/pbenavidesh/narsil/edit/main/docs/modules/module_2/01_ets/ets.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/pbenavidesh/narsil/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div><div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="ets_pres.html"><i class="bi bi-file-slides"></i>RevealJS</a></li></ul></div></nav>
@@ -796,19 +796,28 @@ Model: ETS(A,N,N)
 </div>
 <p><span class="math display">
 \begin{aligned}
-\text{Forecast equation} \quad &amp; \hat{y}_{t+h|t} = \ell_t \\
+\text{Forecast equation} \quad &amp; \hat{y}_{t+h|t} = \ell_t + hb_t \\
 \text{Level equation} \quad &amp; \ell_t = \alpha y_t + (1-\alpha)\ell_{t-1}\\
 \text{Trend equation} \quad &amp; b_t = \beta^*(l_t-l_{t-1}) + (1-\beta^*)b_{t-1}
 \end{aligned}
 </span></p>
 <p>where <span class="math inline">b_t</span> is the growth (or slope) at time <span class="math inline">t</span>.</p>
-<div class="callout callout-style-simple callout-note">
-<div class="callout-body d-flex">
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-body-container">
-<p>Holt’s linear trend method is appropriate for data with a <strong>linear trend</strong> but <strong>no seasonal</strong> pattern.</p>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>When to use Holt’s linear trend method
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul>
+<li>Holt’s linear trend method is appropriate for data with a <strong>linear trend</strong> but <strong>no seasonal</strong> pattern.</li>
+<li>The proper benchmark method to compare against is the <strong>drift</strong> method.</li>
+</ul>
 </div>
 </div>
 </div>
@@ -830,10 +839,8 @@ Model: ETS(A,N,N)
 </div>
 </div>
 </div>
-</section>
-</section>
-<section id="forecasting-brazils-population-4" class="level2" data-auto-animate="true" data-number="1.3">
-<h2 data-auto-animate="true" data-number="1.3" class="anchored" data-anchor-id="forecasting-brazils-population-4"><span class="header-section-number">1.3</span> Forecasting Brazil’s population</h2>
+<section id="forecasting-brazils-population-4" class="level4" data-number="1.2.1.1">
+<h4 data-number="1.2.1.1" class="anchored" data-anchor-id="forecasting-brazils-population-4"><span class="header-section-number">1.2.1.1</span> Forecasting Brazil’s population</h4>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>bra_fit <span class="ot">&lt;-</span> bra_economy <span class="sc">|&gt;</span> </span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(</span>
@@ -864,7 +871,10 @@ Model: ETS(A,A,N)
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">15</span>)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>bra_fc <span class="sc">|&gt;</span> </span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(bra_economy, <span class="at">level =</span> <span class="cn">NULL</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(bra_economy, <span class="at">level =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Brazilian population"</span>,</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Millions"</span>) <span class="sc">+</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">colour =</span> <span class="fu">guide_legend</span>(<span class="at">title =</span> <span class="st">"Forecast"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -873,8 +883,79 @@ Model: ETS(A,A,N)
 </div>
 </div>
 </div>
+</section>
+</section>
+<section id="damped-trend-1" class="level3" data-number="1.2.2">
+<h3 data-number="1.2.2" class="anchored" data-anchor-id="damped-trend-1"><span class="header-section-number">1.2.2</span> Damped trend</h3>
+<div class="notes">
+<ul>
+<li><p>Holt’s linear trend method assume that the trend will continue indefinitely at the same rate. However, in many real-world scenarios, this assumption may not hold true. This methods tend to overestimate (<em>or underestimate</em>) long-term forecasts when the trend is strong.</p></li>
+<li><p>We can include a damping parameter <span class="math inline">\phi</span>, which reduces the trend over time.</p></li>
+</ul>
+</div>
+<p><span class="math display">
+\begin{aligned}
+\text{Forecast equation} \quad &amp; \hat{y}_{t+h|t} = \ell_t +  (\phi + \phi^2 + \ldots + \phi^h) b_t \\
+\text{Level equation} \quad &amp; \ell_t = \alpha y_t + (\ell_{t-1} + \phi b_{t-1}) \\
+\text{Trend equation} \quad &amp; b_t = \beta^*(\ell_t-\ell_{t-1}) + (1-\beta^*)\phi b_{t-1}
+\end{aligned}
+</span></p>
+<p>where <span class="math inline">0 &lt; \phi &lt; 1</span><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> is the damping parameter.</p>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Caution</span>What would happen if <span class="math inline">\phi = 1</span>? What about if <span class="math inline">\phi = 0</span>?
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul>
+<li>If <span class="math inline">\phi = 1</span>, the model reduces to Holt’s linear trend method, meaning the trend continues indefinitely at the same rate.</li>
+<li>If <span class="math inline">\phi = 0</span>, the trend component is completely eliminated, and the model behaves like simple exponential smoothing (SES), where forecasts are based solely on the level component without any trend influence.</li>
+</ul>
+</div>
+</div>
+</div>
+<section id="forecasting-brazils-population-continued-1" class="level4" data-number="1.2.2.1">
+<h4 data-number="1.2.2.1" class="anchored" data-anchor-id="forecasting-brazils-population-continued-1"><span class="header-section-number">1.2.2.1</span> Forecasting Brazil’s population (continued)</h4>
+</section>
+<section id="forecasting-brazils-population-continued-4" class="level4" data-number="1.2.2.2">
+<h4 data-number="1.2.2.2" class="anchored" data-anchor-id="forecasting-brazils-population-continued-4"><span class="header-section-number">1.2.2.2</span> Forecasting Brazil’s population (continued)</h4>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-5"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-5-1"><a href="#annotated-cell-5-1" aria-hidden="true" tabindex="-1"></a>bra_economy <span class="sc">|&gt;</span> </span>
+<span id="annotated-cell-5-2"><a href="#annotated-cell-5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(</span>
+<span id="annotated-cell-5-3"><a href="#annotated-cell-5-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">Holt   =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>)),</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-5" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-5-4" class="code-annotation-target"><a href="#annotated-cell-5-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">Damped =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"Ad"</span>, <span class="at">phi =</span> <span class="fl">0.9</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
+<span id="annotated-cell-5-5"><a href="#annotated-cell-5-5" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="annotated-cell-5-6"><a href="#annotated-cell-5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">15</span>) <span class="sc">|&gt;</span> </span>
+<span id="annotated-cell-5-7"><a href="#annotated-cell-5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(bra_economy, <span class="at">level =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="annotated-cell-5-8"><a href="#annotated-cell-5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Brazilian population"</span>,</span>
+<span id="annotated-cell-5-9"><a href="#annotated-cell-5-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Millions"</span>) <span class="sc">+</span></span>
+<span id="annotated-cell-5-10"><a href="#annotated-cell-5-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">colour =</span> <span class="fu">guide_legend</span>(<span class="at">title =</span> <span class="st">"Forecast"</span>))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-5" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-5" data-code-lines="4" data-code-annotation="1">We specify <code>trend("Ad")</code> to indicate that we want a damped trend, and <code>phi = 0.9</code> sets the damping parameter to 0.9. We could also let the model estimate <span class="math inline">\phi</span> automatically by omitting the <code>phi</code> argument.</span>
+</dd>
+</dl>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="ets_files/figure-html/damped_full-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img src="ets_files/figure-html/damped_full-1.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
 
 
+</section>
+</section>
 </section>
 </section>
 
@@ -883,6 +964,7 @@ Model: ETS(A,A,N)
 
 <ol>
 <li id="fn1"><p>(i.e., a <code>mable</code> containing only one model and one time series.)<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>In practice, we restrict <span class="math inline">0.8 \leq \phi \leq 0.98</span> because the damping effect would be too great for smaller values.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
