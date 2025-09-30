@@ -579,14 +579,14 @@ Model: ETS(A,N,N)
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb3-1" class="hljs-ln-code"><a></a>bra_fit <span class="ot">&lt;-</span> bra_economy <span class="sc">|&gt;</span> </span>
 <span id="cb3-2" class="hljs-ln-code"><a></a>  <span class="fu">model</span>(</span>
-<span id="cb3-3" class="hljs-ln-code"><a></a>    <span class="at">AAN   =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
+<span id="cb3-3" class="hljs-ln-code"><a></a>    <span class="at">Holt  =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
 <span id="cb3-4" class="hljs-ln-code"><a></a>  )</span>
 <span id="cb3-5" class="hljs-ln-code"><a></a></span>
 <span id="cb3-6" class="hljs-ln-code"><a></a>bra_fit</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
-{"columns":[{"label":["Country"],"name":[1],"type":["fct"],"align":["left"]},{"label":["AAN"],"name":[2],"type":["lst_mdl"],"align":["right"]}],"data":[{"1":"Brazil","2":"<lst_mdl>"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["Country"],"name":[1],"type":["fct"],"align":["left"]},{"label":["Holt"],"name":[2],"type":["lst_mdl"],"align":["right"]}],"data":[{"1":"Brazil","2":"<lst_mdl>"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 </div>
@@ -597,7 +597,7 @@ Model: ETS(A,N,N)
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb4-1" class="hljs-ln-code"><a></a>bra_fit <span class="ot">&lt;-</span> bra_economy <span class="sc">|&gt;</span> </span>
 <span id="cb4-2" class="hljs-ln-code"><a></a>  <span class="fu">model</span>(</span>
-<span id="cb4-3" class="hljs-ln-code"><a></a>    <span class="at">AAN   =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>)),</span>
+<span id="cb4-3" class="hljs-ln-code"><a></a>    <span class="at">Holt  =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>)),</span>
 <span id="cb4-4" class="hljs-ln-code"><a></a>    <span class="at">Drift =</span> <span class="fu">RW</span>(Pop <span class="sc">~</span> <span class="fu">drift</span>())</span>
 <span id="cb4-5" class="hljs-ln-code"><a></a>  )</span>
 <span id="cb4-6" class="hljs-ln-code"><a></a></span>
@@ -605,7 +605,7 @@ Model: ETS(A,N,N)
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
-{"columns":[{"label":["Country"],"name":[1],"type":["fct"],"align":["left"]},{"label":["AAN"],"name":[2],"type":["lst_mdl"],"align":["right"]},{"label":["Drift"],"name":[3],"type":["lst_mdl"],"align":["right"]}],"data":[{"1":"Brazil","2":"<lst_mdl>","3":"<lst_mdl>"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["Country"],"name":[1],"type":["fct"],"align":["left"]},{"label":["Holt"],"name":[2],"type":["lst_mdl"],"align":["right"]},{"label":["Drift"],"name":[3],"type":["lst_mdl"],"align":["right"]}],"data":[{"1":"Brazil","2":"<lst_mdl>","3":"<lst_mdl>"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 </div>
@@ -616,12 +616,12 @@ Model: ETS(A,N,N)
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb5-1" class="hljs-ln-code"><a></a>bra_fit <span class="ot">&lt;-</span> bra_economy <span class="sc">|&gt;</span> </span>
 <span id="cb5-2" class="hljs-ln-code"><a></a>  <span class="fu">model</span>(</span>
-<span id="cb5-3" class="hljs-ln-code"><a></a>    <span class="at">AAN   =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>)),</span>
+<span id="cb5-3" class="hljs-ln-code"><a></a>    <span class="at">Holt  =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>)),</span>
 <span id="cb5-4" class="hljs-ln-code"><a></a>    <span class="at">Drift =</span> <span class="fu">RW</span>(Pop <span class="sc">~</span> <span class="fu">drift</span>())</span>
 <span id="cb5-5" class="hljs-ln-code"><a></a>  )</span>
 <span id="cb5-6" class="hljs-ln-code"><a></a></span>
 <span id="cb5-7" class="hljs-ln-code"><a></a>bra_fit <span class="sc">|&gt;</span>  </span>
-<span id="cb5-8" class="hljs-ln-code"><a></a>  <span class="fu">select</span>(AAN) <span class="sc">|&gt;</span>  </span>
+<span id="cb5-8" class="hljs-ln-code"><a></a>  <span class="fu">select</span>(Holt) <span class="sc">|&gt;</span>  </span>
 <span id="cb5-9" class="hljs-ln-code"><a></a>  <span class="fu">report</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Series: Pop 
@@ -644,15 +644,39 @@ Model: ETS(A,A,N)
 <section id="forecasting-brazils-population-3" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Forecasting Brazil’s population</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a>bra_fit <span class="ot">&lt;-</span> bra_economy <span class="sc">|&gt;</span> </span>
-<span id="cb7-2"><a></a>  <span class="fu">model</span>(</span>
-<span id="cb7-3"><a></a>    <span class="at">AAN   =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>)),</span>
-<span id="cb7-4"><a></a>    <span class="at">Drift =</span> <span class="fu">RW</span>(Pop <span class="sc">~</span> <span class="fu">drift</span>())</span>
-<span id="cb7-5"><a></a>  )</span>
-<span id="cb7-6"><a></a></span>
-<span id="cb7-7"><a></a>bra_fit <span class="sc">|&gt;</span>  </span>
-<span id="cb7-8"><a></a>  <span class="fu">select</span>(AAN) <span class="sc">|&gt;</span>  </span>
-<span id="cb7-9"><a></a>  <span class="fu">report</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="annotated-cell-3-1" class="hljs-ln-code"><a href="#annotated-cell-3-1"></a>bra_fit <span class="ot">&lt;-</span> bra_economy <span class="sc">|&gt;</span> </span>
+<span id="annotated-cell-3-2" class="hljs-ln-code"><a href="#annotated-cell-3-2"></a>  <span class="fu">model</span>(</span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-3" data-target-annotation="1">1</button><span id="annotated-cell-3-3" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-3-3"></a>    <span class="at">Holt  =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>)),</span>
+<span id="annotated-cell-3-4" class="hljs-ln-code"><a href="#annotated-cell-3-4"></a>    <span class="at">Drift =</span> <span class="fu">RW</span>(Pop <span class="sc">~</span> <span class="fu">drift</span>())</span>
+<span id="annotated-cell-3-5" class="hljs-ln-code"><a href="#annotated-cell-3-5"></a>  )</span>
+<span id="annotated-cell-3-6" class="hljs-ln-code"><a href="#annotated-cell-3-6"></a></span>
+<span id="annotated-cell-3-7" class="hljs-ln-code"><a href="#annotated-cell-3-7"></a>bra_fit <span class="sc">|&gt;</span>  </span>
+<span id="annotated-cell-3-8" class="hljs-ln-code"><a href="#annotated-cell-3-8"></a>  <span class="fu">select</span>(Holt) <span class="sc">|&gt;</span>  </span>
+<span id="annotated-cell-3-9" class="hljs-ln-code"><a href="#annotated-cell-3-9"></a>  <span class="fu">report</span>()</span>
+<span id="annotated-cell-3-10" class="hljs-ln-code"><a href="#annotated-cell-3-10"></a></span>
+<span id="annotated-cell-3-11" class="hljs-ln-code"><a href="#annotated-cell-3-11"></a>bra_fc <span class="ot">&lt;-</span> bra_fit <span class="sc">|&gt;</span>  </span>
+<span id="annotated-cell-3-12" class="hljs-ln-code"><a href="#annotated-cell-3-12"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">15</span>)</span>
+<span id="annotated-cell-3-13" class="hljs-ln-code"><a href="#annotated-cell-3-13"></a></span>
+<span id="annotated-cell-3-14" class="hljs-ln-code"><a href="#annotated-cell-3-14"></a>bra_fc <span class="sc">|&gt;</span> </span>
+<span id="annotated-cell-3-15" class="hljs-ln-code"><a href="#annotated-cell-3-15"></a>  <span class="fu">autoplot</span>(bra_economy, <span class="at">level =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="annotated-cell-3-16" class="hljs-ln-code"><a href="#annotated-cell-3-16"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Brazilian population"</span>,</span>
+<span id="annotated-cell-3-17" class="hljs-ln-code"><a href="#annotated-cell-3-17"></a>       <span class="at">y =</span> <span class="st">"Millions"</span>) <span class="sc">+</span></span>
+<span id="annotated-cell-3-18" class="hljs-ln-code"><a href="#annotated-cell-3-18"></a>  <span class="fu">guides</span>(<span class="at">colour =</span> <span class="fu">guide_legend</span>(<span class="at">title =</span> <span class="st">"Forecast"</span>))</span><div class="code-annotation-gutter-bg hljs-ln-code"></div><div class="code-annotation-gutter hljs-ln-code"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-3" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-3" data-code-lines="3" data-code-annotation="1">We specify <code>trend("A")</code> to indicate that we want a linear trend. The model will estimate the smoothing parameters <span class="math inline">\alpha</span> and <span class="math inline">\beta^*</span> automatically.</span>
+</dd>
+</dl>
+</div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="ets_files/figure-revealjs/holt_full-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img data-src="ets_files/figure-revealjs/holt_full-1.png" width="960"></a></p>
+</figure>
+</div>
+</div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Series: Pop 
 Model: ETS(A,A,N) 
@@ -668,21 +692,6 @@ Model: ETS(A,A,N)
 
       AIC      AICc       BIC 
 -115.2553 -114.1014 -104.9531 </code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a>bra_fc <span class="ot">&lt;-</span> bra_fit <span class="sc">|&gt;</span>  </span>
-<span id="cb9-2"><a></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">15</span>)</span>
-<span id="cb9-3"><a></a></span>
-<span id="cb9-4"><a></a>bra_fc <span class="sc">|&gt;</span> </span>
-<span id="cb9-5"><a></a>  <span class="fu">autoplot</span>(bra_economy, <span class="at">level =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
-<span id="cb9-6"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Brazilian population"</span>,</span>
-<span id="cb9-7"><a></a>       <span class="at">y =</span> <span class="st">"Millions"</span>) <span class="sc">+</span></span>
-<span id="cb9-8"><a></a>  <span class="fu">guides</span>(<span class="at">colour =</span> <span class="fu">guide_legend</span>(<span class="at">title =</span> <span class="st">"Forecast"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div>
-<figure>
-<p><a href="ets_files/figure-revealjs/holt_full-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img data-src="ets_files/figure-revealjs/holt_full-1.png" width="960"></a></p>
-</figure>
-</div>
 </div>
 </div>
 </section>
@@ -729,16 +738,13 @@ Model: ETS(A,A,N)
 </div>
 </div>
 <aside></aside></section>
-<section id="forecasting-brazils-population-continued" class="slide level2" data-auto-animate="true">
-<h2 data-id="quarto-animate-title">Forecasting Brazil’s population (continued)</h2>
-</section>
 <section id="forecasting-brazils-population-5" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Forecasting Brazil’s population</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb10-1" class="hljs-ln-code"><a></a>bra_economy <span class="sc">|&gt;</span> </span>
-<span id="cb10-2" class="hljs-ln-code"><a></a>  <span class="fu">model</span>(</span>
-<span id="cb10-3" class="hljs-ln-code"><a></a>    <span class="at">Holt   =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
-<span id="cb10-4" class="hljs-ln-code"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb8-1" class="hljs-ln-code"><a></a>bra_economy <span class="sc">|&gt;</span> </span>
+<span id="cb8-2" class="hljs-ln-code"><a></a>  <span class="fu">model</span>(</span>
+<span id="cb8-3" class="hljs-ln-code"><a></a>    <span class="at">Holt   =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
+<span id="cb8-4" class="hljs-ln-code"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -748,14 +754,14 @@ Model: ETS(A,A,N)
 </div>
 </div>
 </section>
-<section id="forecasting-brazils-population-continued-2" class="slide level2" data-auto-animate="true">
+<section id="forecasting-brazils-population-continued" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Forecasting Brazil’s population (continued)</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb11-1" class="hljs-ln-code"><a></a>bra_economy <span class="sc">|&gt;</span> </span>
-<span id="cb11-2" class="hljs-ln-code"><a></a>  <span class="fu">model</span>(</span>
-<span id="cb11-3" class="hljs-ln-code"><a></a>    <span class="at">Holt   =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>)),</span>
-<span id="cb11-4" class="hljs-ln-code"><a></a>    <span class="at">Damped =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"Ad"</span>, <span class="at">phi =</span> <span class="fl">0.9</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
-<span id="cb11-5" class="hljs-ln-code"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb9-1" class="hljs-ln-code"><a></a>bra_economy <span class="sc">|&gt;</span> </span>
+<span id="cb9-2" class="hljs-ln-code"><a></a>  <span class="fu">model</span>(</span>
+<span id="cb9-3" class="hljs-ln-code"><a></a>    <span class="at">Holt   =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>)),</span>
+<span id="cb9-4" class="hljs-ln-code"><a></a>    <span class="at">Damped =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"Ad"</span>, <span class="at">phi =</span> <span class="fl">0.9</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
+<span id="cb9-5" class="hljs-ln-code"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -765,24 +771,24 @@ Model: ETS(A,A,N)
 </div>
 </div>
 </section>
-<section id="forecasting-brazils-population-continued-3" class="slide level2" data-auto-animate="true">
+<section id="forecasting-brazils-population-continued-1" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Forecasting Brazil’s population (continued)</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-5"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="annotated-cell-5-1" class="hljs-ln-code"><a href="#annotated-cell-5-1"></a>bra_economy <span class="sc">|&gt;</span> </span>
-<span id="annotated-cell-5-2" class="hljs-ln-code"><a href="#annotated-cell-5-2"></a>  <span class="fu">model</span>(</span>
-<span id="annotated-cell-5-3" class="hljs-ln-code"><a href="#annotated-cell-5-3"></a>    <span class="at">Holt   =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>)),</span>
-<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-5" data-target-annotation="1">1</button><span id="annotated-cell-5-4" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-5-4"></a>    <span class="at">Damped =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"Ad"</span>, <span class="at">phi =</span> <span class="fl">0.9</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
-<span id="annotated-cell-5-5" class="hljs-ln-code"><a href="#annotated-cell-5-5"></a>  ) <span class="sc">|&gt;</span> </span>
-<span id="annotated-cell-5-6" class="hljs-ln-code"><a href="#annotated-cell-5-6"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">15</span>) <span class="sc">|&gt;</span> </span>
-<span id="annotated-cell-5-7" class="hljs-ln-code"><a href="#annotated-cell-5-7"></a>  <span class="fu">autoplot</span>(bra_economy, <span class="at">level =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
-<span id="annotated-cell-5-8" class="hljs-ln-code"><a href="#annotated-cell-5-8"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Brazilian population"</span>,</span>
-<span id="annotated-cell-5-9" class="hljs-ln-code"><a href="#annotated-cell-5-9"></a>       <span class="at">y =</span> <span class="st">"Millions"</span>) <span class="sc">+</span></span>
-<span id="annotated-cell-5-10" class="hljs-ln-code"><a href="#annotated-cell-5-10"></a>  <span class="fu">guides</span>(<span class="at">colour =</span> <span class="fu">guide_legend</span>(<span class="at">title =</span> <span class="st">"Forecast"</span>))</span><div class="code-annotation-gutter-bg hljs-ln-code"></div><div class="code-annotation-gutter hljs-ln-code"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-4"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="annotated-cell-4-1" class="hljs-ln-code"><a href="#annotated-cell-4-1"></a>bra_economy <span class="sc">|&gt;</span> </span>
+<span id="annotated-cell-4-2" class="hljs-ln-code"><a href="#annotated-cell-4-2"></a>  <span class="fu">model</span>(</span>
+<span id="annotated-cell-4-3" class="hljs-ln-code"><a href="#annotated-cell-4-3"></a>    <span class="at">Holt   =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>)),</span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-4" data-target-annotation="1">1</button><span id="annotated-cell-4-4" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-4-4"></a>    <span class="at">Damped =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"Ad"</span>, <span class="at">phi =</span> <span class="fl">0.9</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
+<span id="annotated-cell-4-5" class="hljs-ln-code"><a href="#annotated-cell-4-5"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="annotated-cell-4-6" class="hljs-ln-code"><a href="#annotated-cell-4-6"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">15</span>) <span class="sc">|&gt;</span> </span>
+<span id="annotated-cell-4-7" class="hljs-ln-code"><a href="#annotated-cell-4-7"></a>  <span class="fu">autoplot</span>(bra_economy, <span class="at">level =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="annotated-cell-4-8" class="hljs-ln-code"><a href="#annotated-cell-4-8"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Brazilian population"</span>,</span>
+<span id="annotated-cell-4-9" class="hljs-ln-code"><a href="#annotated-cell-4-9"></a>       <span class="at">y =</span> <span class="st">"Millions"</span>) <span class="sc">+</span></span>
+<span id="annotated-cell-4-10" class="hljs-ln-code"><a href="#annotated-cell-4-10"></a>  <span class="fu">guides</span>(<span class="at">colour =</span> <span class="fu">guide_legend</span>(<span class="at">title =</span> <span class="st">"Forecast"</span>))</span><div class="code-annotation-gutter-bg hljs-ln-code"></div><div class="code-annotation-gutter hljs-ln-code"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-5" data-target-annotation="1">1</dt>
+<dt data-target-cell="annotated-cell-4" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-5" data-code-lines="4" data-code-annotation="1">We specify <code>trend("Ad")</code> to indicate that we want a damped trend, and <code>phi = 0.9</code> sets the damping parameter to 0.9. We could also let the model estimate <span class="math inline">\phi</span> automatically by omitting the <code>phi</code> argument.</span>
+<span data-code-cell="annotated-cell-4" data-code-lines="4" data-code-annotation="1">We specify <code>trend("Ad")</code> to indicate that we want a damped trend, and <code>phi = 0.9</code> sets the damping parameter to 0.9. We could also let the model estimate <span class="math inline">\phi</span> automatically by omitting the <code>phi</code> argument.</span>
 </dd>
 </dl>
 </div>
@@ -794,14 +800,42 @@ Model: ETS(A,A,N)
 </div>
 </div>
 </div>
-
-
 </section></section>
+<section>
+<section id="methods-with-seasonality" class="title-slide slide level1 center">
+<h1>Methods with seasonality</h1>
+
+</section>
+<section id="holt-winters-method" class="slide level2">
+<h2>Holt-Winters method</h2>
+<h3 id="hw---additive">HW - Additive</h3>
+<p><span class="math display">
+\begin{aligned}
+\text{Forecast equation} \quad &amp; \hat{y}_{t+h|t} = \ell_t + hb_t + s_{t+h-m(k+1)} \\
+\text{Level equation} \quad &amp; \ell_t = \alpha y_t + (\ell_{t-1} + \phi b_{t-1}) \\
+\text{Trend equation} \quad &amp; b_t = \beta^*(\ell_t-\ell_{t-1}) + (1-\beta^*)\phi b_{t-1} \\
+\text{Seasonal equation} \quad &amp; s_t = \gamma(y_t - \ell_{t-1} - b_{t-1}) + (1-\gamma)s_{t-m}
+\end{aligned}
+</span></p>
+<p>where <span class="math inline">s_t</span> is the seasonal component at time <span class="math inline">t</span>, <span class="math inline">m</span> is the period of the seasonality<a href="#/footnotes" class="footnote-ref" id="fnref3" role="doc-noteref" data-footnote-href="#/fn3" onclick=""><sup>3</sup></a>, and <span class="math inline">k = \lfloor (h-1)/m \rfloor</span>.</p>
+<h3 id="hw---multiplicative">HW - Multiplicative</h3>
+<p><span class="math display">
+\begin{aligned}
+\text{Forecast equation} \quad &amp; \hat{y}_{t+h|t} = (\ell_t + hb_t) s_{t+h-m(k+1)} \\
+\text{Level equation} \quad &amp; \ell_t = \alpha \frac{y_t}{s_{t-m}} + (\ell_{t-1} + \phi b_{t-1}) \\
+\text{Trend equation} \quad &amp; b_t = \beta^*(\ell_t-\ell_{t-1}) + (1-\beta^*)\phi b_{t-1} \\
+\text{Seasonal equation} \quad &amp; s_t = \gamma \frac{y_t}{\ell_{t-1} + b_{t-1}} + (1-\gamma)s_{t-m}
+\end{aligned}
+</span></p>
+
+
+<aside></aside></section></section>
 <section id="footnotes" class="footnotes footnotes-end-of-document smaller scrollable" role="doc-endnotes"><h2>Footnotes</h2>
 
 <ol>
 <li id="fn1"><p>(i.e., a <code>mable</code> containing only one model and one time series.)</p></li>
-<li id="fn2"><p>In practice, we restrict <span class="math inline">0.8 \leq \phi \leq 0.98</span> because the damping effect would be too great for smaller values.</p></li>
+<li id="fn2"><p>In practice, we restrict <span class="math inline">0.8 \leq \phi \leq 0.98</span> because the damping effect would be too great for smaller values than 0.8 and almost non distinguishable from a linear trend for greater values than 0.98.</p></li>
+<li id="fn3"><p>e.g., <span class="math inline">m=4</span> for quarterly data, <span class="math inline">m=12</span> for monthly data, …</p></li>
 </ol>
 </section>
     </div>

@@ -589,7 +589,19 @@
     "href": "docs/modules/module_2/01_ets/ets.html#methods-with-trend-1",
     "title": "Exponential smoothing",
     "section": "1.2 Methods with trend",
-    "text": "1.2 Methods with trend\n\n1.2.1 Holt’s linear trend\n\nWe can extend SES models to allow our forecasts to include trend in the data. We need to add a new smoothing parameter \\beta^*, and its corresponding smoothing equation:\n\n\n\\begin{aligned}\n\\text{Forecast equation} \\quad & \\hat{y}_{t+h|t} = \\ell_t + hb_t \\\\\n\\text{Level equation} \\quad & \\ell_t = \\alpha y_t + (1-\\alpha)\\ell_{t-1}\\\\\n\\text{Trend equation} \\quad & b_t = \\beta^*(l_t-l_{t-1}) + (1-\\beta^*)b_{t-1}\n\\end{aligned}\n\nwhere b_t is the growth (or slope) at time t.\n\n\n\n\n\n\nTipWhen to use Holt’s linear trend method\n\n\n\n\n\n\nHolt’s linear trend method is appropriate for data with a linear trend but no seasonal pattern.\nThe proper benchmark method to compare against is the drift method.\n\n\n\n\n\nLet’s see an example using Holt’s linear trend method to forecast Brazil’s population.\n\n\nbra_economy &lt;- global_economy |&gt; \n  filter(Code == \"BRA\") |&gt; \n  mutate(Pop = Population / 1e6)\n\nbra_economy |&gt; \n  autoplot(Pop)\n\n\n\n\n\n\n\n\n\n1.2.1.1 Forecasting Brazil’s population\n\nbra_fit &lt;- bra_economy |&gt; \n  model(\n    AAN   = ETS(Pop ~ error(\"A\") + trend(\"A\") + season(\"N\")),\n    Drift = RW(Pop ~ drift())\n  )\n\nbra_fit |&gt;  \n  select(AAN) |&gt;  \n  report()\n\nSeries: Pop \nModel: ETS(A,A,N) \n  Smoothing parameters:\n    alpha = 0.9999 \n    beta  = 0.9998999 \n\n  Initial states:\n     l[0]     b[0]\n 70.06297 2.132884\n\n  sigma^2:  0.0021\n\n      AIC      AICc       BIC \n-115.2553 -114.1014 -104.9531 \n\nbra_fc &lt;- bra_fit |&gt;  \n  forecast(h = 15)\n\nbra_fc |&gt; \n  autoplot(bra_economy, level = NULL) +\n  labs(title = \"Brazilian population\",\n       y = \"Millions\") +\n  guides(colour = guide_legend(title = \"Forecast\"))\n\n\n\n\n\n\n\n\n\n\n\n1.2.2 Damped trend\n\n\nHolt’s linear trend method assume that the trend will continue indefinitely at the same rate. However, in many real-world scenarios, this assumption may not hold true. This methods tend to overestimate (or underestimate) long-term forecasts when the trend is strong.\nWe can include a damping parameter \\phi, which reduces the trend over time.\n\n\n\n\\begin{aligned}\n\\text{Forecast equation} \\quad & \\hat{y}_{t+h|t} = \\ell_t +  (\\phi + \\phi^2 + \\ldots + \\phi^h) b_t \\\\\n\\text{Level equation} \\quad & \\ell_t = \\alpha y_t + (\\ell_{t-1} + \\phi b_{t-1}) \\\\\n\\text{Trend equation} \\quad & b_t = \\beta^*(\\ell_t-\\ell_{t-1}) + (1-\\beta^*)\\phi b_{t-1}\n\\end{aligned}\n\nwhere 0 &lt; \\phi &lt; 12 is the damping parameter.\n\n\n\n\n\n\nCautionWhat would happen if \\phi = 1? What about if \\phi = 0?\n\n\n\n\n\n\nIf \\phi = 1, the model reduces to Holt’s linear trend method, meaning the trend continues indefinitely at the same rate.\nIf \\phi = 0, the trend component is completely eliminated, and the model behaves like simple exponential smoothing (SES), where forecasts are based solely on the level component without any trend influence.\n\n\n\n\n\n1.2.2.1 Forecasting Brazil’s population (continued)\n\n\n1.2.2.2 Forecasting Brazil’s population (continued)\n\nbra_economy |&gt; \n  model(\n    Holt   = ETS(Pop ~ error(\"A\") + trend(\"A\") + season(\"N\")),\n1    Damped = ETS(Pop ~ error(\"A\") + trend(\"Ad\", phi = 0.9) + season(\"N\"))\n  ) |&gt; \n  forecast(h = 15) |&gt; \n  autoplot(bra_economy, level = NULL) +\n  labs(title = \"Brazilian population\",\n       y = \"Millions\") +\n  guides(colour = guide_legend(title = \"Forecast\"))\n\n\n1\n\nWe specify trend(\"Ad\") to indicate that we want a damped trend, and phi = 0.9 sets the damping parameter to 0.9. We could also let the model estimate \\phi automatically by omitting the phi argument.",
+    "text": "1.2 Methods with trend\n\n1.2.1 Holt’s linear trend\n\nWe can extend SES models to allow our forecasts to include trend in the data. We need to add a new smoothing parameter \\beta^*, and its corresponding smoothing equation:\n\n\n\\begin{aligned}\n\\text{Forecast equation} \\quad & \\hat{y}_{t+h|t} = \\ell_t + hb_t \\\\\n\\text{Level equation} \\quad & \\ell_t = \\alpha y_t + (1-\\alpha)\\ell_{t-1}\\\\\n\\text{Trend equation} \\quad & b_t = \\beta^*(l_t-l_{t-1}) + (1-\\beta^*)b_{t-1}\n\\end{aligned}\n\nwhere b_t is the growth (or slope) at time t.\n\n\n\n\n\n\nTipWhen to use Holt’s linear trend method\n\n\n\n\n\n\nHolt’s linear trend method is appropriate for data with a linear trend but no seasonal pattern.\nThe proper benchmark method to compare against is the drift method.\n\n\n\n\n\nLet’s see an example using Holt’s linear trend method to forecast Brazil’s population.\n\n\nbra_economy &lt;- global_economy |&gt; \n  filter(Code == \"BRA\") |&gt; \n  mutate(Pop = Population / 1e6)\n\nbra_economy |&gt; \n  autoplot(Pop)\n\n\n\n\n\n\n\n\n\n1.2.1.1 Forecasting Brazil’s population\n\nbra_fit &lt;- bra_economy |&gt; \n  model(\n1    Holt  = ETS(Pop ~ error(\"A\") + trend(\"A\") + season(\"N\")),\n    Drift = RW(Pop ~ drift())\n  )\n\nbra_fit |&gt;  \n  select(Holt) |&gt;  \n  report()\n\nbra_fc &lt;- bra_fit |&gt;  \n  forecast(h = 15)\n\nbra_fc |&gt; \n  autoplot(bra_economy, level = NULL) +\n  labs(title = \"Brazilian population\",\n       y = \"Millions\") +\n  guides(colour = guide_legend(title = \"Forecast\"))\n\n\n1\n\nWe specify trend(\"A\") to indicate that we want a linear trend. The model will estimate the smoothing parameters \\alpha and \\beta^* automatically.\n\n\n\n\n\n\n\n\n\n\n\nSeries: Pop \nModel: ETS(A,A,N) \n  Smoothing parameters:\n    alpha = 0.9999 \n    beta  = 0.9998999 \n\n  Initial states:\n     l[0]     b[0]\n 70.06297 2.132884\n\n  sigma^2:  0.0021\n\n      AIC      AICc       BIC \n-115.2553 -114.1014 -104.9531 \n\n\n\n\n\n1.2.2 Damped trend\n\n\nHolt’s linear trend method assume that the trend will continue indefinitely at the same rate. However, in many real-world scenarios, this assumption may not hold true. This methods tend to overestimate (or underestimate) long-term forecasts when the trend is strong.\nWe can include a damping parameter \\phi, which reduces the trend over time.\n\n\n\n\\begin{aligned}\n\\text{Forecast equation} \\quad & \\hat{y}_{t+h|t} = \\ell_t +  (\\phi + \\phi^2 + \\ldots + \\phi^h) b_t \\\\\n\\text{Level equation} \\quad & \\ell_t = \\alpha y_t + (\\ell_{t-1} + \\phi b_{t-1}) \\\\\n\\text{Trend equation} \\quad & b_t = \\beta^*(\\ell_t-\\ell_{t-1}) + (1-\\beta^*)\\phi b_{t-1}\n\\end{aligned}\n\nwhere 0 &lt; \\phi &lt; 12 is the damping parameter.\n\n\n\n\n\n\nCautionWhat would happen if \\phi = 1? What about if \\phi = 0?\n\n\n\n\n\n\nIf \\phi = 1, the model reduces to Holt’s linear trend method, meaning the trend continues indefinitely at the same rate.\nIf \\phi = 0, the trend component is completely eliminated, and the model behaves like simple exponential smoothing (SES), where forecasts are based solely on the level component without any trend influence.\n\n\n\n\n\n1.2.2.1 Forecasting Brazil’s population (continued)\n\nbra_economy |&gt; \n  model(\n    Holt   = ETS(Pop ~ error(\"A\") + trend(\"A\") + season(\"N\")),\n1    Damped = ETS(Pop ~ error(\"A\") + trend(\"Ad\", phi = 0.9) + season(\"N\"))\n  ) |&gt; \n  forecast(h = 15) |&gt; \n  autoplot(bra_economy, level = NULL) +\n  labs(title = \"Brazilian population\",\n       y = \"Millions\") +\n  guides(colour = guide_legend(title = \"Forecast\"))\n\n\n1\n\nWe specify trend(\"Ad\") to indicate that we want a damped trend, and phi = 0.9 sets the damping parameter to 0.9. We could also let the model estimate \\phi automatically by omitting the phi argument.",
+    "crumbs": [
+      "Modules",
+      "2. Adding ETS and ARIMA filters",
+      "2.1 Exponential Smoothing"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_2/01_ets/ets.html#methods-with-seasonality-1",
+    "href": "docs/modules/module_2/01_ets/ets.html#methods-with-seasonality-1",
+    "title": "Exponential smoothing",
+    "section": "1.3 Methods with seasonality",
+    "text": "1.3 Methods with seasonality\n\n1.3.1 Holt-Winters method\n\n1.3.1.1 HW - Additive\n\n\\begin{aligned}\n\\text{Forecast equation} \\quad & \\hat{y}_{t+h|t} = \\ell_t + hb_t + s_{t+h-m(k+1)} \\\\\n\\text{Level equation} \\quad & \\ell_t = \\alpha y_t + (\\ell_{t-1} + \\phi b_{t-1}) \\\\\n\\text{Trend equation} \\quad & b_t = \\beta^*(\\ell_t-\\ell_{t-1}) + (1-\\beta^*)\\phi b_{t-1} \\\\\n\\text{Seasonal equation} \\quad & s_t = \\gamma(y_t - \\ell_{t-1} - b_{t-1}) + (1-\\gamma)s_{t-m}\n\\end{aligned}\n\nwhere s_t is the seasonal component at time t, m is the period of the seasonality3, and k = \\lfloor (h-1)/m \\rfloor.\n\n\n1.3.1.2 HW - Multiplicative\n\n\\begin{aligned}\n\\text{Forecast equation} \\quad & \\hat{y}_{t+h|t} = (\\ell_t + hb_t) s_{t+h-m(k+1)} \\\\\n\\text{Level equation} \\quad & \\ell_t = \\alpha \\frac{y_t}{s_{t-m}} + (\\ell_{t-1} + \\phi b_{t-1}) \\\\\n\\text{Trend equation} \\quad & b_t = \\beta^*(\\ell_t-\\ell_{t-1}) + (1-\\beta^*)\\phi b_{t-1} \\\\\n\\text{Seasonal equation} \\quad & s_t = \\gamma \\frac{y_t}{\\ell_{t-1} + b_{t-1}} + (1-\\gamma)s_{t-m}\n\\end{aligned}",
     "crumbs": [
       "Modules",
       "2. Adding ETS and ARIMA filters",
@@ -601,7 +613,7 @@
     "href": "docs/modules/module_2/01_ets/ets.html#footnotes",
     "title": "Exponential smoothing",
     "section": "Footnotes",
-    "text": "Footnotes\n\n\n(i.e., a mable containing only one model and one time series.)↩︎\nIn practice, we restrict 0.8 \\leq \\phi \\leq 0.98 because the damping effect would be too great for smaller values.↩︎",
+    "text": "Footnotes\n\n\n(i.e., a mable containing only one model and one time series.)↩︎\nIn practice, we restrict 0.8 \\leq \\phi \\leq 0.98 because the damping effect would be too great for smaller values than 0.8 and almost non distinguishable from a linear trend for greater values than 0.98.↩︎\ne.g., m=4 for quarterly data, m=12 for monthly data, …↩︎",
     "crumbs": [
       "Modules",
       "2. Adding ETS and ARIMA filters",
@@ -662,28 +674,28 @@
     "href": "docs/modules/module_2/01_ets/ets_pres.html#forecasting-brazils-population",
     "title": "Exponential smoothing",
     "section": "Forecasting Brazil’s population",
-    "text": "Forecasting Brazil’s population\n\nbra_fit &lt;- bra_economy |&gt; \n  model(\n    AAN   = ETS(Pop ~ error(\"A\") + trend(\"A\") + season(\"N\"))\n  )\n\nbra_fit"
+    "text": "Forecasting Brazil’s population\n\nbra_fit &lt;- bra_economy |&gt; \n  model(\n    Holt  = ETS(Pop ~ error(\"A\") + trend(\"A\") + season(\"N\"))\n  )\n\nbra_fit"
   },
   {
     "objectID": "docs/modules/module_2/01_ets/ets_pres.html#forecasting-brazils-population-1",
     "href": "docs/modules/module_2/01_ets/ets_pres.html#forecasting-brazils-population-1",
     "title": "Exponential smoothing",
     "section": "Forecasting Brazil’s population",
-    "text": "Forecasting Brazil’s population\n\nbra_fit &lt;- bra_economy |&gt; \n  model(\n    AAN   = ETS(Pop ~ error(\"A\") + trend(\"A\") + season(\"N\")),\n    Drift = RW(Pop ~ drift())\n  )\n\nbra_fit"
+    "text": "Forecasting Brazil’s population\n\nbra_fit &lt;- bra_economy |&gt; \n  model(\n    Holt  = ETS(Pop ~ error(\"A\") + trend(\"A\") + season(\"N\")),\n    Drift = RW(Pop ~ drift())\n  )\n\nbra_fit"
   },
   {
     "objectID": "docs/modules/module_2/01_ets/ets_pres.html#forecasting-brazils-population-2",
     "href": "docs/modules/module_2/01_ets/ets_pres.html#forecasting-brazils-population-2",
     "title": "Exponential smoothing",
     "section": "Forecasting Brazil’s population",
-    "text": "Forecasting Brazil’s population\n\nbra_fit &lt;- bra_economy |&gt; \n  model(\n    AAN   = ETS(Pop ~ error(\"A\") + trend(\"A\") + season(\"N\")),\n    Drift = RW(Pop ~ drift())\n  )\n\nbra_fit |&gt;  \n  select(AAN) |&gt;  \n  report()\n\nSeries: Pop \nModel: ETS(A,A,N) \n  Smoothing parameters:\n    alpha = 0.9999 \n    beta  = 0.9998999 \n\n  Initial states:\n     l[0]     b[0]\n 70.06297 2.132884\n\n  sigma^2:  0.0021\n\n      AIC      AICc       BIC \n-115.2553 -114.1014 -104.9531"
+    "text": "Forecasting Brazil’s population\n\nbra_fit &lt;- bra_economy |&gt; \n  model(\n    Holt  = ETS(Pop ~ error(\"A\") + trend(\"A\") + season(\"N\")),\n    Drift = RW(Pop ~ drift())\n  )\n\nbra_fit |&gt;  \n  select(Holt) |&gt;  \n  report()\n\nSeries: Pop \nModel: ETS(A,A,N) \n  Smoothing parameters:\n    alpha = 0.9999 \n    beta  = 0.9998999 \n\n  Initial states:\n     l[0]     b[0]\n 70.06297 2.132884\n\n  sigma^2:  0.0021\n\n      AIC      AICc       BIC \n-115.2553 -114.1014 -104.9531"
   },
   {
     "objectID": "docs/modules/module_2/01_ets/ets_pres.html#forecasting-brazils-population-3",
     "href": "docs/modules/module_2/01_ets/ets_pres.html#forecasting-brazils-population-3",
     "title": "Exponential smoothing",
     "section": "Forecasting Brazil’s population",
-    "text": "Forecasting Brazil’s population\n\nbra_fit &lt;- bra_economy |&gt; \n  model(\n    AAN   = ETS(Pop ~ error(\"A\") + trend(\"A\") + season(\"N\")),\n    Drift = RW(Pop ~ drift())\n  )\n\nbra_fit |&gt;  \n  select(AAN) |&gt;  \n  report()\n\nSeries: Pop \nModel: ETS(A,A,N) \n  Smoothing parameters:\n    alpha = 0.9999 \n    beta  = 0.9998999 \n\n  Initial states:\n     l[0]     b[0]\n 70.06297 2.132884\n\n  sigma^2:  0.0021\n\n      AIC      AICc       BIC \n-115.2553 -114.1014 -104.9531 \n\nbra_fc &lt;- bra_fit |&gt;  \n  forecast(h = 15)\n\nbra_fc |&gt; \n  autoplot(bra_economy, level = NULL) +\n  labs(title = \"Brazilian population\",\n       y = \"Millions\") +\n  guides(colour = guide_legend(title = \"Forecast\"))"
+    "text": "Forecasting Brazil’s population\n\nbra_fit &lt;- bra_economy |&gt; \n  model(\n1    Holt  = ETS(Pop ~ error(\"A\") + trend(\"A\") + season(\"N\")),\n    Drift = RW(Pop ~ drift())\n  )\n\nbra_fit |&gt;  \n  select(Holt) |&gt;  \n  report()\n\nbra_fc &lt;- bra_fit |&gt;  \n  forecast(h = 15)\n\nbra_fc |&gt; \n  autoplot(bra_economy, level = NULL) +\n  labs(title = \"Brazilian population\",\n       y = \"Millions\") +\n  guides(colour = guide_legend(title = \"Forecast\"))\n\n\n1\n\nWe specify trend(\"A\") to indicate that we want a linear trend. The model will estimate the smoothing parameters \\alpha and \\beta^* automatically.\n\n\n\n\n\n\n\n\n\n\n\nSeries: Pop \nModel: ETS(A,A,N) \n  Smoothing parameters:\n    alpha = 0.9999 \n    beta  = 0.9998999 \n\n  Initial states:\n     l[0]     b[0]\n 70.06297 2.132884\n\n  sigma^2:  0.0021\n\n      AIC      AICc       BIC \n-115.2553 -114.1014 -104.9531"
   },
   {
     "objectID": "docs/modules/module_2/01_ets/ets_pres.html#damped-trend",
@@ -693,13 +705,6 @@
     "text": "Damped trend\n\n\nHolt’s linear trend method assume that the trend will continue indefinitely at the same rate. However, in many real-world scenarios, this assumption may not hold true. This methods tend to overestimate (or underestimate) long-term forecasts when the trend is strong.\nWe can include a damping parameter \\phi, which reduces the trend over time.\n\n\n\n\\begin{aligned}\n\\text{Forecast equation} \\quad & \\hat{y}_{t+h|t} = \\ell_t +  (\\phi + \\phi^2 + \\ldots + \\phi^h) b_t \\\\\n\\text{Level equation} \\quad & \\ell_t = \\alpha y_t + (\\ell_{t-1} + \\phi b_{t-1}) \\\\\n\\text{Trend equation} \\quad & b_t = \\beta^*(\\ell_t-\\ell_{t-1}) + (1-\\beta^*)\\phi b_{t-1}\n\\end{aligned}\n\nwhere 0 &lt; \\phi &lt; 12 is the damping parameter.\n\n\n\n\n\n\nWhat would happen if \\phi = 1? What about if \\phi = 0?\n\n\n\nIf \\phi = 1, the model reduces to Holt’s linear trend method, meaning the trend continues indefinitely at the same rate.\nIf \\phi = 0, the trend component is completely eliminated, and the model behaves like simple exponential smoothing (SES), where forecasts are based solely on the level component without any trend influence."
   },
   {
-    "objectID": "docs/modules/module_2/01_ets/ets_pres.html#forecasting-brazils-population-continued",
-    "href": "docs/modules/module_2/01_ets/ets_pres.html#forecasting-brazils-population-continued",
-    "title": "Exponential smoothing",
-    "section": "Forecasting Brazil’s population (continued)",
-    "text": "Forecasting Brazil’s population (continued)"
-  },
-  {
     "objectID": "docs/modules/module_2/01_ets/ets_pres.html#forecasting-brazils-population-5",
     "href": "docs/modules/module_2/01_ets/ets_pres.html#forecasting-brazils-population-5",
     "title": "Exponential smoothing",
@@ -707,25 +712,32 @@
     "text": "Forecasting Brazil’s population\n\nbra_economy |&gt; \n  model(\n    Holt   = ETS(Pop ~ error(\"A\") + trend(\"A\") + season(\"N\"))\n  )"
   },
   {
-    "objectID": "docs/modules/module_2/01_ets/ets_pres.html#forecasting-brazils-population-continued-2",
-    "href": "docs/modules/module_2/01_ets/ets_pres.html#forecasting-brazils-population-continued-2",
+    "objectID": "docs/modules/module_2/01_ets/ets_pres.html#forecasting-brazils-population-continued",
+    "href": "docs/modules/module_2/01_ets/ets_pres.html#forecasting-brazils-population-continued",
     "title": "Exponential smoothing",
     "section": "Forecasting Brazil’s population (continued)",
     "text": "Forecasting Brazil’s population (continued)\n\nbra_economy |&gt; \n  model(\n    Holt   = ETS(Pop ~ error(\"A\") + trend(\"A\") + season(\"N\")),\n    Damped = ETS(Pop ~ error(\"A\") + trend(\"Ad\", phi = 0.9) + season(\"N\"))\n  )"
   },
   {
-    "objectID": "docs/modules/module_2/01_ets/ets_pres.html#forecasting-brazils-population-continued-3",
-    "href": "docs/modules/module_2/01_ets/ets_pres.html#forecasting-brazils-population-continued-3",
+    "objectID": "docs/modules/module_2/01_ets/ets_pres.html#forecasting-brazils-population-continued-1",
+    "href": "docs/modules/module_2/01_ets/ets_pres.html#forecasting-brazils-population-continued-1",
     "title": "Exponential smoothing",
     "section": "Forecasting Brazil’s population (continued)",
     "text": "Forecasting Brazil’s population (continued)\n\nbra_economy |&gt; \n  model(\n    Holt   = ETS(Pop ~ error(\"A\") + trend(\"A\") + season(\"N\")),\n1    Damped = ETS(Pop ~ error(\"A\") + trend(\"Ad\", phi = 0.9) + season(\"N\"))\n  ) |&gt; \n  forecast(h = 15) |&gt; \n  autoplot(bra_economy, level = NULL) +\n  labs(title = \"Brazilian population\",\n       y = \"Millions\") +\n  guides(colour = guide_legend(title = \"Forecast\"))\n\n\n1\n\nWe specify trend(\"Ad\") to indicate that we want a damped trend, and phi = 0.9 sets the damping parameter to 0.9. We could also let the model estimate \\phi automatically by omitting the phi argument."
+  },
+  {
+    "objectID": "docs/modules/module_2/01_ets/ets_pres.html#holt-winters-method",
+    "href": "docs/modules/module_2/01_ets/ets_pres.html#holt-winters-method",
+    "title": "Exponential smoothing",
+    "section": "Holt-Winters method",
+    "text": "Holt-Winters method\nHW - Additive\n\n\\begin{aligned}\n\\text{Forecast equation} \\quad & \\hat{y}_{t+h|t} = \\ell_t + hb_t + s_{t+h-m(k+1)} \\\\\n\\text{Level equation} \\quad & \\ell_t = \\alpha y_t + (\\ell_{t-1} + \\phi b_{t-1}) \\\\\n\\text{Trend equation} \\quad & b_t = \\beta^*(\\ell_t-\\ell_{t-1}) + (1-\\beta^*)\\phi b_{t-1} \\\\\n\\text{Seasonal equation} \\quad & s_t = \\gamma(y_t - \\ell_{t-1} - b_{t-1}) + (1-\\gamma)s_{t-m}\n\\end{aligned}\n\nwhere s_t is the seasonal component at time t, m is the period of the seasonality3, and k = \\lfloor (h-1)/m \\rfloor.\nHW - Multiplicative\n\n\\begin{aligned}\n\\text{Forecast equation} \\quad & \\hat{y}_{t+h|t} = (\\ell_t + hb_t) s_{t+h-m(k+1)} \\\\\n\\text{Level equation} \\quad & \\ell_t = \\alpha \\frac{y_t}{s_{t-m}} + (\\ell_{t-1} + \\phi b_{t-1}) \\\\\n\\text{Trend equation} \\quad & b_t = \\beta^*(\\ell_t-\\ell_{t-1}) + (1-\\beta^*)\\phi b_{t-1} \\\\\n\\text{Seasonal equation} \\quad & s_t = \\gamma \\frac{y_t}{\\ell_{t-1} + b_{t-1}} + (1-\\gamma)s_{t-m}\n\\end{aligned}"
   },
   {
     "objectID": "docs/modules/module_2/01_ets/ets_pres.html#footnotes",
     "href": "docs/modules/module_2/01_ets/ets_pres.html#footnotes",
     "title": "Exponential smoothing",
     "section": "Footnotes",
-    "text": "Footnotes\n\n\n(i.e., a mable containing only one model and one time series.)\nIn practice, we restrict 0.8 \\leq \\phi \\leq 0.98 because the damping effect would be too great for smaller values."
+    "text": "Footnotes\n\n\n(i.e., a mable containing only one model and one time series.)\nIn practice, we restrict 0.8 \\leq \\phi \\leq 0.98 because the damping effect would be too great for smaller values than 0.8 and almost non distinguishable from a linear trend for greater values than 0.98.\ne.g., m=4 for quarterly data, m=12 for monthly data, …"
   },
   {
     "objectID": "docs/about.html",
