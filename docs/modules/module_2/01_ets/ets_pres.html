@@ -7,20 +7,20 @@
 <script src="../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../../../../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-f16cd255ecb5ae9510f6a112aa2ee9ab.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-a14e345711173c227b21482e2eb4cc70.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
-<link href="../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.24">
-<meta name="author" content="pbenavides">
-<title>Time Series Forecasting – Exponential smoothing</title>
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-<link rel="stylesheet" href="../../../../site_libs/revealjs/dist/reset.css">
-<link rel="stylesheet" href="../../../../site_libs/revealjs/dist/reveal.css">
-<style>
+<link href="../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.8.25">
+
+  <meta name="author" content="pbenavides">
+  <title>Time Series Forecasting – Exponential smoothing</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../../../../site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="../../../../site_libs/revealjs/dist/reveal.css">
+  <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
     div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -99,22 +99,25 @@
     code span.vs { color: #da4453; } /* VerbatimString */
     code span.wa { color: #da4453; } /* Warning */
   </style>
-<link rel="stylesheet" href="../../../../site_libs/revealjs/dist/theme/quarto-7aaf31681eed659f0200bcc8fe9a56fc.css">
-<link href="../../../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
-<link href="../../../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
-<link href="../../../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
-<link href="../../../../site_libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
-<link href="../../../../site_libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
-<link href="../../../../site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
-<script type="application/json" class="js-hypothesis-config">
+  <link rel="stylesheet" href="../../../../site_libs/revealjs/dist/theme/quarto-7aaf31681eed659f0200bcc8fe9a56fc.css">
+  <link href="../../../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="../../../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="../../../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="../../../../site_libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="../../../../site_libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
+  <link href="../../../../site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <script type="application/json" class="js-hypothesis-config">
   {
     "theme": "classic"
   }
-  </script><script async="" src="https://hypothes.is/embed.js"></script><script>
+  </script>
+  <script async="" src="https://hypothes.is/embed.js"></script>
+  <script>
     window.document.addEventListener("DOMContentLoaded", function (_event) {
       document.body.classList.add('hypothesis-enabled');
     });
-  </script><style type="text/css">
+  </script>
+  <style type="text/css">
     .reveal div.sourceCode {
       margin: 0;
       overflow: auto;
@@ -202,8 +205,8 @@
       margin-right: 0; 
     }
   </style>
-<link href="../../../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
-<script src="../../../../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+  <link href="../../../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+  <script src="../../../../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
 <meta property="og:title" content="Exponential smoothing – Time Series Forecasting">
 <meta property="og:site_name" content="Time Series Forecasting">
 <meta name="twitter:title" content="Exponential smoothing – Time Series Forecasting">
@@ -214,7 +217,8 @@
   <div class="reveal">
     <div class="slides">
 
-<section id="title-slide" class="quarto-title-block center"><h1 class="title">Exponential smoothing</h1>
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Exponential smoothing</h1>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
@@ -224,10 +228,13 @@ pbenavides
 </div>
 </div>
 
-</section><section id="section" class="slide level2" data-auto-animate="true"><h2 data-id="quarto-animate-title"></h2>
+</section>
+<section id="section" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title"></h2>
 <div class="r-hstack" style="justify-content:space-between; align-items:center; margin-top:50px;">
 <div data-id="mean" style="background:#2F855A; color:white; padding:10px 14px; border-radius:12px;">
-<p><strong>Mean</strong><br><span class="math display">\[
+<p><strong>Mean</strong><br>
+<span class="math display">\[
 \hat y_{T+1\mid T}=\tfrac{1}{T}\sum_{i=1}^T y_i
 \]</span></p>
 </div>
@@ -235,23 +242,15 @@ pbenavides
 
 </div>
 <div data-id="naive" style="background:#C0392B; color:white; padding:10px 14px; border-radius:12px;">
-<p><strong>Naïve</strong><br><span class="math display">\[
+<p><strong>Naïve</strong><br>
+<span class="math display">\[
 \hat y_{T+1\mid T}=y_T
 \]</span></p>
 </div>
 </div>
-<aside class="notes"><p>In the <em>mean</em> method, all observations are weighted equally (all have the same importance), while in the <em>naïve</em> method, only the most recent observation is used for forecasting. (we ignore all previous observations).</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside></section><section id="section-1" class="slide level2" data-auto-animate="true"><h2 data-id="quarto-animate-title"></h2>
+</section>
+<section id="section-1" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title"></h2>
 <div class="r-hstack" style="justify-content:space-between; align-items:center; margin-top:50px;">
 <div data-id="mean" style="background:#2F855A; color:white; padding:10px 14px; border-radius:12px; opacity:.9;">
 <p><strong>Mean</strong></p>
@@ -263,7 +262,8 @@ pbenavides
 <p><strong>Naïve</strong></p>
 </div>
 <div data-id="ets" style="position:absolute; left:50%; transform:translateX(-50%); top:20%; background:#2CA1C2; color:white; padding:16px 20px; border-radius:14px; box-shadow:0 6px 18px #0006;">
-<p><strong>Exponential Smoothing</strong><br><span class="math display">\[
+<p><strong>Exponential Smoothing</strong><br>
+<span class="math display">\[
 \hat y_{T+1\mid T}=\alpha y_T +  \alpha(1-\alpha)y_{T-1} + \ldots
 \]</span></p>
 <ul>
@@ -272,22 +272,23 @@ pbenavides
 </ul>
 </div>
 </div>
-<aside class="notes"><ul>
-<li>
-<p>Exponential smoothing methods are still relatively simple: they’re simply weighted averages from historical data.</p>
+<aside class="notes">
+<ul>
+<li><p>Exponential smoothing methods are still relatively simple: they’re simply weighted averages from historical data.</p>
 <ul>
 <li>However, these forecasting methods are widely used in practice, and they can be very effective.</li>
-</ul>
-</li>
-<li><p>The exponential smoothing method is a compromise between the mean and naïve methods. It uses all historical data, but it assigns exponentially decreasing weights to older observations.</p></li>
-<li>
-<p>The smoothing parameter <span class="math inline">\(\alpha\)</span> controls the rate of decrease:</p>
+</ul></li>
+<li><p>The exponential smoothing method is a compromise between the mean and naïve methods. It uses all historical data, but it assigns exponentially decreasing weights to older observations.</p>
+<ul>
+<li>In the <em>mean</em> method, all observations are weighted equally (all have the same importance), while in the <em>naïve</em> method, only the most recent observation is used for forecasting. (we ignore all previous observations).</li>
+</ul></li>
+<li><p>The smoothing parameter <span class="math inline">\(\alpha\)</span> controls the rate of decrease:</p>
 <ul>
 <li>when <span class="math inline">\(\alpha\)</span> is close to 1, the method behaves like the naïve method, giving more weight to recent observations;</li>
 <li>when <span class="math inline">\(\alpha\)</span> is close to 0, it behaves like the mean method, giving more equal weight to all observations.</li>
+</ul></li>
 </ul>
-</li>
-</ul><style type="text/css">
+<style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
           clip: rect(1px, 1px, 1px, 1px);
@@ -297,15 +298,20 @@ pbenavides
           width: 1px!important;
           overflow: hidden!important;
           display:block!important;
-      }</style></aside></section><section id="section-2" class="slide level2"><h2></h2>
+      }</style></aside>
+</section>
+<section id="section-2" class="slide level2">
+<h2></h2>
 <p><span class="math display">\[
 \hat{y}_{T+1 | T}= \alpha y_{T} + \alpha(1-\alpha) y_{T-1} + \alpha(1-\alpha)^{2} y_{T-2} + \alpha(1-\alpha)^{3} y_{T-3} + \ldots
 \]</span></p>
 <p>where <span class="math inline">\(0\leq \alpha \leq1\)</span> is the smoothing parameter.</p>
 <div id="tbl-ets_alpha_weights" class="quarto-float quarto-figure quarto-figure-center">
-<figure class="quarto-float quarto-float-tbl"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-ets_alpha_weights-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figure class="quarto-float quarto-float-tbl">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-ets_alpha_weights-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Table&nbsp;1: Weights for different values of <span class="math inline">\(\alpha\)</span>
-</figcaption><div aria-describedby="tbl-ets_alpha_weights-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+</figcaption>
+<div aria-describedby="tbl-ets_alpha_weights-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <table class="caption-top" style="width:100%;">
 <colgroup>
 <col style="width: 17%">
@@ -314,13 +320,15 @@ Table&nbsp;1: Weights for different values of <span class="math inline">\(\alpha
 <col style="width: 20%">
 <col style="width: 20%">
 </colgroup>
-<thead><tr class="header">
+<thead>
+<tr class="header">
 <th></th>
 <th style="text-align: center;"><span class="math inline">\(\alpha = 0.2\)</span></th>
 <th style="text-align: center;"><span class="math inline">\(\alpha = 0.4\)</span></th>
 <th style="text-align: center;"><span class="math inline">\(\alpha = 0.6\)</span></th>
 <th style="text-align: center;"><span class="math inline">\(\alpha = 0.8\)</span></th>
-</tr></thead>
+</tr>
+</thead>
 <tbody>
 <tr class="odd">
 <td><span class="math inline">\(y_t\)</span></td>
@@ -369,10 +377,12 @@ Table&nbsp;1: Weights for different values of <span class="math inline">\(\alpha
 </div>
 </figure>
 </div>
-<aside class="notes"><ul>
+<aside class="notes">
+<ul>
 <li><p><span class="math inline">\(\alpha\)</span> can be thought of as the <em>memory</em> of the time series: The smaller the value of <span class="math inline">\(\alpha\)</span>, the longer the memory (i.e., the more past observations are taken into account).</p></li>
 <li><p>Conversely, a larger value of <span class="math inline">\(\alpha\)</span> means a shorter memory, with more emphasis on recent observations. See <a href="#/tbl-ets_alpha_weights" class="quarto-xref">Table&nbsp;1</a> for some examples.</p></li>
-</ul><style type="text/css">
+</ul>
+<style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
           clip: rect(1px, 1px, 1px, 1px);
@@ -382,9 +392,15 @@ Table&nbsp;1: Weights for different values of <span class="math inline">\(\alpha
           width: 1px!important;
           overflow: hidden!important;
           display:block!important;
-      }</style></aside></section><section><section id="exponential-smoothing-methods" class="title-slide slide level1 center"><h1>Exponential smoothing methods</h1>
+      }</style></aside>
+</section>
+<section>
+<section id="exponential-smoothing-methods" class="title-slide slide level1 center">
+<h1>Exponential smoothing methods</h1>
 
-</section><section id="simple-exponential-smoothing-ses" class="slide level2"><h2>Simple exponential smoothing (SES)</h2>
+</section>
+<section id="simple-exponential-smoothing-ses" class="slide level2">
+<h2>Simple exponential smoothing (SES)</h2>
 <p><span class="math display">\[
 \begin{aligned}
 \text{Forecast equation} \quad &amp; \hat{y}_{t+h|t} = \ell_t \\
@@ -402,32 +418,150 @@ Table&nbsp;1: Weights for different values of <span class="math inline">\(\alpha
 </div>
 </div>
 </div>
-</section><section class="slide level2"><div class="cell">
+<p>::: {.content-hidden unless format=“revealjs”}</p>
+</section>
+<section id="section-3" class="slide level2">
+<h2></h2>
+<p>:::</p>
+<div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>algeria_economy <span class="ot">&lt;-</span> global_economy <span class="sc">|&gt;</span></span>
 <span id="cb1-2"><a></a>  <span class="fu">filter</span>(Country <span class="sc">==</span> <span class="st">"Algeria"</span>)</span>
 <span id="cb1-3"><a></a></span>
 <span id="cb1-4"><a></a>alg_fit <span class="ot">&lt;-</span> algeria_economy <span class="sc">|&gt;</span></span>
 <span id="cb1-5"><a></a>  <span class="fu">model</span>(</span>
-<span id="cb1-6"><a></a>    <span class="at">ets =</span> <span class="fu">ETS</span>(Exports <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"N"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
-<span id="cb1-7"><a></a>  )</span>
-<span id="cb1-8"><a></a></span>
-<span id="cb1-9"><a></a>alg_fc <span class="ot">&lt;-</span> alg_fit <span class="sc">|&gt;</span></span>
-<span id="cb1-10"><a></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-6"><a></a>    <span class="at">SES =</span> <span class="fu">ETS</span>(Exports <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"N"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>)),</span>
+<span id="cb1-7"><a></a>    <span class="at">Naive =</span> <span class="fu">NAIVE</span>(Exports)</span>
+<span id="cb1-8"><a></a>  )</span>
+<span id="cb1-9"><a></a></span>
+<span id="cb1-10"><a></a>alg_fc <span class="ot">&lt;-</span> alg_fit <span class="sc">|&gt;</span></span>
+<span id="cb1-11"><a></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+<p>::: {.content-visible unless format=“revealjs”}</p>
+<div class="callout callout-tip callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Benchmark methods for SES</strong></p>
+</div>
+<div class="callout-content">
+<p>The <strong>mean</strong> and <strong>naïve</strong> methods are regularly the best fit as benchmark methods when using SES.</p>
+</div>
+</div>
+</div>
+<p>:::</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1"></a>alg_fit <span class="sc">|&gt;</span> </span>
+<span id="annotated-cell-2-2"><a href="#annotated-cell-2-2"></a>  <span class="fu">select</span>(SES) <span class="sc">|&gt;</span> </span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1">1</button><span id="annotated-cell-2-3" class="code-annotation-target"><a href="#annotated-cell-2-3"></a>  <span class="fu">report</span>()</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-2" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="3" data-code-annotation="1">The <code>report()</code> function allows us to see a model’s report (the time series modeled, the model used, the estimated parameters, and more). It needs a <span class="math inline">\(1 \times 1\)</span> dimension <code>mable</code><a href="#/footnotes" class="footnote-ref" id="fnref1" role="doc-noteref" data-footnote-href="#/fn1" onclick=""><sup>1</sup></a>.</span>
+</dd>
+</dl>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Series: Exports 
+Model: ETS(A,N,N) 
+  Smoothing parameters:
+    alpha = 0.8399875 
+
+  Initial states:
+   l[0]
+ 39.539
+
+  sigma^2:  35.6301
+
+     AIC     AICc      BIC 
+446.7154 447.1599 452.8968 </code></pre>
+</div>
+</div>
+<aside></aside></section>
+<section id="content-hidden-unless-formatrevealjs" class="slide level2">
+<h2>::: {.content-hidden unless format=“revealjs”}</h2>
+<p>:::</p>
 <div class="cell">
 <div class="cell-output-display">
 <div>
-<figure><p><a href="ets_files/figure-revealjs/ses-plot-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img data-src="ets_files/figure-revealjs/ses-plot-1.png" width="960"></a></p>
+<figure>
+<p><a href="ets_files/figure-revealjs/ses-plot-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img data-src="ets_files/figure-revealjs/ses-plot-1.png" width="960"></a></p>
 </figure>
 </div>
 </div>
 </div>
-<p>::: {.content-hidden unless format=“revealjs”} # Methods with trend :::</p>
-<p>::: {.content-visible unless format=“revealjs”} ## Methods with trend :::</p>
+</section>
+<section id="content-hidden-unless-formatrevealjs-1" class="slide level2">
+<h2>::: {.content-hidden unless format=“revealjs”}</h2>
+<p>:::</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>alg_fc <span class="sc">|&gt;</span> </span>
+<span id="cb3-2"><a></a>  <span class="fu">autoplot</span>(algeria_economy <span class="sc">|&gt;</span> <span class="fu">filter_index</span>(<span class="dv">2005</span> <span class="sc">~</span> .), <span class="at">level =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb3-3"><a></a>  <span class="fu">labs</span>(</span>
+<span id="cb3-4"><a></a>    <span class="at">x =</span> <span class="st">""</span>,</span>
+<span id="cb3-5"><a></a>    <span class="at">y =</span> <span class="st">"% of GDP"</span>,</span>
+<span id="cb3-6"><a></a>    <span class="at">title =</span> <span class="st">"Forecasting using SES vs. Naive"</span>,</span>
+<span id="cb3-7"><a></a>    <span class="at">caption =</span> <span class="st">"Why is the SES forecast below the Naive here?"</span></span>
+<span id="cb3-8"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="ets_files/figure-revealjs/unnamed-chunk-1-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img data-src="ets_files/figure-revealjs/unnamed-chunk-1-1.png" width="960"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>::: {.content-hidden unless format=“revealjs”}</p>
+</section></section>
+<section>
+<section id="methods-with-trend" class="title-slide slide level1 center">
+<h1>Methods with trend</h1>
+<p>:::</p>
+<p>::: {.content-visible unless format=“revealjs”}</p>
+</section>
+<section id="methods-with-trend-1" class="slide level2">
+<h2>Methods with trend</h2>
+<p>:::</p>
+<p>::: {.content-hidden unless format=“revealjs”}</p>
+</section>
+<section id="holts-linear-trend" class="slide level2">
+<h2>Holt’s linear trend</h2>
+<p>:::</p>
+<p>::: {.content-visible unless format=“revealjs”}</p>
+<h3 id="holts-linear-trend-1">Holt’s linear trend</h3>
+<p>:::</p>
+<aside class="notes">
+<p>We can extend SES models to allow our forecasts to include trend in the data. We need to add a new smoothing parameter <span class="math inline">\(\beta^*\)</span>, and its corresponding smoothing equation:</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+<p><span class="math display">\[
+\begin{aligned}
+\text{Forecast equation} \quad &amp; \hat{y}_{t+h|t} = \ell_t \\
+\text{Level equation} \quad &amp; \ell_t = \alpha y_t + (1-\alpha)\ell_{t-1}\\
+\text{Trend equation} \quad &amp; b_t = \beta^*(l_t-l_{t-1}) + (1-\beta^*)b_{t-1}
+\end{aligned}
+\]</span></p>
 
 
 </section></section>
-</div>
+<section id="footnotes" class="footnotes footnotes-end-of-document smaller scrollable" role="doc-endnotes"><h2>Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>(i.e., a <code>mable</code> containing only one model and one time series.)</p></li>
+</ol>
+</section>
+    </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <p><img src="../../../../images/iteso_logo.png" class="slide-logo"></p>
 <div class="footer footer-default">
@@ -435,7 +569,24 @@ Table&nbsp;1: Weights for different values of <span class="math inline">\(\alpha
 </div>
 </div></div>
 
-  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="../../../../site_libs/revealjs/dist/reveal.js"></script><!-- reveal.js plugins --><script src="../../../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script><script src="../../../../site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script><script src="../../../../site_libs/revealjs/plugin/reveal-menu/menu.js"></script><script src="../../../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script><script src="../../../../site_libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script><script src="../../../../site_libs/revealjs/plugin/quarto-support/support.js"></script><script src="../../../../site_libs/revealjs/plugin/notes/notes.js"></script><script src="../../../../site_libs/revealjs/plugin/search/search.js"></script><script src="../../../../site_libs/revealjs/plugin/zoom/zoom.js"></script><script src="../../../../site_libs/revealjs/plugin/math/math.js"></script><script>window.define = window.backupDefine; window.backupDefine = undefined;</script><script>
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="../../../../site_libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="../../../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="../../../../site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="../../../../site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="../../../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="../../../../site_libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
+  <script src="../../../../site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="../../../../site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="../../../../site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="../../../../site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="../../../../site_libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
 
       // Full list of configuration options available at:
       // https://revealjs.com/config/
@@ -627,7 +778,9 @@ Table&nbsp;1: Weights for different values of <span class="math inline">\(\alpha
           RevealZoom
         ]
       });
-    </script><script>
+    </script>
+    
+    <script>
       // htmlwidgets need to know to resize themselves when slides are shown/hidden.
       // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
       // slide changes (different for each slide format).
@@ -662,7 +815,9 @@ Table&nbsp;1: Weights for different values of <span class="math inline">\(\alpha
         }
 
       })();
-    </script><script id="quarto-html-after-body" type="application/javascript">
+    </script>
+
+    <script id="quarto-html-after-body" type="application/javascript">
       window.document.addEventListener("DOMContentLoaded", function (event) {
         const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
         tabsets.forEach(function(tabset) {
@@ -986,7 +1141,8 @@ Table&nbsp;1: Weights for different values of <span class="math inline">\(\alpha
           }
         }
       });
-      </script><script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+      </script>
+    <script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
     (function() {
       let previousOnload = window.onload;
       window.onload = () => {
@@ -1018,6 +1174,6 @@ Table&nbsp;1: Weights for different values of <span class="math inline">\(\alpha
       
     })();
               </script>
-
+    
 
 </body></html>
