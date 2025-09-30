@@ -268,7 +268,22 @@ Holt's linear trend method is appropriate for data with a **linear trend** but *
 
 ::: {.notes}
 
-Let's see an example using Holt's linear trend method to forecast Australia's population.
+Let's see an example using Holt's linear trend method to forecast Brazil's population.
+
+:::
+
+::: {.content-visible unless-format="revealjs"}
+
+```{r}
+#| label: bra-pop
+
+bra_economy <- global_economy |> 
+  filter(Code == "BRA") |> 
+  mutate(Pop = Population / 1e6)
+
+bra_economy |> 
+  autoplot(Pop)
+```
 
 :::
 
@@ -276,32 +291,95 @@ Let's see an example using Holt's linear trend method to forecast Australia's po
 
 ##
 
+```{r}
+#| label: bra-pop-plot
+#| echo: false
+
+bra_economy |> 
+  autoplot(Pop)
+```
+
 :::
 
+
+::: {.content-hidden unless-format="revealjs"}
+
+## Forecasting Brazil's population {auto-animate="true"}
+
 ```{r}
-#| label: holt
+#| label: holt_1
 
-aus_economy <- global_economy  |> 
-  filter(Code == "AUS") |> 
-  mutate(Pop = Population / 1e6)
+bra_fit <- bra_economy |> 
+  model(
+    AAN   = ETS(Pop ~ error("A") + trend("A") + season("N"))
+  )
+```
 
-aus_economy |> 
-  autoplot(Pop)
+## Forecasting Brazil's population {auto-animate="true"}
 
-fit <- aus_economy  |> 
-  model(AAN   = ETS(Pop ~ error("A") + trend("A") + season("N")),
-        Drift = RW(Pop ~ drift()))
+```{r}
+#| label: holt_2
 
-fc <- fit  |>  forecast(h = 10)
+bra_fit <- bra_economy |> 
+  model(
+    AAN   = ETS(Pop ~ error("A") + trend("A") + season("N")),
+    Drift = RW(Pop ~ drift())
+  )
+```
 
-fc |> 
-  autoplot(aus_economy |>  filter_index("2000"~.), level = NULL)
+## Forecasting Brazil's population {auto-animate="true"}
 
-fit |>  
-  glance()
+```{r}
+#| label: holt_3
 
-fit |>  
-  select(AAN)  |>  
+bra_fit <- bra_economy |> 
+  model(
+    AAN   = ETS(Pop ~ error("A") + trend("A") + season("N")),
+    Drift = RW(Pop ~ drift())
+  )
+
+bra_fit |>  
+  select(AAN) |>  
   report()
+```
+
+## Forecasting Brazil's population {auto-animate="true"}
+
+```{r}
+#| label: holt_4
+
+bra_fit <- bra_economy |> 
+  model(
+    AAN   = ETS(Pop ~ error("A") + trend("A") + season("N")),
+    Drift = RW(Pop ~ drift())
+  )
+
+bra_fit |>  
+  select(AAN) |>  
+  report()
+```
+
+:::
+
+## Forecasting Brazil's population {auto-animate="true"}
+
+```{r}
+#| label: holt_full
+
+bra_fit <- bra_economy |> 
+  model(
+    AAN   = ETS(Pop ~ error("A") + trend("A") + season("N")),
+    Drift = RW(Pop ~ drift())
+  )
+
+bra_fit |>  
+  select(AAN) |>  
+  report()
+
+bra_fc <- bra_fit |>  
+  forecast(h = 15)
+
+bra_fc |> 
+  autoplot(bra_economy, level = NULL)
 ```
 
