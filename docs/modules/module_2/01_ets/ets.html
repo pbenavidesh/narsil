@@ -974,8 +974,8 @@ Model: ETS(A,A,N)
 <p><span class="math display">
 \begin{aligned}
 \text{Forecast equation} \quad &amp; \hat{y}_{t+h|t} = \ell_t + hb_t + s_{t+h-m(k+1)} \\
-\text{Level equation} \quad &amp; \ell_t = \alpha y_t + (\ell_{t-1} + \phi b_{t-1}) \\
-\text{Trend equation} \quad &amp; b_t = \beta^*(\ell_t-\ell_{t-1}) + (1-\beta^*)\phi b_{t-1} \\
+\text{Level equation} \quad &amp; \ell_t = \alpha (y_t - s_{t-m}) + (1 - \alpha) (\ell_{t-1} + b_{t-1}) \\
+\text{Trend equation} \quad &amp; b_t = \beta^*(\ell_t-\ell_{t-1}) + (1-\beta^*) b_{t-1} \\
 \text{Seasonal equation} \quad &amp; s_t = \gamma(y_t - \ell_{t-1} - b_{t-1}) + (1-\gamma)s_{t-m}
 \end{aligned}
 </span></p>
