@@ -142,10 +142,20 @@ SES has a flat forecast function, so it is appropriate for data with **no trend*
 :::
 
 ```{r}
-#| label: ses
+#| label: alg-plot
 
 algeria_economy <- global_economy |>
   filter(Country == "Algeria")
+  
+algeria_economy |> 
+  autoplot(Exports)
+```
+
+
+```{r}
+#| label: ses
+
+
 
 alg_fit <- algeria_economy |>
   model(
