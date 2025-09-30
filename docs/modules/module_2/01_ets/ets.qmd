@@ -313,7 +313,7 @@ bra_economy |>
 
 bra_fit <- bra_economy |> 
   model(
-    AAN   = ETS(Pop ~ error("A") + trend("A") + season("N"))
+    Holt  = ETS(Pop ~ error("A") + trend("A") + season("N"))
   )
 
 bra_fit
@@ -326,7 +326,7 @@ bra_fit
 
 bra_fit <- bra_economy |> 
   model(
-    AAN   = ETS(Pop ~ error("A") + trend("A") + season("N")),
+    Holt  = ETS(Pop ~ error("A") + trend("A") + season("N")),
     Drift = RW(Pop ~ drift())
   )
 
@@ -340,12 +340,12 @@ bra_fit
 
 bra_fit <- bra_economy |> 
   model(
-    AAN   = ETS(Pop ~ error("A") + trend("A") + season("N")),
+    Holt  = ETS(Pop ~ error("A") + trend("A") + season("N")),
     Drift = RW(Pop ~ drift())
   )
 
 bra_fit |>  
-  select(AAN) |>  
+  select(Holt) |>  
   report()
 ```
 
@@ -370,12 +370,12 @@ bra_fit |>
 
 bra_fit <- bra_economy |> 
   model(
-    AAN   = ETS(Pop ~ error("A") + trend("A") + season("N")),
+    Holt  = ETS(Pop ~ error("A") + trend("A") + season("N")), #<1>
     Drift = RW(Pop ~ drift())
   )
 
 bra_fit |>  
-  select(AAN) |>  
+  select(Holt) |>  
   report()
 
 bra_fc <- bra_fit |>  
@@ -388,6 +388,7 @@ bra_fc |>
   guides(colour = guide_legend(title = "Forecast"))
 ```
 
+1. We specify `trend("A")` to indicate that we want a linear trend. The model will estimate the smoothing parameters $\alpha$ and $\beta^*$ automatically.
 
 ::: {.content-hidden unless-format="revealjs"}
 
@@ -415,7 +416,7 @@ $$
 \end{aligned}
 $$
 
-where $0 < \phi < 1$^[In practice, we restrict $0.8 \leq \phi \leq 0.98$ because the damping effect would be too great for smaller values.] is the damping parameter.
+where $0 < \phi < 1$^[In practice, we restrict $0.8 \leq \phi \leq 0.98$ because the damping effect would be too great for smaller values than 0.8 and almost non distinguishable from a linear trend for greater values than 0.98.] is the damping parameter.
 
 ::: {.callout-caution collapse="true"}
 ## What would happen if $\phi = 1$? What about if $\phi = 0$?
@@ -423,18 +424,6 @@ where $0 < \phi < 1$^[In practice, we restrict $0.8 \leq \phi \leq 0.98$ because
 - If $\phi = 0$, the trend component is completely eliminated, and the model behaves like simple exponential smoothing (SES), where forecasts are based solely on the level component without any trend influence.
 :::
 
-
-::: {.content-hidden unless-format="revealjs"}
-
-## Forecasting Brazil's population (continued) {auto-animate="true"}
-
-:::
-
-::: {.content-visible unless-format="revealjs"}
-
-#### Forecasting Brazil's population (continued)
-
-:::
 
 ::: {.content-hidden unless-format="revealjs"}
 
@@ -491,4 +480,73 @@ bra_economy |>
 ```
 
 1. We specify `trend("Ad")` to indicate that we want a damped trend, and `phi = 0.9` sets the damping parameter to 0.9. We could also let the model estimate $\phi$ automatically by omitting the `phi` argument.
+
+::: {.content-hidden unless-format="revealjs"}
+
+# Methods with seasonality
+
+:::
+
+::: {.content-visible unless-format="revealjs"}
+
+## Methods with seasonality
+
+:::
+
+::: {.content-hidden unless-format="revealjs"}
+
+## Holt-Winters method
+
+:::
+
+::: {.content-visible unless-format="revealjs"}
+
+### Holt-Winters method
+
+:::
+
+::: {.content-hidden unless-format="revealjs"}
+
+### HW - Additive
+
+:::
+
+::: {.content-visible unless-format="revealjs"}
+
+#### HW - Additive
+
+:::
+
+
+$$
+\begin{aligned}
+\text{Forecast equation} \quad & \hat{y}_{t+h|t} = \ell_t + hb_t + s_{t+h-m(k+1)} \\
+\text{Level equation} \quad & \ell_t = \alpha y_t + (\ell_{t-1} + \phi b_{t-1}) \\
+\text{Trend equation} \quad & b_t = \beta^*(\ell_t-\ell_{t-1}) + (1-\beta^*)\phi b_{t-1} \\
+\text{Seasonal equation} \quad & s_t = \gamma(y_t - \ell_{t-1} - b_{t-1}) + (1-\gamma)s_{t-m}
+\end{aligned}
+$$
+
+where $s_t$ is the seasonal component at time $t$, $m$ is the period of the seasonality^[e.g., $m=4$ for quarterly data, $m=12$ for monthly data, ...], and $k = \lfloor (h-1)/m \rfloor$.
+
+::: {.content-hidden unless-format="revealjs"}
+
+### HW - Multiplicative
+
+:::
+
+::: {.content-visible unless-format="revealjs"}
+
+#### HW - Multiplicative
+
+:::
+
+$$
+\begin{aligned}
+\text{Forecast equation} \quad & \hat{y}_{t+h|t} = (\ell_t + hb_t) s_{t+h-m(k+1)} \\
+\text{Level equation} \quad & \ell_t = \alpha \frac{y_t}{s_{t-m}} + (\ell_{t-1} + \phi b_{t-1}) \\
+\text{Trend equation} \quad & b_t = \beta^*(\ell_t-\ell_{t-1}) + (1-\beta^*)\phi b_{t-1} \\
+\text{Seasonal equation} \quad & s_t = \gamma \frac{y_t}{\ell_{t-1} + b_{t-1}} + (1-\gamma)s_{t-m}
+\end{aligned}
+$$
 
