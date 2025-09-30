@@ -43,11 +43,6 @@ $$
 :::
 
 
-
-:::{.notes}
-In the *mean* method, all observations are weighted equally (all have the same importance), while in the *naïve* method, only the most recent observation is used for forecasting. (we ignore all previous observations).
-:::
-
 ## {auto-animate=true}
 ::: {.r-hstack style="justify-content:space-between; align-items:center; margin-top:50px;"}
 ::: {data-id="mean"  style="background:#2F855A; color:white; padding:10px 14px; border-radius:12px; opacity:.9;"}
@@ -82,7 +77,9 @@ $$
 - Exponential smoothing methods are still relatively simple: they're simply weighted averages from historical data. 
   - However, these forecasting methods are widely used in practice, and they can be very effective.
 
-- The exponential smoothing method is a compromise between the mean and naïve methods. It uses all historical data, but it assigns exponentially decreasing weights to older observations. 
+- The exponential smoothing method is a compromise between the mean and naïve methods. It uses all historical data, but it assigns exponentially decreasing weights to older observations.
+
+  - In the *mean* method, all observations are weighted equally (all have the same importance), while in the *naïve* method, only the most recent observation is used for forecasting. (we ignore all previous observations).
 
 - The smoothing parameter $\alpha$ controls the rate of decrease: 
   - when $\alpha$ is close to 1, the method behaves like the naïve method, giving more weight to recent observations; 
@@ -139,7 +136,9 @@ SES has a flat forecast function, so it is appropriate for data with **no trend*
 :::
 
 ::: {.content-hidden unless format="revealjs"}
----
+
+##
+
 :::
 
 ```{r}
@@ -160,11 +159,13 @@ alg_fc <- alg_fit |>
 
 ::: {.content-visible unless format="revealjs"}
 
-::: {.callout-tip appearance="simple"}
+:::{.callout-tip appearance="simple"}
 ## Benchmark methods for SES
 
 The **mean** and **naïve** methods are regularly the best fit as benchmark methods when using SES.
+
 :::
+
 :::
 
 ```{r}
