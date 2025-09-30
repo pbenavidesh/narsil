@@ -543,7 +543,7 @@ Model: ETS(A,N,N)
 </div>
 </div>
 <aside class="notes">
-<p>Let’s see an example using Holt’s linear trend method to forecast Australia’s population.</p>
+<p>Let’s see an example using Holt’s linear trend method to forecast Brazil’s population.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -559,61 +559,133 @@ Model: ETS(A,N,N)
 <section id="section-6" class="slide level2">
 <h2></h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>aus_economy <span class="ot">&lt;-</span> global_economy  <span class="sc">|&gt;</span> </span>
-<span id="cb3-2"><a></a>  <span class="fu">filter</span>(Code <span class="sc">==</span> <span class="st">"AUS"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb3-3"><a></a>  <span class="fu">mutate</span>(<span class="at">Pop =</span> Population <span class="sc">/</span> <span class="fl">1e6</span>)</span>
-<span id="cb3-4"><a></a></span>
-<span id="cb3-5"><a></a>aus_economy <span class="sc">|&gt;</span> </span>
-<span id="cb3-6"><a></a>  <span class="fu">autoplot</span>(Pop)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><a href="ets_files/figure-revealjs/holt-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img data-src="ets_files/figure-revealjs/holt-1.png" width="960"></a></p>
+<p><a href="ets_files/figure-revealjs/bra-pop-plot-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img data-src="ets_files/figure-revealjs/bra-pop-plot-1.png" width="960"></a></p>
 </figure>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>fit <span class="ot">&lt;-</span> aus_economy  <span class="sc">|&gt;</span> </span>
-<span id="cb4-2"><a></a>  <span class="fu">model</span>(<span class="at">AAN   =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>)),</span>
-<span id="cb4-3"><a></a>        <span class="at">Drift =</span> <span class="fu">RW</span>(Pop <span class="sc">~</span> <span class="fu">drift</span>()))</span>
-<span id="cb4-4"><a></a></span>
-<span id="cb4-5"><a></a>fc <span class="ot">&lt;-</span> fit  <span class="sc">|&gt;</span>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">10</span>)</span>
-<span id="cb4-6"><a></a></span>
-<span id="cb4-7"><a></a>fc <span class="sc">|&gt;</span> </span>
-<span id="cb4-8"><a></a>  <span class="fu">autoplot</span>(aus_economy <span class="sc">|&gt;</span>  <span class="fu">filter_index</span>(<span class="st">"2000"</span><span class="sc">~</span>.), <span class="at">level =</span> <span class="cn">NULL</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div>
-<figure>
-<p><a href="ets_files/figure-revealjs/holt-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img data-src="ets_files/figure-revealjs/holt-2.png" width="960"></a></p>
-</figure>
 </div>
+</section>
+<section id="forecasting-brazils-population" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Forecasting Brazil’s population</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb3-1" class="hljs-ln-code"><a></a>bra_fit <span class="ot">&lt;-</span> bra_economy <span class="sc">|&gt;</span> </span>
+<span id="cb3-2" class="hljs-ln-code"><a></a>  <span class="fu">model</span>(</span>
+<span id="cb3-3" class="hljs-ln-code"><a></a>    <span class="at">AAN   =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
+<span id="cb3-4" class="hljs-ln-code"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>fit <span class="sc">|&gt;</span>  </span>
-<span id="cb5-2"><a></a>  <span class="fu">glance</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div data-pagedtable="false">
-  <script data-pagedtable-source="" type="application/json">
-{"columns":[{"label":["Country"],"name":[1],"type":["fct"],"align":["left"]},{"label":[".model"],"name":[2],"type":["chr"],"align":["left"]},{"label":["sigma2"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["log_lik"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["AIC"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["AICc"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["BIC"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["MSE"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["AMSE"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["MAE"],"name":[10],"type":["dbl"],"align":["right"]}],"data":[{"1":"Australia","2":"AAN","3":"0.004133060","4":"43.49284","5":"-76.98569","6":"-75.83184","7":"-66.68347","8":"0.003848021","9":"0.01202009","10":"0.04322732"},{"1":"Australia","2":"Drift","3":"0.006014481","4":"NA","5":"NA","6":"NA","7":"NA","8":"NA","9":"NA","10":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
+</section>
+<section id="forecasting-brazils-population-1" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Forecasting Brazil’s population</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb4-1" class="hljs-ln-code"><a></a>bra_fit <span class="ot">&lt;-</span> bra_economy <span class="sc">|&gt;</span> </span>
+<span id="cb4-2" class="hljs-ln-code"><a></a>  <span class="fu">model</span>(</span>
+<span id="cb4-3" class="hljs-ln-code"><a></a>    <span class="at">AAN   =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>)),</span>
+<span id="cb4-4" class="hljs-ln-code"><a></a>    <span class="at">Drift =</span> <span class="fu">RW</span>(Pop <span class="sc">~</span> <span class="fu">drift</span>())</span>
+<span id="cb4-5" class="hljs-ln-code"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>fit <span class="sc">|&gt;</span>  </span>
-<span id="cb6-2"><a></a>  <span class="fu">select</span>(AAN)  <span class="sc">|&gt;</span>  </span>
-<span id="cb6-3"><a></a>  <span class="fu">report</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="forecasting-brazils-population-2" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Forecasting Brazil’s population</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb5-1" class="hljs-ln-code"><a></a>bra_fit <span class="ot">&lt;-</span> bra_economy <span class="sc">|&gt;</span> </span>
+<span id="cb5-2" class="hljs-ln-code"><a></a>  <span class="fu">model</span>(</span>
+<span id="cb5-3" class="hljs-ln-code"><a></a>    <span class="at">AAN   =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>)),</span>
+<span id="cb5-4" class="hljs-ln-code"><a></a>    <span class="at">Drift =</span> <span class="fu">RW</span>(Pop <span class="sc">~</span> <span class="fu">drift</span>())</span>
+<span id="cb5-5" class="hljs-ln-code"><a></a>  )</span>
+<span id="cb5-6" class="hljs-ln-code"><a></a></span>
+<span id="cb5-7" class="hljs-ln-code"><a></a>bra_fit <span class="sc">|&gt;</span>  </span>
+<span id="cb5-8" class="hljs-ln-code"><a></a>  <span class="fu">select</span>(AAN) <span class="sc">|&gt;</span>  </span>
+<span id="cb5-9" class="hljs-ln-code"><a></a>  <span class="fu">report</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Series: Pop 
 Model: ETS(A,A,N) 
   Smoothing parameters:
     alpha = 0.9999 
-    beta  = 0.3266366 
+    beta  = 0.9998999 
 
   Initial states:
-     l[0]      b[0]
- 10.05414 0.2224818
+     l[0]     b[0]
+ 70.06297 2.132884
 
-  sigma^2:  0.0041
+  sigma^2:  0.0021
 
       AIC      AICc       BIC 
--76.98569 -75.83184 -66.68347 </code></pre>
+-115.2553 -114.1014 -104.9531 </code></pre>
+</div>
+</div>
+</section>
+<section id="forecasting-brazils-population-3" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Forecasting Brazil’s population</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb7-1" class="hljs-ln-code"><a></a>bra_fit <span class="ot">&lt;-</span> bra_economy <span class="sc">|&gt;</span> </span>
+<span id="cb7-2" class="hljs-ln-code"><a></a>  <span class="fu">model</span>(</span>
+<span id="cb7-3" class="hljs-ln-code"><a></a>    <span class="at">AAN   =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>)),</span>
+<span id="cb7-4" class="hljs-ln-code"><a></a>    <span class="at">Drift =</span> <span class="fu">RW</span>(Pop <span class="sc">~</span> <span class="fu">drift</span>())</span>
+<span id="cb7-5" class="hljs-ln-code"><a></a>  )</span>
+<span id="cb7-6" class="hljs-ln-code"><a></a></span>
+<span id="cb7-7" class="hljs-ln-code"><a></a>bra_fit <span class="sc">|&gt;</span>  </span>
+<span id="cb7-8" class="hljs-ln-code"><a></a>  <span class="fu">select</span>(AAN) <span class="sc">|&gt;</span>  </span>
+<span id="cb7-9" class="hljs-ln-code"><a></a>  <span class="fu">report</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Series: Pop 
+Model: ETS(A,A,N) 
+  Smoothing parameters:
+    alpha = 0.9999 
+    beta  = 0.9998999 
+
+  Initial states:
+     l[0]     b[0]
+ 70.06297 2.132884
+
+  sigma^2:  0.0021
+
+      AIC      AICc       BIC 
+-115.2553 -114.1014 -104.9531 </code></pre>
+</div>
+</div>
+</section>
+<section id="forecasting-brazils-population-4" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Forecasting Brazil’s population</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a>bra_fit <span class="ot">&lt;-</span> bra_economy <span class="sc">|&gt;</span> </span>
+<span id="cb9-2"><a></a>  <span class="fu">model</span>(</span>
+<span id="cb9-3"><a></a>    <span class="at">AAN   =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>)),</span>
+<span id="cb9-4"><a></a>    <span class="at">Drift =</span> <span class="fu">RW</span>(Pop <span class="sc">~</span> <span class="fu">drift</span>())</span>
+<span id="cb9-5"><a></a>  )</span>
+<span id="cb9-6"><a></a></span>
+<span id="cb9-7"><a></a>bra_fit <span class="sc">|&gt;</span>  </span>
+<span id="cb9-8"><a></a>  <span class="fu">select</span>(AAN) <span class="sc">|&gt;</span>  </span>
+<span id="cb9-9"><a></a>  <span class="fu">report</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Series: Pop 
+Model: ETS(A,A,N) 
+  Smoothing parameters:
+    alpha = 0.9999 
+    beta  = 0.9998999 
+
+  Initial states:
+     l[0]     b[0]
+ 70.06297 2.132884
+
+  sigma^2:  0.0021
+
+      AIC      AICc       BIC 
+-115.2553 -114.1014 -104.9531 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>bra_fc <span class="ot">&lt;-</span> bra_fit <span class="sc">|&gt;</span>  </span>
+<span id="cb11-2"><a></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">15</span>)</span>
+<span id="cb11-3"><a></a></span>
+<span id="cb11-4"><a></a>bra_fc <span class="sc">|&gt;</span> </span>
+<span id="cb11-5"><a></a>  <span class="fu">autoplot</span>(bra_economy, <span class="at">level =</span> <span class="cn">NULL</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="ets_files/figure-revealjs/holt_full-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img data-src="ets_files/figure-revealjs/holt_full-1.png" width="960"></a></p>
+</figure>
+</div>
 </div>
 </div>
 
