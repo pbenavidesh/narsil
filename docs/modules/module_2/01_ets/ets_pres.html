@@ -418,11 +418,9 @@ Table&nbsp;1: Weights for different values of <span class="math inline">\(\alpha
 </div>
 </div>
 </div>
-<p>::: {.content-hidden unless format=“revealjs”}</p>
 </section>
 <section id="section-3" class="slide level2">
 <h2></h2>
-<p>:::</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>algeria_economy <span class="ot">&lt;-</span> global_economy <span class="sc">|&gt;</span></span>
 <span id="cb1-2"><a></a>  <span class="fu">filter</span>(Country <span class="sc">==</span> <span class="st">"Algeria"</span>)</span>
@@ -436,21 +434,6 @@ Table&nbsp;1: Weights for different values of <span class="math inline">\(\alpha
 <span id="cb1-10"><a></a>alg_fc <span class="ot">&lt;-</span> alg_fit <span class="sc">|&gt;</span></span>
 <span id="cb1-11"><a></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>::: {.content-visible unless format=“revealjs”}</p>
-<div class="callout callout-tip callout-titled callout-style-simple">
-<div class="callout-body">
-<div class="callout-title">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<p><strong>Benchmark methods for SES</strong></p>
-</div>
-<div class="callout-content">
-<p>The <strong>mean</strong> and <strong>naïve</strong> methods are regularly the best fit as benchmark methods when using SES.</p>
-</div>
-</div>
-</div>
-<p>:::</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1"></a>alg_fit <span class="sc">|&gt;</span> </span>
 <span id="annotated-cell-2-2"><a href="#annotated-cell-2-2"></a>  <span class="fu">select</span>(SES) <span class="sc">|&gt;</span> </span>
@@ -480,9 +463,8 @@ Model: ETS(A,N,N)
 </div>
 </div>
 <aside></aside></section>
-<section id="content-hidden-unless-formatrevealjs" class="slide level2">
-<h2>::: {.content-hidden unless format=“revealjs”}</h2>
-<p>:::</p>
+<section id="section-4" class="slide level2">
+<h2></h2>
 <div class="cell">
 <div class="cell-output-display">
 <div>
@@ -493,9 +475,8 @@ Model: ETS(A,N,N)
 </div>
 </div>
 </section>
-<section id="content-hidden-unless-formatrevealjs-1" class="slide level2">
-<h2>::: {.content-hidden unless format=“revealjs”}</h2>
-<p>:::</p>
+<section id="section-5" class="slide level2">
+<h2></h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>alg_fc <span class="sc">|&gt;</span> </span>
 <span id="cb3-2"><a></a>  <span class="fu">autoplot</span>(algeria_economy <span class="sc">|&gt;</span> <span class="fu">filter_index</span>(<span class="dv">2005</span> <span class="sc">~</span> .), <span class="at">level =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
@@ -513,25 +494,14 @@ Model: ETS(A,N,N)
 </div>
 </div>
 </div>
-<p>::: {.content-hidden unless format=“revealjs”}</p>
 </section></section>
 <section>
 <section id="methods-with-trend" class="title-slide slide level1 center">
 <h1>Methods with trend</h1>
-<p>:::</p>
-<p>::: {.content-visible unless format=“revealjs”}</p>
-</section>
-<section id="methods-with-trend-1" class="slide level2">
-<h2>Methods with trend</h2>
-<p>:::</p>
-<p>::: {.content-hidden unless format=“revealjs”}</p>
+
 </section>
 <section id="holts-linear-trend" class="slide level2">
 <h2>Holt’s linear trend</h2>
-<p>:::</p>
-<p>::: {.content-visible unless format=“revealjs”}</p>
-<h3 id="holts-linear-trend-1">Holt’s linear trend</h3>
-<p>:::</p>
 <aside class="notes">
 <p>We can extend SES models to allow our forecasts to include trend in the data. We need to add a new smoothing parameter <span class="math inline">\(\beta^*\)</span>, and its corresponding smoothing equation:</p>
 <style type="text/css">

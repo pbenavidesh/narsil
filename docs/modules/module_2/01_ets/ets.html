@@ -536,16 +536,9 @@ window.Quarto = {
   <li><a href="#exponential-smoothing-methods" id="toc-exponential-smoothing-methods" class="nav-link active" data-scroll-target="#exponential-smoothing-methods"><span class="header-section-number">1</span> Exponential smoothing methods</a>
   <ul class="collapse">
   <li><a href="#simple-exponential-smoothing-ses" id="toc-simple-exponential-smoothing-ses" class="nav-link" data-scroll-target="#simple-exponential-smoothing-ses"><span class="header-section-number">1.1</span> Simple exponential smoothing (SES)</a></li>
-  <li><a href="#section-3" id="toc-section-3" class="nav-link" data-scroll-target="#section-3"><span class="header-section-number">1.2</span> </a></li>
-  <li><a href="#content-hidden-unless-formatrevealjs" id="toc-content-hidden-unless-formatrevealjs" class="nav-link" data-scroll-target="#content-hidden-unless-formatrevealjs"><span class="header-section-number">1.3</span> ::: {.content-hidden unless format=“revealjs”}</a></li>
-  <li><a href="#content-hidden-unless-formatrevealjs-1" id="toc-content-hidden-unless-formatrevealjs-1" class="nav-link" data-scroll-target="#content-hidden-unless-formatrevealjs-1"><span class="header-section-number">1.4</span> ::: {.content-hidden unless format=“revealjs”}</a></li>
-  </ul></li>
-  <li><a href="#methods-with-trend" id="toc-methods-with-trend" class="nav-link" data-scroll-target="#methods-with-trend"><span class="header-section-number">2</span> Methods with trend</a>
+  <li><a href="#methods-with-trend-1" id="toc-methods-with-trend-1" class="nav-link" data-scroll-target="#methods-with-trend-1"><span class="header-section-number">1.2</span> Methods with trend</a>
   <ul class="collapse">
-  <li><a href="#methods-with-trend-1" id="toc-methods-with-trend-1" class="nav-link" data-scroll-target="#methods-with-trend-1"><span class="header-section-number">2.1</span> Methods with trend</a></li>
-  <li><a href="#holts-linear-trend" id="toc-holts-linear-trend" class="nav-link" data-scroll-target="#holts-linear-trend"><span class="header-section-number">2.2</span> Holt’s linear trend</a>
-  <ul class="collapse">
-  <li><a href="#holts-linear-trend-1" id="toc-holts-linear-trend-1" class="nav-link" data-scroll-target="#holts-linear-trend-1"><span class="header-section-number">2.2.1</span> Holt’s linear trend</a></li>
+  <li><a href="#holts-linear-trend-1" id="toc-holts-linear-trend-1" class="nav-link" data-scroll-target="#holts-linear-trend-1"><span class="header-section-number">1.2.1</span> Holt’s linear trend</a></li>
   </ul></li>
   </ul></li>
   </ul>
@@ -705,11 +698,6 @@ Table&nbsp;1: Weights for different values of <span class="math inline">\(\alpha
 </div>
 </div>
 </div>
-<p>::: {.content-hidden unless format=“revealjs”}</p>
-</section>
-<section id="section-3" class="level2" data-number="1.2">
-<h2 data-number="1.2" class="anchored" data-anchor-id="section-3"><span class="header-section-number">1.2</span> </h2>
-<p>:::</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>algeria_economy <span class="ot">&lt;-</span> global_economy <span class="sc">|&gt;</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Country <span class="sc">==</span> <span class="st">"Algeria"</span>)</span>
@@ -723,7 +711,6 @@ Table&nbsp;1: Weights for different values of <span class="math inline">\(\alpha
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>alg_fc <span class="ot">&lt;-</span> alg_fit <span class="sc">|&gt;</span></span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>::: {.content-visible unless format=“revealjs”}</p>
 <div class="callout callout-style-simple callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -737,7 +724,6 @@ Table&nbsp;1: Weights for different values of <span class="math inline">\(\alpha
 <p>The <strong>mean</strong> and <strong>naïve</strong> methods are regularly the best fit as benchmark methods when using SES.</p>
 </div>
 </div>
-<p>:::</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1" aria-hidden="true" tabindex="-1"></a>alg_fit <span class="sc">|&gt;</span> </span>
 <span id="annotated-cell-2-2"><a href="#annotated-cell-2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(SES) <span class="sc">|&gt;</span> </span>
@@ -766,10 +752,6 @@ Model: ETS(A,N,N)
 446.7154 447.1599 452.8968 </code></pre>
 </div>
 </div>
-</section>
-<section id="content-hidden-unless-formatrevealjs" class="level2" data-number="1.3">
-<h2 data-number="1.3" class="anchored" data-anchor-id="content-hidden-unless-formatrevealjs"><span class="header-section-number">1.3</span> ::: {.content-hidden unless format=“revealjs”}</h2>
-<p>:::</p>
 <div class="cell">
 <div class="cell-output-display">
 <div>
@@ -779,10 +761,6 @@ Model: ETS(A,N,N)
 </div>
 </div>
 </div>
-</section>
-<section id="content-hidden-unless-formatrevealjs-1" class="level2" data-number="1.4">
-<h2 data-number="1.4" class="anchored" data-anchor-id="content-hidden-unless-formatrevealjs-1"><span class="header-section-number">1.4</span> ::: {.content-hidden unless format=“revealjs”}</h2>
-<p>:::</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>alg_fc <span class="sc">|&gt;</span> </span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(algeria_economy <span class="sc">|&gt;</span> <span class="fu">filter_index</span>(<span class="dv">2005</span> <span class="sc">~</span> .), <span class="at">level =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
@@ -800,25 +778,11 @@ Model: ETS(A,N,N)
 </div>
 </div>
 </div>
-<p>::: {.content-hidden unless format=“revealjs”}</p>
 </section>
-</section>
-<section id="methods-with-trend" class="level1" data-number="2">
-<h1 data-number="2"><span class="header-section-number">2</span> Methods with trend</h1>
-<p>:::</p>
-<p>::: {.content-visible unless format=“revealjs”}</p>
-<section id="methods-with-trend-1" class="level2" data-number="2.1">
-<h2 data-number="2.1" class="anchored" data-anchor-id="methods-with-trend-1"><span class="header-section-number">2.1</span> Methods with trend</h2>
-<p>:::</p>
-<p>::: {.content-hidden unless format=“revealjs”}</p>
-</section>
-<section id="holts-linear-trend" class="level2" data-number="2.2">
-<h2 data-number="2.2" class="anchored" data-anchor-id="holts-linear-trend"><span class="header-section-number">2.2</span> Holt’s linear trend</h2>
-<p>:::</p>
-<p>::: {.content-visible unless format=“revealjs”}</p>
-<section id="holts-linear-trend-1" class="level3" data-number="2.2.1">
-<h3 data-number="2.2.1" class="anchored" data-anchor-id="holts-linear-trend-1"><span class="header-section-number">2.2.1</span> Holt’s linear trend</h3>
-<p>:::</p>
+<section id="methods-with-trend-1" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="methods-with-trend-1"><span class="header-section-number">1.2</span> Methods with trend</h2>
+<section id="holts-linear-trend-1" class="level3" data-number="1.2.1">
+<h3 data-number="1.2.1" class="anchored" data-anchor-id="holts-linear-trend-1"><span class="header-section-number">1.2.1</span> Holt’s linear trend</h3>
 <div class="notes">
 <p>We can extend SES models to allow our forecasts to include trend in the data. We need to add a new smoothing parameter <span class="math inline">\(\beta^*\)</span>, and its corresponding smoothing equation:</p>
 </div>

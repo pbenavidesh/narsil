@@ -577,43 +577,7 @@
     "href": "docs/modules/module_2/01_ets/ets.html#simple-exponential-smoothing-ses",
     "title": "Exponential smoothing",
     "section": "1.1 Simple exponential smoothing (SES)",
-    "text": "1.1 Simple exponential smoothing (SES)\n\\[\n\\begin{aligned}\n\\text{Forecast equation} \\quad & \\hat{y}_{t+h|t} = \\ell_t \\\\\n\\text{Smoothing equation} \\quad & \\ell_t = \\alpha y_t + (1-\\alpha)\\ell_{t-1}\n\\end{aligned}\n\\]\nwhere \\(\\ell_t\\) is the level at time \\(t\\).\n\n\n\n\n\n\nSES has a flat forecast function, so it is appropriate for data with no trend or seasonal pattern.\n\n\n\n::: {.content-hidden unless format=“revealjs”}",
-    "crumbs": [
-      "Modules",
-      "2. Adding ETS and ARIMA filters",
-      "2.1 Exponential Smoothing"
-    ]
-  },
-  {
-    "objectID": "docs/modules/module_2/01_ets/ets.html#section-3",
-    "href": "docs/modules/module_2/01_ets/ets.html#section-3",
-    "title": "Exponential smoothing",
-    "section": "1.2 ",
-    "text": "1.2 \n:::\n\nalgeria_economy &lt;- global_economy |&gt;\n  filter(Country == \"Algeria\")\n\nalg_fit &lt;- algeria_economy |&gt;\n  model(\n    SES = ETS(Exports ~ error(\"A\") + trend(\"N\") + season(\"N\")),\n    Naive = NAIVE(Exports)\n  )\n\nalg_fc &lt;- alg_fit |&gt;\n  forecast(h = 5)\n\n::: {.content-visible unless format=“revealjs”}\n\n\n\n\n\n\nTipBenchmark methods for SES\n\n\n\nThe mean and naïve methods are regularly the best fit as benchmark methods when using SES.\n\n\n:::\n\nalg_fit |&gt; \n  select(SES) |&gt; \n1  report()\n\n\n1\n\nThe report() function allows us to see a model’s report (the time series modeled, the model used, the estimated parameters, and more). It needs a \\(1 \\times 1\\) dimension mable1.\n\n\n\n\nSeries: Exports \nModel: ETS(A,N,N) \n  Smoothing parameters:\n    alpha = 0.8399875 \n\n  Initial states:\n   l[0]\n 39.539\n\n  sigma^2:  35.6301\n\n     AIC     AICc      BIC \n446.7154 447.1599 452.8968",
-    "crumbs": [
-      "Modules",
-      "2. Adding ETS and ARIMA filters",
-      "2.1 Exponential Smoothing"
-    ]
-  },
-  {
-    "objectID": "docs/modules/module_2/01_ets/ets.html#content-hidden-unless-formatrevealjs",
-    "href": "docs/modules/module_2/01_ets/ets.html#content-hidden-unless-formatrevealjs",
-    "title": "Exponential smoothing",
-    "section": "1.3 ::: {.content-hidden unless format=“revealjs”}",
-    "text": "1.3 ::: {.content-hidden unless format=“revealjs”}\n:::",
-    "crumbs": [
-      "Modules",
-      "2. Adding ETS and ARIMA filters",
-      "2.1 Exponential Smoothing"
-    ]
-  },
-  {
-    "objectID": "docs/modules/module_2/01_ets/ets.html#content-hidden-unless-formatrevealjs-1",
-    "href": "docs/modules/module_2/01_ets/ets.html#content-hidden-unless-formatrevealjs-1",
-    "title": "Exponential smoothing",
-    "section": "1.4 ::: {.content-hidden unless format=“revealjs”}",
-    "text": "1.4 ::: {.content-hidden unless format=“revealjs”}\n:::\n\nalg_fc |&gt; \n  autoplot(algeria_economy |&gt; filter_index(2005 ~ .), level = NULL) +\n  labs(\n    x = \"\",\n    y = \"% of GDP\",\n    title = \"Forecasting using SES vs. Naive\",\n    caption = \"Why is the SES forecast below the Naive here?\"\n  )\n\n\n\n\n\n\n\n\n::: {.content-hidden unless format=“revealjs”}",
+    "text": "1.1 Simple exponential smoothing (SES)\n\\[\n\\begin{aligned}\n\\text{Forecast equation} \\quad & \\hat{y}_{t+h|t} = \\ell_t \\\\\n\\text{Smoothing equation} \\quad & \\ell_t = \\alpha y_t + (1-\\alpha)\\ell_{t-1}\n\\end{aligned}\n\\]\nwhere \\(\\ell_t\\) is the level at time \\(t\\).\n\n\n\n\n\n\nSES has a flat forecast function, so it is appropriate for data with no trend or seasonal pattern.\n\n\n\n\nalgeria_economy &lt;- global_economy |&gt;\n  filter(Country == \"Algeria\")\n\nalg_fit &lt;- algeria_economy |&gt;\n  model(\n    SES = ETS(Exports ~ error(\"A\") + trend(\"N\") + season(\"N\")),\n    Naive = NAIVE(Exports)\n  )\n\nalg_fc &lt;- alg_fit |&gt;\n  forecast(h = 5)\n\n\n\n\n\n\n\nTipBenchmark methods for SES\n\n\n\nThe mean and naïve methods are regularly the best fit as benchmark methods when using SES.\n\n\n\nalg_fit |&gt; \n  select(SES) |&gt; \n1  report()\n\n\n1\n\nThe report() function allows us to see a model’s report (the time series modeled, the model used, the estimated parameters, and more). It needs a \\(1 \\times 1\\) dimension mable1.\n\n\n\n\nSeries: Exports \nModel: ETS(A,N,N) \n  Smoothing parameters:\n    alpha = 0.8399875 \n\n  Initial states:\n   l[0]\n 39.539\n\n  sigma^2:  35.6301\n\n     AIC     AICc      BIC \n446.7154 447.1599 452.8968 \n\n\n\n\n\n\n\n\n\n\n\n\nalg_fc |&gt; \n  autoplot(algeria_economy |&gt; filter_index(2005 ~ .), level = NULL) +\n  labs(\n    x = \"\",\n    y = \"% of GDP\",\n    title = \"Forecasting using SES vs. Naive\",\n    caption = \"Why is the SES forecast below the Naive here?\"\n  )",
     "crumbs": [
       "Modules",
       "2. Adding ETS and ARIMA filters",
@@ -624,20 +588,8 @@
     "objectID": "docs/modules/module_2/01_ets/ets.html#methods-with-trend-1",
     "href": "docs/modules/module_2/01_ets/ets.html#methods-with-trend-1",
     "title": "Exponential smoothing",
-    "section": "2.1 Methods with trend",
-    "text": "2.1 Methods with trend\n:::\n::: {.content-hidden unless format=“revealjs”}",
-    "crumbs": [
-      "Modules",
-      "2. Adding ETS and ARIMA filters",
-      "2.1 Exponential Smoothing"
-    ]
-  },
-  {
-    "objectID": "docs/modules/module_2/01_ets/ets.html#holts-linear-trend",
-    "href": "docs/modules/module_2/01_ets/ets.html#holts-linear-trend",
-    "title": "Exponential smoothing",
-    "section": "2.2 Holt’s linear trend",
-    "text": "2.2 Holt’s linear trend\n:::\n::: {.content-visible unless format=“revealjs”}\n\n2.2.1 Holt’s linear trend\n:::\n\nWe can extend SES models to allow our forecasts to include trend in the data. We need to add a new smoothing parameter \\(\\beta^*\\), and its corresponding smoothing equation:\n\n\\[\n\\begin{aligned}\n\\text{Forecast equation} \\quad & \\hat{y}_{t+h|t} = \\ell_t \\\\\n\\text{Level equation} \\quad & \\ell_t = \\alpha y_t + (1-\\alpha)\\ell_{t-1}\\\\\n\\text{Trend equation} \\quad & b_t = \\beta^*(l_t-l_{t-1}) + (1-\\beta^*)b_{t-1}\n\\end{aligned}\n\\]",
+    "section": "1.2 Methods with trend",
+    "text": "1.2 Methods with trend\n\n1.2.1 Holt’s linear trend\n\nWe can extend SES models to allow our forecasts to include trend in the data. We need to add a new smoothing parameter \\(\\beta^*\\), and its corresponding smoothing equation:\n\n\\[\n\\begin{aligned}\n\\text{Forecast equation} \\quad & \\hat{y}_{t+h|t} = \\ell_t \\\\\n\\text{Level equation} \\quad & \\ell_t = \\alpha y_t + (1-\\alpha)\\ell_{t-1}\\\\\n\\text{Trend equation} \\quad & b_t = \\beta^*(l_t-l_{t-1}) + (1-\\beta^*)b_{t-1}\n\\end{aligned}\n\\]",
     "crumbs": [
       "Modules",
       "2. Adding ETS and ARIMA filters",
@@ -682,42 +634,28 @@
     "href": "docs/modules/module_2/01_ets/ets_pres.html#simple-exponential-smoothing-ses",
     "title": "Exponential smoothing",
     "section": "Simple exponential smoothing (SES)",
-    "text": "Simple exponential smoothing (SES)\n\\[\n\\begin{aligned}\n\\text{Forecast equation} \\quad & \\hat{y}_{t+h|t} = \\ell_t \\\\\n\\text{Smoothing equation} \\quad & \\ell_t = \\alpha y_t + (1-\\alpha)\\ell_{t-1}\n\\end{aligned}\n\\]\nwhere \\(\\ell_t\\) is the level at time \\(t\\).\n\n\n\n\n\n\nSES has a flat forecast function, so it is appropriate for data with no trend or seasonal pattern.\n\n\n\n::: {.content-hidden unless format=“revealjs”}"
+    "text": "Simple exponential smoothing (SES)\n\\[\n\\begin{aligned}\n\\text{Forecast equation} \\quad & \\hat{y}_{t+h|t} = \\ell_t \\\\\n\\text{Smoothing equation} \\quad & \\ell_t = \\alpha y_t + (1-\\alpha)\\ell_{t-1}\n\\end{aligned}\n\\]\nwhere \\(\\ell_t\\) is the level at time \\(t\\).\n\n\n\n\n\n\nSES has a flat forecast function, so it is appropriate for data with no trend or seasonal pattern."
   },
   {
     "objectID": "docs/modules/module_2/01_ets/ets_pres.html#section-3",
     "href": "docs/modules/module_2/01_ets/ets_pres.html#section-3",
     "title": "Exponential smoothing",
     "section": "",
-    "text": ":::\n\nalgeria_economy &lt;- global_economy |&gt;\n  filter(Country == \"Algeria\")\n\nalg_fit &lt;- algeria_economy |&gt;\n  model(\n    SES = ETS(Exports ~ error(\"A\") + trend(\"N\") + season(\"N\")),\n    Naive = NAIVE(Exports)\n  )\n\nalg_fc &lt;- alg_fit |&gt;\n  forecast(h = 5)\n\n::: {.content-visible unless format=“revealjs”}\n\n\n\n\n\n\nBenchmark methods for SES\n\n\nThe mean and naïve methods are regularly the best fit as benchmark methods when using SES.\n\n\n\n:::\n\nalg_fit |&gt; \n  select(SES) |&gt; \n1  report()\n\n\n1\n\nThe report() function allows us to see a model’s report (the time series modeled, the model used, the estimated parameters, and more). It needs a \\(1 \\times 1\\) dimension mable1.\n\n\n\n\nSeries: Exports \nModel: ETS(A,N,N) \n  Smoothing parameters:\n    alpha = 0.8399875 \n\n  Initial states:\n   l[0]\n 39.539\n\n  sigma^2:  35.6301\n\n     AIC     AICc      BIC \n446.7154 447.1599 452.8968"
+    "text": "algeria_economy &lt;- global_economy |&gt;\n  filter(Country == \"Algeria\")\n\nalg_fit &lt;- algeria_economy |&gt;\n  model(\n    SES = ETS(Exports ~ error(\"A\") + trend(\"N\") + season(\"N\")),\n    Naive = NAIVE(Exports)\n  )\n\nalg_fc &lt;- alg_fit |&gt;\n  forecast(h = 5)\n\n\nalg_fit |&gt; \n  select(SES) |&gt; \n1  report()\n\n\n1\n\nThe report() function allows us to see a model’s report (the time series modeled, the model used, the estimated parameters, and more). It needs a \\(1 \\times 1\\) dimension mable1.\n\n\n\n\nSeries: Exports \nModel: ETS(A,N,N) \n  Smoothing parameters:\n    alpha = 0.8399875 \n\n  Initial states:\n   l[0]\n 39.539\n\n  sigma^2:  35.6301\n\n     AIC     AICc      BIC \n446.7154 447.1599 452.8968"
   },
   {
-    "objectID": "docs/modules/module_2/01_ets/ets_pres.html#content-hidden-unless-formatrevealjs",
-    "href": "docs/modules/module_2/01_ets/ets_pres.html#content-hidden-unless-formatrevealjs",
+    "objectID": "docs/modules/module_2/01_ets/ets_pres.html#section-5",
+    "href": "docs/modules/module_2/01_ets/ets_pres.html#section-5",
     "title": "Exponential smoothing",
-    "section": "::: {.content-hidden unless format=“revealjs”}",
-    "text": "::: {.content-hidden unless format=“revealjs”}\n:::"
-  },
-  {
-    "objectID": "docs/modules/module_2/01_ets/ets_pres.html#content-hidden-unless-formatrevealjs-1",
-    "href": "docs/modules/module_2/01_ets/ets_pres.html#content-hidden-unless-formatrevealjs-1",
-    "title": "Exponential smoothing",
-    "section": "::: {.content-hidden unless format=“revealjs”}",
-    "text": "::: {.content-hidden unless format=“revealjs”}\n:::\n\nalg_fc |&gt; \n  autoplot(algeria_economy |&gt; filter_index(2005 ~ .), level = NULL) +\n  labs(\n    x = \"\",\n    y = \"% of GDP\",\n    title = \"Forecasting using SES vs. Naive\",\n    caption = \"Why is the SES forecast below the Naive here?\"\n  )\n\n\n\n\n\n\n\n\n::: {.content-hidden unless format=“revealjs”}"
-  },
-  {
-    "objectID": "docs/modules/module_2/01_ets/ets_pres.html#methods-with-trend-1",
-    "href": "docs/modules/module_2/01_ets/ets_pres.html#methods-with-trend-1",
-    "title": "Exponential smoothing",
-    "section": "Methods with trend",
-    "text": "Methods with trend\n:::\n::: {.content-hidden unless format=“revealjs”}"
+    "section": "",
+    "text": "alg_fc |&gt; \n  autoplot(algeria_economy |&gt; filter_index(2005 ~ .), level = NULL) +\n  labs(\n    x = \"\",\n    y = \"% of GDP\",\n    title = \"Forecasting using SES vs. Naive\",\n    caption = \"Why is the SES forecast below the Naive here?\"\n  )"
   },
   {
     "objectID": "docs/modules/module_2/01_ets/ets_pres.html#holts-linear-trend",
     "href": "docs/modules/module_2/01_ets/ets_pres.html#holts-linear-trend",
     "title": "Exponential smoothing",
     "section": "Holt’s linear trend",
-    "text": "Holt’s linear trend\n:::\n::: {.content-visible unless format=“revealjs”}\nHolt’s linear trend\n:::\n\nWe can extend SES models to allow our forecasts to include trend in the data. We need to add a new smoothing parameter \\(\\beta^*\\), and its corresponding smoothing equation:\n\n\\[\n\\begin{aligned}\n\\text{Forecast equation} \\quad & \\hat{y}_{t+h|t} = \\ell_t \\\\\n\\text{Level equation} \\quad & \\ell_t = \\alpha y_t + (1-\\alpha)\\ell_{t-1}\\\\\n\\text{Trend equation} \\quad & b_t = \\beta^*(l_t-l_{t-1}) + (1-\\beta^*)b_{t-1}\n\\end{aligned}\n\\]"
+    "text": "Holt’s linear trend\n\nWe can extend SES models to allow our forecasts to include trend in the data. We need to add a new smoothing parameter \\(\\beta^*\\), and its corresponding smoothing equation:\n\n\\[\n\\begin{aligned}\n\\text{Forecast equation} \\quad & \\hat{y}_{t+h|t} = \\ell_t \\\\\n\\text{Level equation} \\quad & \\ell_t = \\alpha y_t + (1-\\alpha)\\ell_{t-1}\\\\\n\\text{Trend equation} \\quad & b_t = \\beta^*(l_t-l_{t-1}) + (1-\\beta^*)b_{t-1}\n\\end{aligned}\n\\]"
   },
   {
     "objectID": "docs/modules/module_2/01_ets/ets_pres.html#footnotes",
