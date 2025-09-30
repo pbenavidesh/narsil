@@ -793,7 +793,6 @@ Model: ETS(A,N,N)
 <div class="notes">
 <p>We can extend SES models to allow our forecasts to include trend in the data. We need to add a new smoothing parameter <span class="math inline">\beta^*</span>, and its corresponding smoothing equation:</p>
 </div>
-<div class="stretch">
 <p><span class="math display">
 \begin{aligned}
 \text{Forecast equation} \quad &amp; \hat{y}_{t+h|t} = \ell_t \\
@@ -801,7 +800,6 @@ Model: ETS(A,N,N)
 \text{Trend equation} \quad &amp; b_t = \beta^*(l_t-l_{t-1}) + (1-\beta^*)b_{t-1}
 \end{aligned}
 </span></p>
-</div>
 <p>where <span class="math inline">b_t</span> is the growth (or slope) at time <span class="math inline">t</span>.</p>
 <div class="callout callout-style-simple callout-note">
 <div class="callout-body d-flex">
@@ -811,6 +809,67 @@ Model: ETS(A,N,N)
 <div class="callout-body-container">
 <p>Holt’s linear trend method is appropriate for data with a <strong>linear trend</strong> but <strong>no seasonal</strong> pattern.</p>
 </div>
+</div>
+</div>
+<div class="notes">
+<p>Let’s see an example using Holt’s linear trend method to forecast Australia’s population.</p>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>aus_economy <span class="ot">&lt;-</span> global_economy  <span class="sc">|&gt;</span> </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Code <span class="sc">==</span> <span class="st">"AUS"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Pop =</span> Population <span class="sc">/</span> <span class="fl">1e6</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>aus_economy <span class="sc">|&gt;</span> </span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(Pop)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="ets_files/figure-html/holt-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="ets_files/figure-html/holt-1.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> aus_economy  <span class="sc">|&gt;</span> </span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(<span class="at">AAN   =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>)),</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">Drift =</span> <span class="fu">RW</span>(Pop <span class="sc">~</span> <span class="fu">drift</span>()))</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>fc <span class="ot">&lt;-</span> fit  <span class="sc">|&gt;</span>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">10</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>fc <span class="sc">|&gt;</span> </span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(aus_economy <span class="sc">|&gt;</span>  <span class="fu">filter_index</span>(<span class="st">"2000"</span><span class="sc">~</span>.), <span class="at">level =</span> <span class="cn">NULL</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="ets_files/figure-html/holt-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img src="ets_files/figure-html/holt-2.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>fit <span class="sc">|&gt;</span>  </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glance</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["Country"],"name":[1],"type":["fct"],"align":["left"]},{"label":[".model"],"name":[2],"type":["chr"],"align":["left"]},{"label":["sigma2"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["log_lik"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["AIC"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["AICc"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["BIC"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["MSE"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["AMSE"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["MAE"],"name":[10],"type":["dbl"],"align":["right"]}],"data":[{"1":"Australia","2":"AAN","3":"0.004133060","4":"43.49284","5":"-76.98569","6":"-75.83184","7":"-66.68347","8":"0.003848021","9":"0.01202009","10":"0.04322732"},{"1":"Australia","2":"Drift","3":"0.006014481","4":"NA","5":"NA","6":"NA","7":"NA","8":"NA","9":"NA","10":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>fit <span class="sc">|&gt;</span>  </span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(AAN)  <span class="sc">|&gt;</span>  </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">report</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Series: Pop 
+Model: ETS(A,A,N) 
+  Smoothing parameters:
+    alpha = 0.9999 
+    beta  = 0.3266366 
+
+  Initial states:
+     l[0]      b[0]
+ 10.05414 0.2224818
+
+  sigma^2:  0.0041
+
+      AIC      AICc       BIC 
+-76.98569 -75.83184 -66.68347 </code></pre>
 </div>
 </div>
 
