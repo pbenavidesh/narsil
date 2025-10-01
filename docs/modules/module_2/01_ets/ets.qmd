@@ -581,9 +581,80 @@ $$
 ```{r}
 #| label: hw_1
 
-aus_holidays 
+aus_holidays <- tourism |> 
+  filter(Purpose == "Holiday") |>
+  summarise(Trips = sum(Trips))
+
+aus_holidays
 ```
 
-
+## Forecasting Australian holiday trips {auto-animate="true"}
 
 :::
+
+
+::: {.content-visible unless-format="revealjs"}
+
+#### Forecasting Australian holiday trips
+
+:::
+
+
+```{r}
+#| label: hw_2
+
+aus_holidays <- tourism |> 
+  filter(Purpose == "Holiday") |>
+  summarise(Trips = sum(Trips))
+
+aus_holidays |>
+  autoplot(Trips)
+```
+
+::: {.notes}
+
+We will forecast the number of holiday trips in Australia using additive and multiplicative Holt-Winters methods.
+
+:::
+
+::: {.content-hidden unless-format="revealjs"}
+
+## Forecasting Australian holiday trips {auto-animate="true"}
+
+```{r}
+#| label: hw_3
+
+aus_fit <- aus_holidays |> 
+  model(
+    Additive       = ETS(Trips ~ error("A") + trend("A") + season("A"))
+  )
+```
+
+## Forecasting Australian holiday trips {auto-animate="true"}
+
+```{r}
+#| label: hw_3
+
+aus_fit <- aus_holidays |> 
+  model(
+    Additive       = ETS(Trips ~ error("A") + trend("A") + season("A")),
+    Multiplicative = ETS(Trips ~ error("M") + trend("A") + season("M"))
+  )
+```
+
+## Forecasting Australian holiday trips {auto-animate="true"}
+
+:::
+
+::: {.callout-note collapse="true"}
+## The `tidy()` function for models
+
+```{r}
+aus_fit |> 
+  tidy()  #<1>
+```
+
+1. The `tidy()` function allows us to see the estimated parameters of each model in a [tidy](https://r4ds.hadley.nz/data-tidy.html) table.
+:::
+
+
