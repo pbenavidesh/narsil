@@ -1093,7 +1093,9 @@ Model: ETS(A,A,N)
 <span id="annotated-cell-6-9" class="hljs-ln-code"><a href="#annotated-cell-6-9"></a>  <span class="fu">model</span>(</span>
 <button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-6" data-target-annotation="1">1</button><span id="annotated-cell-6-10" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-6-10"></a>    <span class="at">ETS_auto       =</span> <span class="fu">ETS</span>(Count),</span>
 <button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-6" data-target-annotation="2">2</button><span id="annotated-cell-6-11" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-6-11"></a>    <span class="at">ets_with_trend =</span> <span class="fu">ETS</span>(Count <span class="sc">~</span> <span class="fu">trend</span>(<span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"Ad"</span>))),</span>
-<span id="annotated-cell-6-12" class="hljs-ln-code"><a href="#annotated-cell-6-12"></a>  )</span><div class="code-annotation-gutter-bg hljs-ln-code"></div><div class="code-annotation-gutter hljs-ln-code"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-6-12" class="hljs-ln-code"><a href="#annotated-cell-6-12"></a>  )</span>
+<span id="annotated-cell-6-13" class="hljs-ln-code"><a href="#annotated-cell-6-13"></a></span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-6" data-target-annotation="3">3</button><span id="annotated-cell-6-14" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-6-14"></a>ped_fit</span><div class="code-annotation-gutter-bg hljs-ln-code"></div><div class="code-annotation-gutter hljs-ln-code"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-6" data-target-annotation="1">1</dt>
@@ -1104,7 +1106,18 @@ Model: ETS(A,A,N)
 <dd>
 <span data-code-cell="annotated-cell-6" data-code-lines="11" data-code-annotation="2">Here, we specify that the trend component can be either additive or damped, while the error and seasonal components will be selected automatically.</span>
 </dd>
+<dt data-target-cell="annotated-cell-6" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-6" data-code-lines="14" data-code-annotation="3">The output shows the selected model for each sensor.</span>
+</dd>
 </dl>
+</div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["Sensor"],"name":[1],"type":["chr"],"align":["left"]},{"label":["ETS_auto"],"name":[2],"type":["lst_mdl"],"align":["right"]},{"label":["ets_with_trend"],"name":[3],"type":["lst_mdl"],"align":["right"]}],"data":[{"1":"Bourke Street Mall (North)","2":"<lst_mdl>","3":"<lst_mdl>"},{"1":"QV Market-Elizabeth St (West)","2":"<lst_mdl>","3":"<lst_mdl>"},{"1":"Southern Cross Station","2":"<lst_mdl>","3":"<lst_mdl>"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
 </div>
 </div>
 
