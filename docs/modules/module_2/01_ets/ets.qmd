@@ -427,7 +427,7 @@ bra_fc |>
 $$
 \begin{aligned}
 \text{Forecast equation} \quad & \hat{y}_{t+h|t} = \ell_t +  (\phi + \phi^2 + \ldots + \phi^h) b_t \\
-\text{Level equation} \quad & \ell_t = \alpha y_t + (\ell_{t-1} + \phi b_{t-1}) \\
+\text{Level equation} \quad & \ell_t = \alpha y_t + (1 - \alpha) (\ell_{t-1} + \phi b_{t-1}) \\
 \text{Trend equation} \quad & b_t = \beta^*(\ell_t-\ell_{t-1}) + (1-\beta^*)\phi b_{t-1}
 \end{aligned}
 $$
@@ -826,6 +826,7 @@ sth_cross_ped |>
 ```{r}
 #| label: auto_ets
 #| code-line-numbers: "|10-11"
+#| df-print: default
 
 ped_fit <- pedestrian |> 
   filter(
@@ -847,3 +848,53 @@ ped_fit                                                #<3>
 3. The output shows the selected model for each sensor.
 
 
+::: {.content-hidden unless-format="revealjs"}
+
+# The lineup of exponential smoothing methods
+
+:::
+
+::: {.content-visible unless-format="revealjs"}
+
+## The lineup of exponential smoothing methods
+
+:::
+
+Table: ETS component combinations (trend × seasonal) {#tbl-ets-grid}
+
+| Trend component              | N (None)   | A (Additive)    | M (Multiplicative) |
+|:-----------------------------|:----------:|:---------------:|:------------------:|
+| $N$ **(None)**               | $(N,N)$,   | $(N,A)$         | $(N,M)$            |
+| $A$ **(Additive)**           | $(A,N)$,   | $(A,A)$         | $(A,M)$            |
+| $A_d$ **(Additive damped)**  | $(A_d,N)$, | $(A_d, A)$      | $(A_d,M)$          |
+
+
+Table: Names of some popular ETS models {#tbl-ets-names}
+
+| Notation | Method                             |
+|:--------:|:----------------------------------:|
+|$(N,N)$   | Simple Exponential Smoothing (SES) |
+|$(A,N)$   | Holt's Linear Trend                |
+|$(A_d,N)$ | Additive damped Trend              |
+|$(A,A)$   | Holt-Winters' Additive             |
+|$(A,M)$   | Holt-Winters' Multiplicative       |
+|$(A_d,M)$ | Holt-Winters' damped               |
+
+::: {.content-hidden unless-format="revealjs"}
+
+# In summary
+
+:::
+
+::: {.content-visible unless-format="revealjs"}
+
+## In summary
+
+:::
+
+- Exponential smoothing methods are a family of forecasting methods that use **weighted averages** of past observations to make forecasts.
+- The **weights decrease exponentially** for older observations, controlled by smoothing parameters.
+- Different configurations of ETS models can be used to handle various data patterns, including trend and seasonality.
+- The choice of model components (error, trend, seasonality) should be based on the characteristics of the data.
+  - That is, we **choose the model by viewing the time plot**.
+- Automatic ETS selection can be a powerful tool for fitting models to multiple time series efficiently.
