@@ -771,7 +771,7 @@ $$
 
 ```{r}
 #| label: hw_damped
-#| code-line-numbers: "|10"
+#| code-line-numbers: "10"
 
 sth_cross_ped <- pedestrian |>
   filter(Date >= "2016-07-01",
@@ -826,7 +826,7 @@ sth_cross_ped |>
 ```{r}
 #| label: auto_ets
 #| code-line-numbers: "|10-11"
-#| df-print: default
+#| df-print: tibble
 
 ped_fit <- pedestrian |> 
   filter(
@@ -860,7 +860,7 @@ ped_fit                                                #<3>
 
 :::
 
-Table: ETS component combinations (trend × seasonal) {#tbl-ets-grid}
+Table: ETS component combinations (trend × seasonal) {#tbl-ets-grid .striped .hover}
 
 | Trend component              | N (None)   | A (Additive)    | M (Multiplicative) |
 |:-----------------------------|:----------:|:---------------:|:------------------:|
@@ -869,7 +869,7 @@ Table: ETS component combinations (trend × seasonal) {#tbl-ets-grid}
 | $A_d$ **(Additive damped)**  | $(A_d,N)$, | $(A_d, A)$      | $(A_d,M)$          |
 
 
-Table: Names of some popular ETS models {#tbl-ets-names}
+Table: Names of some popular ETS models {#tbl-ets-names .striped .hover}
 
 | Notation | Method                             |
 |:--------:|:----------------------------------:|
@@ -895,6 +895,6 @@ Table: Names of some popular ETS models {#tbl-ets-names}
 - Exponential smoothing methods are a family of forecasting methods that use **weighted averages** of past observations to make forecasts.
 - The **weights decrease exponentially** for older observations, controlled by smoothing parameters.
 - Different configurations of ETS models can be used to handle various data patterns, including trend and seasonality.
-- The choice of model components (error, trend, seasonality) should be based on the characteristics of the data.
+- The choice of model components (`error(c("A", "M"))`, `trend(c("N", "A", "Ad"))`, `seasonality(c("N", "A", "M"))`) should be based on the characteristics of the data.
   - That is, we **choose the model by viewing the time plot**.
 - Automatic ETS selection can be a powerful tool for fitting models to multiple time series efficiently.
