@@ -461,15 +461,24 @@ Table&nbsp;1: Weights for different values of <span class="math inline">\alpha</
 <span id="cb2-7"><a></a>alg_fc <span class="ot">&lt;-</span> alg_fit <span class="sc">|&gt;</span></span>
 <span id="cb2-8"><a></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Obtaining the <code>report()</code> of a model</strong></p>
+</div>
+<div class="callout-content">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1"></a>alg_fit <span class="sc">|&gt;</span> </span>
-<span id="annotated-cell-3-2"><a href="#annotated-cell-3-2"></a>  <span class="fu">select</span>(SES) <span class="sc">|&gt;</span> </span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1">1</button><span id="annotated-cell-3-3" class="code-annotation-target"><a href="#annotated-cell-3-3"></a>  <span class="fu">report</span>()</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-6"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-6-1"><a href="#annotated-cell-6-1"></a>alg_fit <span class="sc">|&gt;</span> </span>
+<span id="annotated-cell-6-2"><a href="#annotated-cell-6-2"></a>  <span class="fu">select</span>(SES) <span class="sc">|&gt;</span> </span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="1">1</button><span id="annotated-cell-6-3" class="code-annotation-target"><a href="#annotated-cell-6-3"></a>  <span class="fu">report</span>()</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-3" data-target-annotation="1">1</dt>
+<dt data-target-cell="annotated-cell-6" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-3" data-code-lines="3" data-code-annotation="1">The <code>report()</code> function allows us to see a model’s report (the time series modeled, the model used, the estimated parameters, and more). It needs a <span class="math inline">1 \times 1</span> dimension <code>mable</code><a href="#/footnotes" class="footnote-ref" id="fnref1" role="doc-noteref" data-footnote-href="#/fn1" onclick=""><sup>1</sup></a>.</span>
+<span data-code-cell="annotated-cell-6" data-code-lines="3" data-code-annotation="1">The <code>report()</code> function allows us to see a model’s report (the time series modeled, the model used, the estimated parameters, and more). It needs a <span class="math inline">1 \times 1</span> dimension <code>mable</code><a href="#/footnotes" class="footnote-ref" id="fnref1" role="doc-noteref" data-footnote-href="#/fn1" onclick=""><sup>1</sup></a>.</span>
 </dd>
 </dl>
 </div>
@@ -487,6 +496,9 @@ Model: ETS(A,N,N)
 
      AIC     AICc      BIC 
 446.7154 447.1599 452.8968 </code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 <aside></aside></section>
@@ -655,29 +667,29 @@ Model: ETS(A,A,N)
 <section id="forecasting-brazils-population-3" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Forecasting Brazil’s population</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-4"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="annotated-cell-4-1" class="hljs-ln-code"><a href="#annotated-cell-4-1"></a>bra_fit <span class="ot">&lt;-</span> bra_economy <span class="sc">|&gt;</span> </span>
-<span id="annotated-cell-4-2" class="hljs-ln-code"><a href="#annotated-cell-4-2"></a>  <span class="fu">model</span>(</span>
-<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-4" data-target-annotation="1">1</button><span id="annotated-cell-4-3" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-4-3"></a>    <span class="at">Holt  =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>)),</span>
-<span id="annotated-cell-4-4" class="hljs-ln-code"><a href="#annotated-cell-4-4"></a>    <span class="at">Drift =</span> <span class="fu">RW</span>(Pop <span class="sc">~</span> <span class="fu">drift</span>())</span>
-<span id="annotated-cell-4-5" class="hljs-ln-code"><a href="#annotated-cell-4-5"></a>  )</span>
-<span id="annotated-cell-4-6" class="hljs-ln-code"><a href="#annotated-cell-4-6"></a></span>
-<span id="annotated-cell-4-7" class="hljs-ln-code"><a href="#annotated-cell-4-7"></a>bra_fit <span class="sc">|&gt;</span>  </span>
-<span id="annotated-cell-4-8" class="hljs-ln-code"><a href="#annotated-cell-4-8"></a>  <span class="fu">select</span>(Holt) <span class="sc">|&gt;</span>  </span>
-<span id="annotated-cell-4-9" class="hljs-ln-code"><a href="#annotated-cell-4-9"></a>  <span class="fu">report</span>()</span>
-<span id="annotated-cell-4-10" class="hljs-ln-code"><a href="#annotated-cell-4-10"></a></span>
-<span id="annotated-cell-4-11" class="hljs-ln-code"><a href="#annotated-cell-4-11"></a>bra_fc <span class="ot">&lt;-</span> bra_fit <span class="sc">|&gt;</span>  </span>
-<span id="annotated-cell-4-12" class="hljs-ln-code"><a href="#annotated-cell-4-12"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">15</span>)</span>
-<span id="annotated-cell-4-13" class="hljs-ln-code"><a href="#annotated-cell-4-13"></a></span>
-<span id="annotated-cell-4-14" class="hljs-ln-code"><a href="#annotated-cell-4-14"></a>bra_fc <span class="sc">|&gt;</span> </span>
-<span id="annotated-cell-4-15" class="hljs-ln-code"><a href="#annotated-cell-4-15"></a>  <span class="fu">autoplot</span>(bra_economy, <span class="at">level =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
-<span id="annotated-cell-4-16" class="hljs-ln-code"><a href="#annotated-cell-4-16"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Brazilian population"</span>,</span>
-<span id="annotated-cell-4-17" class="hljs-ln-code"><a href="#annotated-cell-4-17"></a>       <span class="at">y =</span> <span class="st">"Millions"</span>) <span class="sc">+</span></span>
-<span id="annotated-cell-4-18" class="hljs-ln-code"><a href="#annotated-cell-4-18"></a>  <span class="fu">guides</span>(<span class="at">colour =</span> <span class="fu">guide_legend</span>(<span class="at">title =</span> <span class="st">"Forecast"</span>))</span><div class="code-annotation-gutter-bg hljs-ln-code"></div><div class="code-annotation-gutter hljs-ln-code"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="annotated-cell-3-1" class="hljs-ln-code"><a href="#annotated-cell-3-1"></a>bra_fit <span class="ot">&lt;-</span> bra_economy <span class="sc">|&gt;</span> </span>
+<span id="annotated-cell-3-2" class="hljs-ln-code"><a href="#annotated-cell-3-2"></a>  <span class="fu">model</span>(</span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-3" data-target-annotation="1">1</button><span id="annotated-cell-3-3" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-3-3"></a>    <span class="at">Holt  =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>)),</span>
+<span id="annotated-cell-3-4" class="hljs-ln-code"><a href="#annotated-cell-3-4"></a>    <span class="at">Drift =</span> <span class="fu">RW</span>(Pop <span class="sc">~</span> <span class="fu">drift</span>())</span>
+<span id="annotated-cell-3-5" class="hljs-ln-code"><a href="#annotated-cell-3-5"></a>  )</span>
+<span id="annotated-cell-3-6" class="hljs-ln-code"><a href="#annotated-cell-3-6"></a></span>
+<span id="annotated-cell-3-7" class="hljs-ln-code"><a href="#annotated-cell-3-7"></a>bra_fit <span class="sc">|&gt;</span>  </span>
+<span id="annotated-cell-3-8" class="hljs-ln-code"><a href="#annotated-cell-3-8"></a>  <span class="fu">select</span>(Holt) <span class="sc">|&gt;</span>  </span>
+<span id="annotated-cell-3-9" class="hljs-ln-code"><a href="#annotated-cell-3-9"></a>  <span class="fu">report</span>()</span>
+<span id="annotated-cell-3-10" class="hljs-ln-code"><a href="#annotated-cell-3-10"></a></span>
+<span id="annotated-cell-3-11" class="hljs-ln-code"><a href="#annotated-cell-3-11"></a>bra_fc <span class="ot">&lt;-</span> bra_fit <span class="sc">|&gt;</span>  </span>
+<span id="annotated-cell-3-12" class="hljs-ln-code"><a href="#annotated-cell-3-12"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">15</span>)</span>
+<span id="annotated-cell-3-13" class="hljs-ln-code"><a href="#annotated-cell-3-13"></a></span>
+<span id="annotated-cell-3-14" class="hljs-ln-code"><a href="#annotated-cell-3-14"></a>bra_fc <span class="sc">|&gt;</span> </span>
+<span id="annotated-cell-3-15" class="hljs-ln-code"><a href="#annotated-cell-3-15"></a>  <span class="fu">autoplot</span>(bra_economy, <span class="at">level =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="annotated-cell-3-16" class="hljs-ln-code"><a href="#annotated-cell-3-16"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Brazilian population"</span>,</span>
+<span id="annotated-cell-3-17" class="hljs-ln-code"><a href="#annotated-cell-3-17"></a>       <span class="at">y =</span> <span class="st">"Millions"</span>) <span class="sc">+</span></span>
+<span id="annotated-cell-3-18" class="hljs-ln-code"><a href="#annotated-cell-3-18"></a>  <span class="fu">guides</span>(<span class="at">colour =</span> <span class="fu">guide_legend</span>(<span class="at">title =</span> <span class="st">"Forecast"</span>))</span><div class="code-annotation-gutter-bg hljs-ln-code"></div><div class="code-annotation-gutter hljs-ln-code"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-4" data-target-annotation="1">1</dt>
+<dt data-target-cell="annotated-cell-3" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-4" data-code-lines="3" data-code-annotation="1">We specify <code>trend("A")</code> to indicate that we want a linear trend. The model will estimate the smoothing parameters <span class="math inline">\alpha</span> and <span class="math inline">\beta^*</span> automatically.</span>
+<span data-code-cell="annotated-cell-3" data-code-lines="3" data-code-annotation="1">We specify <code>trend("A")</code> to indicate that we want a linear trend. The model will estimate the smoothing parameters <span class="math inline">\alpha</span> and <span class="math inline">\beta^*</span> automatically.</span>
 </dd>
 </dl>
 </div>
@@ -785,21 +797,21 @@ Model: ETS(A,A,N)
 <section id="forecasting-brazils-population-continued-1" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Forecasting Brazil’s population (continued)</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-5"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="annotated-cell-5-1" class="hljs-ln-code"><a href="#annotated-cell-5-1"></a>bra_economy <span class="sc">|&gt;</span> </span>
-<span id="annotated-cell-5-2" class="hljs-ln-code"><a href="#annotated-cell-5-2"></a>  <span class="fu">model</span>(</span>
-<span id="annotated-cell-5-3" class="hljs-ln-code"><a href="#annotated-cell-5-3"></a>    <span class="at">Holt   =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>)),</span>
-<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-5" data-target-annotation="1">1</button><span id="annotated-cell-5-4" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-5-4"></a>    <span class="at">Damped =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"Ad"</span>, <span class="at">phi =</span> <span class="fl">0.9</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
-<span id="annotated-cell-5-5" class="hljs-ln-code"><a href="#annotated-cell-5-5"></a>  ) <span class="sc">|&gt;</span> </span>
-<span id="annotated-cell-5-6" class="hljs-ln-code"><a href="#annotated-cell-5-6"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">15</span>) <span class="sc">|&gt;</span> </span>
-<span id="annotated-cell-5-7" class="hljs-ln-code"><a href="#annotated-cell-5-7"></a>  <span class="fu">autoplot</span>(bra_economy, <span class="at">level =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
-<span id="annotated-cell-5-8" class="hljs-ln-code"><a href="#annotated-cell-5-8"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Brazilian population"</span>,</span>
-<span id="annotated-cell-5-9" class="hljs-ln-code"><a href="#annotated-cell-5-9"></a>       <span class="at">y =</span> <span class="st">"Millions"</span>) <span class="sc">+</span></span>
-<span id="annotated-cell-5-10" class="hljs-ln-code"><a href="#annotated-cell-5-10"></a>  <span class="fu">guides</span>(<span class="at">colour =</span> <span class="fu">guide_legend</span>(<span class="at">title =</span> <span class="st">"Forecast"</span>))</span><div class="code-annotation-gutter-bg hljs-ln-code"></div><div class="code-annotation-gutter hljs-ln-code"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-4"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="annotated-cell-4-1" class="hljs-ln-code"><a href="#annotated-cell-4-1"></a>bra_economy <span class="sc">|&gt;</span> </span>
+<span id="annotated-cell-4-2" class="hljs-ln-code"><a href="#annotated-cell-4-2"></a>  <span class="fu">model</span>(</span>
+<span id="annotated-cell-4-3" class="hljs-ln-code"><a href="#annotated-cell-4-3"></a>    <span class="at">Holt   =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>)),</span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-4" data-target-annotation="1">1</button><span id="annotated-cell-4-4" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-4-4"></a>    <span class="at">Damped =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"Ad"</span>, <span class="at">phi =</span> <span class="fl">0.9</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
+<span id="annotated-cell-4-5" class="hljs-ln-code"><a href="#annotated-cell-4-5"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="annotated-cell-4-6" class="hljs-ln-code"><a href="#annotated-cell-4-6"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">15</span>) <span class="sc">|&gt;</span> </span>
+<span id="annotated-cell-4-7" class="hljs-ln-code"><a href="#annotated-cell-4-7"></a>  <span class="fu">autoplot</span>(bra_economy, <span class="at">level =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="annotated-cell-4-8" class="hljs-ln-code"><a href="#annotated-cell-4-8"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Brazilian population"</span>,</span>
+<span id="annotated-cell-4-9" class="hljs-ln-code"><a href="#annotated-cell-4-9"></a>       <span class="at">y =</span> <span class="st">"Millions"</span>) <span class="sc">+</span></span>
+<span id="annotated-cell-4-10" class="hljs-ln-code"><a href="#annotated-cell-4-10"></a>  <span class="fu">guides</span>(<span class="at">colour =</span> <span class="fu">guide_legend</span>(<span class="at">title =</span> <span class="st">"Forecast"</span>))</span><div class="code-annotation-gutter-bg hljs-ln-code"></div><div class="code-annotation-gutter hljs-ln-code"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-5" data-target-annotation="1">1</dt>
+<dt data-target-cell="annotated-cell-4" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-5" data-code-lines="4" data-code-annotation="1">We specify <code>trend("Ad")</code> to indicate that we want a damped trend, and <code>phi = 0.9</code> sets the damping parameter to 0.9. We could also let the model estimate <span class="math inline">\phi</span> automatically by omitting the <code>phi</code> argument.</span>
+<span data-code-cell="annotated-cell-4" data-code-lines="4" data-code-annotation="1">We specify <code>trend("Ad")</code> to indicate that we want a damped trend, and <code>phi = 0.9</code> sets the damping parameter to 0.9. We could also let the model estimate <span class="math inline">\phi</span> automatically by omitting the <code>phi</code> argument.</span>
 </dd>
 </dl>
 </div>
@@ -859,9 +871,134 @@ Model: ETS(A,A,N)
 </div>
 </div>
 </div>
+<aside></aside></section>
+<section id="forecasting-australian-holiday-trips" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Forecasting Australian holiday trips</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb11-1" class="hljs-ln-code"><a></a>aus_holidays <span class="ot">&lt;-</span> tourism <span class="sc">|&gt;</span> </span>
+<span id="cb11-2" class="hljs-ln-code"><a></a>  <span class="fu">filter</span>(Purpose <span class="sc">==</span> <span class="st">"Holiday"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb11-3" class="hljs-ln-code"><a></a>  <span class="fu">summarise</span>(<span class="at">Trips =</span> <span class="fu">sum</span>(Trips))</span>
+<span id="cb11-4" class="hljs-ln-code"><a></a></span>
+<span id="cb11-5" class="hljs-ln-code"><a></a>aus_holidays</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["Quarter"],"name":[1],"type":["qtr"],"align":["right"]},{"label":["Trips"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"1998 Q1","2":"11806.038"},{"1":"1998 Q2","2":"9275.662"},{"1":"1998 Q3","2":"8642.489"},{"1":"1998 Q4","2":"9299.524"},{"1":"1999 Q1","2":"11172.027"},{"1":"1999 Q2","2":"9607.613"},{"1":"1999 Q3","2":"8913.887"},{"1":"1999 Q4","2":"9025.688"},{"1":"2000 Q1","2":"11070.866"},{"1":"2000 Q2","2":"9196.262"},{"1":"2000 Q3","2":"9347.506"},{"1":"2000 Q4","2":"8984.014"},{"1":"2001 Q1","2":"10672.314"},{"1":"2001 Q2","2":"9533.492"},{"1":"2001 Q3","2":"8807.159"},{"1":"2001 Q4","2":"8976.945"},{"1":"2002 Q1","2":"10842.619"},{"1":"2002 Q2","2":"9232.745"},{"1":"2002 Q3","2":"8836.214"},{"1":"2002 Q4","2":"9247.541"},{"1":"2003 Q1","2":"10501.559"},{"1":"2003 Q2","2":"9093.530"},{"1":"2003 Q3","2":"8840.543"},{"1":"2003 Q4","2":"8841.261"},{"1":"2004 Q1","2":"10701.460"},{"1":"2004 Q2","2":"9211.266"},{"1":"2004 Q3","2":"8924.441"},{"1":"2004 Q4","2":"8378.584"},{"1":"2005 Q1","2":"10928.985"},{"1":"2005 Q2","2":"8066.260"},{"1":"2005 Q3","2":"8100.493"},{"1":"2005 Q4","2":"7737.042"},{"1":"2006 Q1","2":"11219.247"},{"1":"2006 Q2","2":"9274.047"},{"1":"2006 Q3","2":"7796.211"},{"1":"2006 Q4","2":"8928.403"},{"1":"2007 Q1","2":"10910.305"},{"1":"2007 Q2","2":"9356.413"},{"1":"2007 Q3","2":"8617.460"},{"1":"2007 Q4","2":"8716.351"},{"1":"2008 Q1","2":"11951.491"},{"1":"2008 Q2","2":"8499.460"},{"1":"2008 Q3","2":"8482.236"},{"1":"2008 Q4","2":"8391.107"},{"1":"2009 Q1","2":"10131.975"},{"1":"2009 Q2","2":"8400.415"},{"1":"2009 Q3","2":"8690.304"},{"1":"2009 Q4","2":"8262.348"},{"1":"2010 Q1","2":"10157.017"},{"1":"2010 Q2","2":"8733.928"},{"1":"2010 Q3","2":"8606.513"},{"1":"2010 Q4","2":"8504.683"},{"1":"2011 Q1","2":"9846.442"},{"1":"2011 Q2","2":"9009.222"},{"1":"2011 Q3","2":"8449.499"},{"1":"2011 Q4","2":"8488.634"},{"1":"2012 Q1","2":"10267.920"},{"1":"2012 Q2","2":"8602.912"},{"1":"2012 Q3","2":"8350.377"},{"1":"2012 Q4","2":"9237.491"},{"1":"2013 Q1","2":"10786.685"},{"1":"2013 Q2","2":"9033.304"},{"1":"2013 Q3","2":"8781.003"},{"1":"2013 Q4","2":"8876.849"},{"1":"2014 Q1","2":"11355.294"},{"1":"2014 Q2","2":"10198.932"},{"1":"2014 Q3","2":"8968.036"},{"1":"2014 Q4","2":"9414.327"},{"1":"2015 Q1","2":"11630.934"},{"1":"2015 Q2","2":"9707.048"},{"1":"2015 Q3","2":"9545.955"},{"1":"2015 Q4","2":"10046.159"},{"1":"2016 Q1","2":"12593.178"},{"1":"2016 Q2","2":"9980.199"},{"1":"2016 Q3","2":"9939.618"},{"1":"2016 Q4","2":"10084.965"},{"1":"2017 Q1","2":"12406.419"},{"1":"2017 Q2","2":"10471.197"},{"1":"2017 Q3","2":"10499.165"},{"1":"2017 Q4","2":"11210.818"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section>
+<section id="forecasting-australian-holiday-trips-1" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Forecasting Australian holiday trips</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb12-1" class="hljs-ln-code"><a></a>aus_holidays <span class="ot">&lt;-</span> tourism <span class="sc">|&gt;</span> </span>
+<span id="cb12-2" class="hljs-ln-code"><a></a>  <span class="fu">filter</span>(Purpose <span class="sc">==</span> <span class="st">"Holiday"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb12-3" class="hljs-ln-code"><a></a>  <span class="fu">summarise</span>(<span class="at">Trips =</span> <span class="fu">sum</span>(Trips))</span>
+<span id="cb12-4" class="hljs-ln-code"><a></a></span>
+<span id="cb12-5" class="hljs-ln-code"><a></a>aus_holidays <span class="sc">|&gt;</span></span>
+<span id="cb12-6" class="hljs-ln-code"><a></a>  <span class="fu">autoplot</span>(Trips)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="ets_files/figure-revealjs/hw_2-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7"><img data-src="ets_files/figure-revealjs/hw_2-1.png" width="960"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>We will forecast the number of holiday trips in Australia using additive and multiplicative Holt-Winters methods.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="forecasting-australian-holiday-trips-3" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Forecasting Australian holiday trips</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb13-1" class="hljs-ln-code"><a></a>aus_fit <span class="ot">&lt;-</span> aus_holidays <span class="sc">|&gt;</span> </span>
+<span id="cb13-2" class="hljs-ln-code"><a></a>  <span class="fu">model</span>(</span>
+<span id="cb13-3" class="hljs-ln-code"><a></a>    <span class="at">Additive       =</span> <span class="fu">ETS</span>(Trips <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"A"</span>))</span>
+<span id="cb13-4" class="hljs-ln-code"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="forecasting-australian-holiday-trips-4" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Forecasting Australian holiday trips</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb14-1" class="hljs-ln-code"><a></a>aus_fit <span class="ot">&lt;-</span> aus_holidays <span class="sc">|&gt;</span> </span>
+<span id="cb14-2" class="hljs-ln-code"><a></a>  <span class="fu">model</span>(</span>
+<span id="cb14-3" class="hljs-ln-code"><a></a>    <span class="at">Additive       =</span> <span class="fu">ETS</span>(Trips <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"A"</span>)),</span>
+<span id="cb14-4" class="hljs-ln-code"><a></a>    <span class="at">Multiplicative =</span> <span class="fu">ETS</span>(Trips <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"M"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"M"</span>))</span>
+<span id="cb14-5" class="hljs-ln-code"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="forecasting-australian-holiday-trips-5" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Forecasting Australian holiday trips</h2>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>The <code>tidy()</code> function for models</strong></p>
+</div>
+<div class="callout-content">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-20"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="annotated-cell-20-1" class="hljs-ln-code"><a href="#annotated-cell-20-1"></a>aus_fit <span class="sc">|&gt;</span> </span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-20" data-target-annotation="1">1</button><span id="annotated-cell-20-2" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-20-2"></a>  <span class="fu">tidy</span>()</span><div class="code-annotation-gutter-bg hljs-ln-code"></div><div class="code-annotation-gutter hljs-ln-code"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-20" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-20" data-code-lines="2" data-code-annotation="1">The <code>tidy()</code> function allows us to see the estimated parameters of each model in a <a href="https://r4ds.hadley.nz/data-tidy.html">tidy</a> table.</span>
+</dd>
+</dl>
+</div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[".model"],"name":[1],"type":["chr"],"align":["left"]},{"label":["term"],"name":[2],"type":["chr"],"align":["left"]},{"label":["estimate"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"Additive","2":"alpha","3":"2.364280e-01"},{"1":"Additive","2":"beta","3":"2.978683e-02"},{"1":"Additive","2":"gamma","3":"1.000204e-04"},{"1":"Additive","2":"l[0]","3":"9.898697e+03"},{"1":"Additive","2":"b[0]","3":"-3.739721e+01"},{"1":"Additive","2":"s[0]","3":"-5.381971e+02"},{"1":"Additive","2":"s[-1]","3":"-6.839969e+02"},{"1":"Additive","2":"s[-2]","3":"-2.897464e+02"},{"1":"Additive","2":"s[-3]","3":"1.511940e+03"},{"1":"Multiplicative","2":"alpha","3":"1.864709e-01"},{"1":"Multiplicative","2":"beta","3":"2.476546e-02"},{"1":"Multiplicative","2":"gamma","3":"1.001247e-04"},{"1":"Multiplicative","2":"l[0]","3":"9.852791e+03"},{"1":"Multiplicative","2":"b[0]","3":"-3.341186e+01"},{"1":"Multiplicative","2":"s[0]","3":"9.425605e-01"},{"1":"Multiplicative","2":"s[-1]","3":"9.255899e-01"},{"1":"Multiplicative","2":"s[-2]","3":"9.699594e-01"},{"1":"Multiplicative","2":"s[-3]","3":"1.161890e+00"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="forecasting-australian-holiday-trips-6" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Forecasting Australian holiday trips</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a>aus_fc <span class="ot">&lt;-</span> aus_fit <span class="sc">|&gt;</span> </span>
+<span id="cb15-2"><a></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"3 years"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a>aus_fc <span class="sc">%&gt;%</span></span>
+<span id="cb16-2"><a></a>  <span class="fu">autoplot</span>(aus_holidays, <span class="at">level =</span> <span class="cn">NULL</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Year"</span>) <span class="sc">+</span></span>
+<span id="cb16-3"><a></a>  <span class="fu">labs</span>(</span>
+<span id="cb16-4"><a></a>    <span class="at">title =</span> <span class="st">"Forecasting Australian holiday trips using Holt-Winters"</span>,</span>
+<span id="cb16-5"><a></a>    <span class="at">y =</span> <span class="st">"Overnight trips (millions)"</span></span>
+<span id="cb16-6"><a></a>  ) <span class="sc">+</span></span>
+<span id="cb16-7"><a></a>  <span class="fu">scale_color_brewer</span>(<span class="at">type =</span> <span class="st">"qual"</span>, <span class="at">palette =</span> <span class="st">"Dark2"</span>) <span class="sc">+</span></span>
+<span id="cb16-8"><a></a>  <span class="fu">guides</span>(<span class="at">colour =</span> <span class="fu">guide_legend</span>(<span class="at">title =</span> <span class="st">"Forecast"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="ets_files/figure-revealjs/hw_7-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8"><img data-src="ets_files/figure-revealjs/hw_7-1.png" width="960"></a></p>
+</figure>
+</div>
+</div>
+</div>
 
 
-<aside></aside></section></section>
+</section></section>
 <section id="footnotes" class="footnotes footnotes-end-of-document smaller scrollable" role="doc-endnotes"><h2>Footnotes</h2>
 
 <ol>
