@@ -137,8 +137,12 @@ SES has a flat forecast function, so it is appropriate for data with **no trend*
 
 ::: {.content-hidden unless-format="revealjs"}
 
-##
+## Forecasting Algeria's exports {auto-animate="true"}
 
+:::
+
+::: {.content-visible unless-format="revealjs"}
+#### Forecasting Algeria's exports {auto-animate="true"}
 :::
 
 ```{r}
@@ -159,13 +163,15 @@ algeria_economy |>
 
 alg_fit <- algeria_economy |>
   model(
-    SES = ETS(Exports ~ error("A") + trend("N") + season("N")),
+    SES = ETS(Exports ~ error("A") + trend("N") + season("N")), #<1>
     Naive = NAIVE(Exports)
   )
 
 alg_fc <- alg_fit |>
   forecast(h = 5)
 ```
+
+1. We specify `trend("N")` and `season("N")` to indicate that we want a simple exponential smoothing (SES) model, which assumes no trend and no seasonality. The model will estimate the smoothing parameter $\alpha$ automatically.
 
 ::: {.content-visible unless-format="revealjs"}
 
@@ -290,6 +296,8 @@ Let's see an example using Holt's linear trend method to forecast Brazil's popul
 
 ::: {.content-visible unless-format="revealjs"}
 
+#### Forecasting Brazil's population
+
 ```{r}
 #| label: bra-pop
 
@@ -305,7 +313,7 @@ bra_economy |>
 
 ::: {.content-hidden unless-format="revealjs"}
 
-##
+## Forecasting Brazil's population {auto-animate="true"}
 
 ```{r}
 #| label: bra-pop-plot
@@ -372,12 +380,6 @@ bra_fit |>
 
 :::
 
-::: {.content-visible unless-format="revealjs"}
-
-#### Forecasting Brazil's population
-
-:::
-
 
 ```{r}
 #| label: holt_full
@@ -441,7 +443,7 @@ where $0 < \phi < 1$^[In practice, we restrict $0.8 \leq \phi \leq 0.98$ because
 
 ::: {.content-hidden unless-format="revealjs"}
 
-## Forecasting Brazil's population {auto-animate="true"}
+## Forecasting Brazil's population (continued) {auto-animate="true"}
 
 ```{r}
 #| label: damped_1
@@ -590,16 +592,6 @@ aus_holidays
 
 ## Forecasting Australian holiday trips {auto-animate="true"}
 
-:::
-
-
-::: {.content-visible unless-format="revealjs"}
-
-#### Forecasting Australian holiday trips
-
-:::
-
-
 ```{r}
 #| label: hw_2
 
@@ -611,11 +603,7 @@ aus_holidays |>
   autoplot(Trips)
 ```
 
-::: {.notes}
 
-We will forecast the number of holiday trips in Australia using additive and multiplicative Holt-Winters methods.
-
-:::
 
 ::: {.content-hidden unless-format="revealjs"}
 
@@ -670,20 +658,71 @@ aus_fc <- aus_fit |>
 ```{r}
 #| label: hw_7
 
-aus_fc %>%
+aus_fc |> 
   autoplot(aus_holidays, level = NULL) + xlab("Year") +
   labs(
-    title = "Forecasting Australian holiday trips using Holt-Winters",
-    y = "Overnight trips (millions)"
+    title   = "Forecasting Australian holiday trips using Holt-Winters",
+    y       = "Overnight trips (millions)",
+    caption = "Can you spot any differences between both forecasts?"
   ) +
   scale_color_brewer(type = "qual", palette = "Dark2") +
   guides(colour = guide_legend(title = "Forecast"))
 ```
 
-
-
 :::
 
+::: {.content-visible unless-format="revealjs"}
 
+#### Forecasting Australian holiday trips
+
+We will forecast the number of holiday trips in Australia using additive and multiplicative Holt-Winters methods.
+
+```{r}
+#| label: hw_full
+
+aus_holidays <- tourism |> 
+  filter(Purpose == "Holiday") |>
+  summarise(Trips = sum(Trips))
+
+aus_holidays |>
+  autoplot(Trips)
+
+aus_fit <- aus_holidays |> 
+  model(
+    Additive       = ETS(Trips ~ error("A") + trend("A") + season("A")), #<1>
+    Multiplicative = ETS(Trips ~ error("M") + trend("A") + season("M"))  #<2>
+  )
+  
+aus_fc <- us_fit |> 
+  forecast(h = "3 years")
+
+aus_fc |> 
+  autoplot(aus_holidays, level = NULL) + xlab("Year") +
+  labs(
+    title   = "Forecasting Australian holiday trips using Holt-Winters",
+    y       = "Overnight trips (millions)",
+    caption = "Can you spot any differences between both forecasts?"
+  ) +
+  scale_color_brewer(type = "qual", palette = "Dark2") +
+  guides(colour = guide_legend(title = "Forecast"))
+```
+
+1. We specify `error("A")` and `season("A")` to indicate that we want an additive Holt-Winters model. We will usually set the `error()` according to the `season()` type.
+2. We specify `error("M")` and `season("M")` to indicate that we want a multiplicative Holt-Winters model. Both models will estimate the smoothing parameters $\alpha$, $\beta^*$, and $\gamma$ automatically.
+
+::: {.callout-note collapse="true"}
+## The `tidy()` function for models
+
+```{r}
+#| label: hw_5
+
+aus_fit |> 
+  tidy()  #<1>
+```
+
+1. The `tidy()` function allows us to see the estimated parameters of each model in a [tidy](https://r4ds.hadley.nz/data-tidy.html) table.
+:::
+
+:::
 
 
