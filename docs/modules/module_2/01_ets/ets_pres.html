@@ -747,7 +747,7 @@ Model: ETS(A,A,N)
 <p><span class="math display">
 \begin{aligned}
 \text{Forecast equation} \quad &amp; \hat{y}_{t+h|t} = \ell_t +  (\phi + \phi^2 + \ldots + \phi^h) b_t \\
-\text{Level equation} \quad &amp; \ell_t = \alpha y_t + (\ell_{t-1} + \phi b_{t-1}) \\
+\text{Level equation} \quad &amp; \ell_t = \alpha y_t + (1 - \alpha) (\ell_{t-1} + \phi b_{t-1}) \\
 \text{Trend equation} \quad &amp; b_t = \beta^*(\ell_t-\ell_{t-1}) + (1-\beta^*)\phi b_{t-1}
 \end{aligned}
 </span></p>
@@ -1081,7 +1081,7 @@ Model: ETS(A,A,N)
 </section>
 <section id="example-forecasting-daily-pedestrian-traffic-continued" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Example: Forecasting daily pedestrian traffic (continued)</h2>
-<div class="cell">
+<div class="cell" data-df-print="default">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-6" data-code-line-numbers="|10-11"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="annotated-cell-6-1" class="hljs-ln-code"><a href="#annotated-cell-6-1"></a>ped_fit <span class="ot">&lt;-</span> pedestrian <span class="sc">|&gt;</span> </span>
 <span id="annotated-cell-6-2" class="hljs-ln-code"><a href="#annotated-cell-6-2"></a>  <span class="fu">filter</span>(</span>
 <span id="annotated-cell-6-3" class="hljs-ln-code"><a href="#annotated-cell-6-3"></a>    Date <span class="sc">&gt;=</span> <span class="st">"2016-07-01"</span>,</span>
@@ -1120,9 +1120,115 @@ Model: ETS(A,A,N)
 </div>
 </div>
 </div>
-
-
 </section></section>
+<section id="the-lineup-of-exponential-smoothing-methods" class="title-slide slide level1 center">
+<h1>The lineup of exponential smoothing methods</h1>
+<div id="tbl-ets-grid" class="quarto-float quarto-figure quarto-figure-center">
+<figure class="quarto-float quarto-float-tbl">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-ets-grid-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;2: ETS component combinations (trend × seasonal)
+</figcaption>
+<div aria-describedby="tbl-ets-grid-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top">
+<colgroup>
+<col style="width: 37%">
+<col style="width: 15%">
+<col style="width: 21%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Trend component</th>
+<th style="text-align: center;">N (None)</th>
+<th style="text-align: center;">A (Additive)</th>
+<th style="text-align: center;">M (Multiplicative)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">N</span> <strong>(None)</strong></td>
+<td style="text-align: center;"><span class="math inline">(N,N)</span>,</td>
+<td style="text-align: center;"><span class="math inline">(N,A)</span></td>
+<td style="text-align: center;"><span class="math inline">(N,M)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">A</span> <strong>(Additive)</strong></td>
+<td style="text-align: center;"><span class="math inline">(A,N)</span>,</td>
+<td style="text-align: center;"><span class="math inline">(A,A)</span></td>
+<td style="text-align: center;"><span class="math inline">(A,M)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">A_d</span> <strong>(Additive damped)</strong></td>
+<td style="text-align: center;"><span class="math inline">(A_d,N)</span>,</td>
+<td style="text-align: center;"><span class="math inline">(A_d, A)</span></td>
+<td style="text-align: center;"><span class="math inline">(A_d,M)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<div id="tbl-ets-names" class="quarto-float quarto-figure quarto-figure-center">
+<figure class="quarto-float quarto-float-tbl">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-ets-names-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;3: Names of some popular ETS models
+</figcaption>
+<div aria-describedby="tbl-ets-names-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: center;">Notation</th>
+<th style="text-align: center;">Method</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">(N,N)</span></td>
+<td style="text-align: center;">Simple Exponential Smoothing (SES)</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="math inline">(A,N)</span></td>
+<td style="text-align: center;">Holt’s Linear Trend</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">(A_d,N)</span></td>
+<td style="text-align: center;">Additive damped Trend</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="math inline">(A,A)</span></td>
+<td style="text-align: center;">Holt-Winters’ Additive</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">(A,M)</span></td>
+<td style="text-align: center;">Holt-Winters’ Multiplicative</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="math inline">(A_d,M)</span></td>
+<td style="text-align: center;">Holt-Winters’ damped</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+</section>
+
+<section id="in-summary" class="title-slide slide level1 center">
+<h1>In summary</h1>
+<ul>
+<li class="fragment">Exponential smoothing methods are a family of forecasting methods that use <strong>weighted averages</strong> of past observations to make forecasts.</li>
+<li class="fragment">The <strong>weights decrease exponentially</strong> for older observations, controlled by smoothing parameters.</li>
+<li class="fragment">Different configurations of ETS models can be used to handle various data patterns, including trend and seasonality.</li>
+<li class="fragment">The choice of model components (error, trend, seasonality) should be based on the characteristics of the data.
+<ul>
+<li class="fragment">That is, we <strong>choose the model by viewing the time plot</strong>.</li>
+</ul></li>
+<li class="fragment">Automatic ETS selection can be a powerful tool for fitting models to multiple time series efficiently.</li>
+</ul>
+
+
+</section>
+
 <section id="footnotes" class="footnotes footnotes-end-of-document smaller scrollable" role="doc-endnotes"><h2>Footnotes</h2>
 
 <ol>
