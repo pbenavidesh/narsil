@@ -276,7 +276,7 @@ $$
 \begin{aligned}
 \text{Forecast equation} \quad & \hat{y}_{t+h|t} = \ell_t + hb_t \\
 \text{Level equation} \quad & \ell_t = \alpha y_t + (1-\alpha)\ell_{t-1}\\
-\text{Trend equation} \quad & b_t = \beta^*(l_t-l_{t-1}) + (1-\beta^*)b_{t-1}
+\text{Trend equation} \quad & b_t = \beta^*(\ell_t - \ell_{t-1}) + (1-\beta^*)b_{t-1}
 \end{aligned}
 $$
 
@@ -644,6 +644,7 @@ aus_fit |>
 ```
 
 1. The `tidy()` function allows us to see the estimated parameters of each model in a [tidy](https://r4ds.hadley.nz/data-tidy.html) table.
+
 :::
 
 ## Example: Forecasting Australian holiday trips {auto-animate="true"}
@@ -668,6 +669,8 @@ aus_fc |>
   scale_color_brewer(type = "qual", palette = "Dark2") +
   guides(colour = guide_legend(title = "Forecast"))
 ```
+
+:::
 
 :::
 
@@ -788,4 +791,43 @@ sth_cross_ped |>
 ```
 
 1. The setup `ETS($y_t$ ~ error("M") + trend("Ad") + season("M"))` is often a robust choice for seasonal data with trend.
+
+::: {.content-hidden unless-format="revealjs"}
+
+# Automatic ETS selection
+
+:::
+
+::: {.content-visible unless-format="revealjs"}
+
+## Automatic ETS selection
+
+:::
+
+::: {.notes}
+
+- Using `fable`, we can automatically select the best ETS model for our data using the `ETS()` function. We achieve this by **not specifying** the error, trend, or seasonal components.
+- You can also get a *semi-automatic* selection by specifying some components and leaving others to be selected automatically, or by providing a set of possible values for a component.
+- Automatic selection is especially useful when we have multiple time series to model, as it allows us to fit different ETS models to each series.
+:::
+
+::: {.content-hidden unless-format="revealjs"}
+
+## Example: Forecasting daily pedestrian traffic (continued) {auto-animate="true"}
+
+:::
+
+::: {.content-visible unless-format="revealjs"}
+
+#### Example: Forecasting daily pedestrian traffic (continued)
+
+:::
+
+```{r}
+pedestrian |> 
+filter(Date >= "2016-07-01") |> 
+  index_by(Date) |>
+  group_by_key() |> 
+  summarise(Count = sum(Count)/1000)
+```
 
