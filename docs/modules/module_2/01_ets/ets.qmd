@@ -771,7 +771,7 @@ $$
 
 ```{r}
 #| label: hw_damped
-#| code-line-numbers: "10"
+#| code-line-numbers: "|10"
 
 sth_cross_ped <- pedestrian |>
   filter(Date >= "2016-07-01",
@@ -790,7 +790,7 @@ sth_cross_ped |>
        y="Pedestrians ('000)")
 ```
 
-1. The setup `ETS($y_t$ ~ error("M") + trend("Ad") + season("M"))` is often a robust choice for seasonal data with trend.
+1. The setup `ETS(y ~ error("M") + trend("Ad") + season("M"))` is often a robust choice for seasonal data with trend.
 
 ::: {.content-hidden unless-format="revealjs"}
 
@@ -824,10 +824,22 @@ sth_cross_ped |>
 :::
 
 ```{r}
-pedestrian |> 
-filter(Date >= "2016-07-01") |> 
+#| label: auto_ets
+#| code-line-numbers: "|10-11"
+
+ped_fit <- pedestrian |> 
+  filter(
+    Date >= "2016-07-01",
+    Sensor != "Birrarung Marr"
+  ) |> 
   index_by(Date) |>
   group_by_key() |> 
-  summarise(Count = sum(Count)/1000)
+  summarise(Count = sum(Count)/1000) |> 
+  model(
+    ETS_auto       = ETS(Count),                       #<1>
+    ets_with_trend = ETS(Count ~ trend(c("A", "Ad"))), #<2>
+  )
 ```
+1. Leaving the right-hand side of the formula empty allows `fable` to automatically select the best ETS model for each time series.
+2. Here, we specify that the trend component can be either additive or damped, while the error and seasonal components will be selected automatically.
 
