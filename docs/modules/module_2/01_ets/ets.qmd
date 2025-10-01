@@ -623,6 +623,7 @@ We will forecast the number of holiday trips in Australia using additive and mul
 
 ```{r}
 #| label: hw_3
+#| eval: false
 
 aus_fit <- aus_holidays |> 
   model(
@@ -633,7 +634,7 @@ aus_fit <- aus_holidays |>
 ## Forecasting Australian holiday trips {auto-animate="true"}
 
 ```{r}
-#| label: hw_3
+#| label: hw_4
 
 aus_fit <- aus_holidays |> 
   model(
@@ -644,17 +645,45 @@ aus_fit <- aus_holidays |>
 
 ## Forecasting Australian holiday trips {auto-animate="true"}
 
-:::
-
 ::: {.callout-note collapse="true"}
 ## The `tidy()` function for models
 
 ```{r}
+#| label: hw_5
+
 aus_fit |> 
   tidy()  #<1>
 ```
 
 1. The `tidy()` function allows us to see the estimated parameters of each model in a [tidy](https://r4ds.hadley.nz/data-tidy.html) table.
 :::
+
+## Forecasting Australian holiday trips {auto-animate="true"}
+
+```{r}
+#| label: hw_6
+
+aus_fc <- aus_fit |> 
+  forecast(h = "3 years")
+```
+
+```{r}
+#| label: hw_7
+
+aus_fc %>%
+  autoplot(aus_holidays, level = NULL) + xlab("Year") +
+  labs(
+    title = "Forecasting Australian holiday trips using Holt-Winters",
+    y = "Overnight trips (millions)"
+  ) +
+  scale_color_brewer(type = "qual", palette = "Dark2") +
+  guides(colour = guide_legend(title = "Forecast"))
+```
+
+
+
+:::
+
+
 
 
