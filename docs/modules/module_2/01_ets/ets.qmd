@@ -137,12 +137,12 @@ SES has a flat forecast function, so it is appropriate for data with **no trend*
 
 ::: {.content-hidden unless-format="revealjs"}
 
-## Forecasting Algeria's exports {auto-animate="true"}
+## Example: Forecasting Algeria's exports {auto-animate="true"}
 
 :::
 
 ::: {.content-visible unless-format="revealjs"}
-#### Forecasting Algeria's exports {auto-animate="true"}
+#### Example: Forecasting Algeria's exports {auto-animate="true"}
 :::
 
 ```{r}
@@ -296,7 +296,7 @@ Let's see an example using Holt's linear trend method to forecast Brazil's popul
 
 ::: {.content-visible unless-format="revealjs"}
 
-#### Forecasting Brazil's population
+#### Example: Forecasting Brazil's population
 
 ```{r}
 #| label: bra-pop
@@ -313,7 +313,7 @@ bra_economy |>
 
 ::: {.content-hidden unless-format="revealjs"}
 
-## Forecasting Brazil's population {auto-animate="true"}
+## Example: Forecasting Brazil's population {auto-animate="true"}
 
 ```{r}
 #| label: bra-pop-plot
@@ -328,7 +328,7 @@ bra_economy |>
 
 ::: {.content-hidden unless-format="revealjs"}
 
-## Forecasting Brazil's population {auto-animate="true"}
+## Example: Forecasting Brazil's population {auto-animate="true"}
 
 ```{r}
 #| label: holt_1
@@ -341,7 +341,7 @@ bra_fit <- bra_economy |>
 bra_fit
 ```
 
-## Forecasting Brazil's population {auto-animate="true"}
+## Example: Forecasting Brazil's population {auto-animate="true"}
 
 ```{r}
 #| label: holt_2
@@ -355,7 +355,7 @@ bra_fit <- bra_economy |>
 bra_fit
 ```
 
-## Forecasting Brazil's population {auto-animate="true"}
+## Example: Forecasting Brazil's population {auto-animate="true"}
 
 ```{r}
 #| label: holt_3
@@ -376,7 +376,7 @@ bra_fit |>
 
 ::: {.content-hidden unless-format="revealjs"}
 
-## Forecasting Brazil's population {auto-animate="true"}
+## Example: Forecasting Brazil's population {auto-animate="true"}
 
 :::
 
@@ -443,7 +443,7 @@ where $0 < \phi < 1$^[In practice, we restrict $0.8 \leq \phi \leq 0.98$ because
 
 ::: {.content-hidden unless-format="revealjs"}
 
-## Forecasting Brazil's population (continued) {auto-animate="true"}
+## Example: Forecasting Brazil's population (continued) {auto-animate="true"}
 
 ```{r}
 #| label: damped_1
@@ -454,7 +454,7 @@ bra_economy |>
   )
 ```
 
-## Forecasting Brazil's population (continued) {auto-animate="true"}
+## Example: Forecasting Brazil's population (continued) {auto-animate="true"}
 
 ```{r}
 #| label: damped_2
@@ -470,13 +470,13 @@ bra_economy |>
 
 ::: {.content-hidden unless-format="revealjs"}
 
-## Forecasting Brazil's population (continued) {auto-animate="true"}
+## Example: Forecasting Brazil's population (continued) {auto-animate="true"}
 
 :::
 
 ::: {.content-visible unless-format="revealjs"}
 
-#### Forecasting Brazil's population (continued)
+#### Example: Forecasting Brazil's population (continued)
 
 :::
 
@@ -578,7 +578,7 @@ $$
 
 ::: {.content-hidden unless-format="revealjs"}
 
-## Forecasting Australian holiday trips {auto-animate="true"}
+## Example: Forecasting Australian holiday trips {auto-animate="true"}
 
 ```{r}
 #| label: hw_1
@@ -590,7 +590,7 @@ aus_holidays <- tourism |>
 aus_holidays
 ```
 
-## Forecasting Australian holiday trips {auto-animate="true"}
+## Example: Forecasting Australian holiday trips {auto-animate="true"}
 
 ```{r}
 #| label: hw_2
@@ -607,7 +607,7 @@ aus_holidays |>
 
 ::: {.content-hidden unless-format="revealjs"}
 
-## Forecasting Australian holiday trips {auto-animate="true"}
+## Example: Forecasting Australian holiday trips {auto-animate="true"}
 
 ```{r}
 #| label: hw_3
@@ -619,7 +619,7 @@ aus_fit <- aus_holidays |>
   )
 ```
 
-## Forecasting Australian holiday trips {auto-animate="true"}
+## Example: Forecasting Australian holiday trips {auto-animate="true"}
 
 ```{r}
 #| label: hw_4
@@ -631,7 +631,7 @@ aus_fit <- aus_holidays |>
   )
 ```
 
-## Forecasting Australian holiday trips {auto-animate="true"}
+## Example: Forecasting Australian holiday trips {auto-animate="true"}
 
 ::: {.callout-note collapse="true"}
 ## The `tidy()` function for models
@@ -646,7 +646,7 @@ aus_fit |>
 1. The `tidy()` function allows us to see the estimated parameters of each model in a [tidy](https://r4ds.hadley.nz/data-tidy.html) table.
 :::
 
-## Forecasting Australian holiday trips {auto-animate="true"}
+## Example: Forecasting Australian holiday trips {auto-animate="true"}
 
 ```{r}
 #| label: hw_6
@@ -673,7 +673,7 @@ aus_fc |>
 
 ::: {.content-visible unless-format="revealjs"}
 
-#### Forecasting Australian holiday trips
+#### Example: Forecasting Australian holiday trips
 
 We will forecast the number of holiday trips in Australia using additive and multiplicative Holt-Winters methods.
 
@@ -714,7 +714,7 @@ aus_fc |>
 ## The `tidy()` function for models
 
 ```{r}
-#| label: hw_5
+#| label: tidy
 
 aus_fit |> 
   tidy()  #<1>
@@ -725,4 +725,53 @@ aus_fit |>
 
 :::
 
+::: {.content-hidden unless-format="revealjs"}
+
+## Holt-Winters' damped method
+
+:::
+
+::: {.content-visible unless-format="revealjs"}
+
+### Holt-Winters' damped method
+
+:::
+
+::: {.notes}
+
+- Similar to Holt's linear trend method, we can also include a damping parameter $\phi$ in the Holt-Winters method to reduce the trend over time.
+  - This can be done on both additive or multiplicative seasonal models.
+- A configuration that has proven to be robust and accurate in practice is to use a multiplicative seasonal component with a damped trend.
+
+:::
+
+$$
+\begin{aligned}
+\text{Forecast equation} \quad & \hat{y}_{t+h|t} = [\ell_t +(\phi + \phi^2 + \ldots + \phi^h)b_t] s_{t+h-m(k+1)} \\
+\text{Level equation} \quad & \ell_t = \alpha \frac{y_t}{s_{t-m}} + (1 - \alpha)(\ell_{t-1} + b_{t-1}) \\
+\text{Trend equation} \quad & b_t = \beta^*(\ell_t-\ell_{t-1}) + (1-\beta^*) \phi b_{t-1} \\
+\text{Seasonal equation} \quad & s_t = \gamma \frac{y_t}{\ell_{t-1} + \phi b_{t-1}} + (1-\gamma)s_{t-m}
+\end{aligned}
+$$
+
+```{r}
+#| label: hw_damped
+
+sth_cross_ped <- pedestrian |>
+  filter(Date >= "2016-07-01",
+         Sensor == "Southern Cross Station") |>
+  index_by(Date) |>
+  summarise(Count = sum(Count)/1000)
+sth_cross_ped |>
+  filter(Date <= "2016-07-31") |>
+  model(
+    hw = ETS(Count ~ error("M") + trend("Ad") + season("M")) #<1>
+  ) |>
+  forecast(h = "2 weeks") |>
+  autoplot(sth_cross_ped |> filter(Date <= "2016-08-14")) +
+  labs(title = "Daily traffic: Southern Cross",
+       y="Pedestrians ('000)")
+```
+
+1. The setup `ETS($y_t$ ~ error("M") + trend("Ad") + season("M"))` is often a robust choice for seasonal data with trend.
 
