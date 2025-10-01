@@ -693,7 +693,7 @@ aus_fit <- aus_holidays |>
     Multiplicative = ETS(Trips ~ error("M") + trend("A") + season("M"))  #<2>
   )
   
-aus_fc <- us_fit |> 
+aus_fc <- aus_fit |> 
   forecast(h = "3 years")
 
 aus_fc |> 
@@ -754,14 +754,28 @@ $$
 \end{aligned}
 $$
 
+::: {.content-hidden unless-format="revealjs"}
+
+## Example: Forecasting daily pedestrian traffic {auto-animate="true"}
+
+:::
+
+::: {.content-visible unless-format="revealjs"}
+
+#### Example: Forecasting daily pedestrian traffic
+
+:::
+
 ```{r}
 #| label: hw_damped
+#| code-line-numbers: "10"
 
 sth_cross_ped <- pedestrian |>
   filter(Date >= "2016-07-01",
          Sensor == "Southern Cross Station") |>
   index_by(Date) |>
   summarise(Count = sum(Count)/1000)
+
 sth_cross_ped |>
   filter(Date <= "2016-07-31") |>
   model(
