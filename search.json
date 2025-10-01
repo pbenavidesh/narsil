@@ -577,7 +577,7 @@
     "href": "docs/modules/module_2/01_ets/ets.html#simple-exponential-smoothing-ses",
     "title": "Exponential smoothing",
     "section": "1.1 Simple exponential smoothing (SES)",
-    "text": "1.1 Simple exponential smoothing (SES)\n\n\\begin{aligned}\n\\text{Forecast equation} \\quad & \\hat{y}_{t+h|t} = \\ell_t \\\\\n\\text{Smoothing equation} \\quad & \\ell_t = \\alpha y_t + (1-\\alpha)\\ell_{t-1}\n\\end{aligned}\n\nwhere \\ell_t is the level at time t.\n\n\n\n\n\n\nSES has a flat forecast function, so it is appropriate for data with no trend or seasonal pattern.\n\n\n\n\nalgeria_economy &lt;- global_economy |&gt;\n  filter(Country == \"Algeria\")\n  \nalgeria_economy |&gt; \n  autoplot(Exports)\n\n\n\n\n\n\n\n\n\nalg_fit &lt;- algeria_economy |&gt;\n  model(\n    SES = ETS(Exports ~ error(\"A\") + trend(\"N\") + season(\"N\")),\n    Naive = NAIVE(Exports)\n  )\n\nalg_fc &lt;- alg_fit |&gt;\n  forecast(h = 5)\n\n\n\n\n\n\n\nTipBenchmark methods for SES\n\n\n\nThe mean and naïve methods are typically the best fit as benchmark methods when using SES.\n\n\n\n\n\n\n\n\nNoteObtaining the report() of a model\n\n\n\n\n\n\nalg_fit |&gt; \n  select(SES) |&gt; \n1  report()\n\n\n1\n\nThe report() function allows us to see a model’s report (the time series modeled, the model used, the estimated parameters, and more). It needs a 1 \\times 1 dimension mable1.\n\n\n\n\nSeries: Exports \nModel: ETS(A,N,N) \n  Smoothing parameters:\n    alpha = 0.8399875 \n\n  Initial states:\n   l[0]\n 39.539\n\n  sigma^2:  35.6301\n\n     AIC     AICc      BIC \n446.7154 447.1599 452.8968 \n\n\n\n\n\n\n\n\n\n\n\n\n\n\nComparing the SES and Naive forecasts:",
+    "text": "1.1 Simple exponential smoothing (SES)\n\n\\begin{aligned}\n\\text{Forecast equation} \\quad & \\hat{y}_{t+h|t} = \\ell_t \\\\\n\\text{Smoothing equation} \\quad & \\ell_t = \\alpha y_t + (1-\\alpha)\\ell_{t-1}\n\\end{aligned}\n\nwhere \\ell_t is the level at time t.\n\n\n\n\n\n\nSES has a flat forecast function, so it is appropriate for data with no trend or seasonal pattern.\n\n\n\n\n1.1.0.1 Example: Forecasting Algeria’s exports\n\nalgeria_economy &lt;- global_economy |&gt;\n  filter(Country == \"Algeria\")\n  \nalgeria_economy |&gt; \n  autoplot(Exports)\n\n\n\n\n\n\n\n\n\nalg_fit &lt;- algeria_economy |&gt;\n  model(\n1    SES = ETS(Exports ~ error(\"A\") + trend(\"N\") + season(\"N\")),\n    Naive = NAIVE(Exports)\n  )\n\nalg_fc &lt;- alg_fit |&gt;\n  forecast(h = 5)\n\n\n1\n\nWe specify trend(\"N\") and season(\"N\") to indicate that we want a simple exponential smoothing (SES) model, which assumes no trend and no seasonality. The model will estimate the smoothing parameter \\alpha automatically.\n\n\n\n\n\n\n\n\n\n\nTipBenchmark methods for SES\n\n\n\nThe mean and naïve methods are typically the best fit as benchmark methods when using SES.\n\n\n\n\n\n\n\n\nNoteObtaining the report() of a model\n\n\n\n\n\n\nalg_fit |&gt; \n  select(SES) |&gt; \n1  report()\n\n\n1\n\nThe report() function allows us to see a model’s report (the time series modeled, the model used, the estimated parameters, and more). It needs a 1 \\times 1 dimension mable1.\n\n\n\n\nSeries: Exports \nModel: ETS(A,N,N) \n  Smoothing parameters:\n    alpha = 0.8399875 \n\n  Initial states:\n   l[0]\n 39.539\n\n  sigma^2:  35.6301\n\n     AIC     AICc      BIC \n446.7154 447.1599 452.8968 \n\n\n\n\n\n\n\n\n\n\n\n\n\n\nComparing the SES and Naive forecasts:",
     "crumbs": [
       "Modules",
       "2. Adding ETS and ARIMA filters",
@@ -589,7 +589,7 @@
     "href": "docs/modules/module_2/01_ets/ets.html#methods-with-trend-1",
     "title": "Exponential smoothing",
     "section": "1.2 Methods with trend",
-    "text": "1.2 Methods with trend\n\n1.2.1 Holt’s linear trend\n\nWe can extend SES models to allow our forecasts to include trend in the data. We need to add a new smoothing parameter \\beta^*, and its corresponding smoothing equation:\n\n\n\\begin{aligned}\n\\text{Forecast equation} \\quad & \\hat{y}_{t+h|t} = \\ell_t + hb_t \\\\\n\\text{Level equation} \\quad & \\ell_t = \\alpha y_t + (1-\\alpha)\\ell_{t-1}\\\\\n\\text{Trend equation} \\quad & b_t = \\beta^*(l_t-l_{t-1}) + (1-\\beta^*)b_{t-1}\n\\end{aligned}\n\nwhere b_t is the growth (or slope) at time t.\n\n\n\n\n\n\nTipWhen to use Holt’s linear trend method\n\n\n\n\n\n\nHolt’s linear trend method is appropriate for data with a linear trend but no seasonal pattern.\nThe proper benchmark method to compare against is the drift method.\n\n\n\n\n\nLet’s see an example using Holt’s linear trend method to forecast Brazil’s population.\n\n\nbra_economy &lt;- global_economy |&gt; \n  filter(Code == \"BRA\") |&gt; \n  mutate(Pop = Population / 1e6)\n\nbra_economy |&gt; \n  autoplot(Pop)\n\n\n\n\n\n\n\n\n\n1.2.1.1 Forecasting Brazil’s population\n\nbra_fit &lt;- bra_economy |&gt; \n  model(\n1    Holt  = ETS(Pop ~ error(\"A\") + trend(\"A\") + season(\"N\")),\n    Drift = RW(Pop ~ drift())\n  )\n\nbra_fit |&gt;  \n  select(Holt) |&gt;  \n  report()\n\nbra_fc &lt;- bra_fit |&gt;  \n  forecast(h = 15)\n\nbra_fc |&gt; \n  autoplot(bra_economy, level = NULL) +\n  labs(title = \"Brazilian population\",\n       y = \"Millions\") +\n  guides(colour = guide_legend(title = \"Forecast\"))\n\n\n1\n\nWe specify trend(\"A\") to indicate that we want a linear trend. The model will estimate the smoothing parameters \\alpha and \\beta^* automatically.\n\n\n\n\n\n\n\n\n\n\n\nSeries: Pop \nModel: ETS(A,A,N) \n  Smoothing parameters:\n    alpha = 0.9999 \n    beta  = 0.9998999 \n\n  Initial states:\n     l[0]     b[0]\n 70.06297 2.132884\n\n  sigma^2:  0.0021\n\n      AIC      AICc       BIC \n-115.2553 -114.1014 -104.9531 \n\n\n\n\n\n1.2.2 Damped trend\n\n\nHolt’s linear trend method assume that the trend will continue indefinitely at the same rate. However, in many real-world scenarios, this assumption may not hold true. This methods tend to overestimate (or underestimate) long-term forecasts when the trend is strong.\nWe can include a damping parameter \\phi, which reduces the trend over time.\n\n\n\n\\begin{aligned}\n\\text{Forecast equation} \\quad & \\hat{y}_{t+h|t} = \\ell_t +  (\\phi + \\phi^2 + \\ldots + \\phi^h) b_t \\\\\n\\text{Level equation} \\quad & \\ell_t = \\alpha y_t + (\\ell_{t-1} + \\phi b_{t-1}) \\\\\n\\text{Trend equation} \\quad & b_t = \\beta^*(\\ell_t-\\ell_{t-1}) + (1-\\beta^*)\\phi b_{t-1}\n\\end{aligned}\n\nwhere 0 &lt; \\phi &lt; 12 is the damping parameter.\n\n\n\n\n\n\nCautionWhat would happen if \\phi = 1? What about if \\phi = 0?\n\n\n\n\n\n\nIf \\phi = 1, the model reduces to Holt’s linear trend method, meaning the trend continues indefinitely at the same rate.\nIf \\phi = 0, the trend component is completely eliminated, and the model behaves like simple exponential smoothing (SES), where forecasts are based solely on the level component without any trend influence.\n\n\n\n\n\n1.2.2.1 Forecasting Brazil’s population (continued)\n\nbra_economy |&gt; \n  model(\n    Holt   = ETS(Pop ~ error(\"A\") + trend(\"A\") + season(\"N\")),\n1    Damped = ETS(Pop ~ error(\"A\") + trend(\"Ad\", phi = 0.9) + season(\"N\"))\n  ) |&gt; \n  forecast(h = 15) |&gt; \n  autoplot(bra_economy, level = NULL) +\n  labs(title = \"Brazilian population\",\n       y = \"Millions\") +\n  guides(colour = guide_legend(title = \"Forecast\"))\n\n\n1\n\nWe specify trend(\"Ad\") to indicate that we want a damped trend, and phi = 0.9 sets the damping parameter to 0.9. We could also let the model estimate \\phi automatically by omitting the phi argument.",
+    "text": "1.2 Methods with trend\n\n1.2.1 Holt’s linear trend\n\nWe can extend SES models to allow our forecasts to include trend in the data. We need to add a new smoothing parameter \\beta^*, and its corresponding smoothing equation:\n\n\n\\begin{aligned}\n\\text{Forecast equation} \\quad & \\hat{y}_{t+h|t} = \\ell_t + hb_t \\\\\n\\text{Level equation} \\quad & \\ell_t = \\alpha y_t + (1-\\alpha)\\ell_{t-1}\\\\\n\\text{Trend equation} \\quad & b_t = \\beta^*(\\ell_t - \\ell_{t-1}) + (1-\\beta^*)b_{t-1}\n\\end{aligned}\n\nwhere b_t is the growth (or slope) at time t.\n\n\n\n\n\n\nTipWhen to use Holt’s linear trend method\n\n\n\n\n\n\nHolt’s linear trend method is appropriate for data with a linear trend but no seasonal pattern.\nThe proper benchmark method to compare against is the drift method.\n\n\n\n\n\nLet’s see an example using Holt’s linear trend method to forecast Brazil’s population.\n\n\n1.2.1.1 Example: Forecasting Brazil’s population\n\nbra_economy &lt;- global_economy |&gt; \n  filter(Code == \"BRA\") |&gt; \n  mutate(Pop = Population / 1e6)\n\nbra_economy |&gt; \n  autoplot(Pop)\n\n\n\n\n\n\n\n\n\nbra_fit &lt;- bra_economy |&gt; \n  model(\n1    Holt  = ETS(Pop ~ error(\"A\") + trend(\"A\") + season(\"N\")),\n    Drift = RW(Pop ~ drift())\n  )\n\nbra_fit |&gt;  \n  select(Holt) |&gt;  \n  report()\n\nbra_fc &lt;- bra_fit |&gt;  \n  forecast(h = 15)\n\nbra_fc |&gt; \n  autoplot(bra_economy, level = NULL) +\n  labs(title = \"Brazilian population\",\n       y = \"Millions\") +\n  guides(colour = guide_legend(title = \"Forecast\"))\n\n\n1\n\nWe specify trend(\"A\") to indicate that we want a linear trend. The model will estimate the smoothing parameters \\alpha and \\beta^* automatically.\n\n\n\n\n\n\n\n\n\n\n\nSeries: Pop \nModel: ETS(A,A,N) \n  Smoothing parameters:\n    alpha = 0.9999 \n    beta  = 0.9998999 \n\n  Initial states:\n     l[0]     b[0]\n 70.06297 2.132884\n\n  sigma^2:  0.0021\n\n      AIC      AICc       BIC \n-115.2553 -114.1014 -104.9531 \n\n\n\n\n\n1.2.2 Damped trend\n\n\nHolt’s linear trend method assume that the trend will continue indefinitely at the same rate. However, in many real-world scenarios, this assumption may not hold true. This methods tend to overestimate (or underestimate) long-term forecasts when the trend is strong.\nWe can include a damping parameter \\phi, which reduces the trend over time.\n\n\n\n\\begin{aligned}\n\\text{Forecast equation} \\quad & \\hat{y}_{t+h|t} = \\ell_t +  (\\phi + \\phi^2 + \\ldots + \\phi^h) b_t \\\\\n\\text{Level equation} \\quad & \\ell_t = \\alpha y_t + (\\ell_{t-1} + \\phi b_{t-1}) \\\\\n\\text{Trend equation} \\quad & b_t = \\beta^*(\\ell_t-\\ell_{t-1}) + (1-\\beta^*)\\phi b_{t-1}\n\\end{aligned}\n\nwhere 0 &lt; \\phi &lt; 12 is the damping parameter.\n\n\n\n\n\n\nCautionWhat would happen if \\phi = 1? What about if \\phi = 0?\n\n\n\n\n\n\nIf \\phi = 1, the model reduces to Holt’s linear trend method, meaning the trend continues indefinitely at the same rate.\nIf \\phi = 0, the trend component is completely eliminated, and the model behaves like simple exponential smoothing (SES), where forecasts are based solely on the level component without any trend influence.\n\n\n\n\n\n1.2.2.1 Example: Forecasting Brazil’s population (continued)\n\nbra_economy |&gt; \n  model(\n    Holt   = ETS(Pop ~ error(\"A\") + trend(\"A\") + season(\"N\")),\n1    Damped = ETS(Pop ~ error(\"A\") + trend(\"Ad\", phi = 0.9) + season(\"N\"))\n  ) |&gt; \n  forecast(h = 15) |&gt; \n  autoplot(bra_economy, level = NULL) +\n  labs(title = \"Brazilian population\",\n       y = \"Millions\") +\n  guides(colour = guide_legend(title = \"Forecast\"))\n\n\n1\n\nWe specify trend(\"Ad\") to indicate that we want a damped trend, and phi = 0.9 sets the damping parameter to 0.9. We could also let the model estimate \\phi automatically by omitting the phi argument.",
     "crumbs": [
       "Modules",
       "2. Adding ETS and ARIMA filters",
@@ -601,7 +601,19 @@
     "href": "docs/modules/module_2/01_ets/ets.html#methods-with-seasonality-1",
     "title": "Exponential smoothing",
     "section": "1.3 Methods with seasonality",
-    "text": "1.3 Methods with seasonality\n\n1.3.1 Holt-Winters method\n\n1.3.1.1 HW - Additive\n\n\\begin{aligned}\n\\text{Forecast equation} \\quad & \\hat{y}_{t+h|t} = \\ell_t + hb_t + s_{t+h-m(k+1)} \\\\\n\\text{Level equation} \\quad & \\ell_t = \\alpha (y_t - s_{t-m}) + (1 - \\alpha) (\\ell_{t-1} + b_{t-1}) \\\\\n\\text{Trend equation} \\quad & b_t = \\beta^*(\\ell_t-\\ell_{t-1}) + (1-\\beta^*) b_{t-1} \\\\\n\\text{Seasonal equation} \\quad & s_t = \\gamma(y_t - \\ell_{t-1} - b_{t-1}) + (1-\\gamma)s_{t-m}\n\\end{aligned}\n\nwhere s_t is the seasonal component at time t, m is the period of the seasonality3, and k = \\lfloor (h-1)/m \\rfloor.\n\n\n1.3.1.2 HW - Multiplicative\n\n\\begin{aligned}\n\\text{Forecast equation} \\quad & \\hat{y}_{t+h|t} = (\\ell_t + hb_t) s_{t+h-m(k+1)} \\\\\n\\text{Level equation} \\quad & \\ell_t = \\alpha \\frac{y_t}{s_{t-m}} + (1 - \\alpha)(\\ell_{t-1} + b_{t-1}) \\\\\n\\text{Trend equation} \\quad & b_t = \\beta^*(\\ell_t-\\ell_{t-1}) + (1-\\beta^*) b_{t-1} \\\\\n\\text{Seasonal equation} \\quad & s_t = \\gamma \\frac{y_t}{\\ell_{t-1} + b_{t-1}} + (1-\\gamma)s_{t-m}\n\\end{aligned}\n\n\n\n\n\n\n\nTipWhen to use Holt-Winters methods\n\n\n\n\n\n\nHolt-Winters methods are appropriate for data with a trend and seasonal pattern.\nUse an additive model when the seasonal fluctuations are roughly constant over time.\nUse a multiplicative model when the seasonal variation increase or decrease over time.\nThe proper benchmark method to compare against is the seasonal naïve method. for seasonal data.\n\nIf the data contains both trend and seasonality, then A decomposition model using STL4 + Drift5 + SNAIVE6 is often a strong competitor.\n\n\n\n\n\n\n\n1.3.1.3 Forecasting Australian holiday trips\n\naus_holidays &lt;- tourism |&gt; \n  filter(Purpose == \"Holiday\") |&gt;\n  summarise(Trips = sum(Trips))\n\naus_holidays |&gt;\n  autoplot(Trips)\n\n\n\n\n\n\n\n\n\nWe will forecast the number of holiday trips in Australia using additive and multiplicative Holt-Winters methods.",
+    "text": "1.3 Methods with seasonality\n\n1.3.1 Holt-Winters method\n\n1.3.1.1 HW - Additive\n\n\\begin{aligned}\n\\text{Forecast equation} \\quad & \\hat{y}_{t+h|t} = \\ell_t + hb_t + s_{t+h-m(k+1)} \\\\\n\\text{Level equation} \\quad & \\ell_t = \\alpha (y_t - s_{t-m}) + (1 - \\alpha) (\\ell_{t-1} + b_{t-1}) \\\\\n\\text{Trend equation} \\quad & b_t = \\beta^*(\\ell_t-\\ell_{t-1}) + (1-\\beta^*) b_{t-1} \\\\\n\\text{Seasonal equation} \\quad & s_t = \\gamma(y_t - \\ell_{t-1} - b_{t-1}) + (1-\\gamma)s_{t-m}\n\\end{aligned}\n\nwhere s_t is the seasonal component at time t, m is the period of the seasonality3, and k = \\lfloor (h-1)/m \\rfloor.\n\n\n1.3.1.2 HW - Multiplicative\n\n\\begin{aligned}\n\\text{Forecast equation} \\quad & \\hat{y}_{t+h|t} = (\\ell_t + hb_t) s_{t+h-m(k+1)} \\\\\n\\text{Level equation} \\quad & \\ell_t = \\alpha \\frac{y_t}{s_{t-m}} + (1 - \\alpha)(\\ell_{t-1} + b_{t-1}) \\\\\n\\text{Trend equation} \\quad & b_t = \\beta^*(\\ell_t-\\ell_{t-1}) + (1-\\beta^*) b_{t-1} \\\\\n\\text{Seasonal equation} \\quad & s_t = \\gamma \\frac{y_t}{\\ell_{t-1} + b_{t-1}} + (1-\\gamma)s_{t-m}\n\\end{aligned}\n\n\n\n\n\n\n\nTipWhen to use Holt-Winters methods\n\n\n\n\n\n\nHolt-Winters methods are appropriate for data with a trend and seasonal pattern.\nUse an additive model when the seasonal fluctuations are roughly constant over time.\nUse a multiplicative model when the seasonal variation increase or decrease over time.\nThe proper benchmark method to compare against is the seasonal naïve method. for seasonal data.\n\nIf the data contains both trend and seasonality, then A decomposition model using STL4 + Drift5 + SNAIVE6 is often a strong competitor.\n\n\n\n\n\n\n\n1.3.1.3 Example: Forecasting Australian holiday trips\nWe will forecast the number of holiday trips in Australia using additive and multiplicative Holt-Winters methods.\n\naus_holidays &lt;- tourism |&gt; \n  filter(Purpose == \"Holiday\") |&gt;\n  summarise(Trips = sum(Trips))\n\naus_holidays |&gt;\n  autoplot(Trips)\n\n\n1\n\nWe specify error(\"A\") and season(\"A\") to indicate that we want an additive Holt-Winters model. We will usually set the error() according to the season() type.\n\n2\n\nWe specify error(\"M\") and season(\"M\") to indicate that we want a multiplicative Holt-Winters model. Both models will estimate the smoothing parameters \\alpha, \\beta^*, and \\gamma automatically.\n\n\n\n\n\n\n\n\n\n\naus_fit &lt;- aus_holidays |&gt; \n  model(\n1    Additive       = ETS(Trips ~ error(\"A\") + trend(\"A\") + season(\"A\")),\n2    Multiplicative = ETS(Trips ~ error(\"M\") + trend(\"A\") + season(\"M\"))\n  )\n  \naus_fc &lt;- aus_fit |&gt; \n  forecast(h = \"3 years\")\n\naus_fc |&gt; \n  autoplot(aus_holidays, level = NULL) + xlab(\"Year\") +\n  labs(\n    title   = \"Forecasting Australian holiday trips using Holt-Winters\",\n    y       = \"Overnight trips (millions)\",\n    caption = \"Can you spot any differences between both forecasts?\"\n  ) +\n  scale_color_brewer(type = \"qual\", palette = \"Dark2\") +\n  guides(colour = guide_legend(title = \"Forecast\"))\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNoteThe tidy() function for models\n\n\n\n\n\n\naus_fit |&gt; \n1  tidy()\n\n\n1\n\nThe tidy() function allows us to see the estimated parameters of each model in a tidy table.\n\n\n\n\n\n  \n\n\n\n\n\n\n\n\n\n1.3.2 Holt-Winters’ damped method\n\n\nSimilar to Holt’s linear trend method, we can also include a damping parameter \\phi in the Holt-Winters method to reduce the trend over time.\n\nThis can be done on both additive or multiplicative seasonal models.\n\nA configuration that has proven to be robust and accurate in practice is to use a multiplicative seasonal component with a damped trend.\n\n\n\n\\begin{aligned}\n\\text{Forecast equation} \\quad & \\hat{y}_{t+h|t} = [\\ell_t +(\\phi + \\phi^2 + \\ldots + \\phi^h)b_t] s_{t+h-m(k+1)} \\\\\n\\text{Level equation} \\quad & \\ell_t = \\alpha \\frac{y_t}{s_{t-m}} + (1 - \\alpha)(\\ell_{t-1} + b_{t-1}) \\\\\n\\text{Trend equation} \\quad & b_t = \\beta^*(\\ell_t-\\ell_{t-1}) + (1-\\beta^*) \\phi b_{t-1} \\\\\n\\text{Seasonal equation} \\quad & s_t = \\gamma \\frac{y_t}{\\ell_{t-1} + \\phi b_{t-1}} + (1-\\gamma)s_{t-m}\n\\end{aligned}\n\n\n1.3.2.1 Example: Forecasting daily pedestrian traffic\n\nsth_cross_ped &lt;- pedestrian |&gt;\n  filter(Date &gt;= \"2016-07-01\",\n         Sensor == \"Southern Cross Station\") |&gt;\n  index_by(Date) |&gt;\n  summarise(Count = sum(Count)/1000)\n\nsth_cross_ped |&gt;\n  filter(Date &lt;= \"2016-07-31\") |&gt;\n  model(\n1    hw = ETS(Count ~ error(\"M\") + trend(\"Ad\") + season(\"M\"))\n  ) |&gt;\n  forecast(h = \"2 weeks\") |&gt;\n  autoplot(sth_cross_ped |&gt; filter(Date &lt;= \"2016-08-14\")) +\n  labs(title = \"Daily traffic: Southern Cross\",\n       y=\"Pedestrians ('000)\")\n\n\n1\n\nThe setup ETS($y_t$ ~ error(\"M\") + trend(\"Ad\") + season(\"M\")) is often a robust choice for seasonal data with trend.",
+    "crumbs": [
+      "Modules",
+      "2. Adding ETS and ARIMA filters",
+      "2.1 Exponential Smoothing"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_2/01_ets/ets.html#automatic-ets-selection-1",
+    "href": "docs/modules/module_2/01_ets/ets.html#automatic-ets-selection-1",
+    "title": "Exponential smoothing",
+    "section": "1.4 Automatic ETS selection",
+    "text": "1.4 Automatic ETS selection\n\n\nUsing fable, we can automatically select the best ETS model for our data using the ETS() function. We achieve this by not specifying the error, trend, or seasonal components.\nYou can also get a semi-automatic selection by specifying some components and leaving others to be selected automatically, or by providing a set of possible values for a component.\nAutomatic selection is especially useful when we have multiple time series to model, as it allows us to fit different ETS models to each series.\n\n\n\n1.4.0.1 Example: Forecasting daily pedestrian traffic (continued)\n\npedestrian |&gt; \nfilter(Date &gt;= \"2016-07-01\") |&gt; \n  index_by(Date) |&gt;\n  group_by_key() |&gt; \n  summarise(Count = sum(Count)/1000)",
     "crumbs": [
       "Modules",
       "2. Adding ETS and ARIMA filters",
@@ -649,15 +661,15 @@
     "text": "Simple exponential smoothing (SES)\n\n\\begin{aligned}\n\\text{Forecast equation} \\quad & \\hat{y}_{t+h|t} = \\ell_t \\\\\n\\text{Smoothing equation} \\quad & \\ell_t = \\alpha y_t + (1-\\alpha)\\ell_{t-1}\n\\end{aligned}\n\nwhere \\ell_t is the level at time t.\n\n\n\n\n\n\nSES has a flat forecast function, so it is appropriate for data with no trend or seasonal pattern."
   },
   {
-    "objectID": "docs/modules/module_2/01_ets/ets_pres.html#section-3",
-    "href": "docs/modules/module_2/01_ets/ets_pres.html#section-3",
+    "objectID": "docs/modules/module_2/01_ets/ets_pres.html#example-forecasting-algerias-exports",
+    "href": "docs/modules/module_2/01_ets/ets_pres.html#example-forecasting-algerias-exports",
     "title": "Exponential smoothing",
-    "section": "",
-    "text": "algeria_economy &lt;- global_economy |&gt;\n  filter(Country == \"Algeria\")\n  \nalgeria_economy |&gt; \n  autoplot(Exports)\n\n\n\n\n\n\n\n\n\nalg_fit &lt;- algeria_economy |&gt;\n  model(\n    SES = ETS(Exports ~ error(\"A\") + trend(\"N\") + season(\"N\")),\n    Naive = NAIVE(Exports)\n  )\n\nalg_fc &lt;- alg_fit |&gt;\n  forecast(h = 5)\n\n\n\n\n\n\n\nObtaining the report() of a model\n\n\n\nalg_fit |&gt; \n  select(SES) |&gt; \n1  report()\n\n\n1\n\nThe report() function allows us to see a model’s report (the time series modeled, the model used, the estimated parameters, and more). It needs a 1 \\times 1 dimension mable1.\n\n\n\n\nSeries: Exports \nModel: ETS(A,N,N) \n  Smoothing parameters:\n    alpha = 0.8399875 \n\n  Initial states:\n   l[0]\n 39.539\n\n  sigma^2:  35.6301\n\n     AIC     AICc      BIC \n446.7154 447.1599 452.8968"
+    "section": "Example: Forecasting Algeria’s exports",
+    "text": "Example: Forecasting Algeria’s exports\n\nalgeria_economy &lt;- global_economy |&gt;\n  filter(Country == \"Algeria\")\n  \nalgeria_economy |&gt; \n  autoplot(Exports)\n\n\n\n\n\n\n\n\n\nalg_fit &lt;- algeria_economy |&gt;\n  model(\n1    SES = ETS(Exports ~ error(\"A\") + trend(\"N\") + season(\"N\")),\n    Naive = NAIVE(Exports)\n  )\n\nalg_fc &lt;- alg_fit |&gt;\n  forecast(h = 5)\n\n\n1\n\nWe specify trend(\"N\") and season(\"N\") to indicate that we want a simple exponential smoothing (SES) model, which assumes no trend and no seasonality. The model will estimate the smoothing parameter \\alpha automatically.\n\n\n\n\n\n\n\n\n\n\nObtaining the report() of a model\n\n\n\nalg_fit |&gt; \n  select(SES) |&gt; \n1  report()\n\n\n1\n\nThe report() function allows us to see a model’s report (the time series modeled, the model used, the estimated parameters, and more). It needs a 1 \\times 1 dimension mable1.\n\n\n\n\nSeries: Exports \nModel: ETS(A,N,N) \n  Smoothing parameters:\n    alpha = 0.8399875 \n\n  Initial states:\n   l[0]\n 39.539\n\n  sigma^2:  35.6301\n\n     AIC     AICc      BIC \n446.7154 447.1599 452.8968"
   },
   {
-    "objectID": "docs/modules/module_2/01_ets/ets_pres.html#section-5",
-    "href": "docs/modules/module_2/01_ets/ets_pres.html#section-5",
+    "objectID": "docs/modules/module_2/01_ets/ets_pres.html#section-4",
+    "href": "docs/modules/module_2/01_ets/ets_pres.html#section-4",
     "title": "Exponential smoothing",
     "section": "",
     "text": "Comparing the SES and Naive forecasts:"
@@ -667,35 +679,42 @@
     "href": "docs/modules/module_2/01_ets/ets_pres.html#holts-linear-trend",
     "title": "Exponential smoothing",
     "section": "Holt’s linear trend",
-    "text": "Holt’s linear trend\n\nWe can extend SES models to allow our forecasts to include trend in the data. We need to add a new smoothing parameter \\beta^*, and its corresponding smoothing equation:\n\n\n\\begin{aligned}\n\\text{Forecast equation} \\quad & \\hat{y}_{t+h|t} = \\ell_t + hb_t \\\\\n\\text{Level equation} \\quad & \\ell_t = \\alpha y_t + (1-\\alpha)\\ell_{t-1}\\\\\n\\text{Trend equation} \\quad & b_t = \\beta^*(l_t-l_{t-1}) + (1-\\beta^*)b_{t-1}\n\\end{aligned}\n\nwhere b_t is the growth (or slope) at time t.\n\n\n\n\n\n\nWhen to use Holt’s linear trend method\n\n\n\nHolt’s linear trend method is appropriate for data with a linear trend but no seasonal pattern.\nThe proper benchmark method to compare against is the drift method.\n\n\n\n\n\nLet’s see an example using Holt’s linear trend method to forecast Brazil’s population."
+    "text": "Holt’s linear trend\n\nWe can extend SES models to allow our forecasts to include trend in the data. We need to add a new smoothing parameter \\beta^*, and its corresponding smoothing equation:\n\n\n\\begin{aligned}\n\\text{Forecast equation} \\quad & \\hat{y}_{t+h|t} = \\ell_t + hb_t \\\\\n\\text{Level equation} \\quad & \\ell_t = \\alpha y_t + (1-\\alpha)\\ell_{t-1}\\\\\n\\text{Trend equation} \\quad & b_t = \\beta^*(\\ell_t - \\ell_{t-1}) + (1-\\beta^*)b_{t-1}\n\\end{aligned}\n\nwhere b_t is the growth (or slope) at time t.\n\n\n\n\n\n\nWhen to use Holt’s linear trend method\n\n\n\nHolt’s linear trend method is appropriate for data with a linear trend but no seasonal pattern.\nThe proper benchmark method to compare against is the drift method.\n\n\n\n\n\nLet’s see an example using Holt’s linear trend method to forecast Brazil’s population."
   },
   {
-    "objectID": "docs/modules/module_2/01_ets/ets_pres.html#forecasting-brazils-population",
-    "href": "docs/modules/module_2/01_ets/ets_pres.html#forecasting-brazils-population",
+    "objectID": "docs/modules/module_2/01_ets/ets_pres.html#example-forecasting-brazils-population-1",
+    "href": "docs/modules/module_2/01_ets/ets_pres.html#example-forecasting-brazils-population-1",
     "title": "Exponential smoothing",
-    "section": "Forecasting Brazil’s population",
-    "text": "Forecasting Brazil’s population\n\nbra_fit &lt;- bra_economy |&gt; \n  model(\n    Holt  = ETS(Pop ~ error(\"A\") + trend(\"A\") + season(\"N\"))\n  )\n\nbra_fit"
+    "section": "Example: Forecasting Brazil’s population",
+    "text": "Example: Forecasting Brazil’s population"
   },
   {
-    "objectID": "docs/modules/module_2/01_ets/ets_pres.html#forecasting-brazils-population-1",
-    "href": "docs/modules/module_2/01_ets/ets_pres.html#forecasting-brazils-population-1",
+    "objectID": "docs/modules/module_2/01_ets/ets_pres.html#example-forecasting-brazils-population-2",
+    "href": "docs/modules/module_2/01_ets/ets_pres.html#example-forecasting-brazils-population-2",
     "title": "Exponential smoothing",
-    "section": "Forecasting Brazil’s population",
-    "text": "Forecasting Brazil’s population\n\nbra_fit &lt;- bra_economy |&gt; \n  model(\n    Holt  = ETS(Pop ~ error(\"A\") + trend(\"A\") + season(\"N\")),\n    Drift = RW(Pop ~ drift())\n  )\n\nbra_fit"
+    "section": "Example: Forecasting Brazil’s population",
+    "text": "Example: Forecasting Brazil’s population\n\nbra_fit &lt;- bra_economy |&gt; \n  model(\n    Holt  = ETS(Pop ~ error(\"A\") + trend(\"A\") + season(\"N\"))\n  )\n\nbra_fit"
   },
   {
-    "objectID": "docs/modules/module_2/01_ets/ets_pres.html#forecasting-brazils-population-2",
-    "href": "docs/modules/module_2/01_ets/ets_pres.html#forecasting-brazils-population-2",
+    "objectID": "docs/modules/module_2/01_ets/ets_pres.html#example-forecasting-brazils-population-3",
+    "href": "docs/modules/module_2/01_ets/ets_pres.html#example-forecasting-brazils-population-3",
     "title": "Exponential smoothing",
-    "section": "Forecasting Brazil’s population",
-    "text": "Forecasting Brazil’s population\n\nbra_fit &lt;- bra_economy |&gt; \n  model(\n    Holt  = ETS(Pop ~ error(\"A\") + trend(\"A\") + season(\"N\")),\n    Drift = RW(Pop ~ drift())\n  )\n\nbra_fit |&gt;  \n  select(Holt) |&gt;  \n  report()\n\nSeries: Pop \nModel: ETS(A,A,N) \n  Smoothing parameters:\n    alpha = 0.9999 \n    beta  = 0.9998999 \n\n  Initial states:\n     l[0]     b[0]\n 70.06297 2.132884\n\n  sigma^2:  0.0021\n\n      AIC      AICc       BIC \n-115.2553 -114.1014 -104.9531"
+    "section": "Example: Forecasting Brazil’s population",
+    "text": "Example: Forecasting Brazil’s population\n\nbra_fit &lt;- bra_economy |&gt; \n  model(\n    Holt  = ETS(Pop ~ error(\"A\") + trend(\"A\") + season(\"N\")),\n    Drift = RW(Pop ~ drift())\n  )\n\nbra_fit"
   },
   {
-    "objectID": "docs/modules/module_2/01_ets/ets_pres.html#forecasting-brazils-population-3",
-    "href": "docs/modules/module_2/01_ets/ets_pres.html#forecasting-brazils-population-3",
+    "objectID": "docs/modules/module_2/01_ets/ets_pres.html#example-forecasting-brazils-population-4",
+    "href": "docs/modules/module_2/01_ets/ets_pres.html#example-forecasting-brazils-population-4",
     "title": "Exponential smoothing",
-    "section": "Forecasting Brazil’s population",
-    "text": "Forecasting Brazil’s population\n\nbra_fit &lt;- bra_economy |&gt; \n  model(\n1    Holt  = ETS(Pop ~ error(\"A\") + trend(\"A\") + season(\"N\")),\n    Drift = RW(Pop ~ drift())\n  )\n\nbra_fit |&gt;  \n  select(Holt) |&gt;  \n  report()\n\nbra_fc &lt;- bra_fit |&gt;  \n  forecast(h = 15)\n\nbra_fc |&gt; \n  autoplot(bra_economy, level = NULL) +\n  labs(title = \"Brazilian population\",\n       y = \"Millions\") +\n  guides(colour = guide_legend(title = \"Forecast\"))\n\n\n1\n\nWe specify trend(\"A\") to indicate that we want a linear trend. The model will estimate the smoothing parameters \\alpha and \\beta^* automatically.\n\n\n\n\n\n\n\n\n\n\n\nSeries: Pop \nModel: ETS(A,A,N) \n  Smoothing parameters:\n    alpha = 0.9999 \n    beta  = 0.9998999 \n\n  Initial states:\n     l[0]     b[0]\n 70.06297 2.132884\n\n  sigma^2:  0.0021\n\n      AIC      AICc       BIC \n-115.2553 -114.1014 -104.9531"
+    "section": "Example: Forecasting Brazil’s population",
+    "text": "Example: Forecasting Brazil’s population\n\nbra_fit &lt;- bra_economy |&gt; \n  model(\n    Holt  = ETS(Pop ~ error(\"A\") + trend(\"A\") + season(\"N\")),\n    Drift = RW(Pop ~ drift())\n  )\n\nbra_fit |&gt;  \n  select(Holt) |&gt;  \n  report()\n\nSeries: Pop \nModel: ETS(A,A,N) \n  Smoothing parameters:\n    alpha = 0.9999 \n    beta  = 0.9998999 \n\n  Initial states:\n     l[0]     b[0]\n 70.06297 2.132884\n\n  sigma^2:  0.0021\n\n      AIC      AICc       BIC \n-115.2553 -114.1014 -104.9531"
+  },
+  {
+    "objectID": "docs/modules/module_2/01_ets/ets_pres.html#example-forecasting-brazils-population-5",
+    "href": "docs/modules/module_2/01_ets/ets_pres.html#example-forecasting-brazils-population-5",
+    "title": "Exponential smoothing",
+    "section": "Example: Forecasting Brazil’s population",
+    "text": "Example: Forecasting Brazil’s population\n\nbra_fit &lt;- bra_economy |&gt; \n  model(\n1    Holt  = ETS(Pop ~ error(\"A\") + trend(\"A\") + season(\"N\")),\n    Drift = RW(Pop ~ drift())\n  )\n\nbra_fit |&gt;  \n  select(Holt) |&gt;  \n  report()\n\nbra_fc &lt;- bra_fit |&gt;  \n  forecast(h = 15)\n\nbra_fc |&gt; \n  autoplot(bra_economy, level = NULL) +\n  labs(title = \"Brazilian population\",\n       y = \"Millions\") +\n  guides(colour = guide_legend(title = \"Forecast\"))\n\n\n1\n\nWe specify trend(\"A\") to indicate that we want a linear trend. The model will estimate the smoothing parameters \\alpha and \\beta^* automatically.\n\n\n\n\n\n\n\n\n\n\n\nSeries: Pop \nModel: ETS(A,A,N) \n  Smoothing parameters:\n    alpha = 0.9999 \n    beta  = 0.9998999 \n\n  Initial states:\n     l[0]     b[0]\n 70.06297 2.132884\n\n  sigma^2:  0.0021\n\n      AIC      AICc       BIC \n-115.2553 -114.1014 -104.9531"
   },
   {
     "objectID": "docs/modules/module_2/01_ets/ets_pres.html#damped-trend",
@@ -705,25 +724,25 @@
     "text": "Damped trend\n\n\nHolt’s linear trend method assume that the trend will continue indefinitely at the same rate. However, in many real-world scenarios, this assumption may not hold true. This methods tend to overestimate (or underestimate) long-term forecasts when the trend is strong.\nWe can include a damping parameter \\phi, which reduces the trend over time.\n\n\n\n\\begin{aligned}\n\\text{Forecast equation} \\quad & \\hat{y}_{t+h|t} = \\ell_t +  (\\phi + \\phi^2 + \\ldots + \\phi^h) b_t \\\\\n\\text{Level equation} \\quad & \\ell_t = \\alpha y_t + (\\ell_{t-1} + \\phi b_{t-1}) \\\\\n\\text{Trend equation} \\quad & b_t = \\beta^*(\\ell_t-\\ell_{t-1}) + (1-\\beta^*)\\phi b_{t-1}\n\\end{aligned}\n\nwhere 0 &lt; \\phi &lt; 12 is the damping parameter.\n\n\n\n\n\n\nWhat would happen if \\phi = 1? What about if \\phi = 0?\n\n\n\nIf \\phi = 1, the model reduces to Holt’s linear trend method, meaning the trend continues indefinitely at the same rate.\nIf \\phi = 0, the trend component is completely eliminated, and the model behaves like simple exponential smoothing (SES), where forecasts are based solely on the level component without any trend influence."
   },
   {
-    "objectID": "docs/modules/module_2/01_ets/ets_pres.html#forecasting-brazils-population-5",
-    "href": "docs/modules/module_2/01_ets/ets_pres.html#forecasting-brazils-population-5",
+    "objectID": "docs/modules/module_2/01_ets/ets_pres.html#example-forecasting-brazils-population-continued",
+    "href": "docs/modules/module_2/01_ets/ets_pres.html#example-forecasting-brazils-population-continued",
     "title": "Exponential smoothing",
-    "section": "Forecasting Brazil’s population",
-    "text": "Forecasting Brazil’s population\n\nbra_economy |&gt; \n  model(\n    Holt   = ETS(Pop ~ error(\"A\") + trend(\"A\") + season(\"N\"))\n  )"
+    "section": "Example: Forecasting Brazil’s population (continued)",
+    "text": "Example: Forecasting Brazil’s population (continued)\n\nbra_economy |&gt; \n  model(\n    Holt   = ETS(Pop ~ error(\"A\") + trend(\"A\") + season(\"N\"))\n  )"
   },
   {
-    "objectID": "docs/modules/module_2/01_ets/ets_pres.html#forecasting-brazils-population-continued",
-    "href": "docs/modules/module_2/01_ets/ets_pres.html#forecasting-brazils-population-continued",
+    "objectID": "docs/modules/module_2/01_ets/ets_pres.html#example-forecasting-brazils-population-continued-1",
+    "href": "docs/modules/module_2/01_ets/ets_pres.html#example-forecasting-brazils-population-continued-1",
     "title": "Exponential smoothing",
-    "section": "Forecasting Brazil’s population (continued)",
-    "text": "Forecasting Brazil’s population (continued)\n\nbra_economy |&gt; \n  model(\n    Holt   = ETS(Pop ~ error(\"A\") + trend(\"A\") + season(\"N\")),\n    Damped = ETS(Pop ~ error(\"A\") + trend(\"Ad\", phi = 0.9) + season(\"N\"))\n  )"
+    "section": "Example: Forecasting Brazil’s population (continued)",
+    "text": "Example: Forecasting Brazil’s population (continued)\n\nbra_economy |&gt; \n  model(\n    Holt   = ETS(Pop ~ error(\"A\") + trend(\"A\") + season(\"N\")),\n    Damped = ETS(Pop ~ error(\"A\") + trend(\"Ad\", phi = 0.9) + season(\"N\"))\n  )"
   },
   {
-    "objectID": "docs/modules/module_2/01_ets/ets_pres.html#forecasting-brazils-population-continued-1",
-    "href": "docs/modules/module_2/01_ets/ets_pres.html#forecasting-brazils-population-continued-1",
+    "objectID": "docs/modules/module_2/01_ets/ets_pres.html#example-forecasting-brazils-population-continued-2",
+    "href": "docs/modules/module_2/01_ets/ets_pres.html#example-forecasting-brazils-population-continued-2",
     "title": "Exponential smoothing",
-    "section": "Forecasting Brazil’s population (continued)",
-    "text": "Forecasting Brazil’s population (continued)\n\nbra_economy |&gt; \n  model(\n    Holt   = ETS(Pop ~ error(\"A\") + trend(\"A\") + season(\"N\")),\n1    Damped = ETS(Pop ~ error(\"A\") + trend(\"Ad\", phi = 0.9) + season(\"N\"))\n  ) |&gt; \n  forecast(h = 15) |&gt; \n  autoplot(bra_economy, level = NULL) +\n  labs(title = \"Brazilian population\",\n       y = \"Millions\") +\n  guides(colour = guide_legend(title = \"Forecast\"))\n\n\n1\n\nWe specify trend(\"Ad\") to indicate that we want a damped trend, and phi = 0.9 sets the damping parameter to 0.9. We could also let the model estimate \\phi automatically by omitting the phi argument."
+    "section": "Example: Forecasting Brazil’s population (continued)",
+    "text": "Example: Forecasting Brazil’s population (continued)\n\nbra_economy |&gt; \n  model(\n    Holt   = ETS(Pop ~ error(\"A\") + trend(\"A\") + season(\"N\")),\n1    Damped = ETS(Pop ~ error(\"A\") + trend(\"Ad\", phi = 0.9) + season(\"N\"))\n  ) |&gt; \n  forecast(h = 15) |&gt; \n  autoplot(bra_economy, level = NULL) +\n  labs(title = \"Brazilian population\",\n       y = \"Millions\") +\n  guides(colour = guide_legend(title = \"Forecast\"))\n\n\n1\n\nWe specify trend(\"Ad\") to indicate that we want a damped trend, and phi = 0.9 sets the damping parameter to 0.9. We could also let the model estimate \\phi automatically by omitting the phi argument."
   },
   {
     "objectID": "docs/modules/module_2/01_ets/ets_pres.html#holt-winters-method",
@@ -733,46 +752,67 @@
     "text": "Holt-Winters method\nHW - Additive\n\n\\begin{aligned}\n\\text{Forecast equation} \\quad & \\hat{y}_{t+h|t} = \\ell_t + hb_t + s_{t+h-m(k+1)} \\\\\n\\text{Level equation} \\quad & \\ell_t = \\alpha (y_t - s_{t-m}) + (1 - \\alpha) (\\ell_{t-1} + b_{t-1}) \\\\\n\\text{Trend equation} \\quad & b_t = \\beta^*(\\ell_t-\\ell_{t-1}) + (1-\\beta^*) b_{t-1} \\\\\n\\text{Seasonal equation} \\quad & s_t = \\gamma(y_t - \\ell_{t-1} - b_{t-1}) + (1-\\gamma)s_{t-m}\n\\end{aligned}\n\nwhere s_t is the seasonal component at time t, m is the period of the seasonality3, and k = \\lfloor (h-1)/m \\rfloor.\nHW - Multiplicative\n\n\\begin{aligned}\n\\text{Forecast equation} \\quad & \\hat{y}_{t+h|t} = (\\ell_t + hb_t) s_{t+h-m(k+1)} \\\\\n\\text{Level equation} \\quad & \\ell_t = \\alpha \\frac{y_t}{s_{t-m}} + (1 - \\alpha)(\\ell_{t-1} + b_{t-1}) \\\\\n\\text{Trend equation} \\quad & b_t = \\beta^*(\\ell_t-\\ell_{t-1}) + (1-\\beta^*) b_{t-1} \\\\\n\\text{Seasonal equation} \\quad & s_t = \\gamma \\frac{y_t}{\\ell_{t-1} + b_{t-1}} + (1-\\gamma)s_{t-m}\n\\end{aligned}\n\n\n\n\n\n\n\nWhen to use Holt-Winters methods\n\n\n\nHolt-Winters methods are appropriate for data with a trend and seasonal pattern.\nUse an additive model when the seasonal fluctuations are roughly constant over time.\nUse a multiplicative model when the seasonal variation increase or decrease over time.\nThe proper benchmark method to compare against is the seasonal naïve method. for seasonal data.\n\nIf the data contains both trend and seasonality, then A decomposition model using STL4 + Drift5 + SNAIVE6 is often a strong competitor."
   },
   {
-    "objectID": "docs/modules/module_2/01_ets/ets_pres.html#forecasting-australian-holiday-trips",
-    "href": "docs/modules/module_2/01_ets/ets_pres.html#forecasting-australian-holiday-trips",
+    "objectID": "docs/modules/module_2/01_ets/ets_pres.html#example-forecasting-australian-holiday-trips",
+    "href": "docs/modules/module_2/01_ets/ets_pres.html#example-forecasting-australian-holiday-trips",
     "title": "Exponential smoothing",
-    "section": "Forecasting Australian holiday trips",
-    "text": "Forecasting Australian holiday trips\n\naus_holidays &lt;- tourism |&gt; \n  filter(Purpose == \"Holiday\") |&gt;\n  summarise(Trips = sum(Trips))\n\naus_holidays"
+    "section": "Example: Forecasting Australian holiday trips",
+    "text": "Example: Forecasting Australian holiday trips\n\naus_holidays &lt;- tourism |&gt; \n  filter(Purpose == \"Holiday\") |&gt;\n  summarise(Trips = sum(Trips))\n\naus_holidays"
   },
   {
-    "objectID": "docs/modules/module_2/01_ets/ets_pres.html#forecasting-australian-holiday-trips-1",
-    "href": "docs/modules/module_2/01_ets/ets_pres.html#forecasting-australian-holiday-trips-1",
+    "objectID": "docs/modules/module_2/01_ets/ets_pres.html#example-forecasting-australian-holiday-trips-1",
+    "href": "docs/modules/module_2/01_ets/ets_pres.html#example-forecasting-australian-holiday-trips-1",
     "title": "Exponential smoothing",
-    "section": "Forecasting Australian holiday trips",
-    "text": "Forecasting Australian holiday trips\n\naus_holidays &lt;- tourism |&gt; \n  filter(Purpose == \"Holiday\") |&gt;\n  summarise(Trips = sum(Trips))\n\naus_holidays |&gt;\n  autoplot(Trips)\n\n\n\n\n\n\n\n\n\nWe will forecast the number of holiday trips in Australia using additive and multiplicative Holt-Winters methods."
+    "section": "Example: Forecasting Australian holiday trips",
+    "text": "Example: Forecasting Australian holiday trips\n\naus_holidays &lt;- tourism |&gt; \n  filter(Purpose == \"Holiday\") |&gt;\n  summarise(Trips = sum(Trips))\n\naus_holidays |&gt;\n  autoplot(Trips)"
   },
   {
-    "objectID": "docs/modules/module_2/01_ets/ets_pres.html#forecasting-australian-holiday-trips-3",
-    "href": "docs/modules/module_2/01_ets/ets_pres.html#forecasting-australian-holiday-trips-3",
+    "objectID": "docs/modules/module_2/01_ets/ets_pres.html#example-forecasting-australian-holiday-trips-2",
+    "href": "docs/modules/module_2/01_ets/ets_pres.html#example-forecasting-australian-holiday-trips-2",
     "title": "Exponential smoothing",
-    "section": "Forecasting Australian holiday trips",
-    "text": "Forecasting Australian holiday trips\n\naus_fit &lt;- aus_holidays |&gt; \n  model(\n    Additive       = ETS(Trips ~ error(\"A\") + trend(\"A\") + season(\"A\"))\n  )"
+    "section": "Example: Forecasting Australian holiday trips",
+    "text": "Example: Forecasting Australian holiday trips\n\naus_fit &lt;- aus_holidays |&gt; \n  model(\n    Additive       = ETS(Trips ~ error(\"A\") + trend(\"A\") + season(\"A\"))\n  )"
   },
   {
-    "objectID": "docs/modules/module_2/01_ets/ets_pres.html#forecasting-australian-holiday-trips-4",
-    "href": "docs/modules/module_2/01_ets/ets_pres.html#forecasting-australian-holiday-trips-4",
+    "objectID": "docs/modules/module_2/01_ets/ets_pres.html#example-forecasting-australian-holiday-trips-3",
+    "href": "docs/modules/module_2/01_ets/ets_pres.html#example-forecasting-australian-holiday-trips-3",
     "title": "Exponential smoothing",
-    "section": "Forecasting Australian holiday trips",
-    "text": "Forecasting Australian holiday trips\n\naus_fit &lt;- aus_holidays |&gt; \n  model(\n    Additive       = ETS(Trips ~ error(\"A\") + trend(\"A\") + season(\"A\")),\n    Multiplicative = ETS(Trips ~ error(\"M\") + trend(\"A\") + season(\"M\"))\n  )"
+    "section": "Example: Forecasting Australian holiday trips",
+    "text": "Example: Forecasting Australian holiday trips\n\naus_fit &lt;- aus_holidays |&gt; \n  model(\n    Additive       = ETS(Trips ~ error(\"A\") + trend(\"A\") + season(\"A\")),\n    Multiplicative = ETS(Trips ~ error(\"M\") + trend(\"A\") + season(\"M\"))\n  )"
   },
   {
-    "objectID": "docs/modules/module_2/01_ets/ets_pres.html#forecasting-australian-holiday-trips-5",
-    "href": "docs/modules/module_2/01_ets/ets_pres.html#forecasting-australian-holiday-trips-5",
+    "objectID": "docs/modules/module_2/01_ets/ets_pres.html#example-forecasting-australian-holiday-trips-4",
+    "href": "docs/modules/module_2/01_ets/ets_pres.html#example-forecasting-australian-holiday-trips-4",
     "title": "Exponential smoothing",
-    "section": "Forecasting Australian holiday trips",
-    "text": "Forecasting Australian holiday trips\n\n\n\n\n\n\nThe tidy() function for models\n\n\n\naus_fit |&gt; \n1  tidy()\n\n\n1\n\nThe tidy() function allows us to see the estimated parameters of each model in a tidy table."
+    "section": "Example: Forecasting Australian holiday trips",
+    "text": "Example: Forecasting Australian holiday trips\n\n\n\n\n\n\nThe tidy() function for models\n\n\n\naus_fit |&gt; \n1  tidy()\n\n\n1\n\nThe tidy() function allows us to see the estimated parameters of each model in a tidy table."
   },
   {
-    "objectID": "docs/modules/module_2/01_ets/ets_pres.html#forecasting-australian-holiday-trips-6",
-    "href": "docs/modules/module_2/01_ets/ets_pres.html#forecasting-australian-holiday-trips-6",
+    "objectID": "docs/modules/module_2/01_ets/ets_pres.html#example-forecasting-australian-holiday-trips-5",
+    "href": "docs/modules/module_2/01_ets/ets_pres.html#example-forecasting-australian-holiday-trips-5",
     "title": "Exponential smoothing",
-    "section": "Forecasting Australian holiday trips",
-    "text": "Forecasting Australian holiday trips\n\naus_fc &lt;- aus_fit |&gt; \n  forecast(h = \"3 years\")\n\n\naus_fc %&gt;%\n  autoplot(aus_holidays, level = NULL) + xlab(\"Year\") +\n  labs(\n    title = \"Forecasting Australian holiday trips using Holt-Winters\",\n    y = \"Overnight trips (millions)\"\n  ) +\n  scale_color_brewer(type = \"qual\", palette = \"Dark2\") +\n  guides(colour = guide_legend(title = \"Forecast\"))"
+    "section": "Example: Forecasting Australian holiday trips",
+    "text": "Example: Forecasting Australian holiday trips\n\naus_fc &lt;- aus_fit |&gt; \n  forecast(h = \"3 years\")\n\n\naus_fc |&gt; \n  autoplot(aus_holidays, level = NULL) + xlab(\"Year\") +\n  labs(\n    title   = \"Forecasting Australian holiday trips using Holt-Winters\",\n    y       = \"Overnight trips (millions)\",\n    caption = \"Can you spot any differences between both forecasts?\"\n  ) +\n  scale_color_brewer(type = \"qual\", palette = \"Dark2\") +\n  guides(colour = guide_legend(title = \"Forecast\"))"
+  },
+  {
+    "objectID": "docs/modules/module_2/01_ets/ets_pres.html#holt-winters-damped-method",
+    "href": "docs/modules/module_2/01_ets/ets_pres.html#holt-winters-damped-method",
+    "title": "Exponential smoothing",
+    "section": "Holt-Winters’ damped method",
+    "text": "Holt-Winters’ damped method\n\n\nSimilar to Holt’s linear trend method, we can also include a damping parameter \\phi in the Holt-Winters method to reduce the trend over time.\n\nThis can be done on both additive or multiplicative seasonal models.\n\nA configuration that has proven to be robust and accurate in practice is to use a multiplicative seasonal component with a damped trend.\n\n\n\n\\begin{aligned}\n\\text{Forecast equation} \\quad & \\hat{y}_{t+h|t} = [\\ell_t +(\\phi + \\phi^2 + \\ldots + \\phi^h)b_t] s_{t+h-m(k+1)} \\\\\n\\text{Level equation} \\quad & \\ell_t = \\alpha \\frac{y_t}{s_{t-m}} + (1 - \\alpha)(\\ell_{t-1} + b_{t-1}) \\\\\n\\text{Trend equation} \\quad & b_t = \\beta^*(\\ell_t-\\ell_{t-1}) + (1-\\beta^*) \\phi b_{t-1} \\\\\n\\text{Seasonal equation} \\quad & s_t = \\gamma \\frac{y_t}{\\ell_{t-1} + \\phi b_{t-1}} + (1-\\gamma)s_{t-m}\n\\end{aligned}"
+  },
+  {
+    "objectID": "docs/modules/module_2/01_ets/ets_pres.html#example-forecasting-daily-pedestrian-traffic",
+    "href": "docs/modules/module_2/01_ets/ets_pres.html#example-forecasting-daily-pedestrian-traffic",
+    "title": "Exponential smoothing",
+    "section": "Example: Forecasting daily pedestrian traffic",
+    "text": "Example: Forecasting daily pedestrian traffic\n\nsth_cross_ped &lt;- pedestrian |&gt;\n  filter(Date &gt;= \"2016-07-01\",\n         Sensor == \"Southern Cross Station\") |&gt;\n  index_by(Date) |&gt;\n  summarise(Count = sum(Count)/1000)\n\nsth_cross_ped |&gt;\n  filter(Date &lt;= \"2016-07-31\") |&gt;\n  model(\n1    hw = ETS(Count ~ error(\"M\") + trend(\"Ad\") + season(\"M\"))\n  ) |&gt;\n  forecast(h = \"2 weeks\") |&gt;\n  autoplot(sth_cross_ped |&gt; filter(Date &lt;= \"2016-08-14\")) +\n  labs(title = \"Daily traffic: Southern Cross\",\n       y=\"Pedestrians ('000)\")\n\n\n1\n\nThe setup ETS($y_t$ ~ error(\"M\") + trend(\"Ad\") + season(\"M\")) is often a robust choice for seasonal data with trend."
+  },
+  {
+    "objectID": "docs/modules/module_2/01_ets/ets_pres.html#example-forecasting-daily-pedestrian-traffic-continued",
+    "href": "docs/modules/module_2/01_ets/ets_pres.html#example-forecasting-daily-pedestrian-traffic-continued",
+    "title": "Exponential smoothing",
+    "section": "Example: Forecasting daily pedestrian traffic (continued)",
+    "text": "Example: Forecasting daily pedestrian traffic (continued)\n\npedestrian |&gt; \nfilter(Date &gt;= \"2016-07-01\") |&gt; \n  index_by(Date) |&gt;\n  group_by_key() |&gt; \n  summarise(Count = sum(Count)/1000)"
   },
   {
     "objectID": "docs/modules/module_2/01_ets/ets_pres.html#footnotes",
