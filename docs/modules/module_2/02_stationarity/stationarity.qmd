@@ -1,0 +1,28 @@
+---
+title: "Identifying Stationarity"
+format:
+  html: default
+  revealjs:
+    output-file: stationarity_pres.html
+---
+
+```{r}
+#| label: pkgs
+#| message: false
+#| include: false
+
+library(tidyverse)
+library(fpp3)
+library(plotly)
+```
+
+- A time series is said to be **stationary** if its statistical properties (mean and variance) are constant over time.
+- Stationarity is important because many time series forecasting methods assume that the underlying data is stationary.
+- Non-stationary data can lead to inaccurate forecasts and misleading interpretations.
+- There are two main types of stationarity:
+  - **Strict Stationarity**: The joint distribution of any set of observations is the same regardless of the time at which they are observed.
+  - **Weak Stationarity**: The mean, variance, and autocovariance of the series are constant over time.
+- In practice, we often focus on weak stationarity because it is easier to test and work with.
+
+## Visual Inspection
+
