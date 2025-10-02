@@ -1026,34 +1026,36 @@ Model: ETS(A,A,N)
 <section id="example-forecasting-daily-pedestrian-traffic" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Example: Forecasting daily pedestrian traffic</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-5" data-code-line-numbers="10"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="annotated-cell-5-1" class="hljs-ln-code"><a href="#annotated-cell-5-1"></a>sth_cross_ped <span class="ot">&lt;-</span> pedestrian <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-5-2" class="hljs-ln-code"><a href="#annotated-cell-5-2"></a>  <span class="fu">filter</span>(Date <span class="sc">&gt;=</span> <span class="st">"2016-07-01"</span>,</span>
-<span id="annotated-cell-5-3" class="hljs-ln-code"><a href="#annotated-cell-5-3"></a>         Sensor <span class="sc">==</span> <span class="st">"Southern Cross Station"</span>) <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-5-4" class="hljs-ln-code"><a href="#annotated-cell-5-4"></a>  <span class="fu">index_by</span>(Date) <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-5-5" class="hljs-ln-code"><a href="#annotated-cell-5-5"></a>  <span class="fu">summarise</span>(<span class="at">Count =</span> <span class="fu">sum</span>(Count)<span class="sc">/</span><span class="dv">1000</span>)</span>
-<span id="annotated-cell-5-6" class="hljs-ln-code"><a href="#annotated-cell-5-6"></a></span>
-<span id="annotated-cell-5-7" class="hljs-ln-code"><a href="#annotated-cell-5-7"></a>sth_cross_ped <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-5-8" class="hljs-ln-code"><a href="#annotated-cell-5-8"></a>  <span class="fu">filter</span>(Date <span class="sc">&lt;=</span> <span class="st">"2016-07-31"</span>) <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-5-9" class="hljs-ln-code"><a href="#annotated-cell-5-9"></a>  <span class="fu">model</span>(</span>
-<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-5" data-target-annotation="1">1</button><span id="annotated-cell-5-10" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-5-10"></a>    <span class="at">hw =</span> <span class="fu">ETS</span>(Count <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"M"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"Ad"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"M"</span>))</span>
-<span id="annotated-cell-5-11" class="hljs-ln-code"><a href="#annotated-cell-5-11"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-5-12" class="hljs-ln-code"><a href="#annotated-cell-5-12"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"2 weeks"</span>) <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-5-13" class="hljs-ln-code"><a href="#annotated-cell-5-13"></a>  <span class="fu">autoplot</span>(sth_cross_ped <span class="sc">|&gt;</span> <span class="fu">filter</span>(Date <span class="sc">&lt;=</span> <span class="st">"2016-08-14"</span>)) <span class="sc">+</span></span>
-<span id="annotated-cell-5-14" class="hljs-ln-code"><a href="#annotated-cell-5-14"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Daily traffic: Southern Cross"</span>,</span>
-<span id="annotated-cell-5-15" class="hljs-ln-code"><a href="#annotated-cell-5-15"></a>       <span class="at">y=</span><span class="st">"Pedestrians ('000)"</span>)</span><div class="code-annotation-gutter-bg hljs-ln-code"></div><div class="code-annotation-gutter hljs-ln-code"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-annotation">
-<dl class="code-annotation-container-hidden code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-5" data-target-annotation="1">1</dt>
-<dd>
-<span data-code-cell="annotated-cell-5" data-code-lines="10" data-code-annotation="1">The setup <code>ETS(y ~ error("M") + trend("Ad") + season("M"))</code> is often a robust choice for seasonal data with trend.</span>
-</dd>
-</dl>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16" data-code-line-numbers="10"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb16-1" class="hljs-ln-code"><a></a>sth_cross_ped <span class="ot">&lt;-</span> pedestrian <span class="sc">|&gt;</span></span>
+<span id="cb16-2" class="hljs-ln-code"><a></a>  <span class="fu">filter</span>(Date <span class="sc">&gt;=</span> <span class="st">"2016-07-01"</span>,</span>
+<span id="cb16-3" class="hljs-ln-code"><a></a>         Sensor <span class="sc">==</span> <span class="st">"Southern Cross Station"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb16-4" class="hljs-ln-code"><a></a>  <span class="fu">index_by</span>(Date) <span class="sc">|&gt;</span></span>
+<span id="cb16-5" class="hljs-ln-code"><a></a>  <span class="fu">summarise</span>(<span class="at">Count =</span> <span class="fu">sum</span>(Count)<span class="sc">/</span><span class="dv">1000</span>)</span>
+<span id="cb16-6" class="hljs-ln-code"><a></a></span>
+<span id="cb16-7" class="hljs-ln-code"><a></a>sth_cross_ped <span class="sc">|&gt;</span></span>
+<span id="cb16-8" class="hljs-ln-code"><a></a>  <span class="fu">filter</span>(Date <span class="sc">&lt;=</span> <span class="st">"2016-07-31"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb16-9" class="hljs-ln-code"><a></a>  <span class="fu">model</span>(</span>
+<span id="cb16-10" class="hljs-ln-code"><a></a>    <span class="at">hw =</span> <span class="fu">ETS</span>(Count <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"M"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"Ad"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"M"</span>))</span>
+<span id="cb16-11" class="hljs-ln-code"><a></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb16-12" class="hljs-ln-code"><a></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"2 weeks"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb16-13" class="hljs-ln-code"><a></a>  <span class="fu">autoplot</span>(sth_cross_ped <span class="sc">|&gt;</span> <span class="fu">filter</span>(Date <span class="sc">&lt;=</span> <span class="st">"2016-08-14"</span>)) <span class="sc">+</span></span>
+<span id="cb16-14" class="hljs-ln-code"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Daily traffic: Southern Cross"</span>,</span>
+<span id="cb16-15" class="hljs-ln-code"><a></a>       <span class="at">y=</span><span class="st">"Pedestrians ('000)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure>
 <p><a href="ets_files/figure-revealjs/hw_damped-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9"><img data-src="ets_files/figure-revealjs/hw_damped-1.png" width="960"></a></p>
 </figure>
+</div>
+</div>
+</div>
+<div class="callout callout-tip callout-style-simple">
+<div class="callout-body">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-content">
+<p>The setup <code>ETS(y ~ error("M") + trend("Ad") + season("M"))</code> is often a robust choice for seasonal data with trend.</p>
 </div>
 </div>
 </div>
@@ -1121,6 +1123,7 @@ Model: ETS(A,A,N)
 </div>
 </div>
 </section></section>
+<section>
 <section id="the-lineup-of-exponential-smoothing-methods" class="title-slide slide level1 center">
 <h1>The lineup of exponential smoothing methods</h1>
 <div id="tbl-ets-grid" class="striped hover quarto-float quarto-figure quarto-figure-center">
@@ -1168,6 +1171,9 @@ Table&nbsp;2: ETS component combinations (trend × seasonal)
 </div>
 </figure>
 </div>
+</section>
+<section id="section-5" class="slide level2">
+<h2></h2>
 <div id="tbl-ets-names" class="striped hover quarto-float quarto-figure quarto-figure-center">
 <figure class="quarto-float quarto-float-tbl">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-ets-names-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -1211,8 +1217,7 @@ Table&nbsp;3: Names of some popular ETS models
 </div>
 </figure>
 </div>
-</section>
-
+</section></section>
 <section id="in-summary" class="title-slide slide level1 center">
 <h1>In summary</h1>
 <ul>
