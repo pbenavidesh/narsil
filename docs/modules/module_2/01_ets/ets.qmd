@@ -847,8 +847,6 @@ ped_fit
 
 #### Example: Forecasting daily pedestrian traffic (continued) {auto-animate="true"}
 
-:::
-
 ```{r}
 #| label: auto_ets
 #| df-print: kable
@@ -872,6 +870,8 @@ ped_fit                                                #<3>
 2. Here, we specify that the trend component can be either additive or damped, while the error and seasonal components will be selected automatically.
 3. The output shows the selected model for each sensor.
 
+:::
+
 
 ::: {.content-hidden unless-format="revealjs"}
 
@@ -885,6 +885,12 @@ ped_fit                                                #<3>
 
 :::
 
+::: {.content-hidden unless-format="revealjs"}
+
+##
+
+:::
+
 Table: ETS component combinations (trend × seasonal) {#tbl-ets-grid .striped .hover}
 
 | Trend component              | N (None)   | A (Additive)    | M (Multiplicative) |
@@ -894,11 +900,7 @@ Table: ETS component combinations (trend × seasonal) {#tbl-ets-grid .striped .h
 | $A_d$ **(Additive damped)**  | $(A_d,N)$, | $(A_d, A)$      | $(A_d,M)$          |
 
 
-::: {.content-hidden unless-format="revealjs"}
 
-##
-
-:::
 
 Table: Names of some popular ETS models {#tbl-ets-names .striped .hover}
 
