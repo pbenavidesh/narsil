@@ -322,13 +322,14 @@ pbenavides
 \hat{y}_{T+1 | T}= \alpha y_{T} + \alpha(1-\alpha) y_{T-1} + \alpha(1-\alpha)^{2} y_{T-2}  + \ldots
 </span></p>
 <p>where <span class="math inline">0\leq \alpha \leq1</span> is the smoothing parameter.</p>
-<div id="tbl-ets_alpha_weights" class="quarto-float quarto-figure quarto-figure-center">
+<div id="tbl-ets_alpha_weights" class="info striped hover responsive quarto-float quarto-figure quarto-figure-center">
 <figure class="quarto-float quarto-float-tbl">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-ets_alpha_weights-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Table&nbsp;1: Weights for different values of <span class="math inline">\alpha</span>
 </figcaption>
 <div aria-describedby="tbl-ets_alpha_weights-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<table class="caption-top" style="width:100%;">
+<div class="table-responsive">
+<table class="table-info table-striped table-hover caption-top" style="width:100%;">
 <colgroup>
 <col style="width: 17%">
 <col style="width: 20%">
@@ -390,6 +391,7 @@ Table&nbsp;1: Weights for different values of <span class="math inline">\alpha</
 </tr>
 </tbody>
 </table>
+</div>
 </div>
 </figure>
 </div>
@@ -479,14 +481,14 @@ Table&nbsp;1: Weights for different values of <span class="math inline">\alpha</
 </div>
 <div class="callout-content">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-7"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-7-1"><a href="#annotated-cell-7-1"></a>alg_fit <span class="sc">|&gt;</span> </span>
-<span id="annotated-cell-7-2"><a href="#annotated-cell-7-2"></a>  <span class="fu">select</span>(SES) <span class="sc">|&gt;</span> </span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="1">1</button><span id="annotated-cell-7-3" class="code-annotation-target"><a href="#annotated-cell-7-3"></a>  <span class="fu">report</span>()</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-6"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-6-1"><a href="#annotated-cell-6-1"></a>alg_fit <span class="sc">|&gt;</span> </span>
+<span id="annotated-cell-6-2"><a href="#annotated-cell-6-2"></a>  <span class="fu">select</span>(SES) <span class="sc">|&gt;</span> </span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="1">1</button><span id="annotated-cell-6-3" class="code-annotation-target"><a href="#annotated-cell-6-3"></a>  <span class="fu">report</span>()</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-7" data-target-annotation="1">1</dt>
+<dt data-target-cell="annotated-cell-6" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-7" data-code-lines="3" data-code-annotation="1">The <code>report()</code> function allows us to see a model’s report (the time series modeled, the model used, the estimated parameters, and more). It needs a <span class="math inline">1 \times 1</span> dimension <code>mable</code><a href="#/footnotes" class="footnote-ref" id="fnref1" role="doc-noteref" data-footnote-href="#/fn1" onclick=""><sup>1</sup></a>.</span>
+<span data-code-cell="annotated-cell-6" data-code-lines="3" data-code-annotation="1">The <code>report()</code> function allows us to see a model’s report (the time series modeled, the model used, the estimated parameters, and more). It needs a <span class="math inline">1 \times 1</span> dimension <code>mable</code><a href="#/footnotes" class="footnote-ref" id="fnref1" role="doc-noteref" data-footnote-href="#/fn1" onclick=""><sup>1</sup></a>.</span>
 </dd>
 </dl>
 </div>
@@ -946,13 +948,13 @@ Model: ETS(A,A,N)
 </div>
 <div class="callout-content">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-22"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="annotated-cell-22-1" class="hljs-ln-code"><a href="#annotated-cell-22-1"></a>aus_fit <span class="sc">|&gt;</span> </span>
-<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-22" data-target-annotation="1">1</button><span id="annotated-cell-22-2" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-22-2"></a>  <span class="fu">tidy</span>()</span><div class="code-annotation-gutter-bg hljs-ln-code"></div><div class="code-annotation-gutter hljs-ln-code"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-21"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="annotated-cell-21-1" class="hljs-ln-code"><a href="#annotated-cell-21-1"></a>aus_fit <span class="sc">|&gt;</span> </span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-21" data-target-annotation="1">1</button><span id="annotated-cell-21-2" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-21-2"></a>  <span class="fu">tidy</span>()</span><div class="code-annotation-gutter-bg hljs-ln-code"></div><div class="code-annotation-gutter hljs-ln-code"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-22" data-target-annotation="1">1</dt>
+<dt data-target-cell="annotated-cell-21" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-22" data-code-lines="2" data-code-annotation="1">The <code>tidy()</code> function allows us to see the estimated parameters of each model in a <a href="https://r4ds.hadley.nz/data-tidy.html">tidy</a> table.</span>
+<span data-code-cell="annotated-cell-21" data-code-lines="2" data-code-annotation="1">The <code>tidy()</code> function allows us to see the estimated parameters of each model in a <a href="https://r4ds.hadley.nz/data-tidy.html">tidy</a> table.</span>
 </dd>
 </dl>
 </div>
@@ -1084,59 +1086,20 @@ Model: ETS(A,A,N)
 <section id="example-forecasting-daily-pedestrian-traffic-continued" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Example: Forecasting daily pedestrian traffic (continued)</h2>
 <div class="cell" data-df-print="tibble">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17" data-code-line-numbers="|10-11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a>ped_fit <span class="ot">&lt;-</span> pedestrian <span class="sc">|&gt;</span> </span>
-<span id="cb17-2"><a></a>  <span class="fu">filter</span>(</span>
-<span id="cb17-3"><a></a>    Date <span class="sc">&gt;=</span> <span class="st">"2016-07-01"</span>,</span>
-<span id="cb17-4"><a></a>    Sensor <span class="sc">!=</span> <span class="st">"Birrarung Marr"</span></span>
-<span id="cb17-5"><a></a>  ) <span class="sc">|&gt;</span> </span>
-<span id="cb17-6"><a></a>  <span class="fu">index_by</span>(Date) <span class="sc">|&gt;</span></span>
-<span id="cb17-7"><a></a>  <span class="fu">group_by_key</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb17-8"><a></a>  <span class="fu">summarise</span>(<span class="at">Count =</span> <span class="fu">sum</span>(Count)<span class="sc">/</span><span class="dv">1000</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb17-9"><a></a>  <span class="fu">model</span>(</span>
-<span id="cb17-10"><a></a>    <span class="at">ETS_auto       =</span> <span class="fu">ETS</span>(Count),                       </span>
-<span id="cb17-11"><a></a>    <span class="at">ets_with_trend =</span> <span class="fu">ETS</span>(Count <span class="sc">~</span> <span class="fu">trend</span>(<span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"Ad"</span>))), </span>
-<span id="cb17-12"><a></a>  )</span>
-<span id="cb17-13"><a></a></span>
-<span id="cb17-14"><a></a>ped_fit                                                </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div data-pagedtable="false">
-  <script data-pagedtable-source="" type="application/json">
-{"columns":[{"label":["Sensor"],"name":[1],"type":["chr"],"align":["left"]},{"label":["ETS_auto"],"name":[2],"type":["lst_mdl"],"align":["right"]},{"label":["ets_with_trend"],"name":[3],"type":["lst_mdl"],"align":["right"]}],"data":[{"1":"Bourke Street Mall (North)","2":"<lst_mdl>","3":"<lst_mdl>"},{"1":"QV Market-Elizabeth St (West)","2":"<lst_mdl>","3":"<lst_mdl>"},{"1":"Southern Cross Station","2":"<lst_mdl>","3":"<lst_mdl>"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
-</div>
-</div>
-</div>
-<div class="cell" data-df-print="kable">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-6"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-6-1"><a href="#annotated-cell-6-1"></a>ped_fit <span class="ot">&lt;-</span> pedestrian <span class="sc">|&gt;</span> </span>
-<span id="annotated-cell-6-2"><a href="#annotated-cell-6-2"></a>  <span class="fu">filter</span>(</span>
-<span id="annotated-cell-6-3"><a href="#annotated-cell-6-3"></a>    Date <span class="sc">&gt;=</span> <span class="st">"2016-07-01"</span>,</span>
-<span id="annotated-cell-6-4"><a href="#annotated-cell-6-4"></a>    Sensor <span class="sc">!=</span> <span class="st">"Birrarung Marr"</span></span>
-<span id="annotated-cell-6-5"><a href="#annotated-cell-6-5"></a>  ) <span class="sc">|&gt;</span> </span>
-<span id="annotated-cell-6-6"><a href="#annotated-cell-6-6"></a>  <span class="fu">index_by</span>(Date) <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-6-7"><a href="#annotated-cell-6-7"></a>  <span class="fu">group_by_key</span>() <span class="sc">|&gt;</span> </span>
-<span id="annotated-cell-6-8"><a href="#annotated-cell-6-8"></a>  <span class="fu">summarise</span>(<span class="at">Count =</span> <span class="fu">sum</span>(Count)<span class="sc">/</span><span class="dv">1000</span>) <span class="sc">|&gt;</span> </span>
-<span id="annotated-cell-6-9"><a href="#annotated-cell-6-9"></a>  <span class="fu">model</span>(</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="1">1</button><span id="annotated-cell-6-10" class="code-annotation-target"><a href="#annotated-cell-6-10"></a>    <span class="at">ETS_auto       =</span> <span class="fu">ETS</span>(Count),</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="2">2</button><span id="annotated-cell-6-11" class="code-annotation-target"><a href="#annotated-cell-6-11"></a>    <span class="at">ets_with_trend =</span> <span class="fu">ETS</span>(Count <span class="sc">~</span> <span class="fu">trend</span>(<span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"Ad"</span>))),</span>
-<span id="annotated-cell-6-12"><a href="#annotated-cell-6-12"></a>  )</span>
-<span id="annotated-cell-6-13"><a href="#annotated-cell-6-13"></a></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="3">3</button><span id="annotated-cell-6-14" class="code-annotation-target"><a href="#annotated-cell-6-14"></a>ped_fit</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-annotation">
-<dl class="code-annotation-container-hidden code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-6" data-target-annotation="1">1</dt>
-<dd>
-<span data-code-cell="annotated-cell-6" data-code-lines="10" data-code-annotation="1">Leaving the right-hand side of the formula empty allows <code>fable</code> to automatically select the best ETS model for each time series.</span>
-</dd>
-<dt data-target-cell="annotated-cell-6" data-target-annotation="2">2</dt>
-<dd>
-<span data-code-cell="annotated-cell-6" data-code-lines="11" data-code-annotation="2">Here, we specify that the trend component can be either additive or damped, while the error and seasonal components will be selected automatically.</span>
-</dd>
-<dt data-target-cell="annotated-cell-6" data-target-annotation="3">3</dt>
-<dd>
-<span data-code-cell="annotated-cell-6" data-code-lines="14" data-code-annotation="3">The output shows the selected model for each sensor.</span>
-</dd>
-</dl>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17" data-code-line-numbers="10-11"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb17-1" class="hljs-ln-code"><a></a>ped_fit <span class="ot">&lt;-</span> pedestrian <span class="sc">|&gt;</span> </span>
+<span id="cb17-2" class="hljs-ln-code"><a></a>  <span class="fu">filter</span>(</span>
+<span id="cb17-3" class="hljs-ln-code"><a></a>    Date <span class="sc">&gt;=</span> <span class="st">"2016-07-01"</span>,</span>
+<span id="cb17-4" class="hljs-ln-code"><a></a>    Sensor <span class="sc">!=</span> <span class="st">"Birrarung Marr"</span></span>
+<span id="cb17-5" class="hljs-ln-code"><a></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb17-6" class="hljs-ln-code"><a></a>  <span class="fu">index_by</span>(Date) <span class="sc">|&gt;</span></span>
+<span id="cb17-7" class="hljs-ln-code"><a></a>  <span class="fu">group_by_key</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb17-8" class="hljs-ln-code"><a></a>  <span class="fu">summarise</span>(<span class="at">Count =</span> <span class="fu">sum</span>(Count)<span class="sc">/</span><span class="dv">1000</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb17-9" class="hljs-ln-code"><a></a>  <span class="fu">model</span>(</span>
+<span id="cb17-10" class="hljs-ln-code"><a></a>    <span class="at">ETS_auto       =</span> <span class="fu">ETS</span>(Count),                       </span>
+<span id="cb17-11" class="hljs-ln-code"><a></a>    <span class="at">ets_with_trend =</span> <span class="fu">ETS</span>(Count <span class="sc">~</span> <span class="fu">trend</span>(<span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"Ad"</span>))), </span>
+<span id="cb17-12" class="hljs-ln-code"><a></a>  )</span>
+<span id="cb17-13" class="hljs-ln-code"><a></a></span>
+<span id="cb17-14" class="hljs-ln-code"><a></a>ped_fit                            </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -1149,13 +1112,18 @@ Model: ETS(A,A,N)
 <section>
 <section id="the-lineup-of-exponential-smoothing-methods" class="title-slide slide level1 center">
 <h1>The lineup of exponential smoothing methods</h1>
-<div id="tbl-ets-grid" class="striped hover quarto-float quarto-figure quarto-figure-center">
+
+</section>
+<section id="section-5" class="slide level2">
+<h2></h2>
+<div id="tbl-ets-grid" class="primary striped hover responsive quarto-float quarto-figure quarto-figure-center">
 <figure class="quarto-float quarto-float-tbl">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-ets-grid-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Table&nbsp;2: ETS component combinations (trend × seasonal)
 </figcaption>
 <div aria-describedby="tbl-ets-grid-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<table class="table-striped table-hover caption-top">
+<div class="table-responsive">
+<table class="table-primary table-striped table-hover caption-top">
 <colgroup>
 <col style="width: 37%">
 <col style="width: 15%">
@@ -1192,18 +1160,17 @@ Table&nbsp;2: ETS component combinations (trend × seasonal)
 </tbody>
 </table>
 </div>
+</div>
 </figure>
 </div>
-</section>
-<section id="section-5" class="slide level2">
-<h2></h2>
-<div id="tbl-ets-names" class="striped hover quarto-float quarto-figure quarto-figure-center">
+<div id="tbl-ets-names" class="secondary striped hover responsive quarto-float quarto-figure quarto-figure-center">
 <figure class="quarto-float quarto-float-tbl">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-ets-names-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Table&nbsp;3: Names of some popular ETS models
 </figcaption>
 <div aria-describedby="tbl-ets-names-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<table class="table-striped table-hover caption-top">
+<div class="table-responsive">
+<table class="table-secondary table-striped table-hover caption-top">
 <thead>
 <tr class="header">
 <th style="text-align: center;">Notation</th>
@@ -1237,6 +1204,7 @@ Table&nbsp;3: Names of some popular ETS models
 </tr>
 </tbody>
 </table>
+</div>
 </div>
 </figure>
 </div>
