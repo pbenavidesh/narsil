@@ -1215,7 +1215,7 @@ Model: ETS(A,A,N)
 </div>
 <section id="example-forecasting-daily-pedestrian-traffic-continued-1" class="level4" data-number="1.4.0.1">
 <h4 data-number="1.4.0.1" class="anchored" data-anchor-id="example-forecasting-daily-pedestrian-traffic-continued-1"><span class="header-section-number">1.4.0.1</span> Example: Forecasting daily pedestrian traffic (continued)</h4>
-<div class="cell" data-df-print="default">
+<div class="cell" data-df-print="tibble">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-6"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-6-1"><a href="#annotated-cell-6-1"></a>ped_fit <span class="ot">&lt;-</span> pedestrian <span class="sc">|&gt;</span> </span>
 <span id="annotated-cell-6-2"><a href="#annotated-cell-6-2"></a>  <span class="fu">filter</span>(</span>
 <span id="annotated-cell-6-3"><a href="#annotated-cell-6-3"></a>    Date <span class="sc">&gt;=</span> <span class="st">"2016-07-01"</span>,</span>
@@ -1258,13 +1258,13 @@ Model: ETS(A,A,N)
 </section>
 <section id="the-lineup-of-exponential-smoothing-methods-1" class="level2" data-number="1.5">
 <h2 data-number="1.5" class="anchored" data-anchor-id="the-lineup-of-exponential-smoothing-methods-1"><span class="header-section-number">1.5</span> The lineup of exponential smoothing methods</h2>
-<div id="tbl-ets-grid" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="tbl-ets-grid" class="striped hover quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-ets-grid-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Table&nbsp;2: ETS component combinations (trend × seasonal)
 </figcaption>
 <div aria-describedby="tbl-ets-grid-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<table class="caption-top table">
+<table class="table-striped table-hover caption-top table">
 <colgroup>
 <col style="width: 37%">
 <col style="width: 15%">
@@ -1303,13 +1303,13 @@ Table&nbsp;2: ETS component combinations (trend × seasonal)
 </div>
 </figure>
 </div>
-<div id="tbl-ets-names" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="tbl-ets-names" class="striped hover quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-ets-names-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Table&nbsp;3: Names of some popular ETS models
 </figcaption>
 <div aria-describedby="tbl-ets-names-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<table class="caption-top table">
+<table class="table-striped table-hover caption-top table">
 <thead>
 <tr class="header">
 <th style="text-align: center;">Notation</th>
@@ -1353,7 +1353,7 @@ Table&nbsp;3: Names of some popular ETS models
 <li>Exponential smoothing methods are a family of forecasting methods that use <strong>weighted averages</strong> of past observations to make forecasts.</li>
 <li>The <strong>weights decrease exponentially</strong> for older observations, controlled by smoothing parameters.</li>
 <li>Different configurations of ETS models can be used to handle various data patterns, including trend and seasonality.</li>
-<li>The choice of model components (error, trend, seasonality) should be based on the characteristics of the data.
+<li>The choice of model components (<code>error(c("A", "M"))</code>, <code>trend(c("N", "A", "Ad"))</code>, <code>seasonality(c("N", "A", "M"))</code>) should be based on the characteristics of the data.
 <ul>
 <li>That is, we <strong>choose the model by viewing the time plot</strong>.</li>
 </ul></li>
