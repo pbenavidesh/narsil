@@ -771,7 +771,7 @@ $$
 
 ```{r}
 #| label: hw_damped
-#| code-line-numbers: "10"
+#| code-line-numbers: "|10"
 
 sth_cross_ped <- pedestrian |>
   filter(Date >= "2016-07-01",
@@ -819,6 +819,28 @@ The setup `ETS(y ~ error("M") + trend("Ad") + season("M"))` is often a robust ch
 
 ## Example: Forecasting daily pedestrian traffic (continued) {auto-animate="true"}
 
+```{r}
+#| label: auto_ets_js
+#| code-line-numbers: "|10-11"
+#| df-print: tibble
+
+ped_fit <- pedestrian |> 
+  filter(
+    Date >= "2016-07-01",
+    Sensor != "Birrarung Marr"
+  ) |> 
+  index_by(Date) |>
+  group_by_key() |> 
+  summarise(Count = sum(Count)/1000) |> 
+  model(
+    ETS_auto       = ETS(Count),                       
+    ets_with_trend = ETS(Count ~ trend(c("A", "Ad"))), 
+  )
+
+ped_fit                                                
+```
+
+
 :::
 
 ::: {.content-visible unless-format="revealjs"}
@@ -829,8 +851,7 @@ The setup `ETS(y ~ error("M") + trend("Ad") + season("M"))` is often a robust ch
 
 ```{r}
 #| label: auto_ets
-#| code-line-numbers: "|10-11"
-#| df-print: tibble
+#| df-print: kable
 
 ped_fit <- pedestrian |> 
   filter(
