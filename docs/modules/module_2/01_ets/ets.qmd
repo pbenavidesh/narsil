@@ -765,7 +765,7 @@ $$
 
 ::: {.content-visible unless-format="revealjs"}
 
-#### Example: Forecasting daily pedestrian traffic
+#### Example: Forecasting daily pedestrian traffic {auto-animate="true"}
 
 :::
 
@@ -782,7 +782,7 @@ sth_cross_ped <- pedestrian |>
 sth_cross_ped |>
   filter(Date <= "2016-07-31") |>
   model(
-    hw = ETS(Count ~ error("M") + trend("Ad") + season("M")) #<1>
+    hw = ETS(Count ~ error("M") + trend("Ad") + season("M"))
   ) |>
   forecast(h = "2 weeks") |>
   autoplot(sth_cross_ped |> filter(Date <= "2016-08-14")) +
@@ -790,7 +790,11 @@ sth_cross_ped |>
        y="Pedestrians ('000)")
 ```
 
-1. The setup `ETS(y ~ error("M") + trend("Ad") + season("M"))` is often a robust choice for seasonal data with trend.
+::: {.callout-tip appearance="simple"}
+
+The setup `ETS(y ~ error("M") + trend("Ad") + season("M"))` is often a robust choice for seasonal data with trend.
+
+:::
 
 ::: {.content-hidden unless-format="revealjs"}
 
@@ -819,7 +823,7 @@ sth_cross_ped |>
 
 ::: {.content-visible unless-format="revealjs"}
 
-#### Example: Forecasting daily pedestrian traffic (continued)
+#### Example: Forecasting daily pedestrian traffic (continued) {auto-animate="true"}
 
 :::
 
@@ -869,6 +873,12 @@ Table: ETS component combinations (trend × seasonal) {#tbl-ets-grid .striped .h
 | $A_d$ **(Additive damped)**  | $(A_d,N)$, | $(A_d, A)$      | $(A_d,M)$          |
 
 
+::: {.content-hidden unless-format="revealjs"}
+
+##
+
+:::
+
 Table: Names of some popular ETS models {#tbl-ets-names .striped .hover}
 
 | Notation | Method                             |
@@ -879,6 +889,8 @@ Table: Names of some popular ETS models {#tbl-ets-names .striped .hover}
 |$(A,A)$   | Holt-Winters' Additive             |
 |$(A,M)$   | Holt-Winters' Multiplicative       |
 |$(A_d,M)$ | Holt-Winters' damped               |
+
+
 
 ::: {.content-hidden unless-format="revealjs"}
 
