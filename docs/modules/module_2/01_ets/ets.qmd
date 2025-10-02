@@ -99,7 +99,7 @@ where $0\leq \alpha \leq1$ is the smoothing parameter.
 
   
 
-Table: Weights for different values of $\alpha$ {#tbl-ets_alpha_weights}
+Table: Weights for different values of $\alpha$ {#tbl-ets_alpha_weights .info .striped .hover .responsive}
 
 |              | $\alpha = 0.2$ | $\alpha = 0.4$ | $\alpha = 0.6$ | $\alpha = 0.8$ |
 |--------------|:--------------:|:--------------:|:--------------:|:--------------:|
@@ -821,7 +821,7 @@ The setup `ETS(y ~ error("M") + trend("Ad") + season("M"))` is often a robust ch
 
 ```{r}
 #| label: auto_ets_js
-#| code-line-numbers: "|10-11"
+#| code-line-numbers: "10-11"
 #| df-print: tibble
 
 ped_fit <- pedestrian |> 
@@ -837,7 +837,7 @@ ped_fit <- pedestrian |>
     ets_with_trend = ETS(Count ~ trend(c("A", "Ad"))), 
   )
 
-ped_fit                                                
+ped_fit                            
 ```
 
 
@@ -891,7 +891,7 @@ ped_fit                                                #<3>
 
 :::
 
-Table: ETS component combinations (trend × seasonal) {#tbl-ets-grid .striped .hover}
+Table: ETS component combinations (trend × seasonal) {#tbl-ets-grid .primary .striped .hover .responsive}
 
 | Trend component              | N (None)   | A (Additive)    | M (Multiplicative) |
 |:-----------------------------|:----------:|:---------------:|:------------------:|
@@ -902,7 +902,7 @@ Table: ETS component combinations (trend × seasonal) {#tbl-ets-grid .striped .h
 
 
 
-Table: Names of some popular ETS models {#tbl-ets-names .striped .hover}
+Table: Names of some popular ETS models {#tbl-ets-names .secondary .striped .hover .responsive}
 
 | Notation | Method                             |
 |:--------:|:----------------------------------:|
