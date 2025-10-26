@@ -16,13 +16,123 @@ library(fpp3)
 library(plotly)
 ```
 
+:::{.content-hidden unless-format="revealjs"}
+
+# What is Stationarity? {background-image="stationary_tank.png"}
+
+## 
+
+:::
+
+
 - A time series is said to be **stationary** if its statistical properties (mean and variance) are constant over time.
+
+:::{.notes}
+
+
 - Stationarity is important because many time series forecasting methods assume that the underlying data is stationary.
 - Non-stationary data can lead to inaccurate forecasts and misleading interpretations.
+
+:::
+
 - There are two main types of stationarity:
   - **Strict Stationarity**: The joint distribution of any set of observations is the same regardless of the time at which they are observed.
   - **Weak Stationarity**: The mean, variance, and autocovariance of the series are constant over time.
+
 - In practice, we often focus on weak stationarity because it is easier to test and work with.
 
-## Visual Inspection
+:::{.content-hidden unless-format="revealjs"}
 
+
+```{r}
+#| label: ts_plots_setup
+#| include: false
+
+google_stock <- gafa_stock |>
+  filter(Symbol == "GOOG") |>
+  mutate(day = row_number()) |>
+  update_tsibble(index = day, regular = TRUE) |> 
+  mutate(diff_close = difference(Close))
+
+google_2015 <- google_stock |> filter(year(Date) == 2015)
+
+p1 <- google_2015 |> 
+  autoplot(Close) +
+  ggtitle("Google stock")
+
+eggs <- as_tsibble(fma::eggs)
+
+p2 <- eggs |> 
+  autoplot(value) +
+  labs(
+    title = "Price of dozen eggs in US",
+    y     = "Constant US cents",
+  )
+
+recent_production <- aus_production |> 
+  filter(year(Quarter) >= 1992 & year(Quarter) <= 1995 )
+
+p3 <- recent_production |> 
+  autoplot(Beer) +
+  ggtitle("Beer production")
+
+pigs <- aus_livestock |> 
+  filter(Animal == "Pigs",
+         State == "Victoria")
+
+p4 <- pigs |> 
+  autoplot(Count) +
+  ggtitle("Pigs production")
+
+p5 <- google_2015 |> 
+  autoplot(diff_close) +
+  ylab("difference(Close)") + 
+  ggtitle("Google's stock daily returns")
+
+lynx <- pelt |> 
+  select(Year, Lynx)
+
+p6 <- lynx |> 
+  autoplot(Lynx) +
+  ggtitle("Lynx pelts traded")
+```
+
+
+## 
+
+```{r}
+#| label: ts_trend_example
+#| echo: false
+#| layout-ncol: 2
+#| fig-cap:
+#|   - "A time series with an upward trend."
+#|   - "A time series with a downward trend."
+
+p1
+p2
+```
+
+##
+
+```{r}
+#| label: ts_seasonality_example
+#| echo: false
+#| layout-ncol: 2
+#| fig-cap:
+#|   - "A time series with yearly seasonality."
+#|   - "A time series with yearly seasonality and a shifting trend."
+
+p3
+p4
+```
+
+```{r}
+#| label: ts_stationary_example
+#| echo: false
+#| layout-ncol: 2
+
+p5
+p6
+```
+
+:::
