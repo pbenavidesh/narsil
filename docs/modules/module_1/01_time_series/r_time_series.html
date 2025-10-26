@@ -414,8 +414,8 @@ window.Quarto = {
         </a>
     </div>
   </nav>
-  <div id="quarto-announcement" data-announcement-id="f7515ca3a679eca1904c4eeb50b2aff8" class="alert alert-primary hidden"><div class="quarto-announcement-content">
-<p><strong>NEW</strong> - Module 1 - Forecasting is now up &amp; running</p>
+  <div id="quarto-announcement" data-announcement-id="593923af5e1d2757fce1244a603f10fb" class="alert alert-primary hidden"><i class="bi bi-megaphone quarto-announcement-icon"></i><div class="quarto-announcement-content">
+<p><strong>NEW</strong> - AI code assistant <a href="https://chatgpt.com/g/g-68e6907c12a48191a07fb0888500a7fa-elendil-ta">Elendil TA</a> is now available! Click the icon in the navbar to start using it.</p>
 </div><i class="bi bi-x-lg quarto-announcement-action"></i></div>
 </header>
 <!-- content -->
@@ -604,7 +604,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">October 11, 2025</p>
+      <p class="date-modified">October 26, 2025</p>
     </div>
   </div>
     
@@ -624,8 +624,8 @@ window.Quarto = {
 <div class="cell-output cell-output-stderr">
 <pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
 ✔ dplyr     1.1.4     ✔ readr     2.1.5
-✔ forcats   1.0.0     ✔ stringr   1.5.1
-✔ ggplot2   3.5.2     ✔ tibble    3.3.0
+✔ forcats   1.0.1     ✔ stringr   1.5.2
+✔ ggplot2   4.0.0     ✔ tibble    3.3.0
 ✔ lubridate 1.9.4     ✔ tidyr     1.3.1
 ✔ purrr     1.1.0     
 ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
@@ -679,10 +679,10 @@ window.Quarto = {
   as_tibble.grouped_df dplyr</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>── Attaching packages ──────────────────────────────────────────── fpp3 1.0.1 ──</code></pre>
+<pre><code>── Attaching packages ──────────────────────────────────────────── fpp3 1.0.2 ──</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>✔ tsibble     1.1.6     ✔ feasts      0.4.1
+<pre><code>✔ tsibble     1.1.6     ✔ feasts      0.4.2
 ✔ tsibbledata 0.4.1     ✔ fable       0.4.1</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
@@ -973,6 +973,10 @@ Note
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a>aus_production <span class="sc">|&gt;</span> </span>
 <span id="cb18-2"><a href="#cb18-2"></a>  <span class="fu">gg_season</span>(Gas)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: `gg_season()` was deprecated in feasts 0.4.2.
+ℹ Please use `ggtime::gg_season()` instead.</code></pre>
+</div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -998,8 +1002,12 @@ Note
 <section id="seasonal-subseries-plots" class="level2" data-number="3.4">
 <h2 data-number="3.4" class="anchored" data-anchor-id="seasonal-subseries-plots"><span class="header-section-number">3.4</span> Seasonal Subseries Plots</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a>aus_production <span class="sc">|&gt;</span> </span>
-<span id="cb19-2"><a href="#cb19-2"></a>  <span class="fu">gg_subseries</span>(Gas)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a>aus_production <span class="sc">|&gt;</span> </span>
+<span id="cb20-2"><a href="#cb20-2"></a>  <span class="fu">gg_subseries</span>(Gas)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: `gg_subseries()` was deprecated in feasts 0.4.2.
+ℹ Please use `ggtime::gg_subseries()` instead.</code></pre>
+</div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1015,8 +1023,12 @@ Note
 <section id="gg_tsdisplay" class="level2" data-number="3.5">
 <h2 data-number="3.5" class="anchored" data-anchor-id="gg_tsdisplay"><span class="header-section-number">3.5</span> <code>gg_tsdisplay()</code></h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a>aus_production <span class="sc">|&gt;</span> </span>
-<span id="cb20-2"><a href="#cb20-2"></a>  <span class="fu">gg_tsdisplay</span>(Gas, <span class="at">plot_type =</span> <span class="st">"season"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a>aus_production <span class="sc">|&gt;</span> </span>
+<span id="cb22-2"><a href="#cb22-2"></a>  <span class="fu">gg_tsdisplay</span>(Gas, <span class="at">plot_type =</span> <span class="st">"season"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: `gg_tsdisplay()` was deprecated in feasts 0.4.2.
+ℹ Please use `ggtime::gg_tsdisplay()` instead.</code></pre>
+</div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1055,11 +1067,11 @@ Note
 <section id="exporting-data-to-.csv" class="level2" data-number="3.6">
 <h2 data-number="3.6" class="anchored" data-anchor-id="exporting-data-to-.csv"><span class="header-section-number">3.6</span> Exporting data to .csv</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a>tourism <span class="sc">|&gt;</span> </span>
-<span id="cb21-2"><a href="#cb21-2"></a>  <span class="fu">filter</span>(State <span class="sc">==</span> <span class="st">"Tasmania"</span>,</span>
-<span id="cb21-3"><a href="#cb21-3"></a>         Region <span class="sc">==</span> <span class="st">"East Coast"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb21-4"><a href="#cb21-4"></a>  <span class="fu">mutate</span>(<span class="at">Quarter =</span> <span class="fu">as.Date</span>(Quarter)) <span class="sc">|&gt;</span> </span>
-<span id="cb21-5"><a href="#cb21-5"></a>  <span class="fu">write_csv</span>(<span class="st">"./datos/tasmania.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a>tourism <span class="sc">|&gt;</span> </span>
+<span id="cb24-2"><a href="#cb24-2"></a>  <span class="fu">filter</span>(State <span class="sc">==</span> <span class="st">"Tasmania"</span>,</span>
+<span id="cb24-3"><a href="#cb24-3"></a>         Region <span class="sc">==</span> <span class="st">"East Coast"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb24-4"><a href="#cb24-4"></a>  <span class="fu">mutate</span>(<span class="at">Quarter =</span> <span class="fu">as.Date</span>(Quarter)) <span class="sc">|&gt;</span> </span>
+<span id="cb24-5"><a href="#cb24-5"></a>  <span class="fu">write_csv</span>(<span class="st">"./datos/tasmania.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="notes">
 <p>You can export to .csv by providing a <code>tsibble</code> or <code>tibble</code> (or any other type of data frame), by calling <strong><code>write_csv()</code></strong>, and specifying the output file’s name.</p>

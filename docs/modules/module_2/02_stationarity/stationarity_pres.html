@@ -7,7 +7,10 @@
 <script src="../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../../../../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-a14e345711173c227b21482e2eb4cc70.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-a14e345711173c227b21482e2eb4cc70.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.8.25">
 <meta name="author" content="pbenavides">
@@ -155,10 +158,26 @@ pbenavides
 </div>
 </div>
 
-</section><section class="slide level2"><ul>
+</section><section><section id="what-is-stationarity" class="title-slide slide level1 center" data-background-image="stationary_tank.png"><h1>What is Stationarity?</h1>
+
+</section><section id="section" class="slide level2"><h2></h2>
+<ul>
 <li class="fragment">A time series is said to be <strong>stationary</strong> if its statistical properties (mean and variance) are constant over time.</li>
-<li class="fragment">Stationarity is important because many time series forecasting methods assume that the underlying data is stationary.</li>
-<li class="fragment">Non-stationary data can lead to inaccurate forecasts and misleading interpretations.</li>
+</ul>
+<aside class="notes"><ul>
+<li>Stationarity is important because many time series forecasting methods assume that the underlying data is stationary.</li>
+<li>Non-stationary data can lead to inaccurate forecasts and misleading interpretations.</li>
+</ul><style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside><ul>
 <li class="fragment">There are two main types of stationarity:
 <ul>
 <li class="fragment">
@@ -168,10 +187,53 @@ pbenavides
 </ul>
 </li>
 <li class="fragment">In practice, we often focus on weak stationarity because it is easier to test and work with.</li>
-</ul></section><section id="visual-inspection" class="slide level2"><h2>Visual Inspection</h2>
+</ul></section><section id="section-1" class="slide level2"><h2></h2>
+<div class="cell quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure><p><a href="stationarity_files/figure-revealjs/ts_trend_example-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="A time series with an upward trend."><img data-src="stationarity_files/figure-revealjs/ts_trend_example-1.png" width="960" alt="A time series with an upward trend."></a></p>
+<figcaption>A time series with an upward trend.</figcaption></figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure><p><a href="stationarity_files/figure-revealjs/ts_trend_example-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="A time series with a downward trend."><img data-src="stationarity_files/figure-revealjs/ts_trend_example-2.png" width="960" alt="A time series with a downward trend."></a></p>
+<figcaption>A time series with a downward trend.</figcaption></figure>
+</div>
+</div>
+</div>
+</div>
+</section><section id="section-2" class="slide level2"><h2></h2>
+<div class="cell quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure><p><a href="stationarity_files/figure-revealjs/ts_seasonality_example-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="A time series with yearly seasonality."><img data-src="stationarity_files/figure-revealjs/ts_seasonality_example-1.png" width="960" alt="A time series with yearly seasonality."></a></p>
+<figcaption>A time series with yearly seasonality.</figcaption></figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure><p><a href="stationarity_files/figure-revealjs/ts_seasonality_example-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="A time series with yearly seasonality and a shifting trend."><img data-src="stationarity_files/figure-revealjs/ts_seasonality_example-2.png" width="960" alt="A time series with yearly seasonality and a shifting trend."></a></p>
+<figcaption>A time series with yearly seasonality and a shifting trend.</figcaption></figure>
+</div>
+</div>
+</div>
+</div>
+<div class="cell quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><a href="stationarity_files/figure-revealjs/ts_stationary_example-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img data-src="stationarity_files/figure-revealjs/ts_stationary_example-1.png" width="960"></a></p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><a href="stationarity_files/figure-revealjs/ts_stationary_example-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img data-src="stationarity_files/figure-revealjs/ts_stationary_example-2.png" width="960"></a></p>
+</div>
+</div>
+</div>
 
 
-</section>
+</section></section>
 </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <p><img src="../../../../images/iteso_logo.png" class="slide-logo"></p>
@@ -713,7 +775,38 @@ pbenavides
           }
         }
       });
-      </script>
+      </script><script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+    (function() {
+      let previousOnload = window.onload;
+      window.onload = () => {
+        if (previousOnload) {
+          previousOnload();
+        }
+        lightboxQuarto.on('slide_before_load', (data) => {
+          const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+          const href = trigger.getAttribute('href');
+          if (href !== null) {
+            const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+            if (imgEl !== null) {
+              const srcAttr = imgEl.getAttribute("src");
+              if (srcAttr && srcAttr.startsWith("data:")) {
+                slideConfig.href = srcAttr;
+              }
+            }
+          } 
+        });
+      
+        lightboxQuarto.on('slide_after_load', (data) => {
+          const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(slideNode);
+          }
+        });
+      
+      };
+      
+    })();
+              </script>
 
 
 </body></html>
