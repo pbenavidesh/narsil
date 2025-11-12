@@ -1,0 +1,71 @@
+---
+title: "Regression models"
+format:
+  html: default
+  revealjs:
+    output-file: reg_pres.html
+draft: true
+---
+
+```{r}
+#| label: pkgs
+#| message: false
+
+library(tidyverse)
+library(fpp3)
+library(ggtime)
+```
+
+
+## Regression Models for Time Series forecasting
+
+::: {.notes}
+
+### Introduction
+
+Regression models can be powerful tools for understanding and forecasting time series when the relationship between a dependent variable and one or more explanatory variables is approximately linear. Unlike ARIMA models, regression models explicitly model deterministic components such as trend and seasonality.
+
+:::
+
+::: {.content-hidden unless-format="html"}
+
+### Introduction
+
+Regression models can help identify and forecast deterministic patterns in time series. They are particularly useful when explanatory variables or known calendar effects drive much of the observed variation.
+
+:::
+
+---
+
+### Time Series Regression Models
+
+A **time series regression model** expresses a variable $y_t$ as a linear combination of explanatory variables:
+
+$$
+y_t = \beta_0 + \beta_1 x_{1t} + \beta_2 x_{2t} + \dots + \varepsilon_t
+$$
+
+where $\varepsilon_t$ is the random error term.
+
+We will use the `us_change` dataset from the *fpp3* package, which contains quarterly percentage changes in US consumption, income, production, savings, and unemployment.
+
+```{r}
+library(fpp3)
+
+us_change |> 
+  glimpse()
+```
+
+A simple regression model relating Consumption to Income can be fit using:
+
+```{r}
+us_change |>
+model(OLS = TSLM(Consumption ~ Income)) |>
+report()
+```
+::: {.callout-tip collapse="true"}
+##Interpretation
+The estimated coefficient for Income represents the average change in consumption (percentage points) associated with a one–percentage-point change in income.
+
+:::
+
