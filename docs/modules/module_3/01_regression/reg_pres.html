@@ -7,20 +7,17 @@
 <script src="../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../../../../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-ac1a48248070c8bfbae4244efd7728e4.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
-<link href="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
-<link href="../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.8.26">
-
-  <meta name="author" content="pbenavides">
-  <title>Time Series Forecasting – Forecasting</title>
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-  <link rel="stylesheet" href="../../../../site_libs/revealjs/dist/reset.css">
-  <link rel="stylesheet" href="../../../../site_libs/revealjs/dist/reveal.css">
-  <style>
+<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-ac1a48248070c8bfbae4244efd7728e4.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+<meta name="author" content="pbenavides">
+<title>Time Series Forecasting – Regression models</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+<link rel="stylesheet" href="../../../../site_libs/revealjs/dist/reset.css">
+<link rel="stylesheet" href="../../../../site_libs/revealjs/dist/reveal.css">
+<style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
     div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -99,9 +96,8 @@
     code span.vs { color: #da4453; } /* VerbatimString */
     code span.wa { color: #da4453; } /* Warning */
   </style>
-  <link rel="stylesheet" href="../../../../site_libs/revealjs/dist/theme/quarto-7aaf31681eed659f0200bcc8fe9a56fc.css">
-  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
-  <script>document.addEventListener("DOMContentLoaded", function () {
+<link rel="stylesheet" href="../../../../site_libs/revealjs/dist/theme/quarto-7aaf31681eed659f0200bcc8fe9a56fc.css">
+<script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script><script>document.addEventListener("DOMContentLoaded", function () {
  var mathElements = document.getElementsByClassName("math");
  var macros = [];
  for (var i = 0; i < mathElements.length; i++) {
@@ -114,26 +110,22 @@
     fleqn: false
    });
 }}});
-  </script>
-  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
-  <link href="../../../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
-  <link href="../../../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
-  <link href="../../../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
-  <link href="../../../../site_libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
-  <link href="../../../../site_libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
-  <link href="../../../../site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
-  <script type="application/json" class="js-hypothesis-config">
+  </script><script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+<link href="../../../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+<link href="../../../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+<link href="../../../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+<link href="../../../../site_libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+<link href="../../../../site_libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
+<link href="../../../../site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+<script type="application/json" class="js-hypothesis-config">
   {
     "theme": "classic"
   }
-  </script>
-  <script async="" src="https://hypothes.is/embed.js"></script>
-  <script>
+  </script><script async="" src="https://hypothes.is/embed.js"></script><script>
     window.document.addEventListener("DOMContentLoaded", function (_event) {
       document.body.classList.add('hypothesis-enabled');
     });
-  </script>
-  <style type="text/css">
+  </script><style type="text/css">
     .reveal div.sourceCode {
       margin: 0;
       overflow: auto;
@@ -221,11 +213,11 @@
       margin-right: 0; 
     }
   </style>
-  <link href="../../../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
-  <script src="../../../../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
-<meta property="og:title" content="Forecasting – Time Series Forecasting">
+<link href="../../../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="../../../../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+<meta property="og:title" content="Regression models – Time Series Forecasting">
 <meta property="og:site_name" content="Time Series Forecasting">
-<meta name="twitter:title" content="Forecasting – Time Series Forecasting">
+<meta name="twitter:title" content="Regression models – Time Series Forecasting">
 <meta name="twitter:creator" content="@PabsBenavides">
 <meta name="twitter:card" content="summary">
 </head>
@@ -233,8 +225,7 @@
   <div class="reveal">
     <div class="slides">
 
-<section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">Forecasting</h1>
+<section id="title-slide" class="quarto-title-block center"><h1 class="title">Regression models</h1>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
@@ -244,364 +235,81 @@ pbenavides
 </div>
 </div>
 
-</section>
-<section>
-<section id="a-tidy-forecasting-workflow" class="title-slide slide level1 center">
-<h1>A tidy forecasting workflow</h1>
-<p><a href="fcst_wf.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img data-src="fcst_wf.png"></a></p>
-</section>
-<section id="tidy-data" class="slide level2">
-<h2>Tidy data</h2>
-<ul>
-<li class="fragment">Use <code>readr::read_csv()</code>, <code>readxl::read_excel()</code>, or <code>tidyquant::tq_get()</code> to import the data into R. You can find more on this <a href="https://r4ds.hadley.nz/import.html">here</a>.</li>
-</ul>
-<aside class="notes">
-<ul>
-<li><p>Your data should be tidy. That means:</p>
-<ul>
-<li>Each variable should be in its own column.</li>
-<li>Each observation should be in its own row.</li>
-<li>Each value should be in its own cell.</li>
-</ul></li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-<ul>
-<li class="fragment"><p><a href="https://r4ds.hadley.nz/data-tidy.html">Data tidying</a> and <a href="https://r4ds.hadley.nz/transform.html">transforming</a> are covered in detail in <a href="https://r4ds.hadley.nz/">R for Data Science</a>.</p></li>
-<li class="fragment"><p>Transform the resulting <code>tibble</code> into a <strong><code>tsibble</code></strong>:</p>
-<ul>
-<li class="fragment">It should have an <code>index</code> (time) variable with the proper time format<a href="#/footnotes" class="footnote-ref" id="fnref1" role="doc-noteref" data-footnote-href="#/fn1" onclick=""><sup>1</sup></a>.</li>
-<li class="fragment">The <code>key</code> argument is only necessary if the dataset contains more than one time series.</li>
-</ul></li>
-</ul>
-<aside></aside></section>
-<section id="traintest-split" class="slide level2">
-<h2>Train/test split</h2>
-<ul>
-<li class="fragment"><p>Split the data into a <strong>training set</strong> and a <strong>test set</strong><a href="#/footnotes" class="footnote-ref" id="fnref2" role="doc-noteref" data-footnote-href="#/fn2" onclick=""><sup>2</sup></a>. The training set is used to estimate the model parameters, while the test set is used to evaluate the model’s performance on unseen data.</p></li>
-<li class="fragment"><p>The size of the training and test sets depends on the length of the time series and the forecasting horizon:</p>
-<ul>
-<li class="fragment">If the forecast horizon is e. g.. 12 months, the test set should contain 12 months of data.</li>
-<li class="fragment">Another common approach is to use the first 70-80% of the data for training and the remaining 20-30% for testing.</li>
-</ul></li>
-<li class="fragment"><p>We can use <code>filter_index()</code> to create the training set<a href="#/footnotes" class="footnote-ref" id="fnref3" role="doc-noteref" data-footnote-href="#/fn3" onclick=""><sup>3</sup></a>:</p></li>
-</ul>
-<div class="fragment">
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1"></a>datos_train <span class="ot">&lt;-</span> <span class="er">&lt;</span>tsibble<span class="sc">&gt;</span> <span class="er">|&gt;</span> </span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1">1</button><span id="annotated-cell-1-2" class="code-annotation-target"><a href="#annotated-cell-1-2"></a>  <span class="fu">filter_index</span>(<span class="st">"start_date"</span> <span class="sc">~</span> <span class="st">"end_date"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-annotation">
-<dl class="code-annotation-container-hidden code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-1" data-target-annotation="1">1</dt>
-<dd>
-<span data-code-cell="annotated-cell-1" data-code-lines="2" data-code-annotation="1">Replace <code>start_date</code> and <code>end_date</code> with the desired date range for the training set.You can also use <code>.</code> to indicate the start or end of the series: <code>filter_index(. ~ "end_date")</code> or <code>filter_index("start_date" ~ .)</code>.</span>
-</dd>
-</dl>
+</section><section class="slide level2"><div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a></a><span class="fu">library</span>(fpp3)</span>
+<span id="cb1-3"><a></a><span class="fu">library</span>(ggtime)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-</div>
-</div>
-<aside></aside></section>
-<section id="visualize" class="slide level2">
-<h2>Visualize</h2>
-<p>Plot the time series to identify patterns, such as trend and seasonality, and anomalies. This can help us choose an appropriate forecasting method. You can find many types of plots <a href="../../../../docs/modules/module_1/01_time_series/r_time_series.html# TS Visualization">here</a>.</p>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure>
-<p><a href="forecasting_files/figure-revealjs/ts_viz-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img data-src="forecasting_files/figure-revealjs/ts_viz-1.png" width="960"></a></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="specify-estimate" class="slide level2">
-<h2>Specify &amp; Estimate</h2>
-<p>Decide whether any math transformations or adjustments are neccesary and choose a forecasting method based on the series’ features.</p>
-<p>Train the model specification on the training set. You can use the <code>model()</code> function to fit various forecasting models<a href="#/footnotes" class="footnote-ref" id="fnref4" role="doc-noteref" data-footnote-href="#/fn4" onclick=""><sup>4</sup></a>.</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1"></a>datos_fit <span class="ot">&lt;-</span> datos_train <span class="sc">|&gt;</span> </span>
-<span id="annotated-cell-2-2"><a href="#annotated-cell-2-2"></a>  <span class="fu">model</span>(</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1">1</button><span id="annotated-cell-2-3" class="code-annotation-target"><a href="#annotated-cell-2-3"></a>    <span class="at">model_1 =</span> <span class="sc">&lt;</span>model_function_1<span class="sc">&gt;</span>(<span class="sc">&lt;</span>y_t<span class="sc">&gt;</span> <span class="er">~</span> x_t),</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="2">2</button><span id="annotated-cell-2-4" class="code-annotation-target"><a href="#annotated-cell-2-4"></a>    <span class="at">model_2 =</span> <span class="sc">&lt;</span>model_function_2<span class="sc">&gt;</span>(<span class="sc">&lt;</span>transformation_function<span class="sc">&gt;</span>(<span class="sc">&lt;</span>y_t<span class="sc">&gt;</span>), <span class="sc">&lt;</span>args<span class="sc">&gt;</span>)</span>
-<span id="annotated-cell-2-5"><a href="#annotated-cell-2-5"></a>  )</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-annotation">
-<dl class="code-annotation-container-hidden code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-2" data-target-annotation="1">1</dt>
-<dd>
-<span data-code-cell="annotated-cell-2" data-code-lines="3" data-code-annotation="1">Replace <code>model_function_1</code> with the desired forecasting method (e.g., <code>ARIMA()</code>, <code>ETS()</code>, <code>NAIVE()</code>, etc.). Replace <code>&lt;y_t&gt;</code> with the name of the forecast variable and <code>&lt;predictor_variables&gt;</code> with any predictor variables if applicable.</span>
-</dd>
-<dt data-target-cell="annotated-cell-2" data-target-annotation="2">2</dt>
-<dd>
-<span data-code-cell="annotated-cell-2" data-code-lines="4" data-code-annotation="2">If a transformation is needed, replace <code>transformation_function</code> with the appropriate function (e.g., <code>log</code>, <code>box_cox</code>, etc.) and include any specific arguments required by the model.</span>
-</dd>
-</dl>
-</div>
-</div>
-<aside></aside></section>
-<section id="evaluate" class="slide level2">
-<h2>Evaluate</h2>
-<ul>
-<li class="fragment"><strong>Fitted</strong> values, <span class="math inline">\hat{y}_t</span>: The values predicted by the model for the training set.</li>
-<li class="fragment"><strong>residuals</strong>, <span class="math inline">e_t</span>: The difference between the actual values and the fitted values, calculated as</li>
-</ul>
+</section><section id="regression-models-for-time-series-forecasting" class="slide level2"><h2>Regression Models for Time Series forecasting</h2>
+<section id="introduction" class="notes"><h3>Introduction</h3>
+<p>Regression models can be powerful tools for understanding and forecasting time series when the relationship between a dependent variable and one or more explanatory variables is approximately linear. Unlike ARIMA models, regression models explicitly model deterministic components such as trend and seasonality.</p>
+</section><h3 id="introduction-1">Introduction</h3>
+<p>Regression models can help identify and forecast deterministic patterns in time series. They are particularly useful when explanatory variables or known calendar effects drive much of the observed variation.</p>
+</section><section class="slide level2"><h3 id="time-series-regression-models">Time Series Regression Models</h3>
+<p>A <strong>time series regression model</strong> expresses a variable <span class="math inline">y_t</span> as a linear combination of explanatory variables:</p>
 <p><span class="math display">
-e_t = y_t - \hat{y}_t
-</span>.</p>
-<ul>
-<li class="fragment"><strong>innovation residuals</strong>: Residuals on the transformed scale<a href="#/footnotes" class="footnote-ref" id="fnref5" role="doc-noteref" data-footnote-href="#/fn5" onclick=""><sup>5</sup></a>.</li>
-</ul>
-<p>We can check if a model is capturing the patterns in the data by analyzing the residuals. Ideally, the residuals should resemble <strong>white noise</strong>.</p>
-<aside class="notes">
-<div class="callout callout-tip callout-style-simple">
-<div class="callout-body">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-content">
-<p>The <strong>fitted</strong> values and <strong>residuals</strong> can be extracted from the model table using <code>augment()</code>.</p>
-</div>
-</div>
-</div>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-<aside></aside></section>
-<section id="what-is-white-noise" class="slide level2">
-<h2>What is white noise?</h2>
-<iframe data-external="1" src="https://www.youtube.com/embed/ubFq-wV3Eic?si=7So2aw3T-IkulZj6" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
-</section>
-<section id="residual-diagnostics" class="slide level2 scrollable">
-<h2>Residual diagnostics</h2>
-<p>We expect residuals to behave like white noise, thus having the following properties:</p>
-<p><em>The most important:</em></p>
-<ol type="1">
-<li class="fragment"><p><strong>Uncorrelated</strong>: There is no correlation between the values at different time points.</p></li>
-<li class="fragment"><p><strong>Zero mean</strong>: The average value of the series is constant over time (and equal to zero).</p></li>
-</ol>
-<p><em>Nice to have:</em></p>
-<ol start="3" type="1">
-<li class="fragment"><p><strong>Constant variance</strong>: The variability of the series is constant over time.</p></li>
-<li class="fragment"><p><strong>Normally distributed</strong>: The values follow a normal distribution (this is not always required).</p></li>
-</ol>
-</section>
-<section id="refine" class="slide level2">
-<h2>Refine</h2>
-<p>If the residuals don’t meet these properties, we could refine the model:</p>
-<ul>
-<li class="fragment">For the first 2: add predictors or change the model structure.</li>
-<li class="fragment">Apply a variance-stabilizing transformation (e.g., Box-Cox).</li>
-<li class="fragment">If the residuals are not normally distributed, only the prediction intervals are affected. We can deal with this by using bootstrap prediction intervals.</li>
-</ul>
-</section></section>
-<section>
-<section id="forecast" class="title-slide slide level1 center">
-<h1>Forecast</h1>
-<p>Once a satisfactory model is obtained, we can proceed to forecast<a href="#/footnotes" class="footnote-ref" id="fnref6" role="doc-noteref" data-footnote-href="#/fn6" onclick=""><sup>6</sup></a>. Use the <code>forecast()</code> function to generate forecasts for a specified horizon <code>h</code>.:</p>
+y_t = \beta_0 + \beta_1 x_{1t} + \beta_2 x_{2t} + \dots + \varepsilon_t
+</span></p>
+<p>where <span class="math inline">\varepsilon_t</span> is the random error term.</p>
+<p>We will use the <code>us_change</code> dataset from the <em>fpp3</em> package, which contains quarterly percentage changes in US consumption, income, production, savings, and unemployment.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1"></a>datos_fcst <span class="ot">&lt;-</span> datos_fit <span class="sc">|&gt;</span> </span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1">1</button><span id="annotated-cell-3-2" class="code-annotation-target"><a href="#annotated-cell-3-2"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="sc">&lt;</span>forecast_horizon<span class="sc">&gt;</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-annotation">
-<dl class="code-annotation-container-hidden code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-3" data-target-annotation="1">1</dt>
-<dd>
-<span data-code-cell="annotated-cell-3" data-code-lines="2" data-code-annotation="1">Replace <code>&lt;forecast_horizon&gt;</code> with the desired number of periods to forecast (e.g., <code>12</code> for 12 months ahead), or you can write in text <code>"1 year"</code> for a one-year forecast.</span>
-</dd>
-</dl>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a><span class="fu">library</span>(fpp3)</span>
+<span id="cb2-2"><a></a></span>
+<span id="cb2-3"><a></a>us_change <span class="sc">|&gt;</span> </span>
+<span id="cb2-4"><a></a>  <span class="fu">glimpse</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 198
+Columns: 6
+$ Quarter      &lt;qtr&gt; 1970 Q1, 1970 Q2, 1970 Q3, 1970 Q4, 1971 Q1, 1971 Q2, 197…
+$ Consumption  &lt;dbl&gt; 0.61856640, 0.45198402, 0.87287178, -0.27184793, 1.901344…
+$ Income       &lt;dbl&gt; 1.0448013, 1.2256472, 1.5851538, -0.2395449, 1.9759249, 1…
+$ Production   &lt;dbl&gt; -2.45248553, -0.55145947, -0.35865175, -2.18569087, 1.909…
+$ Savings      &lt;dbl&gt; 5.2990141, 7.7898938, 7.4039841, 1.1698982, 3.5356669, 5.…
+$ Unemployment &lt;dbl&gt; 0.9, 0.5, 0.5, 0.7, -0.1, -0.1, 0.1, 0.0, -0.2, -0.1, -0.…</code></pre>
 </div>
 </div>
-<div class="callout callout-note callout-titled callout-style-simple">
+<p>A simple regression model relating Consumption to Income can be fit using:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>us_change <span class="sc">|&gt;</span></span>
+<span id="cb4-2"><a></a><span class="fu">model</span>(<span class="at">OLS =</span> <span class="fu">TSLM</span>(Consumption <span class="sc">~</span> Income)) <span class="sc">|&gt;</span></span>
+<span id="cb4-3"><a></a><span class="fu">report</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Series: Consumption 
+Model: TSLM 
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-2.58236 -0.27777  0.01862  0.32330  1.42229 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  0.54454    0.05403  10.079  &lt; 2e-16 ***
+Income       0.27183    0.04673   5.817  2.4e-08 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.5905 on 196 degrees of freedom
+Multiple R-squared: 0.1472, Adjusted R-squared: 0.1429
+F-statistic: 33.84 on 1 and 196 DF, p-value: 2.4022e-08</code></pre>
+</div>
+</div>
+<div class="callout callout-tip callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<p><strong>Forecast horizon</strong></p>
+<p><strong>Tip</strong></p>
 </div>
 <div class="callout-content">
-<p>The forecast horizon should have the same length as the test set to evaluate the model’s performance accurately.</p>
+<p>##Interpretation The estimated coefficient for Income represents the average change in consumption (percentage points) associated with a one–percentage-point change in income.</p>
 </div>
 </div>
 </div>
-<aside></aside></section>
-<section id="forecast-accuracy" class="slide level2">
-<h2>Forecast accuracy</h2>
-<p>We measure a forecast’s accuracy by measuring the forecast error. Forecast errors are computed as:</p>
-<p><span class="math display">
-e_{T+h} = y_{T+h} - \hat{y}_{T+h|T}
-</span></p>
-<aside class="notes">
-<div class="callout callout-warning callout-style-simple">
-<div class="callout-body">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-content">
-<p>These errors depend on the scale of the data. Therefore, they are not suitable for comparing forecast accuracy across series with different scales or units.</p>
-</div>
-</div>
-</div>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-<p>We can also measure errors as percentage errors<a href="#/footnotes" class="footnote-ref" id="fnref7" role="doc-noteref" data-footnote-href="#/fn7" onclick=""><sup>7</sup></a>:</p>
-<p><span class="math display">
-p_t = \frac{e_{T+h}}{y_{T+h}} \times 100
-</span></p>
-<aside class="notes">
-<div class="callout callout-warning callout-style-simple">
-<div class="callout-body">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-content">
-<p>Percentage errors can be problematic when the actual values are close to zero, leading to extremely high or undefined percentage errors.</p>
-</div>
-</div>
-</div>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-<p>or scaled errors<a href="#/footnotes" class="footnote-ref" id="fnref8" role="doc-noteref" data-footnote-href="#/fn8" onclick=""><sup>8</sup></a>.:</p>
-<ul>
-<li class="fragment">For non-seasonal time series:</li>
-</ul>
-<p><span class="math display">
-q_{j}=\frac{e_{j}}{\frac{1}{T-1} \sum_{t=2}^{T}\left|y_{t}-y_{t-1}\right|},
-</span></p>
-<p>For seasonal time series:</p>
-<p><span class="math display">
-q_{j}=\frac{e_{j}}{\frac{1}{T-m} \sum_{t=m+1}^{T}\left|y_{t}-y_{t-m}\right|}.
-</span></p>
-<aside></aside></section>
-<section id="error-metrics" class="slide level2">
-<h2>Error metrics</h2>
-<p>Using this errors, we can compute various error metrics to summarize the forecast accuracy:</p>
-<table class="caption-top" style="width:98%;">
-<caption>Common error metrics</caption>
-<colgroup>
-<col style="width: 18%">
-<col style="width: 9%">
-<col style="width: 34%">
-<col style="width: 35%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Scale</th>
-<th>Metric</th>
-<th>Description</th>
-<th>Formula</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Scale-dependent</td>
-<td><ul>
-<li class="fragment">RMSE</li>
-<li class="fragment">MAE</li>
-</ul></td>
-<td><ul>
-<li class="fragment">Root Mean Squared Error</li>
-<li class="fragment">Mean Absolute Error</li>
-</ul></td>
-<td><ul>
-<li class="fragment"><span class="math inline">\sqrt{\text{mean}(e_{t}^{2})}</span></li>
-<li class="fragment"><span class="math inline">\text{mean}(|e_{t}|)</span></li>
-</ul></td>
-</tr>
-<tr class="even">
-<td>Scale-independent</td>
-<td><ul>
-<li class="fragment">MAPE</li>
-<li class="fragment">MASE</li>
-<li class="fragment">RMMSE</li>
-</ul></td>
-<td><ul>
-<li class="fragment">Mean Absolute Percentage Error</li>
-<li class="fragment">Mean Absolute Scaled Error</li>
-<li class="fragment">Root Mean Squared Scaled Error</li>
-</ul></td>
-<td><ul>
-<li class="fragment"><span class="math inline">\text{mean}(|p_{t}|)</span></li>
-<li class="fragment"><span class="math inline">\text{mean}(|q_{t}|)</span></li>
-<li class="fragment"><span class="math inline">\sqrt{\text{mean}(q_{t}^{2})}</span></li>
-</ul></td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="refit-and-forecast" class="slide level2">
-<h2>Refit and forecast</h2>
-<h3 id="refit-and-forecast-1">Refit and forecast</h3>
-</section>
-<section id="communicate" class="slide level2">
-<h2>Communicate</h2>
-<aside class="notes">
-<p>This is a note.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section></section>
-<section id="benchmark-forecasting-methods" class="title-slide slide level1 center">
-<h1>Benchmark forecasting methods</h1>
 
 
 </section>
-
-<section id="footnotes" class="footnotes footnotes-end-of-document smaller scrollable" role="doc-endnotes"><h2>Footnotes</h2>
-
-<ol>
-<li id="fn1"><p>i.e., if the TS has a monthly frequency, the index variable should be in <code>yearmonth</code> format. Other formats coud be <code>yearweek</code>, <code>yearquarter</code>, <code>year</code>, <code>date</code>.</p></li>
-<li id="fn2"><p>Splitting the data into a training and test set is the minimum requirement for evaluating a forecasting model. If you want to avoid overfitting and get a more reliable estimate of the model’s performance, you should consider splitting the data into 3 sets: <strong>training, validation, and test sets</strong>. The validation set is used to tune model hyperparameters and select the best model, while the test set is used for the final evaluation of the selected model. For an even more robust evaluation of forecasting models, consider using <a href="https://otexts.com/fpp3/tscv.html"><strong>time series cross-validation</strong></a> methods.</p></li>
-<li id="fn3"><p>and store it in a <code>*_train</code> object.</p></li>
-<li id="fn4"><p>and store the model table in a <code>*_fit</code> object.</p></li>
-<li id="fn5"><p>We will focus on innovation residuals whenever a transformation is used in the model.</p></li>
-<li id="fn6"><p>and store the forecasts in a <code>*_fcst</code> object.</p></li>
-<li id="fn7"><p>Percentage errors are scale-independent, making them useful for comparing forecast accuracy across different series.</p></li>
-<li id="fn8"><p>Scaled errors are also scale-independent and are useful for comparing forecast accuracy across different series.</p></li>
-</ol>
-</section>
-    </div>
+</div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <p><img src="../../../../images/iteso_logo.png" class="slide-logo"></p>
 <div class="footer footer-default">
@@ -609,23 +317,7 @@ q_{j}=\frac{e_{j}}{\frac{1}{T-m} \sum_{t=m+1}^{T}\left|y_{t}-y_{t-m}\right|}.
 </div>
 </div></div>
 
-  <script>window.backupDefine = window.define; window.define = undefined;</script>
-  <script src="../../../../site_libs/revealjs/dist/reveal.js"></script>
-  <!-- reveal.js plugins -->
-  <script src="../../../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
-  <script src="../../../../site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
-  <script src="../../../../site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
-  <script src="../../../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
-  <script src="../../../../site_libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
-  <script src="../../../../site_libs/revealjs/plugin/quarto-support/support.js"></script>
-  
-
-  <script src="../../../../site_libs/revealjs/plugin/notes/notes.js"></script>
-  <script src="../../../../site_libs/revealjs/plugin/search/search.js"></script>
-  <script src="../../../../site_libs/revealjs/plugin/zoom/zoom.js"></script>
-  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
-
-  <script>
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="../../../../site_libs/revealjs/dist/reveal.js"></script><!-- reveal.js plugins --><script src="../../../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script><script src="../../../../site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script><script src="../../../../site_libs/revealjs/plugin/reveal-menu/menu.js"></script><script src="../../../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script><script src="../../../../site_libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script><script src="../../../../site_libs/revealjs/plugin/quarto-support/support.js"></script><script src="../../../../site_libs/revealjs/plugin/notes/notes.js"></script><script src="../../../../site_libs/revealjs/plugin/search/search.js"></script><script src="../../../../site_libs/revealjs/plugin/zoom/zoom.js"></script><script>window.define = window.backupDefine; window.backupDefine = undefined;</script><script>
 
       // Full list of configuration options available at:
       // https://revealjs.com/config/
@@ -799,9 +491,7 @@ q_{j}=\frac{e_{j}}{\frac{1}{T-m} \sum_{t=m+1}^{T}\left|y_{t}-y_{t-m}\right|}.
           RevealZoom
         ]
       });
-    </script>
-    
-    <script>
+    </script><script>
       // htmlwidgets need to know to resize themselves when slides are shown/hidden.
       // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
       // slide changes (different for each slide format).
@@ -836,9 +526,7 @@ q_{j}=\frac{e_{j}}{\frac{1}{T-m} \sum_{t=m+1}^{T}\left|y_{t}-y_{t-m}\right|}.
         }
 
       })();
-    </script>
-
-    <script id="quarto-html-after-body" type="application/javascript">
+    </script><script id="quarto-html-after-body" type="application/javascript">
       window.document.addEventListener("DOMContentLoaded", function (event) {
         const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
         tabsets.forEach(function(tabset) {
@@ -1163,38 +851,6 @@ q_{j}=\frac{e_{j}}{\frac{1}{T-m} \sum_{t=m+1}^{T}\left|y_{t}-y_{t-m}\right|}.
         }
       });
       </script>
-    <script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
-    (function() {
-      let previousOnload = window.onload;
-      window.onload = () => {
-        if (previousOnload) {
-          previousOnload();
-        }
-        lightboxQuarto.on('slide_before_load', (data) => {
-          const { slideIndex, slideNode, slideConfig, player, trigger } = data;
-          const href = trigger.getAttribute('href');
-          if (href !== null) {
-            const imgEl = window.document.querySelector(`a[href="${href}"] img`);
-            if (imgEl !== null) {
-              const srcAttr = imgEl.getAttribute("src");
-              if (srcAttr && srcAttr.startsWith("data:")) {
-                slideConfig.href = srcAttr;
-              }
-            }
-          } 
-        });
-      
-        lightboxQuarto.on('slide_after_load', (data) => {
-          const { slideIndex, slideNode, slideConfig, player, trigger } = data;
-          if (window.Quarto?.typesetMath) {
-            window.Quarto.typesetMath(slideNode);
-          }
-        });
-      
-      };
-      
-    })();
-              </script>
-    
+
 
 </body></html>

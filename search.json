@@ -561,99 +561,362 @@
     "text": "Footnotes\n\n\ni.e., if the TS has a monthly frequency, the index variable should be in yearmonth format. Other formats coud be yearweek, yearquarter, year, date.\nSplitting the data into a training and test set is the minimum requirement for evaluating a forecasting model. If you want to avoid overfitting and get a more reliable estimate of the model’s performance, you should consider splitting the data into 3 sets: training, validation, and test sets. The validation set is used to tune model hyperparameters and select the best model, while the test set is used for the final evaluation of the selected model. For an even more robust evaluation of forecasting models, consider using time series cross-validation methods.\nand store it in a *_train object.\nand store the model table in a *_fit object.\nWe will focus on innovation residuals whenever a transformation is used in the model.\nand store the forecasts in a *_fcst object.\nPercentage errors are scale-independent, making them useful for comparing forecast accuracy across different series.\nScaled errors are also scale-independent and are useful for comparing forecast accuracy across different series."
   },
   {
-    "objectID": "docs/modules/module_2/01_ets/ets.html",
-    "href": "docs/modules/module_2/01_ets/ets.html",
-    "title": "Exponential smoothing",
+    "objectID": "docs/modules/module_3/01_regression/regression.html",
+    "href": "docs/modules/module_3/01_regression/regression.html",
+    "title": "Regression models",
     "section": "",
-    "text": "Exponential smoothing methods are still relatively simple: they’re simply weighted averages from historical data.\n\nHowever, these forecasting methods are widely used in practice, and they can be very effective.\n\nThe exponential smoothing method is a compromise between the mean and naïve methods. It uses all historical data, but it assigns exponentially decreasing weights to older observations.\n\nIn the mean method, all observations are weighted equally (all have the same importance), while in the naïve method, only the most recent observation is used for forecasting. (we ignore all previous observations).\n\nThe smoothing parameter \\alpha controls the rate of decrease:\n\nwhen \\alpha is close to 1, the method behaves like the naïve method, giving more weight to recent observations;\nwhen \\alpha is close to 0, it behaves like the mean method, giving more equal weight to all observations.\n\\hat{y}_{T+1 | T}= \\alpha y_{T} + \\alpha(1-\\alpha) y_{T-1} + \\alpha(1-\\alpha)^{2} y_{T-2}  + \\ldots\nwhere 0\\leq \\alpha \\leq1 is the smoothing parameter.",
+    "text": "library(tidyverse)\nlibrary(fpp3)\nlibrary(ggtime)",
     "crumbs": [
       "Modules",
-      "2. Adding ETS and ARIMA filters",
-      "2.1 Exponential Smoothing"
+      "3. Adding exogenous variables to the model",
+      "3.1 Linear Regression Models"
     ]
   },
   {
-    "objectID": "docs/modules/module_2/01_ets/ets.html#simple-exponential-smoothing-ses",
-    "href": "docs/modules/module_2/01_ets/ets.html#simple-exponential-smoothing-ses",
-    "title": "Exponential smoothing",
-    "section": "1.1 Simple exponential smoothing (SES)",
-    "text": "1.1 Simple exponential smoothing (SES)\n\n\\begin{aligned}\n\\text{Forecast equation} \\quad & \\hat{y}_{t+h|t} = \\ell_t \\\\\n\\text{Smoothing equation} \\quad & \\ell_t = \\alpha y_t + (1-\\alpha)\\ell_{t-1}\n\\end{aligned}\n\nwhere \\ell_t is the level at time t.\n\n\n\n\n\n\nSES has a flat forecast function, so it is appropriate for data with no trend or seasonal pattern.\n\n\n\n\n1.1.0.1 Example: Forecasting Algeria’s exports\n\nalgeria_economy &lt;- global_economy |&gt;\n  filter(Country == \"Algeria\")\n  \nalgeria_economy |&gt; \n  autoplot(Exports)\n\n\n\n\n\n\n\n\n\nalg_fit &lt;- algeria_economy |&gt;\n  model(\n1    SES = ETS(Exports ~ error(\"A\") + trend(\"N\") + season(\"N\")),\n    Naive = NAIVE(Exports)\n  )\n\nalg_fc &lt;- alg_fit |&gt;\n  forecast(h = 5)\n\n\n1\n\nWe specify trend(\"N\") and season(\"N\") to indicate that we want a simple exponential smoothing (SES) model, which assumes no trend and no seasonality. The model will estimate the smoothing parameter \\alpha automatically.\n\n\n\n\n\n\n\n\n\n\nTipBenchmark methods for SES\n\n\n\nThe mean and naïve methods are typically the best fit as benchmark methods when using SES.\n\n\n\n\n\n\n\n\nNoteObtaining the report() of a model\n\n\n\n\n\n\nalg_fit |&gt; \n  select(SES) |&gt; \n1  report()\n\n\n1\n\nThe report() function allows us to see a model’s report (the time series modeled, the model used, the estimated parameters, and more). It needs a 1 \\times 1 dimension mable1.\n\n\n\n\nSeries: Exports \nModel: ETS(A,N,N) \n  Smoothing parameters:\n    alpha = 0.8399875 \n\n  Initial states:\n   l[0]\n 39.539\n\n  sigma^2:  35.6301\n\n     AIC     AICc      BIC \n446.7154 447.1599 452.8968 \n\n\n\n\n\n\n\n\n\n\n\n\n\n\nComparing the SES and Naive forecasts:",
+    "objectID": "docs/modules/module_3/01_regression/regression.html#regression-models-for-time-series-forecasting",
+    "href": "docs/modules/module_3/01_regression/regression.html#regression-models-for-time-series-forecasting",
+    "title": "Regression models",
+    "section": "\n1 Regression Models for Time Series forecasting",
+    "text": "1 Regression Models for Time Series forecasting\n\n1.1 Introduction\nRegression models can be powerful tools for understanding and forecasting time series when the relationship between a dependent variable and one or more explanatory variables is approximately linear. Unlike ARIMA models, regression models explicitly model deterministic components such as trend and seasonality.\n\n1.2 Introduction\nRegression models can help identify and forecast deterministic patterns in time series. They are particularly useful when explanatory variables or known calendar effects drive much of the observed variation.\n\n1.3 Time Series Regression Models\nA time series regression model expresses a variable y_t as a linear combination of explanatory variables:\n\ny_t = \\beta_0 + \\beta_1 x_{1t} + \\beta_2 x_{2t} + \\dots + \\varepsilon_t\n\nwhere \\varepsilon_t is the random error term.\nWe will use the us_change dataset from the fpp3 package, which contains quarterly percentage changes in US consumption, income, production, savings, and unemployment.\n\nlibrary(fpp3)\n\nus_change |&gt; \n  glimpse()\n\nRows: 198\nColumns: 6\n$ Quarter      &lt;qtr&gt; 1970 Q1, 1970 Q2, 1970 Q3, 1970 Q4, 1971 Q1, 1971 Q2, 197…\n$ Consumption  &lt;dbl&gt; 0.61856640, 0.45198402, 0.87287178, -0.27184793, 1.901344…\n$ Income       &lt;dbl&gt; 1.0448013, 1.2256472, 1.5851538, -0.2395449, 1.9759249, 1…\n$ Production   &lt;dbl&gt; -2.45248553, -0.55145947, -0.35865175, -2.18569087, 1.909…\n$ Savings      &lt;dbl&gt; 5.2990141, 7.7898938, 7.4039841, 1.1698982, 3.5356669, 5.…\n$ Unemployment &lt;dbl&gt; 0.9, 0.5, 0.5, 0.7, -0.1, -0.1, 0.1, 0.0, -0.2, -0.1, -0.…\n\n\nA simple regression model relating Consumption to Income can be fit using:\n\nus_change |&gt;\nmodel(OLS = TSLM(Consumption ~ Income)) |&gt;\nreport()\n\nSeries: Consumption \nModel: TSLM \n\nResiduals:\n     Min       1Q   Median       3Q      Max \n-2.58236 -0.27777  0.01862  0.32330  1.42229 \n\nCoefficients:\n            Estimate Std. Error t value Pr(&gt;|t|)    \n(Intercept)  0.54454    0.05403  10.079  &lt; 2e-16 ***\nIncome       0.27183    0.04673   5.817  2.4e-08 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 0.5905 on 196 degrees of freedom\nMultiple R-squared: 0.1472, Adjusted R-squared: 0.1429\nF-statistic: 33.84 on 1 and 196 DF, p-value: 2.4022e-08\n\n\n\n\n\n\n\n\nTip\n\n\n\n\n\n##Interpretation The estimated coefficient for Income represents the average change in consumption (percentage points) associated with a one–percentage-point change in income.",
     "crumbs": [
       "Modules",
-      "2. Adding ETS and ARIMA filters",
-      "2.1 Exponential Smoothing"
+      "3. Adding exogenous variables to the model",
+      "3.1 Linear Regression Models"
     ]
   },
   {
-    "objectID": "docs/modules/module_2/01_ets/ets.html#methods-with-trend-1",
-    "href": "docs/modules/module_2/01_ets/ets.html#methods-with-trend-1",
-    "title": "Exponential smoothing",
-    "section": "1.2 Methods with trend",
-    "text": "1.2 Methods with trend\n\n1.2.1 Holt’s linear trend\n\nWe can extend SES models to allow our forecasts to include trend in the data. We need to add a new smoothing parameter \\beta^*, and its corresponding smoothing equation:\n\n\n\\begin{aligned}\n\\text{Forecast equation} \\quad & \\hat{y}_{t+h|t} = \\ell_t + hb_t \\\\\n\\text{Level equation} \\quad & \\ell_t = \\alpha y_t + (1-\\alpha)\\ell_{t-1}\\\\\n\\text{Trend equation} \\quad & b_t = \\beta^*(\\ell_t - \\ell_{t-1}) + (1-\\beta^*)b_{t-1}\n\\end{aligned}\n\nwhere b_t is the growth (or slope) at time t.\n\n\n\n\n\n\nTipWhen to use Holt’s linear trend method\n\n\n\n\n\n\nHolt’s linear trend method is appropriate for data with a linear trend but no seasonal pattern.\nThe proper benchmark method to compare against is the drift method.\n\n\n\n\n\nLet’s see an example using Holt’s linear trend method to forecast Brazil’s population.\n\n\n1.2.1.1 Example: Forecasting Brazil’s population\n\nbra_economy &lt;- global_economy |&gt; \n  filter(Code == \"BRA\") |&gt; \n  mutate(Pop = Population / 1e6)\n\nbra_economy |&gt; \n  autoplot(Pop)\n\n\n\n\n\n\n\n\n\nbra_fit &lt;- bra_economy |&gt; \n  model(\n1    Holt  = ETS(Pop ~ error(\"A\") + trend(\"A\") + season(\"N\")),\n    Drift = RW(Pop ~ drift())\n  )\n\nbra_fit |&gt;  \n  select(Holt) |&gt;  \n  report()\n\nbra_fc &lt;- bra_fit |&gt;  \n  forecast(h = 15)\n\nbra_fc |&gt; \n  autoplot(bra_economy, level = NULL) +\n  labs(title = \"Brazilian population\",\n       y = \"Millions\") +\n  guides(colour = guide_legend(title = \"Forecast\"))\n\n\n1\n\nWe specify trend(\"A\") to indicate that we want a linear trend. The model will estimate the smoothing parameters \\alpha and \\beta^* automatically.\n\n\n\n\n\n\n\n\n\n\n\nSeries: Pop \nModel: ETS(A,A,N) \n  Smoothing parameters:\n    alpha = 0.9999 \n    beta  = 0.9998999 \n\n  Initial states:\n     l[0]     b[0]\n 70.06297 2.132884\n\n  sigma^2:  0.0021\n\n      AIC      AICc       BIC \n-115.2553 -114.1014 -104.9531 \n\n\n\n\n\n1.2.2 Damped trend\n\n\nHolt’s linear trend method assume that the trend will continue indefinitely at the same rate. However, in many real-world scenarios, this assumption may not hold true. This methods tend to overestimate (or underestimate) long-term forecasts when the trend is strong.\nWe can include a damping parameter \\phi, which reduces the trend over time.\n\n\n\n\\begin{aligned}\n\\text{Forecast equation} \\quad & \\hat{y}_{t+h|t} = \\ell_t +  (\\phi + \\phi^2 + \\ldots + \\phi^h) b_t \\\\\n\\text{Level equation} \\quad & \\ell_t = \\alpha y_t + (1 - \\alpha) (\\ell_{t-1} + \\phi b_{t-1}) \\\\\n\\text{Trend equation} \\quad & b_t = \\beta^*(\\ell_t-\\ell_{t-1}) + (1-\\beta^*)\\phi b_{t-1}\n\\end{aligned}\n\nwhere 0 &lt; \\phi &lt; 12 is the damping parameter.\n\n\n\n\n\n\nCautionWhat would happen if \\phi = 1? What about if \\phi = 0?\n\n\n\n\n\n\nIf \\phi = 1, the model reduces to Holt’s linear trend method, meaning the trend continues indefinitely at the same rate.\nIf \\phi = 0, the trend component is completely eliminated, and the model behaves like simple exponential smoothing (SES), where forecasts are based solely on the level component without any trend influence.\n\n\n\n\n\n1.2.2.1 Example: Forecasting Brazil’s population (continued)\n\nbra_economy |&gt; \n  model(\n    Holt   = ETS(Pop ~ error(\"A\") + trend(\"A\") + season(\"N\")),\n1    Damped = ETS(Pop ~ error(\"A\") + trend(\"Ad\", phi = 0.9) + season(\"N\"))\n  ) |&gt; \n  forecast(h = 15) |&gt; \n  autoplot(bra_economy, level = NULL) +\n  labs(title = \"Brazilian population\",\n       y = \"Millions\") +\n  guides(colour = guide_legend(title = \"Forecast\"))\n\n\n1\n\nWe specify trend(\"Ad\") to indicate that we want a damped trend, and phi = 0.9 sets the damping parameter to 0.9. We could also let the model estimate \\phi automatically by omitting the phi argument.",
+    "objectID": "docs/modules/module_3/01_regression/reg_pres.html#regression-models-for-time-series-forecasting",
+    "href": "docs/modules/module_3/01_regression/reg_pres.html#regression-models-for-time-series-forecasting",
+    "title": "Regression models",
+    "section": "Regression Models for Time Series forecasting",
+    "text": "Regression Models for Time Series forecasting\nIntroduction\nRegression models can be powerful tools for understanding and forecasting time series when the relationship between a dependent variable and one or more explanatory variables is approximately linear. Unlike ARIMA models, regression models explicitly model deterministic components such as trend and seasonality.\nIntroduction\nRegression models can help identify and forecast deterministic patterns in time series. They are particularly useful when explanatory variables or known calendar effects drive much of the observed variation."
+  },
+  {
+    "objectID": "docs/modules/module_2/02_stationarity/stationarity.html",
+    "href": "docs/modules/module_2/02_stationarity/stationarity.html",
+    "title": "Identifying Stationarity",
+    "section": "",
+    "text": "A time series is said to be stationary if its statistical properties (mean and variance) are constant over time.\n\n\n\nStationarity is important because many time series forecasting methods assume that the underlying data is stationary.\nNon-stationary data can lead to inaccurate forecasts and misleading interpretations.\n\n\n\nThere are two main types of stationarity:\n\n\nStrict Stationarity: The joint distribution of any set of observations is the same regardless of the time at which they are observed.\n\nWeak Stationarity: The mean, variance, and autocovariance of the series are constant over time.\n\n\nIn practice, we often focus on weak stationarity because it is easier to test and work with.\n\n\n\n\n Back to top",
     "crumbs": [
       "Modules",
       "2. Adding ETS and ARIMA filters",
-      "2.1 Exponential Smoothing"
+      "2.2 Identifying Stationarity"
     ]
   },
   {
-    "objectID": "docs/modules/module_2/01_ets/ets.html#methods-with-seasonality-1",
-    "href": "docs/modules/module_2/01_ets/ets.html#methods-with-seasonality-1",
-    "title": "Exponential smoothing",
-    "section": "1.3 Methods with seasonality",
-    "text": "1.3 Methods with seasonality\n\n1.3.1 Holt-Winters method\n\n1.3.1.1 HW - Additive\n\n\\begin{aligned}\n\\text{Forecast equation} \\quad & \\hat{y}_{t+h|t} = \\ell_t + hb_t + s_{t+h-m(k+1)} \\\\\n\\text{Level equation} \\quad & \\ell_t = \\alpha (y_t - s_{t-m}) + (1 - \\alpha) (\\ell_{t-1} + b_{t-1}) \\\\\n\\text{Trend equation} \\quad & b_t = \\beta^*(\\ell_t-\\ell_{t-1}) + (1-\\beta^*) b_{t-1} \\\\\n\\text{Seasonal equation} \\quad & s_t = \\gamma(y_t - \\ell_{t-1} - b_{t-1}) + (1-\\gamma)s_{t-m}\n\\end{aligned}\n\nwhere s_t is the seasonal component at time t, m is the period of the seasonality3, and k = \\lfloor (h-1)/m \\rfloor.\n\n\n1.3.1.2 HW - Multiplicative\n\n\\begin{aligned}\n\\text{Forecast equation} \\quad & \\hat{y}_{t+h|t} = (\\ell_t + hb_t) s_{t+h-m(k+1)} \\\\\n\\text{Level equation} \\quad & \\ell_t = \\alpha \\frac{y_t}{s_{t-m}} + (1 - \\alpha)(\\ell_{t-1} + b_{t-1}) \\\\\n\\text{Trend equation} \\quad & b_t = \\beta^*(\\ell_t-\\ell_{t-1}) + (1-\\beta^*) b_{t-1} \\\\\n\\text{Seasonal equation} \\quad & s_t = \\gamma \\frac{y_t}{\\ell_{t-1} + b_{t-1}} + (1-\\gamma)s_{t-m}\n\\end{aligned}\n\n\n\n\n\n\n\nTipWhen to use Holt-Winters methods\n\n\n\n\n\n\nHolt-Winters methods are appropriate for data with a trend and seasonal pattern.\nUse an additive model when the seasonal fluctuations are roughly constant over time.\nUse a multiplicative model when the seasonal variation increase or decrease over time.\nThe proper benchmark method to compare against is the seasonal naïve method. for seasonal data.\n\nIf the data contains both trend and seasonality, then A decomposition model using STL4 + Drift5 + SNAIVE6 is often a strong competitor.\n\n\n\n\n\n\n\n1.3.1.3 Example: Forecasting Australian holiday trips\nWe will forecast the number of holiday trips in Australia using additive and multiplicative Holt-Winters methods.\n\naus_holidays &lt;- tourism |&gt; \n  filter(Purpose == \"Holiday\") |&gt;\n  summarise(Trips = sum(Trips))\n\naus_holidays |&gt;\n  autoplot(Trips)\n\n\n1\n\nWe specify error(\"A\") and season(\"A\") to indicate that we want an additive Holt-Winters model. We will usually set the error() according to the season() type.\n\n2\n\nWe specify error(\"M\") and season(\"M\") to indicate that we want a multiplicative Holt-Winters model. Both models will estimate the smoothing parameters \\alpha, \\beta^*, and \\gamma automatically.\n\n\n\n\n\n\n\n\n\n\naus_fit &lt;- aus_holidays |&gt; \n  model(\n1    Additive       = ETS(Trips ~ error(\"A\") + trend(\"A\") + season(\"A\")),\n2    Multiplicative = ETS(Trips ~ error(\"M\") + trend(\"A\") + season(\"M\"))\n  )\n  \naus_fc &lt;- aus_fit |&gt; \n  forecast(h = \"3 years\")\n\naus_fc |&gt; \n  autoplot(aus_holidays, level = NULL) + xlab(\"Year\") +\n  labs(\n    title   = \"Forecasting Australian holiday trips using Holt-Winters\",\n    y       = \"Overnight trips (millions)\",\n    caption = \"Can you spot any differences between both forecasts?\"\n  ) +\n  scale_color_brewer(type = \"qual\", palette = \"Dark2\") +\n  guides(colour = guide_legend(title = \"Forecast\"))\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNoteThe tidy() function for models\n\n\n\n\n\n\naus_fit |&gt; \n1  tidy()\n\n\n1\n\nThe tidy() function allows us to see the estimated parameters of each model in a tidy table.\n\n\n\n\n\n  \n\n\n\n\n\n\n\n\n\n1.3.2 Holt-Winters’ damped method\n\n\nSimilar to Holt’s linear trend method, we can also include a damping parameter \\phi in the Holt-Winters method to reduce the trend over time.\n\nThis can be done on both additive or multiplicative seasonal models.\n\nA configuration that has proven to be robust and accurate in practice is to use a multiplicative seasonal component with a damped trend.\n\n\n\n\\begin{aligned}\n\\text{Forecast equation} \\quad & \\hat{y}_{t+h|t} = [\\ell_t +(\\phi + \\phi^2 + \\ldots + \\phi^h)b_t] s_{t+h-m(k+1)} \\\\\n\\text{Level equation} \\quad & \\ell_t = \\alpha \\frac{y_t}{s_{t-m}} + (1 - \\alpha)(\\ell_{t-1} + b_{t-1}) \\\\\n\\text{Trend equation} \\quad & b_t = \\beta^*(\\ell_t-\\ell_{t-1}) + (1-\\beta^*) \\phi b_{t-1} \\\\\n\\text{Seasonal equation} \\quad & s_t = \\gamma \\frac{y_t}{\\ell_{t-1} + \\phi b_{t-1}} + (1-\\gamma)s_{t-m}\n\\end{aligned}\n\n\n1.3.2.1 Example: Forecasting daily pedestrian traffic\n\nsth_cross_ped &lt;- pedestrian |&gt;\n  filter(Date &gt;= \"2016-07-01\",\n         Sensor == \"Southern Cross Station\") |&gt;\n  index_by(Date) |&gt;\n  summarise(Count = sum(Count)/1000)\n\nsth_cross_ped |&gt;\n  filter(Date &lt;= \"2016-07-31\") |&gt;\n  model(\n    hw = ETS(Count ~ error(\"M\") + trend(\"Ad\") + season(\"M\"))\n  ) |&gt;\n  forecast(h = \"2 weeks\") |&gt;\n  autoplot(sth_cross_ped |&gt; filter(Date &lt;= \"2016-08-14\")) +\n  labs(title = \"Daily traffic: Southern Cross\",\n       y=\"Pedestrians ('000)\")\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nThe setup ETS(y ~ error(\"M\") + trend(\"Ad\") + season(\"M\")) is often a robust choice for seasonal data with trend.",
-    "crumbs": [
-      "Modules",
-      "2. Adding ETS and ARIMA filters",
-      "2.1 Exponential Smoothing"
-    ]
+    "objectID": "docs/modules/module_2/02_stationarity/stationarity_pres.html#section",
+    "href": "docs/modules/module_2/02_stationarity/stationarity_pres.html#section",
+    "title": "Identifying Stationarity",
+    "section": "",
+    "text": "A time series is said to be stationary if its statistical properties (mean and variance) are constant over time.\n\n\nStationarity is important because many time series forecasting methods assume that the underlying data is stationary.\nNon-stationary data can lead to inaccurate forecasts and misleading interpretations.\n\nThere are two main types of stationarity:\n\n\nStrict Stationarity: The joint distribution of any set of observations is the same regardless of the time at which they are observed.\n\nWeak Stationarity: The mean, variance, and autocovariance of the series are constant over time.\n\n\nIn practice, we often focus on weak stationarity because it is easier to test and work with."
   },
   {
-    "objectID": "docs/modules/module_2/01_ets/ets.html#automatic-ets-selection-1",
-    "href": "docs/modules/module_2/01_ets/ets.html#automatic-ets-selection-1",
-    "title": "Exponential smoothing",
-    "section": "1.4 Automatic ETS selection",
-    "text": "1.4 Automatic ETS selection\n\n\nUsing fable, we can automatically select the best ETS model for our data using the ETS() function. We achieve this by not specifying the error, trend, or seasonal components.\nYou can also get a semi-automatic selection by specifying some components and leaving others to be selected automatically, or by providing a set of possible values for a component.\nAutomatic selection is especially useful when we have multiple time series to model, as it allows us to fit different ETS models to each series.\n\n\n\n1.4.0.1 Example: Forecasting daily pedestrian traffic (continued)\n\nped_fit &lt;- pedestrian |&gt; \n  filter(\n    Date &gt;= \"2016-07-01\",\n    Sensor != \"Birrarung Marr\"\n  ) |&gt; \n  index_by(Date) |&gt;\n  group_by_key() |&gt; \n  summarise(Count = sum(Count)/1000) |&gt; \n  model(\n1    ETS_auto       = ETS(Count),\n2    ets_with_trend = ETS(Count ~ trend(c(\"A\", \"Ad\"))),\n  )\n\n3ped_fit\n\n\n1\n\nLeaving the right-hand side of the formula empty allows fable to automatically select the best ETS model for each time series.\n\n2\n\nHere, we specify that the trend component can be either additive or damped, while the error and seasonal components will be selected automatically.\n\n3\n\nThe output shows the selected model for each sensor.",
-    "crumbs": [
-      "Modules",
-      "2. Adding ETS and ARIMA filters",
-      "2.1 Exponential Smoothing"
-    ]
+    "objectID": "docs/modules/module_2/02_stationarity/stationarity_pres.html#section-1",
+    "href": "docs/modules/module_2/02_stationarity/stationarity_pres.html#section-1",
+    "title": "Identifying Stationarity",
+    "section": "",
+    "text": "A time series with an upward trend.\n\n\n\n\n\nA time series with a downward trend."
   },
   {
-    "objectID": "docs/modules/module_2/01_ets/ets.html#the-lineup-of-exponential-smoothing-methods-1",
-    "href": "docs/modules/module_2/01_ets/ets.html#the-lineup-of-exponential-smoothing-methods-1",
-    "title": "Exponential smoothing",
-    "section": "1.5 The lineup of exponential smoothing methods",
-    "text": "1.5 The lineup of exponential smoothing methods\n\n\n\nTable 2: ETS component combinations (trend × seasonal)\n\n\n\n\n\n\n\n\n\n\n\n\nTrend component\nN (None)\nA (Additive)\nM (Multiplicative)\n\n\n\n\nN (None)\n(N,N),\n(N,A)\n(N,M)\n\n\nA (Additive)\n(A,N),\n(A,A)\n(A,M)\n\n\nA_d (Additive damped)\n(A_d,N),\n(A_d, A)\n(A_d,M)\n\n\n\n\n\n\n\n\n\n\nTable 3: Names of some popular ETS models\n\n\n\n\n\n\nNotation\nMethod\n\n\n\n\n(N,N)\nSimple Exponential Smoothing (SES)\n\n\n(A,N)\nHolt’s Linear Trend\n\n\n(A_d,N)\nAdditive damped Trend\n\n\n(A,A)\nHolt-Winters’ Additive\n\n\n(A,M)\nHolt-Winters’ Multiplicative\n\n\n(A_d,M)\nHolt-Winters’ damped",
-    "crumbs": [
-      "Modules",
-      "2. Adding ETS and ARIMA filters",
-      "2.1 Exponential Smoothing"
-    ]
+    "objectID": "docs/modules/module_2/02_stationarity/stationarity_pres.html#section-2",
+    "href": "docs/modules/module_2/02_stationarity/stationarity_pres.html#section-2",
+    "title": "Identifying Stationarity",
+    "section": "",
+    "text": "A time series with yearly seasonality.\n\n\n\n\n\nA time series with yearly seasonality and a shifting trend."
   },
   {
-    "objectID": "docs/modules/module_2/01_ets/ets.html#in-summary-1",
-    "href": "docs/modules/module_2/01_ets/ets.html#in-summary-1",
-    "title": "Exponential smoothing",
-    "section": "1.6 In summary",
-    "text": "1.6 In summary\n\nExponential smoothing methods are a family of forecasting methods that use weighted averages of past observations to make forecasts.\nThe weights decrease exponentially for older observations, controlled by smoothing parameters.\nDifferent configurations of ETS models can be used to handle various data patterns, including trend and seasonality.\nThe choice of model components (error(c(\"A\", \"M\")), trend(c(\"N\", \"A\", \"Ad\")), seasonality(c(\"N\", \"A\", \"M\"))) should be based on the characteristics of the data.\n\nThat is, we choose the model by viewing the time plot.\n\nAutomatic ETS selection can be a powerful tool for fitting models to multiple time series efficiently.",
-    "crumbs": [
-      "Modules",
-      "2. Adding ETS and ARIMA filters",
-      "2.1 Exponential Smoothing"
-    ]
+    "objectID": "docs/about.html",
+    "href": "docs/about.html",
+    "title": "About",
+    "section": "",
+    "text": "Back to top"
   },
   {
-    "objectID": "docs/modules/module_2/01_ets/ets.html#footnotes",
-    "href": "docs/modules/module_2/01_ets/ets.html#footnotes",
-    "title": "Exponential smoothing",
+    "objectID": "docs/more/ets.html#h2-header",
+    "href": "docs/more/ets.html#h2-header",
+    "title": "Exponential Smoothing",
+    "section": "1.1 H2 header",
+    "text": "1.1 H2 header\nthere and back again."
+  },
+  {
+    "objectID": "docs/more/ets.html#code-animation",
+    "href": "docs/more/ets.html#code-animation",
+    "title": "Exponential Smoothing",
+    "section": "1.2 Code animation",
+    "text": "1.2 Code animation"
+  },
+  {
+    "objectID": "docs/more/ets.html#section",
+    "href": "docs/more/ets.html#section",
+    "title": "Exponential Smoothing",
+    "section": "1.3 ",
+    "text": "1.3 \n# Fill in the spot we created for a plot\noutput$phonePlot &lt;- renderPlot({\n  # Render a barplot\n})"
+  },
+  {
+    "objectID": "docs/more/ets.html#section-1",
+    "href": "docs/more/ets.html#section-1",
+    "title": "Exponential Smoothing",
+    "section": "1.4 ",
+    "text": "1.4 \n# Fill in the spot we created for a plot\noutput$phonePlot &lt;- renderPlot({\n  # Render a barplot\n  barplot(WorldPhones[,input$region]*1000, \n          main=input$region,\n          ylab=\"Number of Telephones\",\n          xlab=\"Year\")\n})"
+  },
+  {
+    "objectID": "docs/more/ets_pres.html#h2-header",
+    "href": "docs/more/ets_pres.html#h2-header",
+    "title": "Exponential Smoothing",
+    "section": "H2 header",
+    "text": "H2 header\nthere and back again."
+  },
+  {
+    "objectID": "docs/more/ets_pres.html#code-animation",
+    "href": "docs/more/ets_pres.html#code-animation",
+    "title": "Exponential Smoothing",
+    "section": "Code animation",
+    "text": "Code animation"
+  },
+  {
+    "objectID": "docs/more/ets_pres.html#section",
+    "href": "docs/more/ets_pres.html#section",
+    "title": "Exponential Smoothing",
+    "section": "",
+    "text": "# Fill in the spot we created for a plot\noutput$phonePlot &lt;- renderPlot({\n  # Render a barplot\n})"
+  },
+  {
+    "objectID": "docs/more/ets_pres.html#section-1",
+    "href": "docs/more/ets_pres.html#section-1",
+    "title": "Exponential Smoothing",
+    "section": "",
+    "text": "# Fill in the spot we created for a plot\noutput$phonePlot &lt;- renderPlot({\n  # Render a barplot\n  barplot(WorldPhones[,input$region]*1000, \n          main=input$region,\n          ylab=\"Number of Telephones\",\n          xlab=\"Year\")\n})"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Time Series Forecasting",
+    "section": "",
+    "text": "Welcome to the Time Series Forecasting course at ITESO. Here you will find all the materials and resources needed for the course.\nIn the Modules section, you will find all the theory and practical examples to help you understand the concepts of time series forecasting. In each document you will find attached the presentations as seen in class.\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "docs/more/dummy_pres.html#first-slide",
+    "href": "docs/more/dummy_pres.html#first-slide",
+    "title": "presentation_dummy",
+    "section": "First slide",
+    "text": "First slide\nJust as a tutorial\n```{r}\n1 + 1\n```"
+  },
+  {
+    "objectID": "docs/more/dummy_pres.html#code-with-annotations",
+    "href": "docs/more/dummy_pres.html#code-with-annotations",
+    "title": "presentation_dummy",
+    "section": "Code with annotations",
+    "text": "Code with annotations\n\n1library(tidyverse)\n2library(fpp3)\n\n3aus_production |&gt;\n  autoplot(Beer)\n\n\n1\n\nMeta-package for data-science analysis\n\n2\n\nMeta-package for time series forecasting\n\n3\n\nTime plot of Beer production"
+  },
+  {
+    "objectID": "docs/more/dummy_file.html",
+    "href": "docs/more/dummy_file.html",
+    "title": "presentation_dummy",
+    "section": "",
+    "text": "Just as a tutorial\n```{r}\n1 + 1\n```"
+  },
+  {
+    "objectID": "docs/more/dummy_file.html#first-slide",
+    "href": "docs/more/dummy_file.html#first-slide",
+    "title": "presentation_dummy",
+    "section": "",
+    "text": "Just as a tutorial\n```{r}\n1 + 1\n```"
+  },
+  {
+    "objectID": "docs/more/dummy_file.html#code-with-annotations",
+    "href": "docs/more/dummy_file.html#code-with-annotations",
+    "title": "presentation_dummy",
+    "section": "2 Code with annotations",
+    "text": "2 Code with annotations\n\n1library(tidyverse)\n2library(fpp3)\n\n3aus_production |&gt;\n  autoplot(Beer)\n\n\n1\n\nMeta-package for data-science analysis\n\n2\n\nMeta-package for time series forecasting\n\n3\n\nTime plot of Beer production"
+  },
+  {
+    "objectID": "docs/modules/forecasting_wf_pres.html#packages",
+    "href": "docs/modules/forecasting_wf_pres.html#packages",
+    "title": "The Forecasting Workflow using fable\n",
+    "section": "Packages",
+    "text": "Packages\nIt is recommended to load all the packages at the beginning of your file. We will be using the tidyverts ecosystem for the whole forecasting workflow.\n\nlibrary(tidyverse)\nlibrary(fpp3)\nlibrary(plotly)\n\n\n\n\n\n\n\nWarning\n\n\nDo not load unnecesary packages into your environment. It could lead to conflicts between functions and unwanted results."
+  },
+  {
+    "objectID": "docs/modules/forecasting_wf_pres.html#data",
+    "href": "docs/modules/forecasting_wf_pres.html#data",
+    "title": "The Forecasting Workflow using fable\n",
+    "section": "Data",
+    "text": "Data\nWe will work with the Real Gross Domestic Product (GDP) for Mexico. The data is downloaded from FRED. The time series id is NGDPRNSAXDCMXQ.\nImport data\n\ngdp &lt;- tidyquant::tq_get(\n  x    = \"NGDPRNSAXDCMXQ\",\n  get  = \"economic.data\",\n  from = \"1997-01-01\"\n)\n\ngdp\n\n# A tibble: 113 × 3\n   symbol         date          price\n   &lt;chr&gt;          &lt;date&gt;        &lt;dbl&gt;\n 1 NGDPRNSAXDCMXQ 1997-01-01 3702398.\n 2 NGDPRNSAXDCMXQ 1997-04-01 3896084.\n 3 NGDPRNSAXDCMXQ 1997-07-01 3906063 \n 4 NGDPRNSAXDCMXQ 1997-10-01 4038358.\n 5 NGDPRNSAXDCMXQ 1998-01-01 4084304.\n 6 NGDPRNSAXDCMXQ 1998-04-01 4134899.\n 7 NGDPRNSAXDCMXQ 1998-07-01 4138200.\n 8 NGDPRNSAXDCMXQ 1998-10-01 4146841.\n 9 NGDPRNSAXDCMXQ 1999-01-01 4176243.\n10 NGDPRNSAXDCMXQ 1999-04-01 4232280.\n# ℹ 103 more rows\n\n\nWrangle data\nThere are some issues with our data:\n\nIt is loaded into a tibble object. We need to convert it to a tsibble.\n\n\n\n\n\n\n\nTip\n\n\nWe can use as_tsibble() to do so.\n\n\n\n\nOur data is quarterly, but it is loaded in a YYYY-MM-DD format. We need to change it to a YYYY QQ format.\n\n\n\n\n\n\n\nTip\n\n\nThere are some functions that help us achieve this, such as\n\nyearquarter()\nyearmonth()\nyearweek()\nyear()\n\ndepending on the time series’ period.\n\n\n\nWe will overwrite our data:\n\ngdp &lt;- gdp |&gt; \n  mutate(date = yearquarter(date)) |&gt; \n  as_tsibble(\n    index = date,\n    key   = symbol\n  )\n\ngdp\n\n\n  \n\n\n\n\n\n\n\n\n\nTip\n\n\n\nWe always need to specify the index argument, as it is our date variable.\nThe key argument is necessary whenever we have more than one time series in our data frame and is made up of one or more columns that uniquely identify each time series ."
+  },
+  {
+    "objectID": "docs/modules/forecasting_wf_pres.html#traintest-split",
+    "href": "docs/modules/forecasting_wf_pres.html#traintest-split",
+    "title": "The Forecasting Workflow using fable\n",
+    "section": "Train/Test Split",
+    "text": "Train/Test Split\nWe will split our data in two sets: a training set, and a test set, in order to evaluate our forecasts’ accuracy.\n\ngdp_train &lt;- gdp |&gt; \n  filter_index(. ~ \"2021 Q4\")\n\ngdp_train\n\n\n  \n\n\n\n\n\n\n\n\n\nNote\n\n\nFor all our variables, it is strongly recommended to follow the same notation process, and write our code using snake_case. Here, we called our data gdp, therefore, all the following variables will be called starting with gdp_1, such as gdp_train for our training set."
+  },
+  {
+    "objectID": "docs/modules/forecasting_wf_pres.html#visualization-and-eda",
+    "href": "docs/modules/forecasting_wf_pres.html#visualization-and-eda",
+    "title": "The Forecasting Workflow using fable\n",
+    "section": "Visualization and EDA",
+    "text": "Visualization and EDA\nWhen performing time series analysis/forecasting, one of the first things to do is to create a time series plot.\n\np &lt;- gdp_train |&gt; \n  autoplot(price) +\n  labs(\n    title = \"Time series plot of the Real GDP for Mexico\",\n    y = \"GDP\"\n  )\n \nggplotly(p, dynamicTicks = TRUE) |&gt; \n  rangeslider()\n\n\n\n\n\n\n\n\nOur data exhibits an upward linear trend (with some economic cycles), and strong yearly seasonality.\n\n\n\nWe will explore it further with a season plot.\n\ngdp_train |&gt; \n  gg_season(price) |&gt; \n  ggplotly()\n\n\n\n\n\nTS Decomposition\n\ngdp_train |&gt; \n  model(stl = STL(price, robust = TRUE)) |&gt; \n  components() |&gt; \n  autoplot() |&gt; \n  ggplotly()\n\n\n\n\n\n\n\n\nThe STL decomposition shows that the variance of the seasonal component has been increasing. We could try using a log transformation to counter this.\n\n\n\n\ngdp_train |&gt; \n  autoplot(log(price)) +\n  ggtitle(\"Log of the Real GDP of Mexico\")\n\n\n\n\n\n\n\n\ngdp_train |&gt; \n  model(stl = STL(log(price) ~ season(window = \"periodic\"), robust = TRUE)) |&gt; \n  components() |&gt; \n  autoplot() |&gt; \n  ggplotly()"
+  },
+  {
+    "objectID": "docs/modules/forecasting_wf_pres.html#model-specification",
+    "href": "docs/modules/forecasting_wf_pres.html#model-specification",
+    "title": "The Forecasting Workflow using fable\n",
+    "section": "Model Specification",
+    "text": "Model Specification\nWe will fit two models to our time series: Seasonal Naïve, and the Drift model. We will also use the log transformation.\n\ngdp_fit &lt;- gdp_train |&gt; \n  model(\n    snaive = SNAIVE(log(price)),\n    drift  = RW(log(price) ~ drift())\n  )\n\n\n\n\n\n\n\nBenchmark models\n\n\nWe have four different benchmark models that we’ll use to compare against the rest of the more complex models:\n\nMean (MEAN( &lt;.y&gt; ))\nNaïve (NAIVE( &lt;.y&gt; ))\nSeasonal Naïve (SNAIVE( &lt;.y&gt; ))\nDrift (RW( &lt;.y&gt; ~ drift()))\n\nwhere &lt;.y&gt; is just a placeholder for the variable to model.\nChoose wisely which of these to use in each case, according to the exploratory analysis performed."
+  },
+  {
+    "objectID": "docs/modules/forecasting_wf_pres.html#residuals-diagnostics",
+    "href": "docs/modules/forecasting_wf_pres.html#residuals-diagnostics",
+    "title": "The Forecasting Workflow using fable\n",
+    "section": "Residuals Diagnostics",
+    "text": "Residuals Diagnostics\nVisual analysis\n\ngdp_fit |&gt; \n  select(snaive) |&gt; \n  gg_tsresiduals() +\n  ggtitle(\"Residuals Diagnostics for the Seasonal Naïve Model\")\n\n\n\n\n\n\ngdp_fit |&gt; \n  select(drift) |&gt; \n  gg_tsresiduals() +\n  ggtitle(\"Residuals Diagnostics for the Drift Model\")\n\n\n\n\n\n\n\n\n\n\n\n\n\nTip\n\n\nHere we expect to see:\n\nA time series with no apparent patterns (no trend and/or seasonality), with a mean close to zero.\nIn the ACF, we’d expect no lags with significant autocorrelation.\nNormally distributed residuals.\n\n\n\n\nPortmanteau tests of autocorrelation\n\ngdp_fit |&gt; \n  augment() |&gt; \n  features(.innov, ljung_box, lag = 24, dof = 0)\n\n\n  \n\n\n\n\n\n\n\n\n\nResiduals interpretation\n\n\nBoth models produce sub optimal residuals:\n\nThe SNAIVE correctly detects the seasonality, however, its residuals are still autocorrelated. Moreover, the residuals are not normally distributed.\nThe drift model doesn’t account for the seasonality, and their distribution is a little bit skewed.\n\nHence, we will perform our forecasts using the bootstrapping method.\n\n\n\nWe can compute some error metrics on the training set using the accuracy() function:\n\ngdp_train_accu &lt;- accuracy(gdp_fit) |&gt; \n  arrange(MAPE)\ngdp_train_accu |&gt; \n  select(symbol:.type, MAPE, RMSE, MAE, MASE)\n\n\n  \n\n\n\n\n\n\n\n\n\nThe accuracy() function\n\n\nThe accuracy() function can be used to compute error metrics in the training data, or in the test set. What differs is the data that is given to it:\n\nFor the training metrics, you need to use the mable (the table of models, that we usually store in _fit).\nFor the forecasting error metrics, we need the fable (the forecasts table, usually stored as _fc or _fcst), and the complete set of data (both the training and test set together).\n\n\n\n\n\n\n\n\n\n\n\nFor this analysis, we are focusing on the MAPE2 metric. The drift model (2.47%) seems to have a better fit with the training set than the snaive model (3.24%)."
+  },
+  {
+    "objectID": "docs/modules/forecasting_wf_pres.html#modeling-using-decomposition",
+    "href": "docs/modules/forecasting_wf_pres.html#modeling-using-decomposition",
+    "title": "The Forecasting Workflow using fable\n",
+    "section": "Modeling using decomposition",
+    "text": "Modeling using decomposition\nWe will perform a forecast using decomposition, to see if we can improve our results so far.\n\ngdp_fit_dcmp &lt;- gdp_train |&gt; \n      model(\n        stlf = decomposition_model(\n          STL(log(price) ~ season(window = \"periodic\"), robust = TRUE),\n          RW(season_adjust ~ drift())\n        )\n      )\n\ngdp_fit_dcmp\n\n\n  \n\n\n\n\n\n\n\n\n\nNote on decomposition_model()\n\n\nRemember, when using decomposition models, we need to do the following:\n\nSpecify what type of decomposition we want to use and customize it as needed.\nFit a model for the seasonally adjusted data; season_adjust.\nFit a model for the seasonal component. R uses a SNAIVE() model by default to model the seasonality. If you wish to model it using a different model, you have specify it.\n\n\nThe name of the seasonal component depends on the type of seasonality present in the time series. If it has a yearly seasonality, the component is called season_year. It could also be called season_week, season_day, and so on.\n\n\n\n\nWe can join this new model with the models we trained before. This way we can have them all in the same mable.\n\ngdp_fit &lt;- gdp_fit |&gt; \n  left_join(gdp_fit_dcmp)\n\nResiduals diagnostics\n\ngdp_fit |&gt; \n  accuracy() |&gt; \n  select(symbol:.type, MAPE, RMSE, MAE, MASE) |&gt; \n  arrange(MAPE)\n\n\n  \n\n\n\n\ngdp_fit |&gt; \n  select(stlf) |&gt; \n  gg_tsresiduals()\n\n\n\n\n\n\n\n\ngdp_fit |&gt; \n  augment() |&gt; \n  features(.innov, ljung_box)\n\n\n  \n\n\n\n\n\n\nThe MAPE seems to improve with this decomposition model. Also, the residual diagnostics do not show any seasonality present in them. However, the residuals are still autocorrelated, as the Ljung-Box test suggests."
+  },
+  {
+    "objectID": "docs/modules/forecasting_wf_pres.html#forecasting-on-the-test-set",
+    "href": "docs/modules/forecasting_wf_pres.html#forecasting-on-the-test-set",
+    "title": "The Forecasting Workflow using fable\n",
+    "section": "Forecasting on the test set",
+    "text": "Forecasting on the test set\nOnce we have our models, we can produce forecasts. We will forecast our test data and check our forecasts’ performance.\n\ngdp_fc &lt;- gdp_fit |&gt; \n  forecast(h = gdp_h_fc) \n\ngdp_fc\n\n\n  \n\n\n\n\ngdp_fc |&gt; \n  autoplot(gdp) +\n  facet_wrap(~.model, ncol = 1)\n\n\n\n\n\n\ngdp_fc |&gt; \n  filter(.model == \"stlf\") |&gt; \n  autoplot(gdp)\n\n\n\n\n\n\n\nWe now estimate the forecast errors:\n\ngdp_fc |&gt; \n  accuracy(gdp) |&gt; \n  select(.model:.type, MAPE, RMSE, MAE, MASE) |&gt; \n  arrange(MAPE)"
+  },
+  {
+    "objectID": "docs/modules/forecasting_wf_pres.html#forecasting-the-future",
+    "href": "docs/modules/forecasting_wf_pres.html#forecasting-the-future",
+    "title": "The Forecasting Workflow using fable\n",
+    "section": "Forecasting the future",
+    "text": "Forecasting the future\nWe now refit our model using the whole dataset. We will only model the STL decomposition model, because the other two didn’t get a strong fit.\n\ngdp_fit2 &lt;- gdp |&gt; \n  model(\n    stlf = decomposition_model(\n          STL(log(price) ~ season(window = \"periodic\"), robust = TRUE),\n          RW(season_adjust ~ drift())\n        )\n  )\ngdp_fit2\n\n\n  \n\n\n\n\ngdp_fc_fut &lt;- gdp_fit2 |&gt; \n  forecast(h = gdp_h_fc)\ngdp_fc_fut\n\n\n  \n\n\ngdp_fc_fut |&gt; \n  autoplot(gdp)\n\n\n\n\n\n\n\n\n# save(gdp_fc_fut, file = \"equipo1.RData\")"
+  },
+  {
+    "objectID": "docs/modules/forecasting_wf_pres.html#footnotes",
+    "href": "docs/modules/forecasting_wf_pres.html#footnotes",
+    "title": "The Forecasting Workflow using fable\n",
     "section": "Footnotes",
-    "text": "Footnotes\n\n\n(i.e., a mable containing only one model and one time series.)↩︎\nIn practice, we restrict 0.8 \\leq \\phi \\leq 0.98 because the damping effect would be too great for smaller values than 0.8 and almost non distinguishable from a linear trend for greater values than 0.98.↩︎\ne.g., m=4 for quarterly data, m=12 for monthly data, …↩︎\nas the decomposition method↩︎\nfor the seasonally adjusted series↩︎\nfor the seasonal component↩︎",
+    "text": "Footnotes\n\n\nThis will make it very convenient when calling your variables. RStudio will display all the options starting with gdp_. We will usually use the following suffixes:\n\n\n_train: training set\n\n_fit: the mable (table of models)\n\n_aug: the augmented table with fitted values and residuals\n\n_dcmp: for the dable (decomposition table), containing the components and the seasonally adjusted series of a TS decomposition.\n\n_fc or _fcst: for the fable (forecasts table) that has our forecasts. \n\n\n\n\n\nThe Mean Absolute Percentage Error is a percentage error metric widely used in professional environments.\nLet\n\ne_t = y_t - \\hat{y}_t\n\nbe the error or residual.\nThen the MAPE would be computed as\n\nMAPE = \\frac{1}{T}\\sum_{t=1}^T|\\frac{e_t}{y_t}|\n."
+  },
+  {
+    "objectID": "docs/modules/forecasting_workflow.html#packages",
+    "href": "docs/modules/forecasting_workflow.html#packages",
+    "title": "The Forecasting Workflow using fable\n",
+    "section": "\n0.1 Packages",
+    "text": "0.1 Packages\nIt is recommended to load all the packages at the beginning of your file. We will be using the tidyverts ecosystem for the whole forecasting workflow.\n\nlibrary(tidyverse)\nlibrary(fpp3)\nlibrary(plotly)\n\n\n\n\n\n\n\nWarning\n\n\n\nDo not load unnecesary packages into your environment. It could lead to conflicts between functions and unwanted results.",
     "crumbs": [
       "Modules",
-      "2. Adding ETS and ARIMA filters",
-      "2.1 Exponential Smoothing"
+      "1. Forecasting models based on decomposition methods",
+      "1.4 The Forecasting Workflow"
+    ]
+  },
+  {
+    "objectID": "docs/modules/forecasting_workflow.html#data",
+    "href": "docs/modules/forecasting_workflow.html#data",
+    "title": "The Forecasting Workflow using fable\n",
+    "section": "\n1.1 Data",
+    "text": "1.1 Data\nWe will work with the Real Gross Domestic Product (GDP) for Mexico. The data is downloaded from FRED. The time series id is NGDPRNSAXDCMXQ.\n\n1.1.1 Import data\n\ngdp &lt;- tidyquant::tq_get(\n  x    = \"NGDPRNSAXDCMXQ\",\n  get  = \"economic.data\",\n  from = \"1997-01-01\"\n)\n\ngdp\n\n# A tibble: 113 × 3\n   symbol         date          price\n   &lt;chr&gt;          &lt;date&gt;        &lt;dbl&gt;\n 1 NGDPRNSAXDCMXQ 1997-01-01 3702398.\n 2 NGDPRNSAXDCMXQ 1997-04-01 3896084.\n 3 NGDPRNSAXDCMXQ 1997-07-01 3906063 \n 4 NGDPRNSAXDCMXQ 1997-10-01 4038358.\n 5 NGDPRNSAXDCMXQ 1998-01-01 4084304.\n 6 NGDPRNSAXDCMXQ 1998-04-01 4134899.\n 7 NGDPRNSAXDCMXQ 1998-07-01 4138200.\n 8 NGDPRNSAXDCMXQ 1998-10-01 4146841.\n 9 NGDPRNSAXDCMXQ 1999-01-01 4176243.\n10 NGDPRNSAXDCMXQ 1999-04-01 4232280.\n# ℹ 103 more rows\n\n\n\n1.1.2 Wrangle data\nThere are some issues with our data:\n\nIt is loaded into a tibble object. We need to convert it to a tsibble.\n\n\n\n\n\n\n\nTip\n\n\n\n\n\nWe can use as_tsibble() to do so.\n\n\n\n\nOur data is quarterly, but it is loaded in a YYYY-MM-DD format. We need to change it to a YYYY QQ format.\n\n\n\n\n\n\n\nTip\n\n\n\n\n\nThere are some functions that help us achieve this, such as\n\nyearquarter()\nyearmonth()\nyearweek()\nyear()\n\ndepending on the time series’ period.\n\n\n\nWe will overwrite our data:\n\ngdp &lt;- gdp |&gt; \n  mutate(date = yearquarter(date)) |&gt; \n  as_tsibble(\n    index = date,\n    key   = symbol\n  )\n\ngdp\n\n\n  \n\n\n\n\n\n\n\n\n\nTip\n\n\n\n\n\n\nWe always need to specify the index argument, as it is our date variable.\nThe key argument is necessary whenever we have more than one time series in our data frame and is made up of one or more columns that uniquely identify each time series .",
+    "crumbs": [
+      "Modules",
+      "1. Forecasting models based on decomposition methods",
+      "1.4 The Forecasting Workflow"
+    ]
+  },
+  {
+    "objectID": "docs/modules/forecasting_workflow.html#traintest-split",
+    "href": "docs/modules/forecasting_workflow.html#traintest-split",
+    "title": "The Forecasting Workflow using fable\n",
+    "section": "\n1.2 Train/Test Split",
+    "text": "1.2 Train/Test Split\nWe will split our data in two sets: a training set, and a test set, in order to evaluate our forecasts’ accuracy.\n\ngdp_train &lt;- gdp |&gt; \n  filter_index(. ~ \"2021 Q4\")\n\ngdp_train\n\n\n  \n\n\n\n\n\n\n\n\n\nNote\n\n\n\nFor all our variables, it is strongly recommended to follow the same notation process, and write our code using snake_case. Here, we called our data gdp, therefore, all the following variables will be called starting with gdp_1, such as gdp_train for our training set.",
+    "crumbs": [
+      "Modules",
+      "1. Forecasting models based on decomposition methods",
+      "1.4 The Forecasting Workflow"
+    ]
+  },
+  {
+    "objectID": "docs/modules/forecasting_workflow.html#visualization-and-eda",
+    "href": "docs/modules/forecasting_workflow.html#visualization-and-eda",
+    "title": "The Forecasting Workflow using fable\n",
+    "section": "\n1.3 Visualization and EDA",
+    "text": "1.3 Visualization and EDA\nWhen performing time series analysis/forecasting, one of the first things to do is to create a time series plot.\n\np &lt;- gdp_train |&gt; \n  autoplot(price) +\n  labs(\n    title = \"Time series plot of the Real GDP for Mexico\",\n    y = \"GDP\"\n  )\n \nggplotly(p, dynamicTicks = TRUE) |&gt; \n  rangeslider()\n\n\n\n\n\n\n\n\n\n\n\nOur data exhibits an upward linear trend (with some economic cycles), and strong yearly seasonality.\n\n\n\nWe will explore it further with a season plot.\n\ngdp_train |&gt; \n  gg_season(price) |&gt; \n  ggplotly()\n\nWarning: `gg_season()` was deprecated in feasts 0.4.2.\nℹ Please use `ggtime::gg_season()` instead.\n\n\n\n\n\n\n\n1.3.1 TS Decomposition\n\ngdp_train |&gt; \n  model(stl = STL(price, robust = TRUE)) |&gt; \n  components() |&gt; \n  autoplot() |&gt; \n  ggplotly()\n\n\n\n\n\n\n\n\n\n\n\nThe STL decomposition shows that the variance of the seasonal component has been increasing. We could try using a log transformation to counter this.\n\n\n\n\ngdp_train |&gt; \n  autoplot(log(price)) +\n  ggtitle(\"Log of the Real GDP of Mexico\")\n\n\n\n\n\n\n\n\ngdp_train |&gt; \n  model(stl = STL(log(price) ~ season(window = \"periodic\"), robust = TRUE)) |&gt; \n  components() |&gt; \n  autoplot() |&gt; \n  ggplotly()",
+    "crumbs": [
+      "Modules",
+      "1. Forecasting models based on decomposition methods",
+      "1.4 The Forecasting Workflow"
+    ]
+  },
+  {
+    "objectID": "docs/modules/forecasting_workflow.html#model-specification",
+    "href": "docs/modules/forecasting_workflow.html#model-specification",
+    "title": "The Forecasting Workflow using fable\n",
+    "section": "\n1.4 Model Specification",
+    "text": "1.4 Model Specification\nWe will fit two models to our time series: Seasonal Naïve, and the Drift model. We will also use the log transformation.\n\ngdp_fit &lt;- gdp_train |&gt; \n  model(\n    snaive = SNAIVE(log(price)),\n    drift  = RW(log(price) ~ drift())\n  )\n\n\n\n\n\n\n\nTipBenchmark models\n\n\n\n\n\nWe have four different benchmark models that we’ll use to compare against the rest of the more complex models:\n\nMean (MEAN( &lt;.y&gt; ))\nNaïve (NAIVE( &lt;.y&gt; ))\nSeasonal Naïve (SNAIVE( &lt;.y&gt; ))\nDrift (RW( &lt;.y&gt; ~ drift()))\n\nwhere &lt;.y&gt; is just a placeholder for the variable to model.\nChoose wisely which of these to use in each case, according to the exploratory analysis performed.",
+    "crumbs": [
+      "Modules",
+      "1. Forecasting models based on decomposition methods",
+      "1.4 The Forecasting Workflow"
+    ]
+  },
+  {
+    "objectID": "docs/modules/forecasting_workflow.html#residuals-diagnostics",
+    "href": "docs/modules/forecasting_workflow.html#residuals-diagnostics",
+    "title": "The Forecasting Workflow using fable\n",
+    "section": "\n1.5 Residuals Diagnostics",
+    "text": "1.5 Residuals Diagnostics\n\n1.5.1 Visual analysis\n\ngdp_fit |&gt; \n  select(snaive) |&gt; \n  gg_tsresiduals() +\n  ggtitle(\"Residuals Diagnostics for the Seasonal Naïve Model\")\n\n\n\n\n\n\ngdp_fit |&gt; \n  select(drift) |&gt; \n  gg_tsresiduals() +\n  ggtitle(\"Residuals Diagnostics for the Drift Model\")\n\n\n\n\n\n\n\n\n\n\n\n\n\nTip\n\n\n\n\n\nHere we expect to see:\n\nA time series with no apparent patterns (no trend and/or seasonality), with a mean close to zero.\nIn the ACF, we’d expect no lags with significant autocorrelation.\nNormally distributed residuals.\n\n\n\n\n\n1.5.2 Portmanteau tests of autocorrelation\n\ngdp_fit |&gt; \n  augment() |&gt; \n  features(.innov, ljung_box, lag = 24, dof = 0)\n\n\n  \n\n\n\n\n\n\n\n\n\nCautionResiduals interpretation\n\n\n\nBoth models produce sub optimal residuals:\n\nThe SNAIVE correctly detects the seasonality, however, its residuals are still autocorrelated. Moreover, the residuals are not normally distributed.\nThe drift model doesn’t account for the seasonality, and their distribution is a little bit skewed.\n\nHence, we will perform our forecasts using the bootstrapping method.\n\n\nWe can compute some error metrics on the training set using the accuracy() function:\n\ngdp_train_accu &lt;- accuracy(gdp_fit) |&gt; \n  arrange(MAPE)\ngdp_train_accu |&gt; \n  select(symbol:.type, MAPE, RMSE, MAE, MASE)\n\n\n  \n\n\n\n\n\n\n\n\n\nTipThe accuracy() function\n\n\n\n\n\nThe accuracy() function can be used to compute error metrics in the training data, or in the test set. What differs is the data that is given to it:\n\nFor the training metrics, you need to use the mable (the table of models, that we usually store in _fit).\nFor the forecasting error metrics, we need the fable (the forecasts table, usually stored as _fc or _fcst), and the complete set of data (both the training and test set together).\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nFor this analysis, we are focusing on the MAPE2 metric. The drift model (2.47%) seems to have a better fit with the training set than the snaive model (3.24%).",
+    "crumbs": [
+      "Modules",
+      "1. Forecasting models based on decomposition methods",
+      "1.4 The Forecasting Workflow"
+    ]
+  },
+  {
+    "objectID": "docs/modules/forecasting_workflow.html#modeling-using-decomposition",
+    "href": "docs/modules/forecasting_workflow.html#modeling-using-decomposition",
+    "title": "The Forecasting Workflow using fable\n",
+    "section": "\n1.6 Modeling using decomposition",
+    "text": "1.6 Modeling using decomposition\nWe will perform a forecast using decomposition, to see if we can improve our results so far.\n\ngdp_fit_dcmp &lt;- gdp_train |&gt; \n      model(\n        stlf = decomposition_model(\n          STL(log(price) ~ season(window = \"periodic\"), robust = TRUE),\n          RW(season_adjust ~ drift())\n        )\n      )\n\ngdp_fit_dcmp\n\n\n  \n\n\n\n\n\n\n\n\n\nNoteNote on decomposition_model()\n\n\n\n\n\nRemember, when using decomposition models, we need to do the following:\n\nSpecify what type of decomposition we want to use and customize it as needed.\nFit a model for the seasonally adjusted data; season_adjust.\nFit a model for the seasonal component. R uses a SNAIVE() model by default to model the seasonality. If you wish to model it using a different model, you have specify it.\n\n\nThe name of the seasonal component depends on the type of seasonality present in the time series. If it has a yearly seasonality, the component is called season_year. It could also be called season_week, season_day, and so on.\n\n\n\n\nWe can join this new model with the models we trained before. This way we can have them all in the same mable.\n\ngdp_fit &lt;- gdp_fit |&gt; \n  left_join(gdp_fit_dcmp)\n\nJoining with `by = join_by(symbol)`\n\n\n\n1.6.1 Residuals diagnostics\n\ngdp_fit |&gt; \n  accuracy() |&gt; \n  select(symbol:.type, MAPE, RMSE, MAE, MASE) |&gt; \n  arrange(MAPE)\n\n\n  \n\n\n\n\ngdp_fit |&gt; \n  select(stlf) |&gt; \n  gg_tsresiduals()\n\n\n\n\n\n\n\n\ngdp_fit |&gt; \n  augment() |&gt; \n  features(.innov, ljung_box)\n\n\n  \n\n\n\n\n\n\n\n\n\nThe MAPE seems to improve with this decomposition model. Also, the residual diagnostics do not show any seasonality present in them. However, the residuals are still autocorrelated, as the Ljung-Box test suggests.",
+    "crumbs": [
+      "Modules",
+      "1. Forecasting models based on decomposition methods",
+      "1.4 The Forecasting Workflow"
+    ]
+  },
+  {
+    "objectID": "docs/modules/forecasting_workflow.html#forecasting-on-the-test-set",
+    "href": "docs/modules/forecasting_workflow.html#forecasting-on-the-test-set",
+    "title": "The Forecasting Workflow using fable\n",
+    "section": "\n1.7 Forecasting on the test set",
+    "text": "1.7 Forecasting on the test set\nOnce we have our models, we can produce forecasts. We will forecast our test data and check our forecasts’ performance.\n\ngdp_fc &lt;- gdp_fit |&gt; \n  forecast(h = gdp_h_fc) \n\ngdp_fc\n\n\n  \n\n\n\n\ngdp_fc |&gt; \n  autoplot(gdp) +\n  facet_wrap(~.model, ncol = 1)\n\n\n\n\n\n\ngdp_fc |&gt; \n  filter(.model == \"stlf\") |&gt; \n  autoplot(gdp)\n\n\n\n\n\n\n\nWe now estimate the forecast errors:\n\ngdp_fc |&gt; \n  accuracy(gdp) |&gt; \n  select(.model:.type, MAPE, RMSE, MAE, MASE) |&gt; \n  arrange(MAPE)",
+    "crumbs": [
+      "Modules",
+      "1. Forecasting models based on decomposition methods",
+      "1.4 The Forecasting Workflow"
+    ]
+  },
+  {
+    "objectID": "docs/modules/forecasting_workflow.html#forecasting-the-future",
+    "href": "docs/modules/forecasting_workflow.html#forecasting-the-future",
+    "title": "The Forecasting Workflow using fable\n",
+    "section": "\n1.8 Forecasting the future",
+    "text": "1.8 Forecasting the future\nWe now refit our model using the whole dataset. We will only model the STL decomposition model, because the other two didn’t get a strong fit.\n\ngdp_fit2 &lt;- gdp |&gt; \n  model(\n    stlf = decomposition_model(\n          STL(log(price) ~ season(window = \"periodic\"), robust = TRUE),\n          RW(season_adjust ~ drift())\n        )\n  )\ngdp_fit2\n\n\n  \n\n\n\n\ngdp_fc_fut &lt;- gdp_fit2 |&gt; \n  forecast(h = gdp_h_fc)\ngdp_fc_fut\n\n\n  \n\n\ngdp_fc_fut |&gt; \n  autoplot(gdp)\n\n\n\n\n\n\n\n\n# save(gdp_fc_fut, file = \"equipo1.RData\")",
+    "crumbs": [
+      "Modules",
+      "1. Forecasting models based on decomposition methods",
+      "1.4 The Forecasting Workflow"
+    ]
+  },
+  {
+    "objectID": "docs/modules/forecasting_workflow.html#footnotes",
+    "href": "docs/modules/forecasting_workflow.html#footnotes",
+    "title": "The Forecasting Workflow using fable\n",
+    "section": "Footnotes",
+    "text": "Footnotes\n\n\nThis will make it very convenient when calling your variables. RStudio will display all the options starting with gdp_. We will usually use the following suffixes:\n\n\n_train: training set\n\n_fit: the mable (table of models)\n\n_aug: the augmented table with fitted values and residuals\n\n_dcmp: for the dable (decomposition table), containing the components and the seasonally adjusted series of a TS decomposition.\n\n_fc or _fcst: for the fable (forecasts table) that has our forecasts. \n\n\n↩︎\n\n\nThe Mean Absolute Percentage Error is a percentage error metric widely used in professional environments.\nLet\n\ne_t = y_t - \\hat{y}_t\n\nbe the error or residual.\nThen the MAPE would be computed as\n\nMAPE = \\frac{1}{T}\\sum_{t=1}^T|\\frac{e_t}{y_t}|\n.\n\n\n\n\n↩︎",
+    "crumbs": [
+      "Modules",
+      "1. Forecasting models based on decomposition methods",
+      "1.4 The Forecasting Workflow"
     ]
   },
   {
@@ -853,331 +1116,99 @@
     "text": "Footnotes\n\n\n(i.e., a mable containing only one model and one time series.)\nIn practice, we restrict 0.8 \\leq \\phi \\leq 0.98 because the damping effect would be too great for smaller values than 0.8 and almost non distinguishable from a linear trend for greater values than 0.98.\ne.g., m=4 for quarterly data, m=12 for monthly data, …\nas the decomposition method\nfor the seasonally adjusted series\nfor the seasonal component"
   },
   {
-    "objectID": "docs/modules/forecasting_workflow.html#packages",
-    "href": "docs/modules/forecasting_workflow.html#packages",
-    "title": "The Forecasting Workflow using fable\n",
-    "section": "\n0.1 Packages",
-    "text": "0.1 Packages\nIt is recommended to load all the packages at the beginning of your file. We will be using the tidyverts ecosystem for the whole forecasting workflow.\n\nlibrary(tidyverse)\nlibrary(fpp3)\nlibrary(plotly)\n\n\n\n\n\n\n\nWarning\n\n\n\nDo not load unnecesary packages into your environment. It could lead to conflicts between functions and unwanted results.",
-    "crumbs": [
-      "Modules",
-      "1. Forecasting models based on decomposition methods",
-      "1.4 The Forecasting Workflow"
-    ]
-  },
-  {
-    "objectID": "docs/modules/forecasting_workflow.html#data",
-    "href": "docs/modules/forecasting_workflow.html#data",
-    "title": "The Forecasting Workflow using fable\n",
-    "section": "\n1.1 Data",
-    "text": "1.1 Data\nWe will work with the Real Gross Domestic Product (GDP) for Mexico. The data is downloaded from FRED. The time series id is NGDPRNSAXDCMXQ.\n\n1.1.1 Import data\n\ngdp &lt;- tidyquant::tq_get(\n  x    = \"NGDPRNSAXDCMXQ\",\n  get  = \"economic.data\",\n  from = \"1997-01-01\"\n)\n\ngdp\n\n# A tibble: 113 × 3\n   symbol         date          price\n   &lt;chr&gt;          &lt;date&gt;        &lt;dbl&gt;\n 1 NGDPRNSAXDCMXQ 1997-01-01 3702398.\n 2 NGDPRNSAXDCMXQ 1997-04-01 3896084.\n 3 NGDPRNSAXDCMXQ 1997-07-01 3906063 \n 4 NGDPRNSAXDCMXQ 1997-10-01 4038358.\n 5 NGDPRNSAXDCMXQ 1998-01-01 4084304.\n 6 NGDPRNSAXDCMXQ 1998-04-01 4134899.\n 7 NGDPRNSAXDCMXQ 1998-07-01 4138200.\n 8 NGDPRNSAXDCMXQ 1998-10-01 4146841.\n 9 NGDPRNSAXDCMXQ 1999-01-01 4176243.\n10 NGDPRNSAXDCMXQ 1999-04-01 4232280.\n# ℹ 103 more rows\n\n\n\n1.1.2 Wrangle data\nThere are some issues with our data:\n\nIt is loaded into a tibble object. We need to convert it to a tsibble.\n\n\n\n\n\n\n\nTip\n\n\n\n\n\nWe can use as_tsibble() to do so.\n\n\n\n\nOur data is quarterly, but it is loaded in a YYYY-MM-DD format. We need to change it to a YYYY QQ format.\n\n\n\n\n\n\n\nTip\n\n\n\n\n\nThere are some functions that help us achieve this, such as\n\nyearquarter()\nyearmonth()\nyearweek()\nyear()\n\ndepending on the time series’ period.\n\n\n\nWe will overwrite our data:\n\ngdp &lt;- gdp |&gt; \n  mutate(date = yearquarter(date)) |&gt; \n  as_tsibble(\n    index = date,\n    key   = symbol\n  )\n\ngdp\n\n\n  \n\n\n\n\n\n\n\n\n\nTip\n\n\n\n\n\n\nWe always need to specify the index argument, as it is our date variable.\nThe key argument is necessary whenever we have more than one time series in our data frame and is made up of one or more columns that uniquely identify each time series .",
-    "crumbs": [
-      "Modules",
-      "1. Forecasting models based on decomposition methods",
-      "1.4 The Forecasting Workflow"
-    ]
-  },
-  {
-    "objectID": "docs/modules/forecasting_workflow.html#traintest-split",
-    "href": "docs/modules/forecasting_workflow.html#traintest-split",
-    "title": "The Forecasting Workflow using fable\n",
-    "section": "\n1.2 Train/Test Split",
-    "text": "1.2 Train/Test Split\nWe will split our data in two sets: a training set, and a test set, in order to evaluate our forecasts’ accuracy.\n\ngdp_train &lt;- gdp |&gt; \n  filter_index(. ~ \"2021 Q4\")\n\ngdp_train\n\n\n  \n\n\n\n\n\n\n\n\n\nNote\n\n\n\nFor all our variables, it is strongly recommended to follow the same notation process, and write our code using snake_case. Here, we called our data gdp, therefore, all the following variables will be called starting with gdp_1, such as gdp_train for our training set.",
-    "crumbs": [
-      "Modules",
-      "1. Forecasting models based on decomposition methods",
-      "1.4 The Forecasting Workflow"
-    ]
-  },
-  {
-    "objectID": "docs/modules/forecasting_workflow.html#visualization-and-eda",
-    "href": "docs/modules/forecasting_workflow.html#visualization-and-eda",
-    "title": "The Forecasting Workflow using fable\n",
-    "section": "\n1.3 Visualization and EDA",
-    "text": "1.3 Visualization and EDA\nWhen performing time series analysis/forecasting, one of the first things to do is to create a time series plot.\n\np &lt;- gdp_train |&gt; \n  autoplot(price) +\n  labs(\n    title = \"Time series plot of the Real GDP for Mexico\",\n    y = \"GDP\"\n  )\n \nggplotly(p, dynamicTicks = TRUE) |&gt; \n  rangeslider()\n\n\n\n\n\n\n\n\n\n\n\nOur data exhibits an upward linear trend (with some economic cycles), and strong yearly seasonality.\n\n\n\nWe will explore it further with a season plot.\n\ngdp_train |&gt; \n  gg_season(price) |&gt; \n  ggplotly()\n\nWarning: `gg_season()` was deprecated in feasts 0.4.2.\nℹ Please use `ggtime::gg_season()` instead.\n\n\n\n\n\n\n\n1.3.1 TS Decomposition\n\ngdp_train |&gt; \n  model(stl = STL(price, robust = TRUE)) |&gt; \n  components() |&gt; \n  autoplot() |&gt; \n  ggplotly()\n\n\n\n\n\n\n\n\n\n\n\nThe STL decomposition shows that the variance of the seasonal component has been increasing. We could try using a log transformation to counter this.\n\n\n\n\ngdp_train |&gt; \n  autoplot(log(price)) +\n  ggtitle(\"Log of the Real GDP of Mexico\")\n\n\n\n\n\n\n\n\ngdp_train |&gt; \n  model(stl = STL(log(price) ~ season(window = \"periodic\"), robust = TRUE)) |&gt; \n  components() |&gt; \n  autoplot() |&gt; \n  ggplotly()",
-    "crumbs": [
-      "Modules",
-      "1. Forecasting models based on decomposition methods",
-      "1.4 The Forecasting Workflow"
-    ]
-  },
-  {
-    "objectID": "docs/modules/forecasting_workflow.html#model-specification",
-    "href": "docs/modules/forecasting_workflow.html#model-specification",
-    "title": "The Forecasting Workflow using fable\n",
-    "section": "\n1.4 Model Specification",
-    "text": "1.4 Model Specification\nWe will fit two models to our time series: Seasonal Naïve, and the Drift model. We will also use the log transformation.\n\ngdp_fit &lt;- gdp_train |&gt; \n  model(\n    snaive = SNAIVE(log(price)),\n    drift  = RW(log(price) ~ drift())\n  )\n\n\n\n\n\n\n\nTipBenchmark models\n\n\n\n\n\nWe have four different benchmark models that we’ll use to compare against the rest of the more complex models:\n\nMean (MEAN( &lt;.y&gt; ))\nNaïve (NAIVE( &lt;.y&gt; ))\nSeasonal Naïve (SNAIVE( &lt;.y&gt; ))\nDrift (RW( &lt;.y&gt; ~ drift()))\n\nwhere &lt;.y&gt; is just a placeholder for the variable to model.\nChoose wisely which of these to use in each case, according to the exploratory analysis performed.",
-    "crumbs": [
-      "Modules",
-      "1. Forecasting models based on decomposition methods",
-      "1.4 The Forecasting Workflow"
-    ]
-  },
-  {
-    "objectID": "docs/modules/forecasting_workflow.html#residuals-diagnostics",
-    "href": "docs/modules/forecasting_workflow.html#residuals-diagnostics",
-    "title": "The Forecasting Workflow using fable\n",
-    "section": "\n1.5 Residuals Diagnostics",
-    "text": "1.5 Residuals Diagnostics\n\n1.5.1 Visual analysis\n\ngdp_fit |&gt; \n  select(snaive) |&gt; \n  gg_tsresiduals() +\n  ggtitle(\"Residuals Diagnostics for the Seasonal Naïve Model\")\n\n\n\n\n\n\ngdp_fit |&gt; \n  select(drift) |&gt; \n  gg_tsresiduals() +\n  ggtitle(\"Residuals Diagnostics for the Drift Model\")\n\n\n\n\n\n\n\n\n\n\n\n\n\nTip\n\n\n\n\n\nHere we expect to see:\n\nA time series with no apparent patterns (no trend and/or seasonality), with a mean close to zero.\nIn the ACF, we’d expect no lags with significant autocorrelation.\nNormally distributed residuals.\n\n\n\n\n\n1.5.2 Portmanteau tests of autocorrelation\n\ngdp_fit |&gt; \n  augment() |&gt; \n  features(.innov, ljung_box, lag = 24, dof = 0)\n\n\n  \n\n\n\n\n\n\n\n\n\nCautionResiduals interpretation\n\n\n\nBoth models produce sub optimal residuals:\n\nThe SNAIVE correctly detects the seasonality, however, its residuals are still autocorrelated. Moreover, the residuals are not normally distributed.\nThe drift model doesn’t account for the seasonality, and their distribution is a little bit skewed.\n\nHence, we will perform our forecasts using the bootstrapping method.\n\n\nWe can compute some error metrics on the training set using the accuracy() function:\n\ngdp_train_accu &lt;- accuracy(gdp_fit) |&gt; \n  arrange(MAPE)\ngdp_train_accu |&gt; \n  select(symbol:.type, MAPE, RMSE, MAE, MASE)\n\n\n  \n\n\n\n\n\n\n\n\n\nTipThe accuracy() function\n\n\n\n\n\nThe accuracy() function can be used to compute error metrics in the training data, or in the test set. What differs is the data that is given to it:\n\nFor the training metrics, you need to use the mable (the table of models, that we usually store in _fit).\nFor the forecasting error metrics, we need the fable (the forecasts table, usually stored as _fc or _fcst), and the complete set of data (both the training and test set together).\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nFor this analysis, we are focusing on the MAPE2 metric. The drift model (2.47%) seems to have a better fit with the training set than the snaive model (3.24%).",
-    "crumbs": [
-      "Modules",
-      "1. Forecasting models based on decomposition methods",
-      "1.4 The Forecasting Workflow"
-    ]
-  },
-  {
-    "objectID": "docs/modules/forecasting_workflow.html#modeling-using-decomposition",
-    "href": "docs/modules/forecasting_workflow.html#modeling-using-decomposition",
-    "title": "The Forecasting Workflow using fable\n",
-    "section": "\n1.6 Modeling using decomposition",
-    "text": "1.6 Modeling using decomposition\nWe will perform a forecast using decomposition, to see if we can improve our results so far.\n\ngdp_fit_dcmp &lt;- gdp_train |&gt; \n      model(\n        stlf = decomposition_model(\n          STL(log(price) ~ season(window = \"periodic\"), robust = TRUE),\n          RW(season_adjust ~ drift())\n        )\n      )\n\ngdp_fit_dcmp\n\n\n  \n\n\n\n\n\n\n\n\n\nNoteNote on decomposition_model()\n\n\n\n\n\nRemember, when using decomposition models, we need to do the following:\n\nSpecify what type of decomposition we want to use and customize it as needed.\nFit a model for the seasonally adjusted data; season_adjust.\nFit a model for the seasonal component. R uses a SNAIVE() model by default to model the seasonality. If you wish to model it using a different model, you have specify it.\n\n\nThe name of the seasonal component depends on the type of seasonality present in the time series. If it has a yearly seasonality, the component is called season_year. It could also be called season_week, season_day, and so on.\n\n\n\n\nWe can join this new model with the models we trained before. This way we can have them all in the same mable.\n\ngdp_fit &lt;- gdp_fit |&gt; \n  left_join(gdp_fit_dcmp)\n\nJoining with `by = join_by(symbol)`\n\n\n\n1.6.1 Residuals diagnostics\n\ngdp_fit |&gt; \n  accuracy() |&gt; \n  select(symbol:.type, MAPE, RMSE, MAE, MASE) |&gt; \n  arrange(MAPE)\n\n\n  \n\n\n\n\ngdp_fit |&gt; \n  select(stlf) |&gt; \n  gg_tsresiduals()\n\n\n\n\n\n\n\n\ngdp_fit |&gt; \n  augment() |&gt; \n  features(.innov, ljung_box)\n\n\n  \n\n\n\n\n\n\n\n\n\nThe MAPE seems to improve with this decomposition model. Also, the residual diagnostics do not show any seasonality present in them. However, the residuals are still autocorrelated, as the Ljung-Box test suggests.",
-    "crumbs": [
-      "Modules",
-      "1. Forecasting models based on decomposition methods",
-      "1.4 The Forecasting Workflow"
-    ]
-  },
-  {
-    "objectID": "docs/modules/forecasting_workflow.html#forecasting-on-the-test-set",
-    "href": "docs/modules/forecasting_workflow.html#forecasting-on-the-test-set",
-    "title": "The Forecasting Workflow using fable\n",
-    "section": "\n1.7 Forecasting on the test set",
-    "text": "1.7 Forecasting on the test set\nOnce we have our models, we can produce forecasts. We will forecast our test data and check our forecasts’ performance.\n\ngdp_fc &lt;- gdp_fit |&gt; \n  forecast(h = gdp_h_fc) \n\ngdp_fc\n\n\n  \n\n\n\n\ngdp_fc |&gt; \n  autoplot(gdp) +\n  facet_wrap(~.model, ncol = 1)\n\n\n\n\n\n\ngdp_fc |&gt; \n  filter(.model == \"stlf\") |&gt; \n  autoplot(gdp)\n\n\n\n\n\n\n\nWe now estimate the forecast errors:\n\ngdp_fc |&gt; \n  accuracy(gdp) |&gt; \n  select(.model:.type, MAPE, RMSE, MAE, MASE) |&gt; \n  arrange(MAPE)",
-    "crumbs": [
-      "Modules",
-      "1. Forecasting models based on decomposition methods",
-      "1.4 The Forecasting Workflow"
-    ]
-  },
-  {
-    "objectID": "docs/modules/forecasting_workflow.html#forecasting-the-future",
-    "href": "docs/modules/forecasting_workflow.html#forecasting-the-future",
-    "title": "The Forecasting Workflow using fable\n",
-    "section": "\n1.8 Forecasting the future",
-    "text": "1.8 Forecasting the future\nWe now refit our model using the whole dataset. We will only model the STL decomposition model, because the other two didn’t get a strong fit.\n\ngdp_fit2 &lt;- gdp |&gt; \n  model(\n    stlf = decomposition_model(\n          STL(log(price) ~ season(window = \"periodic\"), robust = TRUE),\n          RW(season_adjust ~ drift())\n        )\n  )\ngdp_fit2\n\n\n  \n\n\n\n\ngdp_fc_fut &lt;- gdp_fit2 |&gt; \n  forecast(h = gdp_h_fc)\ngdp_fc_fut\n\n\n  \n\n\ngdp_fc_fut |&gt; \n  autoplot(gdp)\n\n\n\n\n\n\n\n\n# save(gdp_fc_fut, file = \"equipo1.RData\")",
-    "crumbs": [
-      "Modules",
-      "1. Forecasting models based on decomposition methods",
-      "1.4 The Forecasting Workflow"
-    ]
-  },
-  {
-    "objectID": "docs/modules/forecasting_workflow.html#footnotes",
-    "href": "docs/modules/forecasting_workflow.html#footnotes",
-    "title": "The Forecasting Workflow using fable\n",
-    "section": "Footnotes",
-    "text": "Footnotes\n\n\nThis will make it very convenient when calling your variables. RStudio will display all the options starting with gdp_. We will usually use the following suffixes:\n\n\n_train: training set\n\n_fit: the mable (table of models)\n\n_aug: the augmented table with fitted values and residuals\n\n_dcmp: for the dable (decomposition table), containing the components and the seasonally adjusted series of a TS decomposition.\n\n_fc or _fcst: for the fable (forecasts table) that has our forecasts. \n\n\n↩︎\n\n\nThe Mean Absolute Percentage Error is a percentage error metric widely used in professional environments.\nLet\n\ne_t = y_t - \\hat{y}_t\n\nbe the error or residual.\nThen the MAPE would be computed as\n\nMAPE = \\frac{1}{T}\\sum_{t=1}^T|\\frac{e_t}{y_t}|\n.\n\n\n\n\n↩︎",
-    "crumbs": [
-      "Modules",
-      "1. Forecasting models based on decomposition methods",
-      "1.4 The Forecasting Workflow"
-    ]
-  },
-  {
-    "objectID": "docs/modules/forecasting_wf_pres.html#packages",
-    "href": "docs/modules/forecasting_wf_pres.html#packages",
-    "title": "The Forecasting Workflow using fable\n",
-    "section": "Packages",
-    "text": "Packages\nIt is recommended to load all the packages at the beginning of your file. We will be using the tidyverts ecosystem for the whole forecasting workflow.\n\nlibrary(tidyverse)\nlibrary(fpp3)\nlibrary(plotly)\n\n\n\n\n\n\n\nWarning\n\n\nDo not load unnecesary packages into your environment. It could lead to conflicts between functions and unwanted results."
-  },
-  {
-    "objectID": "docs/modules/forecasting_wf_pres.html#data",
-    "href": "docs/modules/forecasting_wf_pres.html#data",
-    "title": "The Forecasting Workflow using fable\n",
-    "section": "Data",
-    "text": "Data\nWe will work with the Real Gross Domestic Product (GDP) for Mexico. The data is downloaded from FRED. The time series id is NGDPRNSAXDCMXQ.\nImport data\n\ngdp &lt;- tidyquant::tq_get(\n  x    = \"NGDPRNSAXDCMXQ\",\n  get  = \"economic.data\",\n  from = \"1997-01-01\"\n)\n\ngdp\n\n# A tibble: 113 × 3\n   symbol         date          price\n   &lt;chr&gt;          &lt;date&gt;        &lt;dbl&gt;\n 1 NGDPRNSAXDCMXQ 1997-01-01 3702398.\n 2 NGDPRNSAXDCMXQ 1997-04-01 3896084.\n 3 NGDPRNSAXDCMXQ 1997-07-01 3906063 \n 4 NGDPRNSAXDCMXQ 1997-10-01 4038358.\n 5 NGDPRNSAXDCMXQ 1998-01-01 4084304.\n 6 NGDPRNSAXDCMXQ 1998-04-01 4134899.\n 7 NGDPRNSAXDCMXQ 1998-07-01 4138200.\n 8 NGDPRNSAXDCMXQ 1998-10-01 4146841.\n 9 NGDPRNSAXDCMXQ 1999-01-01 4176243.\n10 NGDPRNSAXDCMXQ 1999-04-01 4232280.\n# ℹ 103 more rows\n\n\nWrangle data\nThere are some issues with our data:\n\nIt is loaded into a tibble object. We need to convert it to a tsibble.\n\n\n\n\n\n\n\nTip\n\n\nWe can use as_tsibble() to do so.\n\n\n\n\nOur data is quarterly, but it is loaded in a YYYY-MM-DD format. We need to change it to a YYYY QQ format.\n\n\n\n\n\n\n\nTip\n\n\nThere are some functions that help us achieve this, such as\n\nyearquarter()\nyearmonth()\nyearweek()\nyear()\n\ndepending on the time series’ period.\n\n\n\nWe will overwrite our data:\n\ngdp &lt;- gdp |&gt; \n  mutate(date = yearquarter(date)) |&gt; \n  as_tsibble(\n    index = date,\n    key   = symbol\n  )\n\ngdp\n\n\n  \n\n\n\n\n\n\n\n\n\nTip\n\n\n\nWe always need to specify the index argument, as it is our date variable.\nThe key argument is necessary whenever we have more than one time series in our data frame and is made up of one or more columns that uniquely identify each time series ."
-  },
-  {
-    "objectID": "docs/modules/forecasting_wf_pres.html#traintest-split",
-    "href": "docs/modules/forecasting_wf_pres.html#traintest-split",
-    "title": "The Forecasting Workflow using fable\n",
-    "section": "Train/Test Split",
-    "text": "Train/Test Split\nWe will split our data in two sets: a training set, and a test set, in order to evaluate our forecasts’ accuracy.\n\ngdp_train &lt;- gdp |&gt; \n  filter_index(. ~ \"2021 Q4\")\n\ngdp_train\n\n\n  \n\n\n\n\n\n\n\n\n\nNote\n\n\nFor all our variables, it is strongly recommended to follow the same notation process, and write our code using snake_case. Here, we called our data gdp, therefore, all the following variables will be called starting with gdp_1, such as gdp_train for our training set."
-  },
-  {
-    "objectID": "docs/modules/forecasting_wf_pres.html#visualization-and-eda",
-    "href": "docs/modules/forecasting_wf_pres.html#visualization-and-eda",
-    "title": "The Forecasting Workflow using fable\n",
-    "section": "Visualization and EDA",
-    "text": "Visualization and EDA\nWhen performing time series analysis/forecasting, one of the first things to do is to create a time series plot.\n\np &lt;- gdp_train |&gt; \n  autoplot(price) +\n  labs(\n    title = \"Time series plot of the Real GDP for Mexico\",\n    y = \"GDP\"\n  )\n \nggplotly(p, dynamicTicks = TRUE) |&gt; \n  rangeslider()\n\n\n\n\n\n\n\n\nOur data exhibits an upward linear trend (with some economic cycles), and strong yearly seasonality.\n\n\n\nWe will explore it further with a season plot.\n\ngdp_train |&gt; \n  gg_season(price) |&gt; \n  ggplotly()\n\n\n\n\n\nTS Decomposition\n\ngdp_train |&gt; \n  model(stl = STL(price, robust = TRUE)) |&gt; \n  components() |&gt; \n  autoplot() |&gt; \n  ggplotly()\n\n\n\n\n\n\n\n\nThe STL decomposition shows that the variance of the seasonal component has been increasing. We could try using a log transformation to counter this.\n\n\n\n\ngdp_train |&gt; \n  autoplot(log(price)) +\n  ggtitle(\"Log of the Real GDP of Mexico\")\n\n\n\n\n\n\n\n\ngdp_train |&gt; \n  model(stl = STL(log(price) ~ season(window = \"periodic\"), robust = TRUE)) |&gt; \n  components() |&gt; \n  autoplot() |&gt; \n  ggplotly()"
-  },
-  {
-    "objectID": "docs/modules/forecasting_wf_pres.html#model-specification",
-    "href": "docs/modules/forecasting_wf_pres.html#model-specification",
-    "title": "The Forecasting Workflow using fable\n",
-    "section": "Model Specification",
-    "text": "Model Specification\nWe will fit two models to our time series: Seasonal Naïve, and the Drift model. We will also use the log transformation.\n\ngdp_fit &lt;- gdp_train |&gt; \n  model(\n    snaive = SNAIVE(log(price)),\n    drift  = RW(log(price) ~ drift())\n  )\n\n\n\n\n\n\n\nBenchmark models\n\n\nWe have four different benchmark models that we’ll use to compare against the rest of the more complex models:\n\nMean (MEAN( &lt;.y&gt; ))\nNaïve (NAIVE( &lt;.y&gt; ))\nSeasonal Naïve (SNAIVE( &lt;.y&gt; ))\nDrift (RW( &lt;.y&gt; ~ drift()))\n\nwhere &lt;.y&gt; is just a placeholder for the variable to model.\nChoose wisely which of these to use in each case, according to the exploratory analysis performed."
-  },
-  {
-    "objectID": "docs/modules/forecasting_wf_pres.html#residuals-diagnostics",
-    "href": "docs/modules/forecasting_wf_pres.html#residuals-diagnostics",
-    "title": "The Forecasting Workflow using fable\n",
-    "section": "Residuals Diagnostics",
-    "text": "Residuals Diagnostics\nVisual analysis\n\ngdp_fit |&gt; \n  select(snaive) |&gt; \n  gg_tsresiduals() +\n  ggtitle(\"Residuals Diagnostics for the Seasonal Naïve Model\")\n\n\n\n\n\n\ngdp_fit |&gt; \n  select(drift) |&gt; \n  gg_tsresiduals() +\n  ggtitle(\"Residuals Diagnostics for the Drift Model\")\n\n\n\n\n\n\n\n\n\n\n\n\n\nTip\n\n\nHere we expect to see:\n\nA time series with no apparent patterns (no trend and/or seasonality), with a mean close to zero.\nIn the ACF, we’d expect no lags with significant autocorrelation.\nNormally distributed residuals.\n\n\n\n\nPortmanteau tests of autocorrelation\n\ngdp_fit |&gt; \n  augment() |&gt; \n  features(.innov, ljung_box, lag = 24, dof = 0)\n\n\n  \n\n\n\n\n\n\n\n\n\nResiduals interpretation\n\n\nBoth models produce sub optimal residuals:\n\nThe SNAIVE correctly detects the seasonality, however, its residuals are still autocorrelated. Moreover, the residuals are not normally distributed.\nThe drift model doesn’t account for the seasonality, and their distribution is a little bit skewed.\n\nHence, we will perform our forecasts using the bootstrapping method.\n\n\n\nWe can compute some error metrics on the training set using the accuracy() function:\n\ngdp_train_accu &lt;- accuracy(gdp_fit) |&gt; \n  arrange(MAPE)\ngdp_train_accu |&gt; \n  select(symbol:.type, MAPE, RMSE, MAE, MASE)\n\n\n  \n\n\n\n\n\n\n\n\n\nThe accuracy() function\n\n\nThe accuracy() function can be used to compute error metrics in the training data, or in the test set. What differs is the data that is given to it:\n\nFor the training metrics, you need to use the mable (the table of models, that we usually store in _fit).\nFor the forecasting error metrics, we need the fable (the forecasts table, usually stored as _fc or _fcst), and the complete set of data (both the training and test set together).\n\n\n\n\n\n\n\n\n\n\n\nFor this analysis, we are focusing on the MAPE2 metric. The drift model (2.47%) seems to have a better fit with the training set than the snaive model (3.24%)."
-  },
-  {
-    "objectID": "docs/modules/forecasting_wf_pres.html#modeling-using-decomposition",
-    "href": "docs/modules/forecasting_wf_pres.html#modeling-using-decomposition",
-    "title": "The Forecasting Workflow using fable\n",
-    "section": "Modeling using decomposition",
-    "text": "Modeling using decomposition\nWe will perform a forecast using decomposition, to see if we can improve our results so far.\n\ngdp_fit_dcmp &lt;- gdp_train |&gt; \n      model(\n        stlf = decomposition_model(\n          STL(log(price) ~ season(window = \"periodic\"), robust = TRUE),\n          RW(season_adjust ~ drift())\n        )\n      )\n\ngdp_fit_dcmp\n\n\n  \n\n\n\n\n\n\n\n\n\nNote on decomposition_model()\n\n\nRemember, when using decomposition models, we need to do the following:\n\nSpecify what type of decomposition we want to use and customize it as needed.\nFit a model for the seasonally adjusted data; season_adjust.\nFit a model for the seasonal component. R uses a SNAIVE() model by default to model the seasonality. If you wish to model it using a different model, you have specify it.\n\n\nThe name of the seasonal component depends on the type of seasonality present in the time series. If it has a yearly seasonality, the component is called season_year. It could also be called season_week, season_day, and so on.\n\n\n\n\nWe can join this new model with the models we trained before. This way we can have them all in the same mable.\n\ngdp_fit &lt;- gdp_fit |&gt; \n  left_join(gdp_fit_dcmp)\n\nResiduals diagnostics\n\ngdp_fit |&gt; \n  accuracy() |&gt; \n  select(symbol:.type, MAPE, RMSE, MAE, MASE) |&gt; \n  arrange(MAPE)\n\n\n  \n\n\n\n\ngdp_fit |&gt; \n  select(stlf) |&gt; \n  gg_tsresiduals()\n\n\n\n\n\n\n\n\ngdp_fit |&gt; \n  augment() |&gt; \n  features(.innov, ljung_box)\n\n\n  \n\n\n\n\n\n\nThe MAPE seems to improve with this decomposition model. Also, the residual diagnostics do not show any seasonality present in them. However, the residuals are still autocorrelated, as the Ljung-Box test suggests."
-  },
-  {
-    "objectID": "docs/modules/forecasting_wf_pres.html#forecasting-on-the-test-set",
-    "href": "docs/modules/forecasting_wf_pres.html#forecasting-on-the-test-set",
-    "title": "The Forecasting Workflow using fable\n",
-    "section": "Forecasting on the test set",
-    "text": "Forecasting on the test set\nOnce we have our models, we can produce forecasts. We will forecast our test data and check our forecasts’ performance.\n\ngdp_fc &lt;- gdp_fit |&gt; \n  forecast(h = gdp_h_fc) \n\ngdp_fc\n\n\n  \n\n\n\n\ngdp_fc |&gt; \n  autoplot(gdp) +\n  facet_wrap(~.model, ncol = 1)\n\n\n\n\n\n\ngdp_fc |&gt; \n  filter(.model == \"stlf\") |&gt; \n  autoplot(gdp)\n\n\n\n\n\n\n\nWe now estimate the forecast errors:\n\ngdp_fc |&gt; \n  accuracy(gdp) |&gt; \n  select(.model:.type, MAPE, RMSE, MAE, MASE) |&gt; \n  arrange(MAPE)"
-  },
-  {
-    "objectID": "docs/modules/forecasting_wf_pres.html#forecasting-the-future",
-    "href": "docs/modules/forecasting_wf_pres.html#forecasting-the-future",
-    "title": "The Forecasting Workflow using fable\n",
-    "section": "Forecasting the future",
-    "text": "Forecasting the future\nWe now refit our model using the whole dataset. We will only model the STL decomposition model, because the other two didn’t get a strong fit.\n\ngdp_fit2 &lt;- gdp |&gt; \n  model(\n    stlf = decomposition_model(\n          STL(log(price) ~ season(window = \"periodic\"), robust = TRUE),\n          RW(season_adjust ~ drift())\n        )\n  )\ngdp_fit2\n\n\n  \n\n\n\n\ngdp_fc_fut &lt;- gdp_fit2 |&gt; \n  forecast(h = gdp_h_fc)\ngdp_fc_fut\n\n\n  \n\n\ngdp_fc_fut |&gt; \n  autoplot(gdp)\n\n\n\n\n\n\n\n\n# save(gdp_fc_fut, file = \"equipo1.RData\")"
-  },
-  {
-    "objectID": "docs/modules/forecasting_wf_pres.html#footnotes",
-    "href": "docs/modules/forecasting_wf_pres.html#footnotes",
-    "title": "The Forecasting Workflow using fable\n",
-    "section": "Footnotes",
-    "text": "Footnotes\n\n\nThis will make it very convenient when calling your variables. RStudio will display all the options starting with gdp_. We will usually use the following suffixes:\n\n\n_train: training set\n\n_fit: the mable (table of models)\n\n_aug: the augmented table with fitted values and residuals\n\n_dcmp: for the dable (decomposition table), containing the components and the seasonally adjusted series of a TS decomposition.\n\n_fc or _fcst: for the fable (forecasts table) that has our forecasts. \n\n\n\n\n\nThe Mean Absolute Percentage Error is a percentage error metric widely used in professional environments.\nLet\n\ne_t = y_t - \\hat{y}_t\n\nbe the error or residual.\nThen the MAPE would be computed as\n\nMAPE = \\frac{1}{T}\\sum_{t=1}^T|\\frac{e_t}{y_t}|\n."
-  },
-  {
-    "objectID": "docs/more/dummy_file.html",
-    "href": "docs/more/dummy_file.html",
-    "title": "presentation_dummy",
+    "objectID": "docs/modules/module_2/01_ets/ets.html",
+    "href": "docs/modules/module_2/01_ets/ets.html",
+    "title": "Exponential smoothing",
     "section": "",
-    "text": "Just as a tutorial\n```{r}\n1 + 1\n```"
-  },
-  {
-    "objectID": "docs/more/dummy_file.html#first-slide",
-    "href": "docs/more/dummy_file.html#first-slide",
-    "title": "presentation_dummy",
-    "section": "",
-    "text": "Just as a tutorial\n```{r}\n1 + 1\n```"
-  },
-  {
-    "objectID": "docs/more/dummy_file.html#code-with-annotations",
-    "href": "docs/more/dummy_file.html#code-with-annotations",
-    "title": "presentation_dummy",
-    "section": "2 Code with annotations",
-    "text": "2 Code with annotations\n\n1library(tidyverse)\n2library(fpp3)\n\n3aus_production |&gt;\n  autoplot(Beer)\n\n\n1\n\nMeta-package for data-science analysis\n\n2\n\nMeta-package for time series forecasting\n\n3\n\nTime plot of Beer production"
-  },
-  {
-    "objectID": "docs/more/dummy_pres.html#first-slide",
-    "href": "docs/more/dummy_pres.html#first-slide",
-    "title": "presentation_dummy",
-    "section": "First slide",
-    "text": "First slide\nJust as a tutorial\n```{r}\n1 + 1\n```"
-  },
-  {
-    "objectID": "docs/more/dummy_pres.html#code-with-annotations",
-    "href": "docs/more/dummy_pres.html#code-with-annotations",
-    "title": "presentation_dummy",
-    "section": "Code with annotations",
-    "text": "Code with annotations\n\n1library(tidyverse)\n2library(fpp3)\n\n3aus_production |&gt;\n  autoplot(Beer)\n\n\n1\n\nMeta-package for data-science analysis\n\n2\n\nMeta-package for time series forecasting\n\n3\n\nTime plot of Beer production"
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Time Series Forecasting",
-    "section": "",
-    "text": "Welcome to the Time Series Forecasting course at ITESO. Here you will find all the materials and resources needed for the course.\nIn the Modules section, you will find all the theory and practical examples to help you understand the concepts of time series forecasting. In each document you will find attached the presentations as seen in class.\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "docs/more/ets_pres.html#h2-header",
-    "href": "docs/more/ets_pres.html#h2-header",
-    "title": "Exponential Smoothing",
-    "section": "H2 header",
-    "text": "H2 header\nthere and back again."
-  },
-  {
-    "objectID": "docs/more/ets_pres.html#code-animation",
-    "href": "docs/more/ets_pres.html#code-animation",
-    "title": "Exponential Smoothing",
-    "section": "Code animation",
-    "text": "Code animation"
-  },
-  {
-    "objectID": "docs/more/ets_pres.html#section",
-    "href": "docs/more/ets_pres.html#section",
-    "title": "Exponential Smoothing",
-    "section": "",
-    "text": "# Fill in the spot we created for a plot\noutput$phonePlot &lt;- renderPlot({\n  # Render a barplot\n})"
-  },
-  {
-    "objectID": "docs/more/ets_pres.html#section-1",
-    "href": "docs/more/ets_pres.html#section-1",
-    "title": "Exponential Smoothing",
-    "section": "",
-    "text": "# Fill in the spot we created for a plot\noutput$phonePlot &lt;- renderPlot({\n  # Render a barplot\n  barplot(WorldPhones[,input$region]*1000, \n          main=input$region,\n          ylab=\"Number of Telephones\",\n          xlab=\"Year\")\n})"
-  },
-  {
-    "objectID": "docs/more/ets.html#h2-header",
-    "href": "docs/more/ets.html#h2-header",
-    "title": "Exponential Smoothing",
-    "section": "1.1 H2 header",
-    "text": "1.1 H2 header\nthere and back again."
-  },
-  {
-    "objectID": "docs/more/ets.html#code-animation",
-    "href": "docs/more/ets.html#code-animation",
-    "title": "Exponential Smoothing",
-    "section": "1.2 Code animation",
-    "text": "1.2 Code animation"
-  },
-  {
-    "objectID": "docs/more/ets.html#section",
-    "href": "docs/more/ets.html#section",
-    "title": "Exponential Smoothing",
-    "section": "1.3 ",
-    "text": "1.3 \n# Fill in the spot we created for a plot\noutput$phonePlot &lt;- renderPlot({\n  # Render a barplot\n})"
-  },
-  {
-    "objectID": "docs/more/ets.html#section-1",
-    "href": "docs/more/ets.html#section-1",
-    "title": "Exponential Smoothing",
-    "section": "1.4 ",
-    "text": "1.4 \n# Fill in the spot we created for a plot\noutput$phonePlot &lt;- renderPlot({\n  # Render a barplot\n  barplot(WorldPhones[,input$region]*1000, \n          main=input$region,\n          ylab=\"Number of Telephones\",\n          xlab=\"Year\")\n})"
-  },
-  {
-    "objectID": "docs/about.html",
-    "href": "docs/about.html",
-    "title": "About",
-    "section": "",
-    "text": "Back to top"
-  },
-  {
-    "objectID": "docs/modules/module_2/02_stationarity/stationarity_pres.html#section",
-    "href": "docs/modules/module_2/02_stationarity/stationarity_pres.html#section",
-    "title": "Identifying Stationarity",
-    "section": "",
-    "text": "A time series is said to be stationary if its statistical properties (mean and variance) are constant over time.\n\n\nStationarity is important because many time series forecasting methods assume that the underlying data is stationary.\nNon-stationary data can lead to inaccurate forecasts and misleading interpretations.\n\nThere are two main types of stationarity:\n\n\nStrict Stationarity: The joint distribution of any set of observations is the same regardless of the time at which they are observed.\n\nWeak Stationarity: The mean, variance, and autocovariance of the series are constant over time.\n\n\nIn practice, we often focus on weak stationarity because it is easier to test and work with."
-  },
-  {
-    "objectID": "docs/modules/module_2/02_stationarity/stationarity_pres.html#section-1",
-    "href": "docs/modules/module_2/02_stationarity/stationarity_pres.html#section-1",
-    "title": "Identifying Stationarity",
-    "section": "",
-    "text": "A time series with an upward trend.\n\n\n\n\n\nA time series with a downward trend."
-  },
-  {
-    "objectID": "docs/modules/module_2/02_stationarity/stationarity_pres.html#section-2",
-    "href": "docs/modules/module_2/02_stationarity/stationarity_pres.html#section-2",
-    "title": "Identifying Stationarity",
-    "section": "",
-    "text": "A time series with yearly seasonality.\n\n\n\n\n\nA time series with yearly seasonality and a shifting trend."
-  },
-  {
-    "objectID": "docs/modules/module_2/02_stationarity/stationarity.html",
-    "href": "docs/modules/module_2/02_stationarity/stationarity.html",
-    "title": "Identifying Stationarity",
-    "section": "",
-    "text": "A time series is said to be stationary if its statistical properties (mean and variance) are constant over time.\n\n\n\nStationarity is important because many time series forecasting methods assume that the underlying data is stationary.\nNon-stationary data can lead to inaccurate forecasts and misleading interpretations.\n\n\n\nThere are two main types of stationarity:\n\n\nStrict Stationarity: The joint distribution of any set of observations is the same regardless of the time at which they are observed.\n\nWeak Stationarity: The mean, variance, and autocovariance of the series are constant over time.\n\n\nIn practice, we often focus on weak stationarity because it is easier to test and work with.\n\n\n\n\n Back to top",
+    "text": "Exponential smoothing methods are still relatively simple: they’re simply weighted averages from historical data.\n\nHowever, these forecasting methods are widely used in practice, and they can be very effective.\n\nThe exponential smoothing method is a compromise between the mean and naïve methods. It uses all historical data, but it assigns exponentially decreasing weights to older observations.\n\nIn the mean method, all observations are weighted equally (all have the same importance), while in the naïve method, only the most recent observation is used for forecasting. (we ignore all previous observations).\n\nThe smoothing parameter \\alpha controls the rate of decrease:\n\nwhen \\alpha is close to 1, the method behaves like the naïve method, giving more weight to recent observations;\nwhen \\alpha is close to 0, it behaves like the mean method, giving more equal weight to all observations.\n\\hat{y}_{T+1 | T}= \\alpha y_{T} + \\alpha(1-\\alpha) y_{T-1} + \\alpha(1-\\alpha)^{2} y_{T-2}  + \\ldots\nwhere 0\\leq \\alpha \\leq1 is the smoothing parameter.",
     "crumbs": [
       "Modules",
       "2. Adding ETS and ARIMA filters",
-      "2.2 Identifying Stationarity"
+      "2.1 Exponential Smoothing"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_2/01_ets/ets.html#simple-exponential-smoothing-ses",
+    "href": "docs/modules/module_2/01_ets/ets.html#simple-exponential-smoothing-ses",
+    "title": "Exponential smoothing",
+    "section": "1.1 Simple exponential smoothing (SES)",
+    "text": "1.1 Simple exponential smoothing (SES)\n\n\\begin{aligned}\n\\text{Forecast equation} \\quad & \\hat{y}_{t+h|t} = \\ell_t \\\\\n\\text{Smoothing equation} \\quad & \\ell_t = \\alpha y_t + (1-\\alpha)\\ell_{t-1}\n\\end{aligned}\n\nwhere \\ell_t is the level at time t.\n\n\n\n\n\n\nSES has a flat forecast function, so it is appropriate for data with no trend or seasonal pattern.\n\n\n\n\n1.1.0.1 Example: Forecasting Algeria’s exports\n\nalgeria_economy &lt;- global_economy |&gt;\n  filter(Country == \"Algeria\")\n  \nalgeria_economy |&gt; \n  autoplot(Exports)\n\n\n\n\n\n\n\n\n\nalg_fit &lt;- algeria_economy |&gt;\n  model(\n1    SES = ETS(Exports ~ error(\"A\") + trend(\"N\") + season(\"N\")),\n    Naive = NAIVE(Exports)\n  )\n\nalg_fc &lt;- alg_fit |&gt;\n  forecast(h = 5)\n\n\n1\n\nWe specify trend(\"N\") and season(\"N\") to indicate that we want a simple exponential smoothing (SES) model, which assumes no trend and no seasonality. The model will estimate the smoothing parameter \\alpha automatically.\n\n\n\n\n\n\n\n\n\n\nTipBenchmark methods for SES\n\n\n\nThe mean and naïve methods are typically the best fit as benchmark methods when using SES.\n\n\n\n\n\n\n\n\nNoteObtaining the report() of a model\n\n\n\n\n\n\nalg_fit |&gt; \n  select(SES) |&gt; \n1  report()\n\n\n1\n\nThe report() function allows us to see a model’s report (the time series modeled, the model used, the estimated parameters, and more). It needs a 1 \\times 1 dimension mable1.\n\n\n\n\nSeries: Exports \nModel: ETS(A,N,N) \n  Smoothing parameters:\n    alpha = 0.8399875 \n\n  Initial states:\n   l[0]\n 39.539\n\n  sigma^2:  35.6301\n\n     AIC     AICc      BIC \n446.7154 447.1599 452.8968 \n\n\n\n\n\n\n\n\n\n\n\n\n\n\nComparing the SES and Naive forecasts:",
+    "crumbs": [
+      "Modules",
+      "2. Adding ETS and ARIMA filters",
+      "2.1 Exponential Smoothing"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_2/01_ets/ets.html#methods-with-trend-1",
+    "href": "docs/modules/module_2/01_ets/ets.html#methods-with-trend-1",
+    "title": "Exponential smoothing",
+    "section": "1.2 Methods with trend",
+    "text": "1.2 Methods with trend\n\n1.2.1 Holt’s linear trend\n\nWe can extend SES models to allow our forecasts to include trend in the data. We need to add a new smoothing parameter \\beta^*, and its corresponding smoothing equation:\n\n\n\\begin{aligned}\n\\text{Forecast equation} \\quad & \\hat{y}_{t+h|t} = \\ell_t + hb_t \\\\\n\\text{Level equation} \\quad & \\ell_t = \\alpha y_t + (1-\\alpha)\\ell_{t-1}\\\\\n\\text{Trend equation} \\quad & b_t = \\beta^*(\\ell_t - \\ell_{t-1}) + (1-\\beta^*)b_{t-1}\n\\end{aligned}\n\nwhere b_t is the growth (or slope) at time t.\n\n\n\n\n\n\nTipWhen to use Holt’s linear trend method\n\n\n\n\n\n\nHolt’s linear trend method is appropriate for data with a linear trend but no seasonal pattern.\nThe proper benchmark method to compare against is the drift method.\n\n\n\n\n\nLet’s see an example using Holt’s linear trend method to forecast Brazil’s population.\n\n\n1.2.1.1 Example: Forecasting Brazil’s population\n\nbra_economy &lt;- global_economy |&gt; \n  filter(Code == \"BRA\") |&gt; \n  mutate(Pop = Population / 1e6)\n\nbra_economy |&gt; \n  autoplot(Pop)\n\n\n\n\n\n\n\n\n\nbra_fit &lt;- bra_economy |&gt; \n  model(\n1    Holt  = ETS(Pop ~ error(\"A\") + trend(\"A\") + season(\"N\")),\n    Drift = RW(Pop ~ drift())\n  )\n\nbra_fit |&gt;  \n  select(Holt) |&gt;  \n  report()\n\nbra_fc &lt;- bra_fit |&gt;  \n  forecast(h = 15)\n\nbra_fc |&gt; \n  autoplot(bra_economy, level = NULL) +\n  labs(title = \"Brazilian population\",\n       y = \"Millions\") +\n  guides(colour = guide_legend(title = \"Forecast\"))\n\n\n1\n\nWe specify trend(\"A\") to indicate that we want a linear trend. The model will estimate the smoothing parameters \\alpha and \\beta^* automatically.\n\n\n\n\n\n\n\n\n\n\n\nSeries: Pop \nModel: ETS(A,A,N) \n  Smoothing parameters:\n    alpha = 0.9999 \n    beta  = 0.9998999 \n\n  Initial states:\n     l[0]     b[0]\n 70.06297 2.132884\n\n  sigma^2:  0.0021\n\n      AIC      AICc       BIC \n-115.2553 -114.1014 -104.9531 \n\n\n\n\n\n1.2.2 Damped trend\n\n\nHolt’s linear trend method assume that the trend will continue indefinitely at the same rate. However, in many real-world scenarios, this assumption may not hold true. This methods tend to overestimate (or underestimate) long-term forecasts when the trend is strong.\nWe can include a damping parameter \\phi, which reduces the trend over time.\n\n\n\n\\begin{aligned}\n\\text{Forecast equation} \\quad & \\hat{y}_{t+h|t} = \\ell_t +  (\\phi + \\phi^2 + \\ldots + \\phi^h) b_t \\\\\n\\text{Level equation} \\quad & \\ell_t = \\alpha y_t + (1 - \\alpha) (\\ell_{t-1} + \\phi b_{t-1}) \\\\\n\\text{Trend equation} \\quad & b_t = \\beta^*(\\ell_t-\\ell_{t-1}) + (1-\\beta^*)\\phi b_{t-1}\n\\end{aligned}\n\nwhere 0 &lt; \\phi &lt; 12 is the damping parameter.\n\n\n\n\n\n\nCautionWhat would happen if \\phi = 1? What about if \\phi = 0?\n\n\n\n\n\n\nIf \\phi = 1, the model reduces to Holt’s linear trend method, meaning the trend continues indefinitely at the same rate.\nIf \\phi = 0, the trend component is completely eliminated, and the model behaves like simple exponential smoothing (SES), where forecasts are based solely on the level component without any trend influence.\n\n\n\n\n\n1.2.2.1 Example: Forecasting Brazil’s population (continued)\n\nbra_economy |&gt; \n  model(\n    Holt   = ETS(Pop ~ error(\"A\") + trend(\"A\") + season(\"N\")),\n1    Damped = ETS(Pop ~ error(\"A\") + trend(\"Ad\", phi = 0.9) + season(\"N\"))\n  ) |&gt; \n  forecast(h = 15) |&gt; \n  autoplot(bra_economy, level = NULL) +\n  labs(title = \"Brazilian population\",\n       y = \"Millions\") +\n  guides(colour = guide_legend(title = \"Forecast\"))\n\n\n1\n\nWe specify trend(\"Ad\") to indicate that we want a damped trend, and phi = 0.9 sets the damping parameter to 0.9. We could also let the model estimate \\phi automatically by omitting the phi argument.",
+    "crumbs": [
+      "Modules",
+      "2. Adding ETS and ARIMA filters",
+      "2.1 Exponential Smoothing"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_2/01_ets/ets.html#methods-with-seasonality-1",
+    "href": "docs/modules/module_2/01_ets/ets.html#methods-with-seasonality-1",
+    "title": "Exponential smoothing",
+    "section": "1.3 Methods with seasonality",
+    "text": "1.3 Methods with seasonality\n\n1.3.1 Holt-Winters method\n\n1.3.1.1 HW - Additive\n\n\\begin{aligned}\n\\text{Forecast equation} \\quad & \\hat{y}_{t+h|t} = \\ell_t + hb_t + s_{t+h-m(k+1)} \\\\\n\\text{Level equation} \\quad & \\ell_t = \\alpha (y_t - s_{t-m}) + (1 - \\alpha) (\\ell_{t-1} + b_{t-1}) \\\\\n\\text{Trend equation} \\quad & b_t = \\beta^*(\\ell_t-\\ell_{t-1}) + (1-\\beta^*) b_{t-1} \\\\\n\\text{Seasonal equation} \\quad & s_t = \\gamma(y_t - \\ell_{t-1} - b_{t-1}) + (1-\\gamma)s_{t-m}\n\\end{aligned}\n\nwhere s_t is the seasonal component at time t, m is the period of the seasonality3, and k = \\lfloor (h-1)/m \\rfloor.\n\n\n1.3.1.2 HW - Multiplicative\n\n\\begin{aligned}\n\\text{Forecast equation} \\quad & \\hat{y}_{t+h|t} = (\\ell_t + hb_t) s_{t+h-m(k+1)} \\\\\n\\text{Level equation} \\quad & \\ell_t = \\alpha \\frac{y_t}{s_{t-m}} + (1 - \\alpha)(\\ell_{t-1} + b_{t-1}) \\\\\n\\text{Trend equation} \\quad & b_t = \\beta^*(\\ell_t-\\ell_{t-1}) + (1-\\beta^*) b_{t-1} \\\\\n\\text{Seasonal equation} \\quad & s_t = \\gamma \\frac{y_t}{\\ell_{t-1} + b_{t-1}} + (1-\\gamma)s_{t-m}\n\\end{aligned}\n\n\n\n\n\n\n\nTipWhen to use Holt-Winters methods\n\n\n\n\n\n\nHolt-Winters methods are appropriate for data with a trend and seasonal pattern.\nUse an additive model when the seasonal fluctuations are roughly constant over time.\nUse a multiplicative model when the seasonal variation increase or decrease over time.\nThe proper benchmark method to compare against is the seasonal naïve method. for seasonal data.\n\nIf the data contains both trend and seasonality, then A decomposition model using STL4 + Drift5 + SNAIVE6 is often a strong competitor.\n\n\n\n\n\n\n\n1.3.1.3 Example: Forecasting Australian holiday trips\nWe will forecast the number of holiday trips in Australia using additive and multiplicative Holt-Winters methods.\n\naus_holidays &lt;- tourism |&gt; \n  filter(Purpose == \"Holiday\") |&gt;\n  summarise(Trips = sum(Trips))\n\naus_holidays |&gt;\n  autoplot(Trips)\n\n\n1\n\nWe specify error(\"A\") and season(\"A\") to indicate that we want an additive Holt-Winters model. We will usually set the error() according to the season() type.\n\n2\n\nWe specify error(\"M\") and season(\"M\") to indicate that we want a multiplicative Holt-Winters model. Both models will estimate the smoothing parameters \\alpha, \\beta^*, and \\gamma automatically.\n\n\n\n\n\n\n\n\n\n\naus_fit &lt;- aus_holidays |&gt; \n  model(\n1    Additive       = ETS(Trips ~ error(\"A\") + trend(\"A\") + season(\"A\")),\n2    Multiplicative = ETS(Trips ~ error(\"M\") + trend(\"A\") + season(\"M\"))\n  )\n  \naus_fc &lt;- aus_fit |&gt; \n  forecast(h = \"3 years\")\n\naus_fc |&gt; \n  autoplot(aus_holidays, level = NULL) + xlab(\"Year\") +\n  labs(\n    title   = \"Forecasting Australian holiday trips using Holt-Winters\",\n    y       = \"Overnight trips (millions)\",\n    caption = \"Can you spot any differences between both forecasts?\"\n  ) +\n  scale_color_brewer(type = \"qual\", palette = \"Dark2\") +\n  guides(colour = guide_legend(title = \"Forecast\"))\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNoteThe tidy() function for models\n\n\n\n\n\n\naus_fit |&gt; \n1  tidy()\n\n\n1\n\nThe tidy() function allows us to see the estimated parameters of each model in a tidy table.\n\n\n\n\n\n  \n\n\n\n\n\n\n\n\n\n1.3.2 Holt-Winters’ damped method\n\n\nSimilar to Holt’s linear trend method, we can also include a damping parameter \\phi in the Holt-Winters method to reduce the trend over time.\n\nThis can be done on both additive or multiplicative seasonal models.\n\nA configuration that has proven to be robust and accurate in practice is to use a multiplicative seasonal component with a damped trend.\n\n\n\n\\begin{aligned}\n\\text{Forecast equation} \\quad & \\hat{y}_{t+h|t} = [\\ell_t +(\\phi + \\phi^2 + \\ldots + \\phi^h)b_t] s_{t+h-m(k+1)} \\\\\n\\text{Level equation} \\quad & \\ell_t = \\alpha \\frac{y_t}{s_{t-m}} + (1 - \\alpha)(\\ell_{t-1} + b_{t-1}) \\\\\n\\text{Trend equation} \\quad & b_t = \\beta^*(\\ell_t-\\ell_{t-1}) + (1-\\beta^*) \\phi b_{t-1} \\\\\n\\text{Seasonal equation} \\quad & s_t = \\gamma \\frac{y_t}{\\ell_{t-1} + \\phi b_{t-1}} + (1-\\gamma)s_{t-m}\n\\end{aligned}\n\n\n1.3.2.1 Example: Forecasting daily pedestrian traffic\n\nsth_cross_ped &lt;- pedestrian |&gt;\n  filter(Date &gt;= \"2016-07-01\",\n         Sensor == \"Southern Cross Station\") |&gt;\n  index_by(Date) |&gt;\n  summarise(Count = sum(Count)/1000)\n\nsth_cross_ped |&gt;\n  filter(Date &lt;= \"2016-07-31\") |&gt;\n  model(\n    hw = ETS(Count ~ error(\"M\") + trend(\"Ad\") + season(\"M\"))\n  ) |&gt;\n  forecast(h = \"2 weeks\") |&gt;\n  autoplot(sth_cross_ped |&gt; filter(Date &lt;= \"2016-08-14\")) +\n  labs(title = \"Daily traffic: Southern Cross\",\n       y=\"Pedestrians ('000)\")\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nThe setup ETS(y ~ error(\"M\") + trend(\"Ad\") + season(\"M\")) is often a robust choice for seasonal data with trend.",
+    "crumbs": [
+      "Modules",
+      "2. Adding ETS and ARIMA filters",
+      "2.1 Exponential Smoothing"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_2/01_ets/ets.html#automatic-ets-selection-1",
+    "href": "docs/modules/module_2/01_ets/ets.html#automatic-ets-selection-1",
+    "title": "Exponential smoothing",
+    "section": "1.4 Automatic ETS selection",
+    "text": "1.4 Automatic ETS selection\n\n\nUsing fable, we can automatically select the best ETS model for our data using the ETS() function. We achieve this by not specifying the error, trend, or seasonal components.\nYou can also get a semi-automatic selection by specifying some components and leaving others to be selected automatically, or by providing a set of possible values for a component.\nAutomatic selection is especially useful when we have multiple time series to model, as it allows us to fit different ETS models to each series.\n\n\n\n1.4.0.1 Example: Forecasting daily pedestrian traffic (continued)\n\nped_fit &lt;- pedestrian |&gt; \n  filter(\n    Date &gt;= \"2016-07-01\",\n    Sensor != \"Birrarung Marr\"\n  ) |&gt; \n  index_by(Date) |&gt;\n  group_by_key() |&gt; \n  summarise(Count = sum(Count)/1000) |&gt; \n  model(\n1    ETS_auto       = ETS(Count),\n2    ets_with_trend = ETS(Count ~ trend(c(\"A\", \"Ad\"))),\n  )\n\n3ped_fit\n\n\n1\n\nLeaving the right-hand side of the formula empty allows fable to automatically select the best ETS model for each time series.\n\n2\n\nHere, we specify that the trend component can be either additive or damped, while the error and seasonal components will be selected automatically.\n\n3\n\nThe output shows the selected model for each sensor.",
+    "crumbs": [
+      "Modules",
+      "2. Adding ETS and ARIMA filters",
+      "2.1 Exponential Smoothing"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_2/01_ets/ets.html#the-lineup-of-exponential-smoothing-methods-1",
+    "href": "docs/modules/module_2/01_ets/ets.html#the-lineup-of-exponential-smoothing-methods-1",
+    "title": "Exponential smoothing",
+    "section": "1.5 The lineup of exponential smoothing methods",
+    "text": "1.5 The lineup of exponential smoothing methods\n\n\n\nTable 2: ETS component combinations (trend × seasonal)\n\n\n\n\n\n\n\n\n\n\n\n\nTrend component\nN (None)\nA (Additive)\nM (Multiplicative)\n\n\n\n\nN (None)\n(N,N),\n(N,A)\n(N,M)\n\n\nA (Additive)\n(A,N),\n(A,A)\n(A,M)\n\n\nA_d (Additive damped)\n(A_d,N),\n(A_d, A)\n(A_d,M)\n\n\n\n\n\n\n\n\n\n\nTable 3: Names of some popular ETS models\n\n\n\n\n\n\nNotation\nMethod\n\n\n\n\n(N,N)\nSimple Exponential Smoothing (SES)\n\n\n(A,N)\nHolt’s Linear Trend\n\n\n(A_d,N)\nAdditive damped Trend\n\n\n(A,A)\nHolt-Winters’ Additive\n\n\n(A,M)\nHolt-Winters’ Multiplicative\n\n\n(A_d,M)\nHolt-Winters’ damped",
+    "crumbs": [
+      "Modules",
+      "2. Adding ETS and ARIMA filters",
+      "2.1 Exponential Smoothing"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_2/01_ets/ets.html#in-summary-1",
+    "href": "docs/modules/module_2/01_ets/ets.html#in-summary-1",
+    "title": "Exponential smoothing",
+    "section": "1.6 In summary",
+    "text": "1.6 In summary\n\nExponential smoothing methods are a family of forecasting methods that use weighted averages of past observations to make forecasts.\nThe weights decrease exponentially for older observations, controlled by smoothing parameters.\nDifferent configurations of ETS models can be used to handle various data patterns, including trend and seasonality.\nThe choice of model components (error(c(\"A\", \"M\")), trend(c(\"N\", \"A\", \"Ad\")), seasonality(c(\"N\", \"A\", \"M\"))) should be based on the characteristics of the data.\n\nThat is, we choose the model by viewing the time plot.\n\nAutomatic ETS selection can be a powerful tool for fitting models to multiple time series efficiently.",
+    "crumbs": [
+      "Modules",
+      "2. Adding ETS and ARIMA filters",
+      "2.1 Exponential Smoothing"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_2/01_ets/ets.html#footnotes",
+    "href": "docs/modules/module_2/01_ets/ets.html#footnotes",
+    "title": "Exponential smoothing",
+    "section": "Footnotes",
+    "text": "Footnotes\n\n\n(i.e., a mable containing only one model and one time series.)↩︎\nIn practice, we restrict 0.8 \\leq \\phi \\leq 0.98 because the damping effect would be too great for smaller values than 0.8 and almost non distinguishable from a linear trend for greater values than 0.98.↩︎\ne.g., m=4 for quarterly data, m=12 for monthly data, …↩︎\nas the decomposition method↩︎\nfor the seasonally adjusted series↩︎\nfor the seasonal component↩︎",
+    "crumbs": [
+      "Modules",
+      "2. Adding ETS and ARIMA filters",
+      "2.1 Exponential Smoothing"
     ]
   },
   {
