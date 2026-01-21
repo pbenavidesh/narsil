@@ -11,9 +11,181 @@ date-modified: ""
 
 Welcome to the Time Series Forecasting course at ITESO. Here you will find all the materials and resources needed for the course.
 
-In the [Modules](docs/modules/module_1/00_intro/intro.qmd) section, you will find all the theory and practical examples to help you understand the concepts of time series forecasting. In each document you will find attached the presentations as seen in class.
+
+::: {.content-visible when-format="html"}
+
+# Time Series Forecasting with R
+
+Modern forecasting workflows using **tidy data principles** with the **tidyverts** ecosystem.
+
+::: {.columns}
+::: {.column width="60%"}
+
+## What you’ll learn
+
+- Build tidy time series with **tsibble** and modern data pipelines
+- Create forecasts with **ETS**, **ARIMA**, and regression-based models via **fable**
+- Engineer time features and diagnose models with **feasts**
+- Evaluate with time-aware resampling and communicate uncertainty
+- Scale to multiple series and hierarchies when needed
+
+::: {.callout-tip}
+## How to succeed here
+Forecasting improves with *iteration*: start simple, validate honestly, and refine. Keep a tight loop of **fit → diagnose → evaluate → communicate**.
+:::
+
+:::
+::: {.column width="40%"}
+
+## Start here
+
+::: {.callout-note}
+**New to the site?** Use the links below to jump in.
+:::
+
+- [Setup](setup.qmd)
+- [Syllabus](syllabus.qmd)
+- [Modules](docs/modules/index.qmd)
+- [Resources](resources.qmd)
+
+:::
+:::
+
+---
+
+## Course map
+
+::: {.columns}
+::: {.column}
+
+### 1. Foundations
+- tidy data + time indexes
+- `tsibble` keys, gaps, and intervals
+
+### 2. Patterns & features
+- seasonality, trend, decomposition
+- diagnostics and features (`feasts`)
+
+:::
+::: {.column}
+
+### 3. Core forecasting models
+- ETS + ARIMA
+- model comparison and selection
+
+### 4. Regression workflows
+- time features, events, and covariates
+- forecast reconciliation ideas
+
+:::
+::: {.column}
+
+### 5. Evaluation & communication
+- time series CV and backtesting
+- uncertainty, intervals, and narratives
+
+### 6. Multiple series
+- grouped models
+- hierarchies and reconciliation
+
+:::
+:::
+
+---
+
+## Quick setup check
+
+Run this once after installing packages to confirm your environment.
+
+```{r}
+#| label: setup-check
+#| message: false
+#| warning: false
+
+library(tidyverse)
+library(tsibble)
+library(fable)
+library(feasts)
+
+sessionInfo()
+```
+
+::: {.callout-warning}
+## Common pitfalls
+- **Data leakage**: don’t let future information sneak into features.
+- **Random CV**: use **time-aware** resampling/backtesting.
+- **Overfitting**: a more complex model isn’t automatically better.
+:::
+
+---
+
+## Primary toolchain
+
+We’ll use a tidy workflow centered on:
+
+- **tidyverse** for data wrangling
+- **tsibble** for time-aware tibbles
+- **fable** for modeling and forecasting
+- **feasts** for decomposition, features, and diagnostics
+
+Recommended reading: [*Forecasting: Principles and Practice*](https://otexts.com/fpp3/) (free online).
+
+---
+
+## Office hours & contact
+
+- Office hours: *(add schedule here)*
+- Contact: *(add contact here)*
+
+---
+
+:::
 
 
-![](images/under_construction.jpg)
+::: {.content-visible when-format="revealjs"}
+
+# Time Series Forecasting with R
+
+**Goal:** build forecasting workflows using **tidyverts** (tsibble + fable + feasts).
+
+---
+
+## What you’ll learn
+
+- Tidy time series data with **tsibble**
+- Forecast with **ETS / ARIMA / regression** using **fable**
+- Diagnose and engineer features with **feasts**
+- Evaluate with **time-aware** resampling
+- Communicate uncertainty clearly
+
+---
+
+## Navigation
+
+- Setup: `setup.qmd`
+- Syllabus: `syllabus.qmd`
+- Modules: `modules/index.qmd`
+- Assignments: `assignments/index.qmd`
+- Resources: `resources.qmd`
+
+---
+
+## Workflow mantra
+
+**fit → diagnose → evaluate → communicate**
+
+::: {.callout-warning}
+Avoid: leakage • random CV • unnecessary complexity
+:::
+
+:::
+
+
+## Suggestions & Improvements
+
+- Add a small **module timeline** graphic or table (weeks → topics → deliverables) for faster orientation.
+- Consider a short “**What you need before starting**” checklist (prereqs + expected weekly time).
+- If you use one core dataset repeatedly, feature it here to create continuity across modules.
+
 
 
