@@ -690,9 +690,58 @@
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "Time Series Forecasting",
+    "title": "\n1 Time Series Forecasting with R",
     "section": "",
-    "text": "Welcome to the Time Series Forecasting course at ITESO. Here you will find all the materials and resources needed for the course.\nIn the Modules section, you will find all the theory and practical examples to help you understand the concepts of time series forecasting. In each document you will find attached the presentations as seen in class.\n\n\n\n\n Back to top"
+    "text": "Welcome to the Time Series Forecasting course at ITESO. Here you will find all the materials and resources needed for the course."
+  },
+  {
+    "objectID": "index.html#what-youll-learn",
+    "href": "index.html#what-youll-learn",
+    "title": "\n1 Time Series Forecasting with R",
+    "section": "\n1.1 What you’ll learn",
+    "text": "1.1 What you’ll learn\n\nBuild tidy time series with tsibble and modern data pipelines\nCreate forecasts with ETS, ARIMA, and regression-based models via fable\n\nEngineer time features and diagnose models with feasts\n\nEvaluate with time-aware resampling and communicate uncertainty\nScale to multiple series and hierarchies when needed\n\n\n\n\n\n\n\nTipHow to succeed here\n\n\n\nForecasting improves with iteration: start simple, validate honestly, and refine. Keep a tight loop of fit → diagnose → evaluate → communicate."
+  },
+  {
+    "objectID": "index.html#start-here",
+    "href": "index.html#start-here",
+    "title": "\n1 Time Series Forecasting with R",
+    "section": "\n1.2 Start here",
+    "text": "1.2 Start here\n\n\n\n\n\n\nNote\n\n\n\nNew to the site? Use the links below to jump in.\n\n\n\nSetup\nSyllabus\nModules\nResources"
+  },
+  {
+    "objectID": "index.html#course-map",
+    "href": "index.html#course-map",
+    "title": "\n1 Time Series Forecasting with R",
+    "section": "\n1.3 Course map",
+    "text": "1.3 Course map\n\n\n\n1.3.1 1. Foundations\n\ntidy data + time indexes\n\ntsibble keys, gaps, and intervals\n\n1.3.2 2. Patterns & features\n\nseasonality, trend, decomposition\ndiagnostics and features (feasts)\n\n\n\n1.3.3 3. Core forecasting models\n\nETS + ARIMA\nmodel comparison and selection\n\n1.3.4 4. Regression workflows\n\ntime features, events, and covariates\nforecast reconciliation ideas\n\n\n\n1.3.5 5. Evaluation & communication\n\ntime series CV and backtesting\nuncertainty, intervals, and narratives\n\n1.3.6 6. Multiple series\n\ngrouped models\nhierarchies and reconciliation"
+  },
+  {
+    "objectID": "index.html#quick-setup-check",
+    "href": "index.html#quick-setup-check",
+    "title": "\n1 Time Series Forecasting with R",
+    "section": "\n1.4 Quick setup check",
+    "text": "1.4 Quick setup check\nRun this once after installing packages to confirm your environment.\n\nlibrary(tidyverse)\nlibrary(tsibble)\nlibrary(fable)\nlibrary(feasts)\n\nsessionInfo()\n\nR version 4.5.2 (2025-10-31)\nPlatform: x86_64-pc-linux-gnu\nRunning under: Ubuntu 24.04.3 LTS\n\nMatrix products: default\nBLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 \nLAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.26.so;  LAPACK version 3.12.0\n\nlocale:\n [1] LC_CTYPE=C.UTF-8       LC_NUMERIC=C           LC_TIME=C.UTF-8       \n [4] LC_COLLATE=C.UTF-8     LC_MONETARY=C.UTF-8    LC_MESSAGES=C.UTF-8   \n [7] LC_PAPER=C.UTF-8       LC_NAME=C              LC_ADDRESS=C          \n[10] LC_TELEPHONE=C         LC_MEASUREMENT=C.UTF-8 LC_IDENTIFICATION=C   \n\ntime zone: UTC\ntzcode source: system (glibc)\n\nattached base packages:\n[1] stats     graphics  grDevices datasets  utils     methods   base     \n\nother attached packages:\n [1] feasts_0.4.2     fable_0.4.1      fabletools_0.5.1 tsibble_1.1.6   \n [5] lubridate_1.9.4  forcats_1.0.1    stringr_1.5.2    dplyr_1.1.4     \n [9] purrr_1.1.0      readr_2.1.5      tidyr_1.3.1      tibble_3.3.0    \n[13] ggplot2_4.0.0    tidyverse_2.0.0 \n\nloaded via a namespace (and not attached):\n [1] gtable_0.3.6         jsonlite_2.0.0       compiler_4.5.2      \n [4] renv_1.1.5           Rcpp_1.1.0           tidyselect_1.2.1    \n [7] scales_1.4.0         yaml_2.3.10          fastmap_1.2.0       \n[10] R6_2.6.1             generics_0.1.4       distributional_0.5.0\n[13] knitr_1.50           htmlwidgets_1.6.4    pillar_1.11.1       \n[16] RColorBrewer_1.1-3   tzdb_0.5.0           rlang_1.1.6         \n[19] stringi_1.8.7        xfun_0.53            S7_0.2.0            \n[22] timechange_0.3.0     cli_3.6.5            withr_3.0.2         \n[25] magrittr_2.0.4       digest_0.6.37        grid_4.5.2          \n[28] hms_1.1.3            anytime_0.3.12       lifecycle_1.0.4     \n[31] vctrs_0.6.5          evaluate_1.0.5       glue_1.8.0          \n[34] farver_2.1.2         rmarkdown_2.30       ellipsis_0.3.2      \n[37] tools_4.5.2          pkgconfig_2.0.3      htmltools_0.5.8.1   \n\n\n\n\n\n\n\n\nWarningCommon pitfalls\n\n\n\n\n\nData leakage: don’t let future information sneak into features.\n\nRandom CV: use time-aware resampling/backtesting.\n\nOverfitting: a more complex model isn’t automatically better."
+  },
+  {
+    "objectID": "index.html#primary-toolchain",
+    "href": "index.html#primary-toolchain",
+    "title": "\n1 Time Series Forecasting with R",
+    "section": "\n1.5 Primary toolchain",
+    "text": "1.5 Primary toolchain\nWe’ll use a tidy workflow centered on:\n\n\ntidyverse for data wrangling\n\ntsibble for time-aware tibbles\n\nfable for modeling and forecasting\n\nfeasts for decomposition, features, and diagnostics\n\nRecommended reading: Forecasting: Principles and Practice (free online)."
+  },
+  {
+    "objectID": "index.html#office-hours-contact",
+    "href": "index.html#office-hours-contact",
+    "title": "\n1 Time Series Forecasting with R",
+    "section": "\n1.6 Office hours & contact",
+    "text": "1.6 Office hours & contact\n\nOffice hours: (add schedule here)\n\nContact: (add contact here)"
+  },
+  {
+    "objectID": "index.html#suggestions-improvements",
+    "href": "index.html#suggestions-improvements",
+    "title": "\n1 Time Series Forecasting with R",
+    "section": "\n1.7 Suggestions & Improvements",
+    "text": "1.7 Suggestions & Improvements\n\nAdd a small module timeline graphic or table (weeks → topics → deliverables) for faster orientation.\nConsider a short “What you need before starting” checklist (prereqs + expected weekly time).\nIf you use one core dataset repeatedly, feature it here to create continuity across modules."
   },
   {
     "objectID": "docs/more/dummy_pres.html#first-slide",
@@ -741,7 +790,7 @@
     "href": "docs/modules/forecasting_wf_pres.html#data",
     "title": "The Forecasting Workflow using fable\n",
     "section": "Data",
-    "text": "Data\nWe will work with the Real Gross Domestic Product (GDP) for Mexico. The data is downloaded from FRED. The time series id is NGDPRNSAXDCMXQ.\nImport data\n\ngdp &lt;- tidyquant::tq_get(\n  x    = \"NGDPRNSAXDCMXQ\",\n  get  = \"economic.data\",\n  from = \"1997-01-01\"\n)\n\ngdp\n\n# A tibble: 113 × 3\n   symbol         date          price\n   &lt;chr&gt;          &lt;date&gt;        &lt;dbl&gt;\n 1 NGDPRNSAXDCMXQ 1997-01-01 3702398.\n 2 NGDPRNSAXDCMXQ 1997-04-01 3896084.\n 3 NGDPRNSAXDCMXQ 1997-07-01 3906063 \n 4 NGDPRNSAXDCMXQ 1997-10-01 4038358.\n 5 NGDPRNSAXDCMXQ 1998-01-01 4084304.\n 6 NGDPRNSAXDCMXQ 1998-04-01 4134899.\n 7 NGDPRNSAXDCMXQ 1998-07-01 4138200.\n 8 NGDPRNSAXDCMXQ 1998-10-01 4146841.\n 9 NGDPRNSAXDCMXQ 1999-01-01 4176243.\n10 NGDPRNSAXDCMXQ 1999-04-01 4232280.\n# ℹ 103 more rows\n\n\nWrangle data\nThere are some issues with our data:\n\nIt is loaded into a tibble object. We need to convert it to a tsibble.\n\n\n\n\n\n\n\nTip\n\n\nWe can use as_tsibble() to do so.\n\n\n\n\nOur data is quarterly, but it is loaded in a YYYY-MM-DD format. We need to change it to a YYYY QQ format.\n\n\n\n\n\n\n\nTip\n\n\nThere are some functions that help us achieve this, such as\n\nyearquarter()\nyearmonth()\nyearweek()\nyear()\n\ndepending on the time series’ period.\n\n\n\nWe will overwrite our data:\n\ngdp &lt;- gdp |&gt; \n  mutate(date = yearquarter(date)) |&gt; \n  as_tsibble(\n    index = date,\n    key   = symbol\n  )\n\ngdp\n\n\n  \n\n\n\n\n\n\n\n\n\nTip\n\n\n\nWe always need to specify the index argument, as it is our date variable.\nThe key argument is necessary whenever we have more than one time series in our data frame and is made up of one or more columns that uniquely identify each time series ."
+    "text": "Data\nWe will work with the Real Gross Domestic Product (GDP) for Mexico. The data is downloaded from FRED. The time series id is NGDPRNSAXDCMXQ.\nImport data\n\ngdp &lt;- tidyquant::tq_get(\n  x    = \"NGDPRNSAXDCMXQ\",\n  get  = \"economic.data\",\n  from = \"1997-01-01\"\n)\n\ngdp\n\n# A tibble: 115 × 3\n   symbol         date          price\n   &lt;chr&gt;          &lt;date&gt;        &lt;dbl&gt;\n 1 NGDPRNSAXDCMXQ 1997-01-01 3702398.\n 2 NGDPRNSAXDCMXQ 1997-04-01 3896084.\n 3 NGDPRNSAXDCMXQ 1997-07-01 3906063 \n 4 NGDPRNSAXDCMXQ 1997-10-01 4038358.\n 5 NGDPRNSAXDCMXQ 1998-01-01 4084304.\n 6 NGDPRNSAXDCMXQ 1998-04-01 4134899.\n 7 NGDPRNSAXDCMXQ 1998-07-01 4138200.\n 8 NGDPRNSAXDCMXQ 1998-10-01 4146841.\n 9 NGDPRNSAXDCMXQ 1999-01-01 4176243.\n10 NGDPRNSAXDCMXQ 1999-04-01 4232280.\n# ℹ 105 more rows\n\n\nWrangle data\nThere are some issues with our data:\n\nIt is loaded into a tibble object. We need to convert it to a tsibble.\n\n\n\n\n\n\n\nTip\n\n\nWe can use as_tsibble() to do so.\n\n\n\n\nOur data is quarterly, but it is loaded in a YYYY-MM-DD format. We need to change it to a YYYY QQ format.\n\n\n\n\n\n\n\nTip\n\n\nThere are some functions that help us achieve this, such as\n\nyearquarter()\nyearmonth()\nyearweek()\nyear()\n\ndepending on the time series’ period.\n\n\n\nWe will overwrite our data:\n\ngdp &lt;- gdp |&gt; \n  mutate(date = yearquarter(date)) |&gt; \n  as_tsibble(\n    index = date,\n    key   = symbol\n  )\n\ngdp\n\n\n  \n\n\n\n\n\n\n\n\n\nTip\n\n\n\nWe always need to specify the index argument, as it is our date variable.\nThe key argument is necessary whenever we have more than one time series in our data frame and is made up of one or more columns that uniquely identify each time series ."
   },
   {
     "objectID": "docs/modules/forecasting_wf_pres.html#traintest-split",
@@ -816,7 +865,7 @@
     "href": "docs/modules/forecasting_workflow.html#data",
     "title": "The Forecasting Workflow using fable\n",
     "section": "\n1.1 Data",
-    "text": "1.1 Data\nWe will work with the Real Gross Domestic Product (GDP) for Mexico. The data is downloaded from FRED. The time series id is NGDPRNSAXDCMXQ.\n\n1.1.1 Import data\n\ngdp &lt;- tidyquant::tq_get(\n  x    = \"NGDPRNSAXDCMXQ\",\n  get  = \"economic.data\",\n  from = \"1997-01-01\"\n)\n\ngdp\n\n# A tibble: 113 × 3\n   symbol         date          price\n   &lt;chr&gt;          &lt;date&gt;        &lt;dbl&gt;\n 1 NGDPRNSAXDCMXQ 1997-01-01 3702398.\n 2 NGDPRNSAXDCMXQ 1997-04-01 3896084.\n 3 NGDPRNSAXDCMXQ 1997-07-01 3906063 \n 4 NGDPRNSAXDCMXQ 1997-10-01 4038358.\n 5 NGDPRNSAXDCMXQ 1998-01-01 4084304.\n 6 NGDPRNSAXDCMXQ 1998-04-01 4134899.\n 7 NGDPRNSAXDCMXQ 1998-07-01 4138200.\n 8 NGDPRNSAXDCMXQ 1998-10-01 4146841.\n 9 NGDPRNSAXDCMXQ 1999-01-01 4176243.\n10 NGDPRNSAXDCMXQ 1999-04-01 4232280.\n# ℹ 103 more rows\n\n\n\n1.1.2 Wrangle data\nThere are some issues with our data:\n\nIt is loaded into a tibble object. We need to convert it to a tsibble.\n\n\n\n\n\n\n\nTip\n\n\n\n\n\nWe can use as_tsibble() to do so.\n\n\n\n\nOur data is quarterly, but it is loaded in a YYYY-MM-DD format. We need to change it to a YYYY QQ format.\n\n\n\n\n\n\n\nTip\n\n\n\n\n\nThere are some functions that help us achieve this, such as\n\nyearquarter()\nyearmonth()\nyearweek()\nyear()\n\ndepending on the time series’ period.\n\n\n\nWe will overwrite our data:\n\ngdp &lt;- gdp |&gt; \n  mutate(date = yearquarter(date)) |&gt; \n  as_tsibble(\n    index = date,\n    key   = symbol\n  )\n\ngdp\n\n\n  \n\n\n\n\n\n\n\n\n\nTip\n\n\n\n\n\n\nWe always need to specify the index argument, as it is our date variable.\nThe key argument is necessary whenever we have more than one time series in our data frame and is made up of one or more columns that uniquely identify each time series .",
+    "text": "1.1 Data\nWe will work with the Real Gross Domestic Product (GDP) for Mexico. The data is downloaded from FRED. The time series id is NGDPRNSAXDCMXQ.\n\n1.1.1 Import data\n\ngdp &lt;- tidyquant::tq_get(\n  x    = \"NGDPRNSAXDCMXQ\",\n  get  = \"economic.data\",\n  from = \"1997-01-01\"\n)\n\ngdp\n\n# A tibble: 115 × 3\n   symbol         date          price\n   &lt;chr&gt;          &lt;date&gt;        &lt;dbl&gt;\n 1 NGDPRNSAXDCMXQ 1997-01-01 3702398.\n 2 NGDPRNSAXDCMXQ 1997-04-01 3896084.\n 3 NGDPRNSAXDCMXQ 1997-07-01 3906063 \n 4 NGDPRNSAXDCMXQ 1997-10-01 4038358.\n 5 NGDPRNSAXDCMXQ 1998-01-01 4084304.\n 6 NGDPRNSAXDCMXQ 1998-04-01 4134899.\n 7 NGDPRNSAXDCMXQ 1998-07-01 4138200.\n 8 NGDPRNSAXDCMXQ 1998-10-01 4146841.\n 9 NGDPRNSAXDCMXQ 1999-01-01 4176243.\n10 NGDPRNSAXDCMXQ 1999-04-01 4232280.\n# ℹ 105 more rows\n\n\n\n1.1.2 Wrangle data\nThere are some issues with our data:\n\nIt is loaded into a tibble object. We need to convert it to a tsibble.\n\n\n\n\n\n\n\nTip\n\n\n\n\n\nWe can use as_tsibble() to do so.\n\n\n\n\nOur data is quarterly, but it is loaded in a YYYY-MM-DD format. We need to change it to a YYYY QQ format.\n\n\n\n\n\n\n\nTip\n\n\n\n\n\nThere are some functions that help us achieve this, such as\n\nyearquarter()\nyearmonth()\nyearweek()\nyear()\n\ndepending on the time series’ period.\n\n\n\nWe will overwrite our data:\n\ngdp &lt;- gdp |&gt; \n  mutate(date = yearquarter(date)) |&gt; \n  as_tsibble(\n    index = date,\n    key   = symbol\n  )\n\ngdp\n\n\n  \n\n\n\n\n\n\n\n\n\nTip\n\n\n\n\n\n\nWe always need to specify the index argument, as it is our date variable.\nThe key argument is necessary whenever we have more than one time series in our data frame and is made up of one or more columns that uniquely identify each time series .",
     "crumbs": [
       "Modules",
       "1. Forecasting models based on decomposition methods",
