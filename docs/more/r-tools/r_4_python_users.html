@@ -6,10 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="pbenavides">
-<meta name="dcterms.date" content="2024-07-03">
+<meta name="author" content="Pablo Benavides-Herrera">
 
-<title>Exponential Smoothing – Time Series Forecasting</title>
+<title>R for Python Users – Time Series Forecasting</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -60,32 +59,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../../">
-<link href="../../images/narsil_logo.png" rel="icon" type="image/png">
-<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
-<script src="../../site_libs/quarto-html/popper.min.js"></script>
-<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-2a367172f4fe7d9182ebf8e09f85cb4e.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-7fb59815a1c41eec7c034637f0c35ff0.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-2a367172f4fe7d9182ebf8e09f85cb4e.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
-<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-f75f3358e428cc5073b8e36401a08085.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-050812e28c024fa67842b13441fed95e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../../site_libs/bootstrap/bootstrap-f75f3358e428cc5073b8e36401a08085.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
-<script src="../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
-<link href="../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
-<link href="../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<link href="../../../images/narsil_logo.png" rel="icon" type="image/png">
+<script src="../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-2a367172f4fe7d9182ebf8e09f85cb4e.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-dark-7fb59815a1c41eec7c034637f0c35ff0.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-2a367172f4fe7d9182ebf8e09f85cb4e.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap-f75f3358e428cc5073b8e36401a08085.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../../site_libs/bootstrap/bootstrap-dark-050812e28c024fa67842b13441fed95e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../../site_libs/bootstrap/bootstrap-f75f3358e428cc5073b8e36401a08085.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -125,19 +121,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     document.body.classList.add('hypothesis-enabled');
   });
 </script>
-<meta name="quarto:status" content="draft">
 
 
-<link rel="stylesheet" href="../../styles.css">
-<meta property="og:title" content="Exponential Smoothing – Time Series Forecasting">
+<link rel="stylesheet" href="../../../styles.css">
+<meta property="og:title" content="R for Python Users – Time Series Forecasting">
 <meta property="og:description" content="">
-<meta property="og:image" content="https://pbenavidesh.github.io/narsil/images/under_construction.jpg">
 <meta property="og:site_name" content="Time Series Forecasting">
-<meta name="twitter:title" content="Exponential Smoothing – Time Series Forecasting">
+<meta name="twitter:title" content="R for Python Users – Time Series Forecasting">
 <meta name="twitter:description" content="">
-<meta name="twitter:image" content="https://pbenavidesh.github.io/narsil/images/under_construction.jpg">
 <meta name="twitter:creator" content="@PabsBenavides">
-<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:card" content="summary">
 </head>
 
 <body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
@@ -305,15 +298,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </script>
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top"><div id="quarto-draft-alert" class="alert alert-warning"><i class="bi bi-pencil-square"></i>Draft</div>
+  <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../../images/iteso_logo_blanco.png" alt="" class="navbar-logo light-content">
-    <img src="../../images/iteso_logo_blanco.png" alt="" class="navbar-logo dark-content">
+    <a href="../../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../../images/iteso_logo_blanco.png" alt="" class="navbar-logo light-content">
+    <img src="../../../images/iteso_logo_blanco.png" alt="" class="navbar-logo dark-content">
     </a>
-    <a class="navbar-brand" href="../../index.html">
+    <a class="navbar-brand" href="../../../index.html">
     <span class="navbar-title">Time Series Forecasting</span>
     </a>
   </div>
@@ -324,23 +317,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../../index.html"> 
+    <a class="nav-link" href="../../../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../docs/modules/index.html"> 
+    <a class="nav-link" href="../../../docs/modules/index.html"> 
 <span class="menu-text">Modules</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../docs/exercises/index.html"> 
+    <a class="nav-link" href="../../../docs/exercises/index.html"> 
 <span class="menu-text">Exercises</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../images/under_construction.jpg"> 
+    <a class="nav-link" href="../../../docs/more/index.html"> 
 <span class="menu-text">More</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../docs/about.html"> 
+    <a class="nav-link" href="../../../docs/about.html"> 
 <span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item">
@@ -374,15 +367,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#h1-header" id="toc-h1-header" class="nav-link active" data-scroll-target="#h1-header"><span class="header-section-number">1</span> H1 header</a>
-  <ul class="collapse">
-  <li><a href="#h2-header" id="toc-h2-header" class="nav-link" data-scroll-target="#h2-header"><span class="header-section-number">1.1</span> H2 header</a></li>
-  <li><a href="#code-animation" id="toc-code-animation" class="nav-link" data-scroll-target="#code-animation"><span class="header-section-number">1.2</span> Code animation</a></li>
-  <li><a href="#section" id="toc-section" class="nav-link" data-scroll-target="#section"><span class="header-section-number">1.3</span> </a></li>
-  <li><a href="#section-1" id="toc-section-1" class="nav-link" data-scroll-target="#section-1"><span class="header-section-number">1.4</span> </a></li>
-  </ul></li>
+  <li><a href="#the-main-mindset-shift" id="toc-the-main-mindset-shift" class="nav-link active" data-scroll-target="#the-main-mindset-shift"><span class="header-section-number">1</span> 1. The main mindset shift</a></li>
+  <li><a href="#imperative-vs-functional-style" id="toc-imperative-vs-functional-style" class="nav-link" data-scroll-target="#imperative-vs-functional-style"><span class="header-section-number">2</span> 2. Imperative vs functional style</a></li>
+  <li><a href="#core-object-mapping-python-r" id="toc-core-object-mapping-python-r" class="nav-link" data-scroll-target="#core-object-mapping-python-r"><span class="header-section-number">3</span> 3. Core object mapping (Python → R)</a></li>
+  <li><a href="#mutation-the-silent-trap-for-python-users" id="toc-mutation-the-silent-trap-for-python-users" class="nav-link" data-scroll-target="#mutation-the-silent-trap-for-python-users"><span class="header-section-number">4</span> 4. Mutation: the silent trap for Python users</a></li>
+  <li><a href="#loops-just-because-you-can-doesnt-mean-you-should" id="toc-loops-just-because-you-can-doesnt-mean-you-should" class="nav-link" data-scroll-target="#loops-just-because-you-can-doesnt-mean-you-should"><span class="header-section-number">5</span> 5. Loops: just because you can, doesn’t mean you should</a></li>
+  <li><a href="#indexing-brackets-vs-verbs" id="toc-indexing-brackets-vs-verbs" class="nav-link" data-scroll-target="#indexing-brackets-vs-verbs"><span class="header-section-number">6</span> 6. Indexing: brackets vs verbs</a></li>
+  <li><a href="#equality-assignment-and-naming" id="toc-equality-assignment-and-naming" class="nav-link" data-scroll-target="#equality-assignment-and-naming"><span class="header-section-number">7</span> 7. Equality, assignment, and naming</a></li>
+  <li><a href="#factors-the-weird-thing-you-didnt-ask-for" id="toc-factors-the-weird-thing-you-didnt-ask-for" class="nav-link" data-scroll-target="#factors-the-weird-thing-you-didnt-ask-for"><span class="header-section-number">8</span> 8. Factors: the weird thing you didn’t ask for</a></li>
+  <li><a href="#what-you-actually-need-for-this-course" id="toc-what-you-actually-need-for-this-course" class="nav-link" data-scroll-target="#what-you-actually-need-for-this-course"><span class="header-section-number">9</span> 9. What you actually need for this course</a></li>
+  <li><a href="#final-reassurance" id="toc-final-reassurance" class="nav-link" data-scroll-target="#final-reassurance"><span class="header-section-number">10</span> 10. Final reassurance</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/pbenavidesh/narsil/edit/main/docs/more/ets.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/pbenavidesh/narsil/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div><div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="ets_pres.html"><i class="bi bi-file-slides"></i>RevealJS</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/pbenavidesh/narsil/edit/main/docs/more/r-tools/r_4_python_users.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/pbenavidesh/narsil/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -390,8 +386,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Exponential Smoothing</h1>
-</div>
+<h1 class="title">R for Python Users</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
+  </div>
+  </div>
 
 
 
@@ -400,16 +399,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Author</div>
     <div class="quarto-title-meta-contents">
-             <p>pbenavides </p>
+             <p>Pablo Benavides-Herrera </p>
           </div>
   </div>
     
-    <div>
-    <div class="quarto-title-meta-heading">Published</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">July 3, 2024</p>
-    </div>
-  </div>
   
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
@@ -425,37 +418,358 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p><a href="../../images/under_construction.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="../../images/under_construction.jpg" class="img-fluid"></a></p>
-<section id="h1-header" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> H1 header</h1>
-<p>ETS models.</p>
-<section id="h2-header" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="h2-header"><span class="header-section-number">1.1</span> H2 header</h2>
-<p>there and back again.</p>
+<p>This document is <strong>optional</strong>, but highly recommended if you come from a Python background.</p>
+<p>The goal is <strong>not</strong> to teach R from scratch.<br>
+The goal is to help you <strong>translate mental models</strong> from Python to R, so that the rest of the course feels natural instead of frustrating.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If you already feel comfortable with R, you can safely skip this document and come back to it only if something feels confusing later on.</p>
+</div>
+</div>
+<hr>
+<section id="the-main-mindset-shift" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="the-main-mindset-shift"><span class="header-section-number">1</span> 1. The main mindset shift</h2>
+<p>If you come from Python, you are used to thinking in terms of:</p>
+<ul>
+<li>step-by-step instructions<br>
+</li>
+<li>objects that are modified in place<br>
+</li>
+<li>explicit loops<br>
+</li>
+<li>“do this, then do that”</li>
+</ul>
+<p>R (especially the tidyverse) encourages a different way of thinking:</p>
+<ul>
+<li>transformations instead of instructions<br>
+</li>
+<li>immutable data objects<br>
+</li>
+<li>pipelines instead of loops<br>
+</li>
+<li>“what happens to the data as it flows”</li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In tidyverse code, try to read pipelines <strong>out loud</strong>.<br>
+If it sounds like a sentence describing the data, you are probably doing it right.</p>
+</div>
+</div>
+<hr>
 </section>
-<section id="code-animation" class="level2" data-number="1.2">
-<h2 data-number="1.2" class="anchored" data-anchor-id="code-animation"><span class="header-section-number">1.2</span> Code animation</h2>
+<section id="imperative-vs-functional-style" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="imperative-vs-functional-style"><span class="header-section-number">2</span> 2. Imperative vs functional style</h2>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">R</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df[df[<span class="st">"value"</span>] <span class="op">&gt;</span> <span class="dv">0</span>]</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"log_value"</span>] <span class="op">=</span> np.log(df[<span class="st">"value"</span>])</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.groupby(<span class="st">"id"</span>).mean()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li>Each line modifies or reassigns <code>df</code></li>
+<li>State changes over time</li>
+<li>Order matters a lot</li>
+</ul>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(value <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">log_value =</span> <span class="fu">log</span>(value)) <span class="sc">|&gt;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(id) <span class="sc">|&gt;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), mean))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li>Each step returns a new object</li>
+<li>No mutation in place</li>
+<li>The pipeline reads top to bottom</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Think of <code>|&gt;</code> as saying:<br>
+“take the result so far, <strong>and then</strong> apply the next transformation”.</p>
+</div>
+</div>
+<hr>
 </section>
-<section id="section" class="level2" data-auto-animate="true" data-number="1.3">
-<h2 data-auto-animate="true" data-number="1.3" class="anchored" data-anchor-id="section"><span class="header-section-number">1.3</span> </h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fill in the spot we created for a plot</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>output<span class="sc">$</span>phonePlot <span class="ot">&lt;-</span> <span class="fu">renderPlot</span>({</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Render a barplot</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="core-object-mapping-python-r" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="core-object-mapping-python-r"><span class="header-section-number">3</span> 3. Core object mapping (Python → R)</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Python</th>
+<th>R</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>pandas.DataFrame</code></td>
+<td><code>tibble</code></td>
+</tr>
+<tr class="even">
+<td><code>Series</code></td>
+<td>vector</td>
+</tr>
+<tr class="odd">
+<td><code>NaN</code></td>
+<td><code>NA</code></td>
+</tr>
+<tr class="even">
+<td><code>df.copy()</code></td>
+<td>usually unnecessary</td>
+</tr>
+<tr class="odd">
+<td><code>for row in df</code></td>
+<td>avoid</td>
+</tr>
+<tr class="even">
+<td><code>df.groupby()</code></td>
+<td><code>group_by()</code></td>
+</tr>
+<tr class="odd">
+<td>method chaining</td>
+<td>pipe (<code>|&gt;</code>)</td>
+</tr>
+<tr class="even">
+<td><code>df.reset_index()</code></td>
+<td>rarely needed</td>
+</tr>
+</tbody>
+</table>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In R, columns are <strong>vectors</strong>, not mini-dataframes.<br>
+This is one of the biggest conceptual differences — and one of R’s strengths.</p>
+</div>
+</div>
+<hr>
 </section>
-<section id="section-1" class="level2" data-auto-animate="true" data-number="1.4">
-<h2 data-auto-animate="true" data-number="1.4" class="anchored" data-anchor-id="section-1"><span class="header-section-number">1.4</span> </h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fill in the spot we created for a plot</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>output<span class="sc">$</span>phonePlot <span class="ot">&lt;-</span> <span class="fu">renderPlot</span>({</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Render a barplot</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">barplot</span>(WorldPhones[,input<span class="sc">$</span>region]<span class="sc">*</span><span class="dv">1000</span>, </span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">main=</span>input<span class="sc">$</span>region,</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>          <span class="at">ylab=</span><span class="st">"Number of Telephones"</span>,</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>          <span class="at">xlab=</span><span class="st">"Year"</span>)</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="mutation-the-silent-trap-for-python-users" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="mutation-the-silent-trap-for-python-users"><span class="header-section-number">4</span> 4. Mutation: the silent trap for Python users</h2>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">R</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"x"</span>] <span class="op">=</span> df[<span class="st">"x"</span>] <span class="op">*</span> <span class="dv">2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This modifies <code>df</code> in place.</p>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">x =</span> x <span class="sc">*</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This <strong>does not</strong> modify <code>df</code> unless you reassign it.</p>
+<p>Correct usage:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">x =</span> x <span class="sc">*</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If you forget to reassign in R, <strong>nothing happens</strong>.<br>
+This is the most common source of “why didn’t my code work?” for Python users.</p>
+</div>
+</div>
+<hr>
+</section>
+<section id="loops-just-because-you-can-doesnt-mean-you-should" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="loops-just-because-you-can-doesnt-mean-you-should"><span class="header-section-number">5</span> 5. Loops: just because you can, doesn’t mean you should</h2>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false" href="">R</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Python-style thinking applied to R (not recommended)</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(df)) {</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>x[i] <span class="ot">&lt;-</span> df<span class="sc">$</span>x[i] <span class="sc">*</span> <span class="dv">2</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">x =</span> x <span class="sc">*</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If you feel the urge to write a <code>for</code> loop in R, stop and ask:<br>
+“Is this a vectorized operation?”</p>
+<p>In most cases, the answer is <strong>yes</strong>.</p>
+</div>
+</div>
+<hr>
+</section>
+<section id="indexing-brackets-vs-verbs" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="indexing-brackets-vs-verbs"><span class="header-section-number">6</span> 6. Indexing: brackets vs verbs</h2>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false" href="">R</a></li></ul>
+<div class="tab-content" data-group="language">
+<div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>df.iloc[<span class="dv">0</span>]</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>df.loc[df[<span class="st">"x"</span>] <span class="op">&gt;</span> <span class="dv">0</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>df[<span class="dv">1</span>, ]</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(x <span class="sc">&gt;</span> <span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Base R indexing exists, but in this course we will prefer tidyverse verbs<br>
+because they are clearer and less error-prone.</p>
+</div>
+</div>
+<hr>
+</section>
+<section id="equality-assignment-and-naming" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="equality-assignment-and-naming"><span class="header-section-number">7</span> 7. Equality, assignment, and naming</h2>
+<ul>
+<li><code>&lt;-</code> is the standard operator for assignment in this course<br>
+</li>
+<li><code>=</code> is used <strong>only</strong> for function arguments</li>
+<li><code>==</code> is for comparison</li>
+<li>Names are case-sensitive</li>
+<li>Avoid spaces in column names (or use backticks)</li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Using <code>&lt;-</code> consistently makes it easier to visually distinguish<br>
+<strong>assignment</strong> from <strong>function arguments</strong>, especially in longer pipelines.</p>
+</div>
+</div>
+<hr>
+</section>
+<section id="factors-the-weird-thing-you-didnt-ask-for" class="level2" data-number="8">
+<h2 data-number="8" class="anchored" data-anchor-id="factors-the-weird-thing-you-didnt-ask-for"><span class="header-section-number">8</span> 8. Factors: the weird thing you didn’t ask for</h2>
+<p>R has a special type called <code>factor</code> (categorical variable).</p>
+<p>Sometimes you will see:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>and a column is a factor when you expected a string.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For now:</p>
+<ul>
+<li>don’t panic</li>
+<li>use <code>as.character()</code> if needed</li>
+<li>we will be explicit about factors when they matter</li>
+</ul>
+</div>
+</div>
+<hr>
+</section>
+<section id="what-you-actually-need-for-this-course" class="level2" data-number="9">
+<h2 data-number="9" class="anchored" data-anchor-id="what-you-actually-need-for-this-course"><span class="header-section-number">9</span> 9. What you actually need for this course</h2>
+<p>You do <strong>not</strong> need to become an R expert.</p>
+<p>You need to be comfortable with:</p>
+<ul>
+<li><code>tibble</code></li>
+<li><code>filter()</code></li>
+<li><code>mutate()</code></li>
+<li><code>summarise()</code></li>
+<li><code>group_by()</code></li>
+<li>pipes (<code>|&gt;</code>)</li>
+</ul>
+<p>Everything else is secondary.</p>
+<hr>
+</section>
+<section id="final-reassurance" class="level2" data-number="10">
+<h2 data-number="10" class="anchored" data-anchor-id="final-reassurance"><span class="header-section-number">10</span> 10. Final reassurance</h2>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If you are fluent in Python, you already have the hard skills:</p>
+<ul>
+<li>data thinking</li>
+<li>debugging intuition</li>
+<li>abstraction</li>
+</ul>
+<p>R is just a different dialect.</p>
+</div>
+</div>
+<p>Once the mental model clicks, the rest of the course will feel much lighter.</p>
 
 
-</section>
 </section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
@@ -878,41 +1192,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   });
   </script>
 </div> <!-- /content -->
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/pbenavidesh/narsil/edit/main/docs/more/ets.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/pbenavidesh/narsil/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
-(function() {
-  let previousOnload = window.onload;
-  window.onload = () => {
-    if (previousOnload) {
-      previousOnload();
-    }
-    lightboxQuarto.on('slide_before_load', (data) => {
-      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
-      const href = trigger.getAttribute('href');
-      if (href !== null) {
-        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
-        if (imgEl !== null) {
-          const srcAttr = imgEl.getAttribute("src");
-          if (srcAttr && srcAttr.startsWith("data:")) {
-            slideConfig.href = srcAttr;
-          }
-        }
-      } 
-    });
-  
-    lightboxQuarto.on('slide_after_load', (data) => {
-      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
-      if (window.Quarto?.typesetMath) {
-        window.Quarto.typesetMath(slideNode);
-      }
-    });
-  
-  };
-  
-})();
-          </script>
 
 
 
 
-<script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/pbenavidesh/narsil/edit/main/docs/more/r-tools/r_4_python_users.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/pbenavidesh/narsil/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="../../../site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>
