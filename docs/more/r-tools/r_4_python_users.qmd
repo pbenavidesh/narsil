@@ -2,6 +2,7 @@
 title: "R for Python Users"
 author: "Pablo Benavides-Herrera"
 categories: [R]
+format: html
 ---
 
 This document is **optional**, but highly recommended if you come from a Python background.
@@ -40,9 +41,9 @@ If it sounds like a sentence describing the data, you are probably doing it righ
 
 ## 2. Imperative vs functional style
 
-::: {.tabset group="language"}
+::: {.panel-tabset group="language"}
 
-### Python
+## Python
 
 ```python
 df = df[df["value"] > 0]
@@ -54,7 +55,7 @@ df = df.groupby("id").mean()
 - State changes over time
 - Order matters a lot
 
-### R (tidyverse)
+## R
 
 ```r
 df |>
@@ -99,9 +100,9 @@ This is one of the biggest conceptual differences — and one of R’s strengths
 
 ## 4. Mutation: the silent trap for Python users
 
-::: {.tabset group="language"}
+::: {.panel-tabset group="language"}
 
-### Python
+## Python
 
 ```python
 df["x"] = df["x"] * 2
@@ -109,7 +110,7 @@ df["x"] = df["x"] * 2
 
 This modifies `df` in place.
 
-### R
+## R
 
 ```r
 df |>
@@ -136,17 +137,18 @@ This is the most common source of “why didn’t my code work?” for Python us
 
 ## 5. Loops: just because you can, doesn’t mean you should
 
-::: {.tabset group="language"}
+::: {.panel-tabset group="language"}
 
-### Python-style thinking (not recommended in R)
+## Python
 
 ```r
+# Python-style thinking applied to R (not recommended)
 for (i in 1:nrow(df)) {
   df$x[i] <- df$x[i] * 2
 }
 ```
 
-### Idiomatic R
+## R
 
 ```r
 df |>
@@ -166,16 +168,16 @@ In most cases, the answer is **yes**.
 
 ## 6. Indexing: brackets vs verbs
 
-::: {.tabset group="language"}
+::: {.panel-tabset group="language"}
 
-### Python
+## Python
 
 ```python
 df.iloc[0]
 df.loc[df["x"] > 0]
 ```
 
-### R
+## R
 
 ```r
 df[1, ]
@@ -194,11 +196,16 @@ because they are clearer and less error-prone.
 
 ## 7. Equality, assignment, and naming
 
-- `=` and `<-` both work for assignment  
-  (we will use `=` in this course for simplicity)
+- `<-` is the standard operator for assignment in this course  
+- `=` is used **only** for function arguments
 - `==` is for comparison
 - Names are case-sensitive
 - Avoid spaces in column names (or use backticks)
+
+::: {.callout-tip}
+Using `<-` consistently makes it easier to visually distinguish  
+**assignment** from **function arguments**, especially in longer pipelines.
+:::
 
 ---
 
@@ -216,6 +223,7 @@ and a column is a factor when you expected a string.
 
 ::: {.callout-note}
 For now:
+
 - don’t panic
 - use `as.character()` if needed
 - we will be explicit about factors when they matter
@@ -244,6 +252,7 @@ Everything else is secondary.
 
 ::: {.callout-tip}
 If you are fluent in Python, you already have the hard skills:
+
 - data thinking
 - debugging intuition
 - abstraction
