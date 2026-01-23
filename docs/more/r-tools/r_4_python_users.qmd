@@ -9,34 +9,40 @@ This document is **optional**, but highly recommended if you come from a Python 
 The goal is **not** to teach R from scratch.  
 The goal is to help you **translate mental models** from Python to R, so that the rest of the course feels natural instead of frustrating.
 
+::: {.callout-note}
+If you already feel comfortable with R, you can safely skip this document and come back to it only if something feels confusing later on.
+:::
+
 ---
 
 ## 1. The main mindset shift
 
 If you come from Python, you are used to thinking in terms of:
 
-- step-by-step instructions
-- objects that are modified in place
-- explicit loops
+- step-by-step instructions  
+- objects that are modified in place  
+- explicit loops  
 - “do this, then do that”
 
 R (especially the tidyverse) encourages a different way of thinking:
 
-- transformations instead of instructions
-- immutable data objects
-- pipelines instead of loops
+- transformations instead of instructions  
+- immutable data objects  
+- pipelines instead of loops  
 - “what happens to the data as it flows”
 
-You are not telling R *how* to do things step by step.  
-You are describing *how the data is transformed*.
-
-This difference explains most of the confusion beginners experience.
+::: {.callout-tip}
+In tidyverse code, try to read pipelines **out loud**.  
+If it sounds like a sentence describing the data, you are probably doing it right.
+:::
 
 ---
 
 ## 2. Imperative vs functional style
 
-### Python (typical mental model)
+::: {.tabset group="language"}
+
+### Python
 
 ```python
 df = df[df["value"] > 0]
@@ -48,9 +54,7 @@ df = df.groupby("id").mean()
 - State changes over time
 - Order matters a lot
 
----
-
-### R (tidyverse mental model)
+### R (tidyverse)
 
 ```r
 df |>
@@ -60,12 +64,16 @@ df |>
   summarise(across(everything(), mean))
 ```
 
-- Each step *returns a new object*
+- Each step returns a new object
 - No mutation in place
-- The pipeline reads top to bottom like a story
+- The pipeline reads top to bottom
 
+:::
+
+::: {.callout-note}
 Think of `|>` as saying:  
-> “take the result so far, and apply the next transformation”.
+“take the result so far, **and then** apply the next transformation”.
+:::
 
 ---
 
@@ -77,40 +85,38 @@ Think of `|>` as saying:
 | `Series` | vector |
 | `NaN` | `NA` |
 | `df.copy()` | usually unnecessary |
-| `for row in df` | avoid (vectorize) |
+| `for row in df` | avoid |
 | `df.groupby()` | `group_by()` |
 | method chaining | pipe (`|>`) |
-| `df.reset_index()` | not usually needed |
+| `df.reset_index()` | rarely needed |
 
-Important:  
-In R, **columns are vectors**, not mini-dataframes.  
-This is powerful, but different.
+::: {.callout-tip}
+In R, columns are **vectors**, not mini-dataframes.  
+This is one of the biggest conceptual differences — and one of R’s strengths.
+:::
 
 ---
 
 ## 4. Mutation: the silent trap for Python users
 
-In Python, this is common and expected:
+::: {.tabset group="language"}
+
+### Python
 
 ```python
 df["x"] = df["x"] * 2
 ```
 
-In R, this does **not** modify the object in place.
+This modifies `df` in place.
+
+### R
 
 ```r
 df |>
   mutate(x = x * 2)
 ```
 
-If you forget to reassign:
-
-```r
-df |>
-  mutate(x = x * 2)
-```
-
-nothing changes.
+This **does not** modify `df` unless you reassign it.
 
 Correct usage:
 
@@ -119,13 +125,20 @@ df <- df |>
   mutate(x = x * 2)
 ```
 
-This immutability is a feature, not a bug.
+:::
+
+::: {.callout-warning}
+If you forget to reassign in R, **nothing happens**.  
+This is the most common source of “why didn’t my code work?” for Python users.
+:::
 
 ---
 
 ## 5. Loops: just because you can, doesn’t mean you should
 
-Python users often try this in R:
+::: {.tabset group="language"}
+
+### Python-style thinking (not recommended in R)
 
 ```r
 for (i in 1:nrow(df)) {
@@ -133,43 +146,49 @@ for (i in 1:nrow(df)) {
 }
 ```
 
-This is:
-- slow
-- error-prone
-- unidiomatic R
-
-Preferred R style:
+### Idiomatic R
 
 ```r
 df |>
   mutate(x = x * 2)
 ```
 
-If you feel the urge to write a `for` loop, stop and ask:
-> “Is this a vectorized operation?”
+:::
 
-In 90% of cases, the answer is yes.
+::: {.callout-tip}
+If you feel the urge to write a `for` loop in R, stop and ask:  
+“Is this a vectorized operation?”
+
+In most cases, the answer is **yes**.
+:::
 
 ---
 
-## 6. Indexing: brackets work differently
+## 6. Indexing: brackets vs verbs
+
+::: {.tabset group="language"}
 
 ### Python
+
 ```python
 df.iloc[0]
 df.loc[df["x"] > 0]
 ```
 
 ### R
+
 ```r
 df[1, ]
 df |>
   filter(x > 0)
 ```
 
-Key idea:
-- Base R indexing exists
-- **tidyverse verbs are preferred** for clarity and safety
+:::
+
+::: {.callout-note}
+Base R indexing exists, but in this course we will prefer tidyverse verbs  
+because they are clearer and less error-prone.
+:::
 
 ---
 
@@ -195,10 +214,12 @@ str(df)
 
 and a column is a factor when you expected a string.
 
+::: {.callout-note}
 For now:
-- Don’t panic
-- Use `as.character()` if needed
-- We will be explicit about factors when they matter
+- don’t panic
+- use `as.character()` if needed
+- we will be explicit about factors when they matter
+:::
 
 ---
 
@@ -217,20 +238,17 @@ You need to be comfortable with:
 
 Everything else is secondary.
 
-If something feels unfamiliar:
-- check the examples
-- re-read the pipeline from top to bottom
-- use `glimpse()` and `str()`
-
 ---
 
 ## 10. Final reassurance
 
+::: {.callout-tip}
 If you are fluent in Python, you already have the hard skills:
 - data thinking
 - debugging intuition
 - abstraction
 
 R is just a different dialect.
+:::
 
 Once the mental model clicks, the rest of the course will feel much lighter.
