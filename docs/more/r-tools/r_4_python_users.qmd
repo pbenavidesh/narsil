@@ -1,0 +1,236 @@
+---
+title: "R for Python Users"
+author: "Pablo Benavides-Herrera"
+categories: [R]
+---
+
+This document is **optional**, but highly recommended if you come from a Python background.
+
+The goal is **not** to teach R from scratch.  
+The goal is to help you **translate mental models** from Python to R, so that the rest of the course feels natural instead of frustrating.
+
+---
+
+## 1. The main mindset shift
+
+If you come from Python, you are used to thinking in terms of:
+
+- step-by-step instructions
+- objects that are modified in place
+- explicit loops
+- “do this, then do that”
+
+R (especially the tidyverse) encourages a different way of thinking:
+
+- transformations instead of instructions
+- immutable data objects
+- pipelines instead of loops
+- “what happens to the data as it flows”
+
+You are not telling R *how* to do things step by step.  
+You are describing *how the data is transformed*.
+
+This difference explains most of the confusion beginners experience.
+
+---
+
+## 2. Imperative vs functional style
+
+### Python (typical mental model)
+
+```python
+df = df[df["value"] > 0]
+df["log_value"] = np.log(df["value"])
+df = df.groupby("id").mean()
+```
+
+- Each line modifies or reassigns `df`
+- State changes over time
+- Order matters a lot
+
+---
+
+### R (tidyverse mental model)
+
+```r
+df |>
+  filter(value > 0) |>
+  mutate(log_value = log(value)) |>
+  group_by(id) |>
+  summarise(across(everything(), mean))
+```
+
+- Each step *returns a new object*
+- No mutation in place
+- The pipeline reads top to bottom like a story
+
+Think of `|>` as saying:  
+> “take the result so far, and apply the next transformation”.
+
+---
+
+## 3. Core object mapping (Python → R)
+
+| Python | R |
+|------|---|
+| `pandas.DataFrame` | `tibble` |
+| `Series` | vector |
+| `NaN` | `NA` |
+| `df.copy()` | usually unnecessary |
+| `for row in df` | avoid (vectorize) |
+| `df.groupby()` | `group_by()` |
+| method chaining | pipe (`|>`) |
+| `df.reset_index()` | not usually needed |
+
+Important:  
+In R, **columns are vectors**, not mini-dataframes.  
+This is powerful, but different.
+
+---
+
+## 4. Mutation: the silent trap for Python users
+
+In Python, this is common and expected:
+
+```python
+df["x"] = df["x"] * 2
+```
+
+In R, this does **not** modify the object in place.
+
+```r
+df |>
+  mutate(x = x * 2)
+```
+
+If you forget to reassign:
+
+```r
+df |>
+  mutate(x = x * 2)
+```
+
+nothing changes.
+
+Correct usage:
+
+```r
+df <- df |>
+  mutate(x = x * 2)
+```
+
+This immutability is a feature, not a bug.
+
+---
+
+## 5. Loops: just because you can, doesn’t mean you should
+
+Python users often try this in R:
+
+```r
+for (i in 1:nrow(df)) {
+  df$x[i] <- df$x[i] * 2
+}
+```
+
+This is:
+- slow
+- error-prone
+- unidiomatic R
+
+Preferred R style:
+
+```r
+df |>
+  mutate(x = x * 2)
+```
+
+If you feel the urge to write a `for` loop, stop and ask:
+> “Is this a vectorized operation?”
+
+In 90% of cases, the answer is yes.
+
+---
+
+## 6. Indexing: brackets work differently
+
+### Python
+```python
+df.iloc[0]
+df.loc[df["x"] > 0]
+```
+
+### R
+```r
+df[1, ]
+df |>
+  filter(x > 0)
+```
+
+Key idea:
+- Base R indexing exists
+- **tidyverse verbs are preferred** for clarity and safety
+
+---
+
+## 7. Equality, assignment, and naming
+
+- `=` and `<-` both work for assignment  
+  (we will use `=` in this course for simplicity)
+- `==` is for comparison
+- Names are case-sensitive
+- Avoid spaces in column names (or use backticks)
+
+---
+
+## 8. Factors: the weird thing you didn’t ask for
+
+R has a special type called `factor` (categorical variable).
+
+Sometimes you will see:
+
+```r
+str(df)
+```
+
+and a column is a factor when you expected a string.
+
+For now:
+- Don’t panic
+- Use `as.character()` if needed
+- We will be explicit about factors when they matter
+
+---
+
+## 9. What you actually need for this course
+
+You do **not** need to become an R expert.
+
+You need to be comfortable with:
+
+- `tibble`
+- `filter()`
+- `mutate()`
+- `summarise()`
+- `group_by()`
+- pipes (`|>`)
+
+Everything else is secondary.
+
+If something feels unfamiliar:
+- check the examples
+- re-read the pipeline from top to bottom
+- use `glimpse()` and `str()`
+
+---
+
+## 10. Final reassurance
+
+If you are fluent in Python, you already have the hard skills:
+- data thinking
+- debugging intuition
+- abstraction
+
+R is just a different dialect.
+
+Once the mental model clicks, the rest of the course will feel much lighter.
