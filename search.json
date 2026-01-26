@@ -731,6 +731,202 @@
     "text": "12 Final takeaway\n\n\n\n\n\n\nTip\n\n\n\nIf tidyverse pipelines describe how data changes,\ntsibbles describe what kind of time-based data you have.\n\n\nGet the structure right, and the models will make sense."
   },
   {
+    "objectID": "docs/more/stats/correlation.html",
+    "href": "docs/more/stats/correlation.html",
+    "title": "Correlation, dependence, and time series pitfalls",
+    "section": "",
+    "text": "This document is optional, but strongly recommended.\nCorrelation is one of the most commonly used statistical tools — and one of the most frequently misunderstood.\nIn time series, this misunderstanding can lead to serious modeling errors."
+  },
+  {
+    "objectID": "docs/more/stats/correlation.html#from-covariance-to-correlation",
+    "href": "docs/more/stats/correlation.html#from-covariance-to-correlation",
+    "title": "Correlation, dependence, and time series pitfalls",
+    "section": "1 From covariance to correlation",
+    "text": "1 From covariance to correlation\nRecall that the covariance between two random variables X and Y is defined as\n\n\\operatorname{Cov}(X, Y) = \\mathbb{E}[(X - \\mu_X)(Y - \\mu_Y)].\n\nCovariance measures whether large values of X tend to occur with large (or small) values of Y.\nHowever, covariance depends on the scale of the variables.\nTo address this, we define the correlation coefficient:\n\n\\rho(X,Y) =\n\\frac{\\operatorname{Cov}(X,Y)}\n{\\sqrt{\\operatorname{Var}(X)\\operatorname{Var}(Y)}}.\n\nBy construction,\n\n-1 \\le \\rho(X,Y) \\le 1."
+  },
+  {
+    "objectID": "docs/more/stats/correlation.html#what-correlation-actually-measures",
+    "href": "docs/more/stats/correlation.html#what-correlation-actually-measures",
+    "title": "Correlation, dependence, and time series pitfalls",
+    "section": "2 What correlation actually measures",
+    "text": "2 What correlation actually measures\nCorrelation measures linear association between two random variables.\nIf \\rho(X,Y) \\neq 0, there is evidence of a linear relationship.\nIf \\rho(X,Y) = 0, there is no linear relationship.\n\n\n\n\n\n\nNote\n\n\n\nZero correlation does not imply independence.\nIt only implies absence of linear dependence.\n\n\nThere exist dependent random variables with zero correlation."
+  },
+  {
+    "objectID": "docs/more/stats/correlation.html#dependence-is-broader-than-correlation",
+    "href": "docs/more/stats/correlation.html#dependence-is-broader-than-correlation",
+    "title": "Correlation, dependence, and time series pitfalls",
+    "section": "3 Dependence is broader than correlation",
+    "text": "3 Dependence is broader than correlation\nTwo random variables X and Y are independent if their joint distribution factorizes:\n\nf_{X,Y}(x,y) = f_X(x) f_Y(y).\n\nIndependence is a strong condition.\nCorrelation, by contrast, captures only one specific aspect of dependence.\n\n\n\n\n\n\nImportant\n\n\n\nIndependence \\Rightarrow zero correlation\nZero correlation \\nRightarrow independence\n\n\nThis distinction is often ignored — with consequences."
+  },
+  {
+    "objectID": "docs/more/stats/correlation.html#why-time-series-make-this-worse",
+    "href": "docs/more/stats/correlation.html#why-time-series-make-this-worse",
+    "title": "Correlation, dependence, and time series pitfalls",
+    "section": "4 Why time series make this worse",
+    "text": "4 Why time series make this worse\nIn time series, observations are not independent across time.\nWe work with a sequence of random variables \\{Y_t\\}, where dependence across time is the norm, not the exception.\nCorrelation computed directly on time series data is therefore affected by:\n\ntrends,\nseasonality,\npersistence,\nshared temporal structure."
+  },
+  {
+    "objectID": "docs/more/stats/correlation.html#spurious-correlation",
+    "href": "docs/more/stats/correlation.html#spurious-correlation",
+    "title": "Correlation, dependence, and time series pitfalls",
+    "section": "5 Spurious correlation",
+    "text": "5 Spurious correlation\nConsider two unrelated time series, each with a strong trend.\nEven if the underlying processes are independent, their sample correlation can be large.\nThis phenomenon is known as spurious correlation.\n\n\n\n\n\n\nWarning\n\n\n\nHigh correlation does not imply meaningful dependence\nwhen time series share common structure.\n\n\nThis is one of the most common pitfalls in applied forecasting."
+  },
+  {
+    "objectID": "docs/more/stats/correlation.html#correlation-across-time-autocorrelation",
+    "href": "docs/more/stats/correlation.html#correlation-across-time-autocorrelation",
+    "title": "Correlation, dependence, and time series pitfalls",
+    "section": "6 Correlation across time: autocorrelation",
+    "text": "6 Correlation across time: autocorrelation\nIn time series analysis, correlation most often appears as autocorrelation.\nThe lag-h autocorrelation is defined as\n\n\\rho(h) =\n\\frac{\\operatorname{Cov}(Y_t, Y_{t-h})}\n{\\operatorname{Var}(Y_t)}.\n\nAutocorrelation measures linear dependence across time, not across variables.\n\n\n\n\n\n\nTip\n\n\n\nAutocorrelation is not a nuisance.\nIt is the signal that time series models are built to capture."
+  },
+  {
+    "objectID": "docs/more/stats/correlation.html#why-correlation-is-not-enough",
+    "href": "docs/more/stats/correlation.html#why-correlation-is-not-enough",
+    "title": "Correlation, dependence, and time series pitfalls",
+    "section": "7 Why correlation is not enough",
+    "text": "7 Why correlation is not enough\nCorrelation answers a narrow question:\n\nIs there a linear relationship?\n\nForecasting requires a broader understanding of dependence:\n\nhow long dependence persists,\nhow it decays over time,\nwhether it is stable.\n\nThese questions cannot be answered by a single correlation coefficient."
+  },
+  {
+    "objectID": "docs/more/stats/correlation.html#where-this-shows-up-in-the-course",
+    "href": "docs/more/stats/correlation.html#where-this-shows-up-in-the-course",
+    "title": "Correlation, dependence, and time series pitfalls",
+    "section": "8 Where this shows up in the course",
+    "text": "8 Where this shows up in the course\nThis refresher is foundational for:\n\nautocorrelation and partial autocorrelation functions,\nstationarity assumptions,\nAR and MA models,\nresidual diagnostics.\n\nMisunderstanding correlation leads directly to misinterpreting these tools."
+  },
+  {
+    "objectID": "docs/more/stats/correlation.html#what-you-do-not-need-yet",
+    "href": "docs/more/stats/correlation.html#what-you-do-not-need-yet",
+    "title": "Correlation, dependence, and time series pitfalls",
+    "section": "9 What you do not need yet",
+    "text": "9 What you do not need yet\nAt this stage, you do not need:\n\nnonlinear dependence measures,\ncopulas,\nmutual information.\n\nThose tools exist, but linear dependence is צור enough for the models covered in this course."
+  },
+  {
+    "objectID": "docs/more/stats/correlation.html#takeaway",
+    "href": "docs/more/stats/correlation.html#takeaway",
+    "title": "Correlation, dependence, and time series pitfalls",
+    "section": "10 Takeaway",
+    "text": "10 Takeaway\n\n\n\n\n\n\nImportant\n\n\n\nCorrelation measures linear association.\nDependence is broader.\nIn time series, confusing the two leads to spurious conclusions."
+  },
+  {
+    "objectID": "docs/more/stats/random_variables.html",
+    "href": "docs/more/stats/random_variables.html",
+    "title": "Random variables: uncertainty as an object",
+    "section": "",
+    "text": "This document is optional, but strongly recommended.\nIn forecasting, we do not only analyze observed data.\nWe analyze uncertainty about future values.\nRandom variables are the mathematical objects that allow us to make that uncertainty explicit, formal, and usable."
+  },
+  {
+    "objectID": "docs/more/stats/random_variables.html#from-data-to-uncertainty",
+    "href": "docs/more/stats/random_variables.html#from-data-to-uncertainty",
+    "title": "Random variables: uncertainty as an object",
+    "section": "1 From data to uncertainty",
+    "text": "1 From data to uncertainty\nSuppose you observe a time series:\n\ndaily sales\n\nhourly electricity demand\n\nmonthly inflation\n\nAt time t, the value is known.\nAt time t+1, it is not.\nThat future value is not just “unknown” — it is uncertain.\nA random variable is how we represent that uncertainty mathematically.\n\n\n\n\n\n\nTip\n\n\n\nIn forecasting, uncertainty is not a nuisance.\nIt is the object of interest."
+  },
+  {
+    "objectID": "docs/more/stats/random_variables.html#what-is-a-random-variable",
+    "href": "docs/more/stats/random_variables.html#what-is-a-random-variable",
+    "title": "Random variables: uncertainty as an object",
+    "section": "2 What is a random variable?",
+    "text": "2 What is a random variable?\nConceptually, a random variable represents a quantity whose value is not fixed in advance.\nIn forecasting, it typically represents:\n\na future observation,\na forecast error,\nor a simulated outcome.\n\nFormally, a random variable is a function\n\nX : \\Omega \\rightarrow \\mathbb{R},\n\nwhich assigns a real number to each possible outcome of an uncertain process.\n\n\n\n\n\n\nNote\n\n\n\nYou do not need to work explicitly with sample spaces or probability axioms in this course.\nThe important point is that a random variable is a mathematical representation of uncertainty."
+  },
+  {
+    "objectID": "docs/more/stats/random_variables.html#discrete-and-continuous-random-variables",
+    "href": "docs/more/stats/random_variables.html#discrete-and-continuous-random-variables",
+    "title": "Random variables: uncertainty as an object",
+    "section": "3 Discrete and continuous random variables",
+    "text": "3 Discrete and continuous random variables\nRandom variables are commonly classified into two types.\n\n3.1 Discrete random variables\nA discrete random variable takes values in a countable set.\nExamples:\n\nnumber of customers tomorrow,\nnumber of units sold in an hour,\nnumber of failures in a week.\n\nUncertainty is described by a probability mass function (PMF):\n\np(x) = \\mathbb{P}(X = x),\n\nwith the properties\n\np(x) \\ge 0, \\qquad \\sum_x p(x) = 1.\n\n\n\n\n3.2 Continuous random variables\nA continuous random variable takes values in a continuum.\nExamples:\n\nelectricity demand,\ntemperature,\nforecast errors.\n\nUncertainty is described by a probability density function (PDF) f(x), satisfying\n\n\\int_{-\\infty}^{\\infty} f(x)\\,dx = 1.\n\nProbabilities are assigned to intervals, not points:\n\n\\mathbb{P}(a \\le X \\le b) = \\int_a^b f(x)\\,dx.\n\n\n\n\n\n\n\nWarning\n\n\n\nFor continuous random variables,\n\n\\mathbb{P}(X = x) = 0\n\nfor any single value x.\nThis is not a technicality — it is a core conceptual distinction."
+  },
+  {
+    "objectID": "docs/more/stats/random_variables.html#distributions-as-models-not-data-summaries",
+    "href": "docs/more/stats/random_variables.html#distributions-as-models-not-data-summaries",
+    "title": "Random variables: uncertainty as an object",
+    "section": "4 Distributions as models, not data summaries",
+    "text": "4 Distributions as models, not data summaries\nA distribution describes how a random variable behaves.\nIt answers questions such as:\n\nWhich values are more likely?\nHow spread out are the possibilities?\nHow extreme outcomes behave?\n\nCrucially:\n\n\n\n\n\n\nImportant\n\n\n\nA distribution is not the same as a histogram.\n\nA histogram summarizes observed data.\nA distribution is a model for uncertainty.\n\n\n\nIn forecasting, distributions are assumptions — useful, but always assumptions."
+  },
+  {
+    "objectID": "docs/more/stats/random_variables.html#random-variables-in-time-series",
+    "href": "docs/more/stats/random_variables.html#random-variables-in-time-series",
+    "title": "Random variables: uncertainty as an object",
+    "section": "5 Random variables in time series",
+    "text": "5 Random variables in time series\nIn time series analysis, we typically work with a sequence of random variables\n\n\\{Y_t\\}_{t=1}^T.\n\nIt is essential to distinguish between:\n\nY_t: the random variable,\ny_t: its observed realization.\n\n\n\n\n\n\n\nTip\n\n\n\nUppercase letters denote random variables.\nLowercase letters denote observed values.\nThis distinction will appear repeatedly throughout the course.\n\n\nEach future time point corresponds to its own random variable.\nA forecast is therefore not a single number, but a distribution over possible values."
+  },
+  {
+    "objectID": "docs/more/stats/random_variables.html#why-this-matters-for-forecasting",
+    "href": "docs/more/stats/random_variables.html#why-this-matters-for-forecasting",
+    "title": "Random variables: uncertainty as an object",
+    "section": "6 Why this matters for forecasting",
+    "text": "6 Why this matters for forecasting\nRandom variables and distributions appear throughout the course, even when not explicitly mentioned:\n\nforecast distributions and intervals,\nresiduals and forecast errors,\nsimulation-based forecasting,\nmodel diagnostics.\n\nWhenever you reason about uncertainty, you are implicitly working with random variables.\n\n\n\n\n\n\nNote\n\n\n\nPoint forecasts are summaries.\nDistributions carry the full information."
+  },
+  {
+    "objectID": "docs/more/stats/random_variables.html#what-you-do-not-need-right-now",
+    "href": "docs/more/stats/random_variables.html#what-you-do-not-need-right-now",
+    "title": "Random variables: uncertainty as an object",
+    "section": "7 What you do not need right now",
+    "text": "7 What you do not need right now\nAt this stage, you do not need:\n\nprobability axioms,\nmanual probability calculations,\nanalytical derivations of densities.\n\nThose belong to a probability theory course.\nHere, random variables are tools for thinking, not objects of proof."
+  },
+  {
+    "objectID": "docs/more/stats/random_variables.html#where-this-shows-up-in-the-course",
+    "href": "docs/more/stats/random_variables.html#where-this-shows-up-in-the-course",
+    "title": "Random variables: uncertainty as an object",
+    "section": "8 Where this shows up in the course",
+    "text": "8 Where this shows up in the course\nThis refresher prepares you for:\n\nresidual analysis,\nforecast uncertainty and intervals,\ndiagnostic checks,\nsimulation-based methods.\n\nLater refreshers will build on this foundation to introduce:\n\nexpectation and variance,\ncovariance and correlation,\nstationarity and noise."
+  },
+  {
+    "objectID": "docs/more/stats/random_variables.html#takeaway",
+    "href": "docs/more/stats/random_variables.html#takeaway",
+    "title": "Random variables: uncertainty as an object",
+    "section": "9 Takeaway",
+    "text": "9 Takeaway\nIf you remember only one idea, make it this:\n\n\n\n\n\n\nImportant\n\n\n\nIn forecasting, future values are random variables,\nand models describe their distributions — not certainties."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "\n1 Time Series Forecasting with R",
+    "section": "",
+    "text": "Welcome to the Time Series Forecasting course at ITESO. Here you will find all the materials and resources needed for the course."
+  },
+  {
+    "objectID": "index.html#what-youll-learn",
+    "href": "index.html#what-youll-learn",
+    "title": "\n1 Time Series Forecasting with R",
+    "section": "\n1.1 What you’ll learn",
+    "text": "1.1 What you’ll learn\n\nBuild tidy time series with tsibble and modern data pipelines\nCreate forecasts with ETS, ARIMA, and regression-based models via fable\n\nEngineer time features and diagnose models with feasts)\nEvaluate with time-aware resampling and communicate uncertainty\nScale to multiple series and hierarchies when needed\n\n\n\n\n\n\n\nTipHow to succeed here\n\n\n\nForecasting improves with iteration: start simple, validate honestly, and refine. Keep a tight loop of fit → diagnose → evaluate → communicate."
+  },
+  {
+    "objectID": "index.html#start-here",
+    "href": "index.html#start-here",
+    "title": "\n1 Time Series Forecasting with R",
+    "section": "\n1.2 Start here",
+    "text": "1.2 Start here\n\n\n\n\n\n\nNote\n\n\n\nNew to the site? Use the links below to jump in.\n\n\n\nModules\nIn-class exercises"
+  },
+  {
+    "objectID": "index.html#course-map",
+    "href": "index.html#course-map",
+    "title": "\n1 Time Series Forecasting with R",
+    "section": "\n1.3 Course map",
+    "text": "1.3 Course map\n\n\n\n1.3.1 1. Foundations\n\ntidy data + time indexes\n\ntsibble keys, gaps, and intervals\n\n1.3.2 2. Patterns & features\n\nseasonality, trend, decomposition\ndiagnostics and features (feasts)\n\n\n\n1.3.3 3. Core forecasting models\n\nETS + ARIMA\nmodel comparison and selection\n\n1.3.4 4. Regression workflows\n\ntime features, events, and covariates\nforecast reconciliation ideas\n\n\n\n1.3.5 5. Evaluation & communication\n\ntime series CV and backtesting\nuncertainty, intervals, and narratives\n\n1.3.6 6. Multiple series\n\ngrouped models\nhierarchies and reconciliation"
+  },
+  {
+    "objectID": "index.html#quick-setup-check",
+    "href": "index.html#quick-setup-check",
+    "title": "\n1 Time Series Forecasting with R",
+    "section": "\n1.4 Quick setup check",
+    "text": "1.4 Quick setup check\nRun this once after installing packages to confirm your environment.\n\nCodelibrary(tidyverse)\nlibrary(tsibble)\nlibrary(fable)\nlibrary(feasts)\n\nsessionInfo()\n\n\n\n\n\n\n\n\nWarningCommon pitfalls\n\n\n\n\n\nData leakage: don’t let future information sneak into features.\n\nRandom CV: use time-aware resampling/backtesting.\n\nOverfitting: a more complex model isn’t automatically better."
+  },
+  {
+    "objectID": "index.html#primary-toolchain",
+    "href": "index.html#primary-toolchain",
+    "title": "\n1 Time Series Forecasting with R",
+    "section": "\n1.5 Primary toolchain",
+    "text": "1.5 Primary toolchain\nWe’ll use a tidy workflow centered on:\n\n\ntidyverse for data wrangling\n\ntsibble for time-aware tibbles\n\nfable for modeling and forecasting\n\nfeasts for decomposition, features, and diagnostics\n\nRecommended reading: Forecasting: Principles and Practice (free online)."
+  },
+  {
+    "objectID": "docs/more/index.html",
+    "href": "docs/more/index.html",
+    "title": "More",
+    "section": "",
+    "text": "These materials are optional and are not required to pass the course.\nThey are meant to help you:\n\nRefresh prerequisite concepts (statistics, probability, regression)\nWork more comfortably in R and the tidyverse ecosystem\nImprove your workflow and reproducibility (projects, Quarto, organization)\n\nYou are encouraged to use them as needed.\n\n\n\n\n\n\n   \n    \n    \n      Order By\n      Default\n      \n        Title\n      \n      \n        Date - Oldest\n      \n      \n        Date - Newest\n      \n      \n        Author\n      \n    \n  \n    \n      \n      \n    \n\n\n\n\n\n\n\n\n\n\nCorrelation, dependence, and time series pitfalls\n\n\n\nStat refreshers\n\n\n\nA refresher on correlation and statistical dependence, with an emphasis on why correlation can be misleading in time series data.\n\n\n\n\n\nPablo Benavides-Herrera\n\n3 min\n\n\n\n\n\n\n\n\n\n\n\nExpectation, variance, and covariance: measuring uncertainty\n\n\n\nStat refreshers\n\n\n\nA refresher on expectation, variance, and covariance, focused on how uncertainty and dependence are quantified in time series.\n\n\n\n\n\nPablo Benavides-Herrera\n\n3 min\n\n\n\n\n\n\n\n\n\n\n\nPipes and the tidyverse mental model\n\n\n\nR\n\n\n\nHow to think in tidyverse pipelines: understanding pipes, data flow, and readable transformations in R.\n\n\n\n\n\nPablo Benavides-Herrera\n\n4 min\n\n\n\n\n\n\n\n\n\n\n\nR for Python Users\n\n\n\nR\n\n\n\nA conceptual introduction to R for students coming from a Python background, focused on mental models, data workflows, and tidyverse-style thinking.\n\n\n\n\n\nPablo Benavides-Herrera\n\n4 min\n\n\n\n\n\n\n\n\n\n\n\nRandom variables: uncertainty as an object\n\n\n\nStat refreshers\n\n\n\nA mathematically grounded refresher on random variables and distributions, focused on how uncertainty is represented and used in time series forecasting.\n\n\n\n\n\nPablo Benavides-Herrera\n\n3 min\n\n\n\n\n\n\n\n\n\n\n\ntsibble: thinking in keys and time\n\n\n\nR\n\n\n\nAn introduction to tsibble and the core ideas of time, keys, and structure in tidyverts-based time series workflows.\n\n\n\n\n\nPablo Benavides-Herrera\n\n4 min\n\n\n\n\nNo matching items\n Back to top"
+  },
+  {
     "objectID": "docs/more/stats/expectation_variance_cov.html",
     "href": "docs/more/stats/expectation_variance_cov.html",
     "title": "Expectation, variance, and covariance: measuring uncertainty",
@@ -806,125 +1002,6 @@
     "title": "Expectation, variance, and covariance: measuring uncertainty",
     "section": "10 Takeaway",
     "text": "10 Takeaway\n\n\n\n\n\n\nImportant\n\n\n\nExpectation describes the center.\nVariance describes uncertainty.\nCovariance describes dependence.\nTogether, they define how time series behave."
-  },
-  {
-    "objectID": "docs/more/index.html",
-    "href": "docs/more/index.html",
-    "title": "More",
-    "section": "",
-    "text": "These materials are optional and are not required to pass the course.\nThey are meant to help you:\n\nRefresh prerequisite concepts (statistics, probability, regression)\nWork more comfortably in R and the tidyverse ecosystem\nImprove your workflow and reproducibility (projects, Quarto, organization)\n\nYou are encouraged to use them as needed.\n\n\n\n\n\n\n   \n    \n    \n      Order By\n      Default\n      \n        Title\n      \n      \n        Date - Oldest\n      \n      \n        Date - Newest\n      \n      \n        Author\n      \n    \n  \n    \n      \n      \n    \n\n\n\n\n\n\n\n\n\n\nExpectation, variance, and covariance: measuring uncertainty\n\n\n\nStat refreshers\n\n\n\nA refresher on expectation, variance, and covariance, focused on how uncertainty and dependence are quantified in time series.\n\n\n\n\n\nPablo Benavides-Herrera\n\n3 min\n\n\n\n\n\n\n\n\n\n\n\nPipes and the tidyverse mental model\n\n\n\nR\n\n\n\nHow to think in tidyverse pipelines: understanding pipes, data flow, and readable transformations in R.\n\n\n\n\n\nPablo Benavides-Herrera\n\n4 min\n\n\n\n\n\n\n\n\n\n\n\nR for Python Users\n\n\n\nR\n\n\n\nA conceptual introduction to R for students coming from a Python background, focused on mental models, data workflows, and tidyverse-style thinking.\n\n\n\n\n\nPablo Benavides-Herrera\n\n4 min\n\n\n\n\n\n\n\n\n\n\n\nRandom variables: uncertainty as an object\n\n\n\nStat refreshers\n\n\n\nA mathematically grounded refresher on random variables and distributions, focused on how uncertainty is represented and used in time series forecasting.\n\n\n\n\n\nPablo Benavides-Herrera\n\n3 min\n\n\n\n\n\n\n\n\n\n\n\ntsibble: thinking in keys and time\n\n\n\nR\n\n\n\nAn introduction to tsibble and the core ideas of time, keys, and structure in tidyverts-based time series workflows.\n\n\n\n\n\nPablo Benavides-Herrera\n\n4 min\n\n\n\n\nNo matching items\n Back to top"
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "\n1 Time Series Forecasting with R",
-    "section": "",
-    "text": "Welcome to the Time Series Forecasting course at ITESO. Here you will find all the materials and resources needed for the course."
-  },
-  {
-    "objectID": "index.html#what-youll-learn",
-    "href": "index.html#what-youll-learn",
-    "title": "\n1 Time Series Forecasting with R",
-    "section": "\n1.1 What you’ll learn",
-    "text": "1.1 What you’ll learn\n\nBuild tidy time series with tsibble and modern data pipelines\nCreate forecasts with ETS, ARIMA, and regression-based models via fable\n\nEngineer time features and diagnose models with feasts)\nEvaluate with time-aware resampling and communicate uncertainty\nScale to multiple series and hierarchies when needed\n\n\n\n\n\n\n\nTipHow to succeed here\n\n\n\nForecasting improves with iteration: start simple, validate honestly, and refine. Keep a tight loop of fit → diagnose → evaluate → communicate."
-  },
-  {
-    "objectID": "index.html#start-here",
-    "href": "index.html#start-here",
-    "title": "\n1 Time Series Forecasting with R",
-    "section": "\n1.2 Start here",
-    "text": "1.2 Start here\n\n\n\n\n\n\nNote\n\n\n\nNew to the site? Use the links below to jump in.\n\n\n\nModules\nIn-class exercises"
-  },
-  {
-    "objectID": "index.html#course-map",
-    "href": "index.html#course-map",
-    "title": "\n1 Time Series Forecasting with R",
-    "section": "\n1.3 Course map",
-    "text": "1.3 Course map\n\n\n\n1.3.1 1. Foundations\n\ntidy data + time indexes\n\ntsibble keys, gaps, and intervals\n\n1.3.2 2. Patterns & features\n\nseasonality, trend, decomposition\ndiagnostics and features (feasts)\n\n\n\n1.3.3 3. Core forecasting models\n\nETS + ARIMA\nmodel comparison and selection\n\n1.3.4 4. Regression workflows\n\ntime features, events, and covariates\nforecast reconciliation ideas\n\n\n\n1.3.5 5. Evaluation & communication\n\ntime series CV and backtesting\nuncertainty, intervals, and narratives\n\n1.3.6 6. Multiple series\n\ngrouped models\nhierarchies and reconciliation"
-  },
-  {
-    "objectID": "index.html#quick-setup-check",
-    "href": "index.html#quick-setup-check",
-    "title": "\n1 Time Series Forecasting with R",
-    "section": "\n1.4 Quick setup check",
-    "text": "1.4 Quick setup check\nRun this once after installing packages to confirm your environment.\n\nCodelibrary(tidyverse)\nlibrary(tsibble)\nlibrary(fable)\nlibrary(feasts)\n\nsessionInfo()\n\n\n\n\n\n\n\n\nWarningCommon pitfalls\n\n\n\n\n\nData leakage: don’t let future information sneak into features.\n\nRandom CV: use time-aware resampling/backtesting.\n\nOverfitting: a more complex model isn’t automatically better."
-  },
-  {
-    "objectID": "index.html#primary-toolchain",
-    "href": "index.html#primary-toolchain",
-    "title": "\n1 Time Series Forecasting with R",
-    "section": "\n1.5 Primary toolchain",
-    "text": "1.5 Primary toolchain\nWe’ll use a tidy workflow centered on:\n\n\ntidyverse for data wrangling\n\ntsibble for time-aware tibbles\n\nfable for modeling and forecasting\n\nfeasts for decomposition, features, and diagnostics\n\nRecommended reading: Forecasting: Principles and Practice (free online)."
-  },
-  {
-    "objectID": "docs/more/stats/random_variables.html",
-    "href": "docs/more/stats/random_variables.html",
-    "title": "Random variables: uncertainty as an object",
-    "section": "",
-    "text": "This document is optional, but strongly recommended.\nIn forecasting, we do not only analyze observed data.\nWe analyze uncertainty about future values.\nRandom variables are the mathematical objects that allow us to make that uncertainty explicit, formal, and usable."
-  },
-  {
-    "objectID": "docs/more/stats/random_variables.html#from-data-to-uncertainty",
-    "href": "docs/more/stats/random_variables.html#from-data-to-uncertainty",
-    "title": "Random variables: uncertainty as an object",
-    "section": "1 From data to uncertainty",
-    "text": "1 From data to uncertainty\nSuppose you observe a time series:\n\ndaily sales\n\nhourly electricity demand\n\nmonthly inflation\n\nAt time t, the value is known.\nAt time t+1, it is not.\nThat future value is not just “unknown” — it is uncertain.\nA random variable is how we represent that uncertainty mathematically.\n\n\n\n\n\n\nTip\n\n\n\nIn forecasting, uncertainty is not a nuisance.\nIt is the object of interest."
-  },
-  {
-    "objectID": "docs/more/stats/random_variables.html#what-is-a-random-variable",
-    "href": "docs/more/stats/random_variables.html#what-is-a-random-variable",
-    "title": "Random variables: uncertainty as an object",
-    "section": "2 What is a random variable?",
-    "text": "2 What is a random variable?\nConceptually, a random variable represents a quantity whose value is not fixed in advance.\nIn forecasting, it typically represents:\n\na future observation,\na forecast error,\nor a simulated outcome.\n\nFormally, a random variable is a function\n\nX : \\Omega \\rightarrow \\mathbb{R},\n\nwhich assigns a real number to each possible outcome of an uncertain process.\n\n\n\n\n\n\nNote\n\n\n\nYou do not need to work explicitly with sample spaces or probability axioms in this course.\nThe important point is that a random variable is a mathematical representation of uncertainty."
-  },
-  {
-    "objectID": "docs/more/stats/random_variables.html#discrete-and-continuous-random-variables",
-    "href": "docs/more/stats/random_variables.html#discrete-and-continuous-random-variables",
-    "title": "Random variables: uncertainty as an object",
-    "section": "3 Discrete and continuous random variables",
-    "text": "3 Discrete and continuous random variables\nRandom variables are commonly classified into two types.\n\n3.1 Discrete random variables\nA discrete random variable takes values in a countable set.\nExamples:\n\nnumber of customers tomorrow,\nnumber of units sold in an hour,\nnumber of failures in a week.\n\nUncertainty is described by a probability mass function (PMF):\n\np(x) = \\mathbb{P}(X = x),\n\nwith the properties\n\np(x) \\ge 0, \\qquad \\sum_x p(x) = 1.\n\n\n\n\n3.2 Continuous random variables\nA continuous random variable takes values in a continuum.\nExamples:\n\nelectricity demand,\ntemperature,\nforecast errors.\n\nUncertainty is described by a probability density function (PDF) f(x), satisfying\n\n\\int_{-\\infty}^{\\infty} f(x)\\,dx = 1.\n\nProbabilities are assigned to intervals, not points:\n\n\\mathbb{P}(a \\le X \\le b) = \\int_a^b f(x)\\,dx.\n\n\n\n\n\n\n\nWarning\n\n\n\nFor continuous random variables,\n\n\\mathbb{P}(X = x) = 0\n\nfor any single value x.\nThis is not a technicality — it is a core conceptual distinction."
-  },
-  {
-    "objectID": "docs/more/stats/random_variables.html#distributions-as-models-not-data-summaries",
-    "href": "docs/more/stats/random_variables.html#distributions-as-models-not-data-summaries",
-    "title": "Random variables: uncertainty as an object",
-    "section": "4 Distributions as models, not data summaries",
-    "text": "4 Distributions as models, not data summaries\nA distribution describes how a random variable behaves.\nIt answers questions such as:\n\nWhich values are more likely?\nHow spread out are the possibilities?\nHow extreme outcomes behave?\n\nCrucially:\n\n\n\n\n\n\nImportant\n\n\n\nA distribution is not the same as a histogram.\n\nA histogram summarizes observed data.\nA distribution is a model for uncertainty.\n\n\n\nIn forecasting, distributions are assumptions — useful, but always assumptions."
-  },
-  {
-    "objectID": "docs/more/stats/random_variables.html#random-variables-in-time-series",
-    "href": "docs/more/stats/random_variables.html#random-variables-in-time-series",
-    "title": "Random variables: uncertainty as an object",
-    "section": "5 Random variables in time series",
-    "text": "5 Random variables in time series\nIn time series analysis, we typically work with a sequence of random variables\n\n\\{Y_t\\}_{t=1}^T.\n\nIt is essential to distinguish between:\n\nY_t: the random variable,\ny_t: its observed realization.\n\n\n\n\n\n\n\nTip\n\n\n\nUppercase letters denote random variables.\nLowercase letters denote observed values.\nThis distinction will appear repeatedly throughout the course.\n\n\nEach future time point corresponds to its own random variable.\nA forecast is therefore not a single number, but a distribution over possible values."
-  },
-  {
-    "objectID": "docs/more/stats/random_variables.html#why-this-matters-for-forecasting",
-    "href": "docs/more/stats/random_variables.html#why-this-matters-for-forecasting",
-    "title": "Random variables: uncertainty as an object",
-    "section": "6 Why this matters for forecasting",
-    "text": "6 Why this matters for forecasting\nRandom variables and distributions appear throughout the course, even when not explicitly mentioned:\n\nforecast distributions and intervals,\nresiduals and forecast errors,\nsimulation-based forecasting,\nmodel diagnostics.\n\nWhenever you reason about uncertainty, you are implicitly working with random variables.\n\n\n\n\n\n\nNote\n\n\n\nPoint forecasts are summaries.\nDistributions carry the full information."
-  },
-  {
-    "objectID": "docs/more/stats/random_variables.html#what-you-do-not-need-right-now",
-    "href": "docs/more/stats/random_variables.html#what-you-do-not-need-right-now",
-    "title": "Random variables: uncertainty as an object",
-    "section": "7 What you do not need right now",
-    "text": "7 What you do not need right now\nAt this stage, you do not need:\n\nprobability axioms,\nmanual probability calculations,\nanalytical derivations of densities.\n\nThose belong to a probability theory course.\nHere, random variables are tools for thinking, not objects of proof."
-  },
-  {
-    "objectID": "docs/more/stats/random_variables.html#where-this-shows-up-in-the-course",
-    "href": "docs/more/stats/random_variables.html#where-this-shows-up-in-the-course",
-    "title": "Random variables: uncertainty as an object",
-    "section": "8 Where this shows up in the course",
-    "text": "8 Where this shows up in the course\nThis refresher prepares you for:\n\nresidual analysis,\nforecast uncertainty and intervals,\ndiagnostic checks,\nsimulation-based methods.\n\nLater refreshers will build on this foundation to introduce:\n\nexpectation and variance,\ncovariance and correlation,\nstationarity and noise."
-  },
-  {
-    "objectID": "docs/more/stats/random_variables.html#takeaway",
-    "href": "docs/more/stats/random_variables.html#takeaway",
-    "title": "Random variables: uncertainty as an object",
-    "section": "9 Takeaway",
-    "text": "9 Takeaway\nIf you remember only one idea, make it this:\n\n\n\n\n\n\nImportant\n\n\n\nIn forecasting, future values are random variables,\nand models describe their distributions — not certainties."
   },
   {
     "objectID": "docs/more/r-tools/pipes_tidyverse.html",

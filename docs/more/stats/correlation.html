@@ -6,10 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="">
-<meta name="description" content="Optional materials to support the course.">
+<meta name="author" content="Pablo Benavides-Herrera">
+<meta name="description" content="A refresher on correlation and statistical dependence, with an emphasis on why correlation can be misleading in time series data.">
 
-<title>More – Time Series Forecasting</title>
+<title>Correlation, dependence, and time series pitfalls – Time Series Forecasting</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -25,31 +25,29 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../../">
-<link href="../../images/narsil_logo.png" rel="icon" type="image/png">
-<script src="../../site_libs/quarto-listing/list.min.js"></script>
-<script src="../../site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
-<script src="../../site_libs/quarto-html/popper.min.js"></script>
-<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-2a367172f4fe7d9182ebf8e09f85cb4e.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-7fb59815a1c41eec7c034637f0c35ff0.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-2a367172f4fe7d9182ebf8e09f85cb4e.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
-<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-f75f3358e428cc5073b8e36401a08085.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-050812e28c024fa67842b13441fed95e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../../site_libs/bootstrap/bootstrap-f75f3358e428cc5073b8e36401a08085.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<link href="../../../images/narsil_logo.png" rel="icon" type="image/png">
+<script src="../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-2a367172f4fe7d9182ebf8e09f85cb4e.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-dark-7fb59815a1c41eec7c034637f0c35ff0.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-2a367172f4fe7d9182ebf8e09f85cb4e.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap-f75f3358e428cc5073b8e36401a08085.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../../site_libs/bootstrap/bootstrap-dark-050812e28c024fa67842b13441fed95e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../../site_libs/bootstrap/bootstrap-f75f3358e428cc5073b8e36401a08085.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -77,35 +75,6 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
-
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-image','listing-date','listing-title','listing-description','listing-categories','listing-author','listing-reading-time',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-title","listing-author","listing-image","listing-description","listing-categories"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
 <style>html{ scroll-behavior: smooth; }</style>
 <script type="application/json" class="js-hypothesis-config">
 {
@@ -163,12 +132,12 @@ window.Quarto = {
 };
 </script>
 
-<link rel="stylesheet" href="../../styles.css">
-<meta property="og:title" content="More – Time Series Forecasting">
-<meta property="og:description" content="Optional materials to support the course.">
+<link rel="stylesheet" href="../../../styles.css">
+<meta property="og:title" content="Correlation, dependence, and time series pitfalls – Time Series Forecasting">
+<meta property="og:description" content="A refresher on correlation and statistical dependence, with an emphasis on why correlation can be misleading in time series data.">
 <meta property="og:site_name" content="Time Series Forecasting">
-<meta name="twitter:title" content="More – Time Series Forecasting">
-<meta name="twitter:description" content="Optional materials to support the course.">
+<meta name="twitter:title" content="Correlation, dependence, and time series pitfalls – Time Series Forecasting">
+<meta name="twitter:description" content="A refresher on correlation and statistical dependence, with an emphasis on why correlation can be misleading in time series data.">
 <meta name="twitter:creator" content="@PabsBenavides">
 <meta name="twitter:card" content="summary">
 </head>
@@ -342,11 +311,11 @@ window.Quarto = {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../../images/iteso_logo_blanco.png" alt="" class="navbar-logo light-content">
-    <img src="../../images/iteso_logo_blanco.png" alt="" class="navbar-logo dark-content">
+    <a href="../../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../../images/iteso_logo_blanco.png" alt="" class="navbar-logo light-content">
+    <img src="../../../images/iteso_logo_blanco.png" alt="" class="navbar-logo dark-content">
     </a>
-    <a class="navbar-brand" href="../../index.html">
+    <a class="navbar-brand" href="../../../index.html">
     <span class="navbar-title">Time Series Forecasting</span>
     </a>
   </div>
@@ -357,23 +326,23 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../../index.html"> 
+    <a class="nav-link" href="../../../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../docs/modules/index.html"> 
+    <a class="nav-link" href="../../../docs/modules/index.html"> 
 <span class="menu-text">Modules</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../docs/exercises/index.html"> 
+    <a class="nav-link" href="../../../docs/exercises/index.html"> 
 <span class="menu-text">Exercises</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="../../docs/more/index.html" aria-current="page"> 
+    <a class="nav-link" href="../../../docs/more/index.html"> 
 <span class="menu-text">More</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../docs/about.html"> 
+    <a class="nav-link" href="../../../docs/about.html"> 
 <span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item">
@@ -403,28 +372,58 @@ window.Quarto = {
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(6)</span></div><div class="category" data-category="Ug==">R <span class="quarto-category-count">(3)</span></div><div class="category" data-category="U3RhdCUyMHJlZnJlc2hlcnM=">Stat refreshers <span class="quarto-category-count">(3)</span></div></div></div>
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#from-covariance-to-correlation" id="toc-from-covariance-to-correlation" class="nav-link active" data-scroll-target="#from-covariance-to-correlation"><span class="header-section-number">1</span> From covariance to correlation</a></li>
+  <li><a href="#what-correlation-actually-measures" id="toc-what-correlation-actually-measures" class="nav-link" data-scroll-target="#what-correlation-actually-measures"><span class="header-section-number">2</span> What correlation actually measures</a></li>
+  <li><a href="#dependence-is-broader-than-correlation" id="toc-dependence-is-broader-than-correlation" class="nav-link" data-scroll-target="#dependence-is-broader-than-correlation"><span class="header-section-number">3</span> Dependence is broader than correlation</a></li>
+  <li><a href="#why-time-series-make-this-worse" id="toc-why-time-series-make-this-worse" class="nav-link" data-scroll-target="#why-time-series-make-this-worse"><span class="header-section-number">4</span> Why time series make this worse</a></li>
+  <li><a href="#spurious-correlation" id="toc-spurious-correlation" class="nav-link" data-scroll-target="#spurious-correlation"><span class="header-section-number">5</span> Spurious correlation</a></li>
+  <li><a href="#correlation-across-time-autocorrelation" id="toc-correlation-across-time-autocorrelation" class="nav-link" data-scroll-target="#correlation-across-time-autocorrelation"><span class="header-section-number">6</span> Correlation across time: autocorrelation</a></li>
+  <li><a href="#why-correlation-is-not-enough" id="toc-why-correlation-is-not-enough" class="nav-link" data-scroll-target="#why-correlation-is-not-enough"><span class="header-section-number">7</span> Why correlation is not enough</a></li>
+  <li><a href="#where-this-shows-up-in-the-course" id="toc-where-this-shows-up-in-the-course" class="nav-link" data-scroll-target="#where-this-shows-up-in-the-course"><span class="header-section-number">8</span> Where this shows up in the course</a></li>
+  <li><a href="#what-you-do-not-need-yet" id="toc-what-you-do-not-need-yet" class="nav-link" data-scroll-target="#what-you-do-not-need-yet"><span class="header-section-number">9</span> What you do <em>not</em> need yet</a></li>
+  <li><a href="#takeaway" id="toc-takeaway" class="nav-link" data-scroll-target="#takeaway"><span class="header-section-number">10</span> Takeaway</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/pbenavidesh/narsil/edit/main/docs/more/stats/correlation.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/pbenavidesh/narsil/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">More</h1>
-</div>
+<h1 class="title">Correlation, dependence, and time series pitfalls</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">Stat refreshers</div>
+  </div>
+  </div>
 
 <div>
   <div class="description">
-    Optional materials to support the course.
+    A refresher on correlation and statistical dependence, with an emphasis on why correlation can be misleading in time series data.
   </div>
 </div>
 
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Pablo Benavides-Herrera </p>
+          </div>
+  </div>
     
   
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">January 26, 2026</p>
+    </div>
+  </div>
     
   </div>
   
@@ -433,216 +432,188 @@ window.Quarto = {
 </header>
 
 
-<p>These materials are <strong>optional</strong> and are not required to pass the course.</p>
-<p>They are meant to help you:</p>
+<p>This document is <strong>optional</strong>, but strongly recommended.</p>
+<p>Correlation is one of the most commonly used statistical tools — and one of the most frequently misunderstood.</p>
+<p>In time series, this misunderstanding can lead to <strong>serious modeling errors</strong>.</p>
+<section id="from-covariance-to-correlation" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="from-covariance-to-correlation"><span class="header-section-number">1</span> From covariance to correlation</h2>
+<p>Recall that the covariance between two random variables <span class="math inline">X</span> and <span class="math inline">Y</span> is defined as</p>
+<p><span class="math display">
+\operatorname{Cov}(X, Y) = \mathbb{E}[(X - \mu_X)(Y - \mu_Y)].
+</span></p>
+<p>Covariance measures whether large values of <span class="math inline">X</span> tend to occur with large (or small) values of <span class="math inline">Y</span>.</p>
+<p>However, covariance depends on the <strong>scale</strong> of the variables.</p>
+<p>To address this, we define the <strong>correlation coefficient</strong>:</p>
+<p><span class="math display">
+\rho(X,Y) =
+\frac{\operatorname{Cov}(X,Y)}
+{\sqrt{\operatorname{Var}(X)\operatorname{Var}(Y)}}.
+</span></p>
+<p>By construction,</p>
+<p><span class="math display">
+-1 \le \rho(X,Y) \le 1.
+</span></p>
+</section>
+<section id="what-correlation-actually-measures" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="what-correlation-actually-measures"><span class="header-section-number">2</span> What correlation actually measures</h2>
+<p>Correlation measures <strong>linear association</strong> between two random variables.</p>
+<p>If <span class="math inline">\rho(X,Y) \neq 0</span>, there is evidence of a linear relationship.<br>
+If <span class="math inline">\rho(X,Y) = 0</span>, there is <strong>no linear relationship</strong>.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Zero correlation does <strong>not</strong> imply independence.</p>
+<p>It only implies absence of <em>linear</em> dependence.</p>
+</div>
+</div>
+<p>There exist dependent random variables with zero correlation.</p>
+</section>
+<section id="dependence-is-broader-than-correlation" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="dependence-is-broader-than-correlation"><span class="header-section-number">3</span> Dependence is broader than correlation</h2>
+<p>Two random variables <span class="math inline">X</span> and <span class="math inline">Y</span> are <strong>independent</strong> if their joint distribution factorizes:</p>
+<p><span class="math display">
+f_{X,Y}(x,y) = f_X(x) f_Y(y).
+</span></p>
+<p>Independence is a <strong>strong</strong> condition.</p>
+<p>Correlation, by contrast, captures only one specific aspect of dependence.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Independence <span class="math inline">\Rightarrow</span> zero correlation<br>
+Zero correlation <span class="math inline">\nRightarrow</span> independence</p>
+</div>
+</div>
+<p>This distinction is often ignored — with consequences.</p>
+</section>
+<section id="why-time-series-make-this-worse" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="why-time-series-make-this-worse"><span class="header-section-number">4</span> Why time series make this worse</h2>
+<p>In time series, observations are <strong>not independent across time</strong>.</p>
+<p>We work with a sequence of random variables <span class="math inline">\{Y_t\}</span>, where dependence across time is the norm, not the exception.</p>
+<p>Correlation computed directly on time series data is therefore affected by:</p>
 <ul>
-<li>Refresh prerequisite concepts (statistics, probability, regression)</li>
-<li>Work more comfortably in R and the tidyverse ecosystem</li>
-<li>Improve your workflow and reproducibility (projects, Quarto, organization)</li>
+<li>trends,</li>
+<li>seasonality,</li>
+<li>persistence,</li>
+<li>shared temporal structure.</li>
 </ul>
-<p>You are encouraged to use them <strong>as needed</strong>.</p>
+</section>
+<section id="spurious-correlation" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="spurious-correlation"><span class="header-section-number">5</span> Spurious correlation</h2>
+<p>Consider two unrelated time series, each with a strong trend.</p>
+<p>Even if the underlying processes are independent, their sample correlation can be <strong>large</strong>.</p>
+<p>This phenomenon is known as <strong>spurious correlation</strong>.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>High correlation does not imply meaningful dependence<br>
+when time series share common structure.</p>
+</div>
+</div>
+<p>This is one of the most common pitfalls in applied forecasting.</p>
+</section>
+<section id="correlation-across-time-autocorrelation" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="correlation-across-time-autocorrelation"><span class="header-section-number">6</span> Correlation across time: autocorrelation</h2>
+<p>In time series analysis, correlation most often appears as <strong>autocorrelation</strong>.</p>
+<p>The lag-<span class="math inline">h</span> autocorrelation is defined as</p>
+<p><span class="math display">
+\rho(h) =
+\frac{\operatorname{Cov}(Y_t, Y_{t-h})}
+{\operatorname{Var}(Y_t)}.
+</span></p>
+<p>Autocorrelation measures linear dependence <strong>across time</strong>, not across variables.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Autocorrelation is not a nuisance.</p>
+<p>It is the signal that time series models are built to capture.</p>
+</div>
+</div>
+</section>
+<section id="why-correlation-is-not-enough" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="why-correlation-is-not-enough"><span class="header-section-number">7</span> Why correlation is not enough</h2>
+<p>Correlation answers a narrow question:</p>
+<blockquote class="blockquote">
+<p>Is there a linear relationship?</p>
+</blockquote>
+<p>Forecasting requires a broader understanding of dependence:</p>
+<ul>
+<li>how long dependence persists,</li>
+<li>how it decays over time,</li>
+<li>whether it is stable.</li>
+</ul>
+<p>These questions cannot be answered by a single correlation coefficient.</p>
+</section>
+<section id="where-this-shows-up-in-the-course" class="level2" data-number="8">
+<h2 data-number="8" class="anchored" data-anchor-id="where-this-shows-up-in-the-course"><span class="header-section-number">8</span> Where this shows up in the course</h2>
+<p>This refresher is foundational for:</p>
+<ul>
+<li>autocorrelation and partial autocorrelation functions,</li>
+<li>stationarity assumptions,</li>
+<li>AR and MA models,</li>
+<li>residual diagnostics.</li>
+</ul>
+<p>Misunderstanding correlation leads directly to misinterpreting these tools.</p>
+</section>
+<section id="what-you-do-not-need-yet" class="level2" data-number="9">
+<h2 data-number="9" class="anchored" data-anchor-id="what-you-do-not-need-yet"><span class="header-section-number">9</span> What you do <em>not</em> need yet</h2>
+<p>At this stage, you do <strong>not</strong> need:</p>
+<ul>
+<li>nonlinear dependence measures,</li>
+<li>copulas,</li>
+<li>mutual information.</li>
+</ul>
+<p>Those tools exist, but linear dependence is צור enough for the models covered in this course.</p>
+</section>
+<section id="takeaway" class="level2" data-number="10">
+<h2 data-number="10" class="anchored" data-anchor-id="takeaway"><span class="header-section-number">10</span> Takeaway</h2>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Correlation measures linear association.</p>
+<p>Dependence is broader.</p>
+<p>In time series, confusing the two leads to spurious conclusions.</p>
+</div>
+</div>
 
 
+</section>
 
-
-<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
-<div class="listing-actions-group">
-   <div class="input-group input-group-sm quarto-listing-sort">
-    <span class="input-group-text"><i class="bi bi-sort-down"></i></span>
-    <select id="listing-listing-sort" class="form-select" aria-label="Order By" onchange="window['quarto-listings']['listing-listing'].sort(this.options[this.selectedIndex].value, { order: this.options[this.selectedIndex].getAttribute('data-direction')})">
-      <option value="" disabled="" selected="" hidden="">Order By</option>
-      <option value="index" data-direction="asc">Default</option>
-      <option value="listing-title" data-direction="asc">
-        Title
-      </option>
-      <option value="listing-date-sort" data-direction="asc">
-        Date - Oldest
-      </option>
-      <option value="listing-date-sort" data-direction="desc">
-        Date - Newest
-      </option>
-      <option value="listing-author" data-direction="asc">
-        Author
-      </option>
-    </select>
-  </div>
-    <div class="input-group input-group-sm quarto-listing-filter">
-      <span class="input-group-text"><i class="bi bi-search"></i></span>
-      <input type="text" class="search form-control" placeholder="Filter">
-    </div>
-</div>
-<div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="U3RhdCUyMHJlZnJlc2hlcnM=" data-listing-file-modified-sort="1769468940796" data-listing-reading-time-sort="3" data-listing-word-count-sort="461">
-<div class="thumbnail"><a href="../../docs/more/stats/correlation.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../../docs/more/stats/correlation.html" class="no-external">Correlation, dependence, and time series pitfalls</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('U3RhdCUyMHJlZnJlc2hlcnM='); return false;">Stat refreshers</div>
-
-</div>
-<div class="delink listing-description"><a href="../../docs/more/stats/correlation.html" class="no-external">
-<p>A refresher on correlation and statistical dependence, with an emphasis on why correlation can be misleading in time series data.</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../../docs/more/stats/correlation.html" class="no-external">
-<div class="listing-author">
-Pablo Benavides-Herrera
-</div>
-<div class="listing-reading-time">3 min</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="1" data-categories="U3RhdCUyMHJlZnJlc2hlcnM=" data-listing-file-modified-sort="1769468940797" data-listing-reading-time-sort="3" data-listing-word-count-sort="589">
-<div class="thumbnail"><a href="../../docs/more/stats/expectation_variance_cov.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../../docs/more/stats/expectation_variance_cov.html" class="no-external">Expectation, variance, and covariance: measuring uncertainty</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('U3RhdCUyMHJlZnJlc2hlcnM='); return false;">Stat refreshers</div>
-
-</div>
-<div class="delink listing-description"><a href="../../docs/more/stats/expectation_variance_cov.html" class="no-external">
-<p>A refresher on expectation, variance, and covariance, focused on how uncertainty and dependence are quantified in time series.</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../../docs/more/stats/expectation_variance_cov.html" class="no-external">
-<div class="listing-author">
-Pablo Benavides-Herrera
-</div>
-<div class="listing-reading-time">3 min</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="2" data-categories="Ug==" data-listing-file-modified-sort="1769468940796" data-listing-reading-time-sort="4" data-listing-word-count-sort="772">
-<div class="thumbnail"><a href="../../docs/more/r-tools/pipes_tidyverse.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../../docs/more/r-tools/pipes_tidyverse.html" class="no-external">Pipes and the tidyverse mental model</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('Ug=='); return false;">R</div>
-
-</div>
-<div class="delink listing-description"><a href="../../docs/more/r-tools/pipes_tidyverse.html" class="no-external">
-<p>How to think in tidyverse pipelines: understanding pipes, data flow, and readable transformations in R.</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../../docs/more/r-tools/pipes_tidyverse.html" class="no-external">
-<div class="listing-author">
-Pablo Benavides-Herrera
-</div>
-<div class="listing-reading-time">4 min</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="3" data-categories="Ug==" data-listing-file-modified-sort="1769468940796" data-listing-reading-time-sort="4" data-listing-word-count-sort="655">
-<div class="thumbnail"><a href="../../docs/more/r-tools/r_4_python_users.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../../docs/more/r-tools/r_4_python_users.html" class="no-external">R for Python Users</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('Ug=='); return false;">R</div>
-
-</div>
-<div class="delink listing-description"><a href="../../docs/more/r-tools/r_4_python_users.html" class="no-external">
-<p>A conceptual introduction to R for students coming from a Python background, focused on mental models, data workflows, and tidyverse-style thinking.</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../../docs/more/r-tools/r_4_python_users.html" class="no-external">
-<div class="listing-author">
-Pablo Benavides-Herrera
-</div>
-<div class="listing-reading-time">4 min</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="4" data-categories="U3RhdCUyMHJlZnJlc2hlcnM=" data-listing-file-modified-sort="1769468940797" data-listing-reading-time-sort="3" data-listing-word-count-sort="597">
-<div class="thumbnail"><a href="../../docs/more/stats/random_variables.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../../docs/more/stats/random_variables.html" class="no-external">Random variables: uncertainty as an object</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('U3RhdCUyMHJlZnJlc2hlcnM='); return false;">Stat refreshers</div>
-
-</div>
-<div class="delink listing-description"><a href="../../docs/more/stats/random_variables.html" class="no-external">
-<p>A mathematically grounded refresher on random variables and distributions, focused on how uncertainty is represented and used in time series forecasting.</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../../docs/more/stats/random_variables.html" class="no-external">
-<div class="listing-author">
-Pablo Benavides-Herrera
-</div>
-<div class="listing-reading-time">3 min</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="5" data-categories="Ug==" data-listing-file-modified-sort="1769468940796" data-listing-reading-time-sort="4" data-listing-word-count-sort="674">
-<div class="thumbnail"><a href="../../docs/more/r-tools/tsibble.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../../docs/more/r-tools/tsibble.html" class="no-external">tsibble: thinking in keys and time</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('Ug=='); return false;">R</div>
-
-</div>
-<div class="delink listing-description"><a href="../../docs/more/r-tools/tsibble.html" class="no-external">
-<p>An introduction to tsibble and the core ideas of time, keys, and structure in tidyverts-based time series workflows.</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../../docs/more/r-tools/tsibble.html" class="no-external">
-<div class="listing-author">
-Pablo Benavides-Herrera
-</div>
-<div class="listing-reading-time">4 min</div>
-</a>
-</div>
-</div>
-</div>
-<div class="listing-no-matching d-none">No matching items</div>
-</div><a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right
@@ -1066,5 +1037,5 @@ Pablo Benavides-Herrera
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions"><ul><li><a href="https://github.com/pbenavidesh/narsil/edit/main/docs/more/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/pbenavidesh/narsil/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/pbenavidesh/narsil/edit/main/docs/more/stats/correlation.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/pbenavidesh/narsil/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="../../../site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>
