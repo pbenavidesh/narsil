@@ -658,7 +658,7 @@
     "href": "docs/more/r-tools/pipes_tidyverse.html#tidyverse-code-with-and-without-pipes",
     "title": "Pipes and the tidyverse mental model",
     "section": "2 Tidyverse code with and without pipes",
-    "text": "2 Tidyverse code with and without pipes\n\n\n2.1 Without pipes\ndf_filtered &lt;- filter(df, value &gt; 0)\ndf_transformed &lt;- mutate(df_filtered, log_value = log(value))\ndf_grouped &lt;- group_by(df_transformed, id)\ndf_summary &lt;- summarise(df_grouped, mean_value = mean(log_value))\n\nExplicit intermediate objects\n\nMore typing\n\nEasier to lose the “story” of the data\n\n\n\n2.2 With pipes\ndf |&gt;\n  filter(value &gt; 0) |&gt;\n  mutate(log_value = log(value)) |&gt;\n  group_by(id) |&gt;\n  summarise(mean_value = mean(log_value))\n\nOne clear data flow\n\nNo temporary variables\n\nEasier to read, explain, and debug"
+    "text": "2 Tidyverse code with and without pipes\n\nWithout pipesWith pipes\n\n\ndf_filtered &lt;- filter(df, value &gt; 0)\ndf_transformed &lt;- mutate(df_filtered, log_value = log(value))\ndf_grouped &lt;- group_by(df_transformed, id)\ndf_summary &lt;- summarise(df_grouped, mean_value = mean(log_value))\n\nExplicit intermediate objects\n\nMore typing\n\nEasier to lose the “story” of the data\n\n\n\ndf |&gt;\n  filter(value &gt; 0) |&gt;\n  mutate(log_value = log(value)) |&gt;\n  group_by(id) |&gt;\n  summarise(mean_value = mean(log_value))\n\nOne clear data flow\n\nNo temporary variables\n\nEasier to read, explain, and debug"
   },
   {
     "objectID": "docs/more/r-tools/pipes_tidyverse.html#the-tidyverse-mental-model",

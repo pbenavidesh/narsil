@@ -470,9 +470,10 @@ you are probably writing clear tidyverse code.</p>
 </section>
 <section id="tidyverse-code-with-and-without-pipes" class="level2" data-number="2">
 <h2 data-number="2" class="anchored" data-anchor-id="tidyverse-code-with-and-without-pipes"><span class="header-section-number">2</span> Tidyverse code with and without pipes</h2>
-<div class="tabset" data-group="pipes">
-<section id="without-pipes" class="level3" data-number="2.1">
-<h3 data-number="2.1" class="anchored" data-anchor-id="without-pipes"><span class="header-section-number">2.1</span> Without pipes</h3>
+<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="pipes">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">Without pipes</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">With pipes</a></li></ul>
+<div class="tab-content" data-group="pipes">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df_filtered <span class="ot">&lt;-</span> <span class="fu">filter</span>(df, value <span class="sc">&gt;</span> <span class="dv">0</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>df_transformed <span class="ot">&lt;-</span> <span class="fu">mutate</span>(df_filtered, <span class="at">log_value =</span> <span class="fu">log</span>(value))</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>df_grouped <span class="ot">&lt;-</span> <span class="fu">group_by</span>(df_transformed, id)</span>
@@ -484,9 +485,8 @@ you are probably writing clear tidyverse code.</p>
 </li>
 <li>Easier to lose the “story” of the data</li>
 </ul>
-</section>
-<section id="with-pipes" class="level3" data-number="2.2">
-<h3 data-number="2.2" class="anchored" data-anchor-id="with-pipes"><span class="header-section-number">2.2</span> With pipes</h3>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(value <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">|&gt;</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">log_value =</span> <span class="fu">log</span>(value)) <span class="sc">|&gt;</span></span>
@@ -499,7 +499,8 @@ you are probably writing clear tidyverse code.</p>
 </li>
 <li>Easier to read, explain, and debug</li>
 </ul>
-</section>
+</div>
+</div>
 </div>
 <hr>
 </section>
@@ -549,7 +550,7 @@ The original data is never modified unless you explicitly reassign it.</p>
 <h2 data-number="4" class="anchored" data-anchor-id="pipes-are-not-magic"><span class="header-section-number">4</span> Pipes are not magic</h2>
 <p>The pipe does <strong>not</strong> change what functions do.<br>
 It only changes <strong>how inputs are passed</strong>.</p>
-<div class="tabset" data-group="pipes">
+<div class="panel-trabset" data-group="pipes">
 <section id="without-pipes-1" class="level3" data-number="4.1">
 <h3 data-number="4.1" class="anchored" data-anchor-id="without-pipes-1"><span class="header-section-number">4.1</span> Without pipes</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summarise</span>(</span>
