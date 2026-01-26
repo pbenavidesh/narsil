@@ -1,8 +1,115 @@
 ---
 title: "About"
-draft: true
-format: html
+description: "What this site is, who it’s for, and how to use it."
+about:
+  template: trestles
+  image: images/narsil_logo.png
+  image-width: 12em
+  image-shape: rounded
+  links:
+    - icon: openai
+      text: Elendil TA
+      href: https://chatgpt.com/g/g-68e6907c12a48191a07fb0888500a7fa-elendil-ta
+    - icon: github
+      text: GitHub repository
+      href: https://github.com/pbenavidesh/narsil
+    - icon: bug
+      text: Report an issue
+      href: https://github.com/pbenavidesh/narsil/issues
+    - icon: pencil
+      text: Suggest an edit
+      href: https://github.com/pbenavidesh/narsil/edit/main/docs/about.qmd
+format:
+  html:
+    toc: true
+    toc-location: right
 ---
 
-![](../images/under_construction.jpg)
+## What this site is
 
+This is the public course hub for **Time Series Forecasting**.
+
+It is intentionally built as a **working reference**:
+
+- lecture notes you can revisit during the semester
+- code-first examples you can reuse in projects
+- exercises that build muscle memory for real forecasting workflows
+
+::: {.callout-note}
+If you only follow one rule: **always compare against a baseline**.
+Fancy models without a baseline are just expensive opinions.
+:::
+
+## Who it’s for
+
+You’ll do best in this course if you can:
+
+- manipulate data frames confidently (filter, mutate, group_by, join)
+- understand basic probability/statistics and linear regression
+- stay organized with reproducible work (projects, scripts, reports)
+
+::: {.callout-important}
+This course is not “click-and-run forecasting”.
+You will be expected to justify assumptions, diagnose models, and communicate tradeoffs.
+:::
+
+## How to use the site
+
+Use the navbar as your map:
+
+- **Modules**: the core storyline (what you must learn)
+- **Exercises**: practice and feedback loops (what makes it stick)
+- **More**: optional refreshers (R tooling, stats, side quests)
+- **About**: this page
+
+A practical routine:
+
+1. Read the module page.
+2. Run the code (don’t just skim it).
+3. Do the exercise.
+4. Write a short explanation of what changed and why.
+
+## Tools and conventions
+
+We work primarily in **R**, using the tidy ecosystem for forecasting:
+
+- native pipe `|>` (read it as “then”)
+- tidy data + functional pipelines
+- forecasting as a workflow: split → fit → evaluate → iterate → communicate
+
+Mathematics is included when it adds clarity, not as decoration.
+
+::: {.callout-tip appearance="simple"}
+If you come from Python, you can still follow along.
+The mental model matters more than the syntax.
+:::
+
+## Elendil TA (AI code assistant)
+
+**Elendil TA** is available from the navbar. Use it to:
+
+- debug errors and understand messages
+- translate ideas into R code
+- check your reasoning and interpretation
+
+What not to do:
+
+- paste entire assignments and ask for the final answer
+- use it as a substitute for understanding your own results
+
+::: {.callout-warning}
+If you can’t explain your model, you don’t own it.
+Treat AI output as *draft code* that must be validated.
+:::
+
+## Feedback, corrections, and reuse
+
+This site is maintained like a small open-source project.
+
+- Found a typo? Open an issue.
+- Want to improve an explanation? Propose a pull request.
+- Want to reuse material? Please cite the repository and keep attribution.
+
+## Credits and inspiration
+
+This course is strongly inspired by [*Forecasting: Principles and Practice (FPP3)*](https://otexts.com/fpp3/) and the broader forecasting community.
