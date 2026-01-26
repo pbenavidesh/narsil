@@ -6,10 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="">
-<meta name="description" content="Optional materials to support the course.">
+<meta name="author" content="Pablo Benavides-Herrera">
+<meta name="description" content="A refresher on expectation, variance, and covariance, focused on how uncertainty and dependence are quantified in time series.">
 
-<title>More – Time Series Forecasting</title>
+<title>Expectation, variance, and covariance: measuring uncertainty – Time Series Forecasting</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -25,31 +25,29 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../../">
-<link href="../../images/narsil_logo.png" rel="icon" type="image/png">
-<script src="../../site_libs/quarto-listing/list.min.js"></script>
-<script src="../../site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
-<script src="../../site_libs/quarto-html/popper.min.js"></script>
-<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-2a367172f4fe7d9182ebf8e09f85cb4e.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-7fb59815a1c41eec7c034637f0c35ff0.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-2a367172f4fe7d9182ebf8e09f85cb4e.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
-<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-f75f3358e428cc5073b8e36401a08085.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-050812e28c024fa67842b13441fed95e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../../site_libs/bootstrap/bootstrap-f75f3358e428cc5073b8e36401a08085.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<link href="../../../images/narsil_logo.png" rel="icon" type="image/png">
+<script src="../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-2a367172f4fe7d9182ebf8e09f85cb4e.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-dark-7fb59815a1c41eec7c034637f0c35ff0.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-2a367172f4fe7d9182ebf8e09f85cb4e.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap-f75f3358e428cc5073b8e36401a08085.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../../site_libs/bootstrap/bootstrap-dark-050812e28c024fa67842b13441fed95e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../../site_libs/bootstrap/bootstrap-f75f3358e428cc5073b8e36401a08085.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -77,35 +75,6 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
-
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-image','listing-date','listing-title','listing-description','listing-categories','listing-author','listing-reading-time',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-title","listing-author","listing-image","listing-description","listing-categories"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
 <style>html{ scroll-behavior: smooth; }</style>
 <script type="application/json" class="js-hypothesis-config">
 {
@@ -163,12 +132,12 @@ window.Quarto = {
 };
 </script>
 
-<link rel="stylesheet" href="../../styles.css">
-<meta property="og:title" content="More – Time Series Forecasting">
-<meta property="og:description" content="Optional materials to support the course.">
+<link rel="stylesheet" href="../../../styles.css">
+<meta property="og:title" content="Expectation, variance, and covariance: measuring uncertainty – Time Series Forecasting">
+<meta property="og:description" content="A refresher on expectation, variance, and covariance, focused on how uncertainty and dependence are quantified in time series.">
 <meta property="og:site_name" content="Time Series Forecasting">
-<meta name="twitter:title" content="More – Time Series Forecasting">
-<meta name="twitter:description" content="Optional materials to support the course.">
+<meta name="twitter:title" content="Expectation, variance, and covariance: measuring uncertainty – Time Series Forecasting">
+<meta name="twitter:description" content="A refresher on expectation, variance, and covariance, focused on how uncertainty and dependence are quantified in time series.">
 <meta name="twitter:creator" content="@PabsBenavides">
 <meta name="twitter:card" content="summary">
 </head>
@@ -342,11 +311,11 @@ window.Quarto = {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../../images/iteso_logo_blanco.png" alt="" class="navbar-logo light-content">
-    <img src="../../images/iteso_logo_blanco.png" alt="" class="navbar-logo dark-content">
+    <a href="../../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../../images/iteso_logo_blanco.png" alt="" class="navbar-logo light-content">
+    <img src="../../../images/iteso_logo_blanco.png" alt="" class="navbar-logo dark-content">
     </a>
-    <a class="navbar-brand" href="../../index.html">
+    <a class="navbar-brand" href="../../../index.html">
     <span class="navbar-title">Time Series Forecasting</span>
     </a>
   </div>
@@ -357,23 +326,23 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../../index.html"> 
+    <a class="nav-link" href="../../../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../docs/modules/index.html"> 
+    <a class="nav-link" href="../../../docs/modules/index.html"> 
 <span class="menu-text">Modules</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../docs/exercises/index.html"> 
+    <a class="nav-link" href="../../../docs/exercises/index.html"> 
 <span class="menu-text">Exercises</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="../../docs/more/index.html" aria-current="page"> 
+    <a class="nav-link" href="../../../docs/more/index.html"> 
 <span class="menu-text">More</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../docs/about.html"> 
+    <a class="nav-link" href="../../../docs/about.html"> 
 <span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item">
@@ -403,28 +372,58 @@ window.Quarto = {
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(5)</span></div><div class="category" data-category="Ug==">R <span class="quarto-category-count">(3)</span></div><div class="category" data-category="U3RhdCUyMHJlZnJlc2hlcnM=">Stat refreshers <span class="quarto-category-count">(2)</span></div></div></div>
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#expectation-the-long-run-average" id="toc-expectation-the-long-run-average" class="nav-link active" data-scroll-target="#expectation-the-long-run-average"><span class="header-section-number">1</span> Expectation: the long-run average</a></li>
+  <li><a href="#linearity-of-expectation-this-matters-a-lot" id="toc-linearity-of-expectation-this-matters-a-lot" class="nav-link" data-scroll-target="#linearity-of-expectation-this-matters-a-lot"><span class="header-section-number">2</span> Linearity of expectation (this matters a lot)</a></li>
+  <li><a href="#variance-how-uncertain-is-a-random-variable" id="toc-variance-how-uncertain-is-a-random-variable" class="nav-link" data-scroll-target="#variance-how-uncertain-is-a-random-variable"><span class="header-section-number">3</span> Variance: how uncertain is a random variable?</a></li>
+  <li><a href="#how-variance-reacts-to-transformations" id="toc-how-variance-reacts-to-transformations" class="nav-link" data-scroll-target="#how-variance-reacts-to-transformations"><span class="header-section-number">4</span> How variance reacts to transformations</a></li>
+  <li><a href="#covariance-measuring-dependence" id="toc-covariance-measuring-dependence" class="nav-link" data-scroll-target="#covariance-measuring-dependence"><span class="header-section-number">5</span> Covariance: measuring dependence</a></li>
+  <li><a href="#covariance-in-time-series" id="toc-covariance-in-time-series" class="nav-link" data-scroll-target="#covariance-in-time-series"><span class="header-section-number">6</span> Covariance in time series</a></li>
+  <li><a href="#correlation-preview-not-the-full-story" id="toc-correlation-preview-not-the-full-story" class="nav-link" data-scroll-target="#correlation-preview-not-the-full-story"><span class="header-section-number">7</span> Correlation (preview, not the full story)</a></li>
+  <li><a href="#where-this-shows-up-in-the-course" id="toc-where-this-shows-up-in-the-course" class="nav-link" data-scroll-target="#where-this-shows-up-in-the-course"><span class="header-section-number">8</span> Where this shows up in the course</a></li>
+  <li><a href="#what-you-do-not-need-yet" id="toc-what-you-do-not-need-yet" class="nav-link" data-scroll-target="#what-you-do-not-need-yet"><span class="header-section-number">9</span> What you do <em>not</em> need yet</a></li>
+  <li><a href="#takeaway" id="toc-takeaway" class="nav-link" data-scroll-target="#takeaway"><span class="header-section-number">10</span> Takeaway</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/pbenavidesh/narsil/edit/main/docs/more/stats/expectation_variance_cov.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/pbenavidesh/narsil/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">More</h1>
-</div>
+<h1 class="title">Expectation, variance, and covariance: measuring uncertainty</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">Stat refreshers</div>
+  </div>
+  </div>
 
 <div>
   <div class="description">
-    Optional materials to support the course.
+    A refresher on expectation, variance, and covariance, focused on how uncertainty and dependence are quantified in time series.
   </div>
 </div>
 
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Pablo Benavides-Herrera </p>
+          </div>
+  </div>
     
   
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">January 26, 2026</p>
+    </div>
+  </div>
     
   </div>
   
@@ -433,188 +432,271 @@ window.Quarto = {
 </header>
 
 
-<p>These materials are <strong>optional</strong> and are not required to pass the course.</p>
-<p>They are meant to help you:</p>
+<p>This document is <strong>optional</strong>, but strongly recommended.</p>
+<p>Once uncertainty is represented through random variables, the next step is to <strong>quantify</strong> it.</p>
+<p>Expectation, variance, and covariance are the core mathematical tools we use to describe:</p>
 <ul>
-<li>Refresh prerequisite concepts (statistics, probability, regression)</li>
-<li>Work more comfortably in R and the tidyverse ecosystem</li>
-<li>Improve your workflow and reproducibility (projects, Quarto, organization)</li>
+<li>typical behavior,</li>
+<li>variability,</li>
+<li>and dependence.</li>
 </ul>
-<p>You are encouraged to use them <strong>as needed</strong>.</p>
+<p>They appear everywhere in forecasting, whether explicitly or implicitly.</p>
+<hr>
+<section id="expectation-the-long-run-average" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="expectation-the-long-run-average"><span class="header-section-number">1</span> Expectation: the long-run average</h2>
+<p>The <strong>expectation</strong> (or expected value) of a random variable describes its <em>typical value</em> in the long run.</p>
+<p>For a discrete random variable ( X ) with probability mass function ( p(x) ),</p>
+<p><span class="math display">
+\mathbb{E}[X] = \sum_x x \, p(x).
+</span></p>
+<p>For a continuous random variable with density ( f(x) ),</p>
+<p><span class="math display">
+\mathbb{E}[X] = \int_{-\infty}^{\infty} x \, f(x)\, dx.
+</span></p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Expectation is <strong>not</strong> what you expect to observe next.</p>
+<p>It is what you would obtain <em>on average</em>, across many repetitions.</p>
+</div>
+</div>
+<p>In forecasting, expectation often corresponds to:</p>
+<ul>
+<li>the <strong>point forecast</strong>,</li>
+<li>the mean of a forecast distribution,</li>
+<li>the baseline around which uncertainty is measured.</li>
+</ul>
+<hr>
+</section>
+<section id="linearity-of-expectation-this-matters-a-lot" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="linearity-of-expectation-this-matters-a-lot"><span class="header-section-number">2</span> Linearity of expectation (this matters a lot)</h2>
+<p>One of the most important properties of expectation is <strong>linearity</strong>:</p>
+<p><span class="math display">
+\mathbb{E}[aX + b] = a\,\mathbb{E}[X] + b,
+</span></p>
+<p>for constants ( a ) and ( b ).</p>
+<p>Even more importantly,</p>
+<p><span class="math display">
+\mathbb{E}[X + Y] = \mathbb{E}[X] + \mathbb{E}[Y],
+</span></p>
+<p><strong>regardless of whether ( X ) and ( Y ) are independent</strong>.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Linearity of expectation holds <em>without</em> independence.</p>
+<p>This fact underlies many results in time series and forecasting.</p>
+</div>
+</div>
+<hr>
+</section>
+<section id="variance-how-uncertain-is-a-random-variable" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="variance-how-uncertain-is-a-random-variable"><span class="header-section-number">3</span> Variance: how uncertain is a random variable?</h2>
+<p>Expectation alone is not enough.<br>
+Two random variables may have the same mean but very different levels of uncertainty.</p>
+<p>The <strong>variance</strong> of ( X ) measures how much values fluctuate around their expectation:</p>
+<p><span class="math display">
+\operatorname{Var}(X) = \mathbb{E}\big[(X - \mu)^2\big],
+\qquad \mu = \mathbb{E}[X].
+</span></p>
+<p>An equivalent and often more convenient expression is:</p>
+<p><span class="math display">
+\operatorname{Var}(X) = \mathbb{E}[X^2] - \mu^2.
+</span></p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Variance is measured in <strong>squared units</strong>.</p>
+<p>The standard deviation ( = ) restores the original scale.</p>
+</div>
+</div>
+<p>In forecasting, variance captures:</p>
+<ul>
+<li>forecast uncertainty,</li>
+<li>volatility,</li>
+<li>the typical size of forecast errors.</li>
+</ul>
+<hr>
+</section>
+<section id="how-variance-reacts-to-transformations" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="how-variance-reacts-to-transformations"><span class="header-section-number">4</span> How variance reacts to transformations</h2>
+<p>Variance behaves very differently from expectation under transformations.</p>
+<p>For constants ( a ) and ( b ),</p>
+<p><span class="math display">
+\operatorname{Var}(aX + b) = a^2 \operatorname{Var}(X).
+</span></p>
+<p>Adding a constant does <strong>nothing</strong> to variance.<br>
+Scaling a variable scales variance <strong>quadratically</strong>.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Variance is sensitive to scale.</p>
+<p>This is why transformations (e.g., logarithms) can dramatically change model behavior.</p>
+</div>
+</div>
+<hr>
+</section>
+<section id="covariance-measuring-dependence" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="covariance-measuring-dependence"><span class="header-section-number">5</span> Covariance: measuring dependence</h2>
+<p>Variance describes uncertainty of a single random variable.<br>
+<strong>Covariance</strong> describes how <em>two</em> random variables vary together.</p>
+<p>For random variables ( X ) and ( Y ),</p>
+<p><span class="math display">
+\operatorname{Cov}(X, Y)
+= \mathbb{E}\big[(X - \mu_X)(Y - \mu_Y)\big]
+= \mathbb{E}[XY] - \mu_X \mu_Y.
+</span></p>
+<ul>
+<li>Positive covariance: large values of ( X ) tend to occur with large values of ( Y )</li>
+<li>Negative covariance: large values of ( X ) tend to occur with small values of ( Y )</li>
+</ul>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If ( X ) and ( Y ) are independent, then</p>
+<p>( (X,Y) = 0 ).</p>
+<p>The converse is <strong>not</strong> generally true.</p>
+</div>
+</div>
+<hr>
+</section>
+<section id="covariance-in-time-series" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="covariance-in-time-series"><span class="header-section-number">6</span> Covariance in time series</h2>
+<p>In time series analysis, covariance appears in a very specific form.</p>
+<p>Given a sequence ( {Y_t} ), we define the <strong>lag-( h ) covariance</strong> as:</p>
+<p><span class="math display">
+\operatorname{Cov}(Y_t, Y_{t-h}).
+</span></p>
+<p>This quantity measures how observations relate to their own past.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Autocovariance is the foundation of:</p>
+<ul>
+<li>autocorrelation,</li>
+<li>stationarity,</li>
+<li>AR and MA models.</li>
+</ul>
+</div>
+</div>
+<p>If you understand covariance, you are already halfway to understanding time series models.</p>
+<hr>
+</section>
+<section id="correlation-preview-not-the-full-story" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="correlation-preview-not-the-full-story"><span class="header-section-number">7</span> Correlation (preview, not the full story)</h2>
+<p>Covariance depends on scale, which makes comparisons difficult.</p>
+<p>The <strong>correlation coefficient</strong> rescales covariance:</p>
+<p><span class="math display">
+\rho(X,Y) =
+\frac{\operatorname{Cov}(X,Y)}
+{\sqrt{\operatorname{Var}(X)\operatorname{Var}(Y)}}.
+</span></p>
+<p>Correlation lies between (-1) and (1), but:</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Correlation measures <em>linear association</em>, not general dependence.</p>
+<p>This distinction becomes critical in time series.</p>
+</div>
+</div>
+<p>Correlation deserves its own refresher — and it will get one.</p>
+<hr>
+</section>
+<section id="where-this-shows-up-in-the-course" class="level2" data-number="8">
+<h2 data-number="8" class="anchored" data-anchor-id="where-this-shows-up-in-the-course"><span class="header-section-number">8</span> Where this shows up in the course</h2>
+<p>Expectation, variance, and covariance appear throughout the course:</p>
+<ul>
+<li>point forecasts and forecast distributions,</li>
+<li>forecast error evaluation,</li>
+<li>residual diagnostics,</li>
+<li>autocorrelation functions,</li>
+<li>stationarity assumptions.</li>
+</ul>
+<p>They are not optional background — they are the mathematical backbone of forecasting.</p>
+<hr>
+</section>
+<section id="what-you-do-not-need-yet" class="level2" data-number="9">
+<h2 data-number="9" class="anchored" data-anchor-id="what-you-do-not-need-yet"><span class="header-section-number">9</span> What you do <em>not</em> need yet</h2>
+<p>At this stage, you do <strong>not</strong> need:</p>
+<ul>
+<li>higher-order moments,</li>
+<li>distribution-specific formulas,</li>
+<li>closed-form derivations.</li>
+</ul>
+<p>Those concepts matter, but only once the core quantities are fully internalized.</p>
+<hr>
+</section>
+<section id="takeaway" class="level2" data-number="10">
+<h2 data-number="10" class="anchored" data-anchor-id="takeaway"><span class="header-section-number">10</span> Takeaway</h2>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Expectation describes the center.</p>
+<p>Variance describes uncertainty.</p>
+<p>Covariance describes dependence.</p>
+<p>Together, they define how time series behave.</p>
+</div>
+</div>
 
 
+</section>
 
-
-<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
-<div class="listing-actions-group">
-   <div class="input-group input-group-sm quarto-listing-sort">
-    <span class="input-group-text"><i class="bi bi-sort-down"></i></span>
-    <select id="listing-listing-sort" class="form-select" aria-label="Order By" onchange="window['quarto-listings']['listing-listing'].sort(this.options[this.selectedIndex].value, { order: this.options[this.selectedIndex].getAttribute('data-direction')})">
-      <option value="" disabled="" selected="" hidden="">Order By</option>
-      <option value="index" data-direction="asc">Default</option>
-      <option value="listing-title" data-direction="asc">
-        Title
-      </option>
-      <option value="listing-date-sort" data-direction="asc">
-        Date - Oldest
-      </option>
-      <option value="listing-date-sort" data-direction="desc">
-        Date - Newest
-      </option>
-      <option value="listing-author" data-direction="asc">
-        Author
-      </option>
-    </select>
-  </div>
-    <div class="input-group input-group-sm quarto-listing-filter">
-      <span class="input-group-text"><i class="bi bi-search"></i></span>
-      <input type="text" class="search form-control" placeholder="Filter">
-    </div>
-</div>
-<div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="U3RhdCUyMHJlZnJlc2hlcnM=" data-listing-file-modified-sort="1769467639454" data-listing-reading-time-sort="4" data-listing-word-count-sort="633">
-<div class="thumbnail"><a href="../../docs/more/stats/expectation_variance_cov.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../../docs/more/stats/expectation_variance_cov.html" class="no-external">Expectation, variance, and covariance: measuring uncertainty</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('U3RhdCUyMHJlZnJlc2hlcnM='); return false;">Stat refreshers</div>
-
-</div>
-<div class="delink listing-description"><a href="../../docs/more/stats/expectation_variance_cov.html" class="no-external">
-<p>A refresher on expectation, variance, and covariance, focused on how uncertainty and dependence are quantified in time series.</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../../docs/more/stats/expectation_variance_cov.html" class="no-external">
-<div class="listing-author">
-Pablo Benavides-Herrera
-</div>
-<div class="listing-reading-time">4 min</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="1" data-categories="Ug==" data-listing-file-modified-sort="1769467639454" data-listing-reading-time-sort="4" data-listing-word-count-sort="772">
-<div class="thumbnail"><a href="../../docs/more/r-tools/pipes_tidyverse.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../../docs/more/r-tools/pipes_tidyverse.html" class="no-external">Pipes and the tidyverse mental model</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('Ug=='); return false;">R</div>
-
-</div>
-<div class="delink listing-description"><a href="../../docs/more/r-tools/pipes_tidyverse.html" class="no-external">
-<p>How to think in tidyverse pipelines: understanding pipes, data flow, and readable transformations in R.</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../../docs/more/r-tools/pipes_tidyverse.html" class="no-external">
-<div class="listing-author">
-Pablo Benavides-Herrera
-</div>
-<div class="listing-reading-time">4 min</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="2" data-categories="Ug==" data-listing-file-modified-sort="1769467639454" data-listing-reading-time-sort="4" data-listing-word-count-sort="655">
-<div class="thumbnail"><a href="../../docs/more/r-tools/r_4_python_users.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../../docs/more/r-tools/r_4_python_users.html" class="no-external">R for Python Users</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('Ug=='); return false;">R</div>
-
-</div>
-<div class="delink listing-description"><a href="../../docs/more/r-tools/r_4_python_users.html" class="no-external">
-<p>A conceptual introduction to R for students coming from a Python background, focused on mental models, data workflows, and tidyverse-style thinking.</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../../docs/more/r-tools/r_4_python_users.html" class="no-external">
-<div class="listing-author">
-Pablo Benavides-Herrera
-</div>
-<div class="listing-reading-time">4 min</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="3" data-categories="U3RhdCUyMHJlZnJlc2hlcnM=" data-listing-file-modified-sort="1769467639454" data-listing-reading-time-sort="4" data-listing-word-count-sort="609">
-<div class="thumbnail"><a href="../../docs/more/stats/random_variables.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../../docs/more/stats/random_variables.html" class="no-external">Random variables: uncertainty as an object</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('U3RhdCUyMHJlZnJlc2hlcnM='); return false;">Stat refreshers</div>
-
-</div>
-<div class="delink listing-description"><a href="../../docs/more/stats/random_variables.html" class="no-external">
-<p>A mathematically grounded refresher on random variables and distributions, focused on how uncertainty is represented and used in time series forecasting.</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../../docs/more/stats/random_variables.html" class="no-external">
-<div class="listing-author">
-Pablo Benavides-Herrera
-</div>
-<div class="listing-reading-time">4 min</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="4" data-categories="Ug==" data-listing-file-modified-sort="1769467639454" data-listing-reading-time-sort="4" data-listing-word-count-sort="674">
-<div class="thumbnail"><a href="../../docs/more/r-tools/tsibble.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../../docs/more/r-tools/tsibble.html" class="no-external">tsibble: thinking in keys and time</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('Ug=='); return false;">R</div>
-
-</div>
-<div class="delink listing-description"><a href="../../docs/more/r-tools/tsibble.html" class="no-external">
-<p>An introduction to tsibble and the core ideas of time, keys, and structure in tidyverts-based time series workflows.</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../../docs/more/r-tools/tsibble.html" class="no-external">
-<div class="listing-author">
-Pablo Benavides-Herrera
-</div>
-<div class="listing-reading-time">4 min</div>
-</a>
-</div>
-</div>
-</div>
-<div class="listing-no-matching d-none">No matching items</div>
-</div><a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right
@@ -1038,5 +1120,5 @@ Pablo Benavides-Herrera
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions"><ul><li><a href="https://github.com/pbenavidesh/narsil/edit/main/docs/more/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/pbenavidesh/narsil/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/pbenavidesh/narsil/edit/main/docs/more/stats/expectation_variance_cov.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/pbenavidesh/narsil/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="../../../site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>
