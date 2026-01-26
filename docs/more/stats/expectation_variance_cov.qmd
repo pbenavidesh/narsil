@@ -18,19 +18,18 @@ Expectation, variance, and covariance are the core mathematical tools we use to 
 
 They appear everywhere in forecasting, whether explicitly or implicitly.
 
----
 
 ## Expectation: the long-run average
 
 The **expectation** (or expected value) of a random variable describes its *typical value* in the long run.
 
-For a discrete random variable \( X \) with probability mass function \( p(x) \),
+For a discrete random variable $X$ with probability mass function $p(x)$,
 
 $$
 \mathbb{E}[X] = \sum_x x \, p(x).
 $$
 
-For a continuous random variable with density \( f(x) \),
+For a continuous random variable with density $f(x)$,
 
 $$
 \mathbb{E}[X] = \int_{-\infty}^{\infty} x \, f(x)\, dx.
@@ -48,7 +47,6 @@ In forecasting, expectation often corresponds to:
 - the mean of a forecast distribution,
 - the baseline around which uncertainty is measured.
 
----
 
 ## Linearity of expectation (this matters a lot)
 
@@ -58,7 +56,7 @@ $$
 \mathbb{E}[aX + b] = a\,\mathbb{E}[X] + b,
 $$
 
-for constants \( a \) and \( b \).
+for constants $a$ and $b$.
 
 Even more importantly,
 
@@ -66,7 +64,7 @@ $$
 \mathbb{E}[X + Y] = \mathbb{E}[X] + \mathbb{E}[Y],
 $$
 
-**regardless of whether \( X \) and \( Y \) are independent**.
+**regardless of whether $X$ and $Y$ are independent**.
 
 ::: {.callout-important}
 Linearity of expectation holds *without* independence.
@@ -74,14 +72,13 @@ Linearity of expectation holds *without* independence.
 This fact underlies many results in time series and forecasting.
 :::
 
----
 
 ## Variance: how uncertain is a random variable?
 
 Expectation alone is not enough.  
 Two random variables may have the same mean but very different levels of uncertainty.
 
-The **variance** of \( X \) measures how much values fluctuate around their expectation:
+The **variance** of $X$ measures how much values fluctuate around their expectation:
 
 $$
 \operatorname{Var}(X) = \mathbb{E}\big[(X - \mu)^2\big],
@@ -97,7 +94,7 @@ $$
 ::: {.callout-note}
 Variance is measured in **squared units**.  
 
-The standard deviation \( \sigma = \sqrt{\operatorname{Var}(X)} \) restores the original scale.
+The standard deviation $\sigma = \sqrt{\operatorname{Var}(X)}$ restores the original scale.
 :::
 
 In forecasting, variance captures:
@@ -106,13 +103,13 @@ In forecasting, variance captures:
 - volatility,
 - the typical size of forecast errors.
 
----
+
 
 ## How variance reacts to transformations
 
 Variance behaves very differently from expectation under transformations.
 
-For constants \( a \) and \( b \),
+For constants $a$ and $b$,
 
 $$
 \operatorname{Var}(aX + b) = a^2 \operatorname{Var}(X).
@@ -127,14 +124,13 @@ Variance is sensitive to scale.
 This is why transformations (e.g., logarithms) can dramatically change model behavior.
 :::
 
----
 
 ## Covariance: measuring dependence
 
 Variance describes uncertainty of a single random variable.  
 **Covariance** describes how *two* random variables vary together.
 
-For random variables \( X \) and \( Y \),
+For random variables $X$ and $Y$,
 
 $$
 \operatorname{Cov}(X, Y)
@@ -142,24 +138,23 @@ $$
 = \mathbb{E}[XY] - \mu_X \mu_Y.
 $$
 
-- Positive covariance: large values of \( X \) tend to occur with large values of \( Y \)
-- Negative covariance: large values of \( X \) tend to occur with small values of \( Y \)
+- Positive covariance: large values of $X$ tend to occur with large values of $Y$
+- Negative covariance: large values of $X$ tend to occur with small values of $Y$
 
 ::: {.callout-note}
-If \( X \) and \( Y \) are independent, then  
+If $X$ and $Y$ are independent, then  
 
-\( \operatorname{Cov}(X,Y) = 0 \).
+$\operatorname{Cov}(X,Y) = 0$.
 
 The converse is **not** generally true.
 :::
 
----
 
 ## Covariance in time series
 
 In time series analysis, covariance appears in a very specific form.
 
-Given a sequence \( \{Y_t\} \), we define the **lag-\( h \) covariance** as:
+Given a sequence $\{Y_t\}$, we define the **lag-$h$ covariance** as:
 
 $$
 \operatorname{Cov}(Y_t, Y_{t-h}).
@@ -177,7 +172,6 @@ Autocovariance is the foundation of:
 
 If you understand covariance, you are already halfway to understanding time series models.
 
----
 
 ## Correlation (preview, not the full story)
 
@@ -191,7 +185,7 @@ $$
 {\sqrt{\operatorname{Var}(X)\operatorname{Var}(Y)}}.
 $$
 
-Correlation lies between \(-1\) and \(1\), but:
+Correlation lies between $-1$ and $1$, but:
 
 ::: {.callout-warning}
 Correlation measures *linear association*, not general dependence.
@@ -201,7 +195,6 @@ This distinction becomes critical in time series.
 
 Correlation deserves its own refresher — and it will get one.
 
----
 
 ## Where this shows up in the course
 
@@ -215,8 +208,6 @@ Expectation, variance, and covariance appear throughout the course:
 
 They are not optional background — they are the mathematical backbone of forecasting.
 
----
-
 ## What you do *not* need yet
 
 At this stage, you do **not** need:
@@ -227,7 +218,6 @@ At this stage, you do **not** need:
 
 Those concepts matter, but only once the core quantities are fully internalized.
 
----
 
 ## Takeaway
 
