@@ -441,15 +441,14 @@ window.Quarto = {
 <li>and dependence.</li>
 </ul>
 <p>They appear everywhere in forecasting, whether explicitly or implicitly.</p>
-<hr>
 <section id="expectation-the-long-run-average" class="level2" data-number="1">
 <h2 data-number="1" class="anchored" data-anchor-id="expectation-the-long-run-average"><span class="header-section-number">1</span> Expectation: the long-run average</h2>
 <p>The <strong>expectation</strong> (or expected value) of a random variable describes its <em>typical value</em> in the long run.</p>
-<p>For a discrete random variable ( X ) with probability mass function ( p(x) ),</p>
+<p>For a discrete random variable <span class="math inline">X</span> with probability mass function <span class="math inline">p(x)</span>,</p>
 <p><span class="math display">
 \mathbb{E}[X] = \sum_x x \, p(x).
 </span></p>
-<p>For a continuous random variable with density ( f(x) ),</p>
+<p>For a continuous random variable with density <span class="math inline">f(x)</span>,</p>
 <p><span class="math display">
 \mathbb{E}[X] = \int_{-\infty}^{\infty} x \, f(x)\, dx.
 </span></p>
@@ -473,7 +472,6 @@ Tip
 <li>the mean of a forecast distribution,</li>
 <li>the baseline around which uncertainty is measured.</li>
 </ul>
-<hr>
 </section>
 <section id="linearity-of-expectation-this-matters-a-lot" class="level2" data-number="2">
 <h2 data-number="2" class="anchored" data-anchor-id="linearity-of-expectation-this-matters-a-lot"><span class="header-section-number">2</span> Linearity of expectation (this matters a lot)</h2>
@@ -481,12 +479,12 @@ Tip
 <p><span class="math display">
 \mathbb{E}[aX + b] = a\,\mathbb{E}[X] + b,
 </span></p>
-<p>for constants ( a ) and ( b ).</p>
+<p>for constants <span class="math inline">a</span> and <span class="math inline">b</span>.</p>
 <p>Even more importantly,</p>
 <p><span class="math display">
 \mathbb{E}[X + Y] = \mathbb{E}[X] + \mathbb{E}[Y],
 </span></p>
-<p><strong>regardless of whether ( X ) and ( Y ) are independent</strong>.</p>
+<p><strong>regardless of whether <span class="math inline">X</span> and <span class="math inline">Y</span> are independent</strong>.</p>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -501,13 +499,12 @@ Important
 <p>This fact underlies many results in time series and forecasting.</p>
 </div>
 </div>
-<hr>
 </section>
 <section id="variance-how-uncertain-is-a-random-variable" class="level2" data-number="3">
 <h2 data-number="3" class="anchored" data-anchor-id="variance-how-uncertain-is-a-random-variable"><span class="header-section-number">3</span> Variance: how uncertain is a random variable?</h2>
 <p>Expectation alone is not enough.<br>
 Two random variables may have the same mean but very different levels of uncertainty.</p>
-<p>The <strong>variance</strong> of ( X ) measures how much values fluctuate around their expectation:</p>
+<p>The <strong>variance</strong> of <span class="math inline">X</span> measures how much values fluctuate around their expectation:</p>
 <p><span class="math display">
 \operatorname{Var}(X) = \mathbb{E}\big[(X - \mu)^2\big],
 \qquad \mu = \mathbb{E}[X].
@@ -527,7 +524,7 @@ Note
 </div>
 <div class="callout-body-container callout-body">
 <p>Variance is measured in <strong>squared units</strong>.</p>
-<p>The standard deviation ( = ) restores the original scale.</p>
+<p>The standard deviation <span class="math inline">\sigma = \sqrt{\operatorname{Var}(X)}</span> restores the original scale.</p>
 </div>
 </div>
 <p>In forecasting, variance captures:</p>
@@ -536,12 +533,11 @@ Note
 <li>volatility,</li>
 <li>the typical size of forecast errors.</li>
 </ul>
-<hr>
 </section>
 <section id="how-variance-reacts-to-transformations" class="level2" data-number="4">
 <h2 data-number="4" class="anchored" data-anchor-id="how-variance-reacts-to-transformations"><span class="header-section-number">4</span> How variance reacts to transformations</h2>
 <p>Variance behaves very differently from expectation under transformations.</p>
-<p>For constants ( a ) and ( b ),</p>
+<p>For constants <span class="math inline">a</span> and <span class="math inline">b</span>,</p>
 <p><span class="math display">
 \operatorname{Var}(aX + b) = a^2 \operatorname{Var}(X).
 </span></p>
@@ -561,21 +557,20 @@ Warning
 <p>This is why transformations (e.g., logarithms) can dramatically change model behavior.</p>
 </div>
 </div>
-<hr>
 </section>
 <section id="covariance-measuring-dependence" class="level2" data-number="5">
 <h2 data-number="5" class="anchored" data-anchor-id="covariance-measuring-dependence"><span class="header-section-number">5</span> Covariance: measuring dependence</h2>
 <p>Variance describes uncertainty of a single random variable.<br>
 <strong>Covariance</strong> describes how <em>two</em> random variables vary together.</p>
-<p>For random variables ( X ) and ( Y ),</p>
+<p>For random variables <span class="math inline">X</span> and <span class="math inline">Y</span>,</p>
 <p><span class="math display">
 \operatorname{Cov}(X, Y)
 = \mathbb{E}\big[(X - \mu_X)(Y - \mu_Y)\big]
 = \mathbb{E}[XY] - \mu_X \mu_Y.
 </span></p>
 <ul>
-<li>Positive covariance: large values of ( X ) tend to occur with large values of ( Y )</li>
-<li>Negative covariance: large values of ( X ) tend to occur with small values of ( Y )</li>
+<li>Positive covariance: large values of <span class="math inline">X</span> tend to occur with large values of <span class="math inline">Y</span></li>
+<li>Negative covariance: large values of <span class="math inline">X</span> tend to occur with small values of <span class="math inline">Y</span></li>
 </ul>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -587,17 +582,16 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>If ( X ) and ( Y ) are independent, then</p>
-<p>( (X,Y) = 0 ).</p>
+<p>If <span class="math inline">X</span> and <span class="math inline">Y</span> are independent, then</p>
+<p><span class="math inline">\operatorname{Cov}(X,Y) = 0</span>.</p>
 <p>The converse is <strong>not</strong> generally true.</p>
 </div>
 </div>
-<hr>
 </section>
 <section id="covariance-in-time-series" class="level2" data-number="6">
 <h2 data-number="6" class="anchored" data-anchor-id="covariance-in-time-series"><span class="header-section-number">6</span> Covariance in time series</h2>
 <p>In time series analysis, covariance appears in a very specific form.</p>
-<p>Given a sequence ( {Y_t} ), we define the <strong>lag-( h ) covariance</strong> as:</p>
+<p>Given a sequence <span class="math inline">\{Y_t\}</span>, we define the <strong>lag-<span class="math inline">h</span> covariance</strong> as:</p>
 <p><span class="math display">
 \operatorname{Cov}(Y_t, Y_{t-h}).
 </span></p>
@@ -621,7 +615,6 @@ Important
 </div>
 </div>
 <p>If you understand covariance, you are already halfway to understanding time series models.</p>
-<hr>
 </section>
 <section id="correlation-preview-not-the-full-story" class="level2" data-number="7">
 <h2 data-number="7" class="anchored" data-anchor-id="correlation-preview-not-the-full-story"><span class="header-section-number">7</span> Correlation (preview, not the full story)</h2>
@@ -632,7 +625,7 @@ Important
 \frac{\operatorname{Cov}(X,Y)}
 {\sqrt{\operatorname{Var}(X)\operatorname{Var}(Y)}}.
 </span></p>
-<p>Correlation lies between (-1) and (1), but:</p>
+<p>Correlation lies between <span class="math inline">-1</span> and <span class="math inline">1</span>, but:</p>
 <div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -648,7 +641,6 @@ Warning
 </div>
 </div>
 <p>Correlation deserves its own refresher — and it will get one.</p>
-<hr>
 </section>
 <section id="where-this-shows-up-in-the-course" class="level2" data-number="8">
 <h2 data-number="8" class="anchored" data-anchor-id="where-this-shows-up-in-the-course"><span class="header-section-number">8</span> Where this shows up in the course</h2>
@@ -661,7 +653,6 @@ Warning
 <li>stationarity assumptions.</li>
 </ul>
 <p>They are not optional background — they are the mathematical backbone of forecasting.</p>
-<hr>
 </section>
 <section id="what-you-do-not-need-yet" class="level2" data-number="9">
 <h2 data-number="9" class="anchored" data-anchor-id="what-you-do-not-need-yet"><span class="header-section-number">9</span> What you do <em>not</em> need yet</h2>
@@ -672,7 +663,6 @@ Warning
 <li>closed-form derivations.</li>
 </ul>
 <p>Those concepts matter, but only once the core quantities are fully internalized.</p>
-<hr>
 </section>
 <section id="takeaway" class="level2" data-number="10">
 <h2 data-number="10" class="anchored" data-anchor-id="takeaway"><span class="header-section-number">10</span> Takeaway</h2>
