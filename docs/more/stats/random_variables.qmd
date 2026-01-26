@@ -1,0 +1,233 @@
+---
+title: "Random variables: uncertainty as an object"
+author: "Pablo Benavides-Herrera"
+description: "A mathematically grounded refresher on random variables and distributions, focused on how uncertainty is represented and used in time series forecasting."
+categories: [Stat refreshers]
+format: html
+---
+
+This document is **optional**, but strongly recommended.
+
+In forecasting, we do not only analyze observed data.  
+We analyze **uncertainty about future values**.
+
+Random variables are the mathematical objects that allow us to make that uncertainty explicit, formal, and usable.
+
+---
+
+## From data to uncertainty
+
+Suppose you observe a time series:
+
+- daily sales  
+- hourly electricity demand  
+- monthly inflation  
+
+At time \( t \), the value is known.  
+At time \( t+1 \), it is **not**.
+
+That future value is not just “unknown” — it is **uncertain**.
+
+A **random variable** is how we represent that uncertainty mathematically.
+
+::: {.callout-tip}
+In forecasting, uncertainty is not a nuisance.  
+It is the *object of interest*.
+:::
+
+---
+
+## What is a random variable?
+
+Conceptually, a **random variable** represents a quantity whose value is not fixed in advance.
+
+In forecasting, it typically represents:
+
+- a future observation,
+- a forecast error,
+- or a simulated outcome.
+
+Formally, a random variable is a function
+
+$$
+X : \Omega \rightarrow \mathbb{R},
+$$
+
+which assigns a real number to each possible outcome of an uncertain process.
+
+::: {.callout-note}
+You do **not** need to work explicitly with sample spaces or probability axioms in this course.  
+The important point is that a random variable is a *mathematical representation of uncertainty*.
+:::
+
+---
+
+## Discrete and continuous random variables
+
+Random variables are commonly classified into two types.
+
+### Discrete random variables
+
+A discrete random variable takes values in a **countable set**.
+
+Examples:
+
+- number of customers tomorrow,
+- number of units sold in an hour,
+- number of failures in a week.
+
+Uncertainty is described by a **probability mass function** (PMF):
+
+$$
+p(x) = \mathbb{P}(X = x),
+$$
+
+with the properties
+
+$$
+p(x) \ge 0, \qquad \sum_x p(x) = 1.
+$$
+
+---
+
+### Continuous random variables
+
+A continuous random variable takes values in a **continuum**.
+
+Examples:
+
+- electricity demand,
+- temperature,
+- forecast errors.
+
+Uncertainty is described by a **probability density function** (PDF) \( f(x) \), satisfying
+
+$$
+\int_{-\infty}^{\infty} f(x)\,dx = 1.
+$$
+
+Probabilities are assigned to **intervals**, not points:
+
+$$
+\mathbb{P}(a \le X \le b) = \int_a^b f(x)\,dx.
+$$
+
+::: {.callout-warning}
+For continuous random variables,
+
+$$
+\mathbb{P}(X = x) = 0
+$$
+
+for any single value \( x \).
+
+This is not a technicality — it is a core conceptual distinction.
+:::
+
+---
+
+## Distributions as models, not data summaries
+
+A **distribution** describes how a random variable behaves.
+
+It answers questions such as:
+
+- Which values are more likely?
+- How spread out are the possibilities?
+- How extreme outcomes behave?
+
+Crucially:
+
+::: {.callout-important}
+A distribution is **not** the same as a histogram.
+
+- A histogram summarizes observed data.
+- A distribution is a **model** for uncertainty.
+:::
+
+In forecasting, distributions are assumptions — useful, but always assumptions.
+
+---
+
+## Random variables in time series
+
+In time series analysis, we typically work with a sequence of random variables
+
+$$
+\{Y_t\}_{t=1}^T.
+$$
+
+It is essential to distinguish between:
+- \( Y_t \): the random variable,
+- \( y_t \): its observed realization.
+
+::: {.callout-tip}
+Uppercase letters denote random variables.  
+Lowercase letters denote observed values.
+
+This distinction will appear repeatedly throughout the course.
+:::
+
+Each future time point corresponds to its **own** random variable.
+
+A forecast is therefore **not a single number**, but a distribution over possible values.
+
+---
+
+## Why this matters for forecasting
+
+Random variables and distributions appear throughout the course, even when not explicitly mentioned:
+
+- forecast distributions and intervals,
+- residuals and forecast errors,
+- simulation-based forecasting,
+- model diagnostics.
+
+Whenever you reason about uncertainty, you are implicitly working with random variables.
+
+::: {.callout-note}
+Point forecasts are summaries.  
+Distributions carry the full information.
+:::
+
+---
+
+## What you do *not* need right now
+
+At this stage, you do **not** need:
+
+- probability axioms,
+- manual probability calculations,
+- analytical derivations of densities.
+
+Those belong to a probability theory course.
+
+Here, random variables are **tools for thinking**, not objects of proof.
+
+---
+
+## Where this shows up in the course
+
+This refresher prepares you for:
+
+- residual analysis,
+- forecast uncertainty and intervals,
+- diagnostic checks,
+- simulation-based methods.
+
+Later refreshers will build on this foundation to introduce:
+
+- expectation and variance,
+- covariance and correlation,
+- stationarity and noise.
+
+---
+
+## Takeaway
+
+If you remember only one idea, make it this:
+
+::: {.callout-important}
+In forecasting, future values are random variables,  
+and models describe their distributions — not certainties.
+:::
