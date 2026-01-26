@@ -651,7 +651,7 @@
     "href": "docs/more/r-tools/pipes_tidyverse.html#what-a-pipe-really-means",
     "title": "Pipes and the tidyverse mental model",
     "section": "1 What a pipe really means",
-    "text": "1 What a pipe really means\nIn tidyverse-style R, the pipe operator |&gt; means:\n\n“take the result of the previous step and pass it as the input of the next one”\n\nThis encourages you to think in terms of data transformations, not instructions.\n\n\n\n\n\n\nA good pipeline should read like a sentence describing what happens to the data.\n\n\n\n\n\n\n\n\n\nFor a deeper discussion of pipes and workflow, see\nR for Data Science (2e) — Chapter 6: Workflow: pipes\nhttps://r4ds.hadley.nz/workflow-pipes.html"
+    "text": "1 What a pipe really means\nIn tidyverse-style R, the pipe operator |&gt; means:\n\n“take the result of the previous step and pass it as the input of the next one”\n\nA useful way to read a pipeline is to mentally replace |&gt; with the word “then”.\nFor example:\ndf |&gt;\n  filter(value &gt; 0) |&gt;\n  summarise(mean_value = mean(value))\ncan be read as:\n\n“take df, then filter rows where value &gt; 0, then compute the mean of value.”\n\n\n\n\n\n\n\nTip\n\n\n\nIf you can read a pipeline out loud using “then” and it still makes sense,\nyou are probably writing clear tidyverse code.\n\n\n\n\n\n\n\n\nFor more on style, including guidance on pipes, see\nR for Data Science (2e) — Workflow: code style (Pipes)."
   },
   {
     "objectID": "docs/more/r-tools/pipes_tidyverse.html#tidyverse-code-with-and-without-pipes",
@@ -665,21 +665,21 @@
     "href": "docs/more/r-tools/pipes_tidyverse.html#the-tidyverse-mental-model",
     "title": "Pipes and the tidyverse mental model",
     "section": "3 The tidyverse mental model",
-    "text": "3 The tidyverse mental model\nA tidyverse pipeline usually follows this pattern:\n\nstart with a dataset\n\nfilter rows\n\ncreate or transform variables\n\ngroup the data\n\nsummarise\n\nThis is not a strict rule, but a very common and effective structure.\n\n\n\n\n\n\nMost tidyverse verbs return a new tibble.\nThe original data is never modified unless you explicitly reassign it.\n\n\n\n\n\n\n\n\n\nThis mental model is central to the tidyverse philosophy.\nFor a broader overview of how tidyverse tools fit together, see\nR for Data Science (2e) — Chapter 1: Introduction\nhttps://r4ds.hadley.nz/intro.html"
+    "text": "3 The tidyverse mental model\nA tidyverse pipeline usually follows this pattern:\n\nstart with a dataset\n\nfilter rows\n\ncreate or transform variables\n\ngroup the data\n\nsummarise\n\nThis is not a strict rule, but a very common and effective structure.\n\n\n\n\n\n\nNote\n\n\n\nMost tidyverse verbs return a new tibble.\nThe original data is never modified unless you explicitly reassign it.\n\n\n\n\n\n\n\n\nIf you want a broader overview of how the pieces fit together, see\nR for Data Science (2e) — Introduction."
   },
   {
     "objectID": "docs/more/r-tools/pipes_tidyverse.html#pipes-are-not-magic",
     "href": "docs/more/r-tools/pipes_tidyverse.html#pipes-are-not-magic",
     "title": "Pipes and the tidyverse mental model",
     "section": "4 Pipes are not magic",
-    "text": "4 Pipes are not magic\nThe pipe does not change what functions do.\nIt only changes how inputs are passed.\n\n\n4.1 Without pipes\nsummarise(\n  group_by(\n    mutate(\n      filter(df, value &gt; 0),\n      log_value = log(value)\n    ),\n    id\n  ),\n  mean_value = mean(log_value)\n)\n\n\n4.2 With pipes\ndf |&gt;\n  filter(value &gt; 0) |&gt;\n  mutate(log_value = log(value)) |&gt;\n  group_by(id) |&gt;\n  summarise(mean_value = mean(log_value))\n\n\n\n\n\n\n\n\nIf you can rewrite a pipeline as nested function calls,\nthen the pipeline is doing exactly what you think it is."
+    "text": "4 Pipes are not magic\nThe pipe does not change what functions do.\nIt only changes how inputs are passed.\n\n\n4.1 Without pipes\nsummarise(\n  group_by(\n    mutate(\n      filter(df, value &gt; 0),\n      log_value = log(value)\n    ),\n    id\n  ),\n  mean_value = mean(log_value)\n)\n\n\n4.2 With pipes\ndf |&gt;\n  filter(value &gt; 0) |&gt;\n  mutate(log_value = log(value)) |&gt;\n  group_by(id) |&gt;\n  summarise(mean_value = mean(log_value))\n\n\n\n\n\n\n\n\nTip\n\n\n\nIf you can rewrite a pipeline as nested function calls,\nthen the pipeline is doing exactly what you think it is."
   },
   {
     "objectID": "docs/more/r-tools/pipes_tidyverse.html#pipes-and-column-references",
     "href": "docs/more/r-tools/pipes_tidyverse.html#pipes-and-column-references",
     "title": "Pipes and the tidyverse mental model",
     "section": "5 Pipes and column references",
-    "text": "5 Pipes and column references\nInside tidyverse verbs, column names are used directly.\ndf |&gt;\n  summarise(mean_value = mean(value, na.rm = TRUE))\nNo $, no indexing, no extra syntax.\n\n\n\n\n\n\nThis works because tidyverse uses tidy evaluation:\ncolumn names are looked up automatically inside the data.\n\n\n\n\n\n\n\n\n\nYou do not need to master tidy evaluation for this course.\nIf you are curious, see\nR for Data Science (2e) — Chapter 18: Expressions\nhttps://r4ds.hadley.nz/expressions.html"
+    "text": "5 Pipes and column references\nInside tidyverse verbs, column names are used directly.\ndf |&gt;\n  summarise(mean_value = mean(value, na.rm = TRUE))\nNo $, no indexing, no extra syntax.\n\n\n\n\n\n\nNote\n\n\n\nThis works because tidyverse uses data-masking:\ncolumn names are looked up automatically inside the data.\n\n\n\n\n\n\n\n\nYou do not need to master these details for this course.\nIf you are curious about what’s happening under the hood, see\nR for Data Science (2e) — Functions."
   },
   {
     "objectID": "docs/more/r-tools/pipes_tidyverse.html#why-we-avoid-in-this-course",
@@ -693,14 +693,14 @@
     "href": "docs/more/r-tools/pipes_tidyverse.html#common-pipe-mistakes",
     "title": "Pipes and the tidyverse mental model",
     "section": "7 Common pipe mistakes",
-    "text": "7 Common pipe mistakes\n\n7.1 Breaking the pipeline\ndf |&gt;\n  filter(value &gt; 0)\n\nmutate(log_value = log(value))\nThe second line does not receive the result of the pipeline.\nCorrect:\ndf |&gt;\n  filter(value &gt; 0) |&gt;\n  mutate(log_value = log(value))\n\n\n\n7.2 Forgetting reassignment\ndf |&gt;\n  mutate(x = x * 2)\nNothing changes.\nCorrect:\ndf &lt;- df |&gt;\n  mutate(x = x * 2)\n\n\n\n\n\n\nIf you forget to reassign, the pipeline runs but the result is discarded."
+    "text": "7 Common pipe mistakes\n\n7.1 Breaking the pipeline\ndf |&gt;\n  filter(value &gt; 0)\n\nmutate(log_value = log(value))\nThe second line does not receive the result of the pipeline.\nCorrect:\ndf |&gt;\n  filter(value &gt; 0) |&gt;\n  mutate(log_value = log(value))\n\n\n\n7.2 Forgetting reassignment\ndf |&gt;\n  mutate(x = x * 2)\nNothing changes.\nCorrect:\ndf &lt;- df |&gt;\n  mutate(x = x * 2)\n\n\n\n\n\n\nWarning\n\n\n\nIf you forget to reassign, the pipeline runs but the result is discarded."
   },
   {
     "objectID": "docs/more/r-tools/pipes_tidyverse.html#pipes-and-readability",
     "href": "docs/more/r-tools/pipes_tidyverse.html#pipes-and-readability",
     "title": "Pipes and the tidyverse mental model",
     "section": "8 Pipes and readability",
-    "text": "8 Pipes and readability\nPipelines are about clarity, not cleverness.\nPrefer this:\ndf |&gt;\n  filter(value &gt; 0) |&gt;\n  group_by(id) |&gt;\n  summarise(mean_value = mean(value))\nOver this:\ndf |&gt; filter(value &gt; 0) |&gt; group_by(id) |&gt; summarise(mean_value = mean(value))\n\n\n\n\n\n\nOne verb per line is a good default.\n\n\n\n\n\n\n\n\n\nFor more examples of data transformation with filter(), mutate(), group_by(), and summarise(), see\nR for Data Science (2e) — Chapter 13: Data transformation\nhttps://r4ds.hadley.nz/data-transform.html"
+    "text": "8 Pipes and readability\nPipelines are about clarity, not cleverness.\nPrefer this:\ndf |&gt;\n  filter(value &gt; 0) |&gt;\n  group_by(id) |&gt;\n  summarise(mean_value = mean(value))\nOver this:\ndf |&gt; filter(value &gt; 0) |&gt; group_by(id) |&gt; summarise(mean_value = mean(value))\n\n\n\n\n\n\nTip\n\n\n\nOne verb per line is a good default.\n\n\n\n\n\n\n\n\nFor more examples of filter(), mutate(), group_by(), and summarise(), see\nR for Data Science (2e) — Data transformation."
   },
   {
     "objectID": "docs/more/r-tools/pipes_tidyverse.html#when-not-to-use-pipes",
@@ -714,14 +714,14 @@
     "href": "docs/more/r-tools/pipes_tidyverse.html#pipes-in-this-course",
     "title": "Pipes and the tidyverse mental model",
     "section": "10 Pipes in this course",
-    "text": "10 Pipes in this course\nThroughout the course:\n\nall data manipulation examples will use pipes\n\ntidyverse verbs will be preferred\n\nclarity will be valued over clever tricks\n\nIf something feels confusing, read the pipeline top to bottom, step by step."
+    "text": "10 Pipes in this course\nThroughout the course:\n\nall data manipulation examples will use pipes\n\ntidyverse verbs will be preferred\n\nclarity will be valued over clever tricks\n\nIf something feels confusing, read the pipeline top to bottom, step by step —\nusing “then” as you go."
   },
   {
     "objectID": "docs/more/r-tools/pipes_tidyverse.html#final-takeaway",
     "href": "docs/more/r-tools/pipes_tidyverse.html#final-takeaway",
     "title": "Pipes and the tidyverse mental model",
     "section": "11 Final takeaway",
-    "text": "11 Final takeaway\n\n\n\n\n\n\nIf you understand pipes, you understand most of tidyverse-based R.\n\n\n\nEverything else in the course builds on this idea."
+    "text": "11 Final takeaway\n\n\n\n\n\n\nTip\n\n\n\nIf you understand pipes, you understand most of tidyverse-based R.\n\n\nEverything else in the course builds on this idea."
   },
   {
     "objectID": "index.html",
