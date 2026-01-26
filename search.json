@@ -699,71 +699,71 @@
     "objectID": "docs/more/r-tools/r_4_python_users.html#the-main-mindset-shift",
     "href": "docs/more/r-tools/r_4_python_users.html#the-main-mindset-shift",
     "title": "R for Python Users",
-    "section": "1 1. The main mindset shift",
-    "text": "1 1. The main mindset shift\nIf you come from Python, you are used to thinking in terms of:\n\nstep-by-step instructions\n\nobjects that are modified in place\n\nexplicit loops\n\n“do this, then do that”\n\nR (especially the tidyverse) encourages a different way of thinking:\n\ntransformations instead of instructions\n\nimmutable data objects\n\npipelines instead of loops\n\n“what happens to the data as it flows”\n\n\n\n\n\n\n\nTip\n\n\n\nIn tidyverse code, try to read pipelines out loud.\nIf it sounds like a sentence describing the data, you are probably doing it right."
+    "section": "1 The main mindset shift",
+    "text": "1 The main mindset shift\nIf you come from Python, you are used to thinking in terms of:\n\nstep-by-step instructions\n\nobjects that are modified in place\n\nexplicit loops\n\n“do this, then do that”\n\nR (especially the tidyverse) encourages a different way of thinking:\n\ntransformations instead of instructions\n\nimmutable data objects\n\npipelines instead of loops\n\n“what happens to the data as it flows”\n\n\n\n\n\n\n\nTip\n\n\n\nIn tidyverse code, try to read pipelines out loud.\nIf it sounds like a sentence describing the data, you are probably doing it right."
   },
   {
     "objectID": "docs/more/r-tools/r_4_python_users.html#imperative-vs-functional-style",
     "href": "docs/more/r-tools/r_4_python_users.html#imperative-vs-functional-style",
     "title": "R for Python Users",
-    "section": "2 2. Imperative vs functional style",
-    "text": "2 2. Imperative vs functional style\n\nPythonR\n\n\ndf = df[df[\"value\"] &gt; 0]\ndf[\"log_value\"] = np.log(df[\"value\"])\ndf = df.groupby(\"id\").mean()\n\nEach line modifies or reassigns df\nState changes over time\nOrder matters a lot\n\n\n\ndf |&gt;\n  filter(value &gt; 0) |&gt;\n  mutate(log_value = log(value)) |&gt;\n  group_by(id) |&gt;\n  summarise(across(everything(), mean))\n\nEach step returns a new object\nNo mutation in place\nThe pipeline reads top to bottom\n\n\n\n\n\n\n\n\n\n\nNote\n\n\n\nThink of |&gt; as saying:\n“take the result so far, and then apply the next transformation”."
+    "section": "2 Imperative vs functional style",
+    "text": "2 Imperative vs functional style\n\nPythonR\n\n\ndf = df[df[\"value\"] &gt; 0]\ndf[\"log_value\"] = np.log(df[\"value\"])\ndf = df.groupby(\"id\").mean()\n\nEach line modifies or reassigns df\nState changes over time\nOrder matters a lot\n\n\n\ndf |&gt;\n  filter(value &gt; 0) |&gt;\n  mutate(log_value = log(value)) |&gt;\n  group_by(id) |&gt;\n  summarise(across(everything(), mean))\n\nEach step returns a new object\nNo mutation in place\nThe pipeline reads top to bottom\n\n\n\n\n\n\n\n\n\n\nNote\n\n\n\nThink of |&gt; as saying:\n“take the result so far, and then apply the next transformation”."
   },
   {
     "objectID": "docs/more/r-tools/r_4_python_users.html#core-object-mapping-python-r",
     "href": "docs/more/r-tools/r_4_python_users.html#core-object-mapping-python-r",
     "title": "R for Python Users",
-    "section": "3 3. Core object mapping (Python → R)",
-    "text": "3 3. Core object mapping (Python → R)\n\n\n\nPython\nR\n\n\n\n\npandas.DataFrame\ntibble\n\n\nSeries\nvector\n\n\nNaN\nNA\n\n\ndf.copy()\nusually unnecessary\n\n\nfor row in df\navoid\n\n\ndf.groupby()\ngroup_by()\n\n\nmethod chaining\npipe (|&gt;)\n\n\ndf.reset_index()\nrarely needed\n\n\n\n\n\n\n\n\n\nTip\n\n\n\nIn R, columns are vectors, not mini-dataframes.\nThis is one of the biggest conceptual differences — and one of R’s strengths."
+    "section": "3 Core object mapping (Python → R)",
+    "text": "3 Core object mapping (Python → R)\n\n\n\nPython\nR\n\n\n\n\npandas.DataFrame\ntibble\n\n\nSeries\nvector\n\n\nNaN\nNA\n\n\ndf.copy()\nusually unnecessary\n\n\nfor row in df\navoid\n\n\ndf.groupby()\ngroup_by()\n\n\nmethod chaining\npipe (|&gt;)\n\n\ndf.reset_index()\nrarely needed\n\n\n\n\n\n\n\n\n\nTip\n\n\n\nIn R, columns are vectors, not mini-dataframes.\nThis is one of the biggest conceptual differences — and one of R’s strengths."
   },
   {
     "objectID": "docs/more/r-tools/r_4_python_users.html#mutation-the-silent-trap-for-python-users",
     "href": "docs/more/r-tools/r_4_python_users.html#mutation-the-silent-trap-for-python-users",
     "title": "R for Python Users",
-    "section": "4 4. Mutation: the silent trap for Python users",
-    "text": "4 4. Mutation: the silent trap for Python users\n\nPythonR\n\n\ndf[\"x\"] = df[\"x\"] * 2\nThis modifies df in place.\n\n\ndf |&gt;\n  mutate(x = x * 2)\nThis does not modify df unless you reassign it.\nCorrect usage:\ndf &lt;- df |&gt;\n  mutate(x = x * 2)\n\n\n\n\n\n\n\n\n\nWarning\n\n\n\nIf you forget to reassign in R, nothing happens.\nThis is the most common source of “why didn’t my code work?” for Python users."
+    "section": "4 Mutation: the silent trap for Python users",
+    "text": "4 Mutation: the silent trap for Python users\n\nPythonR\n\n\ndf[\"x\"] = df[\"x\"] * 2\nThis modifies df in place.\n\n\ndf |&gt;\n  mutate(x = x * 2)\nThis does not modify df unless you reassign it.\nCorrect usage:\ndf &lt;- df |&gt;\n  mutate(x = x * 2)\n\n\n\n\n\n\n\n\n\nWarning\n\n\n\nIf you forget to reassign in R, nothing happens.\nThis is the most common source of “why didn’t my code work?” for Python users."
   },
   {
     "objectID": "docs/more/r-tools/r_4_python_users.html#loops-just-because-you-can-doesnt-mean-you-should",
     "href": "docs/more/r-tools/r_4_python_users.html#loops-just-because-you-can-doesnt-mean-you-should",
     "title": "R for Python Users",
-    "section": "5 5. Loops: just because you can, doesn’t mean you should",
-    "text": "5 5. Loops: just because you can, doesn’t mean you should\n\nPythonR\n\n\n# Python-style thinking applied to R (not recommended)\nfor (i in 1:nrow(df)) {\n  df$x[i] &lt;- df$x[i] * 2\n}\n\n\ndf |&gt;\n  mutate(x = x * 2)\n\n\n\n\n\n\n\n\n\nTip\n\n\n\nIf you feel the urge to write a for loop in R, stop and ask:\n“Is this a vectorized operation?”\nIn most cases, the answer is yes."
+    "section": "5 Loops: just because you can, doesn’t mean you should",
+    "text": "5 Loops: just because you can, doesn’t mean you should\n\nPythonR\n\n\n# Python-style thinking applied to R (not recommended)\nfor (i in 1:nrow(df)) {\n  df$x[i] &lt;- df$x[i] * 2\n}\n\n\ndf |&gt;\n  mutate(x = x * 2)\n\n\n\n\n\n\n\n\n\nTip\n\n\n\nIf you feel the urge to write a for loop in R, stop and ask:\n“Is this a vectorized operation?”\nIn most cases, the answer is yes."
   },
   {
     "objectID": "docs/more/r-tools/r_4_python_users.html#indexing-brackets-vs-verbs",
     "href": "docs/more/r-tools/r_4_python_users.html#indexing-brackets-vs-verbs",
     "title": "R for Python Users",
-    "section": "6 6. Indexing: brackets vs verbs",
-    "text": "6 6. Indexing: brackets vs verbs\n\nPythonR\n\n\ndf.iloc[0]\ndf.loc[df[\"x\"] &gt; 0]\n\n\ndf[1, ]\ndf |&gt;\n  filter(x &gt; 0)\n\n\n\n\n\n\n\n\n\nNote\n\n\n\nBase R indexing exists, but in this course we will prefer tidyverse verbs\nbecause they are clearer and less error-prone."
+    "section": "6 Indexing: brackets vs verbs",
+    "text": "6 Indexing: brackets vs verbs\n\nPythonR\n\n\ndf.iloc[0]\ndf.loc[df[\"x\"] &gt; 0]\n\n\ndf[1, ]\ndf |&gt;\n  filter(x &gt; 0)\n\n\n\n\n\n\n\n\n\nNote\n\n\n\nBase R indexing exists, but in this course we will prefer tidyverse verbs\nbecause they are clearer and less error-prone."
   },
   {
     "objectID": "docs/more/r-tools/r_4_python_users.html#equality-assignment-and-naming",
     "href": "docs/more/r-tools/r_4_python_users.html#equality-assignment-and-naming",
     "title": "R for Python Users",
-    "section": "7 7. Equality, assignment, and naming",
-    "text": "7 7. Equality, assignment, and naming\n\n&lt;- is the standard operator for assignment in this course\n\n= is used only for function arguments\n== is for comparison\nNames are case-sensitive\nAvoid spaces in column names (or use backticks)\n\n\n\n\n\n\n\nTip\n\n\n\nUsing &lt;- consistently makes it easier to visually distinguish\nassignment from function arguments, especially in longer pipelines."
+    "section": "7 Equality, assignment, and naming",
+    "text": "7 Equality, assignment, and naming\n\n&lt;- is the standard operator for assignment in this course\n\n= is used only for function arguments\n== is for comparison\nNames are case-sensitive\nAvoid spaces in column names (or use backticks)\n\n\n\n\n\n\n\nTip\n\n\n\nUsing &lt;- consistently makes it easier to visually distinguish\nassignment from function arguments, especially in longer pipelines."
   },
   {
     "objectID": "docs/more/r-tools/r_4_python_users.html#factors-the-weird-thing-you-didnt-ask-for",
     "href": "docs/more/r-tools/r_4_python_users.html#factors-the-weird-thing-you-didnt-ask-for",
     "title": "R for Python Users",
-    "section": "8 8. Factors: the weird thing you didn’t ask for",
-    "text": "8 8. Factors: the weird thing you didn’t ask for\nR has a special type called factor (categorical variable).\nSometimes you will see:\nstr(df)\nand a column is a factor when you expected a string.\n\n\n\n\n\n\nNote\n\n\n\nFor now:\n\ndon’t panic\nuse as.character() if needed\nwe will be explicit about factors when they matter"
+    "section": "8 Factors: the weird thing you didn’t ask for",
+    "text": "8 Factors: the weird thing you didn’t ask for\nR has a special type called factor (categorical variable).\nSometimes you will see:\nstr(df)\nand a column is a factor when you expected a string.\n\n\n\n\n\n\nNote\n\n\n\nFor now:\n\ndon’t panic\nuse as.character() if needed\nwe will be explicit about factors when they matter"
   },
   {
     "objectID": "docs/more/r-tools/r_4_python_users.html#what-you-actually-need-for-this-course",
     "href": "docs/more/r-tools/r_4_python_users.html#what-you-actually-need-for-this-course",
     "title": "R for Python Users",
-    "section": "9 9. What you actually need for this course",
-    "text": "9 9. What you actually need for this course\nYou do not need to become an R expert.\nYou need to be comfortable with:\n\ntibble\nfilter()\nmutate()\nsummarise()\ngroup_by()\npipes (|&gt;)\n\nEverything else is secondary."
+    "section": "9 What you actually need for this course",
+    "text": "9 What you actually need for this course\nYou do not need to become an R expert.\nYou need to be comfortable with:\n\ntibble\nfilter()\nmutate()\nsummarise()\ngroup_by()\npipes (|&gt;)\n\nEverything else is secondary."
   },
   {
     "objectID": "docs/more/r-tools/r_4_python_users.html#final-reassurance",
     "href": "docs/more/r-tools/r_4_python_users.html#final-reassurance",
     "title": "R for Python Users",
-    "section": "10 10. Final reassurance",
-    "text": "10 10. Final reassurance\n\n\n\n\n\n\nTip\n\n\n\nIf you are fluent in Python, you already have the hard skills:\n\ndata thinking\ndebugging intuition\nabstraction\n\nR is just a different dialect.\n\n\nOnce the mental model clicks, the rest of the course will feel much lighter."
+    "section": "10 Final reassurance",
+    "text": "10 Final reassurance\n\n\n\n\n\n\nTip\n\n\n\nIf you are fluent in Python, you already have the hard skills:\n\ndata thinking\ndebugging intuition\nabstraction\n\nR is just a different dialect.\n\n\nOnce the mental model clicks, the rest of the course will feel much lighter."
   },
   {
     "objectID": "docs/exercises/index.html",
