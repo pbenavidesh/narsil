@@ -6,10 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="">
-<meta name="description" content="Optional materials to support the course.">
+<meta name="author" content="Pablo Benavides-Herrera">
 
-<title>More – Time Series Forecasting</title>
+<title>tsibble: thinking in keys and time – Time Series Forecasting</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -22,34 +21,67 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../../">
-<link href="../../images/narsil_logo.png" rel="icon" type="image/png">
-<script src="../../site_libs/quarto-listing/list.min.js"></script>
-<script src="../../site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
-<script src="../../site_libs/quarto-html/popper.min.js"></script>
-<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-2a367172f4fe7d9182ebf8e09f85cb4e.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-7fb59815a1c41eec7c034637f0c35ff0.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-2a367172f4fe7d9182ebf8e09f85cb4e.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
-<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-f75f3358e428cc5073b8e36401a08085.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-050812e28c024fa67842b13441fed95e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../../site_libs/bootstrap/bootstrap-f75f3358e428cc5073b8e36401a08085.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<link href="../../../images/narsil_logo.png" rel="icon" type="image/png">
+<script src="../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-2a367172f4fe7d9182ebf8e09f85cb4e.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-dark-7fb59815a1c41eec7c034637f0c35ff0.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-2a367172f4fe7d9182ebf8e09f85cb4e.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap-f75f3358e428cc5073b8e36401a08085.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../../site_libs/bootstrap/bootstrap-dark-050812e28c024fa67842b13441fed95e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../../site_libs/bootstrap/bootstrap-f75f3358e428cc5073b8e36401a08085.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -77,35 +109,6 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
-
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-image','listing-date','listing-title','listing-description','listing-categories','listing-author','listing-reading-time',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-title","listing-author","listing-image","listing-description","listing-categories"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
 <style>html{ scroll-behavior: smooth; }</style>
 <script type="application/json" class="js-hypothesis-config">
 {
@@ -119,56 +122,13 @@ ul.task-list li input[type="checkbox"] {
   });
 </script>
 
-  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
-  <script>document.addEventListener("DOMContentLoaded", function () {
- var mathElements = document.getElementsByClassName("math");
- var macros = [];
- for (var i = 0; i < mathElements.length; i++) {
-  var texText = mathElements[i].firstChild;
-  if (mathElements[i].tagName == "SPAN") {
-   katex.render(texText.data, mathElements[i], {
-    displayMode: mathElements[i].classList.contains('display'),
-    throwOnError: false,
-    macros: macros,
-    fleqn: false
-   });
-}}});
-  </script>
-  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
 
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
-
-<link rel="stylesheet" href="../../styles.css">
-<meta property="og:title" content="More – Time Series Forecasting">
-<meta property="og:description" content="Optional materials to support the course.">
+<link rel="stylesheet" href="../../../styles.css">
+<meta property="og:title" content="tsibble: thinking in keys and time – Time Series Forecasting">
+<meta property="og:description" content="">
 <meta property="og:site_name" content="Time Series Forecasting">
-<meta name="twitter:title" content="More – Time Series Forecasting">
-<meta name="twitter:description" content="Optional materials to support the course.">
+<meta name="twitter:title" content="tsibble: thinking in keys and time – Time Series Forecasting">
+<meta name="twitter:description" content="">
 <meta name="twitter:creator" content="@PabsBenavides">
 <meta name="twitter:card" content="summary">
 </head>
@@ -342,11 +302,11 @@ window.Quarto = {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../../images/iteso_logo_blanco.png" alt="" class="navbar-logo light-content">
-    <img src="../../images/iteso_logo_blanco.png" alt="" class="navbar-logo dark-content">
+    <a href="../../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../../images/iteso_logo_blanco.png" alt="" class="navbar-logo light-content">
+    <img src="../../../images/iteso_logo_blanco.png" alt="" class="navbar-logo dark-content">
     </a>
-    <a class="navbar-brand" href="../../index.html">
+    <a class="navbar-brand" href="../../../index.html">
     <span class="navbar-title">Time Series Forecasting</span>
     </a>
   </div>
@@ -357,23 +317,23 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../../index.html"> 
+    <a class="nav-link" href="../../../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../docs/modules/index.html"> 
+    <a class="nav-link" href="../../../docs/modules/index.html"> 
 <span class="menu-text">Modules</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../docs/exercises/index.html"> 
+    <a class="nav-link" href="../../../docs/exercises/index.html"> 
 <span class="menu-text">Exercises</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="../../docs/more/index.html" aria-current="page"> 
+    <a class="nav-link" href="../../../docs/more/index.html"> 
 <span class="menu-text">More</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../docs/about.html"> 
+    <a class="nav-link" href="../../../docs/about.html"> 
 <span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item">
@@ -403,28 +363,63 @@ window.Quarto = {
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(3)</span></div><div class="category" data-category="Ug==">R <span class="quarto-category-count">(3)</span></div></div></div>
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#why-tsibble-exists" id="toc-why-tsibble-exists" class="nav-link active" data-scroll-target="#why-tsibble-exists"><span class="header-section-number">1</span> Why tsibble exists</a></li>
+  <li><a href="#from-tibble-to-tsibble" id="toc-from-tibble-to-tsibble" class="nav-link" data-scroll-target="#from-tibble-to-tsibble"><span class="header-section-number">2</span> From tibble to tsibble</a></li>
+  <li><a href="#the-two-core-ideas-index-and-key" id="toc-the-two-core-ideas-index-and-key" class="nav-link" data-scroll-target="#the-two-core-ideas-index-and-key"><span class="header-section-number">3</span> The two core ideas: index and key</a>
+  <ul class="collapse">
+  <li><a href="#index" id="toc-index" class="nav-link" data-scroll-target="#index"><span class="header-section-number">3.1</span> Index</a></li>
+  <li><a href="#key" id="toc-key" class="nav-link" data-scroll-target="#key"><span class="header-section-number">3.2</span> Key</a></li>
+  </ul></li>
+  <li><a href="#creating-a-tsibble" id="toc-creating-a-tsibble" class="nav-link" data-scroll-target="#creating-a-tsibble"><span class="header-section-number">4</span> Creating a tsibble</a></li>
+  <li><a href="#what-tsibble-checks-for-you" id="toc-what-tsibble-checks-for-you" class="nav-link" data-scroll-target="#what-tsibble-checks-for-you"><span class="header-section-number">5</span> What tsibble checks for you</a></li>
+  <li><a href="#regular-vs-irregular-time" id="toc-regular-vs-irregular-time" class="nav-link" data-scroll-target="#regular-vs-irregular-time"><span class="header-section-number">6</span> Regular vs irregular time</a></li>
+  <li><a href="#missing-time-is-different-from-missing-values" id="toc-missing-time-is-different-from-missing-values" class="nav-link" data-scroll-target="#missing-time-is-different-from-missing-values"><span class="header-section-number">7</span> Missing time is different from missing values</a></li>
+  <li><a href="#tsibble-and-tidyverse-pipelines" id="toc-tsibble-and-tidyverse-pipelines" class="nav-link" data-scroll-target="#tsibble-and-tidyverse-pipelines"><span class="header-section-number">8</span> tsibble and tidyverse pipelines</a></li>
+  <li><a href="#why-models-require-tsibbles" id="toc-why-models-require-tsibbles" class="nav-link" data-scroll-target="#why-models-require-tsibbles"><span class="header-section-number">9</span> Why models require tsibbles</a></li>
+  <li><a href="#common-mistakes" id="toc-common-mistakes" class="nav-link" data-scroll-target="#common-mistakes"><span class="header-section-number">10</span> Common mistakes</a>
+  <ul class="collapse">
+  <li><a href="#forgetting-the-key" id="toc-forgetting-the-key" class="nav-link" data-scroll-target="#forgetting-the-key"><span class="header-section-number">10.1</span> Forgetting the key</a></li>
+  <li><a href="#using-the-wrong-index" id="toc-using-the-wrong-index" class="nav-link" data-scroll-target="#using-the-wrong-index"><span class="header-section-number">10.2</span> Using the wrong index</a></li>
+  </ul></li>
+  <li><a href="#how-this-fits-in-the-course" id="toc-how-this-fits-in-the-course" class="nav-link" data-scroll-target="#how-this-fits-in-the-course"><span class="header-section-number">11</span> How this fits in the course</a></li>
+  <li><a href="#final-takeaway" id="toc-final-takeaway" class="nav-link" data-scroll-target="#final-takeaway"><span class="header-section-number">12</span> Final takeaway</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/pbenavidesh/narsil/edit/main/docs/more/r-tools/tsibble.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/pbenavidesh/narsil/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">More</h1>
-</div>
-
-<div>
-  <div class="description">
-    Optional materials to support the course.
+<h1 class="title">tsibble: thinking in keys and time</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
   </div>
-</div>
+  </div>
+
 
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Pablo Benavides-Herrera </p>
+          </div>
+  </div>
     
   
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">January 26, 2026</p>
+    </div>
+  </div>
     
   </div>
   
@@ -433,132 +428,315 @@ window.Quarto = {
 </header>
 
 
-<p>These materials are <strong>optional</strong> and are not required to pass the course.</p>
-<p>They are meant to help you:</p>
+<p>This document is <strong>optional</strong>, but strongly recommended.</p>
+<p>If tidyverse pipelines explain <em>how data flows</em>, <strong>tsibble</strong> explains <em>what kind of data you are working with</em>.<br>
+For time series, this distinction is essential.</p>
+<hr>
+<section id="why-tsibble-exists" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="why-tsibble-exists"><span class="header-section-number">1</span> Why tsibble exists</h2>
+<p>Most time series errors come from one simple problem:</p>
+<blockquote class="blockquote">
+<p>we forget that <strong>time is a structure</strong>, not just a column.</p>
+</blockquote>
+<p>A <code>tsibble</code> makes time <strong>explicit</strong>, <strong>checked</strong>, and <strong>enforced</strong>.</p>
+<p>Instead of asking: - “do I have a date column?”</p>
+<p>we ask: - “what defines time in this data?” - “what uniquely identifies a series?” - “are observations ordered and regular?”</p>
+<hr>
+</section>
+<section id="from-tibble-to-tsibble" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="from-tibble-to-tsibble"><span class="header-section-number">2</span> From tibble to tsibble</h2>
+<p>A <code>tsibble</code> is a tibble with extra rules.</p>
+<p>Conceptually:</p>
 <ul>
-<li>Refresh prerequisite concepts (statistics, probability, regression)</li>
-<li>Work more comfortably in R and the tidyverse ecosystem</li>
-<li>Improve your workflow and reproducibility (projects, Quarto, organization)</li>
+<li>a <strong>tibble</strong> is just rows and columns<br>
+</li>
+<li>a <strong>tsibble</strong> is:
+<ul>
+<li>a table of time-indexed observations</li>
+<li>with an explicit time variable (<strong>index</strong>)</li>
+<li>and optional identifiers (<strong>keys</strong>)</li>
+</ul></li>
 </ul>
-<p>You are encouraged to use them <strong>as needed</strong>.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A tsibble is still a tibble.<br>
+All tidyverse verbs work the same way.</p>
+</div>
+</div>
+<hr>
+</section>
+<section id="the-two-core-ideas-index-and-key" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="the-two-core-ideas-index-and-key"><span class="header-section-number">3</span> The two core ideas: index and key</h2>
+<p>Every tsibble is defined by:</p>
+<ul>
+<li>an <strong>index</strong> → the time variable<br>
+</li>
+<li>a <strong>key</strong> → what distinguishes one series from another</li>
+</ul>
+<section id="index" class="level3" data-number="3.1">
+<h3 data-number="3.1" class="anchored" data-anchor-id="index"><span class="header-section-number">3.1</span> Index</h3>
+<p>The index answers:</p>
+<blockquote class="blockquote">
+<p>“along which variable does time move forward?”</p>
+</blockquote>
+<p>Examples: - <code>date</code> - <code>year</code> - <code>yearweek</code> - <code>yearmonth</code></p>
+</section>
+<section id="key" class="level3" data-number="3.2">
+<h3 data-number="3.2" class="anchored" data-anchor-id="key"><span class="header-section-number">3.2</span> Key</h3>
+<p>The key answers:</p>
+<blockquote class="blockquote">
+<p>“what defines a unique time series?”</p>
+</blockquote>
+<p>Examples:</p>
+<ul>
+<li>a store<br>
+</li>
+<li>a product<br>
+</li>
+<li>a sensor<br>
+</li>
+<li>a country</li>
+</ul>
+<p>A dataset can have: - no key (single series) - one key - multiple keys (hierarchical series)</p>
+<hr>
+</section>
+</section>
+<section id="creating-a-tsibble" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="creating-a-tsibble"><span class="header-section-number">4</span> Creating a tsibble</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tsibble)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>data_ts <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tsibble</span>(</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">index =</span> date,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">key =</span> id</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Reading this with the pipeline mental model:</p>
+<blockquote class="blockquote">
+<p>take <code>data</code>, <strong>then</strong> declare that <code>date</code> is time,<br>
+<strong>then</strong> declare that <code>id</code> identifies each series.</p>
+</blockquote>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Always read <code>as_tsibble()</code> as a <em>declaration</em>, not a transformation.</p>
+</div>
+</div>
+<hr>
+</section>
+<section id="what-tsibble-checks-for-you" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="what-tsibble-checks-for-you"><span class="header-section-number">5</span> What tsibble checks for you</h2>
+<p>When you create a tsibble, R checks that:</p>
+<ul>
+<li>the index is ordered</li>
+<li>each key–index combination is unique</li>
+<li>time moves forward consistently</li>
+</ul>
+<p>If something is wrong, <strong>it fails early</strong>.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Errors at <code>as_tsibble()</code> time are a feature.<br>
+They prevent silent mistakes later in modeling and forecasting.</p>
+</div>
+</div>
+<hr>
+</section>
+<section id="regular-vs-irregular-time" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="regular-vs-irregular-time"><span class="header-section-number">6</span> Regular vs irregular time</h2>
+<p>Some series have observations at fixed intervals:</p>
+<ul>
+<li>daily</li>
+<li>monthly</li>
+<li>yearly</li>
+</ul>
+<p>Others do not.</p>
+<p>A tsibble keeps track of this distinction.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">is_regular</span>(data_ts)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>If a series is regular, many models become simpler and more efficient.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Regularity is a property of the <strong>index</strong>, not the values.</p>
+</div>
+</div>
+<hr>
+</section>
+<section id="missing-time-is-different-from-missing-values" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="missing-time-is-different-from-missing-values"><span class="header-section-number">7</span> Missing time is different from missing values</h2>
+<p>A critical distinction in time series:</p>
+<ul>
+<li>missing <strong>values</strong> → <code>NA</code></li>
+<li>missing <strong>time points</strong> → gaps</li>
+</ul>
+<p>tsibble makes this difference explicit.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>data_ts <span class="sc">|&gt;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">has_gaps</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>To fill missing time points:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>data_ts <span class="sc">|&gt;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fill_gaps</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Do not confuse “no observation” with “observation equals NA”.</p>
+</div>
+</div>
+<hr>
+</section>
+<section id="tsibble-and-tidyverse-pipelines" class="level2" data-number="8">
+<h2 data-number="8" class="anchored" data-anchor-id="tsibble-and-tidyverse-pipelines"><span class="header-section-number">8</span> tsibble and tidyverse pipelines</h2>
+<p>Because tsibble extends tibble, pipelines feel natural:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">|&gt;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tsibble</span>(<span class="at">index =</span> date, <span class="at">key =</span> id) <span class="sc">|&gt;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(date <span class="sc">&gt;=</span> <span class="fu">yearmonth</span>(<span class="st">"2019 Jan"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(id) <span class="sc">|&gt;</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mean_value =</span> <span class="fu">mean</span>(value, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The difference is not syntax — it is <strong>semantics</strong>.</p>
+<hr>
+</section>
+<section id="why-models-require-tsibbles" class="level2" data-number="9">
+<h2 data-number="9" class="anchored" data-anchor-id="why-models-require-tsibbles"><span class="header-section-number">9</span> Why models require tsibbles</h2>
+<p>In tidyverts:</p>
+<ul>
+<li>models expect a clear notion of time</li>
+<li>forecasts depend on index behavior</li>
+<li>keys define independent series</li>
+</ul>
+<p>Without a tsibble, the model cannot know:</p>
+<ul>
+<li>what “next” means</li>
+<li>how many steps ahead to forecast</li>
+<li>whether series are independent</li>
+</ul>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>tsibble is the contract between your data and the forecasting models.</p>
+</div>
+</div>
+<hr>
+</section>
+<section id="common-mistakes" class="level2" data-number="10">
+<h2 data-number="10" class="anchored" data-anchor-id="common-mistakes"><span class="header-section-number">10</span> Common mistakes</h2>
+<section id="forgetting-the-key" class="level3" data-number="10.1">
+<h3 data-number="10.1" class="anchored" data-anchor-id="forgetting-the-key"><span class="header-section-number">10.1</span> Forgetting the key</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as_tsibble</span>(data, <span class="at">index =</span> date)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This creates a <strong>single series</strong>, even if multiple series are present.</p>
+</section>
+<section id="using-the-wrong-index" class="level3" data-number="10.2">
+<h3 data-number="10.2" class="anchored" data-anchor-id="using-the-wrong-index"><span class="header-section-number">10.2</span> Using the wrong index</h3>
+<p>Using an identifier as time will often succeed syntactically, but fail conceptually.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If your forecasts look strange, always check the index and key first.</p>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="how-this-fits-in-the-course" class="level2" data-number="11">
+<h2 data-number="11" class="anchored" data-anchor-id="how-this-fits-in-the-course"><span class="header-section-number">11</span> How this fits in the course</h2>
+<p>Throughout the course:</p>
+<ul>
+<li>all time series data will be stored as tsibbles</li>
+<li>models will assume valid indices and keys</li>
+<li>diagnostics rely on tsibble structure</li>
+</ul>
+<p>If something breaks early, it usually means the data structure is wrong — not the model.</p>
+<hr>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Further reading
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>For the conceptual foundations of tidy data and tibbles, see<br>
+<a href="https://r4ds.hadley.nz/tibbles.html"><em>R for Data Science (2e)</em> — <strong>Tibbles</strong></a>.</li>
+<li>For joins and keys, which strongly relate to tsibble keys, see<br>
+<a href="https://r4ds.hadley.nz/joins.html"><em>R for Data Science (2e)</em> — <strong>Joins</strong></a>. For the full tsibble framework and design philosophy, see the<br>
+<a href="https://tsibble.tidyverts.org/"><em>tsibble package documentation</em></a>.</li>
+</ul>
+</div>
+</div>
+<hr>
+</section>
+<section id="final-takeaway" class="level2" data-number="12">
+<h2 data-number="12" class="anchored" data-anchor-id="final-takeaway"><span class="header-section-number">12</span> Final takeaway</h2>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If tidyverse pipelines describe <strong>how data changes</strong>,<br>
+tsibbles describe <strong>what kind of time-based data you have</strong>.</p>
+</div>
+</div>
+<p>Get the structure right, and the models will make sense.</p>
 
 
+</section>
 
-
-<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
-<div class="listing-actions-group">
-   <div class="input-group input-group-sm quarto-listing-sort">
-    <span class="input-group-text"><i class="bi bi-sort-down"></i></span>
-    <select id="listing-listing-sort" class="form-select" aria-label="Order By" onchange="window['quarto-listings']['listing-listing'].sort(this.options[this.selectedIndex].value, { order: this.options[this.selectedIndex].getAttribute('data-direction')})">
-      <option value="" disabled="" selected="" hidden="">Order By</option>
-      <option value="index" data-direction="asc">Default</option>
-      <option value="listing-title" data-direction="asc">
-        Title
-      </option>
-      <option value="listing-date-sort" data-direction="asc">
-        Date - Oldest
-      </option>
-      <option value="listing-date-sort" data-direction="desc">
-        Date - Newest
-      </option>
-      <option value="listing-author" data-direction="asc">
-        Author
-      </option>
-    </select>
-  </div>
-    <div class="input-group input-group-sm quarto-listing-filter">
-      <span class="input-group-text"><i class="bi bi-search"></i></span>
-      <input type="text" class="search form-control" placeholder="Filter">
-    </div>
-</div>
-<div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="Ug==" data-listing-file-modified-sort="1769457175871" data-listing-reading-time-sort="4" data-listing-word-count-sort="772">
-<div class="thumbnail"><a href="../../docs/more/r-tools/pipes_tidyverse.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../../docs/more/r-tools/pipes_tidyverse.html" class="no-external">Pipes and the tidyverse mental model</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('Ug=='); return false;">R</div>
-
-</div>
-<div class="delink listing-description"><a href="../../docs/more/r-tools/pipes_tidyverse.html" class="no-external">
-This document is <strong>optional</strong>, but strongly recommended.
-</a></div>
-</div>
-<div class="metadata">
-<a href="../../docs/more/r-tools/pipes_tidyverse.html" class="no-external">
-<div class="listing-author">
-Pablo Benavides-Herrera
-</div>
-<div class="listing-reading-time">4 min</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="1" data-categories="Ug==" data-listing-file-modified-sort="1769457175871" data-listing-reading-time-sort="4" data-listing-word-count-sort="655">
-<div class="thumbnail"><a href="../../docs/more/r-tools/r_4_python_users.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../../docs/more/r-tools/r_4_python_users.html" class="no-external">R for Python Users</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('Ug=='); return false;">R</div>
-
-</div>
-<div class="delink listing-description"><a href="../../docs/more/r-tools/r_4_python_users.html" class="no-external">
-This document is <strong>optional</strong>, but highly recommended if you come from a Python background.
-</a></div>
-</div>
-<div class="metadata">
-<a href="../../docs/more/r-tools/r_4_python_users.html" class="no-external">
-<div class="listing-author">
-Pablo Benavides-Herrera
-</div>
-<div class="listing-reading-time">4 min</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="2" data-categories="Ug==" data-listing-file-modified-sort="1769457175871" data-listing-reading-time-sort="4" data-listing-word-count-sort="674">
-<div class="thumbnail"><a href="../../docs/more/r-tools/tsibble.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../../docs/more/r-tools/tsibble.html" class="no-external">tsibble: thinking in keys and time</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('Ug=='); return false;">R</div>
-
-</div>
-<div class="delink listing-description"><a href="../../docs/more/r-tools/tsibble.html" class="no-external">
-This document is <strong>optional</strong>, but strongly recommended.
-</a></div>
-</div>
-<div class="metadata">
-<a href="../../docs/more/r-tools/tsibble.html" class="no-external">
-<div class="listing-author">
-Pablo Benavides-Herrera
-</div>
-<div class="listing-reading-time">4 min</div>
-</a>
-</div>
-</div>
-</div>
-<div class="listing-no-matching d-none">No matching items</div>
-</div><a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right
@@ -982,5 +1160,5 @@ Pablo Benavides-Herrera
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions"><ul><li><a href="https://github.com/pbenavidesh/narsil/edit/main/docs/more/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/pbenavidesh/narsil/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/pbenavidesh/narsil/edit/main/docs/more/r-tools/tsibble.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/pbenavidesh/narsil/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="../../../site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>

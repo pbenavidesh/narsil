@@ -640,6 +640,146 @@
     "text": "Back to top"
   },
   {
+    "objectID": "docs/more/r-tools/tsibble.html",
+    "href": "docs/more/r-tools/tsibble.html",
+    "title": "tsibble: thinking in keys and time",
+    "section": "",
+    "text": "This document is optional, but strongly recommended.\nIf tidyverse pipelines explain how data flows, tsibble explains what kind of data you are working with.\nFor time series, this distinction is essential."
+  },
+  {
+    "objectID": "docs/more/r-tools/tsibble.html#why-tsibble-exists",
+    "href": "docs/more/r-tools/tsibble.html#why-tsibble-exists",
+    "title": "tsibble: thinking in keys and time",
+    "section": "1 Why tsibble exists",
+    "text": "1 Why tsibble exists\nMost time series errors come from one simple problem:\n\nwe forget that time is a structure, not just a column.\n\nA tsibble makes time explicit, checked, and enforced.\nInstead of asking: - “do I have a date column?”\nwe ask: - “what defines time in this data?” - “what uniquely identifies a series?” - “are observations ordered and regular?”"
+  },
+  {
+    "objectID": "docs/more/r-tools/tsibble.html#from-tibble-to-tsibble",
+    "href": "docs/more/r-tools/tsibble.html#from-tibble-to-tsibble",
+    "title": "tsibble: thinking in keys and time",
+    "section": "2 From tibble to tsibble",
+    "text": "2 From tibble to tsibble\nA tsibble is a tibble with extra rules.\nConceptually:\n\na tibble is just rows and columns\n\na tsibble is:\n\na table of time-indexed observations\nwith an explicit time variable (index)\nand optional identifiers (keys)\n\n\n\n\n\n\n\n\nNote\n\n\n\nA tsibble is still a tibble.\nAll tidyverse verbs work the same way."
+  },
+  {
+    "objectID": "docs/more/r-tools/tsibble.html#the-two-core-ideas-index-and-key",
+    "href": "docs/more/r-tools/tsibble.html#the-two-core-ideas-index-and-key",
+    "title": "tsibble: thinking in keys and time",
+    "section": "3 The two core ideas: index and key",
+    "text": "3 The two core ideas: index and key\nEvery tsibble is defined by:\n\nan index → the time variable\n\na key → what distinguishes one series from another\n\n\n3.1 Index\nThe index answers:\n\n“along which variable does time move forward?”\n\nExamples: - date - year - yearweek - yearmonth\n\n\n3.2 Key\nThe key answers:\n\n“what defines a unique time series?”\n\nExamples:\n\na store\n\na product\n\na sensor\n\na country\n\nA dataset can have: - no key (single series) - one key - multiple keys (hierarchical series)"
+  },
+  {
+    "objectID": "docs/more/r-tools/tsibble.html#creating-a-tsibble",
+    "href": "docs/more/r-tools/tsibble.html#creating-a-tsibble",
+    "title": "tsibble: thinking in keys and time",
+    "section": "4 Creating a tsibble",
+    "text": "4 Creating a tsibble\nlibrary(tsibble)\n\ndata_ts &lt;- data |&gt;\n  as_tsibble(\n    index = date,\n    key = id\n  )\nReading this with the pipeline mental model:\n\ntake data, then declare that date is time,\nthen declare that id identifies each series.\n\n\n\n\n\n\n\nTip\n\n\n\nAlways read as_tsibble() as a declaration, not a transformation."
+  },
+  {
+    "objectID": "docs/more/r-tools/tsibble.html#what-tsibble-checks-for-you",
+    "href": "docs/more/r-tools/tsibble.html#what-tsibble-checks-for-you",
+    "title": "tsibble: thinking in keys and time",
+    "section": "5 What tsibble checks for you",
+    "text": "5 What tsibble checks for you\nWhen you create a tsibble, R checks that:\n\nthe index is ordered\neach key–index combination is unique\ntime moves forward consistently\n\nIf something is wrong, it fails early.\n\n\n\n\n\n\nWarning\n\n\n\nErrors at as_tsibble() time are a feature.\nThey prevent silent mistakes later in modeling and forecasting."
+  },
+  {
+    "objectID": "docs/more/r-tools/tsibble.html#regular-vs-irregular-time",
+    "href": "docs/more/r-tools/tsibble.html#regular-vs-irregular-time",
+    "title": "tsibble: thinking in keys and time",
+    "section": "6 Regular vs irregular time",
+    "text": "6 Regular vs irregular time\nSome series have observations at fixed intervals:\n\ndaily\nmonthly\nyearly\n\nOthers do not.\nA tsibble keeps track of this distinction.\nis_regular(data_ts)\nIf a series is regular, many models become simpler and more efficient.\n\n\n\n\n\n\nNote\n\n\n\nRegularity is a property of the index, not the values."
+  },
+  {
+    "objectID": "docs/more/r-tools/tsibble.html#missing-time-is-different-from-missing-values",
+    "href": "docs/more/r-tools/tsibble.html#missing-time-is-different-from-missing-values",
+    "title": "tsibble: thinking in keys and time",
+    "section": "7 Missing time is different from missing values",
+    "text": "7 Missing time is different from missing values\nA critical distinction in time series:\n\nmissing values → NA\nmissing time points → gaps\n\ntsibble makes this difference explicit.\ndata_ts |&gt;\n  has_gaps()\nTo fill missing time points:\ndata_ts |&gt;\n  fill_gaps()\n\n\n\n\n\n\nTip\n\n\n\nDo not confuse “no observation” with “observation equals NA”."
+  },
+  {
+    "objectID": "docs/more/r-tools/tsibble.html#tsibble-and-tidyverse-pipelines",
+    "href": "docs/more/r-tools/tsibble.html#tsibble-and-tidyverse-pipelines",
+    "title": "tsibble: thinking in keys and time",
+    "section": "8 tsibble and tidyverse pipelines",
+    "text": "8 tsibble and tidyverse pipelines\nBecause tsibble extends tibble, pipelines feel natural:\ndata |&gt;\n  as_tsibble(index = date, key = id) |&gt;\n  filter(date &gt;= yearmonth(\"2019 Jan\")) |&gt;\n  group_by(id) |&gt;\n  summarise(mean_value = mean(value, na.rm = TRUE))\nThe difference is not syntax — it is semantics."
+  },
+  {
+    "objectID": "docs/more/r-tools/tsibble.html#why-models-require-tsibbles",
+    "href": "docs/more/r-tools/tsibble.html#why-models-require-tsibbles",
+    "title": "tsibble: thinking in keys and time",
+    "section": "9 Why models require tsibbles",
+    "text": "9 Why models require tsibbles\nIn tidyverts:\n\nmodels expect a clear notion of time\nforecasts depend on index behavior\nkeys define independent series\n\nWithout a tsibble, the model cannot know:\n\nwhat “next” means\nhow many steps ahead to forecast\nwhether series are independent\n\n\n\n\n\n\n\nNote\n\n\n\ntsibble is the contract between your data and the forecasting models."
+  },
+  {
+    "objectID": "docs/more/r-tools/tsibble.html#common-mistakes",
+    "href": "docs/more/r-tools/tsibble.html#common-mistakes",
+    "title": "tsibble: thinking in keys and time",
+    "section": "10 Common mistakes",
+    "text": "10 Common mistakes\n\n10.1 Forgetting the key\nas_tsibble(data, index = date)\nThis creates a single series, even if multiple series are present.\n\n\n10.2 Using the wrong index\nUsing an identifier as time will often succeed syntactically, but fail conceptually.\n\n\n\n\n\n\nWarning\n\n\n\nIf your forecasts look strange, always check the index and key first."
+  },
+  {
+    "objectID": "docs/more/r-tools/tsibble.html#how-this-fits-in-the-course",
+    "href": "docs/more/r-tools/tsibble.html#how-this-fits-in-the-course",
+    "title": "tsibble: thinking in keys and time",
+    "section": "11 How this fits in the course",
+    "text": "11 How this fits in the course\nThroughout the course:\n\nall time series data will be stored as tsibbles\nmodels will assume valid indices and keys\ndiagnostics rely on tsibble structure\n\nIf something breaks early, it usually means the data structure is wrong — not the model.\n\n\n\n\n\n\n\nNoteFurther reading\n\n\n\n\nFor the conceptual foundations of tidy data and tibbles, see\nR for Data Science (2e) — Tibbles.\nFor joins and keys, which strongly relate to tsibble keys, see\nR for Data Science (2e) — Joins. For the full tsibble framework and design philosophy, see the\ntsibble package documentation."
+  },
+  {
+    "objectID": "docs/more/r-tools/tsibble.html#final-takeaway",
+    "href": "docs/more/r-tools/tsibble.html#final-takeaway",
+    "title": "tsibble: thinking in keys and time",
+    "section": "12 Final takeaway",
+    "text": "12 Final takeaway\n\n\n\n\n\n\nTip\n\n\n\nIf tidyverse pipelines describe how data changes,\ntsibbles describe what kind of time-based data you have.\n\n\nGet the structure right, and the models will make sense."
+  },
+  {
+    "objectID": "docs/more/index.html",
+    "href": "docs/more/index.html",
+    "title": "More",
+    "section": "",
+    "text": "These materials are optional and are not required to pass the course.\nThey are meant to help you:\n\nRefresh prerequisite concepts (statistics, probability, regression)\nWork more comfortably in R and the tidyverse ecosystem\nImprove your workflow and reproducibility (projects, Quarto, organization)\n\nYou are encouraged to use them as needed.\n\n\n\n\n\n\n   \n    \n    \n      Order By\n      Default\n      \n        Title\n      \n      \n        Date - Oldest\n      \n      \n        Date - Newest\n      \n      \n        Author\n      \n    \n  \n    \n      \n      \n    \n\n\n\n\n\n\n\n\n\n\nPipes and the tidyverse mental model\n\n\n\nR\n\n\n\n\n\n\n\n\n\nPablo Benavides-Herrera\n\n4 min\n\n\n\n\n\n\n\n\n\n\n\nR for Python Users\n\n\n\nR\n\n\n\n\n\n\n\n\n\nPablo Benavides-Herrera\n\n4 min\n\n\n\n\n\n\n\n\n\n\n\ntsibble: thinking in keys and time\n\n\n\nR\n\n\n\n\n\n\n\n\n\nPablo Benavides-Herrera\n\n4 min\n\n\n\n\nNo matching items\n Back to top"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "\n1 Time Series Forecasting with R",
+    "section": "",
+    "text": "Welcome to the Time Series Forecasting course at ITESO. Here you will find all the materials and resources needed for the course."
+  },
+  {
+    "objectID": "index.html#what-youll-learn",
+    "href": "index.html#what-youll-learn",
+    "title": "\n1 Time Series Forecasting with R",
+    "section": "\n1.1 What you’ll learn",
+    "text": "1.1 What you’ll learn\n\nBuild tidy time series with tsibble and modern data pipelines\nCreate forecasts with ETS, ARIMA, and regression-based models via fable\n\nEngineer time features and diagnose models with feasts)\nEvaluate with time-aware resampling and communicate uncertainty\nScale to multiple series and hierarchies when needed\n\n\n\n\n\n\n\nTipHow to succeed here\n\n\n\nForecasting improves with iteration: start simple, validate honestly, and refine. Keep a tight loop of fit → diagnose → evaluate → communicate."
+  },
+  {
+    "objectID": "index.html#start-here",
+    "href": "index.html#start-here",
+    "title": "\n1 Time Series Forecasting with R",
+    "section": "\n1.2 Start here",
+    "text": "1.2 Start here\n\n\n\n\n\n\nNote\n\n\n\nNew to the site? Use the links below to jump in.\n\n\n\nModules\nIn-class exercises"
+  },
+  {
+    "objectID": "index.html#course-map",
+    "href": "index.html#course-map",
+    "title": "\n1 Time Series Forecasting with R",
+    "section": "\n1.3 Course map",
+    "text": "1.3 Course map\n\n\n\n1.3.1 1. Foundations\n\ntidy data + time indexes\n\ntsibble keys, gaps, and intervals\n\n1.3.2 2. Patterns & features\n\nseasonality, trend, decomposition\ndiagnostics and features (feasts)\n\n\n\n1.3.3 3. Core forecasting models\n\nETS + ARIMA\nmodel comparison and selection\n\n1.3.4 4. Regression workflows\n\ntime features, events, and covariates\nforecast reconciliation ideas\n\n\n\n1.3.5 5. Evaluation & communication\n\ntime series CV and backtesting\nuncertainty, intervals, and narratives\n\n1.3.6 6. Multiple series\n\ngrouped models\nhierarchies and reconciliation"
+  },
+  {
+    "objectID": "index.html#quick-setup-check",
+    "href": "index.html#quick-setup-check",
+    "title": "\n1 Time Series Forecasting with R",
+    "section": "\n1.4 Quick setup check",
+    "text": "1.4 Quick setup check\nRun this once after installing packages to confirm your environment.\n\nCodelibrary(tidyverse)\nlibrary(tsibble)\nlibrary(fable)\nlibrary(feasts)\n\nsessionInfo()\n\n\n\n\n\n\n\n\nWarningCommon pitfalls\n\n\n\n\n\nData leakage: don’t let future information sneak into features.\n\nRandom CV: use time-aware resampling/backtesting.\n\nOverfitting: a more complex model isn’t automatically better."
+  },
+  {
+    "objectID": "index.html#primary-toolchain",
+    "href": "index.html#primary-toolchain",
+    "title": "\n1 Time Series Forecasting with R",
+    "section": "\n1.5 Primary toolchain",
+    "text": "1.5 Primary toolchain\nWe’ll use a tidy workflow centered on:\n\n\ntidyverse for data wrangling\n\ntsibble for time-aware tibbles\n\nfable for modeling and forecasting\n\nfeasts for decomposition, features, and diagnostics\n\nRecommended reading: Forecasting: Principles and Practice (free online)."
+  },
+  {
     "objectID": "docs/more/r-tools/pipes_tidyverse.html",
     "href": "docs/more/r-tools/pipes_tidyverse.html",
     "title": "Pipes and the tidyverse mental model",
@@ -722,55 +862,6 @@
     "title": "Pipes and the tidyverse mental model",
     "section": "11 Final takeaway",
     "text": "11 Final takeaway\n\n\n\n\n\n\nTip\n\n\n\nIf you understand pipes, you understand most of tidyverse-based R.\n\n\nEverything else in the course builds on this idea."
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "\n1 Time Series Forecasting with R",
-    "section": "",
-    "text": "Welcome to the Time Series Forecasting course at ITESO. Here you will find all the materials and resources needed for the course."
-  },
-  {
-    "objectID": "index.html#what-youll-learn",
-    "href": "index.html#what-youll-learn",
-    "title": "\n1 Time Series Forecasting with R",
-    "section": "\n1.1 What you’ll learn",
-    "text": "1.1 What you’ll learn\n\nBuild tidy time series with tsibble and modern data pipelines\nCreate forecasts with ETS, ARIMA, and regression-based models via fable\n\nEngineer time features and diagnose models with feasts)\nEvaluate with time-aware resampling and communicate uncertainty\nScale to multiple series and hierarchies when needed\n\n\n\n\n\n\n\nTipHow to succeed here\n\n\n\nForecasting improves with iteration: start simple, validate honestly, and refine. Keep a tight loop of fit → diagnose → evaluate → communicate."
-  },
-  {
-    "objectID": "index.html#start-here",
-    "href": "index.html#start-here",
-    "title": "\n1 Time Series Forecasting with R",
-    "section": "\n1.2 Start here",
-    "text": "1.2 Start here\n\n\n\n\n\n\nNote\n\n\n\nNew to the site? Use the links below to jump in.\n\n\n\nModules\nIn-class exercises"
-  },
-  {
-    "objectID": "index.html#course-map",
-    "href": "index.html#course-map",
-    "title": "\n1 Time Series Forecasting with R",
-    "section": "\n1.3 Course map",
-    "text": "1.3 Course map\n\n\n\n1.3.1 1. Foundations\n\ntidy data + time indexes\n\ntsibble keys, gaps, and intervals\n\n1.3.2 2. Patterns & features\n\nseasonality, trend, decomposition\ndiagnostics and features (feasts)\n\n\n\n1.3.3 3. Core forecasting models\n\nETS + ARIMA\nmodel comparison and selection\n\n1.3.4 4. Regression workflows\n\ntime features, events, and covariates\nforecast reconciliation ideas\n\n\n\n1.3.5 5. Evaluation & communication\n\ntime series CV and backtesting\nuncertainty, intervals, and narratives\n\n1.3.6 6. Multiple series\n\ngrouped models\nhierarchies and reconciliation"
-  },
-  {
-    "objectID": "index.html#quick-setup-check",
-    "href": "index.html#quick-setup-check",
-    "title": "\n1 Time Series Forecasting with R",
-    "section": "\n1.4 Quick setup check",
-    "text": "1.4 Quick setup check\nRun this once after installing packages to confirm your environment.\n\nCodelibrary(tidyverse)\nlibrary(tsibble)\nlibrary(fable)\nlibrary(feasts)\n\nsessionInfo()\n\n\n\n\n\n\n\n\nWarningCommon pitfalls\n\n\n\n\n\nData leakage: don’t let future information sneak into features.\n\nRandom CV: use time-aware resampling/backtesting.\n\nOverfitting: a more complex model isn’t automatically better."
-  },
-  {
-    "objectID": "index.html#primary-toolchain",
-    "href": "index.html#primary-toolchain",
-    "title": "\n1 Time Series Forecasting with R",
-    "section": "\n1.5 Primary toolchain",
-    "text": "1.5 Primary toolchain\nWe’ll use a tidy workflow centered on:\n\n\ntidyverse for data wrangling\n\ntsibble for time-aware tibbles\n\nfable for modeling and forecasting\n\nfeasts for decomposition, features, and diagnostics\n\nRecommended reading: Forecasting: Principles and Practice (free online)."
-  },
-  {
-    "objectID": "docs/more/index.html",
-    "href": "docs/more/index.html",
-    "title": "More",
-    "section": "",
-    "text": "These materials are optional and are not required to pass the course.\nThey are meant to help you:\n\nRefresh prerequisite concepts (statistics, probability, regression)\nWork more comfortably in R and the tidyverse ecosystem\nImprove your workflow and reproducibility (projects, Quarto, organization)\n\nYou are encouraged to use them as needed.\n\n\n\n\n\n\n   \n    \n    \n      Order By\n      Default\n      \n        Title\n      \n      \n        Date - Oldest\n      \n      \n        Date - Newest\n      \n      \n        Author\n      \n    \n  \n    \n      \n      \n    \n\n\n\n\n\n\n\n\n\n\nPipes and the tidyverse mental model\n\n\n\nR\n\n\n\n\n\n\n\n\n\nPablo Benavides-Herrera\n\n4 min\n\n\n\n\n\n\n\n\n\n\n\nR for Python Users\n\n\n\nR\n\n\n\n\n\n\n\n\n\nPablo Benavides-Herrera\n\n4 min\n\n\n\n\nNo matching items\n Back to top"
   },
   {
     "objectID": "docs/more/r-tools/r_4_python_users.html",
