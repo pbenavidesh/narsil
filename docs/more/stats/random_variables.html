@@ -6,9 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="">
+<meta name="author" content="Pablo Benavides-Herrera">
+<meta name="description" content="A mathematically grounded refresher on random variables and distributions, focused on how uncertainty is represented and used in time series forecasting.">
 
-<title>In-class exercises – Time Series Forecasting</title>
+<title>Random variables: uncertainty as an object – Time Series Forecasting</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -24,31 +25,29 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../../">
-<link href="../../images/narsil_logo.png" rel="icon" type="image/png">
-<script src="../../site_libs/quarto-listing/list.min.js"></script>
-<script src="../../site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
-<script src="../../site_libs/quarto-html/popper.min.js"></script>
-<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-2a367172f4fe7d9182ebf8e09f85cb4e.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-7fb59815a1c41eec7c034637f0c35ff0.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-2a367172f4fe7d9182ebf8e09f85cb4e.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
-<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-f75f3358e428cc5073b8e36401a08085.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-050812e28c024fa67842b13441fed95e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../../site_libs/bootstrap/bootstrap-f75f3358e428cc5073b8e36401a08085.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<link href="../../../images/narsil_logo.png" rel="icon" type="image/png">
+<script src="../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-2a367172f4fe7d9182ebf8e09f85cb4e.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-dark-7fb59815a1c41eec7c034637f0c35ff0.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-2a367172f4fe7d9182ebf8e09f85cb4e.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap-f75f3358e428cc5073b8e36401a08085.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../../site_libs/bootstrap/bootstrap-dark-050812e28c024fa67842b13441fed95e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../../site_libs/bootstrap/bootstrap-f75f3358e428cc5073b8e36401a08085.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -76,35 +75,6 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
-
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-image','listing-date','listing-title','listing-description','listing-categories','listing-author','listing-reading-time',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description","listing-categories"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
 <style>html{ scroll-behavior: smooth; }</style>
 <script type="application/json" class="js-hypothesis-config">
 {
@@ -162,12 +132,12 @@ window.Quarto = {
 };
 </script>
 
-<link rel="stylesheet" href="../../styles.css">
-<meta property="og:title" content="In-class exercises – Time Series Forecasting">
-<meta property="og:description" content="">
+<link rel="stylesheet" href="../../../styles.css">
+<meta property="og:title" content="Random variables: uncertainty as an object – Time Series Forecasting">
+<meta property="og:description" content="A mathematically grounded refresher on random variables and distributions, focused on how uncertainty is represented and used in time series forecasting.">
 <meta property="og:site_name" content="Time Series Forecasting">
-<meta name="twitter:title" content="In-class exercises – Time Series Forecasting">
-<meta name="twitter:description" content="">
+<meta name="twitter:title" content="Random variables: uncertainty as an object – Time Series Forecasting">
+<meta name="twitter:description" content="A mathematically grounded refresher on random variables and distributions, focused on how uncertainty is represented and used in time series forecasting.">
 <meta name="twitter:creator" content="@PabsBenavides">
 <meta name="twitter:card" content="summary">
 </head>
@@ -341,11 +311,11 @@ window.Quarto = {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../../images/iteso_logo_blanco.png" alt="" class="navbar-logo light-content">
-    <img src="../../images/iteso_logo_blanco.png" alt="" class="navbar-logo dark-content">
+    <a href="../../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../../images/iteso_logo_blanco.png" alt="" class="navbar-logo light-content">
+    <img src="../../../images/iteso_logo_blanco.png" alt="" class="navbar-logo dark-content">
     </a>
-    <a class="navbar-brand" href="../../index.html">
+    <a class="navbar-brand" href="../../../index.html">
     <span class="navbar-title">Time Series Forecasting</span>
     </a>
   </div>
@@ -356,23 +326,23 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../../index.html"> 
+    <a class="nav-link" href="../../../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../docs/modules/index.html"> 
+    <a class="nav-link" href="../../../docs/modules/index.html"> 
 <span class="menu-text">Modules</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="../../docs/exercises/index.html" aria-current="page"> 
+    <a class="nav-link" href="../../../docs/exercises/index.html"> 
 <span class="menu-text">Exercises</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../docs/more/index.html"> 
+    <a class="nav-link" href="../../../docs/more/index.html"> 
 <span class="menu-text">More</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../docs/about.html"> 
+    <a class="nav-link" href="../../../docs/about.html"> 
 <span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item">
@@ -402,23 +372,61 @@ window.Quarto = {
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Zm91bmRhdGlvbnM=">foundations <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Ug==">R <span class="quarto-category-count">(1)</span></div><div class="category" data-category="VmlzdWFsaXphdGlvbg==">Visualization <span class="quarto-category-count">(1)</span></div></div></div>
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#from-data-to-uncertainty" id="toc-from-data-to-uncertainty" class="nav-link active" data-scroll-target="#from-data-to-uncertainty"><span class="header-section-number">1</span> From data to uncertainty</a></li>
+  <li><a href="#what-is-a-random-variable" id="toc-what-is-a-random-variable" class="nav-link" data-scroll-target="#what-is-a-random-variable"><span class="header-section-number">2</span> What is a random variable?</a></li>
+  <li><a href="#discrete-and-continuous-random-variables" id="toc-discrete-and-continuous-random-variables" class="nav-link" data-scroll-target="#discrete-and-continuous-random-variables"><span class="header-section-number">3</span> Discrete and continuous random variables</a>
+  <ul class="collapse">
+  <li><a href="#discrete-random-variables" id="toc-discrete-random-variables" class="nav-link" data-scroll-target="#discrete-random-variables"><span class="header-section-number">3.1</span> Discrete random variables</a></li>
+  <li><a href="#continuous-random-variables" id="toc-continuous-random-variables" class="nav-link" data-scroll-target="#continuous-random-variables"><span class="header-section-number">3.2</span> Continuous random variables</a></li>
+  </ul></li>
+  <li><a href="#distributions-as-models-not-data-summaries" id="toc-distributions-as-models-not-data-summaries" class="nav-link" data-scroll-target="#distributions-as-models-not-data-summaries"><span class="header-section-number">4</span> Distributions as models, not data summaries</a></li>
+  <li><a href="#random-variables-in-time-series" id="toc-random-variables-in-time-series" class="nav-link" data-scroll-target="#random-variables-in-time-series"><span class="header-section-number">5</span> Random variables in time series</a></li>
+  <li><a href="#why-this-matters-for-forecasting" id="toc-why-this-matters-for-forecasting" class="nav-link" data-scroll-target="#why-this-matters-for-forecasting"><span class="header-section-number">6</span> Why this matters for forecasting</a></li>
+  <li><a href="#what-you-do-not-need-right-now" id="toc-what-you-do-not-need-right-now" class="nav-link" data-scroll-target="#what-you-do-not-need-right-now"><span class="header-section-number">7</span> What you do <em>not</em> need right now</a></li>
+  <li><a href="#where-this-shows-up-in-the-course" id="toc-where-this-shows-up-in-the-course" class="nav-link" data-scroll-target="#where-this-shows-up-in-the-course"><span class="header-section-number">8</span> Where this shows up in the course</a></li>
+  <li><a href="#takeaway" id="toc-takeaway" class="nav-link" data-scroll-target="#takeaway"><span class="header-section-number">9</span> Takeaway</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/pbenavidesh/narsil/edit/main/docs/more/stats/random_variables.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/pbenavidesh/narsil/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">In-class exercises</h1>
-</div>
+<h1 class="title">Random variables: uncertainty as an object</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">Stat refreshers</div>
+  </div>
+  </div>
 
+<div>
+  <div class="description">
+    A mathematically grounded refresher on random variables and distributions, focused on how uncertainty is represented and used in time series forecasting.
+  </div>
+</div>
 
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Pablo Benavides-Herrera </p>
+          </div>
+  </div>
     
   
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">January 26, 2026</p>
+    </div>
+  </div>
     
   </div>
   
@@ -427,107 +435,264 @@ window.Quarto = {
 </header>
 
 
-<p>Welcome to the <strong>In-class exercises</strong> section of the course. Here you will find exercises designed to reinforce the concepts covered in the modules.</p>
-
-
-
-
-<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
-<div class="listing-actions-group">
-   <div class="input-group input-group-sm quarto-listing-sort">
-    <span class="input-group-text"><i class="bi bi-sort-down"></i></span>
-    <select id="listing-listing-sort" class="form-select" aria-label="Order By" onchange="window['quarto-listings']['listing-listing'].sort(this.options[this.selectedIndex].value, { order: this.options[this.selectedIndex].getAttribute('data-direction')})">
-      <option value="" disabled="" selected="" hidden="">Order By</option>
-      <option value="index" data-direction="asc">Default</option>
-      <option value="listing-title" data-direction="asc">
-        Title
-      </option>
-      <option value="listing-date-sort" data-direction="asc">
-        Date - Oldest
-      </option>
-      <option value="listing-date-sort" data-direction="desc">
-        Date - Newest
-      </option>
-      <option value="listing-author" data-direction="asc">
-        Author
-      </option>
-    </select>
-  </div>
-    <div class="input-group input-group-sm quarto-listing-filter">
-      <span class="input-group-text"><i class="bi bi-search"></i></span>
-      <input type="text" class="search form-control" placeholder="Filter">
-    </div>
+<p>This document is <strong>optional</strong>, but strongly recommended.</p>
+<p>In forecasting, we do not only analyze observed data.<br>
+We analyze <strong>uncertainty about future values</strong>.</p>
+<p>Random variables are the mathematical objects that allow us to make that uncertainty explicit, formal, and usable.</p>
+<hr>
+<section id="from-data-to-uncertainty" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="from-data-to-uncertainty"><span class="header-section-number">1</span> From data to uncertainty</h2>
+<p>Suppose you observe a time series:</p>
+<ul>
+<li>daily sales<br>
+</li>
+<li>hourly electricity demand<br>
+</li>
+<li>monthly inflation</li>
+</ul>
+<p>At time ( t ), the value is known.<br>
+At time ( t+1 ), it is <strong>not</strong>.</p>
+<p>That future value is not just “unknown” — it is <strong>uncertain</strong>.</p>
+<p>A <strong>random variable</strong> is how we represent that uncertainty mathematically.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
 </div>
-<div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="VmlzdWFsaXphdGlvbiUyQ2ZvdW5kYXRpb25z" data-listing-date-sort="1769040000000" data-listing-file-modified-sort="1769458628779" data-listing-date-modified-sort="1769458628000" data-listing-reading-time-sort="1" data-listing-word-count-sort="6">
-<div class="thumbnail"><a href="../../docs/exercises/posts/prueba_2.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../../docs/exercises/posts/prueba_2.html" class="no-external">Prueba 2</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('VmlzdWFsaXphdGlvbg=='); return false;">Visualization</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('Zm91bmRhdGlvbnM='); return false;">foundations</div>
-
-</div>
-<div class="delink listing-description"><a href="../../docs/exercises/posts/prueba_2.html" class="no-external">
-Esta es otra prueba
-</a></div>
-</div>
-<div class="metadata">
-<a href="../../docs/exercises/posts/prueba_2.html" class="no-external">
-<div class="listing-date">
-Jan 22, 2026
-</div>
-<div class="listing-author">
-Pablo Benavides-Herrera
-</div>
-<div class="listing-reading-time">1 min</div>
-</a>
+<div class="callout-title-container flex-fill">
+Tip
 </div>
 </div>
-<div class="quarto-post image-right" data-index="1" data-categories="Zm91bmRhdGlvbnMlMkNS" data-listing-date-sort="1768953600000" data-listing-file-modified-sort="1769458628779" data-listing-date-modified-sort="1769458628000" data-listing-reading-time-sort="1" data-listing-word-count-sort="6">
-<div class="thumbnail"><a href="../../docs/exercises/posts/prueba.html" class="no-external">
+<div class="callout-body-container callout-body">
+<p>In forecasting, uncertainty is not a nuisance.<br>
+It is the <em>object of interest</em>.</p>
+</div>
+</div>
+<hr>
+</section>
+<section id="what-is-a-random-variable" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="what-is-a-random-variable"><span class="header-section-number">2</span> What is a random variable?</h2>
+<p>Conceptually, a <strong>random variable</strong> represents a quantity whose value is not fixed in advance.</p>
+<p>In forecasting, it typically represents:</p>
+<ul>
+<li>a future observation,</li>
+<li>a forecast error,</li>
+<li>or a simulated outcome.</li>
+</ul>
+<p>Formally, a random variable is a function</p>
+<p><span class="math display">
+X : \Omega \rightarrow \mathbb{R},
+</span></p>
+<p>which assigns a real number to each possible outcome of an uncertain process.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>You do <strong>not</strong> need to work explicitly with sample spaces or probability axioms in this course.<br>
+The important point is that a random variable is a <em>mathematical representation of uncertainty</em>.</p>
+</div>
+</div>
+<hr>
+</section>
+<section id="discrete-and-continuous-random-variables" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="discrete-and-continuous-random-variables"><span class="header-section-number">3</span> Discrete and continuous random variables</h2>
+<p>Random variables are commonly classified into two types.</p>
+<section id="discrete-random-variables" class="level3" data-number="3.1">
+<h3 data-number="3.1" class="anchored" data-anchor-id="discrete-random-variables"><span class="header-section-number">3.1</span> Discrete random variables</h3>
+<p>A discrete random variable takes values in a <strong>countable set</strong>.</p>
+<p>Examples:</p>
+<ul>
+<li>number of customers tomorrow,</li>
+<li>number of units sold in an hour,</li>
+<li>number of failures in a week.</li>
+</ul>
+<p>Uncertainty is described by a <strong>probability mass function</strong> (PMF):</p>
+<p><span class="math display">
+p(x) = \mathbb{P}(X = x),
+</span></p>
+<p>with the properties</p>
+<p><span class="math display">
+p(x) \ge 0, \qquad \sum_x p(x) = 1.
+</span></p>
+<hr>
+</section>
+<section id="continuous-random-variables" class="level3" data-number="3.2">
+<h3 data-number="3.2" class="anchored" data-anchor-id="continuous-random-variables"><span class="header-section-number">3.2</span> Continuous random variables</h3>
+<p>A continuous random variable takes values in a <strong>continuum</strong>.</p>
+<p>Examples:</p>
+<ul>
+<li>electricity demand,</li>
+<li>temperature,</li>
+<li>forecast errors.</li>
+</ul>
+<p>Uncertainty is described by a <strong>probability density function</strong> (PDF) ( f(x) ), satisfying</p>
+<p><span class="math display">
+\int_{-\infty}^{\infty} f(x)\,dx = 1.
+</span></p>
+<p>Probabilities are assigned to <strong>intervals</strong>, not points:</p>
+<p><span class="math display">
+\mathbb{P}(a \le X \le b) = \int_a^b f(x)\,dx.
+</span></p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For continuous random variables,</p>
+<p><span class="math display">
+\mathbb{P}(X = x) = 0
+</span></p>
+<p>for any single value ( x ).</p>
+<p>This is not a technicality — it is a core conceptual distinction.</p>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="distributions-as-models-not-data-summaries" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="distributions-as-models-not-data-summaries"><span class="header-section-number">4</span> Distributions as models, not data summaries</h2>
+<p>A <strong>distribution</strong> describes how a random variable behaves.</p>
+<p>It answers questions such as:</p>
+<ul>
+<li>Which values are more likely?</li>
+<li>How spread out are the possibilities?</li>
+<li>How extreme outcomes behave?</li>
+</ul>
+<p>Crucially:</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A distribution is <strong>not</strong> the same as a histogram.</p>
+<ul>
+<li>A histogram summarizes observed data.</li>
+<li>A distribution is a <strong>model</strong> for uncertainty.</li>
+</ul>
+</div>
+</div>
+<p>In forecasting, distributions are assumptions — useful, but always assumptions.</p>
+<hr>
+</section>
+<section id="random-variables-in-time-series" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="random-variables-in-time-series"><span class="header-section-number">5</span> Random variables in time series</h2>
+<p>In time series analysis, we typically work with a sequence of random variables</p>
+<p><span class="math display">
+\{Y_t\}_{t=1}^T.
+</span></p>
+<p>It is essential to distinguish between: - ( Y_t ): the random variable, - ( y_t ): its observed realization.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Uppercase letters denote random variables.<br>
+Lowercase letters denote observed values.</p>
+<p>This distinction will appear repeatedly throughout the course.</p>
+</div>
+</div>
+<p>Each future time point corresponds to its <strong>own</strong> random variable.</p>
+<p>A forecast is therefore <strong>not a single number</strong>, but a distribution over possible values.</p>
+<hr>
+</section>
+<section id="why-this-matters-for-forecasting" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="why-this-matters-for-forecasting"><span class="header-section-number">6</span> Why this matters for forecasting</h2>
+<p>Random variables and distributions appear throughout the course, even when not explicitly mentioned:</p>
+<ul>
+<li>forecast distributions and intervals,</li>
+<li>residuals and forecast errors,</li>
+<li>simulation-based forecasting,</li>
+<li>model diagnostics.</li>
+</ul>
+<p>Whenever you reason about uncertainty, you are implicitly working with random variables.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Point forecasts are summaries.<br>
+Distributions carry the full information.</p>
+</div>
+</div>
+<hr>
+</section>
+<section id="what-you-do-not-need-right-now" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="what-you-do-not-need-right-now"><span class="header-section-number">7</span> What you do <em>not</em> need right now</h2>
+<p>At this stage, you do <strong>not</strong> need:</p>
+<ul>
+<li>probability axioms,</li>
+<li>manual probability calculations,</li>
+<li>analytical derivations of densities.</li>
+</ul>
+<p>Those belong to a probability theory course.</p>
+<p>Here, random variables are <strong>tools for thinking</strong>, not objects of proof.</p>
+<hr>
+</section>
+<section id="where-this-shows-up-in-the-course" class="level2" data-number="8">
+<h2 data-number="8" class="anchored" data-anchor-id="where-this-shows-up-in-the-course"><span class="header-section-number">8</span> Where this shows up in the course</h2>
+<p>This refresher prepares you for:</p>
+<ul>
+<li>residual analysis,</li>
+<li>forecast uncertainty and intervals,</li>
+<li>diagnostic checks,</li>
+<li>simulation-based methods.</li>
+</ul>
+<p>Later refreshers will build on this foundation to introduce:</p>
+<ul>
+<li>expectation and variance,</li>
+<li>covariance and correlation,</li>
+<li>stationarity and noise.</li>
+</ul>
+<hr>
+</section>
+<section id="takeaway" class="level2" data-number="9">
+<h2 data-number="9" class="anchored" data-anchor-id="takeaway"><span class="header-section-number">9</span> Takeaway</h2>
+<p>If you remember only one idea, make it this:</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In forecasting, future values are random variables,<br>
+and models describe their distributions — not certainties.</p>
+</div>
+</div>
 
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
 
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../../docs/exercises/posts/prueba.html" class="no-external">Prueba</a>
-</h3>
-<div class="listing-categories">
+</section>
 
-<div class="listing-category" onclick="window.quartoListingCategory('Zm91bmRhdGlvbnM='); return false;">foundations</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('Ug=='); return false;">R</div>
-
-</div>
-<div class="delink listing-description"><a href="../../docs/exercises/posts/prueba.html" class="no-external">
-Esto es una prueba.
-</a></div>
-</div>
-<div class="metadata">
-<a href="../../docs/exercises/posts/prueba.html" class="no-external">
-<div class="listing-date">
-Jan 21, 2026
-</div>
-<div class="listing-author">
-Pablo Benavides-Herrera
-</div>
-<div class="listing-reading-time">1 min</div>
-</a>
-</div>
-</div>
-</div>
-<div class="listing-no-matching d-none">No matching items</div>
-</div><a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right
@@ -951,5 +1116,5 @@ Pablo Benavides-Herrera
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions"><ul><li><a href="https://github.com/pbenavidesh/narsil/edit/main/docs/exercises/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/pbenavidesh/narsil/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/pbenavidesh/narsil/edit/main/docs/more/stats/random_variables.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/pbenavidesh/narsil/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="../../../site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>
