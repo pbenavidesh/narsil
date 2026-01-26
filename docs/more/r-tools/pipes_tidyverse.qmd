@@ -17,16 +17,28 @@ In tidyverse-style R, the pipe operator `|>` means:
 
 > “take the result of the previous step and pass it as the input of the next one”
 
-This encourages you to think in terms of **data transformations**, not instructions.
+A useful way to read a pipeline is to mentally replace `|>` with the word **“then”**.
 
-::: {.callout-tip appearance="simple"}
-A good pipeline should read like a sentence describing what happens to the data.
+For example:
+
+```r
+df |>
+  filter(value > 0) |>
+  summarise(mean_value = mean(value))
+```
+
+can be read as:
+
+> “take `df`, **then** filter rows where `value > 0`, **then** compute the mean of `value`.”
+
+::: {.callout-tip}
+If you can read a pipeline out loud using “then” and it still makes sense,  
+you are probably writing clear tidyverse code.
 :::
 
 ::: {.callout-note appearance="simple"}
-For a deeper discussion of pipes and workflow, see  
-*R for Data Science (2e)* — **Chapter 6: Workflow: pipes**  
-https://r4ds.hadley.nz/workflow-pipes.html
+For more on style, including guidance on pipes, see  
+[*R for Data Science (2e)* — **Workflow: code style (Pipes)**](https://r4ds.hadley.nz/workflow-style.html#sec-pipes).
 :::
 
 ---
@@ -78,17 +90,14 @@ A tidyverse pipeline usually follows this pattern:
 
 This is not a strict rule, but a very common and effective structure.
 
-::: {.callout-note appearance="simple"}
+::: {.callout-note}
 Most tidyverse verbs return a **new tibble**.  
 The original data is never modified unless you explicitly reassign it.
 :::
 
 ::: {.callout-note appearance="simple"}
-This mental model is central to the tidyverse philosophy.
-
-For a broader overview of how tidyverse tools fit together, see  
-*R for Data Science (2e)* — **Chapter 1: Introduction**  
-https://r4ds.hadley.nz/intro.html
+If you want a broader overview of how the pieces fit together, see  
+[*R for Data Science (2e)* — **Introduction**](https://r4ds.hadley.nz/intro.html).
 :::
 
 ---
@@ -127,7 +136,7 @@ df |>
 
 :::
 
-::: {.callout-tip appearance="simple"}
+::: {.callout-tip}
 If you can rewrite a pipeline as nested function calls,  
 then the pipeline is doing exactly what you think it is.
 :::
@@ -145,17 +154,16 @@ df |>
 
 No `$`, no indexing, no extra syntax.
 
-::: {.callout-note appearance="simple"}
-This works because tidyverse uses **tidy evaluation**:  
+::: {.callout-note}
+This works because tidyverse uses **data-masking**:  
 column names are looked up automatically inside the data.
 :::
 
 ::: {.callout-tip appearance="simple"}
-You do not need to master tidy evaluation for this course.
+You do not need to master these details for this course.
 
-If you are curious, see  
-*R for Data Science (2e)* — **Chapter 18: Expressions**  
-https://r4ds.hadley.nz/expressions.html
+If you are curious about what’s happening under the hood, see  
+[*R for Data Science (2e)* — **Functions**](https://r4ds.hadley.nz/functions.html).
 :::
 
 ---
@@ -209,7 +217,7 @@ df <- df |>
   mutate(x = x * 2)
 ```
 
-::: {.callout-warning appearance="simple"}
+::: {.callout-warning}
 If you forget to reassign, the pipeline runs but the result is discarded.
 :::
 
@@ -234,15 +242,13 @@ Over this:
 df |> filter(value > 0) |> group_by(id) |> summarise(mean_value = mean(value))
 ```
 
-::: {.callout-tip appearance="simple"}
+::: {.callout-tip}
 One verb per line is a good default.
 :::
 
 ::: {.callout-note appearance="simple"}
-For more examples of data transformation with `filter()`, `mutate()`,
-`group_by()`, and `summarise()`, see  
-*R for Data Science (2e)* — **Chapter 13: Data transformation**  
-https://r4ds.hadley.nz/data-transform.html
+For more examples of `filter()`, `mutate()`, `group_by()`, and `summarise()`, see  
+[*R for Data Science (2e)* — **Data transformation**](https://r4ds.hadley.nz/data-transform.html).
 :::
 
 ---
@@ -274,13 +280,14 @@ Throughout the course:
 - tidyverse verbs will be preferred  
 - clarity will be valued over clever tricks  
 
-If something feels confusing, read the pipeline **top to bottom**, step by step.
+If something feels confusing, read the pipeline **top to bottom**, step by step —  
+using “then” as you go.
 
 ---
 
 ## Final takeaway
 
-::: {.callout-tip appearance="simple"}
+::: {.callout-tip}
 If you understand pipes, you understand most of tidyverse-based R.
 :::
 
