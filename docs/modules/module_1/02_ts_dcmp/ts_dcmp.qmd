@@ -384,7 +384,7 @@ Is the Mexican economy really that similar Australia's economy? Is Iceland's eco
 #| echo: false
 
 p <- ge |> 
-  autoplot(Population, size = 1) +
+  autoplot(Population, linewidth = 1) +
   labs(
     title = "Population: Mexico, Iceland, and Australia"
     )
@@ -403,7 +403,7 @@ The population sizes of these countries are very different.
 
 p <- ge |> 
   mutate(GDP_per_capita = GDP / Population) |> 
-  autoplot(GDP_per_capita, size = 1) +
+  autoplot(GDP_per_capita, linewidth = 1) +
   labs(
     title = "GDP per capita: Mexico, Iceland, and Australia"
     )
@@ -419,6 +419,57 @@ ggplotly(p, dynamicTicks = TRUE)
 - It is clear now that Iceland and Australia have a much higher GDP per capita compared to Mexico, indicating a higher standard of living for its residents.
 
 :::
+:::
+
+::: {.content-hidden unless-format="revealjs"}
+
+## Business examples of population adjustments
+
+:::
+
+::: {.content-visible unless-format="revealjs"}
+
+### Business examples of population adjustments
+
+:::
+
+::: {.columns}
+::: {.column width="33%"}
+### Retail expansion
+**Revenue** vs **Revenue per store**
+
+- Total revenue $\uparrow$ can be “just more stores”
+- Per-store revenue reveals **dilution** vs **true performance**
+
+**Normalize by:** \# stores
+:::
+
+::: {.column width="33%"}
+### Customer base growth
+**Sales** vs **Sales per active customer**
+
+- Sales $\uparrow$ can hide weaker **customer value**
+- Per-customer series tracks **ARPA / LTV direction** (signal, not hype)
+
+**Normalize by:** active customers
+:::
+
+::: {.column width="33%"}
+### Operational load
+**Support tickets** vs **Tickets per customer / contract**
+
+- Tickets $\uparrow$ may be scale, not worse quality
+- Tickets per customer exposes **product/service degradation**
+
+**Normalize by:** customers or contracts
+:::
+:::
+
+::: {.callout-tip}
+## Rule of thumb: 
+
+If the business “size” changes over time (stores, customers, users, employees, assets), model the **rate** (per-unit) to separate **growth** from **efficiency**.
+
 :::
 
 
