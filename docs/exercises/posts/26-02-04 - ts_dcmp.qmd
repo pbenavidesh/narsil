@@ -1,0 +1,90 @@
+---
+title: "Descomposición de series de tiempo"
+description: "Intro a la descomposición STL usando `fable`"
+author: "Pablo Benavides Herrera"
+date: 2026-02-04
+format: 
+  html:
+    code-annotations: hover
+---
+## pkgs
+
+```{r}
+#| message: false
+
+library(tidyverse)
+library(fpp3)
+```
+
+## Descarga de datos del FRED usando `tidyquant`
+
+```{r}
+ur_cal <- tidyquant::tq_get(
+  x    = "CAURN",
+  get  = "economic.data",
+  from = "1976-01-01",
+  to   = "2025-09-01"
+)
+
+ur_cal
+```
+
+### exportar a csv
+
+```{r}
+#| eval: false
+
+ur_cal |> # se pone el pipe con CTRL/CMD + SHIFT + M
+  write_csv("ur_cal.csv")
+```
+
+## Descomposición STL
+
+```{r}
+ur_cal
+```
+
+### Convertir la tabla a `tsibble`
+
+La tabla es una `tibble` y necesitamos que sea una `tsibble`. Podemos convertirla utilizando la función `as_tsibble()`, y especificando el `index` (variable temporal). En caso de que la tabla contenga más de una serie de tiempo, es necesario especificar también el `key` (columna(s) que le indican a R cómo distinguir a cada serie).
+
+```{r}
+ur_cal_tsb <- ur_cal |>
+  as_tsibble(index = date)
+
+ur_cal_tsb
+```
+
+La `tsibble` está mal porque R cree que la serie tiene una periodicidad diaria y no mensual. Esto se controla con el **formato** de la fecha. Vamos a convertir la fecha a formato año-mes (*yearmonth*).
+
+```{r}
+ur_cal_tsb <- ur_cal |>
+  mutate(date = yearmonth(date)) |> #<1>
+  as_tsibble(index = date)          #<2>
+
+ur_cal_tsb
+```
+
+1. Convertimos la columna `date` a formato `yearmonth`. también existen funciones como `yearquarter()` y `yearweek()`.
+2. Convertimos la tabla a `tsibble`, especificando la columna `date` como índice temporal.
+
+Ahora sí, podemos hacer la descomposición STL utilizando la función `model()` y la función `STL()`.
+
+### Descomposición STL
+
+```{r}
+ur_cal_dcmp <- ur_cal_tsb |>
+  model(
+    stl = STL(price, robust = TRUE) #<1>
+  )
+
+ur_cal_dcmp |> 
+  components() |>      #<2>
+  autoplot()           #<3>
+```
+
+1. Especificamos que queremos hacer una descomposición STL de la variable `price`.
+2. Extraemos los componentes de la descomposición utilizando la función `components()`.
+3. Graficamos los componentes utilizando la función `autoplot()`.
+
+
