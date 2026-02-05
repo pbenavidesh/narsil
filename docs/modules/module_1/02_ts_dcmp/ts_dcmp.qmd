@@ -321,7 +321,10 @@ ggplotly(p, dynamicTicks = TRUE) |>
 - Using the mean volume per trading day helps to standardize the data, making it easier to compare across months.
 
 :::
-## Population adjustments
+
+::: {.content-hidden unless-format="revealjs"}
+
+##
 
 ```{r}
 #| label: global_economy
@@ -331,13 +334,28 @@ ge <- global_economy |>
   filter(Country %in% c("Mexico", "Iceland", "Australia"))
 
 p <- ge |> 
-  autoplot(GDP, size = 1) +
+  autoplot(GDP, linewidth = 1) +
   labs(
     title = "GDP: Mexico, Iceland, and Australia"
     )
 
+p
+```
+
+:::
+
+::: {.content-visible unless-format="revealjs"}
+
+## Population adjustments
+
+```{r}
+#| label: global_economy_plotly
+#| echo: false
+
 ggplotly(p, dynamicTicks = TRUE)
 ```
+
+:::
 
 Is the Mexican economy really that similar Australia's economy? Is Iceland's economy really that small?
 
@@ -353,7 +371,7 @@ Is the Mexican economy really that similar Australia's economy? Is Iceland's eco
 
 :::{.content-hidden unless-format="revealjs"}
 
-##
+## Population adjustments
 
 :::
 
@@ -402,6 +420,8 @@ ggplotly(p, dynamicTicks = TRUE)
 
 :::
 :::
+
+
 
 ## Inflation adjustments
 
