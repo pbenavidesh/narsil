@@ -573,6 +573,8 @@ Seasonally adjusted series can be useful for:
 
 :::
 
+::: {.content-visible unless-format="revealjs"}
+
 ```{r}
 #| label: seasonally_adjusted
 #| echo: false
@@ -594,6 +596,34 @@ p <- mexretail_stl |>
 ggplotly(p, dynamicTicks = TRUE)
 ```
 
+- For an additive decomposition, the seasonally adjusted series is given by:
+$$
+y_t - S_t
+$$
+- For a multiplicative decomposition, the seasonally adjusted series is given by:
+$$
+\frac{y_t}{S_t}
+$$
+
+:::
+
+
+::: {.content-hidden unless-format="revealjs"}
+
+:::: {.columns}
+
+::: {.column width="60%"}
+
+```{r}
+#| label: seasonally_adjusted_p
+#| echo: false
+
+p
+```
+
+:::
+
+::: {.column width="40%"}
 
 - For an additive decomposition, the seasonally adjusted series is given by:
 $$
@@ -604,11 +634,25 @@ $$
 \frac{y_t}{S_t}
 $$
 
+:::
+
+::::
+
+:::
+
+
+
 
 
 ## Classical decomposition
 
-In a classical decomposition, the trend-cycle component is estimated using a moving average. Then, the seasonal component is estimated by averaging the detrended values for each season. Finally, the remainder component is obtained by subtracting the trend-cycle and seasonal components from the original series.
+::: {.notes}
+
+The classical decomposition is a simple method for decomposing time series data. It assumes that the components of the time series are additive or multiplicative.
+
+:::
+
+1. The **trend-cycle** component is estimated using a moving average.
 
 An $m$ order moving average is given by:
 
@@ -618,6 +662,8 @@ $$
 
 where $k = (m-1)/2$^[In R, you can compute any moving average by using the `slider::slide_dbl()` function.].
 
+2. Then, the **seasonal component** is estimated by averaging the detrended values for each season. 
+3. Finally, the **remainder component** is obtained by subtracting the trend-cycle and seasonal components from the original series.
 
 :::{.content-hidden unless-format="revealjs"}
 
