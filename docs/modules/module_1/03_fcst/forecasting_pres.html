@@ -13,7 +13,7 @@
 <link href="../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.8.27">
 
-  <meta name="author" content="Pablo Benavides-Herrera">
+  <meta name="author" content="">
   <title>Time Series Forecasting – Forecasting</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -237,11 +237,6 @@
   <h1 class="title">Forecasting</h1>
 
 <div class="quarto-title-authors">
-<div class="quarto-title-author">
-<div class="quarto-title-author-name">
-Pablo Benavides-Herrera 
-</div>
-</div>
 </div>
 
 </section>
@@ -290,7 +285,7 @@ Pablo Benavides-Herrera
 <li class="fragment"><p>Split the data into a <strong>training set</strong> and a <strong>test set</strong><a href="#/footnotes" class="footnote-ref" id="fnref2" role="doc-noteref" data-footnote-href="#/fn2" onclick=""><sup>2</sup></a>. The training set is used to estimate the model parameters, while the test set is used to evaluate the model’s performance on unseen data.</p></li>
 <li class="fragment"><p>The size of the training and test sets depends on the length of the time series and the forecasting horizon:</p>
 <ul>
-<li class="fragment">If the forecast horizon is e. g.. 12 months, the test set should contain 12 months of data.</li>
+<li class="fragment">If the forecast horizon is e.g.. 12 months, the test set should contain 12 months of data.</li>
 <li class="fragment">Another common approach is to use the first 70-80% of the data for training and the remaining 20-30% for testing.</li>
 </ul></li>
 <li class="fragment"><p>We can use <code>filter_index()</code> to create the training set<a href="#/footnotes" class="footnote-ref" id="fnref3" role="doc-noteref" data-footnote-href="#/fn3" onclick=""><sup>3</sup></a>:</p></li>
@@ -325,7 +320,7 @@ Pablo Benavides-Herrera
 </section>
 <section id="specify-estimate" class="slide level2">
 <h2>Specify &amp; Estimate</h2>
-<p>Decide whether any math transformations or adjustments are neccesary and choose a forecasting method based on the series’ features.</p>
+<p>Decide whether any math transformations or adjustments are necessary and choose a forecasting method based on the series’ features.</p>
 <p>Train the model specification on the training set. You can use the <code>model()</code> function to fit various forecasting models<a href="#/footnotes" class="footnote-ref" id="fnref4" role="doc-noteref" data-footnote-href="#/fn4" onclick=""><sup>4</sup></a>.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1"></a>datos_fit <span class="ot">&lt;-</span> datos_train <span class="sc">|&gt;</span> </span>
@@ -413,7 +408,7 @@ e_t = y_t - \hat{y}_t
 <section>
 <section id="forecast" class="title-slide slide level1 center">
 <h1>Forecast</h1>
-<p>Once a satisfactory model is obtained, we can proceed to forecast<a href="#/footnotes" class="footnote-ref" id="fnref6" role="doc-noteref" data-footnote-href="#/fn6" onclick=""><sup>6</sup></a>. Use the <code>forecast()</code> function to generate forecasts for a specified horizon <code>h</code>.:</p>
+<p>Once a satisfactory model is obtained, we can proceed to forecast<a href="#/footnotes" class="footnote-ref" id="fnref6" role="doc-noteref" data-footnote-href="#/fn6" onclick=""><sup>6</sup></a>. Use the <code>forecast()</code> function to generate forecasts for a specified horizon <code>h</code>:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1"></a>datos_fcst <span class="ot">&lt;-</span> datos_fit <span class="sc">|&gt;</span> </span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1">1</button><span id="annotated-cell-3-2" class="code-annotation-target"><a href="#annotated-cell-3-2"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="sc">&lt;</span>forecast_horizon<span class="sc">&gt;</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -442,7 +437,7 @@ e_t = y_t - \hat{y}_t
 <aside></aside></section>
 <section id="forecast-accuracy" class="slide level2">
 <h2>Forecast accuracy</h2>
-<p>We measure a forecast’s accuracy by measuring the forecast error. Forecast errors are computed as:</p>
+<p>We measure a forecast’s accuracy by measuring the <strong>forecast error</strong>. Forecast errors are computed as:</p>
 <p><span class="math display">
 e_{T+h} = y_{T+h} - \hat{y}_{T+h|T}
 </span></p>
@@ -468,7 +463,7 @@ e_{T+h} = y_{T+h} - \hat{y}_{T+h|T}
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
-<p>We can also measure errors as percentage errors<a href="#/footnotes" class="footnote-ref" id="fnref7" role="doc-noteref" data-footnote-href="#/fn7" onclick=""><sup>7</sup></a>:</p>
+<p>We can also measure errors as <strong>percentage errors</strong><a href="#/footnotes" class="footnote-ref" id="fnref7" role="doc-noteref" data-footnote-href="#/fn7" onclick=""><sup>7</sup></a>:</p>
 <p><span class="math display">
 p_t = \frac{e_{T+h}}{y_{T+h}} \times 100
 </span></p>
@@ -494,10 +489,8 @@ p_t = \frac{e_{T+h}}{y_{T+h}} \times 100
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
-<p>or scaled errors<a href="#/footnotes" class="footnote-ref" id="fnref8" role="doc-noteref" data-footnote-href="#/fn8" onclick=""><sup>8</sup></a>.:</p>
-<ul>
-<li class="fragment">For non-seasonal time series:</li>
-</ul>
+<p>or <strong>scaled errors</strong><a href="#/footnotes" class="footnote-ref" id="fnref8" role="doc-noteref" data-footnote-href="#/fn8" onclick=""><sup>8</sup></a>.:</p>
+<p>For non-seasonal time series:</p>
 <p><span class="math display">
 q_{j}=\frac{e_{j}}{\frac{1}{T-1} \sum_{t=2}^{T}\left|y_{t}-y_{t-1}\right|},
 </span></p>
@@ -529,34 +522,34 @@ q_{j}=\frac{e_{j}}{\frac{1}{T-m} \sum_{t=m+1}^{T}\left|y_{t}-y_{t-m}\right|}.
 <tr class="odd">
 <td>Scale-dependent</td>
 <td><ul>
-<li class="fragment">RMSE</li>
-<li class="fragment">MAE</li>
+<li>RMSE</li>
+<li>MAE</li>
 </ul></td>
 <td><ul>
-<li class="fragment">Root Mean Squared Error</li>
-<li class="fragment">Mean Absolute Error</li>
+<li>Root Mean Squared Error</li>
+<li>Mean Absolute Error</li>
 </ul></td>
 <td><ul>
-<li class="fragment"><span class="math inline">\sqrt{\text{mean}(e_{t}^{2})}</span></li>
-<li class="fragment"><span class="math inline">\text{mean}(|e_{t}|)</span></li>
+<li><span class="math inline">\sqrt{\text{mean}(e_{t}^{2})}</span></li>
+<li><span class="math inline">\text{mean}(|e_{t}|)</span></li>
 </ul></td>
 </tr>
 <tr class="even">
 <td>Scale-independent</td>
 <td><ul>
-<li class="fragment">MAPE</li>
-<li class="fragment">MASE</li>
-<li class="fragment">RMMSE</li>
+<li>MAPE</li>
+<li>MASE</li>
+<li>RMMSE</li>
 </ul></td>
 <td><ul>
-<li class="fragment">Mean Absolute Percentage Error</li>
-<li class="fragment">Mean Absolute Scaled Error</li>
-<li class="fragment">Root Mean Squared Scaled Error</li>
+<li>Mean Absolute Percentage Error</li>
+<li>Mean Absolute Scaled Error</li>
+<li>Root Mean Squared Scaled Error</li>
 </ul></td>
 <td><ul>
-<li class="fragment"><span class="math inline">\text{mean}(|p_{t}|)</span></li>
-<li class="fragment"><span class="math inline">\text{mean}(|q_{t}|)</span></li>
-<li class="fragment"><span class="math inline">\sqrt{\text{mean}(q_{t}^{2})}</span></li>
+<li><span class="math inline">\text{mean}(|p_{t}|)</span></li>
+<li><span class="math inline">\text{mean}(|q_{t}|)</span></li>
+<li><span class="math inline">\sqrt{\text{mean}(q_{t}^{2})}</span></li>
 </ul></td>
 </tr>
 </tbody>
@@ -564,34 +557,127 @@ q_{j}=\frac{e_{j}}{\frac{1}{T-m} \sum_{t=m+1}^{T}\left|y_{t}-y_{t-m}\right|}.
 </section>
 <section id="refit-and-forecast" class="slide level2">
 <h2>Refit and forecast</h2>
-<h3 id="refit-and-forecast-1">Refit and forecast</h3>
+<p>Up to this point, models have been estimated <strong>only on the training set</strong>.<br>
+Once a model has been selected and validated, the final step before deployment is to <strong>refit it using all available data</strong>.</p>
+<p>Why refit?</p>
+<ul>
+<li class="fragment">The test set is no longer “future” once model selection is finished.</li>
+<li class="fragment">Using all available observations generally improves parameter estimates.</li>
+<li class="fragment">This reflects how models are used in practice.</li>
+</ul>
+<p>In the tidy forecasting workflow, refitting is straightforward:</p>
+<ul>
+<li class="fragment">Re-estimate the chosen model using the <strong>full tsibble</strong>.</li>
+<li class="fragment">Generate forecasts for the desired future horizon.</li>
+</ul>
+<p>This ensures that the final forecasts are based on the maximum amount of information available.</p>
 </section>
 <section id="communicate" class="slide level2">
 <h2>Communicate</h2>
-<aside class="notes">
-<p>This is a note.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
+<p>Forecasting is not finished when numbers are produced.<br>
+Results must be <strong>communicated clearly and honestly</strong>.</p>
+<p>Effective communication usually includes:</p>
+<ul>
+<li class="fragment"><strong>Visualizations</strong>
+<ul>
+<li class="fragment">Historical data + forecasts + prediction intervals.</li>
+<li class="fragment">Clear labeling of units, horizons, and uncertainty.</li>
+</ul></li>
+<li class="fragment"><strong>Assumptions</strong>
+<ul>
+<li class="fragment">Model choice.</li>
+<li class="fragment">Transformations and adjustments.</li>
+</ul></li>
+<li class="fragment"><strong>Uncertainty</strong>
+<ul>
+<li class="fragment">Point forecasts alone are rarely sufficient.</li>
+<li class="fragment">Prediction intervals convey risk and variability.</li>
+</ul></li>
+<li class="fragment"><strong>Limitations</strong>
+<ul>
+<li class="fragment">Structural breaks, data quality issues, or short samples.</li>
+</ul></li>
+</ul>
+<p>A good forecast is one that decision-makers can <strong>understand, trust, and act upon</strong>, even if it turns out to be wrong.</p>
 </section></section>
+<section>
 <section id="benchmark-forecasting-methods" class="title-slide slide level1 center">
 <h1>Benchmark forecasting methods</h1>
 
-
 </section>
+<section id="section" class="slide level2 scrollable">
+<h2></h2>
+<p>Before fitting complex models, it is essential to establish <strong>benchmark forecasts</strong>.</p>
+<p>Benchmark methods serve two key purposes:</p>
+<ol type="1">
+<li class="fragment">They provide a <strong>baseline</strong> that any serious model should outperform.</li>
+<li class="fragment">They help detect cases where complexity adds little or no value.</li>
+</ol>
+<p>Benchmark methods are typically <strong>simple, transparent, and fast</strong>.</p>
+</section>
+<section id="mean-method" class="slide level2">
+<h2>Mean method</h2>
+<p>The forecast is the historical mean of the series:</p>
+<p><span class="math display">
+\hat{y}_{T+h|T} = \bar{y}
+</span></p>
+<p>Characteristics:</p>
+<ul>
+<li class="fragment">Assumes no trend and no seasonality.</li>
+<li class="fragment">Useful mainly as a baseline for stationary series.</li>
+</ul>
+</section>
+<section id="naïve-method" class="slide level2">
+<h2>Naïve method</h2>
+<p>The forecast equals the last observed value:</p>
+<p><span class="math display">
+\hat{y}_{T+h|T} = y_T
+</span></p>
+<p>Characteristics:</p>
+<ul>
+<li class="fragment">Assumes the future will behave like the most recent past.</li>
+<li class="fragment">Surprisingly hard to beat for many economic and financial series.</li>
+<li class="fragment">Equivalent to a random walk model.</li>
+</ul>
+</section>
+<section id="seasonal-naïve-method" class="slide level2">
+<h2>Seasonal naïve method</h2>
+<p>The forecast equals the last observed value from the same season:</p>
+<p><span class="math display">
+\hat{y}_{T+h|T} = y_{T+h-m}
+</span></p>
+<p>where <span class="math inline">m</span> is the seasonal period.</p>
+<p>Characteristics:</p>
+<ul>
+<li class="fragment">Captures seasonality with no trend modeling.</li>
+<li class="fragment">Often a very strong benchmark for seasonal data.</li>
+</ul>
+</section>
+<section id="drift-method" class="slide level2">
+<h2>Drift method</h2>
+<p>A linear trend is extrapolated from the first to the last observation:</p>
+<p><span class="math display">
+\hat{y}_{T+h|T} = y_T + h \cdot \frac{y_T - y_1}{T-1}
+</span></p>
+<p>Characteristics:</p>
+<ul>
+<li class="fragment">Equivalent to a random walk with drift.</li>
+<li class="fragment">Assumes a constant average change over time.</li>
+<li class="fragment">Simple but often competitive for trending series.</li>
+</ul>
+</section>
+<section class="slide level2">
 
+<p>Benchmark methods are <strong>not meant to be optimal</strong>.<br>
+They are meant to be <strong>hard to beat</strong>.</p>
+<p>If a complex model cannot outperform a suitable benchmark, it should be reconsidered.</p>
+
+
+</section></section>
 <section id="footnotes" class="footnotes footnotes-end-of-document smaller scrollable" role="doc-endnotes"><h2>Footnotes</h2>
 
 <ol>
-<li id="fn1"><p>i.e., if the TS has a monthly frequency, the index variable should be in <code>yearmonth</code> format. Other formats coud be <code>yearweek</code>, <code>yearquarter</code>, <code>year</code>, <code>date</code>.</p></li>
+<li id="fn1"><p>i.e., if the TS has a monthly frequency, the index variable should be in <code>yearmonth</code> format. Other formats could be <code>yearweek</code>, <code>yearquarter</code>, <code>year</code>, <code>date</code>.</p></li>
 <li id="fn2"><p>Splitting the data into a training and test set is the minimum requirement for evaluating a forecasting model. If you want to avoid overfitting and get a more reliable estimate of the model’s performance, you should consider splitting the data into 3 sets: <strong>training, validation, and test sets</strong>. The validation set is used to tune model hyperparameters and select the best model, while the test set is used for the final evaluation of the selected model. For an even more robust evaluation of forecasting models, consider using <a href="https://otexts.com/fpp3/tscv.html"><strong>time series cross-validation</strong></a> methods.</p></li>
 <li id="fn3"><p>and store it in a <code>*_train</code> object.</p></li>
 <li id="fn4"><p>and store the model table in a <code>*_fit</code> object.</p></li>
