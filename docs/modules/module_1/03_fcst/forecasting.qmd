@@ -44,7 +44,7 @@ library(fpp3)
     -   It should have an `index` (time) variable with the proper time format[^1].
     -   The `key` argument is only necessary if the dataset contains more than one time series.
 
-[^1]: i.e., if the TS has a monthly frequency, the index variable should be in `yearmonth` format. Other formats coud be `yearweek`, `yearquarter`, `year`, `date`.
+[^1]: i.e., if the TS has a monthly frequency, the index variable should be in `yearmonth` format. Other formats could be `yearweek`, `yearquarter`, `year`, `date`.
 
 ::: {.content-hidden unless-format="revealjs"}
 ## Train/test split
@@ -58,7 +58,7 @@ library(fpp3)
 
 -   The size of the training and test sets depends on the length of the time series and the forecasting horizon:
 
-    -   If the forecast horizon is e. g.. 12 months, the test set should contain 12 months of data.
+    -   If the forecast horizon is e.g.. 12 months, the test set should contain 12 months of data.
     -   Another common approach is to use the first 70-80% of the data for training and the remaining 20-30% for testing.
 
 -   We can use `filter_index()` to create the training set[^3]:
@@ -103,7 +103,7 @@ aus_production |>
 
 ## Specify & Estimate
 
-Decide whether any math transformations or adjustments are neccesary and choose a forecasting method based on the series' features.
+Decide whether any math transformations or adjustments are necessary and choose a forecasting method based on the series' features.
 
 Train the model specification on the training set. You can use the `model()` function to fit various forecasting models[^4].
 
@@ -198,7 +198,7 @@ If the residuals don't meet these properties, we could refine the model:
 ## Forecast
 :::
 
-Once a satisfactory model is obtained, we can proceed to forecast[^6]. Use the `forecast()` function to generate forecasts for a specified horizon `h`.:
+Once a satisfactory model is obtained, we can proceed to forecast[^6]. Use the `forecast()` function to generate forecasts for a specified horizon `h`:
 
 [^6]: and store the forecasts in a `*_fcst` object.
 
@@ -226,7 +226,7 @@ The forecast horizon should have the same length as the test set to evaluate the
 ### Forecast accuracy
 :::
 
-We measure a forecast's accuracy by measuring the forecast error. Forecast errors are computed as:
+We measure a forecast's accuracy by measuring the **forecast error**. Forecast errors are computed as:
 
 $$
 e_{T+h} = y_{T+h} - \hat{y}_{T+h|T}
@@ -238,7 +238,7 @@ These errors depend on the scale of the data. Therefore, they are not suitable f
 ::: 
 :::
 
-We can also measure errors as percentage errors[^7]:
+We can also measure errors as **percentage errors**[^7]:
 
 [^7]: Percentage errors are scale-independent, making them useful for comparing forecast accuracy across different series.
 
@@ -252,11 +252,11 @@ Percentage errors can be problematic when the actual values are close to zero, l
 :::
 :::
 
-or scaled errors[^8].:
+or **scaled errors**[^8].:
 
 [^8]: Scaled errors are also scale-independent and are useful for comparing forecast accuracy across different series.
 
--   For non-seasonal time series:
+For non-seasonal time series:
 
 $$
 q_{j}=\frac{e_{j}}{\frac{1}{T-1} \sum_{t=2}^{T}\left|y_{t}-y_{t-1}\right|},
@@ -278,6 +278,8 @@ $$
 
 Using this errors, we can compute various error metrics to summarize the forecast accuracy:
 
+::: {.nonincremental}
+
 +------------------+---------+----------------------------------+-----------------------------------+
 | Scale            | Metric  |    Description                   | Formula                           |
 +==================+=========+==================================+===================================+
@@ -291,13 +293,23 @@ Using this errors, we can compute various error metrics to summarize the forecas
 
 : Common error metrics
 
+:::
+
 ::: {.content-hidden unless-format="revealjs"}
 ## Refit and forecast
 :::
 
+::: {.content-visible unless-format="revealjs"}
 ### Refit and forecast
+:::
 
+::: {.content-hidden unless-format="revealjs"}
 ## Communicate
+:::
+
+::: {.content-visible unless-format="revealjs"}
+### Communicate
+:::
 
 ::: {.notes}
 This is a note.
