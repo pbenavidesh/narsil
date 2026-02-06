@@ -303,6 +303,22 @@ Using this errors, we can compute various error metrics to summarize the forecas
 ### Refit and forecast
 :::
 
+Up to this point, models have been estimated **only on the training set**.  
+Once a model has been selected and validated, the final step before deployment is to **refit it using all available data**.
+
+Why refit?
+
+- The test set is no longer “future” once model selection is finished.
+- Using all available observations generally improves parameter estimates.
+- This reflects how models are used in practice.
+
+In the tidy forecasting workflow, refitting is straightforward:
+
+- Re-estimate the chosen model using the **full tsibble**.
+- Generate forecasts for the desired future horizon.
+
+This ensures that the final forecasts are based on the maximum amount of information available.
+
 ::: {.content-hidden unless-format="revealjs"}
 ## Communicate
 :::
@@ -311,8 +327,106 @@ Using this errors, we can compute various error metrics to summarize the forecas
 ### Communicate
 :::
 
-::: {.notes}
-This is a note.
-:::
+Forecasting is not finished when numbers are produced.  
+Results must be **communicated clearly and honestly**.
+
+Effective communication usually includes:
+
+- **Visualizations**  
+  - Historical data + forecasts + prediction intervals.
+  - Clear labeling of units, horizons, and uncertainty.
+- **Assumptions**  
+  - Model choice.
+  - Transformations and adjustments.
+- **Uncertainty**  
+  - Point forecasts alone are rarely sufficient.
+  - Prediction intervals convey risk and variability.
+- **Limitations**  
+  - Structural breaks, data quality issues, or short samples.
+
+A good forecast is one that decision-makers can **understand, trust, and act upon**, even if it turns out to be wrong.
+
+
 
 # Benchmark forecasting methods
+
+::: {.content-hidden unless-format="revealjs"}
+
+##
+
+:::
+
+Before fitting complex models, it is essential to establish **benchmark forecasts**.
+
+Benchmark methods serve two key purposes:
+
+1. They provide a **baseline** that any serious model should outperform.
+2. They help detect cases where complexity adds little or no value.
+
+Benchmark methods are typically **simple, transparent, and fast**.
+
+## Mean method
+
+The forecast is the historical mean of the series:
+
+$$
+\hat{y}_{T+h|T} = \bar{y}
+$$
+
+Characteristics:
+
+- Assumes no trend and no seasonality.
+- Useful mainly as a baseline for stationary series.
+
+## Naïve method
+
+The forecast equals the last observed value:
+
+$$
+\hat{y}_{T+h|T} = y_T
+$$
+
+Characteristics:
+
+- Assumes the future will behave like the most recent past.
+- Surprisingly hard to beat for many economic and financial series.
+- Equivalent to a random walk model.
+
+## Seasonal naïve method
+
+The forecast equals the last observed value from the same season:
+
+$$
+\hat{y}_{T+h|T} = y_{T+h-m}
+$$
+
+where $m$ is the seasonal period.
+
+Characteristics:
+
+- Captures seasonality with no trend modeling.
+- Often a very strong benchmark for seasonal data.
+
+## Drift method
+
+A linear trend is extrapolated from the first to the last observation:
+
+$$
+\hat{y}_{T+h|T} = y_T + h \cdot \frac{y_T - y_1}{T-1}
+$$
+
+Characteristics:
+
+- Equivalent to a random walk with drift.
+- Assumes a constant average change over time.
+- Simple but often competitive for trending series.
+
+::: {.content-hidden unless-format="revealjs"}
+---
+
+:::
+
+Benchmark methods are **not meant to be optimal**.  
+They are meant to be **hard to beat**.
+
+If a complex model cannot outperform a suitable benchmark, it should be reconsidered.
