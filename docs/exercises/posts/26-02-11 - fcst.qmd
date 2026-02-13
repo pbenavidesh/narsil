@@ -1,0 +1,185 @@
+---
+title: "Pronósticos con métodos benchmark"
+format: html
+---
+
+```{r}
+#| message: false
+
+library(tidyverse)
+library(fpp3)
+```
+
+```{r}
+#| echo: false
+
+aus_production
+```
+
+## Train/test
+
+Vamos a hacer pronósticos a 3 años, por lo que necesitamos dejar los últimos 3 años como el conjunto de test.
+
+```{r}
+gas_train <- aus_production |> 
+  filter_index(. ~ "2007 Q2")
+
+gas_train
+```
+
+## Visualize
+
+```{r}
+gas_train |> 
+  autoplot(Gas)
+```
+
+Intentamos estabilizar la varianza con logaritmos.
+
+```{r}
+gas_train |> 
+  autoplot(log(Gas))
+```
+
+Parece que todavía no es completamente estable (ahora al inicio la varianza es mayor).
+
+Probemos con Box-Cox:
+
+```{r}
+gas_lambda <- gas_train |> 
+  features(Gas, guerrero) |> 
+  pull()
+
+gas_lambda
+
+gas_train |> 
+  autoplot(box_cox(Gas, gas_lambda))
+```
+
+Parece que mejora un poco.
+
+### Descomposición STL
+
+Vamos a separar la serie transformada usando STL.
+
+```{r}
+gas_train |> 
+  model(
+    stl = STL(box_cox(Gas, gas_lambda), robust = TRUE)
+  ) |> 
+    components() |> 
+  autoplot()
+```
+
+## Especificación de modelos
+
+Primero vamos a probar los 4 modelos benchmark por separado, y posteriormente vamos a crear un modelo a partir de la descomposición que hicimos arriba.
+
+```{r}
+gas_fit <- gas_train |> 
+  model(
+    media = MEAN(box_cox(Gas, gas_lambda)),
+    naive = NAIVE(box_cox(Gas, gas_lambda)),
+    snaive = SNAIVE(box_cox(Gas, gas_lambda)),
+    drift = RW(box_cox(Gas, gas_lambda) ~ drift())
+  )
+
+gas_fit
+```
+
+## Evaluación
+
+```{r}
+#| warning: false
+
+gas_aug <- gas_fit |> 
+  augment()
+
+gas_fit |> 
+  select(media) |>
+  gg_tsresiduals() +
+  labs(
+    title = "Residuos del modelo media"
+  )
+
+gas_aug |> 
+  ggplot(aes(x = Quarter, y = .innov)) + 
+  geom_line() +
+  facet_wrap(vars(.model), scales = "free_y") + 
+  labs(
+    title = "Innovaciones de los modelos benchmark"
+  )
+```
+
+### Pronóstico a partir de descomposición
+
+```{r}
+gas_fit_stl <- gas_train |> 
+  model(
+    stlf = decomposition_model(
+      STL(box_cox(Gas, gas_lambda), robust = TRUE),
+      SNAIVE(season_year),
+      RW(season_adjust ~ drift())
+    )
+  )
+
+gas_fit_stl
+```
+
+```{r}
+#| warning: false
+
+gas_fit_stl |> 
+  gg_tsresiduals()
+```
+
+```{r}
+gas_fit_todos <- gas_train |> 
+  model(
+    media = MEAN(box_cox(Gas, gas_lambda)),
+    naive = NAIVE(box_cox(Gas, gas_lambda)),
+    snaive = SNAIVE(box_cox(Gas, gas_lambda)),
+    drift = RW(box_cox(Gas, gas_lambda) ~ drift()),
+    stlf = decomposition_model(
+      STL(box_cox(Gas, gas_lambda), robust = TRUE),
+      SNAIVE(season_year),
+      RW(season_adjust ~ drift())
+    )
+  )
+```
+
+## Pronóstico
+
+```{r}
+gas_fc_todos <- gas_fit_todos |> 
+  forecast(h = "3 years")
+
+gas_fc_todos
+
+gas_fc_todos |> 
+  autoplot(aus_production) +
+  facet_wrap(vars(.model), scales = "free_y")
+
+gas_fc_todos |> 
+  autoplot(aus_production, level = NULL, linewidth = 1)
+```
+
+### Métricas de error (Accuracy)
+
+```{r}
+gas_fc_todos |> 
+  accuracy(aus_production) |> 
+  arrange(RMSE)
+```
+
+El mejor modelo parece ser el SNAIVE. Vamos a utilizar este para hacer el pronóstico final.
+
+```{r}
+aus_production |> 
+  model(
+    snaive = SNAIVE(box_cox(Gas, gas_lambda))
+  ) |> 
+    forecast(h = "3 years") |>
+    autoplot(aus_production)
+```
+
