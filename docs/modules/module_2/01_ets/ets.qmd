@@ -17,6 +17,55 @@ library(fpp3)
 library(plotly)
 ```
 
+## Introduction
+
+In Module 1, you built your **first complete forecasting model**. That model used:
+
+- **STL decomposition** to separate trend-cycle and seasonal patterns.
+- **Drift** to forecast the trend-cycle component (assuming the last observed trend continues linearly).
+- **SNAIVE** to forecast the seasonal component (assuming last year's season repeats).
+
+:::{.callout-note appearance="simple"}
+## Your Module 1 baseline model
+
+```{r}
+#| eval: false
+
+tsibble |>
+  model(
+    baseline = decomposition_model(
+      STL(y ~ trend(window = NULL) + season(window = "periodic"), robust = TRUE),
+      RW(season_adjust ~ drift()),
+      SNAIVE(season_year)
+    )
+  )
+```
+
+
+This is your **benchmark**. Every model we build from now on must beat it.
+:::
+
+That's a solid start — but the Drift method is very simple: it just extrapolates the last observed average growth rate forever. **What if the trend is slowing down? Accelerating? Or changing direction?**
+
+:::{.content-hidden unless-format="revealjs"}
+
+##
+
+:::
+
+This module introduces **Exponential Smoothing (ETS)** models — a smarter way to model the trend-cycle component (and eventually, the seasonal component too).
+
+:::{.callout-tip appearance="simple"}
+## The upgrade we're making
+
+| Component     | Module 1 (Baseline)  | Module 2 (ETS upgrade)      |
+|:--------------|:--------------------:|:---------------------------:|
+| Trend-cycle   | Drift (RW + drift)   | **ETS** (adaptive smoothing)|
+| Seasonal      | SNAIVE               | SNAIVE (for now)            |
+| Decomposition | STL                  | STL (for now)               |
+
+We're making the trend-cycle component **smarter**. Same architecture, better engine.
+:::
 
 :::{.content-hidden unless-format="revealjs"}
 
