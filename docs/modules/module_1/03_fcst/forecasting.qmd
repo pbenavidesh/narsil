@@ -3,9 +3,8 @@ title: "Forecasting Foundations"
 format:
   html: default
   revealjs:
-    output-file: forecasting_foundations_pres.html
+    output-file: forecasting_pres.html
 ---
-
 
 ```{r}
 #| label: pkgs
@@ -16,7 +15,6 @@ library(tidyverse)
 library(fpp3)
 ```
 
-
 # A tidy forecasting workflow
 
 ::: {.content-visible unless-format="html"}
@@ -25,26 +23,61 @@ library(fpp3)
 
 ![](fcst_wf.png)
 
-## Tidy data
-
--   Use `readr::read_csv()`, `readxl::read_excel()`, or `tidyquant::tq_get()` to import the data into R. You can find more on this [here](https://r4ds.hadley.nz/import.html).
-
-::: notes
--   Your data should be tidy. That means:
-
-    -   Each variable should be in its own column.
-    -   Each observation should be in its own row.
-    -   Each value should be in its own cell.
+::: {.content-hidden unless-format="revealjs"}
+## Foundations
 :::
 
--   [Data tidying](https://r4ds.hadley.nz/data-tidy.html) and [transforming](https://r4ds.hadley.nz/transform.html) are covered in detail in [R for Data Science](https://r4ds.hadley.nz/).
+::: {.content-visible unless-format="revealjs"}
+### Foundations
+:::
 
--   Transform the resulting `tibble` into a **`tsibble`**:
+Forecasting requires methodological discipline:
 
-    -   It should have an `index` (time) variable with the proper time format[^1].
-    -   The `key` argument is only necessary if the dataset contains more than one time series.
+- Split the data (train/test)
+- Establish **benchmark models**
+- Forecast
+- Measure accuracy
+- Select a baseline
+- Refit and produce the final forecast
 
-[^1]: i.e., if the TS has a monthly frequency, the index variable should be in `yearmonth` format. Other formats could be `yearweek`, `yearquarter`, `year`, `date`.
+::: {.content-hidden unless-format="revealjs"}
+## Example dataset
+:::
+
+::: {.content-visible unless-format="revealjs"}
+### Example dataset
+:::
+
+We use a built-in dataset from `fpp3`: `aus_production`.
+
+- It is already a `tsibble`
+- It contains multiple economic production series
+- We focus on `Gas`
+
+```{r}
+#| label: example_data
+#| echo: false
+
+aus_production |> 
+  select(Quarter, Gas) |> 
+  slice_head(n = 6)
+```
+
+::: {.content-hidden unless-format="revealjs"}
+## Visualize
+:::
+
+::: {.content-visible unless-format="revealjs"}
+### Visualize
+:::
+
+```{r}
+#| label: viz
+#| echo: false
+
+aus_production |> 
+  gg_tsdisplay(Gas)
+```
 
 ::: {.content-hidden unless-format="revealjs"}
 ## Train/test split
@@ -54,169 +87,91 @@ library(fpp3)
 ### Train/test split
 :::
 
--   Split the data into a **training set** and a **test set**[^2]. The training set is used to estimate the model parameters, while the test set is used to evaluate the model's performance on unseen data.
+- Split the series into **training** and **test** sets.
+- The test set length should match the **forecast horizon**.
 
--   The size of the training and test sets depends on the length of the time series and the forecasting horizon:
-
-    -   If the forecast horizon is e.g.. 12 months, the test set should contain 12 months of data.
-    -   Another common approach is to use the first 70-80% of the data for training and the remaining 20-30% for testing.
-
--   We can use `filter_index()` to create the training set[^3]:
-
-[^2]: Splitting the data into a training and test set is the minimum requirement for evaluating a forecasting model. If you want to avoid overfitting and get a more reliable estimate of the model's performance, you should consider splitting the data into 3 sets: **training, validation, and test sets**. The validation set is used to tune model hyperparameters and select the best model, while the test set is used for the final evaluation of the selected model. For an even more robust evaluation of forecasting models, consider using [**time series cross-validation**](https://otexts.com/fpp3/tscv.html) methods.
-
-[^3]: and store it in a `*_train` object.
-
-::: {.content-hidden unless-format="revealjs"}
-. . .
-:::
+For this example, we use the last **8 quarters** as test data.
 
 ```{r}
-#| label: filter_index
-#| eval: false
+#| label: split
+#| echo: false
 
-datos_train <- <tsibble> |> 
-  filter_index("start_date" ~ "end_date")  #<1>
+gas_train <- aus_production |> 
+  filter_index(. ~ "2008 Q4")
+
+gas_test <- aus_production |> 
+  filter_index("2009 Q1" ~ .)
+
+c(n_train = nrow(gas_train), n_test = nrow(gas_test))
 ```
-
-1.  Replace `start_date` and `end_date` with the desired date range for the training set.You can also use `.` to indicate the start or end of the series: `filter_index(. ~ "end_date")` or `filter_index("start_date" ~ .)`.
 
 :::: {.content-visible unless-format="revealjs"}
 ::: {.callout-note collapse="true"}
 ## Splitting the data
 
-In time series, the training set should always contain the earlier observations, while the test set should contain the later observations. This is because time series data is ordered in time, and we want to simulate the real-world scenario where we use past data to predict future values.
+In time series, the training set must contain earlier observations and the test set later observations.  
+We mimic the real-world scenario: use past data to forecast the future.
 :::
 ::::
 
-## Visualize
+::: {.content-hidden unless-format="revealjs"}
+## Benchmark models
+:::
 
-Plot the time series to identify patterns, such as trend and seasonality, and anomalies. This can help us choose an appropriate forecasting method. You can find many types of plots [here](../01_time_series/r_time_series.qmd#%20TS%20Visualization).
+::: {.content-visible unless-format="revealjs"}
+### Benchmark models
+:::
 
-```{r}
-#| label: ts_viz
-#| echo: false
+Before fitting complex models, we establish benchmarks.
 
-aus_production |> 
-  gg_tsdisplay(log(Gas))
-```
+Common benchmark methods in tidyverts:
 
-## Specify & Estimate
-
-Decide whether any math transformations or adjustments are necessary and choose a forecasting method based on the series' features.
-
-Train the model specification on the training set. You can use the `model()` function to fit various forecasting models[^4].
-
-[^4]: and store the model table in a `*_fit` object.
+- Mean method: `MEAN()`
+- Naïve method: `NAIVE()`
+- Seasonal naïve method: `SNAIVE()`
+- Drift method: `RW(... drift())`
 
 ```{r}
-#| label: model_estimation
+#| label: benchmark_fit
 #| eval: false
 
-datos_fit <- datos_train |> 
+bench_fit <- gas_train |> 
   model(
-    model_1 = <model_function_1>(<y_t> ~ x_t),                               #<1>
-    model_2 = <model_function_2>(<transformation_function>(<y_t>), <args>)   #<2>
+    mean   = MEAN(Gas),
+    naive  = NAIVE(Gas),
+    snaive = SNAIVE(Gas),
+    drift  = RW(Gas ~ drift())
   )
 ```
 
-1.  Replace `model_function_1` with the desired forecasting method (e.g., `ARIMA()`, `ETS()`, `NAIVE()`, etc.). Replace `<y_t>` with the name of the forecast variable and `<predictor_variables>` with any predictor variables if applicable.
-2.  If a transformation is needed, replace `transformation_function` with the appropriate function (e.g., `log`, `box_cox`, etc.) and include any specific arguments required by the model.
-
-## Evaluate
-
--   **Fitted** values, $\hat{y}_t$: The values predicted by the model for the training set.
--   **residuals**, $e_t$: The difference between the actual values and the fitted values, calculated as
-
-$$
-e_t = y_t - \hat{y}_t
-$$.
-
--   **innovation residuals**: Residuals on the transformed scale[^5].
-
-[^5]: We will focus on innovation residuals whenever a transformation is used in the model.
-
-We can check if a model is capturing the patterns in the data by analyzing the residuals. Ideally, the residuals should resemble **white noise**.
-
-:::: notes
-::: {.callout-tip appearance="simple"}
-The **fitted** values and **residuals** can be extracted from the model table using `augment()`.
-:::
-::::
-
 ::: {.content-hidden unless-format="revealjs"}
-## What is white noise?
-:::
-
-::: {.content-visible unless-format="revealjs"}
-### White noise
-:::
-
-{{< video https://youtu.be/ubFq-wV3Eic?si=7So2aw3T-IkulZj6 >}}
-
-::: {.content-hidden unless-format="revealjs"}
-## Residual diagnostics
-:::
-
-::: {.content-visible unless-format="revealjs"}
-### Residual diagnostics
-:::
-
-We expect residuals to behave like white noise, thus having the following properties:
-
-*The most important:*
-
-1.  **Uncorrelated**: There is no correlation between the values at different time points.
-
-2.  **Zero mean**: The average value of the series is constant over time (and equal to zero).
-
-*Nice to have:*
-
-3.  **Constant variance**: The variability of the series is constant over time.
-
-4.  **Normally distributed**: The values follow a normal distribution (this is not always required).
-
-::: {.content-hidden unless-format="revealjs"}
-## Refine
-:::
-
-::: {.content-visible unless-format="revealjs"}
-### Refine
-:::
-
-If the residuals don't meet these properties, we could refine the model:
-
--   For the first 2: add predictors or change the model structure.
--   Apply a variance-stabilizing transformation (e.g., Box-Cox).
--   If the residuals are not normally distributed, only the prediction intervals are affected. We can deal with this by using bootstrap prediction intervals.
-
-::: {.content-hidden unless-format="revealjs"}
-# Forecast
-:::
-
-::: {.content-visible unless-format="revealjs"}
 ## Forecast
 :::
 
-Once a satisfactory model is obtained, we can proceed to forecast[^6]. Use the `forecast()` function to generate forecasts for a specified horizon `h`:
+::: {.content-visible unless-format="revealjs"}
+### Forecast
+:::
 
-[^6]: and store the forecasts in a `*_fcst` object.
+Generate forecasts with a horizon equal to the test set length.
 
 ```{r}
-#| label: forecast
+#| label: benchmark_forecast
 #| eval: false
 
-datos_fcst <- datos_fit |> 
-  forecast(h = <forecast_horizon>)  #<1>
+bench_fcst <- bench_fit |> 
+  forecast(h = nrow(gas_test))
 ```
 
-1.  Replace `<forecast_horizon>` with the desired number of periods to forecast (e.g., `12` for 12 months ahead), or you can write in text `"1 year"` for a one-year forecast.
+(Optional) Plot forecasts:
 
-::: {.callout-note appearance="simple"}
-## Forecast horizon
+```{r}
+#| label: plot_bench_forecast
+#| eval: false
 
-The forecast horizon should have the same length as the test set to evaluate the model's performance accurately.
-:::
+bench_fcst |> 
+  autoplot(gas_train, level = 95) |> 
+  autolayer(gas_test, Gas, alpha = 0.7)
+```
 
 ::: {.content-hidden unless-format="revealjs"}
 ## Forecast accuracy
@@ -226,57 +181,39 @@ The forecast horizon should have the same length as the test set to evaluate the
 ### Forecast accuracy
 :::
 
-We measure a forecast's accuracy by measuring the **forecast error**. Forecast errors are computed as:
+We measure forecast accuracy using forecast errors:
 
 $$
 e_{T+h} = y_{T+h} - \hat{y}_{T+h|T}
 $$ 
 
-::: {.notes} 
-::: {.callout-warning appearance="simple"} 
-These errors depend on the scale of the data. Therefore, they are not suitable for comparing forecast accuracy across series with different scales or units. 
-::: 
-:::
+Compute accuracy metrics:
 
-We can also measure errors as **percentage errors**[^7]:
+```{r}
+#| label: accuracy
+#| eval: false
 
-[^7]: Percentage errors are scale-independent, making them useful for comparing forecast accuracy across different series.
+bench_acc <- bench_fcst |> 
+  accuracy(gas_test) |> 
+  arrange(MASE)
 
-$$
-p_t = \frac{e_{T+h}}{y_{T+h}} \times 100
-$$ 
+bench_acc
+```
 
-:::{.notes} 
-:::{.callout-warning appearance="simple"} 
-Percentage errors can be problematic when the actual values are close to zero, leading to extremely high or undefined percentage errors. 
-:::
-:::
+Selection rule:
 
-or **scaled errors**[^8].:
+- Prefer models that perform well on **MASE** (scale-independent).
+- For seasonal data, `snaive` is often a strong benchmark.
 
-[^8]: Scaled errors are also scale-independent and are useful for comparing forecast accuracy across different series.
-
-For non-seasonal time series:
-
-$$
-q_{j}=\frac{e_{j}}{\frac{1}{T-1} \sum_{t=2}^{T}\left|y_{t}-y_{t-1}\right|},
-$$
-
-For seasonal time series:
-
-$$
-q_{j}=\frac{e_{j}}{\frac{1}{T-m} \sum_{t=m+1}^{T}\left|y_{t}-y_{t-m}\right|}.
-$$ 
-
-:::{.content-hidden unless-format="revealjs"} 
-## Error metrics 
+::: {.content-hidden unless-format="revealjs"}
+## Error metrics
 :::
 
 ::: {.content-visible unless-format="revealjs"}
 ### Error metrics
 :::
 
-Using this errors, we can compute various error metrics to summarize the forecast accuracy:
+Using forecast errors, we can compute summary metrics:
 
 ::: {.nonincremental}
 
@@ -303,21 +240,22 @@ Using this errors, we can compute various error metrics to summarize the forecas
 ### Refit and forecast
 :::
 
-Up to this point, models have been estimated **only on the training set**.  
-Once a model has been selected and validated, the final step before deployment is to **refit it using all available data**.
+Once a benchmark is selected based on the test set, refit it using **all available data**, then forecast the desired future horizon.
 
-Why refit?
+Example: refit `snaive` and forecast the next 8 quarters.
 
-- The test set is no longer “future” once model selection is finished.
-- Using all available observations generally improves parameter estimates.
-- This reflects how models are used in practice.
+```{r}
+#| label: refit_forecast
+#| eval: false
 
-In the tidy forecasting workflow, refitting is straightforward:
+final_fit <- aus_production |> 
+  model(
+    final_model = SNAIVE(Gas)
+  )
 
-- Re-estimate the chosen model using the **full tsibble**.
-- Generate forecasts for the desired future horizon.
-
-This ensures that the final forecasts are based on the maximum amount of information available.
+final_fcst <- final_fit |> 
+  forecast(h = "8 quarters")
+```
 
 ::: {.content-hidden unless-format="revealjs"}
 ## Communicate
@@ -328,105 +266,12 @@ This ensures that the final forecasts are based on the maximum amount of informa
 :::
 
 Forecasting is not finished when numbers are produced.  
-Results must be **communicated clearly and honestly**.
+Results must be communicated clearly and honestly.
 
-Effective communication usually includes:
+Minimum communication checklist:
 
-- **Visualizations**  
-  - Historical data + forecasts + prediction intervals.
-  - Clear labeling of units, horizons, and uncertainty.
-- **Assumptions**  
-  - Model choice.
-  - Transformations and adjustments.
-- **Uncertainty**  
-  - Point forecasts alone are rarely sufficient.
-  - Prediction intervals convey risk and variability.
-- **Limitations**  
-  - Structural breaks, data quality issues, or short samples.
-
-A good forecast is one that decision-makers can **understand, trust, and act upon**, even if it turns out to be wrong.
-
-
-
-# Benchmark forecasting methods
-
-::: {.content-hidden unless-format="revealjs"}
-
-##
-
-:::
-
-Before fitting complex models, it is essential to establish **benchmark forecasts**.
-
-Benchmark methods serve two key purposes:
-
-1. They provide a **baseline** that any serious model should outperform.
-2. They help detect cases where complexity adds little or no value.
-
-Benchmark methods are typically **simple, transparent, and fast**.
-
-## Mean method
-
-The forecast is the historical mean of the series:
-
-$$
-\hat{y}_{T+h|T} = \bar{y}
-$$
-
-Characteristics:
-
-- Assumes no trend and no seasonality.
-- Useful mainly as a baseline for stationary series.
-
-## Naïve method
-
-The forecast equals the last observed value:
-
-$$
-\hat{y}_{T+h|T} = y_T
-$$
-
-Characteristics:
-
-- Assumes the future will behave like the most recent past.
-- Surprisingly hard to beat for many economic and financial series.
-- Equivalent to a random walk model.
-
-## Seasonal naïve method
-
-The forecast equals the last observed value from the same season:
-
-$$
-\hat{y}_{T+h|T} = y_{T+h-m}
-$$
-
-where $m$ is the seasonal period.
-
-Characteristics:
-
-- Captures seasonality with no trend modeling.
-- Often a very strong benchmark for seasonal data.
-
-## Drift method
-
-A linear trend is extrapolated from the first to the last observation:
-
-$$
-\hat{y}_{T+h|T} = y_T + h \cdot \frac{y_T - y_1}{T-1}
-$$
-
-Characteristics:
-
-- Equivalent to a random walk with drift.
-- Assumes a constant average change over time.
-- Simple but often competitive for trending series.
-
-::: {.content-hidden unless-format="revealjs"}
----
-
-:::
-
-Benchmark methods are **not meant to be optimal**.  
-They are meant to be **hard to beat**.
-
-If a complex model cannot outperform a suitable benchmark, it should be reconsidered.
+- Plot: history + forecast + prediction intervals
+- Horizon: what the forecast period represents
+- Baseline: state the benchmark model used
+- Uncertainty: prediction intervals are essential
+- Limitations: structural breaks, short samples, changing conditions
