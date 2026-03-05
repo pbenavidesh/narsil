@@ -142,15 +142,15 @@ p_lynx <- lynx |>
 
 :::{.content-visible unless-format="revealjs"}
 
-Which of the following six series are stationary?
+Which of the following six series are stationary (i.e., which look more *stable*)?
 
 ```{r}
 #| label: all-six-html
 #| echo: false
 #| message: false
-#| fig-height: 9
 #| layout-ncol: 2
-#| fig-cap: "Which of these series look more stable?"
+#| lightbox:
+#|   group: "six-series"
 
 p_google 
 p_eggs
@@ -341,8 +341,9 @@ $$y'_t = y_t - y_{t-1}$$
 #| message: false
 
 google_2015 |>
-  gg_tsdisplay(difference(Close), plot_type = "partial")
+  gg_tsdisplay(difference(Close), plot_type = "partial") #<1>
 ```
+1. 
 
 ## Second Differences
 
@@ -378,6 +379,7 @@ where $m$ is the seasonal period ($m = 12$ for monthly data, $m = 4$ for quarter
 ```{r}
 #| label: pbs-setup
 #| message: false
+#| echo: false
 
 h02 <- PBS |>
   filter(ATC2 == "H02") |>
