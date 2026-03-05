@@ -550,18 +550,18 @@
     "href": "docs/modules/module_2/02_stationarity/stationarity.html#what-makes-a-series-non-stationary",
     "title": "Stationarity & Differencing",
     "section": "2.1 What Makes a Series Non-Stationary?",
-    "text": "2.1 What Makes a Series Non-Stationary?\nA time series is non-stationary if it exhibits any of the following:\n\nTrend — a long-term increase or decrease in the mean.\nSeasonality — a repeating pattern that causes the mean to shift systematically.\nChanging variance — the spread of fluctuations grows or shrinks over time.",
+    "text": "2.1 What Makes a Series Non-Stationary?\nA time series is non-stationary if it exhibits any of the following:\n\nTrend — a long-term increase or decrease in the mean.\nSeasonality — a repeating pattern that causes the mean to shift systematically.\nChanging variance — the spread of fluctuations grows or shrinks over time.\n\n\n\n\n\n\n\n\nNoteWhat can we expect from a Stationary Series then?\n\n\n\nA stationary serie will not have any systematic patterns that change the level or scale of the series over time (no trend, no seasonality, and constant variance).",
     "crumbs": [
       "2. Adding ETS and ARIMA filters",
       "2.2 Stationarity & Differencing"
     ]
   },
   {
-    "objectID": "docs/modules/module_2/02_stationarity/stationarity.html#we-already-know-part-of-the-answer",
-    "href": "docs/modules/module_2/02_stationarity/stationarity.html#we-already-know-part-of-the-answer",
+    "objectID": "docs/modules/module_2/02_stationarity/stationarity.html#what-to-do-with-non-stationary-series",
+    "href": "docs/modules/module_2/02_stationarity/stationarity.html#what-to-do-with-non-stationary-series",
     "title": "Stationarity & Differencing",
-    "section": "3.1 We Already Know Part of the Answer",
-    "text": "3.1 We Already Know Part of the Answer\nRecall from Module 1: we can stabilize the variance using mathematical transformations — logarithms, Box-Cox, and so on.\nw_t = \\log(y_t) \\qquad \\text{or more generally} \\qquad w_t = \\frac{y_t^\\lambda - 1}{\\lambda}\nBut what about the mean? Transformations alone don’t remove a trend or seasonal pattern.",
+    "section": "3.1 What to do with Non-Stationary Series?",
+    "text": "3.1 What to do with Non-Stationary Series?\n\n\n3.1.1 If we find heteroskedasticity (changing variance)\nRecall from Module 1: we can stabilize the variance using mathematical transformations — logarithms, Box-Cox, and so on.\n\n\n\n\n3.1.2 But what about the mean?\nTransformations alone don’t remove a trend or seasonal pattern.",
     "crumbs": [
       "2. Adding ETS and ARIMA filters",
       "2.2 Stationarity & Differencing"
@@ -583,7 +583,7 @@
     "href": "docs/modules/module_2/02_stationarity/stationarity.html#second-differences",
     "title": "Stationarity & Differencing",
     "section": "4.2 Second Differences",
-    "text": "4.2 Second Differences\nSometimes the first-differenced series is still non-stationary. We can difference again:\n\\begin{align}\ny''_t &= y'_t - y'_{t-1} \\\\\n      &= y_t - 2y_{t-1} + y_{t-2}\n\\end{align}\n\nSecond differences have T - 2 observations.\nThey represent the change in the changes — acceleration rather than velocity.\nEconomic and business series almost never require more than two differences.\n\n\n\n\n\n\n\n\nNeeding three or more differences usually signals something else is wrong — an outlier, a structural break, or a transformation that should have been applied first.",
+    "text": "4.2 Second Differences\nSometimes the first-differenced series is still non-stationary. We can difference again:\n\\begin{align*}\ny''_t &= y'_t - y'_{t-1} \\\\\n      &= y_t - 2y_{t-1} + y_{t-2}\n\\end{align*}\n\nSecond differences have T - 2 observations.\nThey represent the change in the changes — acceleration rather than velocity.\nEconomic and business series almost never require more than two differences.\n\n\n\n\n\n\n\n\nNeeding three or more differences usually signals something else is wrong — an outlier, a structural break, or a transformation that should have been applied first.",
     "crumbs": [
       "2. Adding ETS and ARIMA filters",
       "2.2 Stationarity & Differencing"
@@ -737,7 +737,7 @@
     "href": "docs/modules/module_2/02_stationarity/stationarity_pres.html#section",
     "title": "Stationarity & Differencing",
     "section": "",
-    "text": "Have you ever heard the word stationary before?\n\nIn everyday language, stationary means not moving — fixed in place.\nFor a time series, what would that mean?\n\n\n\n\n\n\n\n\nThink about it\n\n\nIf a time series is “not moving”, what statistical properties would you expect it to have?"
+    "text": "Have you ever heard the word stationary before?\n\n\n\n\n\n\nGas cylinders & stationary tanks — what’s the difference?\n\n\n\n\n\n\nIn everyday language, stationary means not moving — fixed in place.\nFor a time series, what would that mean?\n\n\n\n\n\n\n\n\n\n\nThink about it\n\n\nIf a time series is “not moving”, what statistical properties would you expect it to have?"
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity_pres.html#the-formal-definition",
@@ -751,21 +751,28 @@
     "href": "docs/modules/module_2/02_stationarity/stationarity_pres.html#what-makes-a-series-non-stationary",
     "title": "Stationarity & Differencing",
     "section": "What Makes a Series Non-Stationary?",
-    "text": "What Makes a Series Non-Stationary?\nA time series is non-stationary if it exhibits any of the following:\n\nTrend — a long-term increase or decrease in the mean.\nSeasonality — a repeating pattern that causes the mean to shift systematically.\nChanging variance — the spread of fluctuations grows or shrinks over time."
+    "text": "What Makes a Series Non-Stationary?\nA time series is non-stationary if it exhibits any of the following:\n\nTrend — a long-term increase or decrease in the mean.\nSeasonality — a repeating pattern that causes the mean to shift systematically.\nChanging variance — the spread of fluctuations grows or shrinks over time.\n\n\n\n\n\n\n\n\nWhat can we expect from a Stationary Series then?\n\n\nA stationary serie will not have any systematic patterns that change the level or scale of the series over time (no trend, no seasonality, and constant variance)."
   },
   {
-    "objectID": "docs/modules/module_2/02_stationarity/stationarity_pres.html#we-already-know-part-of-the-answer",
-    "href": "docs/modules/module_2/02_stationarity/stationarity_pres.html#we-already-know-part-of-the-answer",
+    "objectID": "docs/modules/module_2/02_stationarity/stationarity_pres.html#what-to-do-with-non-stationary-series",
+    "href": "docs/modules/module_2/02_stationarity/stationarity_pres.html#what-to-do-with-non-stationary-series",
     "title": "Stationarity & Differencing",
-    "section": "We Already Know Part of the Answer",
-    "text": "We Already Know Part of the Answer\nRecall from Module 1: we can stabilize the variance using mathematical transformations — logarithms, Box-Cox, and so on.\nw_t = \\log(y_t) \\qquad \\text{or more generally} \\qquad w_t = \\frac{y_t^\\lambda - 1}{\\lambda}\nBut what about the mean? Transformations alone don’t remove a trend or seasonal pattern."
+    "section": "What to do with Non-Stationary Series?",
+    "text": "What to do with Non-Stationary Series?\n\nIf we find heteroskedasticity (changing variance)\nRecall from Module 1: we can stabilize the variance using mathematical transformations — logarithms, Box-Cox, and so on.\n\n\nBut what about the mean?\nTransformations alone don’t remove a trend or seasonal pattern."
+  },
+  {
+    "objectID": "docs/modules/module_2/02_stationarity/stationarity_pres.html#section-4",
+    "href": "docs/modules/module_2/02_stationarity/stationarity_pres.html#section-4",
+    "title": "Stationarity & Differencing",
+    "section": "",
+    "text": "Look at these two series:"
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity_pres.html#section-5",
     "href": "docs/modules/module_2/02_stationarity/stationarity_pres.html#section-5",
     "title": "Stationarity & Differencing",
     "section": "",
-    "text": "The daily return is simply today’s price minus yesterday’s price — the change between consecutive observations. This operation is called differencing, and it is how we stabilize the mean of a non-stationary series.\n\n\n\n\n\n\n\n\n\n\n\nGoogle stock and random walks\n\n\nGoogle’s stock price follows a random walk. Random walks are non-stationary, but their first differences are stationary — something we will revisit when we look at model equations."
+    "text": "a non-stationary series\n\n\n\n\n\n\n\na stationary series\n\n\n\n\n\n\nThe second series was produced directly from the first — can you figure out how?\n\n\n\n\n\n\n\n\n\n\nDifferencing\n\n\nThe daily return is simply today’s price minus yesterday’s price — the change between consecutive observations. This operation is called differencing, and it is how we stabilize the mean of a non-stationary series.\n\n\n\n\n\n\n\n\n\n\n\nRandom walks & stationarity\n\n\n\nGoogle’s stock price follows a random walk.\nBy definition, random walks are non-stationary, but their first differences are stationary."
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity_pres.html#first-differences",
@@ -779,7 +786,7 @@
     "href": "docs/modules/module_2/02_stationarity/stationarity_pres.html#second-differences",
     "title": "Stationarity & Differencing",
     "section": "Second Differences",
-    "text": "Second Differences\nSometimes the first-differenced series is still non-stationary. We can difference again:\n\\begin{align}\ny''_t &= y'_t - y'_{t-1} \\\\\n      &= y_t - 2y_{t-1} + y_{t-2}\n\\end{align}\n\nSecond differences have T - 2 observations.\nThey represent the change in the changes — acceleration rather than velocity.\nEconomic and business series almost never require more than two differences.\n\n\n\n\n\n\n\n\nNeeding three or more differences usually signals something else is wrong — an outlier, a structural break, or a transformation that should have been applied first."
+    "text": "Second Differences\nSometimes the first-differenced series is still non-stationary. We can difference again:\n\\begin{align*}\ny''_t &= y'_t - y'_{t-1} \\\\\n      &= y_t - 2y_{t-1} + y_{t-2}\n\\end{align*}\n\nSecond differences have T - 2 observations.\nThey represent the change in the changes — acceleration rather than velocity.\nEconomic and business series almost never require more than two differences.\n\n\n\n\n\n\n\n\nNeeding three or more differences usually signals something else is wrong — an outlier, a structural break, or a transformation that should have been applied first."
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity_pres.html#seasonal-differencing",
