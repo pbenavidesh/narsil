@@ -526,351 +526,351 @@
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity.html",
     "href": "docs/modules/module_2/02_stationarity/stationarity.html",
-    "title": "Identifying Stationarity",
+    "title": "Stationarity & Differencing",
     "section": "",
     "text": "Code\n1library(tidyquant)\nlibrary(plotly)\n\n\n\n1\n\nIn addition to the regular packages, here we’ll use tidyquant and plotly.",
     "crumbs": [
       "2. Adding ETS and ARIMA filters",
-      "2.2 Identifying Stationarity"
+      "2.2 Stationarity & Differencing"
     ]
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity.html#the-formal-definition",
     "href": "docs/modules/module_2/02_stationarity/stationarity.html#the-formal-definition",
-    "title": "Identifying Stationarity",
+    "title": "Stationarity & Differencing",
     "section": "1.1 The Formal Definition",
-    "text": "1.1 The Formal Definition\nA time series is stationary if its statistical properties — primarily its mean and variance — do not change over time.\n\n\nThe series fluctuates around a constant mean.\nThe spread of those fluctuations stays roughly constant over time.\nThere are no systematic patterns that change the level or scale of the series.",
+    "text": "1.1 The Formal Definition\nA time series is stationary if its statistical properties — primarily its mean and variance — do not change over time.\n\nThe series fluctuates around a constant mean.\nThe spread of those fluctuations stays roughly constant over time.\nThere are no systematic patterns that change the level or scale of the series.",
     "crumbs": [
       "2. Adding ETS and ARIMA filters",
-      "2.2 Identifying Stationarity"
+      "2.2 Stationarity & Differencing"
     ]
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity.html#what-makes-a-series-non-stationary",
     "href": "docs/modules/module_2/02_stationarity/stationarity.html#what-makes-a-series-non-stationary",
-    "title": "Identifying Stationarity",
+    "title": "Stationarity & Differencing",
     "section": "2.1 What Makes a Series Non-Stationary?",
-    "text": "2.1 What Makes a Series Non-Stationary?\nA time series is non-stationary if it exhibits any of the following:\n\n\nTrend — a long-term increase or decrease in the mean.\nSeasonality — a repeating pattern that causes the mean to shift systematically.\nChanging variance — the spread of fluctuations grows or shrinks over time.",
+    "text": "2.1 What Makes a Series Non-Stationary?\nA time series is non-stationary if it exhibits any of the following:\n\nTrend — a long-term increase or decrease in the mean.\nSeasonality — a repeating pattern that causes the mean to shift systematically.\nChanging variance — the spread of fluctuations grows or shrinks over time.",
     "crumbs": [
       "2. Adding ETS and ARIMA filters",
-      "2.2 Identifying Stationarity"
+      "2.2 Stationarity & Differencing"
     ]
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity.html#we-already-know-part-of-the-answer",
     "href": "docs/modules/module_2/02_stationarity/stationarity.html#we-already-know-part-of-the-answer",
-    "title": "Identifying Stationarity",
+    "title": "Stationarity & Differencing",
     "section": "3.1 We Already Know Part of the Answer",
     "text": "3.1 We Already Know Part of the Answer\nRecall from Module 1: we can stabilize the variance using mathematical transformations — logarithms, Box-Cox, and so on.\nw_t = \\log(y_t) \\qquad \\text{or more generally} \\qquad w_t = \\frac{y_t^\\lambda - 1}{\\lambda}\nBut what about the mean? Transformations alone don’t remove a trend or seasonal pattern.",
     "crumbs": [
       "2. Adding ETS and ARIMA filters",
-      "2.2 Identifying Stationarity"
+      "2.2 Stationarity & Differencing"
     ]
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity.html#first-differences",
     "href": "docs/modules/module_2/02_stationarity/stationarity.html#first-differences",
-    "title": "Identifying Stationarity",
+    "title": "Stationarity & Differencing",
     "section": "4.1 First Differences",
-    "text": "4.1 First Differences\nThe first difference of a series y_t is:\ny'_t = y_t - y_{t-1}\n\n\nThe differenced series has T - 1 observations.\nFirst differences represent the change from one period to the next.\nIf the original series has a linear trend, the differences will fluctuate around a constant mean.\n\n\n\n\nCode\ngoogle_2015 |&gt;\n  gg_tsdisplay(difference(Close), plot_type = \"partial\")",
+    "text": "4.1 First Differences\nThe first difference of a series y_t is:\ny'_t = y_t - y_{t-1}\n\nThe differenced series has T - 1 observations.\nFirst differences represent the change from one period to the next.\nIf the original series has a linear trend, the differences will fluctuate around a constant mean.\n\n\n\nCode\ngoogle_2015 |&gt;\n  gg_tsdisplay(difference(Close), plot_type = \"partial\")",
     "crumbs": [
       "2. Adding ETS and ARIMA filters",
-      "2.2 Identifying Stationarity"
+      "2.2 Stationarity & Differencing"
     ]
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity.html#second-differences",
     "href": "docs/modules/module_2/02_stationarity/stationarity.html#second-differences",
-    "title": "Identifying Stationarity",
+    "title": "Stationarity & Differencing",
     "section": "4.2 Second Differences",
-    "text": "4.2 Second Differences\nSometimes the first-differenced series is still non-stationary. We can difference again:\n\\begin{align}\ny''_t &= y'_t - y'_{t-1} \\\\\n      &= y_t - 2y_{t-1} + y_{t-2}\n\\end{align}\n\n\nSecond differences have T - 2 observations.\nThey represent the change in the changes — acceleration rather than velocity.\nEconomic and business series almost never require more than two differences.\n\n\n\n\n\n\n\n\nNeeding three or more differences usually signals something else is wrong — an outlier, a structural break, or a transformation that should have been applied first.",
+    "text": "4.2 Second Differences\nSometimes the first-differenced series is still non-stationary. We can difference again:\n\\begin{align}\ny''_t &= y'_t - y'_{t-1} \\\\\n      &= y_t - 2y_{t-1} + y_{t-2}\n\\end{align}\n\nSecond differences have T - 2 observations.\nThey represent the change in the changes — acceleration rather than velocity.\nEconomic and business series almost never require more than two differences.\n\n\n\n\n\n\n\n\nNeeding three or more differences usually signals something else is wrong — an outlier, a structural break, or a transformation that should have been applied first.",
     "crumbs": [
       "2. Adding ETS and ARIMA filters",
-      "2.2 Identifying Stationarity"
+      "2.2 Stationarity & Differencing"
     ]
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity.html#seasonal-differencing",
     "href": "docs/modules/module_2/02_stationarity/stationarity.html#seasonal-differencing",
-    "title": "Identifying Stationarity",
+    "title": "Stationarity & Differencing",
     "section": "4.3 Seasonal Differencing",
-    "text": "4.3 Seasonal Differencing\nIf the series has seasonality, we take a seasonal difference — the change relative to the same period in the previous cycle:\ny'_t = y_t - y_{t-m}\nwhere m is the seasonal period (m = 12 for monthly data, m = 4 for quarterly).\n\n\nSeasonal differences represent year-over-year change at each point.\nAlso called lag-m differences.\nAfter seasonal differencing, any remaining non-seasonal trend can be removed with a first difference.\n\n\n\n\nCode\nh02 &lt;- PBS |&gt;\n  filter(ATC2 == \"H02\") |&gt;\n  summarise(Cost = sum(Cost) / 1e6)\n\n\n\n\nCode\nh02 |&gt;\n  gg_tsdisplay(difference(log(Cost), 12),\n               plot_type = \"partial\",\n               lag_max = 48)",
+    "text": "4.3 Seasonal Differencing\nIf the series has seasonality, we take a seasonal difference — the change relative to the same period in the previous cycle:\ny'_t = y_t - y_{t-m}\nwhere m is the seasonal period (m = 12 for monthly data, m = 4 for quarterly).\n\nSeasonal differences represent year-over-year change at each point.\nAlso called lag-m differences.\nAfter seasonal differencing, any remaining non-seasonal trend can be removed with a first difference.\n\n\n\nCode\nh02 &lt;- PBS |&gt;\n  filter(ATC2 == \"H02\") |&gt;\n  summarise(Cost = sum(Cost) / 1e6)\n\n\n\n\nCode\nh02 |&gt;\n  gg_tsdisplay(difference(log(Cost), 12),\n               plot_type = \"partial\",\n               lag_max = 48)",
     "crumbs": [
       "2. Adding ETS and ARIMA filters",
-      "2.2 Identifying Stationarity"
+      "2.2 Stationarity & Differencing"
     ]
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity.html#does-the-order-of-differencing-matter",
     "href": "docs/modules/module_2/02_stationarity/stationarity.html#does-the-order-of-differencing-matter",
-    "title": "Identifying Stationarity",
+    "title": "Stationarity & Differencing",
     "section": "4.4 Does the Order of Differencing Matter?",
-    "text": "4.4 Does the Order of Differencing Matter?\nWhen a series needs both seasonal and regular differencing, does it matter which one we apply first?\nLet’s introduce the backshift operator B, where B^k y_t = y_{t-k}, to work out the algebra cleanly:\n\nFirst difference: (1 - B)\\,y_t = y_t - y_{t-1}\nSeasonal difference: (1 - B^m)\\,y_t = y_t - y_{t-m}\n\nApplying seasonal first, then regular: (1 - B)(1 - B^m)\\,y_t\nApplying regular first, then seasonal: (1 - B^m)(1 - B)\\,y_t\nSince B follows ordinary algebraic rules, both expand to the same result:\ny_t - y_{t-1} - y_{t-m} + y_{t-m-1}\n\n\n\n\n\n\nThe order does not matter — the result is always identical. In practice, if the seasonal pattern is strong, apply the seasonal difference first: the result may already be stationary without needing the regular difference.",
+    "text": "4.4 Does the Order of Differencing Matter?\nWhen a series needs both seasonal and regular differencing, does it matter which one we apply first?\nLet’s introduce the backshift operator B, where B^k y_t = y_{t-k}, to work out the algebra cleanly:\n\nFirst difference: (1 - B)\\,y_t = y_t - y_{t-1}\nSeasonal difference: (1 - B^m)\\,y_t = y_t - y_{t-m}\n\nApplying seasonal first, then regular: (1 - B)(1 - B^m)\\,y_t\nApplying regular first, then seasonal: (1 - B^m)(1 - B)\\,y_t\nSince B follows ordinary algebraic rules, both expand to the same result:\ny_t - y_{t-1} - y_{t-m} + y_{t-m-1}\n\n\n\n\n\n\n\nThe order does not matter — the result is always identical. In practice, if the seasonal pattern is strong, apply the seasonal difference first: the result may already be stationary without needing the regular difference.",
     "crumbs": [
       "2. Adding ETS and ARIMA filters",
-      "2.2 Identifying Stationarity"
+      "2.2 Stationarity & Differencing"
     ]
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity.html#backshift-notation",
     "href": "docs/modules/module_2/02_stationarity/stationarity.html#backshift-notation",
-    "title": "Identifying Stationarity",
+    "title": "Stationarity & Differencing",
     "section": "4.5 Backshift Notation",
     "text": "4.5 Backshift Notation\nThe backshift operator B is worth understanding properly — you will see it throughout the model equations in the next classes.\nBy_t = y_{t-1}, \\qquad B^2y_t = y_{t-2}, \\qquad B^m y_t = y_{t-m}\n\n\n\nOperation\nBackshift form\n\n\n\n\nFirst difference\n(1 - B)\\,y_t\n\n\nSecond difference\n(1 - B)^2\\,y_t\n\n\nSeasonal difference\n(1 - B^m)\\,y_t\n\n\nBoth together\n(1 - B)(1 - B^m)\\,y_t",
     "crumbs": [
       "2. Adding ETS and ARIMA filters",
-      "2.2 Identifying Stationarity"
+      "2.2 Stationarity & Differencing"
     ]
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity.html#applying-this-to-mexretail",
     "href": "docs/modules/module_2/02_stationarity/stationarity.html#applying-this-to-mexretail",
-    "title": "Identifying Stationarity",
+    "title": "Stationarity & Differencing",
     "section": "4.6 Applying This to mexretail",
-    "text": "4.6 Applying This to mexretail\nmexretail has trend, seasonality, and growing variance. The full differencing pipeline:\n\nLevelsLogBox-CoxSeasonal diffSeasonal + first diff\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNoteA question to think about before next class\n\n\n\nWe have been deciding how many differences to apply by looking at plots. But visual inspection is subjective — two analysts could disagree. Is there a more rigorous, objective way to make this call?\nThat is exactly where we pick up next time.",
+    "text": "4.6 Applying This to mexretail\nmexretail has trend, seasonality, and growing variance. The full differencing pipeline:\n\nLevelsLogBox-CoxSeasonal diffSeasonal + first diff\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNoteA question to think about before next class\n\n\n\nWe have been deciding how many differences to apply by looking at plots. But visual inspection is subjective — two analysts could disagree. Is there a more rigorous, objective way to make this call?\nThat is exactly where we pick up next time.",
     "crumbs": [
       "2. Adding ETS and ARIMA filters",
-      "2.2 Identifying Stationarity"
+      "2.2 Stationarity & Differencing"
     ]
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity.html#kpss-in-r",
     "href": "docs/modules/module_2/02_stationarity/stationarity.html#kpss-in-r",
-    "title": "Identifying Stationarity",
+    "title": "Stationarity & Differencing",
     "section": "5.1 KPSS in R",
     "text": "5.1 KPSS in R\n\n\nCode\ngoogle_2015 |&gt; features(Close, unitroot_kpss)\n\n\n\n  \n\n\n\n\n\nCode\ngoogle_2015 |&gt; features(diff_close, unitroot_kpss)",
     "crumbs": [
       "2. Adding ETS and ARIMA filters",
-      "2.2 Identifying Stationarity"
+      "2.2 Stationarity & Differencing"
     ]
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity.html#automated-differencing-orders",
     "href": "docs/modules/module_2/02_stationarity/stationarity.html#automated-differencing-orders",
-    "title": "Identifying Stationarity",
+    "title": "Stationarity & Differencing",
     "section": "5.2 Automated Differencing Orders",
-    "text": "5.2 Automated Differencing Orders\nRather than manually testing each transformation, feasts provides two functions that determine exactly how many differences are needed:\n\n\nCode\nmexretail |&gt; features(box_cox(y, lambda), unitroot_nsdiffs)\n\n\n\n  \n\n\n\n\n\nCode\nmexretail |&gt;\n  features(difference(box_cox(y, lambda), 12), unitroot_ndiffs)\n\n\n\n  \n\n\n\n\n\n\n\n\n\nTipFull stationarity protocol for mexretail\n\n\n\n\n\n\nApply Box-Cox with Guerrero lambda to stabilize variance: box_cox(y, lambda)\nCheck seasonal differencing needed: unitroot_nsdiffs() → 1\nApply seasonal diff, then check regular: unitroot_ndiffs() → 1\nFinal stationary series: difference(box_cox(y, lambda), 12) |&gt; difference(1)\n\nWhen we fit the models in the next class, the algorithm will make these exact same choices automatically. Now you understand why.",
+    "text": "5.2 Automated Differencing Orders\nRather than manually testing each transformation, feasts provides two functions that determine exactly how many differences are needed:\n\n\nCode\nmexretail |&gt; features(box_cox(y, lambda), unitroot_nsdiffs)\n\n\n\n  \n\n\n\n\n\nCode\nmexretail |&gt;\n  features(difference(box_cox(y, lambda), 12), unitroot_ndiffs)\n\n\n\n  \n\n\n\n\n\n\n\n\n\n\nTipFull stationarity protocol for mexretail\n\n\n\n\n\n\nApply Box-Cox with Guerrero lambda to stabilize variance: box_cox(y, lambda)\nCheck seasonal differencing needed: unitroot_nsdiffs() → 1\nApply seasonal diff, then check regular: unitroot_ndiffs() → 1\nFinal stationary series: difference(box_cox(y, lambda), 12) |&gt; difference(1)\n\nWhen we fit the models in the next class, the algorithm will make these exact same choices automatically. Now you understand why.",
     "crumbs": [
       "2. Adding ETS and ARIMA filters",
-      "2.2 Identifying Stationarity"
+      "2.2 Stationarity & Differencing"
     ]
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity.html#autocorrelation-function-acf",
     "href": "docs/modules/module_2/02_stationarity/stationarity.html#autocorrelation-function-acf",
-    "title": "Identifying Stationarity",
+    "title": "Stationarity & Differencing",
     "section": "6.1 Autocorrelation Function (ACF)",
-    "text": "6.1 Autocorrelation Function (ACF)\nThe ACF measures the correlation between a series and its own past values at each lag k:\nr_k = \\text{Corr}(y_t,\\, y_{t-k})\n\n\n\n\n\n\nNoteACF as a stationarity diagnostic\n\n\n\n\nStationary series: ACF drops to zero quickly.\nNon-stationary series: ACF decays very slowly, with the lag-1 value close to 1.\n\nThis gives us another way to detect non-stationarity — and, as we will see, it also tells us about the structure of the model to fit.",
+    "text": "6.1 Autocorrelation Function (ACF)\nThe ACF measures the correlation between a series and its own past values at each lag k:\nr_k = \\text{Corr}(y_t,\\, y_{t-k})\n\n\n\n\n\n\n\nNoteACF as a stationarity diagnostic\n\n\n\n\nStationary series: ACF drops to zero quickly.\nNon-stationary series: ACF decays very slowly, with the lag-1 value close to 1.\n\nThis gives us another way to detect non-stationarity — and, as we will see, it also tells us about the structure of the model to fit.",
     "crumbs": [
       "2. Adding ETS and ARIMA filters",
-      "2.2 Identifying Stationarity"
+      "2.2 Stationarity & Differencing"
     ]
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity.html#acf-shapes-for-different-patterns",
     "href": "docs/modules/module_2/02_stationarity/stationarity.html#acf-shapes-for-different-patterns",
-    "title": "Identifying Stationarity",
+    "title": "Stationarity & Differencing",
     "section": "6.2 ACF Shapes for Different Patterns",
     "text": "6.2 ACF Shapes for Different Patterns\n\nTrend onlySeasonality onlyTrend + seasonalityStationarymexretail after differencing",
     "crumbs": [
       "2. Adding ETS and ARIMA filters",
-      "2.2 Identifying Stationarity"
+      "2.2 Stationarity & Differencing"
     ]
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity.html#partial-autocorrelation-function-pacf",
     "href": "docs/modules/module_2/02_stationarity/stationarity.html#partial-autocorrelation-function-pacf",
-    "title": "Identifying Stationarity",
+    "title": "Stationarity & Differencing",
     "section": "6.3 Partial Autocorrelation Function (PACF)",
-    "text": "6.3 Partial Autocorrelation Function (PACF)\nThe ACF at lag k captures both the direct relationship between y_t and y_{t-k} and the indirect relationship mediated through intermediate lags. The PACF isolates only the direct part.\n\n\n\n\n\n\nTipThe regression analogy\n\n\n\n\nACF at lag k: simple correlation between y_t and y_{t-k}.\nPACF at lag k: the coefficient on y_{t-k} in a regression of y_t on y_{t-1}, y_{t-2}, \\ldots, y_{t-k}.\n\nThe PACF asks: once I already know the effect of all closer lags, does lag k add any new information?",
+    "text": "6.3 Partial Autocorrelation Function (PACF)\nThe ACF at lag k captures both the direct relationship between y_t and y_{t-k} and the indirect relationship mediated through intermediate lags. The PACF isolates only the direct part.\n\n\n\n\n\n\n\nTipThe regression analogy\n\n\n\n\nACF at lag k: simple correlation between y_t and y_{t-k}.\nPACF at lag k: the coefficient on y_{t-k} in a regression of y_t on y_{t-1}, y_{t-2}, \\ldots, y_{t-k}.\n\nThe PACF asks: once I already know the effect of all closer lags, does lag k add any new information?",
     "crumbs": [
       "2. Adding ETS and ARIMA filters",
-      "2.2 Identifying Stationarity"
+      "2.2 Stationarity & Differencing"
     ]
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity.html#acf-and-pacf-together",
     "href": "docs/modules/module_2/02_stationarity/stationarity.html#acf-and-pacf-together",
-    "title": "Identifying Stationarity",
+    "title": "Stationarity & Differencing",
     "section": "6.4 ACF and PACF Together",
     "text": "6.4 ACF and PACF Together\ngg_tsdisplay() with plot_type = \"partial\" shows the time series, ACF, and PACF together — this is the standard diagnostic display for the rest of the module.\n\n\nCode\nmexretail |&gt;\n  gg_tsdisplay(\n    difference(box_cox(y, lambda), 12) |&gt; difference(1),\n    plot_type = \"partial\",\n    lag_max = 48\n  )",
     "crumbs": [
       "2. Adding ETS and ARIMA filters",
-      "2.2 Identifying Stationarity"
+      "2.2 Stationarity & Differencing"
     ]
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity.html#autoregressive-models-arp",
     "href": "docs/modules/module_2/02_stationarity/stationarity.html#autoregressive-models-arp",
-    "title": "Identifying Stationarity",
+    "title": "Stationarity & Differencing",
     "section": "7.1 Autoregressive Models — AR(p)",
-    "text": "7.1 Autoregressive Models — AR(p)\nAn autoregressive model of order p forecasts y_t as a weighted sum of its own past values:\ny_t = c + \\phi_1 y_{t-1} + \\phi_2 y_{t-2} + \\cdots + \\phi_p y_{t-p} + \\varepsilon_t\n\n\nStructurally identical to multiple linear regression — except the predictors are lagged values of the series itself.\np is the number of past values used.\n\\varepsilon_t is white noise.\n\n\n\n\n\n\n\n\nNoteSignature in ACF/PACF\n\n\n\n\nPACF cuts off sharply after lag p — this is how you read the order.\nACF decays gradually (exponentially or with damped oscillations).",
+    "text": "7.1 Autoregressive Models — AR(p)\nAn autoregressive model of order p forecasts y_t as a weighted sum of its own past values:\ny_t = c + \\phi_1 y_{t-1} + \\phi_2 y_{t-2} + \\cdots + \\phi_p y_{t-p} + \\varepsilon_t\n\nStructurally identical to multiple linear regression — except the predictors are lagged values of the series itself.\np is the number of past values used.\n\\varepsilon_t is white noise.\n\n\n\n\n\n\n\n\nNoteSignature in ACF/PACF\n\n\n\n\nPACF cuts off sharply after lag p — this is how you read the order.\nACF decays gradually (exponentially or with damped oscillations).",
     "crumbs": [
       "2. Adding ETS and ARIMA filters",
-      "2.2 Identifying Stationarity"
+      "2.2 Stationarity & Differencing"
     ]
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity.html#moving-average-models-maq",
     "href": "docs/modules/module_2/02_stationarity/stationarity.html#moving-average-models-maq",
-    "title": "Identifying Stationarity",
+    "title": "Stationarity & Differencing",
     "section": "7.2 Moving Average Models — MA(q)",
-    "text": "7.2 Moving Average Models — MA(q)\nA moving average model of order q forecasts y_t as a weighted sum of past forecast errors:\ny_t = c + \\varepsilon_t + \\theta_1 \\varepsilon_{t-1} + \\theta_2 \\varepsilon_{t-2} + \\cdots + \\theta_q \\varepsilon_{t-q}\n\n\nThe predictors are past errors, not past values of the series.\nq is the number of past errors used.\n\\varepsilon_t is white noise.\n\n\n\n\n\n\n\n\nWarningMA models ≠ moving average smoothing\n\n\n\nDo not confuse MA models with the moving average smoothing used in decomposition. Smoothing estimates the trend-cycle from past observed values. MA models use past errors to describe the correlation structure of the series.\n\n\n\n\n\n\n\n\nNoteSignature in ACF/PACF\n\n\n\n\nACF cuts off sharply after lag q — the mirror image of the AR signature.\nPACF decays gradually.\n\n\n\n\n\n\n\n\n\nImportantYou cannot identify a model from the time plot alone\n\n\n\nNow that you have seen AR and MA models: their time plots can look very similar to each other. The ACF and PACF are what distinguish them. This is fundamentally different from ETS, where the form of trend and seasonality in the time plot directly guides model selection — one of the key differences we will revisit when comparing these two families.",
+    "text": "7.2 Moving Average Models — MA(q)\nA moving average model of order q forecasts y_t as a weighted sum of past forecast errors:\ny_t = c + \\varepsilon_t + \\theta_1 \\varepsilon_{t-1} + \\theta_2 \\varepsilon_{t-2} + \\cdots + \\theta_q \\varepsilon_{t-q}\n\nThe predictors are past errors, not past values of the series.\nq is the number of past errors used.\n\\varepsilon_t is white noise.\n\n\n\n\n\n\n\n\nWarningMA models ≠ moving average smoothing\n\n\n\nDo not confuse MA models with the moving average smoothing used in decomposition. Smoothing estimates the trend-cycle from past observed values. MA models use past errors to describe the correlation structure of the series.\n\n\n\n\n\n\n\n\n\n\nNoteSignature in ACF/PACF\n\n\n\n\nACF cuts off sharply after lag q — the mirror image of the AR signature.\nPACF decays gradually.\n\n\n\n\n\n\n\n\n\n\n\nImportantYou cannot identify a model from the time plot alone\n\n\n\nNow that you have seen AR and MA models: their time plots can look very similar to each other. The ACF and PACF are what distinguish them. This is fundamentally different from ETS, where the form of trend and seasonality in the time plot directly guides model selection — one of the key differences we will revisit when comparing these two families.",
     "crumbs": [
       "2. Adding ETS and ARIMA filters",
-      "2.2 Identifying Stationarity"
+      "2.2 Stationarity & Differencing"
     ]
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity.html#what-comes-next",
     "href": "docs/modules/module_2/02_stationarity/stationarity.html#what-comes-next",
-    "title": "Identifying Stationarity",
+    "title": "Stationarity & Differencing",
     "section": "7.3 What Comes Next",
-    "text": "7.3 What Comes Next\nIn practice, you will rarely use a pure AR or pure MA model. Real series typically need both. And most real series also need differencing before any of this applies.\nCombining differencing, AR terms, and MA terms into a single unified model — and applying it systematically to mexretail — is the subject of the next class.\n\n\n\n\n\n\nNoteWhere we are in the bigger picture\n\n\n\n\nStabilize variance → Box-Cox / log transformation ✓\nStabilize the mean → differencing ✓\n\nDetect remaining correlation structure → ACF and PACF ✓\nUnderstand the building blocks → AR and MA terms ✓\n\nAll the pieces are in place. Time to put them together.",
+    "text": "7.3 What Comes Next\nIn practice, you will rarely use a pure AR or pure MA model. Real series typically need both. And most real series also need differencing before any of this applies.\nCombining differencing, AR terms, and MA terms into a single unified model — and applying it systematically to mexretail — is the subject of the next class.\n\n\n\n\n\n\n\nNoteWhere we are in the bigger picture\n\n\n\n\nStabilize variance → Box-Cox / log transformation ✓\nStabilize the mean → differencing ✓\n\nDetect remaining correlation structure → ACF and PACF ✓\nUnderstand the building blocks → AR and MA terms ✓\n\nAll the pieces are in place. Time to put them together.",
     "crumbs": [
       "2. Adding ETS and ARIMA filters",
-      "2.2 Identifying Stationarity"
+      "2.2 Stationarity & Differencing"
     ]
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity_pres.html#section",
     "href": "docs/modules/module_2/02_stationarity/stationarity_pres.html#section",
-    "title": "Identifying Stationarity",
+    "title": "Stationarity & Differencing",
     "section": "",
-    "text": "Have you ever heard the word stationary before?\n\nIn everyday language, stationary means not moving — fixed in place.\nFor a time series, what would that mean?\n\n\n\n\n\n\n\nThink about it\n\n\nIf a time series is “not moving”, what statistical properties would you expect it to have?"
+    "text": "Have you ever heard the word stationary before?\n\nIn everyday language, stationary means not moving — fixed in place.\nFor a time series, what would that mean?\n\n\n\n\n\n\n\n\nThink about it\n\n\nIf a time series is “not moving”, what statistical properties would you expect it to have?"
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity_pres.html#the-formal-definition",
     "href": "docs/modules/module_2/02_stationarity/stationarity_pres.html#the-formal-definition",
-    "title": "Identifying Stationarity",
+    "title": "Stationarity & Differencing",
     "section": "The Formal Definition",
     "text": "The Formal Definition\nA time series is stationary if its statistical properties — primarily its mean and variance — do not change over time.\n\nThe series fluctuates around a constant mean.\nThe spread of those fluctuations stays roughly constant over time.\nThere are no systematic patterns that change the level or scale of the series."
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity_pres.html#what-makes-a-series-non-stationary",
     "href": "docs/modules/module_2/02_stationarity/stationarity_pres.html#what-makes-a-series-non-stationary",
-    "title": "Identifying Stationarity",
+    "title": "Stationarity & Differencing",
     "section": "What Makes a Series Non-Stationary?",
     "text": "What Makes a Series Non-Stationary?\nA time series is non-stationary if it exhibits any of the following:\n\nTrend — a long-term increase or decrease in the mean.\nSeasonality — a repeating pattern that causes the mean to shift systematically.\nChanging variance — the spread of fluctuations grows or shrinks over time."
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity_pres.html#we-already-know-part-of-the-answer",
     "href": "docs/modules/module_2/02_stationarity/stationarity_pres.html#we-already-know-part-of-the-answer",
-    "title": "Identifying Stationarity",
+    "title": "Stationarity & Differencing",
     "section": "We Already Know Part of the Answer",
     "text": "We Already Know Part of the Answer\nRecall from Module 1: we can stabilize the variance using mathematical transformations — logarithms, Box-Cox, and so on.\nw_t = \\log(y_t) \\qquad \\text{or more generally} \\qquad w_t = \\frac{y_t^\\lambda - 1}{\\lambda}\nBut what about the mean? Transformations alone don’t remove a trend or seasonal pattern."
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity_pres.html#section-5",
     "href": "docs/modules/module_2/02_stationarity/stationarity_pres.html#section-5",
-    "title": "Identifying Stationarity",
+    "title": "Stationarity & Differencing",
     "section": "",
-    "text": "The daily return is simply today’s price minus yesterday’s price — the change between consecutive observations. This operation is called differencing, and it is how we stabilize the mean of a non-stationary series.\n\n\n\n\n\n\n\n\n\nGoogle stock and random walks\n\n\nGoogle’s stock price follows a random walk. Random walks are non-stationary, but their first differences are stationary — something we will revisit when we look at model equations."
+    "text": "The daily return is simply today’s price minus yesterday’s price — the change between consecutive observations. This operation is called differencing, and it is how we stabilize the mean of a non-stationary series.\n\n\n\n\n\n\n\n\n\n\n\nGoogle stock and random walks\n\n\nGoogle’s stock price follows a random walk. Random walks are non-stationary, but their first differences are stationary — something we will revisit when we look at model equations."
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity_pres.html#first-differences",
     "href": "docs/modules/module_2/02_stationarity/stationarity_pres.html#first-differences",
-    "title": "Identifying Stationarity",
+    "title": "Stationarity & Differencing",
     "section": "First Differences",
     "text": "First Differences\nThe first difference of a series y_t is:\ny'_t = y_t - y_{t-1}\n\nThe differenced series has T - 1 observations.\nFirst differences represent the change from one period to the next.\nIf the original series has a linear trend, the differences will fluctuate around a constant mean.\n\n\ngoogle_2015 |&gt;\n  gg_tsdisplay(difference(Close), plot_type = \"partial\")"
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity_pres.html#second-differences",
     "href": "docs/modules/module_2/02_stationarity/stationarity_pres.html#second-differences",
-    "title": "Identifying Stationarity",
+    "title": "Stationarity & Differencing",
     "section": "Second Differences",
-    "text": "Second Differences\nSometimes the first-differenced series is still non-stationary. We can difference again:\n\\begin{align}\ny''_t &= y'_t - y'_{t-1} \\\\\n      &= y_t - 2y_{t-1} + y_{t-2}\n\\end{align}\n\nSecond differences have T - 2 observations.\nThey represent the change in the changes — acceleration rather than velocity.\nEconomic and business series almost never require more than two differences.\n\n\n\n\n\n\n\nNeeding three or more differences usually signals something else is wrong — an outlier, a structural break, or a transformation that should have been applied first."
+    "text": "Second Differences\nSometimes the first-differenced series is still non-stationary. We can difference again:\n\\begin{align}\ny''_t &= y'_t - y'_{t-1} \\\\\n      &= y_t - 2y_{t-1} + y_{t-2}\n\\end{align}\n\nSecond differences have T - 2 observations.\nThey represent the change in the changes — acceleration rather than velocity.\nEconomic and business series almost never require more than two differences.\n\n\n\n\n\n\n\n\nNeeding three or more differences usually signals something else is wrong — an outlier, a structural break, or a transformation that should have been applied first."
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity_pres.html#seasonal-differencing",
     "href": "docs/modules/module_2/02_stationarity/stationarity_pres.html#seasonal-differencing",
-    "title": "Identifying Stationarity",
+    "title": "Stationarity & Differencing",
     "section": "Seasonal Differencing",
     "text": "Seasonal Differencing\nIf the series has seasonality, we take a seasonal difference — the change relative to the same period in the previous cycle:\ny'_t = y_t - y_{t-m}\nwhere m is the seasonal period (m = 12 for monthly data, m = 4 for quarterly).\n\nSeasonal differences represent year-over-year change at each point.\nAlso called lag-m differences.\nAfter seasonal differencing, any remaining non-seasonal trend can be removed with a first difference.\n\n\nh02 &lt;- PBS |&gt;\n  filter(ATC2 == \"H02\") |&gt;\n  summarise(Cost = sum(Cost) / 1e6)\n\n\nh02 |&gt;\n  gg_tsdisplay(difference(log(Cost), 12),\n               plot_type = \"partial\",\n               lag_max = 48)"
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity_pres.html#does-the-order-of-differencing-matter",
     "href": "docs/modules/module_2/02_stationarity/stationarity_pres.html#does-the-order-of-differencing-matter",
-    "title": "Identifying Stationarity",
+    "title": "Stationarity & Differencing",
     "section": "Does the Order of Differencing Matter?",
-    "text": "Does the Order of Differencing Matter?\nWhen a series needs both seasonal and regular differencing, does it matter which one we apply first?\nLet’s introduce the backshift operator B, where B^k y_t = y_{t-k}, to work out the algebra cleanly:\n\nFirst difference: (1 - B)\\,y_t = y_t - y_{t-1}\nSeasonal difference: (1 - B^m)\\,y_t = y_t - y_{t-m}\n\nApplying seasonal first, then regular: (1 - B)(1 - B^m)\\,y_t\nApplying regular first, then seasonal: (1 - B^m)(1 - B)\\,y_t\nSince B follows ordinary algebraic rules, both expand to the same result:\ny_t - y_{t-1} - y_{t-m} + y_{t-m-1}\n\n\n\n\n\n\nThe order does not matter — the result is always identical. In practice, if the seasonal pattern is strong, apply the seasonal difference first: the result may already be stationary without needing the regular difference."
+    "text": "Does the Order of Differencing Matter?\nWhen a series needs both seasonal and regular differencing, does it matter which one we apply first?\nLet’s introduce the backshift operator B, where B^k y_t = y_{t-k}, to work out the algebra cleanly:\n\nFirst difference: (1 - B)\\,y_t = y_t - y_{t-1}\nSeasonal difference: (1 - B^m)\\,y_t = y_t - y_{t-m}\n\nApplying seasonal first, then regular: (1 - B)(1 - B^m)\\,y_t\nApplying regular first, then seasonal: (1 - B^m)(1 - B)\\,y_t\nSince B follows ordinary algebraic rules, both expand to the same result:\ny_t - y_{t-1} - y_{t-m} + y_{t-m-1}\n\n\n\n\n\n\n\nThe order does not matter — the result is always identical. In practice, if the seasonal pattern is strong, apply the seasonal difference first: the result may already be stationary without needing the regular difference."
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity_pres.html#backshift-notation",
     "href": "docs/modules/module_2/02_stationarity/stationarity_pres.html#backshift-notation",
-    "title": "Identifying Stationarity",
+    "title": "Stationarity & Differencing",
     "section": "Backshift Notation",
     "text": "Backshift Notation\nThe backshift operator B is worth understanding properly — you will see it throughout the model equations in the next classes.\nBy_t = y_{t-1}, \\qquad B^2y_t = y_{t-2}, \\qquad B^m y_t = y_{t-m}\n\n\n\nOperation\nBackshift form\n\n\n\n\nFirst difference\n(1 - B)\\,y_t\n\n\nSecond difference\n(1 - B)^2\\,y_t\n\n\nSeasonal difference\n(1 - B^m)\\,y_t\n\n\nBoth together\n(1 - B)(1 - B^m)\\,y_t"
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity_pres.html#applying-this-to-mexretail",
     "href": "docs/modules/module_2/02_stationarity/stationarity_pres.html#applying-this-to-mexretail",
-    "title": "Identifying Stationarity",
+    "title": "Stationarity & Differencing",
     "section": "Applying This to mexretail",
-    "text": "Applying This to mexretail\nmexretail has trend, seasonality, and growing variance. The full differencing pipeline:\n\nLevelsLogBox-CoxSeasonal diffSeasonal + first diff\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nA question to think about before next class\n\n\nWe have been deciding how many differences to apply by looking at plots. But visual inspection is subjective — two analysts could disagree. Is there a more rigorous, objective way to make this call?\nThat is exactly where we pick up next time."
+    "text": "Applying This to mexretail\nmexretail has trend, seasonality, and growing variance. The full differencing pipeline:\n\nLevelsLogBox-CoxSeasonal diffSeasonal + first diff\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nA question to think about before next class\n\n\nWe have been deciding how many differences to apply by looking at plots. But visual inspection is subjective — two analysts could disagree. Is there a more rigorous, objective way to make this call?\nThat is exactly where we pick up next time."
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity_pres.html#kpss-in-r",
     "href": "docs/modules/module_2/02_stationarity/stationarity_pres.html#kpss-in-r",
-    "title": "Identifying Stationarity",
+    "title": "Stationarity & Differencing",
     "section": "KPSS in R",
     "text": "KPSS in R\n\ngoogle_2015 |&gt; features(Close, unitroot_kpss)\n\n\n  \n\n\n\n\ngoogle_2015 |&gt; features(diff_close, unitroot_kpss)"
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity_pres.html#automated-differencing-orders",
     "href": "docs/modules/module_2/02_stationarity/stationarity_pres.html#automated-differencing-orders",
-    "title": "Identifying Stationarity",
+    "title": "Stationarity & Differencing",
     "section": "Automated Differencing Orders",
-    "text": "Automated Differencing Orders\nRather than manually testing each transformation, feasts provides two functions that determine exactly how many differences are needed:\n\nmexretail |&gt; features(box_cox(y, lambda), unitroot_nsdiffs)\n\n\n  \n\n\n\n\nmexretail |&gt;\n  features(difference(box_cox(y, lambda), 12), unitroot_ndiffs)\n\n\n  \n\n\n\n\n\n\n\n\n\nFull stationarity protocol for mexretail\n\n\n\nApply Box-Cox with Guerrero lambda to stabilize variance: box_cox(y, lambda)\nCheck seasonal differencing needed: unitroot_nsdiffs() → 1\nApply seasonal diff, then check regular: unitroot_ndiffs() → 1\nFinal stationary series: difference(box_cox(y, lambda), 12) |&gt; difference(1)\n\nWhen we fit the models in the next class, the algorithm will make these exact same choices automatically. Now you understand why."
+    "text": "Automated Differencing Orders\nRather than manually testing each transformation, feasts provides two functions that determine exactly how many differences are needed:\n\nmexretail |&gt; features(box_cox(y, lambda), unitroot_nsdiffs)\n\n\n  \n\n\n\n\nmexretail |&gt;\n  features(difference(box_cox(y, lambda), 12), unitroot_ndiffs)\n\n\n  \n\n\n\n\n\n\n\n\n\n\nFull stationarity protocol for mexretail\n\n\n\nApply Box-Cox with Guerrero lambda to stabilize variance: box_cox(y, lambda)\nCheck seasonal differencing needed: unitroot_nsdiffs() → 1\nApply seasonal diff, then check regular: unitroot_ndiffs() → 1\nFinal stationary series: difference(box_cox(y, lambda), 12) |&gt; difference(1)\n\nWhen we fit the models in the next class, the algorithm will make these exact same choices automatically. Now you understand why."
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity_pres.html#autocorrelation-function-acf",
     "href": "docs/modules/module_2/02_stationarity/stationarity_pres.html#autocorrelation-function-acf",
-    "title": "Identifying Stationarity",
+    "title": "Stationarity & Differencing",
     "section": "Autocorrelation Function (ACF)",
-    "text": "Autocorrelation Function (ACF)\nThe ACF measures the correlation between a series and its own past values at each lag k:\nr_k = \\text{Corr}(y_t,\\, y_{t-k})\n\n\n\n\n\n\nACF as a stationarity diagnostic\n\n\n\nStationary series: ACF drops to zero quickly.\nNon-stationary series: ACF decays very slowly, with the lag-1 value close to 1.\n\nThis gives us another way to detect non-stationarity — and, as we will see, it also tells us about the structure of the model to fit."
+    "text": "Autocorrelation Function (ACF)\nThe ACF measures the correlation between a series and its own past values at each lag k:\nr_k = \\text{Corr}(y_t,\\, y_{t-k})\n\n\n\n\n\n\n\nACF as a stationarity diagnostic\n\n\n\nStationary series: ACF drops to zero quickly.\nNon-stationary series: ACF decays very slowly, with the lag-1 value close to 1.\n\nThis gives us another way to detect non-stationarity — and, as we will see, it also tells us about the structure of the model to fit."
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity_pres.html#acf-shapes-for-different-patterns",
     "href": "docs/modules/module_2/02_stationarity/stationarity_pres.html#acf-shapes-for-different-patterns",
-    "title": "Identifying Stationarity",
+    "title": "Stationarity & Differencing",
     "section": "ACF Shapes for Different Patterns",
     "text": "ACF Shapes for Different Patterns\n\nTrend onlySeasonality onlyTrend + seasonalityStationarymexretail after differencing"
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity_pres.html#partial-autocorrelation-function-pacf",
     "href": "docs/modules/module_2/02_stationarity/stationarity_pres.html#partial-autocorrelation-function-pacf",
-    "title": "Identifying Stationarity",
+    "title": "Stationarity & Differencing",
     "section": "Partial Autocorrelation Function (PACF)",
-    "text": "Partial Autocorrelation Function (PACF)\nThe ACF at lag k captures both the direct relationship between y_t and y_{t-k} and the indirect relationship mediated through intermediate lags. The PACF isolates only the direct part.\n\n\n\n\n\n\nThe regression analogy\n\n\n\nACF at lag k: simple correlation between y_t and y_{t-k}.\nPACF at lag k: the coefficient on y_{t-k} in a regression of y_t on y_{t-1}, y_{t-2}, \\ldots, y_{t-k}.\n\nThe PACF asks: once I already know the effect of all closer lags, does lag k add any new information?"
+    "text": "Partial Autocorrelation Function (PACF)\nThe ACF at lag k captures both the direct relationship between y_t and y_{t-k} and the indirect relationship mediated through intermediate lags. The PACF isolates only the direct part.\n\n\n\n\n\n\n\nThe regression analogy\n\n\n\nACF at lag k: simple correlation between y_t and y_{t-k}.\nPACF at lag k: the coefficient on y_{t-k} in a regression of y_t on y_{t-1}, y_{t-2}, \\ldots, y_{t-k}.\n\nThe PACF asks: once I already know the effect of all closer lags, does lag k add any new information?"
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity_pres.html#acf-and-pacf-together",
     "href": "docs/modules/module_2/02_stationarity/stationarity_pres.html#acf-and-pacf-together",
-    "title": "Identifying Stationarity",
+    "title": "Stationarity & Differencing",
     "section": "ACF and PACF Together",
     "text": "ACF and PACF Together\ngg_tsdisplay() with plot_type = \"partial\" shows the time series, ACF, and PACF together — this is the standard diagnostic display for the rest of the module.\n\nmexretail |&gt;\n  gg_tsdisplay(\n    difference(box_cox(y, lambda), 12) |&gt; difference(1),\n    plot_type = \"partial\",\n    lag_max = 48\n  )"
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity_pres.html#autoregressive-models-arp",
     "href": "docs/modules/module_2/02_stationarity/stationarity_pres.html#autoregressive-models-arp",
-    "title": "Identifying Stationarity",
+    "title": "Stationarity & Differencing",
     "section": "Autoregressive Models — AR(p)",
-    "text": "Autoregressive Models — AR(p)\nAn autoregressive model of order p forecasts y_t as a weighted sum of its own past values:\ny_t = c + \\phi_1 y_{t-1} + \\phi_2 y_{t-2} + \\cdots + \\phi_p y_{t-p} + \\varepsilon_t\n\nStructurally identical to multiple linear regression — except the predictors are lagged values of the series itself.\np is the number of past values used.\n\\varepsilon_t is white noise.\n\n\n\n\n\n\n\nSignature in ACF/PACF\n\n\n\nPACF cuts off sharply after lag p — this is how you read the order.\nACF decays gradually (exponentially or with damped oscillations)."
+    "text": "Autoregressive Models — AR(p)\nAn autoregressive model of order p forecasts y_t as a weighted sum of its own past values:\ny_t = c + \\phi_1 y_{t-1} + \\phi_2 y_{t-2} + \\cdots + \\phi_p y_{t-p} + \\varepsilon_t\n\nStructurally identical to multiple linear regression — except the predictors are lagged values of the series itself.\np is the number of past values used.\n\\varepsilon_t is white noise.\n\n\n\n\n\n\n\n\nSignature in ACF/PACF\n\n\n\nPACF cuts off sharply after lag p — this is how you read the order.\nACF decays gradually (exponentially or with damped oscillations)."
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity_pres.html#moving-average-models-maq",
     "href": "docs/modules/module_2/02_stationarity/stationarity_pres.html#moving-average-models-maq",
-    "title": "Identifying Stationarity",
+    "title": "Stationarity & Differencing",
     "section": "Moving Average Models — MA(q)",
-    "text": "Moving Average Models — MA(q)\nA moving average model of order q forecasts y_t as a weighted sum of past forecast errors:\ny_t = c + \\varepsilon_t + \\theta_1 \\varepsilon_{t-1} + \\theta_2 \\varepsilon_{t-2} + \\cdots + \\theta_q \\varepsilon_{t-q}\n\nThe predictors are past errors, not past values of the series.\nq is the number of past errors used.\n\\varepsilon_t is white noise.\n\n\n\n\n\n\n\nMA models ≠ moving average smoothing\n\n\nDo not confuse MA models with the moving average smoothing used in decomposition. Smoothing estimates the trend-cycle from past observed values. MA models use past errors to describe the correlation structure of the series.\n\n\n\n\n\n\n\n\n\nSignature in ACF/PACF\n\n\n\nACF cuts off sharply after lag q — the mirror image of the AR signature.\nPACF decays gradually.\n\n\n\n\n\n\n\n\n\n\nYou cannot identify a model from the time plot alone\n\n\nNow that you have seen AR and MA models: their time plots can look very similar to each other. The ACF and PACF are what distinguish them. This is fundamentally different from ETS, where the form of trend and seasonality in the time plot directly guides model selection — one of the key differences we will revisit when comparing these two families."
+    "text": "Moving Average Models — MA(q)\nA moving average model of order q forecasts y_t as a weighted sum of past forecast errors:\ny_t = c + \\varepsilon_t + \\theta_1 \\varepsilon_{t-1} + \\theta_2 \\varepsilon_{t-2} + \\cdots + \\theta_q \\varepsilon_{t-q}\n\nThe predictors are past errors, not past values of the series.\nq is the number of past errors used.\n\\varepsilon_t is white noise.\n\n\n\n\n\n\n\n\nMA models ≠ moving average smoothing\n\n\nDo not confuse MA models with the moving average smoothing used in decomposition. Smoothing estimates the trend-cycle from past observed values. MA models use past errors to describe the correlation structure of the series.\n\n\n\n\n\n\n\n\n\n\n\nSignature in ACF/PACF\n\n\n\nACF cuts off sharply after lag q — the mirror image of the AR signature.\nPACF decays gradually.\n\n\n\n\n\n\n\n\n\n\n\n\nYou cannot identify a model from the time plot alone\n\n\nNow that you have seen AR and MA models: their time plots can look very similar to each other. The ACF and PACF are what distinguish them. This is fundamentally different from ETS, where the form of trend and seasonality in the time plot directly guides model selection — one of the key differences we will revisit when comparing these two families."
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity_pres.html#what-comes-next",
     "href": "docs/modules/module_2/02_stationarity/stationarity_pres.html#what-comes-next",
-    "title": "Identifying Stationarity",
+    "title": "Stationarity & Differencing",
     "section": "What Comes Next",
-    "text": "What Comes Next\nIn practice, you will rarely use a pure AR or pure MA model. Real series typically need both. And most real series also need differencing before any of this applies.\nCombining differencing, AR terms, and MA terms into a single unified model — and applying it systematically to mexretail — is the subject of the next class.\n\n\n\n\n\n\nWhere we are in the bigger picture\n\n\n\nStabilize variance → Box-Cox / log transformation ✓\nStabilize the mean → differencing ✓\n\nDetect remaining correlation structure → ACF and PACF ✓\nUnderstand the building blocks → AR and MA terms ✓\n\nAll the pieces are in place. Time to put them together."
+    "text": "What Comes Next\nIn practice, you will rarely use a pure AR or pure MA model. Real series typically need both. And most real series also need differencing before any of this applies.\nCombining differencing, AR terms, and MA terms into a single unified model — and applying it systematically to mexretail — is the subject of the next class.\n\n\n\n\n\n\n\nWhere we are in the bigger picture\n\n\n\nStabilize variance → Box-Cox / log transformation ✓\nStabilize the mean → differencing ✓\n\nDetect remaining correlation structure → ACF and PACF ✓\nUnderstand the building blocks → AR and MA terms ✓\n\nAll the pieces are in place. Time to put them together."
   },
   {
     "objectID": "docs/more/stats/expectation_variance_cov.html",
