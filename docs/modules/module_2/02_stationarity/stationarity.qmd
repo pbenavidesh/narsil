@@ -1,5 +1,5 @@
 ---
-title: "Identifying Stationarity"
+title: "Stationarity & Differencing"
 format:
   html: default
   revealjs:
@@ -61,7 +61,7 @@ google_2015 <- google_stock |> filter(year(Date) == 2015)
 
 :::{.content-hidden unless-format="revealjs"}
 
-# What Does "Stationary" Mean? {background-image="gas_tanks.jpg"}
+# What Does "Stationary" Mean? {background-color="black" background-image="gas_tanks.jpg"}
 
 ##
 
@@ -71,7 +71,7 @@ Have you ever heard the word **stationary** before?
 
 :::{.content-visible unless-format="revealjs"}
 
-![A stationary tank — not going anywhere.](gas_tanks.jpg){width=50%}
+![Gas cylinders & stationary tanks — what's the difference?](gas_tanks.jpg){width=50%}
 
 :::
 
@@ -90,15 +90,9 @@ If a time series is "not moving", what statistical properties would you expect i
 
 A time series is **stationary** if its statistical properties — primarily its **mean** and **variance** — do not change over time.
 
-:::{.incremental}
-
 - The series fluctuates around a **constant mean**.
 - The spread of those fluctuations stays **roughly constant** over time.
 - There are no systematic patterns that change the level or scale of the series.
-
-:::
-
-
 
 
 # Are These Series Stationary?
@@ -193,7 +187,7 @@ p_lynx
 
 :::{.content-visible unless-format="revealjs"}
 
-:::{.callout-tip collapse="false"}
+:::{.callout-tip collapse="true"}
 ## Answer
 
 - **(a)** and **(b)**: clear trends (upward and downward) → **not stationary** ✗
