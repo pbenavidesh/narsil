@@ -75,15 +75,15 @@ Have you ever heard the word **stationary** before?
 
 :::
 
-
-
 - In everyday language, **stationary** means *not moving* — fixed in place.
 - For a time series, what would that mean?
 
+:::{.fragment}
 :::{.callout-note appearance="simple"}
 ## Think about it
 
 If a time series is "not moving", what statistical properties would you expect it to have?
+:::
 :::
 
 ## The Formal Definition
@@ -182,9 +182,6 @@ p_lynx
 
 :::
 
-
-
-
 :::{.content-visible unless-format="revealjs"}
 
 :::{.callout-tip collapse="true"}
@@ -204,32 +201,25 @@ p_lynx
 
 A time series is **non-stationary** if it exhibits any of the following:
 
-:::{.incremental}
-
 - **Trend** — a long-term increase or decrease in the mean.
 - **Seasonality** — a repeating pattern that causes the mean to shift systematically.
 - **Changing variance** — the spread of fluctuations grows or shrinks over time.
 
-:::
-
-
-
 
 # Why Does This Matter?
-
-
-
 
 There is an important family of forecasting models that work by describing the **correlation structure** between a series and its own past values.
 
 For those correlations to be stable and meaningful, the series needs to have a **constant mean and variance** — it needs to be stationary.
 
+:::{.fragment}
 :::{.callout-note appearance="simple"}
 ## The key question
 
 If these models require stationarity, does that mean they can *only* work with series that have no trend, no seasonality, and no changing variance?
 
 Or is there something we can do to a non-stationary series to make it usable?
+:::
 :::
 
 ## We Already Know Part of the Answer
@@ -239,8 +229,6 @@ Recall from Module 1: we can **stabilize the variance** using mathematical trans
 $$w_t = \log(y_t) \qquad \text{or more generally} \qquad w_t = \frac{y_t^\lambda - 1}{\lambda}$$
 
 But what about the **mean**? Transformations alone don't remove a trend or seasonal pattern.
-
-
 
 
 # Differencing
@@ -291,14 +279,18 @@ p_returns
 
 :::
 
+:::{.fragment}
 :::{.callout-note appearance="simple"}
 The daily return is simply today's price minus yesterday's price — the **change** between consecutive observations. This operation is called **differencing**, and it is how we stabilize the mean of a non-stationary series.
 :::
+:::
 
+:::{.fragment}
 :::{.callout-tip collapse="true"}
 ## Google stock and random walks
 
 Google's stock price follows a **random walk**. Random walks are non-stationary, but their first differences are stationary — something we will revisit when we look at model equations.
+:::
 :::
 
 ## First Differences
@@ -307,13 +299,9 @@ The **first difference** of a series $y_t$ is:
 
 $$y'_t = y_t - y_{t-1}$$
 
-:::{.incremental}
-
 - The differenced series has $T - 1$ observations.
 - First differences represent the *change* from one period to the next.
 - If the original series has a linear trend, the differences will fluctuate around a constant mean.
-
-:::
 
 ```{r}
 #| label: google-tsdisplay
@@ -333,16 +321,14 @@ y''_t &= y'_t - y'_{t-1} \\
       &= y_t - 2y_{t-1} + y_{t-2}
 \end{align}$$
 
-:::{.incremental}
-
 - Second differences have $T - 2$ observations.
 - They represent the *change in the changes* — acceleration rather than velocity.
 - **Economic and business series almost never require more than two differences.**
 
-:::
-
+:::{.fragment}
 :::{.callout-warning appearance="simple"}
 Needing three or more differences usually signals something else is wrong — an outlier, a structural break, or a transformation that should have been applied first.
+:::
 :::
 
 ## Seasonal Differencing
@@ -353,13 +339,9 @@ $$y'_t = y_t - y_{t-m}$$
 
 where $m$ is the seasonal period ($m = 12$ for monthly data, $m = 4$ for quarterly).
 
-:::{.incremental}
-
 - Seasonal differences represent *year-over-year change* at each point.
 - Also called **lag-$m$ differences**.
 - After seasonal differencing, any remaining non-seasonal trend can be removed with a first difference.
-
-:::
 
 ```{r}
 #| label: pbs-setup
@@ -400,8 +382,10 @@ Since $B$ follows ordinary algebraic rules, both expand to the same result:
 
 $$y_t - y_{t-1} - y_{t-m} + y_{t-m-1}$$
 
+:::{.fragment}
 :::{.callout-tip appearance="simple"}
 The order **does not matter** — the result is always identical. In practice, if the seasonal pattern is strong, apply the seasonal difference first: the result may already be stationary without needing the regular difference.
+:::
 :::
 
 ## Backshift Notation
@@ -416,9 +400,6 @@ $$By_t = y_{t-1}, \qquad B^2y_t = y_{t-2}, \qquad B^m y_t = y_{t-m}$$
 | Second difference | $(1 - B)^2\,y_t$ |
 | Seasonal difference | $(1 - B^m)\,y_t$ |
 | Both together | $(1 - B)(1 - B^m)\,y_t$ |
-
-
-
 
 ## Applying This to `mexretail`
 
@@ -504,15 +485,14 @@ ggplotly(p, dynamicTicks = TRUE)
 
 :::
 
-
-
-
+:::{.fragment}
 :::{.callout-note appearance="simple"}
 ## A question to think about before next class
 
 We have been deciding how many differences to apply by looking at plots. But visual inspection is subjective — two analysts could disagree. Is there a more rigorous, objective way to make this call?
 
 That is exactly where we pick up next time.
+:::
 :::
 
 # Unit Root Tests
@@ -521,6 +501,7 @@ Visual inspection is useful but subjective. **Unit root tests** formalize the qu
 
 The test we will use is the **KPSS test** (Kwiatkowski-Phillips-Schmidt-Shin).
 
+:::{.fragment}
 :::{.callout-important appearance="simple"}
 ## Read the hypotheses carefully — they are the opposite of what you might expect
 
@@ -531,6 +512,7 @@ $$H_1: \text{the series is NOT stationary}$$
 - **Small p-value** ($< 0.05$): reject $H_0$ → the series needs differencing ✗
 
 You *want* a large p-value here.
+:::
 :::
 
 ## KPSS in R
@@ -548,9 +530,6 @@ google_2015 |> features(Close, unitroot_kpss)
 
 google_2015 |> features(diff_close, unitroot_kpss)
 ```
-
-
-
 
 ## Automated Differencing Orders
 
@@ -571,9 +550,7 @@ mexretail |>
   features(difference(box_cox(y, lambda), 12), unitroot_ndiffs)
 ```
 
-
-
-
+:::{.fragment}
 :::{.callout-tip collapse="true"}
 ## Full stationarity protocol for `mexretail`
 
@@ -583,6 +560,7 @@ mexretail |>
 4. Final stationary series: `difference(box_cox(y, lambda), 12) |> difference(1)`
 
 When we fit the models in the next class, the algorithm will make these exact same choices automatically. Now you understand *why*.
+:::
 :::
 
 # ACF and PACF
@@ -595,6 +573,7 @@ The **ACF** measures the correlation between a series and its own past values at
 
 $$r_k = \text{Corr}(y_t,\, y_{t-k})$$
 
+:::{.fragment}
 :::{.callout-note appearance="simple"}
 ## ACF as a stationarity diagnostic
 
@@ -602,6 +581,7 @@ $$r_k = \text{Corr}(y_t,\, y_{t-k})$$
 - **Non-stationary** series: ACF decays **very slowly**, with the lag-1 value close to 1.
 
 This gives us another way to detect non-stationarity — and, as we will see, it also tells us about the structure of the model to fit.
+:::
 :::
 
 ## ACF Shapes for Different Patterns
@@ -678,6 +658,7 @@ mexretail |>
 
 The ACF at lag $k$ captures both the *direct* relationship between $y_t$ and $y_{t-k}$ and the *indirect* relationship mediated through intermediate lags. The **PACF** isolates only the direct part.
 
+:::{.fragment}
 :::{.callout-tip appearance="simple"}
 ## The regression analogy
 
@@ -686,9 +667,7 @@ The ACF at lag $k$ captures both the *direct* relationship between $y_t$ and $y_
 
 The PACF asks: *once I already know the effect of all closer lags, does lag $k$ add any new information?*
 :::
-
-
-
+:::
 
 ## ACF and PACF Together
 
@@ -707,9 +686,6 @@ mexretail |>
   )
 ```
 
-
-
-
 # AR and MA Models
 
 :::{.callout-important appearance="simple"}
@@ -726,22 +702,17 @@ An **autoregressive model** of order $p$ forecasts $y_t$ as a weighted sum of it
 
 $$y_t = c + \phi_1 y_{t-1} + \phi_2 y_{t-2} + \cdots + \phi_p y_{t-p} + \varepsilon_t$$
 
-:::{.incremental}
-
 - Structurally identical to multiple linear regression — except the predictors are *lagged values of the series itself*.
 - $p$ is the number of past values used.
 - $\varepsilon_t$ is white noise.
 
-:::
-
-
-
-
+:::{.fragment}
 :::{.callout-note appearance="simple"}
 ## Signature in ACF/PACF
 
 - **PACF** cuts off sharply after lag $p$ — this is how you read the order.
 - **ACF** decays gradually (exponentially or with damped oscillations).
+:::
 :::
 
 ```{r}
@@ -770,31 +741,33 @@ A **moving average model** of order $q$ forecasts $y_t$ as a weighted sum of **p
 
 $$y_t = c + \varepsilon_t + \theta_1 \varepsilon_{t-1} + \theta_2 \varepsilon_{t-2} + \cdots + \theta_q \varepsilon_{t-q}$$
 
-:::{.incremental}
-
 - The predictors are *past errors*, not past values of the series.
 - $q$ is the number of past errors used.
 - $\varepsilon_t$ is white noise.
 
-:::
-
+:::{.fragment}
 :::{.callout-warning appearance="simple"}
 ## MA models ≠ moving average smoothing
 
 Do not confuse MA *models* with the moving average *smoothing* used in decomposition. Smoothing estimates the trend-cycle from past observed values. MA models use past *errors* to describe the correlation structure of the series.
 :::
+:::
 
+:::{.fragment}
 :::{.callout-note appearance="simple"}
 ## Signature in ACF/PACF
 
 - **ACF** cuts off sharply after lag $q$ — the mirror image of the AR signature.
 - **PACF** decays gradually.
 :::
+:::
 
+:::{.fragment}
 :::{.callout-important appearance="simple"}
 ## You cannot identify a model from the time plot alone
 
 Now that you have seen AR and MA models: their time plots can look very similar to each other. The ACF and PACF are what distinguish them. This is fundamentally different from ETS, where the form of trend and seasonality in the time plot directly guides model selection — one of the key differences we will revisit when comparing these two families.
+:::
 :::
 
 ## What Comes Next
@@ -803,6 +776,7 @@ In practice, you will rarely use a pure AR or pure MA model. Real series typical
 
 Combining differencing, AR terms, and MA terms into a single unified model — and applying it systematically to `mexretail` — is the subject of the next class.
 
+:::{.fragment}
 :::{.callout-note appearance="simple"}
 ## Where we are in the bigger picture
 
@@ -812,4 +786,5 @@ Combining differencing, AR terms, and MA terms into a single unified model — a
 - Understand the building blocks → AR and MA terms ✓
 
 All the pieces are in place. Time to put them together.
+:::
 :::
