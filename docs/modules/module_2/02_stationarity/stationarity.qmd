@@ -310,7 +310,8 @@ p_returns
 
 
 :::{.fragment}
-:::{.callout-note appearance="simple"}
+:::{.callout-note }
+## Differencing
 The daily return is simply today's price minus yesterday's price — the **change** between consecutive observations. This operation is called **differencing**, and it is how we stabilize the mean of a non-stationary series.
 :::
 :::
@@ -347,10 +348,10 @@ google_2015 |>
 
 Sometimes the first-differenced series is still non-stationary. We can **difference again**:
 
-$$\begin{align}
+$$\begin{align*}
 y''_t &= y'_t - y'_{t-1} \\
       &= y_t - 2y_{t-1} + y_{t-2}
-\end{align}$$
+\end{align*}$$
 
 - Second differences have $T - 2$ observations.
 - They represent the *change in the changes* — acceleration rather than velocity.
