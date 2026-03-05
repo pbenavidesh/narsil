@@ -57,26 +57,34 @@ google_stock <- gafa_stock |>
 google_2015 <- google_stock |> filter(year(Date) == 2015)
 ```
 
+
 # What Does "Stationary" Mean? 
 
-:::{.content-hidden unless-format="revealjs"}
-
-# What Does "Stationary" Mean? {background-color="black" background-image="gas_tanks.jpg"}
-
+::: {.content-hidden unless-format="revealjs"}
 ##
-
 :::
 
 Have you ever heard the word **stationary** before?
 
-:::{.content-visible unless-format="revealjs"}
+::: {.columns}
+
+::: {.column width="50%"}
+
+:::{.fragment}
 
 ![Gas cylinders & stationary tanks — what's the difference?](gas_tanks.jpg){width=50%}
 
 :::
+:::
 
+::: {.column width="50%"}
+::: {.fragment}
 - In everyday language, **stationary** means *not moving* — fixed in place.
 - For a time series, what would that mean?
+:::
+:::
+
+:::
 
 :::{.fragment}
 :::{.callout-note appearance="simple"}
@@ -205,35 +213,53 @@ A time series is **non-stationary** if it exhibits any of the following:
 - **Seasonality** — a repeating pattern that causes the mean to shift systematically.
 - **Changing variance** — the spread of fluctuations grows or shrinks over time.
 
+::: {.fragment}
+::: {.callout-note}
+## What can we expect from a Stationary Series then?
+A stationary serie will not have any systematic patterns that change the level or scale of the series over time (**no trend**, **no seasonality**, and **constant variance**).  
+:::
+:::
 
-# Why Does This Matter?
+# Why Does Stationarity Matter?
 
-There is an important family of forecasting models that work by describing the **correlation structure** between a series and its own past values.
+- There is an important family of forecasting models that work by describing the **correlation structure** between a series and its own past values.
 
-For those correlations to be stable and meaningful, the series needs to have a **constant mean and variance** — it needs to be stationary.
+- For those correlations to be stable and meaningful, the series needs to be stationary.
 
 :::{.fragment}
 :::{.callout-note appearance="simple"}
 ## The key question
 
-If these models require stationarity, does that mean they can *only* work with series that have no trend, no seasonality, and no changing variance?
+- If these models require stationarity, does that mean they can *only* work with series that have no trend, no seasonality, and no changing variance?
 
-Or is there something we can do to a non-stationary series to make it usable?
+- Or is there something we can do to a non-stationary series to make it usable?
 :::
 :::
 
-## We Already Know Part of the Answer
+## What to do with Non-Stationary Series?
 
-Recall from Module 1: we can **stabilize the variance** using mathematical transformations — logarithms, Box-Cox, and so on.
+::: {.fragment}
+### If we find heteroskedasticity (changing variance)
 
-$$w_t = \log(y_t) \qquad \text{or more generally} \qquad w_t = \frac{y_t^\lambda - 1}{\lambda}$$
+Recall from [Module 1](../../module_1/02_ts_dcmp/ts_dcmp.qmd#mathematical-transformations): we can **stabilize the variance** using mathematical transformations — logarithms, Box-Cox, and so on.
+:::
 
-But what about the **mean**? Transformations alone don't remove a trend or seasonal pattern.
 
+::: {.fragment}
+### But what about the **mean**? 
 
+Transformations alone don't remove a trend or seasonal pattern.
+:::
+
+::: {.content-visible unless-format="revealjs"}
 # Differencing
+:::
 
-Before naming the technique, look at these two series. The first is non-stationary. The second is stationary. The second was produced **directly from the first** — can you figure out how?
+::: {.content-hidden unless-format="revealjs"}
+##
+:::
+
+Look at these two series. The first is non-stationary. The second is stationary. The second was produced **directly from the first** — can you figure out how?
 
 :::{.content-visible unless-format="revealjs"}
 
@@ -264,16 +290,10 @@ ggplotly(
 ```{r}
 #| label: google-reveal-pres
 #| echo: false
+#| layout-ncol: 2
+#| 
 
 p_google
-```
-
-##
-
-```{r}
-#| label: google-returns-pres
-#| echo: false
-
 p_returns
 ```
 
@@ -287,9 +307,10 @@ The daily return is simply today's price minus yesterday's price — the **chang
 
 :::{.fragment}
 :::{.callout-tip collapse="true"}
-## Google stock and random walks
+## Random walks & stationarity
 
-Google's stock price follows a **random walk**. Random walks are non-stationary, but their first differences are stationary — something we will revisit when we look at model equations.
+- Google's stock price follows a **random walk**. 
+- By definition, random walks are non-stationary, but their first differences are stationary.
 :::
 :::
 
