@@ -265,7 +265,7 @@ Transformations alone don't remove a trend or seasonal pattern.
 ##
 :::
 
-Look at these two series. The first is non-stationary. The second is stationary. The second was produced **directly from the first** — can you figure out how?
+Look at these two series:
 
 :::{.content-visible unless-format="revealjs"}
 
@@ -273,6 +273,7 @@ Look at these two series. The first is non-stationary. The second is stationary.
 #| label: google-reveal-plotly
 #| echo: false
 #| message: false
+#| include: false
 
 ggplotly(
   p_google + labs(title = "Google stock price"),
@@ -292,18 +293,21 @@ ggplotly(
 :::{.content-hidden unless-format="revealjs"}
 
 ##
-
+:::
 ```{r}
 #| label: google-reveal-pres
 #| echo: false
 #| layout-ncol: 2
-#| 
+#| fig-cap: "The second series was produced directly from the first — can you figure out how?"
+#| fig-subcap:
+#|   - "a non-stationary series"
+#|   - "a stationary series"
 
 p_google
 p_returns
 ```
 
-:::
+
 
 :::{.fragment}
 :::{.callout-note appearance="simple"}
