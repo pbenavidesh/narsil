@@ -594,7 +594,7 @@
     "href": "docs/modules/module_2/02_stationarity/stationarity.html#first-differences",
     "title": "Stationarity & Differencing",
     "section": "2.1 First Differences",
-    "text": "2.1 First Differences\nThe first difference of a series y_t is:\ny'_t = y_t - y_{t-1}\n\nThe differenced series has T - 1 observations.\nFirst differences represent the change from one period to the next.\nIf the original series has a linear trend, the differences will fluctuate around a constant mean.\n\n\n\nCode\ngoogle_2015 |&gt;\n1  gg_tsdisplay(difference(Close), plot_type = \"partial\")\n\n\n\n1\n\ndifference(Close) computes the first difference of the Close variable.",
+    "text": "2.1 First Differences\nThe first difference of a series y_t is:\ny'_t = y_t - y_{t-1}\n\nThe differenced series has T - 1 observations.\nFirst differences represent the change from one period to the next.\nIf the original series has a linear trend, the differences will fluctuate around a constant mean.\n\n\n\n\nCode\ngoogle_2015 |&gt;\n1  autoplot(difference(Close))\n\n\n\n1\n\ndifference(Close) computes the first difference of the Close variable.",
     "crumbs": [
       "2. Adding ETS and ARIMA filters",
       "2.2 Stationarity & Differencing"
@@ -605,7 +605,7 @@
     "href": "docs/modules/module_2/02_stationarity/stationarity.html#second-differences",
     "title": "Stationarity & Differencing",
     "section": "2.2 Second Differences",
-    "text": "2.2 Second Differences\nSometimes the first-differenced series is still non-stationary. We can difference again:\n\\begin{align*}\ny''_t &= y'_t - y'_{t-1} \\\\\n      &= y_t - 2y_{t-1} + y_{t-2}\n\\end{align*}\n\nSecond differences have T - 2 observations.\nThey represent the change in the changes — acceleration rather than velocity.\nEconomic and business series almost never require more than two differences.\n\n\n\n\n\n\n\n\nNeeding three or more differences usually signals something else is wrong — an outlier, a structural break, or a transformation that should have been applied first.\n\n\n\n\n\n\nCode\ngoogle_2015 |&gt;\n1  gg_tsdisplay(difference(Close, differences = 2), plot_type = \"partial\")\n\n\n\n1\n\nThe argument differences = 2 tells difference() to apply the differencing operation twice.",
+    "text": "2.2 Second Differences\nSometimes the first-differenced series is still non-stationary. We can difference again:\n\\begin{align*}\ny''_t &= y'_t - y'_{t-1} \\\\\n      &= y_t - 2y_{t-1} + y_{t-2}\n\\end{align*}\n\nSecond differences have T - 2 observations.\nThey represent the change in the changes — acceleration rather than velocity.\nEconomic and business series almost never require more than two differences.\n\n\n\n\n\n\n\n\nNeeding three or more differences usually signals something else is wrong — an outlier, a structural break, or a transformation that should have been applied first.\n\n\n\n\n\nCode\ngoogle_2015 |&gt;\n1  autoplot(difference(Close, differences = 2))\n\n\n\n1\n\nThe argument differences = 2 tells difference() to apply the differencing operation twice.",
     "crumbs": [
       "2. Adding ETS and ARIMA filters",
       "2.2 Stationarity & Differencing"
@@ -616,7 +616,7 @@
     "href": "docs/modules/module_2/02_stationarity/stationarity.html#seasonal-differencing",
     "title": "Stationarity & Differencing",
     "section": "2.3 Seasonal Differencing",
-    "text": "2.3 Seasonal Differencing\nIf the series has seasonality, we take a seasonal difference — the change relative to the same period in the previous cycle:\ny'_t = y_t - y_{t-m}\nwhere m is the seasonal period (m = 12 for monthly data, m = 4 for quarterly).\n\nSeasonal differences represent year-over-year change at each point.\nAlso called lag-m differences.\nAfter seasonal differencing, any remaining non-seasonal trend can be removed with a first difference.\n\n\n\nCode\nh02 |&gt;\n1  gg_tsdisplay(difference(log(Cost), lag = 12),\n               plot_type = \"partial\",\n               lag_max = 48)\n\n\n\n1\n\nThe argument lag = 12 tells difference() to compute the seasonal difference with a lag of 12 periods (i.e. y_t - y_{t-12}). If no lag is specified, it defaults to 1 (the first difference).",
+    "text": "2.3 Seasonal Differencing\nIf the series has seasonality, we take a seasonal difference — the change relative to the same period in the previous cycle:\ny'_t = y_t - y_{t-m}\nwhere m is the seasonal period (m = 12 for monthly data, m = 4 for quarterly).\n\nSeasonal differences represent year-over-year change at each point.\nAlso called lag-m differences.\nAfter seasonal differencing, any remaining non-seasonal trend can be removed with a first difference.\n\n\n\n\n\n\n\n\n\n\n\n\n\nCode\nh02 |&gt;\n1  autoplot(difference(log(Cost), lag = 12))\n\n\n\n1\n\nThe argument lag = 12 tells difference() to compute the seasonal difference with a lag of 12 periods (i.e. y_t - y_{t-12}). If no lag is specified, it defaults to 1 (the first difference).",
     "crumbs": [
       "2. Adding ETS and ARIMA filters",
       "2.2 Stationarity & Differencing"
@@ -627,18 +627,7 @@
     "href": "docs/modules/module_2/02_stationarity/stationarity.html#does-the-order-of-differencing-matter",
     "title": "Stationarity & Differencing",
     "section": "2.4 Does the Order of Differencing Matter?",
-    "text": "2.4 Does the Order of Differencing Matter?\nWhen a series needs both seasonal and regular differencing, does it matter which one we apply first?\nApplying seasonal first, then regular:\n\n\\begin{align*}\n(y_t - y_{t-m})' &= (y_t - y_{t-m}) - (y_{t-1} - y_{t-m-1}) \\\\\n                 &= y_t - y_{t-1} - y_{t-m} + y_{t-m-1}\n\\end{align*}\n\nApplying regular first, then seasonal:\n\n\\begin{align*}\n(y_t - y_{t-1})' &= (y_t - y_{t-1}) - (y_{t-m} - y_{t-m-1}) \\\\\n                 &= y_t - y_{t-1} - y_{t-m} + y_{t-m-1}\n\\end{align*}\n\nBoth routes lead to the same result.\n\n\n\n\n\n\n\nThe order does not matter — the result is always identical. In practice, if the seasonal pattern is strong, apply the seasonal difference first: the result may already be stationary without needing the regular difference.",
-    "crumbs": [
-      "2. Adding ETS and ARIMA filters",
-      "2.2 Stationarity & Differencing"
-    ]
-  },
-  {
-    "objectID": "docs/modules/module_2/02_stationarity/stationarity.html#does-the-order-of-differencing-matter-1",
-    "href": "docs/modules/module_2/02_stationarity/stationarity.html#does-the-order-of-differencing-matter-1",
-    "title": "Stationarity & Differencing",
-    "section": "2.5 Does the Order of Differencing Matter?",
-    "text": "2.5 Does the Order of Differencing Matter?\nWhen a series needs both seasonal and regular differencing, does it matter which one we apply first?\nLet’s introduce the backshift operator B, where B^k y_t = y_{t-k}, to work out the algebra cleanly:\n\nFirst difference: (1 - B)\\,y_t = y_t - y_{t-1}\nSeasonal difference: (1 - B^m)\\,y_t = y_t - y_{t-m}\n\nApplying seasonal first, then regular: (1 - B)(1 - B^m)\\,y_t\nApplying regular first, then seasonal: (1 - B^m)(1 - B)\\,y_t\nSince B follows ordinary algebraic rules, both expand to the same result:\ny_t - y_{t-1} - y_{t-m} + y_{t-m-1}\n\n\n\n\n\n\n\nThe order does not matter — the result is always identical. In practice, if the seasonal pattern is strong, apply the seasonal difference first: the result may already be stationary without needing the regular difference.",
+    "text": "2.4 Does the Order of Differencing Matter?\nWhen a series needs both seasonal and regular differencing, does it matter which one we apply first?\nApplying seasonal first, then regular:\n\n\\begin{align*}\n(y_t - y_{t-m})' &= (y_t - y_{t-m}) - (y_{t-1} - y_{t-m-1}) \\\\\n                 &= y_t - y_{t-1} - y_{t-m} + y_{t-m-1}\n\\end{align*}\n\n\nApplying regular first, then seasonal:\n\n\\begin{align*}\n(y_t - y_{t-1})' &= (y_t - y_{t-1}) - (y_{t-m} - y_{t-m-1}) \\\\\n                 &= y_t - y_{t-1} - y_{t-m} + y_{t-m-1}\n\\end{align*}\n\nBoth routes lead to the same result.\n\n\n\n\n\n\nThe order does not matter — the result is always identical. In practice, if the seasonal pattern is strong, apply the seasonal difference first: the result may already be stationary without needing the regular difference.",
     "crumbs": [
       "2. Adding ETS and ARIMA filters",
       "2.2 Stationarity & Differencing"
@@ -648,8 +637,8 @@
     "objectID": "docs/modules/module_2/02_stationarity/stationarity.html#backshift-notation",
     "href": "docs/modules/module_2/02_stationarity/stationarity.html#backshift-notation",
     "title": "Stationarity & Differencing",
-    "section": "2.6 Backshift Notation",
-    "text": "2.6 Backshift Notation\nThe backshift operator B provides a compact way to write differencing operations — and, as we will see next class, to write out full model equations cleanly.\nIt is defined simply as:\nBy_t = y_{t-1}\nThat is, applying B to a series shifts it back one period.\n\n2.6.1 First Differences\nRecall the first difference:\ny'_t = y_t - y_{t-1}\nWe can rewrite y_{t-1} = By_t, so:\ny'_t = y_t - By_t = (1 - B)y_t\n\n\n2.6.2 Second Differences\nApplying the same idea twice:\ny''_t = y'_t - y'_{t-1} = (1-B)y'_t = (1-B)(1-B)y_t = (1-B)^2 y_t\nExpanding (1-B)^2 gives a perfect square trinomial:\n(1-B)^2 y_t = (1 - 2B + B^2)y_t = y_t - 2y_{t-1} + y_{t-2}\n\n\n\n2.6.3 General d-level Differences\nThe pattern generalizes naturally:\n\n(1 - B)^d y_t\n\nwhere d is the number of times we difference the series.\n\n\n\n\n\n\n\nTipBinomial expansion of (1-B)^d\n\n\n\n\n\nFor a general order d, the binomial theorem gives:\n\n(1-B)^d = \\sum_{k=0}^{d} \\binom{d}{k} (-B)^k = \\sum_{k=0}^{d} \\binom{d}{k} (-1)^k B^k\n\nSo:\n\n(1-B)^d y_t = \\sum_{k=0}^{d} \\binom{d}{k} (-1)^k y_{t-k}\n\nFor d=1: y_t - y_{t-1} ✓\nFor d=2: y_t - 2y_{t-1} + y_{t-2} ✓\n\n\n\n\n\n\n2.6.4 Seasonal Differences\nA seasonal difference shifts back m periods:\ny_t - y_{t-m} = y_t - B^m y_t = (1 - B^m)y_t\nAnd when both are needed — as with mexretail — the two operators simply multiply:\n(1-B)(1-B^m)y_t\nwhich is exactly the expression we expanded by hand in the previous section.\n\n\n\nOperation\nBackshift form\n\n\n\n\nFirst difference\n(1 - B)\\,y_t\n\n\nSecond difference\n(1 - B)^2\\,y_t\n\n\nd-th difference\n(1 - B)^d\\,y_t\n\n\nSeasonal difference\n(1 - B^m)\\,y_t\n\n\nBoth together\n(1 - B)^d(1 - B^m)\\,y_t\n\n\n\n\n\n\n\n\n\n\nTipOrder of differencing — revisited\n\n\n\nUsing backshift notation, it becomes trivial to see that the order doesn’t matter. Both orderings produce the same expression, since multiplication is commutative:\n(1-B)(1-B^m)y_t = (1-B^m)(1-B)y_t\nNo algebra needed.",
+    "section": "2.5 Backshift Notation",
+    "text": "2.5 Backshift Notation\nThe backshift operator B provides a compact way to write differencing operations — and, as we will see next class, to write out full model equations cleanly.\nIt is defined simply as:\n\nBy_t = y_{t-1} ; B(By_t) = B^2 y_t = y_{t-2}\n\nThat is, applying B to a series shifts it back one period.\n\n2.5.1 First Differences\nRecall the first difference:\ny'_t = y_t - y_{t-1}\nWe can rewrite y_{t-1} = By_t, so:\ny'_t = y_t - By_t = (1 - B)y_t\n\n\n2.5.2 Second Differences\nRecall:\n\ny''_t = y_t - 2y_{t-1} + y_{t-2}\n\nUsing the backshift operator turns to:\n\n\ny''_t = y_t - 2By_t + B^2 y_t = (1 - 2B + B^2)y_t\n\n\n\nwhich gives a perfect square trinomial1\n\ny''_t = (1-B)^2 y_t\n\n\n\n\n2.5.3 General d-level Differences\nThe pattern generalizes naturally:\n\n(1 - B)^d y_t\n\nwhere d is the number of times we difference the series.\n\n\n\n\n\n\nTipBinomial expansion of (1-B)^d\n\n\n\n\n\nFor a general order d, the binomial theorem gives:\n\n(1-B)^d = \\sum_{k=0}^{d} \\binom{d}{k} (-B)^k = \\sum_{k=0}^{d} \\binom{d}{k} (-1)^k B^k\n\nSo:\n\n(1-B)^d y_t = \\sum_{k=0}^{d} \\binom{d}{k} (-1)^k y_{t-k}\n\nFor d=1: y_t - y_{t-1} ✓\nFor d=2: y_t - 2y_{t-1} + y_{t-2} ✓\n\n\n\n\n\n2.5.4 Seasonal Differences\nA seasonal difference shifts back m periods:\ny_t - y_{t-m} = y_t - B^m y_t = (1 - B^m)y_t\nAnd when both are needed — as with mexretail — the two operators simply multiply:\n(1-B)(1-B^m)y_t\nwhich is exactly the expression we expanded by hand in the previous section.\n\n\n\nOperation\nBackshift form\n\n\n\n\nFirst difference\n(1 - B)\\,y_t\n\n\nSecond difference\n(1 - B)^2\\,y_t\n\n\nd-th difference\n(1 - B)^d\\,y_t\n\n\nSeasonal difference\n(1 - B^m)\\,y_t\n\n\nBoth together\n(1 - B)^d(1 - B^m)\\,y_t\n\n\n\n\n\n\n\n\n\n\nTipOrder of differencing — revisited\n\n\n\nUsing backshift notation, it becomes trivial to see that the order doesn’t matter. Both orderings produce the same expression, since multiplication is commutative:\n(1-B)(1-B^m)y_t = (1-B^m)(1-B)y_t\nNo algebra needed.",
     "crumbs": [
       "2. Adding ETS and ARIMA filters",
       "2.2 Stationarity & Differencing"
@@ -659,8 +648,8 @@
     "objectID": "docs/modules/module_2/02_stationarity/stationarity.html#applying-this-to-mexretail",
     "href": "docs/modules/module_2/02_stationarity/stationarity.html#applying-this-to-mexretail",
     "title": "Stationarity & Differencing",
-    "section": "2.7 Applying This to mexretail",
-    "text": "2.7 Applying This to mexretail\nmexretail has trend, seasonality, and growing variance. The full differencing pipeline:\n\nLevelsLogBox-CoxSeasonal diffSeasonal + first diff\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNoteA question to think about before next class\n\n\n\nWe have been deciding how many differences to apply by looking at plots. But visual inspection is subjective — two analysts could disagree. Is there a more rigorous, objective way to make this call?\nThat is exactly where we pick up next time.",
+    "section": "2.6 Applying This to mexretail",
+    "text": "2.6 Applying This to mexretail\nmexretail has trend, seasonality, and growing variance. The full differencing pipeline:\n\nLevelsLogBox-CoxSeasonal diffSeasonal + first diff\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nWe have been deciding how many differences to apply by looking at plots. But visual inspection is subjective — two analysts could disagree. Is there a more rigorous, objective way to make this call?",
     "crumbs": [
       "2. Adding ETS and ARIMA filters",
       "2.2 Stationarity & Differencing"
@@ -766,6 +755,17 @@
     ]
   },
   {
+    "objectID": "docs/modules/module_2/02_stationarity/stationarity.html#footnotes",
+    "href": "docs/modules/module_2/02_stationarity/stationarity.html#footnotes",
+    "title": "Stationarity & Differencing",
+    "section": "Footnotes",
+    "text": "Footnotes\n\n\n↩︎",
+    "crumbs": [
+      "2. Adding ETS and ARIMA filters",
+      "2.2 Stationarity & Differencing"
+    ]
+  },
+  {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity_pres.html#what-does-stationary-mean",
     "href": "docs/modules/module_2/02_stationarity/stationarity_pres.html#what-does-stationary-mean",
     "title": "Stationarity & Differencing",
@@ -808,60 +808,53 @@
     "text": "What to do with Non-Stationary Series?\n\nIf we find heteroskedasticity (changing variance)\nRecall from Module 1: we can stabilize the variance using mathematical transformations — logarithms, Box-Cox, and so on.\n\n\nBut what about the mean?\nTransformations alone don’t remove a trend or seasonal pattern."
   },
   {
-    "objectID": "docs/modules/module_2/02_stationarity/stationarity_pres.html#section-3",
-    "href": "docs/modules/module_2/02_stationarity/stationarity_pres.html#section-3",
+    "objectID": "docs/modules/module_2/02_stationarity/stationarity_pres.html#section",
+    "href": "docs/modules/module_2/02_stationarity/stationarity_pres.html#section",
     "title": "Stationarity & Differencing",
     "section": "",
-    "text": "Look at these two series:\n\n\n\n\n\n\na non-stationary series\n\n\n\n\n\n\n\na stationary series\n\n\n\n\n\n\nThe second series was produced directly from the first. Can you figure out how?\n\n\n\n\n\n\n\n\n\n\nDifferencing\n\n\nThe daily return is simply today’s price minus yesterday’s price — the change between consecutive observations. This operation is called differencing, and it is how we stabilize the mean of a non-stationary series.\n\n\n\n\n\n\n\n\n\n\n\nRandom walks & stationarity\n\n\n\nGoogle’s stock price follows a random walk.\nBy definition, random walks are non-stationary, but their first differences are stationary."
+    "text": "Look at these two series:\n\n\n\n\n\n\n\na non-stationary series\n\n\n\n\n\n\n\na stationary series\n\n\n\n\n\n\nThe second series was produced directly from the first. Can you figure out how?\n\n\n\n\n\n\n\n\n\n\nDifferencing\n\n\nThe daily return is simply today’s price minus yesterday’s price — the change between consecutive observations. This operation is called differencing, and it is how we stabilize the mean of a non-stationary series.\n\n\n\n\n\n\n\n\n\n\n\nRandom walks & stationarity\n\n\n\nGoogle’s stock price follows a random walk.\nBy definition, random walks are non-stationary, but their first differences are stationary."
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity_pres.html#first-differences",
     "href": "docs/modules/module_2/02_stationarity/stationarity_pres.html#first-differences",
     "title": "Stationarity & Differencing",
     "section": "First Differences",
-    "text": "First Differences\nThe first difference of a series y_t is:\ny'_t = y_t - y_{t-1}\n\nThe differenced series has T - 1 observations.\nFirst differences represent the change from one period to the next.\nIf the original series has a linear trend, the differences will fluctuate around a constant mean.\n\n\ngoogle_2015 |&gt;\n1  gg_tsdisplay(difference(Close), plot_type = \"partial\")\n\n\n1\n\ndifference(Close) computes the first difference of the Close variable."
+    "text": "First Differences\nThe first difference of a series y_t is:\ny'_t = y_t - y_{t-1}\n\nThe differenced series has T - 1 observations.\nFirst differences represent the change from one period to the next.\nIf the original series has a linear trend, the differences will fluctuate around a constant mean.\n\n\n\ngoogle_2015 |&gt;\n1  autoplot(difference(Close))\n\n\n1\n\ndifference(Close) computes the first difference of the Close variable."
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity_pres.html#second-differences",
     "href": "docs/modules/module_2/02_stationarity/stationarity_pres.html#second-differences",
     "title": "Stationarity & Differencing",
     "section": "Second Differences",
-    "text": "Second Differences\nSometimes the first-differenced series is still non-stationary. We can difference again:\n\\begin{align*}\ny''_t &= y'_t - y'_{t-1} \\\\\n      &= y_t - 2y_{t-1} + y_{t-2}\n\\end{align*}\n\nSecond differences have T - 2 observations.\nThey represent the change in the changes — acceleration rather than velocity.\nEconomic and business series almost never require more than two differences.\n\n\n\n\n\n\n\n\nNeeding three or more differences usually signals something else is wrong — an outlier, a structural break, or a transformation that should have been applied first.\n\n\n\n\n\ngoogle_2015 |&gt;\n1  gg_tsdisplay(difference(Close, differences = 2), plot_type = \"partial\")\n\n\n1\n\nThe argument differences = 2 tells difference() to apply the differencing operation twice."
+    "text": "Second Differences\nSometimes the first-differenced series is still non-stationary. We can difference again:\n\\begin{align*}\ny''_t &= y'_t - y'_{t-1} \\\\\n      &= y_t - 2y_{t-1} + y_{t-2}\n\\end{align*}\n\nSecond differences have T - 2 observations.\nThey represent the change in the changes — acceleration rather than velocity.\nEconomic and business series almost never require more than two differences.\n\n\n\n\n\n\n\n\nNeeding three or more differences usually signals something else is wrong — an outlier, a structural break, or a transformation that should have been applied first.\n\n\n\n\ngoogle_2015 |&gt;\n1  autoplot(difference(Close, differences = 2))\n\n\n1\n\nThe argument differences = 2 tells difference() to apply the differencing operation twice."
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity_pres.html#seasonal-differencing",
     "href": "docs/modules/module_2/02_stationarity/stationarity_pres.html#seasonal-differencing",
     "title": "Stationarity & Differencing",
     "section": "Seasonal Differencing",
-    "text": "Seasonal Differencing\nIf the series has seasonality, we take a seasonal difference — the change relative to the same period in the previous cycle:\ny'_t = y_t - y_{t-m}\nwhere m is the seasonal period (m = 12 for monthly data, m = 4 for quarterly).\n\nSeasonal differences represent year-over-year change at each point.\nAlso called lag-m differences.\nAfter seasonal differencing, any remaining non-seasonal trend can be removed with a first difference.\n\n\nh02 |&gt;\n1  gg_tsdisplay(difference(log(Cost), lag = 12),\n               plot_type = \"partial\",\n               lag_max = 48)\n\n\n1\n\nThe argument lag = 12 tells difference() to compute the seasonal difference with a lag of 12 periods (i.e. y_t - y_{t-12}). If no lag is specified, it defaults to 1 (the first difference)."
+    "text": "Seasonal Differencing\nIf the series has seasonality, we take a seasonal difference — the change relative to the same period in the previous cycle:\ny'_t = y_t - y_{t-m}\nwhere m is the seasonal period (m = 12 for monthly data, m = 4 for quarterly).\n\nSeasonal differences represent year-over-year change at each point.\nAlso called lag-m differences.\nAfter seasonal differencing, any remaining non-seasonal trend can be removed with a first difference.\n\n\n\n\n\n\n\n\n\n\n\n\nh02 |&gt;\n1  autoplot(difference(log(Cost), lag = 12))\n\n\n1\n\nThe argument lag = 12 tells difference() to compute the seasonal difference with a lag of 12 periods (i.e. y_t - y_{t-12}). If no lag is specified, it defaults to 1 (the first difference)."
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity_pres.html#does-the-order-of-differencing-matter",
     "href": "docs/modules/module_2/02_stationarity/stationarity_pres.html#does-the-order-of-differencing-matter",
     "title": "Stationarity & Differencing",
     "section": "Does the Order of Differencing Matter?",
-    "text": "Does the Order of Differencing Matter?\nWhen a series needs both seasonal and regular differencing, does it matter which one we apply first?\nApplying seasonal first, then regular:\n\n\\begin{align*}\n(y_t - y_{t-m})' &= (y_t - y_{t-m}) - (y_{t-1} - y_{t-m-1}) \\\\\n                 &= y_t - y_{t-1} - y_{t-m} + y_{t-m-1}\n\\end{align*}\n\nApplying regular first, then seasonal:\n\n\\begin{align*}\n(y_t - y_{t-1})' &= (y_t - y_{t-1}) - (y_{t-m} - y_{t-m-1}) \\\\\n                 &= y_t - y_{t-1} - y_{t-m} + y_{t-m-1}\n\\end{align*}\n\nBoth routes lead to the same result.\n\n\n\n\n\n\n\nThe order does not matter — the result is always identical. In practice, if the seasonal pattern is strong, apply the seasonal difference first: the result may already be stationary without needing the regular difference."
-  },
-  {
-    "objectID": "docs/modules/module_2/02_stationarity/stationarity_pres.html#does-the-order-of-differencing-matter-1",
-    "href": "docs/modules/module_2/02_stationarity/stationarity_pres.html#does-the-order-of-differencing-matter-1",
-    "title": "Stationarity & Differencing",
-    "section": "Does the Order of Differencing Matter?",
-    "text": "Does the Order of Differencing Matter?\nWhen a series needs both seasonal and regular differencing, does it matter which one we apply first?\nLet’s introduce the backshift operator B, where B^k y_t = y_{t-k}, to work out the algebra cleanly:\n\nFirst difference: (1 - B)\\,y_t = y_t - y_{t-1}\nSeasonal difference: (1 - B^m)\\,y_t = y_t - y_{t-m}\n\nApplying seasonal first, then regular: (1 - B)(1 - B^m)\\,y_t\nApplying regular first, then seasonal: (1 - B^m)(1 - B)\\,y_t\nSince B follows ordinary algebraic rules, both expand to the same result:\ny_t - y_{t-1} - y_{t-m} + y_{t-m-1}\n\n\n\n\n\n\n\nThe order does not matter — the result is always identical. In practice, if the seasonal pattern is strong, apply the seasonal difference first: the result may already be stationary without needing the regular difference."
+    "text": "Does the Order of Differencing Matter?\nWhen a series needs both seasonal and regular differencing, does it matter which one we apply first?\nApplying seasonal first, then regular:\n\n\\begin{align*}\n(y_t - y_{t-m})' &= (y_t - y_{t-m}) - (y_{t-1} - y_{t-m-1}) \\\\\n                 &= y_t - y_{t-1} - y_{t-m} + y_{t-m-1}\n\\end{align*}\n\n\nApplying regular first, then seasonal:\n\n\\begin{align*}\n(y_t - y_{t-1})' &= (y_t - y_{t-1}) - (y_{t-m} - y_{t-m-1}) \\\\\n                 &= y_t - y_{t-1} - y_{t-m} + y_{t-m-1}\n\\end{align*}\n\nBoth routes lead to the same result.\n\n\n\n\n\n\nThe order does not matter — the result is always identical. In practice, if the seasonal pattern is strong, apply the seasonal difference first: the result may already be stationary without needing the regular difference."
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity_pres.html#backshift-notation",
     "href": "docs/modules/module_2/02_stationarity/stationarity_pres.html#backshift-notation",
     "title": "Stationarity & Differencing",
     "section": "Backshift Notation",
-    "text": "Backshift Notation\nThe backshift operator B provides a compact way to write differencing operations — and, as we will see next class, to write out full model equations cleanly.\nIt is defined simply as:\nBy_t = y_{t-1}\nThat is, applying B to a series shifts it back one period.\nFirst Differences\nRecall the first difference:\ny'_t = y_t - y_{t-1}\nWe can rewrite y_{t-1} = By_t, so:\ny'_t = y_t - By_t = (1 - B)y_t\nSecond Differences\nApplying the same idea twice:\ny''_t = y'_t - y'_{t-1} = (1-B)y'_t = (1-B)(1-B)y_t = (1-B)^2 y_t\nExpanding (1-B)^2 gives a perfect square trinomial:\n(1-B)^2 y_t = (1 - 2B + B^2)y_t = y_t - 2y_{t-1} + y_{t-2}\n\n\n\nGeneral d-level Differences\nThe pattern generalizes naturally:\n\n(1 - B)^d y_t\n\nwhere d is the number of times we difference the series.\n\n\n\n\n\n\n\nBinomial expansion of (1-B)^d\n\n\nFor a general order d, the binomial theorem gives:\n\n(1-B)^d = \\sum_{k=0}^{d} \\binom{d}{k} (-B)^k = \\sum_{k=0}^{d} \\binom{d}{k} (-1)^k B^k\n\nSo:\n\n(1-B)^d y_t = \\sum_{k=0}^{d} \\binom{d}{k} (-1)^k y_{t-k}\n\nFor d=1: y_t - y_{t-1} ✓\nFor d=2: y_t - 2y_{t-1} + y_{t-2} ✓\n\n\n\n\nSeasonal Differences\nA seasonal difference shifts back m periods:\ny_t - y_{t-m} = y_t - B^m y_t = (1 - B^m)y_t\nAnd when both are needed — as with mexretail — the two operators simply multiply:\n(1-B)(1-B^m)y_t\nwhich is exactly the expression we expanded by hand in the previous section.\n\n\n\nOperation\nBackshift form\n\n\n\n\nFirst difference\n(1 - B)\\,y_t\n\n\nSecond difference\n(1 - B)^2\\,y_t\n\n\nd-th difference\n(1 - B)^d\\,y_t\n\n\nSeasonal difference\n(1 - B^m)\\,y_t\n\n\nBoth together\n(1 - B)^d(1 - B^m)\\,y_t\n\n\n\n\n\n\n\n\n\n\nOrder of differencing — revisited\n\n\nUsing backshift notation, it becomes trivial to see that the order doesn’t matter. Both orderings produce the same expression, since multiplication is commutative:\n(1-B)(1-B^m)y_t = (1-B^m)(1-B)y_t\nNo algebra needed."
+    "text": "Backshift Notation\nThe backshift operator B provides a compact way to write differencing operations — and, as we will see next class, to write out full model equations cleanly.\nIt is defined simply as:\n\nBy_t = y_{t-1} ; B(By_t) = B^2 y_t = y_{t-2}\n\nThat is, applying B to a series shifts it back one period.\nFirst Differences\nRecall the first difference:\ny'_t = y_t - y_{t-1}\nWe can rewrite y_{t-1} = By_t, so:\ny'_t = y_t - By_t = (1 - B)y_t\nSecond Differences\nRecall:\n\ny''_t = y_t - 2y_{t-1} + y_{t-2}\n\nUsing the backshift operator turns to:\n\n\ny''_t = y_t - 2By_t + B^2 y_t = (1 - 2B + B^2)y_t\n\n\n\nwhich gives a perfect square trinomial1\n\ny''_t = (1-B)^2 y_t\n\n\n\n\n\nGeneral d-level Differences\nThe pattern generalizes naturally:\n\n(1 - B)^d y_t\n\nwhere d is the number of times we difference the series.\nSeasonal Differences\nA seasonal difference shifts back m periods:\ny_t - y_{t-m} = y_t - B^m y_t = (1 - B^m)y_t\nAnd when both are needed — as with mexretail — the two operators simply multiply:\n(1-B)(1-B^m)y_t\nwhich is exactly the expression we expanded by hand in the previous section.\n\n\n\nOperation\nBackshift form\n\n\n\n\nFirst difference\n(1 - B)\\,y_t\n\n\nSecond difference\n(1 - B)^2\\,y_t\n\n\nd-th difference\n(1 - B)^d\\,y_t\n\n\nSeasonal difference\n(1 - B^m)\\,y_t\n\n\nBoth together\n(1 - B)^d(1 - B^m)\\,y_t\n\n\n\n\n\n\n\n\n\n\nOrder of differencing — revisited\n\n\nUsing backshift notation, it becomes trivial to see that the order doesn’t matter. Both orderings produce the same expression, since multiplication is commutative:\n(1-B)(1-B^m)y_t = (1-B^m)(1-B)y_t\nNo algebra needed."
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity_pres.html#applying-this-to-mexretail",
     "href": "docs/modules/module_2/02_stationarity/stationarity_pres.html#applying-this-to-mexretail",
     "title": "Stationarity & Differencing",
     "section": "Applying This to mexretail",
-    "text": "Applying This to mexretail\nmexretail has trend, seasonality, and growing variance. The full differencing pipeline:\n\nLevelsLogBox-CoxSeasonal diffSeasonal + first diff\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nA question to think about before next class\n\n\nWe have been deciding how many differences to apply by looking at plots. But visual inspection is subjective — two analysts could disagree. Is there a more rigorous, objective way to make this call?\nThat is exactly where we pick up next time."
+    "text": "Applying This to mexretail\nmexretail has trend, seasonality, and growing variance. The full differencing pipeline:\n\nLevelsLogBox-CoxSeasonal diffSeasonal + first diff\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nWe have been deciding how many differences to apply by looking at plots. But visual inspection is subjective — two analysts could disagree. Is there a more rigorous, objective way to make this call?"
   },
   {
     "objectID": "docs/modules/module_2/02_stationarity/stationarity_pres.html#kpss-in-r",
@@ -925,6 +918,13 @@
     "title": "Stationarity & Differencing",
     "section": "What Comes Next",
     "text": "What Comes Next\nIn practice, you will rarely use a pure AR or pure MA model. Real series typically need both. And most real series also need differencing before any of this applies.\nCombining differencing, AR terms, and MA terms into a single unified model — and applying it systematically to mexretail — is the subject of the next class.\n\n\n\n\n\n\n\nWhere we are in the bigger picture\n\n\n\nStabilize variance → Box-Cox / log transformation ✓\nStabilize the mean → differencing ✓\n\nDetect remaining correlation structure → ACF and PACF ✓\nUnderstand the building blocks → AR and MA terms ✓\n\nAll the pieces are in place. Time to put them together."
+  },
+  {
+    "objectID": "docs/modules/module_2/02_stationarity/stationarity_pres.html#footnotes",
+    "href": "docs/modules/module_2/02_stationarity/stationarity_pres.html#footnotes",
+    "title": "Stationarity & Differencing",
+    "section": "Footnotes",
+    "text": "Footnotes"
   },
   {
     "objectID": "docs/more/stats/expectation_variance_cov.html",
