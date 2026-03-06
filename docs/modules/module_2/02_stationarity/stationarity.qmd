@@ -164,10 +164,6 @@ p_lynx
 
 :::{.content-hidden unless-format="revealjs"}
 
-##
-
-
-
 ```{r}
 #| label: trend-series-pres
 #| echo: false
@@ -182,26 +178,6 @@ p_returns
 p_lynx
 ```
 
-
-##
-
-```{r}
-#| label: seasonal-series-pres
-#| echo: false
-
-p_beer
-p_pigs
-```
-
-##
-
-```{r}
-#| label: stationary-series-pres
-#| echo: false
-
-p_returns
-p_lynx
-```
 
 :::
 
@@ -274,34 +250,9 @@ Transformations alone don't remove a trend or seasonal pattern.
 ##
 :::
 
-Look at these two series:
+- Look at these two series:
 
-:::{.content-visible unless-format="revealjs"}
 
-```{r}
-#| label: google-reveal-plotly
-#| echo: false
-#| message: false
-#| include: false
-
-ggplotly(
-  p_google + labs(title = "Google stock price"),
-  dynamicTicks = TRUE
-) |>
-  bslib::card(full_screen = TRUE)
-
-ggplotly(
-  p_returns + labs(title = "Google stock daily returns"),
-  dynamicTicks = TRUE
-) |>
-  bslib::card(full_screen = TRUE)
-```
-
-:::
-
-:::{.content-hidden unless-format="revealjs"}
-
-:::
 ```{r}
 #| label: google-reveal-pres
 #| echo: false
@@ -345,15 +296,19 @@ $$y'_t = y_t - y_{t-1}$$
 - First differences represent the *change* from one period to the next.
 - If the original series has a linear trend, the differences will fluctuate around a constant mean.
 
+::: {.fragment}
+
 ```{r}
 #| label: google-tsdisplay
 #| warning: false
 #| message: false
 
 google_2015 |>
-  gg_tsdisplay(difference(Close), plot_type = "partial") #<1>
+  autoplot(difference(Close)) #<1>
 ```
 1. `difference(Close)` computes the first difference of the `Close` variable.
+
+:::
 
 ## Second Differences
 
@@ -372,15 +327,18 @@ y''_t &= y'_t - y'_{t-1} \\
 :::{.callout-warning appearance="simple"}
 Needing three or more differences usually signals something else is wrong — an outlier, a structural break, or a transformation that should have been applied first.
 :::
-:::
 
 ```{r}
 #| label: google-second-diff
 
 google_2015 |>
-  gg_tsdisplay(difference(Close, differences = 2), plot_type = "partial") #<1>
+  autoplot(difference(Close, differences = 2)) #<1>
 ```
 1. The argument `differences = 2` tells `difference()` to apply the differencing operation twice.
+
+:::
+
+
 
 
 ## Seasonal Differencing
@@ -395,6 +353,8 @@ where $m$ is the seasonal period ($m = 12$ for monthly data, $m = 4$ for quarter
 - Also called **lag-$m$ differences**.
 - After seasonal differencing, any remaining non-seasonal trend can be removed with a first difference.
 
+::: {.fragment}
+
 ```{r}
 #| label: pbs-setup
 #| message: false
@@ -403,6 +363,9 @@ where $m$ is the seasonal period ($m = 12$ for monthly data, $m = 4$ for quarter
 h02 <- PBS |>
   filter(ATC2 == "H02") |>
   summarise(Cost = sum(Cost) / 1e6)
+
+h02 |> 
+  autoplot(log(Cost))
 ```
 
 ```{r}
@@ -411,11 +374,11 @@ h02 <- PBS |>
 #| message: false
 
 h02 |>
-  gg_tsdisplay(difference(log(Cost), lag = 12), #<1>
-               plot_type = "partial",
-               lag_max = 48)
+  autoplot(difference(log(Cost), lag = 12)) #<1>
 ```
 1. The argument `lag = 12` tells `difference()` to compute the seasonal difference with a lag of 12 periods (i.e. $y_t - y_{t-12}$). If no `lag` is specified, it defaults to 1 (the first difference).
+
+:::
 
 ## Does the Order of Differencing Matter?
 
@@ -430,6 +393,8 @@ $$
 \end{align*}
 $$
 
+::: {.fragment}
+
 Applying **regular first, then seasonal**:
 
 $$
@@ -441,32 +406,6 @@ $$
 
 Both routes lead to the same result.
 
-:::{.fragment}
-:::{.callout-tip appearance="simple"}
-The order **does not matter** — the result is always identical. In practice, if the seasonal pattern is strong, apply the seasonal difference first: the result may already be stationary without needing the regular difference.
-:::
-:::
-
-## Does the Order of Differencing Matter?
-
-When a series needs both seasonal and regular differencing, does it matter which one we apply first?
-
-Let's introduce the **backshift operator** $B$, where $B^k y_t = y_{t-k}$, to work out the algebra cleanly:
-
-- First difference: $(1 - B)\,y_t = y_t - y_{t-1}$
-- Seasonal difference: $(1 - B^m)\,y_t = y_t - y_{t-m}$
-
-Applying **seasonal first, then regular**:
-$$(1 - B)(1 - B^m)\,y_t$$
-
-Applying **regular first, then seasonal**:
-$$(1 - B^m)(1 - B)\,y_t$$
-
-Since $B$ follows ordinary algebraic rules, both expand to the same result:
-
-$$y_t - y_{t-1} - y_{t-m} + y_{t-m-1}$$
-
-:::{.fragment}
 :::{.callout-tip appearance="simple"}
 The order **does not matter** — the result is always identical. In practice, if the seasonal pattern is strong, apply the seasonal difference first: the result may already be stationary without needing the regular difference.
 :::
@@ -502,10 +441,6 @@ $$y''_t = y'_t - y'_{t-1} = (1-B)y'_t = (1-B)(1-B)y_t = (1-B)^2 y_t$$
 Expanding $(1-B)^2$ gives a **perfect square trinomial**:
 
 $$(1-B)^2 y_t = (1 - 2B + B^2)y_t = y_t - 2y_{t-1} + y_{t-2}$$
-
-:::{.content-visible unless-format="revealjs"}
-![](trinomio cuadrado perfecto.jpg){width=50%}
-:::
 
 :::{.content-hidden unless-format="revealjs"}
 :::{.fragment}
@@ -662,11 +597,10 @@ ggplotly(p, dynamicTicks = TRUE)
 
 :::{.fragment}
 :::{.callout-note appearance="simple"}
-## A question to think about before next class
+## 
 
 We have been deciding how many differences to apply by looking at plots. But visual inspection is subjective — two analysts could disagree. Is there a more rigorous, objective way to make this call?
 
-That is exactly where we pick up next time.
 :::
 :::
 
