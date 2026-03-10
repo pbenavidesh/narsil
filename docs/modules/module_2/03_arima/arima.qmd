@@ -54,12 +54,16 @@ lambda <- mexretail |>
 ## From AR/MA to ARIMA
 :::
 
-In the [previous topic](../02_stationarity/stationarity.html#ar-and-ma-models) we introduced the two basic building blocks for modeling the correlation structure of a stationary time series:
+In the [previous topic](../02_stationarity/stationarity.qmd#ar-and-ma-models) we introduced the two basic building blocks for modeling the correlation structure of a stationary time series:
 
 - **AR($p$):** forecast $y_t$ using its own $p$ past values.
 - **MA($q$):** forecast $y_t$ using $q$ past forecast errors.
 
+::: {.fragment}
+
 In practice, neither model alone is usually sufficient. Real series often show patterns that require *both* autoregressive and moving average components simultaneously. And most real series are also **non-stationary** — they have trend, seasonality, or both.
+
+:::
 
 ::: {.fragment}
 ::: {.callout-note appearance="simple"}
@@ -97,7 +101,7 @@ where $y'_t$ denotes the $d$-times differenced series and $\varepsilon_t$ is whi
 
 ## Backshift Notation
 
-Recall from the [previous topic](../02_stationarity/stationarity.html#backshift-notation) that the backshift operator $B$ satisfies $By_t = y_{t-1}$, and that $d$-th order differencing can be written as $(1-B)^d y_t$.
+Recall from the [previous topic](../02_stationarity/stationarity.qmd#backshift-notation) that the backshift operator $B$ satisfies $By_t = y_{t-1}$, and that $d$-th order differencing can be written as $(1-B)^d y_t$.
 
 Using this notation, we can write the AR and MA components compactly as well:
 
@@ -155,7 +159,9 @@ The constant $c$ and the differencing order $d$ interact to determine the long-r
 - $d = 1$, $c \neq 0$: forecasts follow a straight line.
 - $d = 2$, $c \neq 0$: forecasts follow a quadratic trend.
 
+::: {.fragment}
 Higher values of $d$ also produce wider prediction intervals that grow faster.
+:::
 :::
 :::
 
@@ -166,7 +172,7 @@ Higher values of $d$ also produce wider prediction intervals that grow faster.
 Selecting the right ARIMA order involves three decisions:
 
 ::: {.incremental}
-1. **Choose $d$** — determine how many differences are needed using the stationarity protocol from the [previous topic](../02_stationarity/stationarity.html#unit-root-tests): Box-Cox / log transformation to stabilize variance, `unitroot_nsdiffs()` for seasonal differencing (if any), then `unitroot_ndiffs()` on the differenced series.
+1. **Choose $d$** — determine how many differences are needed using the stationarity protocol from the [previous topic](../02_stationarity/stationarity.qmd#unit-root-tests): Box-Cox / log transformation to stabilize variance, `unitroot_nsdiffs()` for seasonal differencing (if any), then `unitroot_ndiffs()` on the differenced series.
 
 2. **Choose $p$ or $q$** — read the ACF and PACF of the (differenced, stationary) series:
    - **PACF cuts off** after lag $p$ → AR($p$) component.
@@ -202,16 +208,25 @@ p <- us_change |>
 
 ggplotly(p, dynamicTicks = TRUE)
 ```
+
+::: {.fragment}
+
 ```{r}
 #| label: us-change-tsdisplay
 #| warning: false
 #| message: false
+#| echo: false
 
 us_change |>
   gg_tsdisplay(Consumption, plot_type = "partial", lag_max = 16)
 ```
 
 The series appears stationary ($d = 0$). The PACF shows significant spikes at lags 1–3, suggesting AR(3). Let's fit that model:
+
+:::
+
+::: {.fragment}
+
 ```{r}
 #| label: us-change-fit
 #| message: false
@@ -225,6 +240,8 @@ report(fit_us)
 ```
 
 1. `pdq()` sets the non-seasonal orders. `PDQ(0,0,0)` explicitly forces a non-seasonal model.
+
+:::
 
 ## Model Selection {#sec-model-selection}
 
