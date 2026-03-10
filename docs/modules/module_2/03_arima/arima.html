@@ -600,31 +600,32 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#from-arma-to-arima" id="toc-from-arma-to-arima" class="nav-link active" data-scroll-target="#from-arma-to-arima"><span class="header-section-number">1</span> From AR/MA to ARIMA</a>
+  <li><a href="#arima-models" id="toc-arima-models" class="nav-link active" data-scroll-target="#arima-models"><span class="header-section-number">1</span> ARIMA Models</a>
   <ul class="collapse">
-  <li><a href="#the-arima-model" id="toc-the-arima-model" class="nav-link" data-scroll-target="#the-arima-model"><span class="header-section-number">1.1</span> The ARIMA Model</a></li>
+  <li><a href="#the-arima-equation" id="toc-the-arima-equation" class="nav-link" data-scroll-target="#the-arima-equation"><span class="header-section-number">1.1</span> The ARIMA Equation</a></li>
+  <li><a href="#backshift-notation" id="toc-backshift-notation" class="nav-link" data-scroll-target="#backshift-notation"><span class="header-section-number">1.2</span> Backshift Notation</a></li>
+  <li><a href="#special-cases" id="toc-special-cases" class="nav-link" data-scroll-target="#special-cases"><span class="header-section-number">1.3</span> Special Cases</a></li>
   </ul></li>
-  <li><a href="#backshift-notation-for-arima" id="toc-backshift-notation-for-arima" class="nav-link" data-scroll-target="#backshift-notation-for-arima"><span class="header-section-number">2</span> Backshift Notation for ARIMA</a>
+  <li><a href="#arima-in-r" id="toc-arima-in-r" class="nav-link" data-scroll-target="#arima-in-r"><span class="header-section-number">2</span> ARIMA in R</a>
   <ul class="collapse">
-  <li><a href="#full-arimap-d-q-in-backshift-notation" id="toc-full-arimap-d-q-in-backshift-notation" class="nav-link" data-scroll-target="#full-arimap-d-q-in-backshift-notation"><span class="header-section-number">2.0.3</span> Full ARIMA(<span class="math inline">p</span>, <span class="math inline">d</span>, <span class="math inline">q</span>) in backshift notation</a></li>
+  <li><a href="#choosing-the-orders" id="toc-choosing-the-orders" class="nav-link" data-scroll-target="#choosing-the-orders"><span class="header-section-number">2.1</span> Choosing the Orders</a></li>
+  <li><a href="#sec-manual" id="toc-sec-manual" class="nav-link" data-scroll-target="#sec-manual"><span class="header-section-number">2.2</span> Manual Specification</a></li>
+  <li><a href="#sec-model-selection" id="toc-sec-model-selection" class="nav-link" data-scroll-target="#sec-model-selection"><span class="header-section-number">2.3</span> Model Selection</a></li>
+  <li><a href="#automatic-and-semi-automatic-selection" id="toc-automatic-and-semi-automatic-selection" class="nav-link" data-scroll-target="#automatic-and-semi-automatic-selection"><span class="header-section-number">2.4</span> Automatic and Semi-Automatic Selection</a></li>
+  <li><a href="#box-jenkins-methodology" id="toc-box-jenkins-methodology" class="nav-link" data-scroll-target="#box-jenkins-methodology"><span class="header-section-number">2.5</span> Box-Jenkins Methodology</a></li>
+  <li><a href="#residual-diagnostics" id="toc-residual-diagnostics" class="nav-link" data-scroll-target="#residual-diagnostics"><span class="header-section-number">2.6</span> Residual Diagnostics</a></li>
+  <li><a href="#forecasting" id="toc-forecasting" class="nav-link" data-scroll-target="#forecasting"><span class="header-section-number">2.7</span> Forecasting</a></li>
   </ul></li>
-  <li><a href="#special-cases-of-arima" id="toc-special-cases-of-arima" class="nav-link" data-scroll-target="#special-cases-of-arima"><span class="header-section-number">3</span> Special Cases of ARIMA</a></li>
-  <li><a href="#choosing-the-orders" id="toc-choosing-the-orders" class="nav-link" data-scroll-target="#choosing-the-orders"><span class="header-section-number">4</span> Choosing the Orders</a></li>
-  <li><a href="#arima-in-r" id="toc-arima-in-r" class="nav-link" data-scroll-target="#arima-in-r"><span class="header-section-number">5</span> ARIMA in R</a></li>
-  <li><a href="#model-selection" id="toc-model-selection" class="nav-link" data-scroll-target="#model-selection"><span class="header-section-number">6</span> Model Selection</a>
+  <li><a href="#seasonal-arima" id="toc-seasonal-arima" class="nav-link" data-scroll-target="#seasonal-arima"><span class="header-section-number">3</span> Seasonal ARIMA</a>
   <ul class="collapse">
-  <li><a href="#automatic-and-semi-automatic-selection-1" id="toc-automatic-and-semi-automatic-selection-1" class="nav-link" data-scroll-target="#automatic-and-semi-automatic-selection-1"><span class="header-section-number">6.1</span> Automatic and Semi-Automatic Selection</a></li>
-  </ul></li>
-  <li><a href="#box-jenkins-methodology" id="toc-box-jenkins-methodology" class="nav-link" data-scroll-target="#box-jenkins-methodology"><span class="header-section-number">7</span> Box-Jenkins Methodology</a></li>
-  <li><a href="#residual-diagnostics-for-arima" id="toc-residual-diagnostics-for-arima" class="nav-link" data-scroll-target="#residual-diagnostics-for-arima"><span class="header-section-number">8</span> Residual Diagnostics for ARIMA</a></li>
-  <li><a href="#forecasting-with-arima" id="toc-forecasting-with-arima" class="nav-link" data-scroll-target="#forecasting-with-arima"><span class="header-section-number">9</span> Forecasting with ARIMA</a></li>
-  <li><a href="#seasonal-series-stl-arima" id="toc-seasonal-series-stl-arima" class="nav-link" data-scroll-target="#seasonal-series-stl-arima"><span class="header-section-number">10</span> Seasonal Series: STL + ARIMA</a></li>
-  <li><a href="#seasonal-arima-sarima" id="toc-seasonal-arima-sarima" class="nav-link" data-scroll-target="#seasonal-arima-sarima"><span class="header-section-number">11</span> Seasonal ARIMA (SARIMA)</a>
+  <li><a href="#stl-arima" id="toc-stl-arima" class="nav-link" data-scroll-target="#stl-arima"><span class="header-section-number">3.1</span> STL + ARIMA</a></li>
+  <li><a href="#sarima" id="toc-sarima" class="nav-link" data-scroll-target="#sarima"><span class="header-section-number">3.2</span> SARIMA</a>
   <ul class="collapse">
-  <li><a href="#reading-acfpacf-for-seasonal-orders" id="toc-reading-acfpacf-for-seasonal-orders" class="nav-link" data-scroll-target="#reading-acfpacf-for-seasonal-orders"><span class="header-section-number">11.1</span> Reading ACF/PACF for Seasonal Orders</a></li>
-  <li><a href="#sarima-for-mexretail-1" id="toc-sarima-for-mexretail-1" class="nav-link" data-scroll-target="#sarima-for-mexretail-1"><span class="header-section-number">11.2</span> SARIMA for <code>mexretail</code></a></li>
+  <li><a href="#reading-acfpacf-for-seasonal-orders-1" id="toc-reading-acfpacf-for-seasonal-orders-1" class="nav-link" data-scroll-target="#reading-acfpacf-for-seasonal-orders-1"><span class="header-section-number">3.2.1</span> Reading ACF/PACF for Seasonal Orders</a></li>
+  <li><a href="#sarima-for-mexretail-1" id="toc-sarima-for-mexretail-1" class="nav-link" data-scroll-target="#sarima-for-mexretail-1"><span class="header-section-number">3.2.2</span> SARIMA for <code>mexretail</code></a></li>
   </ul></li>
-  <li><a href="#stl-arima-vs.-sarima" id="toc-stl-arima-vs.-sarima" class="nav-link" data-scroll-target="#stl-arima-vs.-sarima"><span class="header-section-number">12</span> STL + ARIMA vs.&nbsp;SARIMA</a></li>
+  </ul></li>
+  <li><a href="#stl-arima-vs.-sarima" id="toc-stl-arima-vs.-sarima" class="nav-link" data-scroll-target="#stl-arima-vs.-sarima"><span class="header-section-number">4</span> STL + ARIMA vs.&nbsp;SARIMA</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/pbenavidesh/narsil/edit/main/docs/modules/module_2/03_arima/arima.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/pbenavidesh/narsil/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div><div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="arima_pres.html"><i class="bi bi-file-slides"></i>RevealJS</a></li></ul></div><div class="quarto-other-links"><h2>Other Links</h2><ul><li><a href="https://otexts.com/fpp3/arima.html"><i class="bi bi-link-45deg"></i>FPP3 Chapter 9</a></li></ul></div></nav>
     </div>
@@ -672,9 +673,9 @@ window.Quarto = {
 </dl>
 </div>
 </div>
-<section id="from-arma-to-arima" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> From AR/MA to ARIMA</h1>
-<p>In the previous class, we introduced the two basic building blocks for modeling the correlation structure of a stationary time series:</p>
+<section id="arima-models" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> ARIMA Models</h1>
+<p>In the <a href="../02_stationarity/stationarity.html#ar-and-ma-models">previous topic</a> we introduced the two basic building blocks for modeling the correlation structure of a stationary time series:</p>
 <ul>
 <li><strong>AR(<span class="math inline">p</span>):</strong> forecast <span class="math inline">y_t</span> using its own <span class="math inline">p</span> past values.</li>
 <li><strong>MA(<span class="math inline">q</span>):</strong> forecast <span class="math inline">y_t</span> using <span class="math inline">q</span> past forecast errors.</li>
@@ -696,8 +697,8 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<section id="the-arima-model" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="the-arima-model"><span class="header-section-number">1.1</span> The ARIMA Model</h2>
+<section id="the-arima-equation" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="the-arima-equation"><span class="header-section-number">1.1</span> The ARIMA Equation</h2>
 <p><strong>ARIMA</strong> stands for <strong>A</strong>uto<strong>R</strong>egressive <strong>I</strong>ntegrated <strong>M</strong>oving <strong>A</strong>verage. The “Integrated” part refers to the reverse operation of differencing: if we difference a series <span class="math inline">d</span> times to make it stationary, the model is said to be integrated of order <span class="math inline">d</span>.</p>
 <p>A non-seasonal ARIMA model is written as <strong>ARIMA(<span class="math inline">p</span>, <span class="math inline">d</span>, <span class="math inline">q</span>)</strong>, where:</p>
 <div class="incremental">
@@ -715,37 +716,27 @@ y'_t = c + \phi_1 y'_{t-1} + \cdots + \phi_p y'_{t-p} + \theta_1 \varepsilon_{t-
 <p>where <span class="math inline">y'_t</span> denotes the <span class="math inline">d</span>-times differenced series and <span class="math inline">\varepsilon_t</span> is white noise.</p>
 </div>
 </section>
-</section>
-<section id="backshift-notation-for-arima" class="level1" data-number="2">
-<h1 data-number="2"><span class="header-section-number">2</span> Backshift Notation for ARIMA</h1>
-<p>Recall from the previous class that the backshift operator <span class="math inline">B</span> satisfies <span class="math inline">By_t = y_{t-1}</span>, and that <span class="math inline">d</span>-th order differencing can be written as <span class="math inline">(1-B)^d y_t</span>.</p>
-<p>Using this notation, we can write the AR and MA components compactly as well.</p>
+<section id="backshift-notation" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="backshift-notation"><span class="header-section-number">1.2</span> Backshift Notation</h2>
+<p>Recall from the <a href="../02_stationarity/stationarity.html#backshift-notation">previous topic</a> that the backshift operator <span class="math inline">B</span> satisfies <span class="math inline">By_t = y_{t-1}</span>, and that <span class="math inline">d</span>-th order differencing can be written as <span class="math inline">(1-B)^d y_t</span>.</p>
+<p>Using this notation, we can write the AR and MA components compactly as well:</p>
 <div class="fragment">
-<section id="ar-component" class="level3" data-number="2.0.1">
-<h3 data-number="2.0.1" class="anchored" data-anchor-id="ar-component"><span class="header-section-number">2.0.1</span> AR component</h3>
-<p><span class="math display">\phi_1 y_{t-1} + \phi_2 y_{t-2} + \cdots + \phi_p y_{t-p} = \phi(B)\,y_t</span></p>
+<p><strong>AR component:</strong> <span class="math display">\phi_1 y_{t-1} + \phi_2 y_{t-2} + \cdots + \phi_p y_{t-p} = \phi(B)\,y_t</span></p>
 <p>where <span class="math inline">\phi(B) = \phi_1 B + \phi_2 B^2 + \cdots + \phi_p B^p</span>.</p>
-</section>
-<section id="ma-component" class="level3" data-number="2.0.2">
-<h3 data-number="2.0.2" class="anchored" data-anchor-id="ma-component"><span class="header-section-number">2.0.2</span> MA component</h3>
-<p><span class="math display">\theta_1 \varepsilon_{t-1} + \theta_2 \varepsilon_{t-2} + \cdots + \theta_q \varepsilon_{t-q} = \theta(B)\,\varepsilon_t</span></p>
+<p><strong>MA component:</strong> <span class="math display">\theta_1 \varepsilon_{t-1} + \theta_2 \varepsilon_{t-2} + \cdots + \theta_q \varepsilon_{t-q} = \theta(B)\,\varepsilon_t</span></p>
 <p>where <span class="math inline">\theta(B) = \theta_1 B + \theta_2 B^2 + \cdots + \theta_q B^q</span>.</p>
-</section>
 </div>
 <div class="fragment">
-<section id="full-arimap-d-q-in-backshift-notation" class="level3" data-number="2.0.3">
-<h3 data-number="2.0.3" class="anchored" data-anchor-id="full-arimap-d-q-in-backshift-notation"><span class="header-section-number">2.0.3</span> Full ARIMA(<span class="math inline">p</span>, <span class="math inline">d</span>, <span class="math inline">q</span>) in backshift notation</h3>
-<p>Putting it all together:</p>
+<p><strong>Full ARIMA(<span class="math inline">p</span>, <span class="math inline">d</span>, <span class="math inline">q</span>) in backshift notation:</strong></p>
 <p><span class="math display">
 \underbrace{(1 - \phi_1 B - \cdots - \phi_p B^p)}_{\text{AR}(p)} \underbrace{(1-B)^d}_{\text{differencing}} y_t = c + \underbrace{(1 + \theta_1 B + \cdots + \theta_q B^q)}_{\text{MA}(q)} \varepsilon_t
 </span></p>
 <p>This compact form shows clearly how the three components interact. The differencing operator <span class="math inline">(1-B)^d</span> is applied first, and the AR and MA operators act on the resulting stationary series.</p>
-</section>
 </div>
 </section>
-<section id="special-cases-of-arima" class="level1" data-number="3">
-<h1 data-number="3"><span class="header-section-number">3</span> Special Cases of ARIMA</h1>
-<p>Several models we have already encountered are special cases of the ARIMA family. This unifies much of what we have learned:</p>
+<section id="special-cases" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="special-cases"><span class="header-section-number">1.3</span> Special Cases</h2>
+<p>Several models we have already encountered are special cases of the ARIMA family:</p>
 <div class="fragment">
 <table class="caption-top table">
 <thead>
@@ -802,19 +793,22 @@ y'_t = c + \phi_1 y'_{t-1} + \cdots + \phi_p y'_{t-p} + \theta_1 \varepsilon_{t-
 </div>
 </div>
 </section>
-<section id="choosing-the-orders" class="level1" data-number="4">
-<h1 data-number="4"><span class="header-section-number">4</span> Choosing the Orders</h1>
-<p>Selecting the right ARIMA order involves three decisions. A principled workflow is:</p>
+</section>
+<section id="arima-in-r" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> ARIMA in R</h1>
+<section id="choosing-the-orders" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="choosing-the-orders"><span class="header-section-number">2.1</span> Choosing the Orders</h2>
+<p>Selecting the right ARIMA order involves three decisions:</p>
 <div class="incremental">
 <ol class="incremental" type="1">
-<li><p><strong>Choose <span class="math inline">d</span></strong> — determine how many differences are needed using the stationarity protocol from the previous class: Box-Cox / log transformation to stabilize variance, <code>unitroot_nsdiffs()</code> for seasonal differencing (if any), then <code>unitroot_ndiffs()</code> on the differenced series.</p></li>
+<li><p><strong>Choose <span class="math inline">d</span></strong> — determine how many differences are needed using the stationarity protocol from the <a href="../02_stationarity/stationarity.html#unit-root-tests">previous topic</a>: Box-Cox / log transformation to stabilize variance, <code>unitroot_nsdiffs()</code> for seasonal differencing (if any), then <code>unitroot_ndiffs()</code> on the differenced series.</p></li>
 <li><p><strong>Choose <span class="math inline">p</span> or <span class="math inline">q</span></strong> — read the ACF and PACF of the (differenced, stationary) series:</p>
 <ul class="incremental">
 <li><strong>PACF cuts off</strong> after lag <span class="math inline">p</span> → AR(<span class="math inline">p</span>) component.</li>
 <li><strong>ACF cuts off</strong> after lag <span class="math inline">q</span> → MA(<span class="math inline">q</span>) component.</li>
 <li>Both decay gradually → mixed ARMA, try several combinations.</li>
 </ul></li>
-<li><p><strong>Compare candidates</strong> using information criteria (see next section).</p></li>
+<li><p><strong>Compare candidates</strong> using information criteria (see <a href="#sec-model-selection">Model Selection</a>).</p></li>
 </ol>
 </div>
 <div class="fragment">
@@ -833,13 +827,13 @@ y'_t = c + \phi_1 y'_{t-1} + \cdots + \phi_p y'_{t-p} + \theta_1 \varepsilon_{t-
 </div>
 </div>
 </section>
-<section id="arima-in-r" class="level1" data-number="5">
-<h1 data-number="5"><span class="header-section-number">5</span> ARIMA in R</h1>
+<section id="sec-manual" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="sec-manual"><span class="header-section-number">2.2</span> Manual Specification</h2>
 <p>In <code>fable</code>, ARIMA models are specified inside <code>model()</code> using the <code>ARIMA()</code> function. The order is controlled with <code>pdq()</code>:</p>
 <div class="cell">
 <div class="cell-output-display">
-<div class="plotly html-widget html-fill-item" id="htmlwidget-365522888bd0ddb5f326" style="width:100%;height:464px;"></div>
-<script type="application/json" data-for="htmlwidget-365522888bd0ddb5f326">{"x":{"data":[{"x":["1970-01-01","1970-04-01","1970-07-01","1970-10-01","1971-01-01","1971-04-01","1971-07-01","1971-10-01","1972-01-01","1972-04-01","1972-07-01","1972-10-01","1973-01-01","1973-04-01","1973-07-01","1973-10-01","1974-01-01","1974-04-01","1974-07-01","1974-10-01","1975-01-01","1975-04-01","1975-07-01","1975-10-01","1976-01-01","1976-04-01","1976-07-01","1976-10-01","1977-01-01","1977-04-01","1977-07-01","1977-10-01","1978-01-01","1978-04-01","1978-07-01","1978-10-01","1979-01-01","1979-04-01","1979-07-01","1979-10-01","1980-01-01","1980-04-01","1980-07-01","1980-10-01","1981-01-01","1981-04-01","1981-07-01","1981-10-01","1982-01-01","1982-04-01","1982-07-01","1982-10-01","1983-01-01","1983-04-01","1983-07-01","1983-10-01","1984-01-01","1984-04-01","1984-07-01","1984-10-01","1985-01-01","1985-04-01","1985-07-01","1985-10-01","1986-01-01","1986-04-01","1986-07-01","1986-10-01","1987-01-01","1987-04-01","1987-07-01","1987-10-01","1988-01-01","1988-04-01","1988-07-01","1988-10-01","1989-01-01","1989-04-01","1989-07-01","1989-10-01","1990-01-01","1990-04-01","1990-07-01","1990-10-01","1991-01-01","1991-04-01","1991-07-01","1991-10-01","1992-01-01","1992-04-01","1992-07-01","1992-10-01","1993-01-01","1993-04-01","1993-07-01","1993-10-01","1994-01-01","1994-04-01","1994-07-01","1994-10-01","1995-01-01","1995-04-01","1995-07-01","1995-10-01","1996-01-01","1996-04-01","1996-07-01","1996-10-01","1997-01-01","1997-04-01","1997-07-01","1997-10-01","1998-01-01","1998-04-01","1998-07-01","1998-10-01","1999-01-01","1999-04-01","1999-07-01","1999-10-01","2000-01-01","2000-04-01","2000-07-01","2000-10-01","2001-01-01","2001-04-01","2001-07-01","2001-10-01","2002-01-01","2002-04-01","2002-07-01","2002-10-01","2003-01-01","2003-04-01","2003-07-01","2003-10-01","2004-01-01","2004-04-01","2004-07-01","2004-10-01","2005-01-01","2005-04-01","2005-07-01","2005-10-01","2006-01-01","2006-04-01","2006-07-01","2006-10-01","2007-01-01","2007-04-01","2007-07-01","2007-10-01","2008-01-01","2008-04-01","2008-07-01","2008-10-01","2009-01-01","2009-04-01","2009-07-01","2009-10-01","2010-01-01","2010-04-01","2010-07-01","2010-10-01","2011-01-01","2011-04-01","2011-07-01","2011-10-01","2012-01-01","2012-04-01","2012-07-01","2012-10-01","2013-01-01","2013-04-01","2013-07-01","2013-10-01","2014-01-01","2014-04-01","2014-07-01","2014-10-01","2015-01-01","2015-04-01","2015-07-01","2015-10-01","2016-01-01","2016-04-01","2016-07-01","2016-10-01","2017-01-01","2017-04-01","2017-07-01","2017-10-01","2018-01-01","2018-04-01","2018-07-01","2018-10-01","2019-01-01","2019-04-01"],"y":[0.61856639950867986,0.45198401890083062,0.87287178049919589,-0.27184793266723517,1.9013449590126186,0.91487734626181094,0.79410964146013896,1.6456331640359423,1.3111896944382195,1.8857778772673583,1.5293336123326284,2.3195575416487202,1.809282167105053,-0.045090606803555033,0.35135318461438914,-0.29869338699288761,-0.89869875557102574,0.35940644782268549,0.42864100915203096,-1.4725025295399874,0.83524738243898611,1.6314874322645778,1.4112403459712652,1.0695915750005724,1.9796594970381776,0.91584534695154929,1.0473521621852555,1.2891401570625405,1.1717988524164724,0.54078143277109803,0.9411156110621377,1.4923451366069429,0.56022307316876407,2.1153292162249926,0.4190265384867331,0.80370279279193824,0.51659697626558199,-0.064957553115085886,0.96839261647829744,0.24851259973921458,-0.14305362067297267,-2.277835537125128,1.0909753940994804,1.3420279465389484,0.33443884795225642,0.0072807570438371272,0.46151212887615145,-0.68636675279343251,0.73388909329619167,0.30413540520939364,0.66814235894767648,1.7365066200037305,0.98384883775519683,2.015812652322424,1.7773140628120743,1.5810003094532732,0.82645055008576662,1.3912539121985645,0.73889767723702704,1.2871021313594966,1.6847758649143785,0.91384956643647541,1.8815216700032167,0.21609668825384176,0.87001801802166767,1.0837900215650009,1.7535634926721499,0.61147551655604815,0.09976547062624519,1.3554644312069541,1.1348444664966095,0.21133112004285692,1.7510779936037224,0.73554506057380564,0.88464617470975782,1.130580293629535,0.46287091453525164,0.46569964362657146,0.96344929349303499,0.43367269413643328,0.83807215721183326,0.30415224822046838,0.39537256853225955,-0.7636661366504427,-0.37673817763064221,0.82534748360938437,0.49735253440186256,-0.050052317948079406,1.8550267653187902,0.67654570493331789,1.0662220658923971,1.1848406952783108,0.38268878403542317,0.90549816753213719,1.106802421346309,0.87402382558749991,1.1373046854421531,0.77505850315375824,0.75962195601313454,1.0753242916431205,0.24857476422344149,0.87284989032774263,0.90215213263817873,0.69514618012771479,0.91806191616399246,1.0700389958259393,0.60359420503299788,0.79336064043253884,1.0485731200363446,0.44918438345735723,1.6894026298871267,1.1881299946718826,1.0064500585786007,1.7456110997876806,1.2955973952983868,1.4343579074440171,0.96559658032706608,1.4474719805205538,1.122359638080539,1.4545820126993902,1.5245704589775144,0.96121226060006393,0.97716909621858861,0.85641013321193782,0.39949971937947026,0.23614630465917941,0.34213043294144541,1.4842458564933381,0.30559197965835949,0.51213557913332153,0.72191276398552162,0.5730511174222741,0.469223438280153,1.116772543504041,1.4561676481678276,0.67576908285733595,0.885841720193703,0.62024912305336244,1.0997774904339508,1.0818205486621935,0.58177683051461315,1.1281613841871874,0.9659927116326017,0.2965152867693277,1.108946546955103,0.50532567491075042,0.60528083477535688,0.96309962427394424,0.55801093940068824,0.18516894930051819,0.56200944315651924,0.28440653556973672,-0.26612300054669191,0.1620192263617426,-0.75160125879616402,-0.93500719533796683,-0.22611780953116778,-0.405843686476004,0.68751976023069261,-0.14842452321452981,0.49323220243060462,0.79222239425256191,0.6969058131405248,0.65919794681370547,0.42444669623069586,0.22117719949523718,0.39080368544510691,0.18257696148236136,0.79975920345436435,0.14826832411838353,0.1630396947035706,0.44719232367036454,0.51719840815938056,0.071945195958811325,0.40590273403449117,0.85797592610408202,0.39315711289269473,1.08895373968938,1.070282590151983,1.2054265972464506,0.82726776563788462,0.79281273076148295,0.75942733134812812,0.4468239200960511,0.77825431744287243,0.71559142102817219,0.63491556349006828,0.61854533409189116,0.59333650119643977,0.59315340666827865,0.58473790051056795,1.1331455896359088,0.41696295782411852,0.98311190336257681,0.85318135333736222,0.3565120284084955,0.28288546871166886,1.1135167032879423],"text":["Quarter: 1970 Q1<br />Consumption:  0.618566400","Quarter: 1970 Q2<br />Consumption:  0.451984019","Quarter: 1970 Q3<br />Consumption:  0.872871780","Quarter: 1970 Q4<br />Consumption: -0.271847933","Quarter: 1971 Q1<br />Consumption:  1.901344959","Quarter: 1971 Q2<br />Consumption:  0.914877346","Quarter: 1971 Q3<br />Consumption:  0.794109641","Quarter: 1971 Q4<br />Consumption:  1.645633164","Quarter: 1972 Q1<br />Consumption:  1.311189694","Quarter: 1972 Q2<br />Consumption:  1.885777877","Quarter: 1972 Q3<br />Consumption:  1.529333612","Quarter: 1972 Q4<br />Consumption:  2.319557542","Quarter: 1973 Q1<br />Consumption:  1.809282167","Quarter: 1973 Q2<br />Consumption: -0.045090607","Quarter: 1973 Q3<br />Consumption:  0.351353185","Quarter: 1973 Q4<br />Consumption: -0.298693387","Quarter: 1974 Q1<br />Consumption: -0.898698756","Quarter: 1974 Q2<br />Consumption:  0.359406448","Quarter: 1974 Q3<br />Consumption:  0.428641009","Quarter: 1974 Q4<br />Consumption: -1.472502530","Quarter: 1975 Q1<br />Consumption:  0.835247382","Quarter: 1975 Q2<br />Consumption:  1.631487432","Quarter: 1975 Q3<br />Consumption:  1.411240346","Quarter: 1975 Q4<br />Consumption:  1.069591575","Quarter: 1976 Q1<br />Consumption:  1.979659497","Quarter: 1976 Q2<br />Consumption:  0.915845347","Quarter: 1976 Q3<br />Consumption:  1.047352162","Quarter: 1976 Q4<br />Consumption:  1.289140157","Quarter: 1977 Q1<br />Consumption:  1.171798852","Quarter: 1977 Q2<br />Consumption:  0.540781433","Quarter: 1977 Q3<br />Consumption:  0.941115611","Quarter: 1977 Q4<br />Consumption:  1.492345137","Quarter: 1978 Q1<br />Consumption:  0.560223073","Quarter: 1978 Q2<br />Consumption:  2.115329216","Quarter: 1978 Q3<br />Consumption:  0.419026538","Quarter: 1978 Q4<br />Consumption:  0.803702793","Quarter: 1979 Q1<br />Consumption:  0.516596976","Quarter: 1979 Q2<br />Consumption: -0.064957553","Quarter: 1979 Q3<br />Consumption:  0.968392616","Quarter: 1979 Q4<br />Consumption:  0.248512600","Quarter: 1980 Q1<br />Consumption: -0.143053621","Quarter: 1980 Q2<br />Consumption: -2.277835537","Quarter: 1980 Q3<br />Consumption:  1.090975394","Quarter: 1980 Q4<br />Consumption:  1.342027947","Quarter: 1981 Q1<br />Consumption:  0.334438848","Quarter: 1981 Q2<br />Consumption:  0.007280757","Quarter: 1981 Q3<br />Consumption:  0.461512129","Quarter: 1981 Q4<br />Consumption: -0.686366753","Quarter: 1982 Q1<br />Consumption:  0.733889093","Quarter: 1982 Q2<br />Consumption:  0.304135405","Quarter: 1982 Q3<br />Consumption:  0.668142359","Quarter: 1982 Q4<br />Consumption:  1.736506620","Quarter: 1983 Q1<br />Consumption:  0.983848838","Quarter: 1983 Q2<br />Consumption:  2.015812652","Quarter: 1983 Q3<br />Consumption:  1.777314063","Quarter: 1983 Q4<br />Consumption:  1.581000309","Quarter: 1984 Q1<br />Consumption:  0.826450550","Quarter: 1984 Q2<br />Consumption:  1.391253912","Quarter: 1984 Q3<br />Consumption:  0.738897677","Quarter: 1984 Q4<br />Consumption:  1.287102131","Quarter: 1985 Q1<br />Consumption:  1.684775865","Quarter: 1985 Q2<br />Consumption:  0.913849566","Quarter: 1985 Q3<br />Consumption:  1.881521670","Quarter: 1985 Q4<br />Consumption:  0.216096688","Quarter: 1986 Q1<br />Consumption:  0.870018018","Quarter: 1986 Q2<br />Consumption:  1.083790022","Quarter: 1986 Q3<br />Consumption:  1.753563493","Quarter: 1986 Q4<br />Consumption:  0.611475517","Quarter: 1987 Q1<br />Consumption:  0.099765471","Quarter: 1987 Q2<br />Consumption:  1.355464431","Quarter: 1987 Q3<br />Consumption:  1.134844466","Quarter: 1987 Q4<br />Consumption:  0.211331120","Quarter: 1988 Q1<br />Consumption:  1.751077994","Quarter: 1988 Q2<br />Consumption:  0.735545061","Quarter: 1988 Q3<br />Consumption:  0.884646175","Quarter: 1988 Q4<br />Consumption:  1.130580294","Quarter: 1989 Q1<br />Consumption:  0.462870915","Quarter: 1989 Q2<br />Consumption:  0.465699644","Quarter: 1989 Q3<br />Consumption:  0.963449293","Quarter: 1989 Q4<br />Consumption:  0.433672694","Quarter: 1990 Q1<br />Consumption:  0.838072157","Quarter: 1990 Q2<br />Consumption:  0.304152248","Quarter: 1990 Q3<br />Consumption:  0.395372569","Quarter: 1990 Q4<br />Consumption: -0.763666137","Quarter: 1991 Q1<br />Consumption: -0.376738178","Quarter: 1991 Q2<br />Consumption:  0.825347484","Quarter: 1991 Q3<br />Consumption:  0.497352534","Quarter: 1991 Q4<br />Consumption: -0.050052318","Quarter: 1992 Q1<br />Consumption:  1.855026765","Quarter: 1992 Q2<br />Consumption:  0.676545705","Quarter: 1992 Q3<br />Consumption:  1.066222066","Quarter: 1992 Q4<br />Consumption:  1.184840695","Quarter: 1993 Q1<br />Consumption:  0.382688784","Quarter: 1993 Q2<br />Consumption:  0.905498168","Quarter: 1993 Q3<br />Consumption:  1.106802421","Quarter: 1993 Q4<br />Consumption:  0.874023826","Quarter: 1994 Q1<br />Consumption:  1.137304685","Quarter: 1994 Q2<br />Consumption:  0.775058503","Quarter: 1994 Q3<br />Consumption:  0.759621956","Quarter: 1994 Q4<br />Consumption:  1.075324292","Quarter: 1995 Q1<br />Consumption:  0.248574764","Quarter: 1995 Q2<br />Consumption:  0.872849890","Quarter: 1995 Q3<br />Consumption:  0.902152133","Quarter: 1995 Q4<br />Consumption:  0.695146180","Quarter: 1996 Q1<br />Consumption:  0.918061916","Quarter: 1996 Q2<br />Consumption:  1.070038996","Quarter: 1996 Q3<br />Consumption:  0.603594205","Quarter: 1996 Q4<br />Consumption:  0.793360640","Quarter: 1997 Q1<br />Consumption:  1.048573120","Quarter: 1997 Q2<br />Consumption:  0.449184383","Quarter: 1997 Q3<br />Consumption:  1.689402630","Quarter: 1997 Q4<br />Consumption:  1.188129995","Quarter: 1998 Q1<br />Consumption:  1.006450059","Quarter: 1998 Q2<br />Consumption:  1.745611100","Quarter: 1998 Q3<br />Consumption:  1.295597395","Quarter: 1998 Q4<br />Consumption:  1.434357907","Quarter: 1999 Q1<br />Consumption:  0.965596580","Quarter: 1999 Q2<br />Consumption:  1.447471981","Quarter: 1999 Q3<br />Consumption:  1.122359638","Quarter: 1999 Q4<br />Consumption:  1.454582013","Quarter: 2000 Q1<br />Consumption:  1.524570459","Quarter: 2000 Q2<br />Consumption:  0.961212261","Quarter: 2000 Q3<br />Consumption:  0.977169096","Quarter: 2000 Q4<br />Consumption:  0.856410133","Quarter: 2001 Q1<br />Consumption:  0.399499719","Quarter: 2001 Q2<br />Consumption:  0.236146305","Quarter: 2001 Q3<br />Consumption:  0.342130433","Quarter: 2001 Q4<br />Consumption:  1.484245856","Quarter: 2002 Q1<br />Consumption:  0.305591980","Quarter: 2002 Q2<br />Consumption:  0.512135579","Quarter: 2002 Q3<br />Consumption:  0.721912764","Quarter: 2002 Q4<br />Consumption:  0.573051117","Quarter: 2003 Q1<br />Consumption:  0.469223438","Quarter: 2003 Q2<br />Consumption:  1.116772544","Quarter: 2003 Q3<br />Consumption:  1.456167648","Quarter: 2003 Q4<br />Consumption:  0.675769083","Quarter: 2004 Q1<br />Consumption:  0.885841720","Quarter: 2004 Q2<br />Consumption:  0.620249123","Quarter: 2004 Q3<br />Consumption:  1.099777490","Quarter: 2004 Q4<br />Consumption:  1.081820549","Quarter: 2005 Q1<br />Consumption:  0.581776831","Quarter: 2005 Q2<br />Consumption:  1.128161384","Quarter: 2005 Q3<br />Consumption:  0.965992712","Quarter: 2005 Q4<br />Consumption:  0.296515287","Quarter: 2006 Q1<br />Consumption:  1.108946547","Quarter: 2006 Q2<br />Consumption:  0.505325675","Quarter: 2006 Q3<br />Consumption:  0.605280835","Quarter: 2006 Q4<br />Consumption:  0.963099624","Quarter: 2007 Q1<br />Consumption:  0.558010939","Quarter: 2007 Q2<br />Consumption:  0.185168949","Quarter: 2007 Q3<br />Consumption:  0.562009443","Quarter: 2007 Q4<br />Consumption:  0.284406536","Quarter: 2008 Q1<br />Consumption: -0.266123001","Quarter: 2008 Q2<br />Consumption:  0.162019226","Quarter: 2008 Q3<br />Consumption: -0.751601259","Quarter: 2008 Q4<br />Consumption: -0.935007195","Quarter: 2009 Q1<br />Consumption: -0.226117810","Quarter: 2009 Q2<br />Consumption: -0.405843686","Quarter: 2009 Q3<br />Consumption:  0.687519760","Quarter: 2009 Q4<br />Consumption: -0.148424523","Quarter: 2010 Q1<br />Consumption:  0.493232202","Quarter: 2010 Q2<br />Consumption:  0.792222394","Quarter: 2010 Q3<br />Consumption:  0.696905813","Quarter: 2010 Q4<br />Consumption:  0.659197947","Quarter: 2011 Q1<br />Consumption:  0.424446696","Quarter: 2011 Q2<br />Consumption:  0.221177199","Quarter: 2011 Q3<br />Consumption:  0.390803685","Quarter: 2011 Q4<br />Consumption:  0.182576961","Quarter: 2012 Q1<br />Consumption:  0.799759203","Quarter: 2012 Q2<br />Consumption:  0.148268324","Quarter: 2012 Q3<br />Consumption:  0.163039695","Quarter: 2012 Q4<br />Consumption:  0.447192324","Quarter: 2013 Q1<br />Consumption:  0.517198408","Quarter: 2013 Q2<br />Consumption:  0.071945196","Quarter: 2013 Q3<br />Consumption:  0.405902734","Quarter: 2013 Q4<br />Consumption:  0.857975926","Quarter: 2014 Q1<br />Consumption:  0.393157113","Quarter: 2014 Q2<br />Consumption:  1.088953740","Quarter: 2014 Q3<br />Consumption:  1.070282590","Quarter: 2014 Q4<br />Consumption:  1.205426597","Quarter: 2015 Q1<br />Consumption:  0.827267766","Quarter: 2015 Q2<br />Consumption:  0.792812731","Quarter: 2015 Q3<br />Consumption:  0.759427331","Quarter: 2015 Q4<br />Consumption:  0.446823920","Quarter: 2016 Q1<br />Consumption:  0.778254317","Quarter: 2016 Q2<br />Consumption:  0.715591421","Quarter: 2016 Q3<br />Consumption:  0.634915563","Quarter: 2016 Q4<br />Consumption:  0.618545334","Quarter: 2017 Q1<br />Consumption:  0.593336501","Quarter: 2017 Q2<br />Consumption:  0.593153407","Quarter: 2017 Q3<br />Consumption:  0.584737901","Quarter: 2017 Q4<br />Consumption:  1.133145590","Quarter: 2018 Q1<br />Consumption:  0.416962958","Quarter: 2018 Q2<br />Consumption:  0.983111903","Quarter: 2018 Q3<br />Consumption:  0.853181353","Quarter: 2018 Q4<br />Consumption:  0.356512028","Quarter: 2019 Q1<br />Consumption:  0.282885469","Quarter: 2019 Q2<br />Consumption:  1.113516703"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(70,130,180,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":40.840182648401829,"r":7.3059360730593621,"b":22.648401826484022,"l":37.260273972602747},"plot_bgcolor":"rgba(235,235,235,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"title":{"text":"US consumption — quarterly % change","font":{"color":"rgba(0,0,0,1)","family":"","size":17.534246575342465},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"date","autorange":true,"range":["1967-07-16","2021-09-16"],"tickmode":"auto","ticktext":["1980 Q1","2000 Q1","2020 Q1"],"tickvals":[3652.0000000000005,10957,18262],"categoryorder":"array","categoryarray":["1980 Q1","2000 Q1","2020 Q1"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"y","title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":true,"range":[-2.5077051910638204,2.5494271955874126],"tickmode":"auto","ticktext":["-2","-1","0","1","2"],"tickvals":[-2,-1,0,1,2],"categoryorder":"array","categoryarray":["-2","-1","0","1","2"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"x","title":{"text":"% change","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"shapes":[],"showlegend":false,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.8897637795275593,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"1b0d6dc7bfb1":{"x":{},"y":{},"type":"scatter"}},"cur_data":"1b0d6dc7bfb1","visdat":{"1b0d6dc7bfb1":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<div class="plotly html-widget html-fill-item" id="htmlwidget-becec7facd416c6d0901" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-becec7facd416c6d0901">{"x":{"data":[{"x":["1970-01-01","1970-04-01","1970-07-01","1970-10-01","1971-01-01","1971-04-01","1971-07-01","1971-10-01","1972-01-01","1972-04-01","1972-07-01","1972-10-01","1973-01-01","1973-04-01","1973-07-01","1973-10-01","1974-01-01","1974-04-01","1974-07-01","1974-10-01","1975-01-01","1975-04-01","1975-07-01","1975-10-01","1976-01-01","1976-04-01","1976-07-01","1976-10-01","1977-01-01","1977-04-01","1977-07-01","1977-10-01","1978-01-01","1978-04-01","1978-07-01","1978-10-01","1979-01-01","1979-04-01","1979-07-01","1979-10-01","1980-01-01","1980-04-01","1980-07-01","1980-10-01","1981-01-01","1981-04-01","1981-07-01","1981-10-01","1982-01-01","1982-04-01","1982-07-01","1982-10-01","1983-01-01","1983-04-01","1983-07-01","1983-10-01","1984-01-01","1984-04-01","1984-07-01","1984-10-01","1985-01-01","1985-04-01","1985-07-01","1985-10-01","1986-01-01","1986-04-01","1986-07-01","1986-10-01","1987-01-01","1987-04-01","1987-07-01","1987-10-01","1988-01-01","1988-04-01","1988-07-01","1988-10-01","1989-01-01","1989-04-01","1989-07-01","1989-10-01","1990-01-01","1990-04-01","1990-07-01","1990-10-01","1991-01-01","1991-04-01","1991-07-01","1991-10-01","1992-01-01","1992-04-01","1992-07-01","1992-10-01","1993-01-01","1993-04-01","1993-07-01","1993-10-01","1994-01-01","1994-04-01","1994-07-01","1994-10-01","1995-01-01","1995-04-01","1995-07-01","1995-10-01","1996-01-01","1996-04-01","1996-07-01","1996-10-01","1997-01-01","1997-04-01","1997-07-01","1997-10-01","1998-01-01","1998-04-01","1998-07-01","1998-10-01","1999-01-01","1999-04-01","1999-07-01","1999-10-01","2000-01-01","2000-04-01","2000-07-01","2000-10-01","2001-01-01","2001-04-01","2001-07-01","2001-10-01","2002-01-01","2002-04-01","2002-07-01","2002-10-01","2003-01-01","2003-04-01","2003-07-01","2003-10-01","2004-01-01","2004-04-01","2004-07-01","2004-10-01","2005-01-01","2005-04-01","2005-07-01","2005-10-01","2006-01-01","2006-04-01","2006-07-01","2006-10-01","2007-01-01","2007-04-01","2007-07-01","2007-10-01","2008-01-01","2008-04-01","2008-07-01","2008-10-01","2009-01-01","2009-04-01","2009-07-01","2009-10-01","2010-01-01","2010-04-01","2010-07-01","2010-10-01","2011-01-01","2011-04-01","2011-07-01","2011-10-01","2012-01-01","2012-04-01","2012-07-01","2012-10-01","2013-01-01","2013-04-01","2013-07-01","2013-10-01","2014-01-01","2014-04-01","2014-07-01","2014-10-01","2015-01-01","2015-04-01","2015-07-01","2015-10-01","2016-01-01","2016-04-01","2016-07-01","2016-10-01","2017-01-01","2017-04-01","2017-07-01","2017-10-01","2018-01-01","2018-04-01","2018-07-01","2018-10-01","2019-01-01","2019-04-01"],"y":[0.61856639950867986,0.45198401890083062,0.87287178049919589,-0.27184793266723517,1.9013449590126186,0.91487734626181094,0.79410964146013896,1.6456331640359423,1.3111896944382195,1.8857778772673583,1.5293336123326284,2.3195575416487202,1.809282167105053,-0.045090606803555033,0.35135318461438914,-0.29869338699288761,-0.89869875557102574,0.35940644782268549,0.42864100915203096,-1.4725025295399874,0.83524738243898611,1.6314874322645778,1.4112403459712652,1.0695915750005724,1.9796594970381776,0.91584534695154929,1.0473521621852555,1.2891401570625405,1.1717988524164724,0.54078143277109803,0.9411156110621377,1.4923451366069429,0.56022307316876407,2.1153292162249926,0.4190265384867331,0.80370279279193824,0.51659697626558199,-0.064957553115085886,0.96839261647829744,0.24851259973921458,-0.14305362067297267,-2.277835537125128,1.0909753940994804,1.3420279465389484,0.33443884795225642,0.0072807570438371272,0.46151212887615145,-0.68636675279343251,0.73388909329619167,0.30413540520939364,0.66814235894767648,1.7365066200037305,0.98384883775519683,2.015812652322424,1.7773140628120743,1.5810003094532732,0.82645055008576662,1.3912539121985645,0.73889767723702704,1.2871021313594966,1.6847758649143785,0.91384956643647541,1.8815216700032167,0.21609668825384176,0.87001801802166767,1.0837900215650009,1.7535634926721499,0.61147551655604815,0.09976547062624519,1.3554644312069541,1.1348444664966095,0.21133112004285692,1.7510779936037224,0.73554506057380564,0.88464617470975782,1.130580293629535,0.46287091453525164,0.46569964362657146,0.96344929349303499,0.43367269413643328,0.83807215721183326,0.30415224822046838,0.39537256853225955,-0.7636661366504427,-0.37673817763064221,0.82534748360938437,0.49735253440186256,-0.050052317948079406,1.8550267653187902,0.67654570493331789,1.0662220658923971,1.1848406952783108,0.38268878403542317,0.90549816753213719,1.106802421346309,0.87402382558749991,1.1373046854421531,0.77505850315375824,0.75962195601313454,1.0753242916431205,0.24857476422344149,0.87284989032774263,0.90215213263817873,0.69514618012771479,0.91806191616399246,1.0700389958259393,0.60359420503299788,0.79336064043253884,1.0485731200363446,0.44918438345735723,1.6894026298871267,1.1881299946718826,1.0064500585786007,1.7456110997876806,1.2955973952983868,1.4343579074440171,0.96559658032706608,1.4474719805205538,1.122359638080539,1.4545820126993902,1.5245704589775144,0.96121226060006393,0.97716909621858861,0.85641013321193782,0.39949971937947026,0.23614630465917941,0.34213043294144541,1.4842458564933381,0.30559197965835949,0.51213557913332153,0.72191276398552162,0.5730511174222741,0.469223438280153,1.116772543504041,1.4561676481678276,0.67576908285733595,0.885841720193703,0.62024912305336244,1.0997774904339508,1.0818205486621935,0.58177683051461315,1.1281613841871874,0.9659927116326017,0.2965152867693277,1.108946546955103,0.50532567491075042,0.60528083477535688,0.96309962427394424,0.55801093940068824,0.18516894930051819,0.56200944315651924,0.28440653556973672,-0.26612300054669191,0.1620192263617426,-0.75160125879616402,-0.93500719533796683,-0.22611780953116778,-0.405843686476004,0.68751976023069261,-0.14842452321452981,0.49323220243060462,0.79222239425256191,0.6969058131405248,0.65919794681370547,0.42444669623069586,0.22117719949523718,0.39080368544510691,0.18257696148236136,0.79975920345436435,0.14826832411838353,0.1630396947035706,0.44719232367036454,0.51719840815938056,0.071945195958811325,0.40590273403449117,0.85797592610408202,0.39315711289269473,1.08895373968938,1.070282590151983,1.2054265972464506,0.82726776563788462,0.79281273076148295,0.75942733134812812,0.4468239200960511,0.77825431744287243,0.71559142102817219,0.63491556349006828,0.61854533409189116,0.59333650119643977,0.59315340666827865,0.58473790051056795,1.1331455896359088,0.41696295782411852,0.98311190336257681,0.85318135333736222,0.3565120284084955,0.28288546871166886,1.1135167032879423],"text":["Quarter: 1970 Q1<br />Consumption:  0.618566400","Quarter: 1970 Q2<br />Consumption:  0.451984019","Quarter: 1970 Q3<br />Consumption:  0.872871780","Quarter: 1970 Q4<br />Consumption: -0.271847933","Quarter: 1971 Q1<br />Consumption:  1.901344959","Quarter: 1971 Q2<br />Consumption:  0.914877346","Quarter: 1971 Q3<br />Consumption:  0.794109641","Quarter: 1971 Q4<br />Consumption:  1.645633164","Quarter: 1972 Q1<br />Consumption:  1.311189694","Quarter: 1972 Q2<br />Consumption:  1.885777877","Quarter: 1972 Q3<br />Consumption:  1.529333612","Quarter: 1972 Q4<br />Consumption:  2.319557542","Quarter: 1973 Q1<br />Consumption:  1.809282167","Quarter: 1973 Q2<br />Consumption: -0.045090607","Quarter: 1973 Q3<br />Consumption:  0.351353185","Quarter: 1973 Q4<br />Consumption: -0.298693387","Quarter: 1974 Q1<br />Consumption: -0.898698756","Quarter: 1974 Q2<br />Consumption:  0.359406448","Quarter: 1974 Q3<br />Consumption:  0.428641009","Quarter: 1974 Q4<br />Consumption: -1.472502530","Quarter: 1975 Q1<br />Consumption:  0.835247382","Quarter: 1975 Q2<br />Consumption:  1.631487432","Quarter: 1975 Q3<br />Consumption:  1.411240346","Quarter: 1975 Q4<br />Consumption:  1.069591575","Quarter: 1976 Q1<br />Consumption:  1.979659497","Quarter: 1976 Q2<br />Consumption:  0.915845347","Quarter: 1976 Q3<br />Consumption:  1.047352162","Quarter: 1976 Q4<br />Consumption:  1.289140157","Quarter: 1977 Q1<br />Consumption:  1.171798852","Quarter: 1977 Q2<br />Consumption:  0.540781433","Quarter: 1977 Q3<br />Consumption:  0.941115611","Quarter: 1977 Q4<br />Consumption:  1.492345137","Quarter: 1978 Q1<br />Consumption:  0.560223073","Quarter: 1978 Q2<br />Consumption:  2.115329216","Quarter: 1978 Q3<br />Consumption:  0.419026538","Quarter: 1978 Q4<br />Consumption:  0.803702793","Quarter: 1979 Q1<br />Consumption:  0.516596976","Quarter: 1979 Q2<br />Consumption: -0.064957553","Quarter: 1979 Q3<br />Consumption:  0.968392616","Quarter: 1979 Q4<br />Consumption:  0.248512600","Quarter: 1980 Q1<br />Consumption: -0.143053621","Quarter: 1980 Q2<br />Consumption: -2.277835537","Quarter: 1980 Q3<br />Consumption:  1.090975394","Quarter: 1980 Q4<br />Consumption:  1.342027947","Quarter: 1981 Q1<br />Consumption:  0.334438848","Quarter: 1981 Q2<br />Consumption:  0.007280757","Quarter: 1981 Q3<br />Consumption:  0.461512129","Quarter: 1981 Q4<br />Consumption: -0.686366753","Quarter: 1982 Q1<br />Consumption:  0.733889093","Quarter: 1982 Q2<br />Consumption:  0.304135405","Quarter: 1982 Q3<br />Consumption:  0.668142359","Quarter: 1982 Q4<br />Consumption:  1.736506620","Quarter: 1983 Q1<br />Consumption:  0.983848838","Quarter: 1983 Q2<br />Consumption:  2.015812652","Quarter: 1983 Q3<br />Consumption:  1.777314063","Quarter: 1983 Q4<br />Consumption:  1.581000309","Quarter: 1984 Q1<br />Consumption:  0.826450550","Quarter: 1984 Q2<br />Consumption:  1.391253912","Quarter: 1984 Q3<br />Consumption:  0.738897677","Quarter: 1984 Q4<br />Consumption:  1.287102131","Quarter: 1985 Q1<br />Consumption:  1.684775865","Quarter: 1985 Q2<br />Consumption:  0.913849566","Quarter: 1985 Q3<br />Consumption:  1.881521670","Quarter: 1985 Q4<br />Consumption:  0.216096688","Quarter: 1986 Q1<br />Consumption:  0.870018018","Quarter: 1986 Q2<br />Consumption:  1.083790022","Quarter: 1986 Q3<br />Consumption:  1.753563493","Quarter: 1986 Q4<br />Consumption:  0.611475517","Quarter: 1987 Q1<br />Consumption:  0.099765471","Quarter: 1987 Q2<br />Consumption:  1.355464431","Quarter: 1987 Q3<br />Consumption:  1.134844466","Quarter: 1987 Q4<br />Consumption:  0.211331120","Quarter: 1988 Q1<br />Consumption:  1.751077994","Quarter: 1988 Q2<br />Consumption:  0.735545061","Quarter: 1988 Q3<br />Consumption:  0.884646175","Quarter: 1988 Q4<br />Consumption:  1.130580294","Quarter: 1989 Q1<br />Consumption:  0.462870915","Quarter: 1989 Q2<br />Consumption:  0.465699644","Quarter: 1989 Q3<br />Consumption:  0.963449293","Quarter: 1989 Q4<br />Consumption:  0.433672694","Quarter: 1990 Q1<br />Consumption:  0.838072157","Quarter: 1990 Q2<br />Consumption:  0.304152248","Quarter: 1990 Q3<br />Consumption:  0.395372569","Quarter: 1990 Q4<br />Consumption: -0.763666137","Quarter: 1991 Q1<br />Consumption: -0.376738178","Quarter: 1991 Q2<br />Consumption:  0.825347484","Quarter: 1991 Q3<br />Consumption:  0.497352534","Quarter: 1991 Q4<br />Consumption: -0.050052318","Quarter: 1992 Q1<br />Consumption:  1.855026765","Quarter: 1992 Q2<br />Consumption:  0.676545705","Quarter: 1992 Q3<br />Consumption:  1.066222066","Quarter: 1992 Q4<br />Consumption:  1.184840695","Quarter: 1993 Q1<br />Consumption:  0.382688784","Quarter: 1993 Q2<br />Consumption:  0.905498168","Quarter: 1993 Q3<br />Consumption:  1.106802421","Quarter: 1993 Q4<br />Consumption:  0.874023826","Quarter: 1994 Q1<br />Consumption:  1.137304685","Quarter: 1994 Q2<br />Consumption:  0.775058503","Quarter: 1994 Q3<br />Consumption:  0.759621956","Quarter: 1994 Q4<br />Consumption:  1.075324292","Quarter: 1995 Q1<br />Consumption:  0.248574764","Quarter: 1995 Q2<br />Consumption:  0.872849890","Quarter: 1995 Q3<br />Consumption:  0.902152133","Quarter: 1995 Q4<br />Consumption:  0.695146180","Quarter: 1996 Q1<br />Consumption:  0.918061916","Quarter: 1996 Q2<br />Consumption:  1.070038996","Quarter: 1996 Q3<br />Consumption:  0.603594205","Quarter: 1996 Q4<br />Consumption:  0.793360640","Quarter: 1997 Q1<br />Consumption:  1.048573120","Quarter: 1997 Q2<br />Consumption:  0.449184383","Quarter: 1997 Q3<br />Consumption:  1.689402630","Quarter: 1997 Q4<br />Consumption:  1.188129995","Quarter: 1998 Q1<br />Consumption:  1.006450059","Quarter: 1998 Q2<br />Consumption:  1.745611100","Quarter: 1998 Q3<br />Consumption:  1.295597395","Quarter: 1998 Q4<br />Consumption:  1.434357907","Quarter: 1999 Q1<br />Consumption:  0.965596580","Quarter: 1999 Q2<br />Consumption:  1.447471981","Quarter: 1999 Q3<br />Consumption:  1.122359638","Quarter: 1999 Q4<br />Consumption:  1.454582013","Quarter: 2000 Q1<br />Consumption:  1.524570459","Quarter: 2000 Q2<br />Consumption:  0.961212261","Quarter: 2000 Q3<br />Consumption:  0.977169096","Quarter: 2000 Q4<br />Consumption:  0.856410133","Quarter: 2001 Q1<br />Consumption:  0.399499719","Quarter: 2001 Q2<br />Consumption:  0.236146305","Quarter: 2001 Q3<br />Consumption:  0.342130433","Quarter: 2001 Q4<br />Consumption:  1.484245856","Quarter: 2002 Q1<br />Consumption:  0.305591980","Quarter: 2002 Q2<br />Consumption:  0.512135579","Quarter: 2002 Q3<br />Consumption:  0.721912764","Quarter: 2002 Q4<br />Consumption:  0.573051117","Quarter: 2003 Q1<br />Consumption:  0.469223438","Quarter: 2003 Q2<br />Consumption:  1.116772544","Quarter: 2003 Q3<br />Consumption:  1.456167648","Quarter: 2003 Q4<br />Consumption:  0.675769083","Quarter: 2004 Q1<br />Consumption:  0.885841720","Quarter: 2004 Q2<br />Consumption:  0.620249123","Quarter: 2004 Q3<br />Consumption:  1.099777490","Quarter: 2004 Q4<br />Consumption:  1.081820549","Quarter: 2005 Q1<br />Consumption:  0.581776831","Quarter: 2005 Q2<br />Consumption:  1.128161384","Quarter: 2005 Q3<br />Consumption:  0.965992712","Quarter: 2005 Q4<br />Consumption:  0.296515287","Quarter: 2006 Q1<br />Consumption:  1.108946547","Quarter: 2006 Q2<br />Consumption:  0.505325675","Quarter: 2006 Q3<br />Consumption:  0.605280835","Quarter: 2006 Q4<br />Consumption:  0.963099624","Quarter: 2007 Q1<br />Consumption:  0.558010939","Quarter: 2007 Q2<br />Consumption:  0.185168949","Quarter: 2007 Q3<br />Consumption:  0.562009443","Quarter: 2007 Q4<br />Consumption:  0.284406536","Quarter: 2008 Q1<br />Consumption: -0.266123001","Quarter: 2008 Q2<br />Consumption:  0.162019226","Quarter: 2008 Q3<br />Consumption: -0.751601259","Quarter: 2008 Q4<br />Consumption: -0.935007195","Quarter: 2009 Q1<br />Consumption: -0.226117810","Quarter: 2009 Q2<br />Consumption: -0.405843686","Quarter: 2009 Q3<br />Consumption:  0.687519760","Quarter: 2009 Q4<br />Consumption: -0.148424523","Quarter: 2010 Q1<br />Consumption:  0.493232202","Quarter: 2010 Q2<br />Consumption:  0.792222394","Quarter: 2010 Q3<br />Consumption:  0.696905813","Quarter: 2010 Q4<br />Consumption:  0.659197947","Quarter: 2011 Q1<br />Consumption:  0.424446696","Quarter: 2011 Q2<br />Consumption:  0.221177199","Quarter: 2011 Q3<br />Consumption:  0.390803685","Quarter: 2011 Q4<br />Consumption:  0.182576961","Quarter: 2012 Q1<br />Consumption:  0.799759203","Quarter: 2012 Q2<br />Consumption:  0.148268324","Quarter: 2012 Q3<br />Consumption:  0.163039695","Quarter: 2012 Q4<br />Consumption:  0.447192324","Quarter: 2013 Q1<br />Consumption:  0.517198408","Quarter: 2013 Q2<br />Consumption:  0.071945196","Quarter: 2013 Q3<br />Consumption:  0.405902734","Quarter: 2013 Q4<br />Consumption:  0.857975926","Quarter: 2014 Q1<br />Consumption:  0.393157113","Quarter: 2014 Q2<br />Consumption:  1.088953740","Quarter: 2014 Q3<br />Consumption:  1.070282590","Quarter: 2014 Q4<br />Consumption:  1.205426597","Quarter: 2015 Q1<br />Consumption:  0.827267766","Quarter: 2015 Q2<br />Consumption:  0.792812731","Quarter: 2015 Q3<br />Consumption:  0.759427331","Quarter: 2015 Q4<br />Consumption:  0.446823920","Quarter: 2016 Q1<br />Consumption:  0.778254317","Quarter: 2016 Q2<br />Consumption:  0.715591421","Quarter: 2016 Q3<br />Consumption:  0.634915563","Quarter: 2016 Q4<br />Consumption:  0.618545334","Quarter: 2017 Q1<br />Consumption:  0.593336501","Quarter: 2017 Q2<br />Consumption:  0.593153407","Quarter: 2017 Q3<br />Consumption:  0.584737901","Quarter: 2017 Q4<br />Consumption:  1.133145590","Quarter: 2018 Q1<br />Consumption:  0.416962958","Quarter: 2018 Q2<br />Consumption:  0.983111903","Quarter: 2018 Q3<br />Consumption:  0.853181353","Quarter: 2018 Q4<br />Consumption:  0.356512028","Quarter: 2019 Q1<br />Consumption:  0.282885469","Quarter: 2019 Q2<br />Consumption:  1.113516703"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(70,130,180,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":40.840182648401829,"r":7.3059360730593621,"b":22.648401826484022,"l":37.260273972602747},"plot_bgcolor":"rgba(235,235,235,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"title":{"text":"US consumption — quarterly % change","font":{"color":"rgba(0,0,0,1)","family":"","size":17.534246575342465},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"date","autorange":true,"range":["1967-07-16","2021-09-16"],"tickmode":"auto","ticktext":["1980 Q1","2000 Q1","2020 Q1"],"tickvals":[3652.0000000000005,10957,18262],"categoryorder":"array","categoryarray":["1980 Q1","2000 Q1","2020 Q1"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"y","title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":true,"range":[-2.5077051910638204,2.5494271955874126],"tickmode":"auto","ticktext":["-2","-1","0","1","2"],"tickvals":[-2,-1,0,1,2],"categoryorder":"array","categoryarray":["-2","-1","0","1","2"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"x","title":{"text":"% change","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"shapes":[],"showlegend":false,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.8897637795275593,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"188a527b0b57":{"x":{},"y":{},"type":"scatter"}},"cur_data":"188a527b0b57","visdat":{"188a527b0b57":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <div class="cell">
@@ -889,8 +883,8 @@ AIC=350.6   AICc=350.91   BIC=367.04</code></pre>
 </div>
 </div>
 </section>
-<section id="model-selection" class="level1" data-number="6">
-<h1 data-number="6"><span class="header-section-number">6</span> Model Selection</h1>
+<section id="sec-model-selection" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="sec-model-selection"><span class="header-section-number">2.3</span> Model Selection</h2>
 <p>When comparing candidate ARIMA models, we use <strong>information criteria</strong> — they balance goodness of fit against model complexity:</p>
 <p><span class="math display">
 \text{AIC} = -2\log(L) + 2(p + q + k + 1)
@@ -901,7 +895,7 @@ AIC=350.6   AICc=350.91   BIC=367.04</code></pre>
 <p><span class="math display">
 \text{BIC} = \text{AIC} + [\log(T) - 2](p + q + k + 1)
 </span></p>
-<p>where <span class="math inline">k = 1</span> if the model includes a constant, <span class="math inline">k = 0</span> otherwise.</p>
+<p>where <span class="math inline">k = 1</span> if the model includes a constant, <span class="math inline">k = 0</span> otherwise. The preferred criterion is AIC<span class="math inline">_c</span>.</p>
 <div class="fragment">
 <div class="callout callout-style-simple callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -913,12 +907,13 @@ AIC=350.6   AICc=350.91   BIC=367.04</code></pre>
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Information criteria are only comparable across models fitted to <strong>identical data</strong> — same transformation, same differencing order. You cannot compare, for example, AIC<span class="math inline">_c</span> of an ARIMA fitted to <span class="math inline">\log(y_t)</span> vs.&nbsp;one fitted to <span class="math inline">y_t</span>, or ARIMA(1,1,1) vs.&nbsp;ARIMA(1,0,1) using AIC<span class="math inline">_c</span>. When models differ in <span class="math inline">d</span>, use forecast accuracy on a test set instead.</p>
+<p>Information criteria are only comparable across models fitted to <strong>identical data</strong> — same transformation, same differencing order. You cannot compare AIC<span class="math inline">_c</span> of an ARIMA fitted to <span class="math inline">\log(y_t)</span> vs.&nbsp;one fitted to <span class="math inline">y_t</span>, or ARIMA(1,1,1) vs.&nbsp;ARIMA(1,0,1). When models differ in <span class="math inline">d</span>, use forecast accuracy on a test set instead.</p>
 </div>
 </div>
 </div>
-<section id="automatic-and-semi-automatic-selection-1" class="level2" data-number="6.1">
-<h2 data-number="6.1" class="anchored" data-anchor-id="automatic-and-semi-automatic-selection-1"><span class="header-section-number">6.1</span> Automatic and Semi-Automatic Selection</h2>
+</section>
+<section id="automatic-and-semi-automatic-selection" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="automatic-and-semi-automatic-selection"><span class="header-section-number">2.4</span> Automatic and Semi-Automatic Selection</h2>
 <p><code>ARIMA()</code> in <code>fable</code> can search for the best order automatically when <code>pdq()</code> is not specified:</p>
 <div class="cell">
 <details open="" class="code-fold">
@@ -962,7 +957,7 @@ AIC=351.77   AICc=352.21   BIC=371.5</code></pre>
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><code>fable</code> implements a stepwise search algorithm (based on Hyndman &amp; Khandakar, 2008) that:</p>
+<p><code>fable</code> implements a stepwise search algorithm (Hyndman &amp; Khandakar, 2008) that:</p>
 <ol type="1">
 <li>Determines <span class="math inline">d</span> using unit root tests.</li>
 <li>Starts from a simple model and navigates through the order space by comparing AIC<span class="math inline">_c</span> values.</li>
@@ -972,7 +967,7 @@ AIC=351.77   AICc=352.21   BIC=371.5</code></pre>
 </div>
 </div>
 </div>
-<p>You can also supply a <strong>range of values</strong> to explore:</p>
+<p>You can also supply a <strong>range of values</strong> to explore, or request an exhaustive search:</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
@@ -1004,7 +999,6 @@ sigma^2 estimated as 0.3332:  log likelihood=-170.3
 AIC=350.6   AICc=350.91   BIC=367.04</code></pre>
 </div>
 </div>
-<p>For a more exhaustive (but slower) search, disable stepwise approximations:</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
@@ -1012,7 +1006,7 @@ AIC=350.6   AICc=350.91   BIC=367.04</code></pre>
 <span id="annotated-cell-5-2"><a href="#annotated-cell-5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(</span>
 <span id="annotated-cell-5-3"><a href="#annotated-cell-5-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">exhaustive =</span> <span class="fu">ARIMA</span>(</span>
 <span id="annotated-cell-5-4"><a href="#annotated-cell-5-4" aria-hidden="true" tabindex="-1"></a>      Consumption <span class="sc">~</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>),</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-5" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-5-5" class="code-annotation-target"><a href="#annotated-cell-5-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">stepwise     =</span> <span class="cn">FALSE</span>,</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-5" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-5-5" class="code-annotation-target"><a href="#annotated-cell-5-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">stepwise      =</span> <span class="cn">FALSE</span>,</span>
 <a class="code-annotation-anchor" data-target-cell="annotated-cell-5" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-5-6" class="code-annotation-target"><a href="#annotated-cell-5-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">approximation =</span> <span class="cn">FALSE</span></span>
 <span id="annotated-cell-5-7"><a href="#annotated-cell-5-7" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="annotated-cell-5-8"><a href="#annotated-cell-5-8" aria-hidden="true" tabindex="-1"></a>  )</span>
@@ -1027,7 +1021,7 @@ AIC=350.6   AICc=350.91   BIC=367.04</code></pre>
 </dd>
 <dt data-target-cell="annotated-cell-5" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-cell="annotated-cell-5" data-code-lines="6" data-code-annotation="2"><code>approximation = FALSE</code> uses exact likelihood rather than a faster approximation. This is more accurate but can be substantially slower on long series.</span>
+<span data-code-cell="annotated-cell-5" data-code-lines="6" data-code-annotation="2"><code>approximation = FALSE</code> uses exact likelihood rather than a faster approximation. More accurate but can be substantially slower on long series.</span>
 </dd>
 </dl>
 </div>
@@ -1050,24 +1044,23 @@ AIC=350.6   AICc=350.91   BIC=367.04</code></pre>
 <i class="callout-icon"></i>
 </div>
 <div class="callout-body-container">
-<p>For exploratory work, automatic selection is fine. For a final model or a competition, use <code>stepwise = FALSE, approximation = FALSE</code> and compare the result with your manually identified candidate.</p>
+<p>For exploratory work, automatic selection is fine. For a final model, use <code>stepwise = FALSE, approximation = FALSE</code> and compare the result with your manually identified candidate.</p>
 </div>
 </div>
 </div>
 </section>
-</section>
-<section id="box-jenkins-methodology" class="level1" data-number="7">
-<h1 data-number="7"><span class="header-section-number">7</span> Box-Jenkins Methodology</h1>
-<p>ARIMA model identification follows an iterative procedure known as the <strong>Box-Jenkins methodology</strong>:</p>
+<section id="box-jenkins-methodology" class="level2" data-number="2.5">
+<h2 data-number="2.5" class="anchored" data-anchor-id="box-jenkins-methodology"><span class="header-section-number">2.5</span> Box-Jenkins Methodology</h2>
+<p>ARIMA model building follows an iterative procedure known as the <strong>Box-Jenkins methodology</strong>:</p>
 <div class="incremental">
 <ol class="incremental" type="1">
-<li><p><strong>Plot the data.</strong> Identify unusual observations, structural breaks, outliers.</p></li>
-<li><p><strong>Stabilize the variance</strong> if needed — apply a log or Box-Cox transformation.</p></li>
-<li><p><strong>Determine <span class="math inline">d</span></strong> — use <code>unitroot_nsdiffs()</code> and <code>unitroot_ndiffs()</code> to decide how many differences are needed.</p></li>
-<li><p><strong>Examine ACF and PACF</strong> of the stationary series to identify candidate orders <span class="math inline">p</span> and <span class="math inline">q</span>.</p></li>
-<li><p><strong>Fit candidate models</strong> and compare them using AIC<span class="math inline">_c</span>.</p></li>
-<li><p><strong>Check residuals</strong> — plot ACF of residuals and run a Ljung-Box test. If residuals are not white noise, go back to step 4 and refine.</p></li>
-<li><p><strong>Forecast</strong> once residuals pass diagnostic checks.</p></li>
+<li><strong>Plot the data.</strong> Identify unusual observations, structural breaks, outliers.</li>
+<li><strong>Stabilize the variance</strong> if needed — apply a log or Box-Cox transformation.</li>
+<li><strong>Determine <span class="math inline">d</span></strong> — use <code>unitroot_nsdiffs()</code> and <code>unitroot_ndiffs()</code>.</li>
+<li><strong>Examine ACF and PACF</strong> of the stationary series to identify candidate orders <span class="math inline">p</span> and <span class="math inline">q</span>.</li>
+<li><strong>Fit candidate models</strong> and compare using AIC<span class="math inline">_c</span>.</li>
+<li><strong>Check residuals</strong> — ACF of residuals and Ljung-Box test. If not white noise, refine.</li>
+<li><strong>Forecast</strong> once residuals pass diagnostic checks.</li>
 </ol>
 </div>
 <div class="fragment">
@@ -1086,13 +1079,13 @@ AIC=350.6   AICc=350.91   BIC=367.04</code></pre>
 </div>
 </div>
 </section>
-<section id="residual-diagnostics-for-arima" class="level1" data-number="8">
-<h1 data-number="8"><span class="header-section-number">8</span> Residual Diagnostics for ARIMA</h1>
-<p>We have already used the Ljung-Box test to check residuals. When applying it to ARIMA models, there is one important adjustment: you need to account for the <strong>degrees of freedom consumed by the estimated parameters</strong>.</p>
+<section id="residual-diagnostics" class="level2" data-number="2.6">
+<h2 data-number="2.6" class="anchored" data-anchor-id="residual-diagnostics"><span class="header-section-number">2.6</span> Residual Diagnostics</h2>
+<p>We have already used the Ljung-Box test to check residuals from benchmark models. When applying it to <strong>ARIMA models</strong>, there is one important adjustment: you must account for the degrees of freedom consumed by the estimated AR and MA parameters.</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>fit_us <span class="sc">|&gt;</span>                              </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>fit_us <span class="sc">|&gt;</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(arima300) <span class="sc">|&gt;</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gg_tsresiduals</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
@@ -1117,7 +1110,7 @@ AIC=350.6   AICc=350.91   BIC=367.04</code></pre>
 <dl class="code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-7" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-7" data-code-lines="5" data-code-annotation="1"><code>dof</code> should equal <span class="math inline">p + q</span> (the number of estimated AR and MA coefficients). For ARIMA(3,0,0), <code>dof = 3</code>. Failing to set this inflates the test statistic and produces misleadingly small p-values.</span>
+<span data-code-cell="annotated-cell-7" data-code-lines="5" data-code-annotation="1"><code>dof</code> should equal <span class="math inline">p + q</span> — the number of estimated AR and MA coefficients. For ARIMA(3,0,0), <code>dof = 3</code>. Omitting this inflates the test statistic and produces misleadingly small p-values.</span>
 </dd>
 </dl>
 </div>
@@ -1130,8 +1123,8 @@ AIC=350.6   AICc=350.91   BIC=367.04</code></pre>
 </div>
 </div>
 </section>
-<section id="forecasting-with-arima" class="level1" data-number="9">
-<h1 data-number="9"><span class="header-section-number">9</span> Forecasting with ARIMA</h1>
+<section id="forecasting" class="level2" data-number="2.7">
+<h2 data-number="2.7" class="anchored" data-anchor-id="forecasting"><span class="header-section-number">2.7</span> Forecasting</h2>
 <p>Once the model passes residual diagnostics, forecasting uses the same <code>forecast()</code> workflow as all other <code>fable</code> models:</p>
 <div class="cell">
 <details open="" class="code-fold">
@@ -1164,15 +1157,18 @@ AIC=350.6   AICc=350.91   BIC=367.04</code></pre>
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>ARIMA prediction intervals are derived analytically from the model’s MA representation. A key property: the width of the intervals grows with the forecast horizon, and <strong>grows faster as <span class="math inline">d</span> increases</strong> — a direct consequence of the accumulated uncertainty from differencing. For a random walk (<span class="math inline">d = 1</span>), intervals widen at rate <span class="math inline">\sqrt{h}</span>; for <span class="math inline">d = 2</span>, they widen even faster.</p>
+<p>ARIMA prediction intervals are derived analytically from the model’s MA representation. Their width grows with the forecast horizon, and <strong>grows faster as <span class="math inline">d</span> increases</strong> — a direct consequence of accumulated uncertainty from differencing. For a random walk (<span class="math inline">d = 1</span>), intervals widen at rate <span class="math inline">\sqrt{h}</span>; for <span class="math inline">d = 2</span>, they widen even faster.</p>
 </div>
 </div>
 </div>
 </section>
-<section id="seasonal-series-stl-arima" class="level1" data-number="10">
-<h1 data-number="10"><span class="header-section-number">10</span> Seasonal Series: STL + ARIMA</h1>
+</section>
+<section id="seasonal-arima" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Seasonal ARIMA</h1>
+<section id="stl-arima" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="stl-arima"><span class="header-section-number">3.1</span> STL + ARIMA</h2>
 <p><code>mexretail</code> is a monthly series with strong trend and seasonality. We already know how to handle it with STL decomposition. In Module 1 we combined STL with SNAIVE; in Module 2 we replaced SNAIVE with ETS. The natural next step is to replace it with ARIMA.</p>
-<p>The idea is the same: use STL to handle the seasonal pattern, and let ARIMA model the trend-cycle component on the <strong>seasonally adjusted series</strong>.</p>
+<p>The idea is the same: use STL to handle the seasonal pattern, and let ARIMA model the trend-cycle on the <strong>seasonally adjusted series</strong>.</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
@@ -1201,7 +1197,7 @@ AIC=350.6   AICc=350.91   BIC=367.04</code></pre>
 </dd>
 <dt data-target-cell="annotated-cell-9" data-target-annotation="3">3</dt>
 <dd>
-<span data-code-cell="annotated-cell-9" data-code-lines="8" data-code-annotation="3"><code>ARIMA(season_adjust)</code> fits an ARIMA model automatically to the seasonally adjusted component. The seasonal component is re-added when generating forecasts.</span>
+<span data-code-cell="annotated-cell-9" data-code-lines="8" data-code-annotation="3"><code>ARIMA(season_adjust)</code> fits an ARIMA model automatically to the seasonally adjusted component. The seasonal part is re-added when generating forecasts.</span>
 </dd>
 </dl>
 </div>
@@ -1263,28 +1259,23 @@ sigma^2: 0 </code></pre>
 </div>
 </div>
 </section>
-<section id="seasonal-arima-sarima" class="level1" data-number="11">
-<h1 data-number="11"><span class="header-section-number">11</span> Seasonal ARIMA (SARIMA)</h1>
-<p>STL + ARIMA is a two-stage approach: decompose first, then model. An alternative is to handle seasonality <strong>within a single ARIMA model</strong> by adding seasonal AR and MA terms. This is a <strong>Seasonal ARIMA</strong> model, often written as:</p>
+<section id="sarima" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="sarima"><span class="header-section-number">3.2</span> SARIMA</h2>
+<p>STL + ARIMA is a two-stage approach: decompose first, then model. An alternative is to handle seasonality <strong>within a single ARIMA model</strong> by adding seasonal AR and MA terms. This is a <strong>Seasonal ARIMA</strong> model, written as:</p>
 <p><span class="math display">
 \text{ARIMA}\underbrace{(p,\,d,\,q)}_{\text{non-seasonal}}\underbrace{(P,\,D,\,Q)_{m}}_{\text{seasonal}}
 </span></p>
 <p>where <span class="math inline">m</span> is the seasonal period (<span class="math inline">m = 12</span> for monthly data).</p>
 <div class="fragment">
-<p>The full model equation in backshift notation is:</p>
+<p>The full model in backshift notation is:</p>
 <p><span class="math display">
 \underbrace{\Phi(B^m)}_{\text{seasonal AR}} \underbrace{\phi(B)}_{\text{non-seasonal AR}} \underbrace{(1-B^m)^D (1-B)^d}_{\text{differencing}} y_t = c + \underbrace{\Theta(B^m)}_{\text{seasonal MA}} \underbrace{\theta(B)}_{\text{non-seasonal MA}} \varepsilon_t
 </span></p>
-<p>where <span class="math inline">\Phi</span>, <span class="math inline">\Theta</span> are the seasonal AR and MA polynomials evaluated at <span class="math inline">B^m</span>.</p>
 </div>
-<section id="reading-acfpacf-for-seasonal-orders" class="level2" data-number="11.1">
-<h2 data-number="11.1" class="anchored" data-anchor-id="reading-acfpacf-for-seasonal-orders"><span class="header-section-number">11.1</span> Reading ACF/PACF for Seasonal Orders</h2>
+<section id="reading-acfpacf-for-seasonal-orders-1" class="level3" data-number="3.2.1">
+<h3 data-number="3.2.1" class="anchored" data-anchor-id="reading-acfpacf-for-seasonal-orders-1"><span class="header-section-number">3.2.1</span> Reading ACF/PACF for Seasonal Orders</h3>
 <p>The non-seasonal orders (<span class="math inline">p</span>, <span class="math inline">q</span>) are read from the first few lags of the ACF/PACF, as before. The seasonal orders (<span class="math inline">P</span>, <span class="math inline">Q</span>) are read from the <strong>seasonal lags</strong> (<span class="math inline">m</span>, <span class="math inline">2m</span>, <span class="math inline">3m</span>, …):</p>
 <table class="caption-top table">
-<colgroup>
-<col style="width: 56%">
-<col style="width: 43%">
-</colgroup>
 <thead>
 <tr class="header">
 <th style="text-align: left;">Pattern at seasonal lags</th>
@@ -1293,15 +1284,15 @@ sigma^2: 0 </code></pre>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">PACF spikes at lags <span class="math inline">m</span>, <span class="math inline">2m</span>, … cut off after lag <span class="math inline">Pm</span></td>
+<td style="text-align: left;">PACF spikes cut off after lag <span class="math inline">Pm</span></td>
 <td style="text-align: left;">Seasonal AR(<span class="math inline">P</span>)</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">ACF spikes at lags <span class="math inline">m</span>, <span class="math inline">2m</span>, … cut off after lag <span class="math inline">Qm</span></td>
+<td style="text-align: left;">ACF spikes cut off after lag <span class="math inline">Qm</span></td>
 <td style="text-align: left;">Seasonal MA(<span class="math inline">Q</span>)</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Both decay gradually at seasonal lags</td>
+<td style="text-align: left;">Both decay gradually</td>
 <td style="text-align: left;">Mixed seasonal ARMA</td>
 </tr>
 </tbody>
@@ -1313,15 +1304,15 @@ sigma^2: 0 </code></pre>
 <i class="callout-icon"></i>
 </div>
 <div class="callout-body-container">
-<p>Focus on the seasonal lags <em>separately</em> from the non-seasonal lags. A good practice is to use <code>lag_max = 3m</code> or <code>4m</code> to make the seasonal structure clearly visible.</p>
+<p>Focus on the seasonal lags <em>separately</em> from the non-seasonal lags. Use <code>lag_max = 3m</code> or <code>4m</code> to make the seasonal structure clearly visible.</p>
 </div>
 </div>
 </div>
 </div>
 </section>
-<section id="sarima-for-mexretail-1" class="level2" data-number="11.2">
-<h2 data-number="11.2" class="anchored" data-anchor-id="sarima-for-mexretail-1"><span class="header-section-number">11.2</span> SARIMA for <code>mexretail</code></h2>
-<p>The full stationarity protocol for <code>mexretail</code> told us we need a seasonal difference (<span class="math inline">D = 1</span>) and a first difference (<span class="math inline">d = 1</span>), applied to the Box-Cox-transformed series. Let’s inspect the ACF/PACF to choose <span class="math inline">p</span>, <span class="math inline">q</span>, <span class="math inline">P</span>, <span class="math inline">Q</span>:</p>
+<section id="sarima-for-mexretail-1" class="level3" data-number="3.2.2">
+<h3 data-number="3.2.2" class="anchored" data-anchor-id="sarima-for-mexretail-1"><span class="header-section-number">3.2.2</span> SARIMA for <code>mexretail</code></h3>
+<p>The stationarity protocol for <code>mexretail</code> established that we need <span class="math inline">D = 1</span> and <span class="math inline">d = 1</span> applied to the Box-Cox-transformed series. Let’s inspect the ACF/PACF to choose <span class="math inline">p</span>, <span class="math inline">q</span>, <span class="math inline">P</span>, <span class="math inline">Q</span>:</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
@@ -1352,8 +1343,8 @@ sigma^2: 0 </code></pre>
 </div>
 <div class="callout-body-container callout-body">
 <ul>
-<li><strong>Non-seasonal lags (1–11):</strong> ACF and PACF both show a spike at lag 1, suggesting a small ARMA component — try <span class="math inline">p = 1</span> or <span class="math inline">q = 1</span>.</li>
-<li><strong>Seasonal lags (12, 24, 36):</strong> PACF has a spike at lag 12 only → seasonal AR(1). ACF has a spike at lag 12 → could also be seasonal MA(1). Start with both and compare.</li>
+<li><strong>Non-seasonal lags (1–11):</strong> ACF and PACF both show a spike at lag 1 → try <span class="math inline">p = 1</span> or <span class="math inline">q = 1</span>.</li>
+<li><strong>Seasonal lags (12, 24, 36):</strong> PACF spike at lag 12 only → seasonal AR(1). ACF spike at lag 12 → could also be seasonal MA(1). Start with both.</li>
 </ul>
 </div>
 </div>
@@ -1368,7 +1359,7 @@ sigma^2: 0 </code></pre>
 <span id="annotated-cell-13-5"><a href="#annotated-cell-13-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">sarima_011_011 =</span> <span class="fu">ARIMA</span>(<span class="fu">box_cox</span>(y, lambda) <span class="sc">~</span></span>
 <a class="code-annotation-anchor" data-target-cell="annotated-cell-13" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-13-6" class="code-annotation-target"><a href="#annotated-cell-13-6" aria-hidden="true" tabindex="-1"></a>                             <span class="fu">pdq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">+</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>)),</span>
 <a class="code-annotation-anchor" data-target-cell="annotated-cell-13" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-13-7" class="code-annotation-target"><a href="#annotated-cell-13-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">sarima_auto    =</span> <span class="fu">ARIMA</span>(<span class="fu">box_cox</span>(y, lambda),</span>
-<span id="annotated-cell-13-8"><a href="#annotated-cell-13-8" aria-hidden="true" tabindex="-1"></a>                           <span class="at">stepwise     =</span> <span class="cn">FALSE</span>,</span>
+<span id="annotated-cell-13-8"><a href="#annotated-cell-13-8" aria-hidden="true" tabindex="-1"></a>                           <span class="at">stepwise      =</span> <span class="cn">FALSE</span>,</span>
 <span id="annotated-cell-13-9"><a href="#annotated-cell-13-9" aria-hidden="true" tabindex="-1"></a>                           <span class="at">approximation =</span> <span class="cn">FALSE</span>)</span>
 <span id="annotated-cell-13-10"><a href="#annotated-cell-13-10" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="annotated-cell-13-11"><a href="#annotated-cell-13-11" aria-hidden="true" tabindex="-1"></a></span>
@@ -1380,11 +1371,11 @@ sigma^2: 0 </code></pre>
 <dl class="code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-13" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-13" data-code-lines="4" data-code-annotation="1">First candidate from ACF/PACF reading: non-seasonal MA(1), seasonal AR(1).</span>
+<span data-code-cell="annotated-cell-13" data-code-lines="4" data-code-annotation="1">First candidate from ACF/PACF: non-seasonal MA(1), seasonal AR(1).</span>
 </dd>
 <dt data-target-cell="annotated-cell-13" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-cell="annotated-cell-13" data-code-lines="6" data-code-annotation="2">Second candidate: non-seasonal MA(1), seasonal MA(1) — very common structure for monthly economic data.</span>
+<span data-code-cell="annotated-cell-13" data-code-lines="6" data-code-annotation="2">Second candidate: non-seasonal MA(1), seasonal MA(1) — a very common structure for monthly economic data.</span>
 </dd>
 <dt data-target-cell="annotated-cell-13" data-target-annotation="3">3</dt>
 <dd>
@@ -1450,7 +1441,7 @@ AIC=1774.62   AICc=1774.95   BIC=1807.22</code></pre>
 <dl class="code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-16" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-16" data-code-lines="6" data-code-annotation="1">Set <code>dof</code> to <span class="math inline">p + q + P + Q</span> for the fitted SARIMA model. Adjust this to match the order reported by <code>report()</code>.</span>
+<span data-code-cell="annotated-cell-16" data-code-lines="6" data-code-annotation="1">Set <code>dof</code> to <span class="math inline">p + q + P + Q</span> for the fitted model. Adjust this value to match the order reported by <code>report()</code> above.</span>
 </dd>
 </dl>
 </div>
@@ -1464,50 +1455,43 @@ AIC=1774.62   AICc=1774.95   BIC=1807.22</code></pre>
 </div>
 </section>
 </section>
-<section id="stl-arima-vs.-sarima" class="level1" data-number="12">
-<h1 data-number="12"><span class="header-section-number">12</span> STL + ARIMA vs.&nbsp;SARIMA</h1>
-<p>Both STL + ARIMA and SARIMA are valid approaches for seasonal time series. Let’s compare them directly on <code>mexretail</code> using a train/test split:</p>
+</section>
+<section id="stl-arima-vs.-sarima" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> STL + ARIMA vs.&nbsp;SARIMA</h1>
+<p>Both approaches are valid for seasonal series. Let’s compare them on <code>mexretail</code> using a train/test split:</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-17"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><a class="code-annotation-anchor" data-target-cell="annotated-cell-17" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-17-1" class="code-annotation-target"><a href="#annotated-cell-17-1" aria-hidden="true" tabindex="-1"></a>mex_train <span class="ot">&lt;-</span> mexretail <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">year</span>(date) <span class="sc">&lt;=</span> <span class="dv">2019</span>)</span>
-<span id="annotated-cell-17-2"><a href="#annotated-cell-17-2" aria-hidden="true" tabindex="-1"></a>mex_test  <span class="ot">&lt;-</span> mexretail <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">year</span>(date) <span class="sc">&gt;</span>  <span class="dv">2019</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-annotation">
-<dl class="code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-17" data-target-annotation="1">1</dt>
-<dd>
-<span data-code-cell="annotated-cell-17" data-code-lines="1,2" data-code-annotation="1">We hold out the last few years as a test set. Note that this comparison uses forecast accuracy — not information criteria — so differences in transformation or differencing order do not affect comparability.</span>
-</dd>
-</dl>
-</div>
-</div>
-<div class="cell">
-<details open="" class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>fit_compare <span class="ot">&lt;-</span> mex_train <span class="sc">|&gt;</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">stl_arima =</span> <span class="fu">decomposition_model</span>(</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">STL</span>(<span class="fu">box_cox</span>(y, lambda) <span class="sc">~</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>            <span class="fu">trend</span>(<span class="at">window =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>            <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>),</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>          <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">ARIMA</span>(season_adjust)</span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">sarima =</span> <span class="fu">ARIMA</span>(<span class="fu">box_cox</span>(y, lambda),</span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>                   <span class="at">stepwise      =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>                   <span class="at">approximation =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>mex_train <span class="ot">&lt;-</span> mexretail <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">year</span>(date) <span class="sc">&lt;=</span> <span class="dv">2019</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>mex_test  <span class="ot">&lt;-</span> mexretail <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">year</span>(date) <span class="sc">&gt;</span>  <span class="dv">2019</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>fit_compare <span class="sc">|&gt;</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="fu">nrow</span>(mex_test)) <span class="sc">|&gt;</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">accuracy</span>(mexretail) <span class="sc">|&gt;</span></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(.model, RMSE, MAE, MAPE, MASE) <span class="sc">|&gt;</span></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(RMSE)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>fit_compare <span class="ot">&lt;-</span> mex_train <span class="sc">|&gt;</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">stl_arima =</span> <span class="fu">decomposition_model</span>(</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">STL</span>(<span class="fu">box_cox</span>(y, lambda) <span class="sc">~</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>            <span class="fu">trend</span>(<span class="at">window =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>            <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>),</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>          <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">ARIMA</span>(season_adjust)</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">sarima =</span> <span class="fu">ARIMA</span>(<span class="fu">box_cox</span>(y, lambda),</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>                   <span class="at">stepwise      =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>                   <span class="at">approximation =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>fit_compare <span class="sc">|&gt;</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="fu">nrow</span>(mex_test)) <span class="sc">|&gt;</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">accuracy</span>(mexretail) <span class="sc">|&gt;</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(.model, RMSE, MAE, MAPE, MASE) <span class="sc">|&gt;</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(RMSE)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div data-pagedtable="false">
