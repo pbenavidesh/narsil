@@ -54,7 +54,7 @@ lambda <- mexretail |>
 ## From AR/MA to ARIMA
 :::
 
-In the previous class, we introduced the two basic building blocks for modeling the correlation structure of a stationary time series:
+In the [previous topic](../02_stationarity/stationarity.html#ar-and-ma-models) we introduced the two basic building blocks for modeling the correlation structure of a stationary time series:
 
 - **AR($p$):** forecast $y_t$ using its own $p$ past values.
 - **MA($q$):** forecast $y_t$ using $q$ past forecast errors.
@@ -656,6 +656,7 @@ fit_compare <- mex_train |>
                    approximation = FALSE)
   )
 ```
+
 ```{r}
 #| label: comparison-accuracy
 #| message: false
@@ -667,6 +668,7 @@ fit_compare |>
   select(.model, RMSE, MAE, MAPE, MASE) |>
   arrange(RMSE)
 ```
+
 ```{r}
 #| label: comparison-plot
 #| message: false
