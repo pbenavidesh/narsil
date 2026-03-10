@@ -322,9 +322,13 @@ report(fit_us2)
 2. Starts from a simple model and navigates through the order space by comparing AIC$_c$ values.
 3. Stops when no neighboring model improves AIC$_c$.
 
+::: {.fragment}
 **Important:** this is a heuristic search — it does *not* evaluate all possible combinations. It is fast and usually good, but not guaranteed to find the global optimum.
 :::
 :::
+:::
+
+::: {.fragment}
 
 You can also supply a **range of values** to explore, or request an exhaustive search:
 ```{r}
@@ -340,6 +344,8 @@ report(fit_us3)
 ```
 
 1. This evaluates all combinations of $p \in \{1,2,3\}$ and $q \in \{0,1,2\}$ and returns the one with the lowest AIC$_c$.
+
+
 ```{r}
 #| label: us-change-exhaustive
 #| message: false
@@ -359,8 +365,14 @@ report(fit_us4)
 1. `stepwise = FALSE` explores all combinations rather than navigating step by step.
 2. `approximation = FALSE` uses exact likelihood rather than a faster approximation. More accurate but can be substantially slower on long series.
 
+:::
+
+::: {.fragment}
+
 ::: {.callout-tip appearance="simple"}
 For exploratory work, automatic selection is fine. For a final model, use `stepwise = FALSE, approximation = FALSE` and compare the result with your manually identified candidate.
+:::
+
 :::
 
 ## Box-Jenkins Methodology
