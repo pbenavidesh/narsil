@@ -245,7 +245,19 @@ report(fit_us)
 
 ## Model Selection {#sec-model-selection}
 
-When comparing candidate ARIMA models, we use **information criteria** — they balance goodness of fit against model complexity:
+:::{.content-visible unless-format="revealjs"}
+
+When we fit a statistical model, we face a fundamental tension: a more complex model (more parameters) will always fit the observed data better, but it may simply be memorizing noise rather than capturing genuine structure. This is the **bias-variance tradeoff**.
+
+**Information criteria** address this by penalizing model complexity — they reward goodness of fit but add a cost for each additional parameter estimated. The goal is to find the model that generalizes best, not the one that fits best in-sample.
+
+:::
+
+When comparing candidate ARIMA models, we use three related criteria:
+
+- **AIC** — Akaike Information Criterion
+- **AIC$_c$** — AIC corrected for small sample sizes
+- **BIC** — Bayesian Information Criterion (also known as Schwarz criterion)
 
 $$
 \text{AIC} = -2\log(L) + 2(p + q + k + 1)
@@ -259,7 +271,22 @@ $$
 \text{BIC} = \text{AIC} + [\log(T) - 2](p + q + k + 1)
 $$
 
-where $k = 1$ if the model includes a constant, $k = 0$ otherwise. The preferred criterion is AIC$_c$.
+where $k = 1$ if the model includes a constant, $k = 0$ otherwise. **Lower is better** for all three. The preferred criterion is AIC$_c$ — it converges to AIC as $T$ grows, but is more conservative with small samples.
+
+:::{.content-visible unless-format="revealjs"}
+
+::: {.callout-tip collapse="true"}
+## AIC vs. BIC — which to prefer?
+
+Both penalize complexity, but BIC applies a heavier penalty (it grows with $\log T$ rather than a fixed 2). In practice:
+
+- **AIC$_c$** tends to select slightly richer models and is generally preferred for forecasting.
+- **BIC** tends to select more parsimonious models and is preferred when interpretability matters.
+
+For this course, use **AIC$_c$** as the default.
+:::
+
+:::
 
 ::: {.fragment}
 ::: {.callout-important appearance="simple"}
@@ -268,7 +295,6 @@ where $k = 1$ if the model includes a constant, $k = 0$ otherwise. The preferred
 Information criteria are only comparable across models fitted to **identical data** — same transformation, same differencing order. You cannot compare AIC$_c$ of an ARIMA fitted to $\log(y_t)$ vs. one fitted to $y_t$, or ARIMA(1,1,1) vs. ARIMA(1,0,1). When models differ in $d$, use forecast accuracy on a test set instead.
 :::
 :::
-
 ## Automatic and Semi-Automatic Selection
 
 `ARIMA()` in `fable` can search for the best order automatically when `pdq()` is not specified:
