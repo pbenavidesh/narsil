@@ -1,0 +1,701 @@
+---
+title: "ARIMA Models"
+format:
+  html:
+    other-links:
+      - text: FPP3 Chapter 9
+        href: https://otexts.com/fpp3/arima.html
+  revealjs:
+    output-file: arima_pres.html
+---
+```{r}
+#| label: pkgs
+#| message: false
+#| include: false
+
+library(tidyverse)
+library(fpp3)
+```
+
+:::{.content-visible unless-format="revealjs"}
+```{r}
+#| label: pkgs_special
+#| message: false
+
+library(tidyquant) #<1>
+library(plotly)    #<1>
+```
+
+1. In addition to the regular packages, here we'll use `tidyquant` and `plotly`.
+
+:::
+```{r}
+#| label: data-setup
+#| include: false
+#| message: false
+
+mexretail <- tq_get(
+  "MEXSLRTTO01IXOBM",
+  get = "economic.data",
+  from = "1985-01-01"
+) |>
+  mutate(date = yearmonth(date)) |>
+  rename(y = price) |>
+  as_tsibble(index = date)
+
+lambda <- mexretail |>
+  features(y, features = guerrero) |>
+  pull(lambda_guerrero)
+```
+
+# From AR/MA to ARIMA
+
+::: {.content-hidden unless-format="revealjs"}
+## From AR/MA to ARIMA
+:::
+
+In the previous class, we introduced the two basic building blocks for modeling the correlation structure of a stationary time series:
+
+- **AR($p$):** forecast $y_t$ using its own $p$ past values.
+- **MA($q$):** forecast $y_t$ using $q$ past forecast errors.
+
+In practice, neither model alone is usually sufficient. Real series often show patterns that require *both* autoregressive and moving average components simultaneously. And most real series are also **non-stationary** — they have trend, seasonality, or both.
+
+::: {.fragment}
+::: {.callout-note appearance="simple"}
+## The natural next step
+
+If we could combine AR and MA terms *and* relax the stationarity requirement by incorporating differencing directly into the model, we would have a single, unified framework for a very wide range of time series.
+
+That framework is **ARIMA**.
+:::
+:::
+
+## The ARIMA Model
+
+**ARIMA** stands for **A**uto**R**egressive **I**ntegrated **M**oving **A**verage. The "Integrated" part refers to the reverse operation of differencing: if we difference a series $d$ times to make it stationary, the model is said to be integrated of order $d$.
+
+A non-seasonal ARIMA model is written as **ARIMA($p$, $d$, $q$)**, where:
+
+::: {.incremental}
+- $p$ — order of the **autoregressive** component (how many past values)
+- $d$ — order of **differencing** (how many times we difference to achieve stationarity)
+- $q$ — order of the **moving average** component (how many past errors)
+:::
+
+::: {.fragment}
+
+The model equation, written on the **differenced series** $y'_t$, is:
+
+$$
+y'_t = c + \phi_1 y'_{t-1} + \cdots + \phi_p y'_{t-p} + \theta_1 \varepsilon_{t-1} + \cdots + \theta_q \varepsilon_{t-q} + \varepsilon_t
+$$
+
+where $y'_t$ denotes the $d$-times differenced series and $\varepsilon_t$ is white noise.
+
+:::
+
+# Backshift Notation for ARIMA
+
+::: {.content-hidden unless-format="revealjs"}
+## Backshift Notation for ARIMA
+:::
+
+Recall from the previous class that the backshift operator $B$ satisfies $By_t = y_{t-1}$, and that $d$-th order differencing can be written as $(1-B)^d y_t$.
+
+Using this notation, we can write the AR and MA components compactly as well.
+
+::: {.fragment}
+
+### AR component
+
+$$\phi_1 y_{t-1} + \phi_2 y_{t-2} + \cdots + \phi_p y_{t-p} = \phi(B)\,y_t$$
+
+where $\phi(B) = \phi_1 B + \phi_2 B^2 + \cdots + \phi_p B^p$.
+
+### MA component
+
+$$\theta_1 \varepsilon_{t-1} + \theta_2 \varepsilon_{t-2} + \cdots + \theta_q \varepsilon_{t-q} = \theta(B)\,\varepsilon_t$$
+
+where $\theta(B) = \theta_1 B + \theta_2 B^2 + \cdots + \theta_q B^q$.
+
+:::
+
+::: {.fragment}
+
+### Full ARIMA($p$, $d$, $q$) in backshift notation
+
+Putting it all together:
+
+$$
+\underbrace{(1 - \phi_1 B - \cdots - \phi_p B^p)}_{\text{AR}(p)} \underbrace{(1-B)^d}_{\text{differencing}} y_t = c + \underbrace{(1 + \theta_1 B + \cdots + \theta_q B^q)}_{\text{MA}(q)} \varepsilon_t
+$$
+
+This compact form shows clearly how the three components interact. The differencing operator $(1-B)^d$ is applied first, and the AR and MA operators act on the resulting stationary series.
+
+:::
+
+# Special Cases of ARIMA
+
+::: {.content-hidden unless-format="revealjs"}
+## Special Cases of ARIMA
+:::
+
+Several models we have already encountered are special cases of the ARIMA family. This unifies much of what we have learned:
+
+::: {.fragment}
+
+| Model | ARIMA specification |
+|:------|:-------------------|
+| White noise | ARIMA(0, 0, 0) without constant |
+| Random walk | ARIMA(0, 1, 0) without constant |
+| Random walk with drift | ARIMA(0, 1, 0) with constant |
+| AR($p$) | ARIMA($p$, 0, 0) |
+| MA($q$) | ARIMA(0, 0, $q$) |
+
+:::
+
+::: {.fragment}
+::: {.callout-tip appearance="simple"}
+## Effect of $c$ and $d$ on long-run forecasts
+
+The constant $c$ and the differencing order $d$ interact to determine the long-run behavior of ARIMA forecasts:
+
+- $d = 0$, $c = 0$: forecasts go to zero.
+- $d = 0$, $c \neq 0$: forecasts go to the mean of the series.
+- $d = 1$, $c = 0$: forecasts approach a non-zero constant.
+- $d = 1$, $c \neq 0$: forecasts follow a straight line.
+- $d = 2$, $c \neq 0$: forecasts follow a quadratic trend.
+
+Higher values of $d$ also produce wider prediction intervals that grow faster.
+:::
+:::
+
+# Choosing the Orders
+
+::: {.content-hidden unless-format="revealjs"}
+## Choosing the Orders
+:::
+
+Selecting the right ARIMA order involves three decisions. A principled workflow is:
+
+::: {.incremental}
+1. **Choose $d$** — determine how many differences are needed using the stationarity protocol from the previous class: Box-Cox / log transformation to stabilize variance, `unitroot_nsdiffs()` for seasonal differencing (if any), then `unitroot_ndiffs()` on the differenced series.
+
+2. **Choose $p$ or $q$** — read the ACF and PACF of the (differenced, stationary) series:
+   - **PACF cuts off** after lag $p$ → AR($p$) component.
+   - **ACF cuts off** after lag $q$ → MA($q$) component.
+   - Both decay gradually → mixed ARMA, try several combinations.
+
+3. **Compare candidates** using information criteria (see next section).
+:::
+
+::: {.fragment}
+::: {.callout-warning appearance="simple"}
+## ACF/PACF reading is a starting point, not a definitive answer
+
+Real data rarely produces textbook-perfect ACF/PACF shapes. Use the plots to narrow down candidate models, then compare them formally with AIC$_c$.
+:::
+:::
+
+# ARIMA in R
+
+::: {.content-hidden unless-format="revealjs"}
+## ARIMA in R — `fable`
+:::
+
+In `fable`, ARIMA models are specified inside `model()` using the `ARIMA()` function. The order is controlled with `pdq()`:
+```{r}
+#| label: us-change-plot
+#| echo: false
+#| message: false
+
+p <- us_change |>
+  autoplot(Consumption, color = "steelblue") +
+  labs(
+    title = "US consumption — quarterly % change",
+    y = "% change",
+    x = ""
+  )
+
+ggplotly(p, dynamicTicks = TRUE)
+```
+```{r}
+#| label: us-change-tsdisplay
+#| warning: false
+#| message: false
+
+us_change |>
+  gg_tsdisplay(Consumption, plot_type = "partial", lag_max = 16)
+```
+
+The series appears stationary ($d = 0$). The PACF shows significant spikes at lags 1–3, suggesting AR(3). Let's fit that model:
+```{r}
+#| label: us-change-fit
+#| message: false
+
+fit_us <- us_change |>
+  model(
+    arima300 = ARIMA(Consumption ~ pdq(3, 0, 0) + PDQ(0, 0, 0)) #<1>
+  )
+
+report(fit_us)
+```
+
+1. `pdq()` sets the non-seasonal orders. `PDQ(0,0,0)` explicitly forces a non-seasonal model.
+
+# Model Selection
+
+::: {.content-hidden unless-format="revealjs"}
+## Information Criteria
+:::
+
+When comparing candidate ARIMA models, we use **information criteria** — they balance goodness of fit against model complexity:
+
+$$
+\text{AIC} = -2\log(L) + 2(p + q + k + 1)
+$$
+
+$$
+\text{AIC}_c = \text{AIC} + \frac{2(p + q + k + 1)(p + q + k + 2)}{T - p - q - k - 2}
+$$
+
+$$
+\text{BIC} = \text{AIC} + [\log(T) - 2](p + q + k + 1)
+$$
+
+where $k = 1$ if the model includes a constant, $k = 0$ otherwise.
+
+::: {.fragment}
+::: {.callout-important appearance="simple"}
+## Information criteria require the same scale
+
+Information criteria are only comparable across models fitted to **identical data** — same transformation, same differencing order. You cannot compare, for example, AIC$_c$ of an ARIMA fitted to $\log(y_t)$ vs. one fitted to $y_t$, or ARIMA(1,1,1) vs. ARIMA(1,0,1) using AIC$_c$. When models differ in $d$, use forecast accuracy on a test set instead.
+:::
+:::
+
+::: {.content-hidden unless-format="revealjs"}
+## Automatic and Semi-Automatic Selection
+:::
+
+::: {.content-visible unless-format="revealjs"}
+## Automatic and Semi-Automatic Selection
+:::
+
+`ARIMA()` in `fable` can search for the best order automatically when `pdq()` is not specified:
+```{r}
+#| label: us-change-auto
+#| message: false
+
+fit_us2 <- us_change |>
+  model(
+    auto = ARIMA(Consumption ~ PDQ(0, 0, 0)) #<1>
+  )
+
+report(fit_us2)
+```
+
+1. Leaving `pdq()` unspecified triggers automatic order selection. We still fix `PDQ(0,0,0)` to keep the non-seasonal constraint.
+
+::: {.fragment}
+::: {.callout-note appearance="simple"}
+## How does automatic selection work?
+
+`fable` implements a stepwise search algorithm (based on Hyndman & Khandakar, 2008) that:
+
+1. Determines $d$ using unit root tests.
+2. Starts from a simple model and navigates through the order space by comparing AIC$_c$ values.
+3. Stops when no neighboring model improves AIC$_c$.
+
+**Important:** this is a heuristic search — it does *not* evaluate all possible combinations. It is fast and usually good, but not guaranteed to find the global optimum.
+:::
+:::
+
+You can also supply a **range of values** to explore:
+```{r}
+#| label: us-change-semi-auto
+#| message: false
+
+fit_us3 <- us_change |>
+  model(
+    semi_auto = ARIMA(Consumption ~ pdq(1:3, 0, 0:2) + PDQ(0, 0, 0)) #<1>
+  )
+
+report(fit_us3)
+```
+
+1. This evaluates all combinations of $p \in \{1,2,3\}$ and $q \in \{0,1,2\}$ and returns the one with the lowest AIC$_c$.
+
+For a more exhaustive (but slower) search, disable stepwise approximations:
+```{r}
+#| label: us-change-exhaustive
+#| message: false
+
+fit_us4 <- us_change |>
+  model(
+    exhaustive = ARIMA(
+      Consumption ~ PDQ(0, 0, 0),
+      stepwise     = FALSE, #<1>
+      approximation = FALSE  #<2>
+    )
+  )
+
+report(fit_us4)
+```
+
+1. `stepwise = FALSE` explores all combinations rather than navigating step by step.
+2. `approximation = FALSE` uses exact likelihood rather than a faster approximation. This is more accurate but can be substantially slower on long series.
+
+::: {.callout-tip appearance="simple"}
+For exploratory work, automatic selection is fine. For a final model or a competition, use `stepwise = FALSE, approximation = FALSE` and compare the result with your manually identified candidate.
+:::
+
+# Box-Jenkins Methodology
+
+::: {.content-hidden unless-format="revealjs"}
+## The Box-Jenkins Approach
+:::
+
+ARIMA model identification follows an iterative procedure known as the **Box-Jenkins methodology**:
+
+::: {.incremental}
+
+1. **Plot the data.** Identify unusual observations, structural breaks, outliers.
+
+2. **Stabilize the variance** if needed — apply a log or Box-Cox transformation.
+
+3. **Determine $d$** — use `unitroot_nsdiffs()` and `unitroot_ndiffs()` to decide how many differences are needed.
+
+4. **Examine ACF and PACF** of the stationary series to identify candidate orders $p$ and $q$.
+
+5. **Fit candidate models** and compare them using AIC$_c$.
+
+6. **Check residuals** — plot ACF of residuals and run a Ljung-Box test. If residuals are not white noise, go back to step 4 and refine.
+
+7. **Forecast** once residuals pass diagnostic checks.
+
+:::
+
+::: {.fragment}
+::: {.callout-note appearance="simple"}
+## It's iterative
+
+The Box-Jenkins procedure is a cycle, not a checklist. It is normal to go through steps 4–6 two or three times before settling on a model.
+:::
+:::
+
+# Residual Diagnostics for ARIMA
+
+::: {.content-hidden unless-format="revealjs"}
+## A note on Ljung-Box for ARIMA
+:::
+
+We have already used the Ljung-Box test to check residuals. When applying it to ARIMA models, there is one important adjustment: you need to account for the **degrees of freedom consumed by the estimated parameters**.
+```{r}
+#| label: us-change-residuals
+#| warning: false
+
+fit_us |>                              
+  select(arima300) |>
+  gg_tsresiduals()
+```
+```{r}
+#| label: us-change-ljungbox
+
+fit_us |>
+  augment() |>
+  features(.innov, ljung_box,
+           lag = 10,
+           dof = 3) #<1>
+```
+
+1. `dof` should equal $p + q$ (the number of estimated AR and MA coefficients). For ARIMA(3,0,0), `dof = 3`. Failing to set this inflates the test statistic and produces misleadingly small p-values.
+
+# Forecasting with ARIMA
+
+::: {.content-hidden unless-format="revealjs"}
+## Forecasting with ARIMA
+:::
+
+Once the model passes residual diagnostics, forecasting uses the same `forecast()` workflow as all other `fable` models:
+```{r}
+#| label: us-change-forecast
+#| message: false
+#| warning: false
+
+fit_us |>
+  select(arima300) |>
+  forecast(h = 10) |>
+  autoplot(us_change |> filter(year(Quarter) >= 2005)) +
+  labs(
+    title = "US consumption — ARIMA(3,0,0) forecast",
+    y = "% change"
+  )
+```
+
+::: {.fragment}
+::: {.callout-note appearance="simple"}
+## Prediction intervals
+
+ARIMA prediction intervals are derived analytically from the model's MA representation. A key property: the width of the intervals grows with the forecast horizon, and **grows faster as $d$ increases** — a direct consequence of the accumulated uncertainty from differencing. For a random walk ($d = 1$), intervals widen at rate $\sqrt{h}$; for $d = 2$, they widen even faster.
+:::
+:::
+
+# Seasonal Series: STL + ARIMA
+
+::: {.content-hidden unless-format="revealjs"}
+## Seasonal Series: STL + ARIMA
+:::
+
+`mexretail` is a monthly series with strong trend and seasonality. We already know how to handle it with STL decomposition. In Module 1 we combined STL with SNAIVE; in Module 2 we replaced SNAIVE with ETS. The natural next step is to replace it with ARIMA.
+
+The idea is the same: use STL to handle the seasonal pattern, and let ARIMA model the trend-cycle component on the **seasonally adjusted series**.
+```{r}
+#| label: stl-arima-fit
+#| message: false
+
+fit_mex_stl <- mexretail |>
+  model(
+    stl_arima = decomposition_model(       #<1>
+      STL(box_cox(y, lambda) ~             #<2>
+            trend(window = NULL) +
+            season(window = "periodic"),
+          robust = TRUE),
+      ARIMA(season_adjust)                 #<3>
+    )
+  )
+
+report(fit_mex_stl)
+```
+
+1. `decomposition_model()` combines a decomposition method with a model for one or more of its components.
+2. STL decomposes the Box-Cox-transformed series. The seasonal component is handled implicitly by the decomposition.
+3. `ARIMA(season_adjust)` fits an ARIMA model automatically to the seasonally adjusted component. The seasonal component is re-added when generating forecasts.
+```{r}
+#| label: stl-arima-residuals
+#| warning: false
+
+fit_mex_stl |> gg_tsresiduals()
+```
+```{r}
+#| label: stl-arima-forecast
+#| message: false
+#| warning: false
+
+fit_mex_stl |>
+  forecast(h = 24) |>
+  autoplot(mexretail |> filter(year(date) >= 2015)) +
+  labs(
+    title = "mexretail — STL + ARIMA forecast",
+    y = "Index 2015=100"
+  )
+```
+
+# Seasonal ARIMA (SARIMA)
+
+::: {.content-hidden unless-format="revealjs"}
+## Seasonal ARIMA
+:::
+
+STL + ARIMA is a two-stage approach: decompose first, then model. An alternative is to handle seasonality **within a single ARIMA model** by adding seasonal AR and MA terms. This is a **Seasonal ARIMA** model, often written as:
+
+$$
+\text{ARIMA}\underbrace{(p,\,d,\,q)}_{\text{non-seasonal}}\underbrace{(P,\,D,\,Q)_{m}}_{\text{seasonal}}
+$$
+
+where $m$ is the seasonal period ($m = 12$ for monthly data).
+
+::: {.fragment}
+
+The full model equation in backshift notation is:
+
+$$
+\underbrace{\Phi(B^m)}_{\text{seasonal AR}} \underbrace{\phi(B)}_{\text{non-seasonal AR}} \underbrace{(1-B^m)^D (1-B)^d}_{\text{differencing}} y_t = c + \underbrace{\Theta(B^m)}_{\text{seasonal MA}} \underbrace{\theta(B)}_{\text{non-seasonal MA}} \varepsilon_t
+$$
+
+where $\Phi$, $\Theta$ are the seasonal AR and MA polynomials evaluated at $B^m$.
+
+:::
+
+::: {.content-hidden unless-format="revealjs"}
+## Reading ACF/PACF for SARIMA
+:::
+
+::: {.content-visible unless-format="revealjs"}
+## Reading ACF/PACF for Seasonal Orders
+:::
+
+The non-seasonal orders ($p$, $q$) are read from the first few lags of the ACF/PACF, as before. The seasonal orders ($P$, $Q$) are read from the **seasonal lags** ($m$, $2m$, $3m$, ...):
+
+| Pattern at seasonal lags | Suggested component |
+|:--------------------------|:--------------------|
+| PACF spikes at lags $m$, $2m$, ... cut off after lag $Pm$ | Seasonal AR($P$) |
+| ACF spikes at lags $m$, $2m$, ... cut off after lag $Qm$ | Seasonal MA($Q$) |
+| Both decay gradually at seasonal lags | Mixed seasonal ARMA |
+
+::: {.fragment}
+::: {.callout-tip appearance="simple"}
+Focus on the seasonal lags *separately* from the non-seasonal lags. A good practice is to use `lag_max = 3m` or `4m` to make the seasonal structure clearly visible.
+:::
+:::
+
+::: {.content-hidden unless-format="revealjs"}
+## SARIMA for `mexretail` {auto-animate="true"}
+:::
+
+::: {.content-visible unless-format="revealjs"}
+## SARIMA for `mexretail`
+:::
+
+The full stationarity protocol for `mexretail` told us we need a seasonal difference ($D = 1$) and a first difference ($d = 1$), applied to the Box-Cox-transformed series. Let's inspect the ACF/PACF to choose $p$, $q$, $P$, $Q$:
+```{r}
+#| label: mexretail-tsdisplay
+#| warning: false
+#| message: false
+
+mexretail |>
+  gg_tsdisplay(
+    difference(box_cox(y, lambda), 12) |> difference(1),
+    plot_type = "partial",
+    lag_max   = 48
+  )
+```
+
+::: {.fragment}
+::: {.callout-note appearance="simple"}
+## Reading the plot
+
+- **Non-seasonal lags (1–11):** ACF and PACF both show a spike at lag 1, suggesting a small ARMA component — try $p = 1$ or $q = 1$.
+- **Seasonal lags (12, 24, 36):** PACF has a spike at lag 12 only → seasonal AR(1). ACF has a spike at lag 12 → could also be seasonal MA(1). Start with both and compare.
+:::
+:::
+```{r}
+#| label: sarima-fit
+#| message: false
+
+fit_mex_sarima <- mexretail |>
+  model(
+    sarima_011_110 = ARIMA(box_cox(y, lambda) ~
+                             pdq(0, 1, 1) + PDQ(1, 1, 0)), #<1>
+    sarima_011_011 = ARIMA(box_cox(y, lambda) ~
+                             pdq(0, 1, 1) + PDQ(0, 1, 1)), #<2>
+    sarima_auto    = ARIMA(box_cox(y, lambda),              #<3>
+                           stepwise     = FALSE,
+                           approximation = FALSE)
+  )
+
+glance(fit_mex_sarima) |>
+  arrange(AICc) |>
+  select(.model, AIC, AICc, BIC)
+```
+
+1. First candidate from ACF/PACF reading: non-seasonal MA(1), seasonal AR(1).
+2. Second candidate: non-seasonal MA(1), seasonal MA(1) — very common structure for monthly economic data.
+3. Exhaustive automatic search for comparison.
+```{r}
+#| label: sarima-report
+#| message: false
+
+fit_mex_sarima |>
+  select(sarima_auto) |>
+  report()
+```
+```{r}
+#| label: sarima-residuals
+#| warning: false
+
+fit_mex_sarima |>
+  select(sarima_auto) |>
+  gg_tsresiduals(lag_max = 48)
+```
+```{r}
+#| label: sarima-ljungbox
+
+fit_mex_sarima |>
+  select(sarima_auto) |>
+  augment() |>
+  features(.innov, ljung_box,
+           lag = 24,
+           dof = 4) #<1>
+```
+
+1. Set `dof` to $p + q + P + Q$ for the fitted SARIMA model. Adjust this to match the order reported by `report()`.
+
+# STL + ARIMA vs. SARIMA
+
+::: {.content-hidden unless-format="revealjs"}
+## Comparing Both Strategies
+:::
+
+Both STL + ARIMA and SARIMA are valid approaches for seasonal time series. Let's compare them directly on `mexretail` using a train/test split:
+```{r}
+#| label: train-test-split
+#| message: false
+
+mex_train <- mexretail |> filter(year(date) <= 2019) #<1>
+mex_test  <- mexretail |> filter(year(date) >  2019) #<1>
+```
+
+1. We hold out the last few years as a test set. Note that this comparison uses forecast accuracy — not information criteria — so differences in transformation or differencing order do not affect comparability.
+```{r}
+#| label: comparison-fit
+#| message: false
+#| warning: false
+
+fit_compare <- mex_train |>
+  model(
+    stl_arima = decomposition_model(
+      STL(box_cox(y, lambda) ~
+            trend(window = NULL) +
+            season(window = "periodic"),
+          robust = TRUE),
+      ARIMA(season_adjust)
+    ),
+    sarima = ARIMA(box_cox(y, lambda),
+                   stepwise      = FALSE,
+                   approximation = FALSE)
+  )
+```
+```{r}
+#| label: comparison-accuracy
+#| message: false
+#| warning: false
+
+fit_compare |>
+  forecast(h = nrow(mex_test)) |>
+  accuracy(mexretail) |>
+  select(.model, RMSE, MAE, MAPE, MASE) |>
+  arrange(RMSE)
+```
+```{r}
+#| label: comparison-plot
+#| message: false
+#| warning: false
+#| echo: false
+
+fit_compare |>
+  forecast(h = nrow(mex_test)) |>
+  autoplot(mexretail |> filter(year(date) >= 2015), level = 80) +
+  labs(
+    title    = "mexretail — STL + ARIMA vs. SARIMA",
+    y        = "Index 2015=100",
+    subtitle = "80% prediction intervals"
+  ) +
+  facet_wrap(vars(.model), ncol = 1)
+```
+
+::: {.fragment}
+::: {.callout-note appearance="simple"}
+## When to use which
+
+| | STL + ARIMA | SARIMA |
+|:--|:--|:--|
+| **Seasonal pattern** | Flexible — can change over time | Fixed structure |
+| **Outlier robustness** | High (with `robust = TRUE`) | Lower |
+| **Interpretability** | Decomposition is visible | Single compact model |
+| **Multiple seasonality** | Handles it naturally | Difficult |
+| **Parsimony** | Two models in sequence | One unified model |
+
+Neither approach dominates universally. Let the data and the accuracy metrics guide the choice.
+:::
+:::
