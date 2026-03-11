@@ -661,26 +661,28 @@ window.Quarto = {
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-20"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><a class="code-annotation-anchor" data-target-cell="annotated-cell-20" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-20-1" class="code-annotation-target"><a href="#annotated-cell-20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyquant)</span>
-<span id="annotated-cell-20-2"><a href="#annotated-cell-20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(plotly)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-16"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><a class="code-annotation-anchor" data-target-cell="annotated-cell-16" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-16-1" class="code-annotation-target"><a href="#annotated-cell-16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyquant)</span>
+<span id="annotated-cell-16-2"><a href="#annotated-cell-16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(plotly)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-annotation">
 <dl class="code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-20" data-target-annotation="1">1</dt>
+<dt data-target-cell="annotated-cell-16" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-20" data-code-lines="1,2" data-code-annotation="1">In addition to the regular packages, here we’ll use <code>tidyquant</code> and <code>plotly</code>.</span>
+<span data-code-cell="annotated-cell-16" data-code-lines="1,2" data-code-annotation="1">In addition to the regular packages, here we’ll use <code>tidyquant</code> and <code>plotly</code>.</span>
 </dd>
 </dl>
 </div>
 </div>
 <section id="arima-models" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> ARIMA Models</h1>
-<p>In the <a href="../02_stationarity/stationarity.html#ar-and-ma-models">previous topic</a> we introduced the two basic building blocks for modeling the correlation structure of a stationary time series:</p>
+<p>In the <a href="../../../../docs/modules/module_2/02_stationarity/stationarity.html#ar-and-ma-models">previous topic</a> we introduced the two basic building blocks for modeling the correlation structure of a stationary time series:</p>
 <ul>
 <li><strong>AR(<span class="math inline">p</span>):</strong> forecast <span class="math inline">y_t</span> using its own <span class="math inline">p</span> past values.</li>
 <li><strong>MA(<span class="math inline">q</span>):</strong> forecast <span class="math inline">y_t</span> using <span class="math inline">q</span> past forecast errors.</li>
 </ul>
+<div class="fragment">
 <p>In practice, neither model alone is usually sufficient. Real series often show patterns that require <em>both</em> autoregressive and moving average components simultaneously. And most real series are also <strong>non-stationary</strong> — they have trend, seasonality, or both.</p>
+</div>
 <div class="fragment">
 <div class="callout callout-style-simple callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -718,7 +720,7 @@ y'_t = c + \phi_1 y'_{t-1} + \cdots + \phi_p y'_{t-p} + \theta_1 \varepsilon_{t-
 </section>
 <section id="backshift-notation" class="level2" data-number="1.2">
 <h2 data-number="1.2" class="anchored" data-anchor-id="backshift-notation"><span class="header-section-number">1.2</span> Backshift Notation</h2>
-<p>Recall from the <a href="../02_stationarity/stationarity.html#backshift-notation">previous topic</a> that the backshift operator <span class="math inline">B</span> satisfies <span class="math inline">By_t = y_{t-1}</span>, and that <span class="math inline">d</span>-th order differencing can be written as <span class="math inline">(1-B)^d y_t</span>.</p>
+<p>Recall from the <a href="../../../../docs/modules/module_2/02_stationarity/stationarity.html#backshift-notation">previous topic</a> that the backshift operator <span class="math inline">B</span> satisfies <span class="math inline">By_t = y_{t-1}</span>, and that <span class="math inline">d</span>-th order differencing can be written as <span class="math inline">(1-B)^d y_t</span>.</p>
 <p>Using this notation, we can write the AR and MA components compactly as well:</p>
 <div class="fragment">
 <p><strong>AR component:</strong> <span class="math display">\phi_1 y_{t-1} + \phi_2 y_{t-2} + \cdots + \phi_p y_{t-p} = \phi(B)\,y_t</span></p>
@@ -788,7 +790,9 @@ y'_t = c + \phi_1 y'_{t-1} + \cdots + \phi_p y'_{t-p} + \theta_1 \varepsilon_{t-
 <li><span class="math inline">d = 1</span>, <span class="math inline">c \neq 0</span>: forecasts follow a straight line.</li>
 <li><span class="math inline">d = 2</span>, <span class="math inline">c \neq 0</span>: forecasts follow a quadratic trend.</li>
 </ul>
+<div class="fragment">
 <p>Higher values of <span class="math inline">d</span> also produce wider prediction intervals that grow faster.</p>
+</div>
 </div>
 </div>
 </div>
@@ -801,7 +805,7 @@ y'_t = c + \phi_1 y'_{t-1} + \cdots + \phi_p y'_{t-p} + \theta_1 \varepsilon_{t-
 <p>Selecting the right ARIMA order involves three decisions:</p>
 <div class="incremental">
 <ol class="incremental" type="1">
-<li><p><strong>Choose <span class="math inline">d</span></strong> — determine how many differences are needed using the stationarity protocol from the <a href="../02_stationarity/stationarity.html#unit-root-tests">previous topic</a>: Box-Cox / log transformation to stabilize variance, <code>unitroot_nsdiffs()</code> for seasonal differencing (if any), then <code>unitroot_ndiffs()</code> on the differenced series.</p></li>
+<li><p><strong>Choose <span class="math inline">d</span></strong> — determine how many differences are needed using the stationarity protocol from the <a href="../../../../docs/modules/module_2/02_stationarity/stationarity.html#unit-root-tests">previous topic</a>: Box-Cox / log transformation to stabilize variance, <code>unitroot_nsdiffs()</code> for seasonal differencing (if any), then <code>unitroot_ndiffs()</code> on the differenced series.</p></li>
 <li><p><strong>Choose <span class="math inline">p</span> or <span class="math inline">q</span></strong> — read the ACF and PACF of the (differenced, stationary) series:</p>
 <ul class="incremental">
 <li><strong>PACF cuts off</strong> after lag <span class="math inline">p</span> → AR(<span class="math inline">p</span>) component.</li>
@@ -832,16 +836,12 @@ y'_t = c + \phi_1 y'_{t-1} + \cdots + \phi_p y'_{t-p} + \theta_1 \varepsilon_{t-
 <p>In <code>fable</code>, ARIMA models are specified inside <code>model()</code> using the <code>ARIMA()</code> function. The order is controlled with <code>pdq()</code>:</p>
 <div class="cell">
 <div class="cell-output-display">
-<div class="plotly html-widget html-fill-item" id="htmlwidget-becec7facd416c6d0901" style="width:100%;height:464px;"></div>
-<script type="application/json" data-for="htmlwidget-becec7facd416c6d0901">{"x":{"data":[{"x":["1970-01-01","1970-04-01","1970-07-01","1970-10-01","1971-01-01","1971-04-01","1971-07-01","1971-10-01","1972-01-01","1972-04-01","1972-07-01","1972-10-01","1973-01-01","1973-04-01","1973-07-01","1973-10-01","1974-01-01","1974-04-01","1974-07-01","1974-10-01","1975-01-01","1975-04-01","1975-07-01","1975-10-01","1976-01-01","1976-04-01","1976-07-01","1976-10-01","1977-01-01","1977-04-01","1977-07-01","1977-10-01","1978-01-01","1978-04-01","1978-07-01","1978-10-01","1979-01-01","1979-04-01","1979-07-01","1979-10-01","1980-01-01","1980-04-01","1980-07-01","1980-10-01","1981-01-01","1981-04-01","1981-07-01","1981-10-01","1982-01-01","1982-04-01","1982-07-01","1982-10-01","1983-01-01","1983-04-01","1983-07-01","1983-10-01","1984-01-01","1984-04-01","1984-07-01","1984-10-01","1985-01-01","1985-04-01","1985-07-01","1985-10-01","1986-01-01","1986-04-01","1986-07-01","1986-10-01","1987-01-01","1987-04-01","1987-07-01","1987-10-01","1988-01-01","1988-04-01","1988-07-01","1988-10-01","1989-01-01","1989-04-01","1989-07-01","1989-10-01","1990-01-01","1990-04-01","1990-07-01","1990-10-01","1991-01-01","1991-04-01","1991-07-01","1991-10-01","1992-01-01","1992-04-01","1992-07-01","1992-10-01","1993-01-01","1993-04-01","1993-07-01","1993-10-01","1994-01-01","1994-04-01","1994-07-01","1994-10-01","1995-01-01","1995-04-01","1995-07-01","1995-10-01","1996-01-01","1996-04-01","1996-07-01","1996-10-01","1997-01-01","1997-04-01","1997-07-01","1997-10-01","1998-01-01","1998-04-01","1998-07-01","1998-10-01","1999-01-01","1999-04-01","1999-07-01","1999-10-01","2000-01-01","2000-04-01","2000-07-01","2000-10-01","2001-01-01","2001-04-01","2001-07-01","2001-10-01","2002-01-01","2002-04-01","2002-07-01","2002-10-01","2003-01-01","2003-04-01","2003-07-01","2003-10-01","2004-01-01","2004-04-01","2004-07-01","2004-10-01","2005-01-01","2005-04-01","2005-07-01","2005-10-01","2006-01-01","2006-04-01","2006-07-01","2006-10-01","2007-01-01","2007-04-01","2007-07-01","2007-10-01","2008-01-01","2008-04-01","2008-07-01","2008-10-01","2009-01-01","2009-04-01","2009-07-01","2009-10-01","2010-01-01","2010-04-01","2010-07-01","2010-10-01","2011-01-01","2011-04-01","2011-07-01","2011-10-01","2012-01-01","2012-04-01","2012-07-01","2012-10-01","2013-01-01","2013-04-01","2013-07-01","2013-10-01","2014-01-01","2014-04-01","2014-07-01","2014-10-01","2015-01-01","2015-04-01","2015-07-01","2015-10-01","2016-01-01","2016-04-01","2016-07-01","2016-10-01","2017-01-01","2017-04-01","2017-07-01","2017-10-01","2018-01-01","2018-04-01","2018-07-01","2018-10-01","2019-01-01","2019-04-01"],"y":[0.61856639950867986,0.45198401890083062,0.87287178049919589,-0.27184793266723517,1.9013449590126186,0.91487734626181094,0.79410964146013896,1.6456331640359423,1.3111896944382195,1.8857778772673583,1.5293336123326284,2.3195575416487202,1.809282167105053,-0.045090606803555033,0.35135318461438914,-0.29869338699288761,-0.89869875557102574,0.35940644782268549,0.42864100915203096,-1.4725025295399874,0.83524738243898611,1.6314874322645778,1.4112403459712652,1.0695915750005724,1.9796594970381776,0.91584534695154929,1.0473521621852555,1.2891401570625405,1.1717988524164724,0.54078143277109803,0.9411156110621377,1.4923451366069429,0.56022307316876407,2.1153292162249926,0.4190265384867331,0.80370279279193824,0.51659697626558199,-0.064957553115085886,0.96839261647829744,0.24851259973921458,-0.14305362067297267,-2.277835537125128,1.0909753940994804,1.3420279465389484,0.33443884795225642,0.0072807570438371272,0.46151212887615145,-0.68636675279343251,0.73388909329619167,0.30413540520939364,0.66814235894767648,1.7365066200037305,0.98384883775519683,2.015812652322424,1.7773140628120743,1.5810003094532732,0.82645055008576662,1.3912539121985645,0.73889767723702704,1.2871021313594966,1.6847758649143785,0.91384956643647541,1.8815216700032167,0.21609668825384176,0.87001801802166767,1.0837900215650009,1.7535634926721499,0.61147551655604815,0.09976547062624519,1.3554644312069541,1.1348444664966095,0.21133112004285692,1.7510779936037224,0.73554506057380564,0.88464617470975782,1.130580293629535,0.46287091453525164,0.46569964362657146,0.96344929349303499,0.43367269413643328,0.83807215721183326,0.30415224822046838,0.39537256853225955,-0.7636661366504427,-0.37673817763064221,0.82534748360938437,0.49735253440186256,-0.050052317948079406,1.8550267653187902,0.67654570493331789,1.0662220658923971,1.1848406952783108,0.38268878403542317,0.90549816753213719,1.106802421346309,0.87402382558749991,1.1373046854421531,0.77505850315375824,0.75962195601313454,1.0753242916431205,0.24857476422344149,0.87284989032774263,0.90215213263817873,0.69514618012771479,0.91806191616399246,1.0700389958259393,0.60359420503299788,0.79336064043253884,1.0485731200363446,0.44918438345735723,1.6894026298871267,1.1881299946718826,1.0064500585786007,1.7456110997876806,1.2955973952983868,1.4343579074440171,0.96559658032706608,1.4474719805205538,1.122359638080539,1.4545820126993902,1.5245704589775144,0.96121226060006393,0.97716909621858861,0.85641013321193782,0.39949971937947026,0.23614630465917941,0.34213043294144541,1.4842458564933381,0.30559197965835949,0.51213557913332153,0.72191276398552162,0.5730511174222741,0.469223438280153,1.116772543504041,1.4561676481678276,0.67576908285733595,0.885841720193703,0.62024912305336244,1.0997774904339508,1.0818205486621935,0.58177683051461315,1.1281613841871874,0.9659927116326017,0.2965152867693277,1.108946546955103,0.50532567491075042,0.60528083477535688,0.96309962427394424,0.55801093940068824,0.18516894930051819,0.56200944315651924,0.28440653556973672,-0.26612300054669191,0.1620192263617426,-0.75160125879616402,-0.93500719533796683,-0.22611780953116778,-0.405843686476004,0.68751976023069261,-0.14842452321452981,0.49323220243060462,0.79222239425256191,0.6969058131405248,0.65919794681370547,0.42444669623069586,0.22117719949523718,0.39080368544510691,0.18257696148236136,0.79975920345436435,0.14826832411838353,0.1630396947035706,0.44719232367036454,0.51719840815938056,0.071945195958811325,0.40590273403449117,0.85797592610408202,0.39315711289269473,1.08895373968938,1.070282590151983,1.2054265972464506,0.82726776563788462,0.79281273076148295,0.75942733134812812,0.4468239200960511,0.77825431744287243,0.71559142102817219,0.63491556349006828,0.61854533409189116,0.59333650119643977,0.59315340666827865,0.58473790051056795,1.1331455896359088,0.41696295782411852,0.98311190336257681,0.85318135333736222,0.3565120284084955,0.28288546871166886,1.1135167032879423],"text":["Quarter: 1970 Q1<br />Consumption:  0.618566400","Quarter: 1970 Q2<br />Consumption:  0.451984019","Quarter: 1970 Q3<br />Consumption:  0.872871780","Quarter: 1970 Q4<br />Consumption: -0.271847933","Quarter: 1971 Q1<br />Consumption:  1.901344959","Quarter: 1971 Q2<br />Consumption:  0.914877346","Quarter: 1971 Q3<br />Consumption:  0.794109641","Quarter: 1971 Q4<br />Consumption:  1.645633164","Quarter: 1972 Q1<br />Consumption:  1.311189694","Quarter: 1972 Q2<br />Consumption:  1.885777877","Quarter: 1972 Q3<br />Consumption:  1.529333612","Quarter: 1972 Q4<br />Consumption:  2.319557542","Quarter: 1973 Q1<br />Consumption:  1.809282167","Quarter: 1973 Q2<br />Consumption: -0.045090607","Quarter: 1973 Q3<br />Consumption:  0.351353185","Quarter: 1973 Q4<br />Consumption: -0.298693387","Quarter: 1974 Q1<br />Consumption: -0.898698756","Quarter: 1974 Q2<br />Consumption:  0.359406448","Quarter: 1974 Q3<br />Consumption:  0.428641009","Quarter: 1974 Q4<br />Consumption: -1.472502530","Quarter: 1975 Q1<br />Consumption:  0.835247382","Quarter: 1975 Q2<br />Consumption:  1.631487432","Quarter: 1975 Q3<br />Consumption:  1.411240346","Quarter: 1975 Q4<br />Consumption:  1.069591575","Quarter: 1976 Q1<br />Consumption:  1.979659497","Quarter: 1976 Q2<br />Consumption:  0.915845347","Quarter: 1976 Q3<br />Consumption:  1.047352162","Quarter: 1976 Q4<br />Consumption:  1.289140157","Quarter: 1977 Q1<br />Consumption:  1.171798852","Quarter: 1977 Q2<br />Consumption:  0.540781433","Quarter: 1977 Q3<br />Consumption:  0.941115611","Quarter: 1977 Q4<br />Consumption:  1.492345137","Quarter: 1978 Q1<br />Consumption:  0.560223073","Quarter: 1978 Q2<br />Consumption:  2.115329216","Quarter: 1978 Q3<br />Consumption:  0.419026538","Quarter: 1978 Q4<br />Consumption:  0.803702793","Quarter: 1979 Q1<br />Consumption:  0.516596976","Quarter: 1979 Q2<br />Consumption: -0.064957553","Quarter: 1979 Q3<br />Consumption:  0.968392616","Quarter: 1979 Q4<br />Consumption:  0.248512600","Quarter: 1980 Q1<br />Consumption: -0.143053621","Quarter: 1980 Q2<br />Consumption: -2.277835537","Quarter: 1980 Q3<br />Consumption:  1.090975394","Quarter: 1980 Q4<br />Consumption:  1.342027947","Quarter: 1981 Q1<br />Consumption:  0.334438848","Quarter: 1981 Q2<br />Consumption:  0.007280757","Quarter: 1981 Q3<br />Consumption:  0.461512129","Quarter: 1981 Q4<br />Consumption: -0.686366753","Quarter: 1982 Q1<br />Consumption:  0.733889093","Quarter: 1982 Q2<br />Consumption:  0.304135405","Quarter: 1982 Q3<br />Consumption:  0.668142359","Quarter: 1982 Q4<br />Consumption:  1.736506620","Quarter: 1983 Q1<br />Consumption:  0.983848838","Quarter: 1983 Q2<br />Consumption:  2.015812652","Quarter: 1983 Q3<br />Consumption:  1.777314063","Quarter: 1983 Q4<br />Consumption:  1.581000309","Quarter: 1984 Q1<br />Consumption:  0.826450550","Quarter: 1984 Q2<br />Consumption:  1.391253912","Quarter: 1984 Q3<br />Consumption:  0.738897677","Quarter: 1984 Q4<br />Consumption:  1.287102131","Quarter: 1985 Q1<br />Consumption:  1.684775865","Quarter: 1985 Q2<br />Consumption:  0.913849566","Quarter: 1985 Q3<br />Consumption:  1.881521670","Quarter: 1985 Q4<br />Consumption:  0.216096688","Quarter: 1986 Q1<br />Consumption:  0.870018018","Quarter: 1986 Q2<br />Consumption:  1.083790022","Quarter: 1986 Q3<br />Consumption:  1.753563493","Quarter: 1986 Q4<br />Consumption:  0.611475517","Quarter: 1987 Q1<br />Consumption:  0.099765471","Quarter: 1987 Q2<br />Consumption:  1.355464431","Quarter: 1987 Q3<br />Consumption:  1.134844466","Quarter: 1987 Q4<br />Consumption:  0.211331120","Quarter: 1988 Q1<br />Consumption:  1.751077994","Quarter: 1988 Q2<br />Consumption:  0.735545061","Quarter: 1988 Q3<br />Consumption:  0.884646175","Quarter: 1988 Q4<br />Consumption:  1.130580294","Quarter: 1989 Q1<br />Consumption:  0.462870915","Quarter: 1989 Q2<br />Consumption:  0.465699644","Quarter: 1989 Q3<br />Consumption:  0.963449293","Quarter: 1989 Q4<br />Consumption:  0.433672694","Quarter: 1990 Q1<br />Consumption:  0.838072157","Quarter: 1990 Q2<br />Consumption:  0.304152248","Quarter: 1990 Q3<br />Consumption:  0.395372569","Quarter: 1990 Q4<br />Consumption: -0.763666137","Quarter: 1991 Q1<br />Consumption: -0.376738178","Quarter: 1991 Q2<br />Consumption:  0.825347484","Quarter: 1991 Q3<br />Consumption:  0.497352534","Quarter: 1991 Q4<br />Consumption: -0.050052318","Quarter: 1992 Q1<br />Consumption:  1.855026765","Quarter: 1992 Q2<br />Consumption:  0.676545705","Quarter: 1992 Q3<br />Consumption:  1.066222066","Quarter: 1992 Q4<br />Consumption:  1.184840695","Quarter: 1993 Q1<br />Consumption:  0.382688784","Quarter: 1993 Q2<br />Consumption:  0.905498168","Quarter: 1993 Q3<br />Consumption:  1.106802421","Quarter: 1993 Q4<br />Consumption:  0.874023826","Quarter: 1994 Q1<br />Consumption:  1.137304685","Quarter: 1994 Q2<br />Consumption:  0.775058503","Quarter: 1994 Q3<br />Consumption:  0.759621956","Quarter: 1994 Q4<br />Consumption:  1.075324292","Quarter: 1995 Q1<br />Consumption:  0.248574764","Quarter: 1995 Q2<br />Consumption:  0.872849890","Quarter: 1995 Q3<br />Consumption:  0.902152133","Quarter: 1995 Q4<br />Consumption:  0.695146180","Quarter: 1996 Q1<br />Consumption:  0.918061916","Quarter: 1996 Q2<br />Consumption:  1.070038996","Quarter: 1996 Q3<br />Consumption:  0.603594205","Quarter: 1996 Q4<br />Consumption:  0.793360640","Quarter: 1997 Q1<br />Consumption:  1.048573120","Quarter: 1997 Q2<br />Consumption:  0.449184383","Quarter: 1997 Q3<br />Consumption:  1.689402630","Quarter: 1997 Q4<br />Consumption:  1.188129995","Quarter: 1998 Q1<br />Consumption:  1.006450059","Quarter: 1998 Q2<br />Consumption:  1.745611100","Quarter: 1998 Q3<br />Consumption:  1.295597395","Quarter: 1998 Q4<br />Consumption:  1.434357907","Quarter: 1999 Q1<br />Consumption:  0.965596580","Quarter: 1999 Q2<br />Consumption:  1.447471981","Quarter: 1999 Q3<br />Consumption:  1.122359638","Quarter: 1999 Q4<br />Consumption:  1.454582013","Quarter: 2000 Q1<br />Consumption:  1.524570459","Quarter: 2000 Q2<br />Consumption:  0.961212261","Quarter: 2000 Q3<br />Consumption:  0.977169096","Quarter: 2000 Q4<br />Consumption:  0.856410133","Quarter: 2001 Q1<br />Consumption:  0.399499719","Quarter: 2001 Q2<br />Consumption:  0.236146305","Quarter: 2001 Q3<br />Consumption:  0.342130433","Quarter: 2001 Q4<br />Consumption:  1.484245856","Quarter: 2002 Q1<br />Consumption:  0.305591980","Quarter: 2002 Q2<br />Consumption:  0.512135579","Quarter: 2002 Q3<br />Consumption:  0.721912764","Quarter: 2002 Q4<br />Consumption:  0.573051117","Quarter: 2003 Q1<br />Consumption:  0.469223438","Quarter: 2003 Q2<br />Consumption:  1.116772544","Quarter: 2003 Q3<br />Consumption:  1.456167648","Quarter: 2003 Q4<br />Consumption:  0.675769083","Quarter: 2004 Q1<br />Consumption:  0.885841720","Quarter: 2004 Q2<br />Consumption:  0.620249123","Quarter: 2004 Q3<br />Consumption:  1.099777490","Quarter: 2004 Q4<br />Consumption:  1.081820549","Quarter: 2005 Q1<br />Consumption:  0.581776831","Quarter: 2005 Q2<br />Consumption:  1.128161384","Quarter: 2005 Q3<br />Consumption:  0.965992712","Quarter: 2005 Q4<br />Consumption:  0.296515287","Quarter: 2006 Q1<br />Consumption:  1.108946547","Quarter: 2006 Q2<br />Consumption:  0.505325675","Quarter: 2006 Q3<br />Consumption:  0.605280835","Quarter: 2006 Q4<br />Consumption:  0.963099624","Quarter: 2007 Q1<br />Consumption:  0.558010939","Quarter: 2007 Q2<br />Consumption:  0.185168949","Quarter: 2007 Q3<br />Consumption:  0.562009443","Quarter: 2007 Q4<br />Consumption:  0.284406536","Quarter: 2008 Q1<br />Consumption: -0.266123001","Quarter: 2008 Q2<br />Consumption:  0.162019226","Quarter: 2008 Q3<br />Consumption: -0.751601259","Quarter: 2008 Q4<br />Consumption: -0.935007195","Quarter: 2009 Q1<br />Consumption: -0.226117810","Quarter: 2009 Q2<br />Consumption: -0.405843686","Quarter: 2009 Q3<br />Consumption:  0.687519760","Quarter: 2009 Q4<br />Consumption: -0.148424523","Quarter: 2010 Q1<br />Consumption:  0.493232202","Quarter: 2010 Q2<br />Consumption:  0.792222394","Quarter: 2010 Q3<br />Consumption:  0.696905813","Quarter: 2010 Q4<br />Consumption:  0.659197947","Quarter: 2011 Q1<br />Consumption:  0.424446696","Quarter: 2011 Q2<br />Consumption:  0.221177199","Quarter: 2011 Q3<br />Consumption:  0.390803685","Quarter: 2011 Q4<br />Consumption:  0.182576961","Quarter: 2012 Q1<br />Consumption:  0.799759203","Quarter: 2012 Q2<br />Consumption:  0.148268324","Quarter: 2012 Q3<br />Consumption:  0.163039695","Quarter: 2012 Q4<br />Consumption:  0.447192324","Quarter: 2013 Q1<br />Consumption:  0.517198408","Quarter: 2013 Q2<br />Consumption:  0.071945196","Quarter: 2013 Q3<br />Consumption:  0.405902734","Quarter: 2013 Q4<br />Consumption:  0.857975926","Quarter: 2014 Q1<br />Consumption:  0.393157113","Quarter: 2014 Q2<br />Consumption:  1.088953740","Quarter: 2014 Q3<br />Consumption:  1.070282590","Quarter: 2014 Q4<br />Consumption:  1.205426597","Quarter: 2015 Q1<br />Consumption:  0.827267766","Quarter: 2015 Q2<br />Consumption:  0.792812731","Quarter: 2015 Q3<br />Consumption:  0.759427331","Quarter: 2015 Q4<br />Consumption:  0.446823920","Quarter: 2016 Q1<br />Consumption:  0.778254317","Quarter: 2016 Q2<br />Consumption:  0.715591421","Quarter: 2016 Q3<br />Consumption:  0.634915563","Quarter: 2016 Q4<br />Consumption:  0.618545334","Quarter: 2017 Q1<br />Consumption:  0.593336501","Quarter: 2017 Q2<br />Consumption:  0.593153407","Quarter: 2017 Q3<br />Consumption:  0.584737901","Quarter: 2017 Q4<br />Consumption:  1.133145590","Quarter: 2018 Q1<br />Consumption:  0.416962958","Quarter: 2018 Q2<br />Consumption:  0.983111903","Quarter: 2018 Q3<br />Consumption:  0.853181353","Quarter: 2018 Q4<br />Consumption:  0.356512028","Quarter: 2019 Q1<br />Consumption:  0.282885469","Quarter: 2019 Q2<br />Consumption:  1.113516703"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(70,130,180,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":40.840182648401829,"r":7.3059360730593621,"b":22.648401826484022,"l":37.260273972602747},"plot_bgcolor":"rgba(235,235,235,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"title":{"text":"US consumption — quarterly % change","font":{"color":"rgba(0,0,0,1)","family":"","size":17.534246575342465},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"date","autorange":true,"range":["1967-07-16","2021-09-16"],"tickmode":"auto","ticktext":["1980 Q1","2000 Q1","2020 Q1"],"tickvals":[3652.0000000000005,10957,18262],"categoryorder":"array","categoryarray":["1980 Q1","2000 Q1","2020 Q1"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"y","title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":true,"range":[-2.5077051910638204,2.5494271955874126],"tickmode":"auto","ticktext":["-2","-1","0","1","2"],"tickvals":[-2,-1,0,1,2],"categoryorder":"array","categoryarray":["-2","-1","0","1","2"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"x","title":{"text":"% change","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"shapes":[],"showlegend":false,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.8897637795275593,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"188a527b0b57":{"x":{},"y":{},"type":"scatter"}},"cur_data":"188a527b0b57","visdat":{"188a527b0b57":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<div class="plotly html-widget html-fill-item" id="htmlwidget-a7b2dc7be85679034ddd" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-a7b2dc7be85679034ddd">{"x":{"data":[{"x":["1970-01-01","1970-04-01","1970-07-01","1970-10-01","1971-01-01","1971-04-01","1971-07-01","1971-10-01","1972-01-01","1972-04-01","1972-07-01","1972-10-01","1973-01-01","1973-04-01","1973-07-01","1973-10-01","1974-01-01","1974-04-01","1974-07-01","1974-10-01","1975-01-01","1975-04-01","1975-07-01","1975-10-01","1976-01-01","1976-04-01","1976-07-01","1976-10-01","1977-01-01","1977-04-01","1977-07-01","1977-10-01","1978-01-01","1978-04-01","1978-07-01","1978-10-01","1979-01-01","1979-04-01","1979-07-01","1979-10-01","1980-01-01","1980-04-01","1980-07-01","1980-10-01","1981-01-01","1981-04-01","1981-07-01","1981-10-01","1982-01-01","1982-04-01","1982-07-01","1982-10-01","1983-01-01","1983-04-01","1983-07-01","1983-10-01","1984-01-01","1984-04-01","1984-07-01","1984-10-01","1985-01-01","1985-04-01","1985-07-01","1985-10-01","1986-01-01","1986-04-01","1986-07-01","1986-10-01","1987-01-01","1987-04-01","1987-07-01","1987-10-01","1988-01-01","1988-04-01","1988-07-01","1988-10-01","1989-01-01","1989-04-01","1989-07-01","1989-10-01","1990-01-01","1990-04-01","1990-07-01","1990-10-01","1991-01-01","1991-04-01","1991-07-01","1991-10-01","1992-01-01","1992-04-01","1992-07-01","1992-10-01","1993-01-01","1993-04-01","1993-07-01","1993-10-01","1994-01-01","1994-04-01","1994-07-01","1994-10-01","1995-01-01","1995-04-01","1995-07-01","1995-10-01","1996-01-01","1996-04-01","1996-07-01","1996-10-01","1997-01-01","1997-04-01","1997-07-01","1997-10-01","1998-01-01","1998-04-01","1998-07-01","1998-10-01","1999-01-01","1999-04-01","1999-07-01","1999-10-01","2000-01-01","2000-04-01","2000-07-01","2000-10-01","2001-01-01","2001-04-01","2001-07-01","2001-10-01","2002-01-01","2002-04-01","2002-07-01","2002-10-01","2003-01-01","2003-04-01","2003-07-01","2003-10-01","2004-01-01","2004-04-01","2004-07-01","2004-10-01","2005-01-01","2005-04-01","2005-07-01","2005-10-01","2006-01-01","2006-04-01","2006-07-01","2006-10-01","2007-01-01","2007-04-01","2007-07-01","2007-10-01","2008-01-01","2008-04-01","2008-07-01","2008-10-01","2009-01-01","2009-04-01","2009-07-01","2009-10-01","2010-01-01","2010-04-01","2010-07-01","2010-10-01","2011-01-01","2011-04-01","2011-07-01","2011-10-01","2012-01-01","2012-04-01","2012-07-01","2012-10-01","2013-01-01","2013-04-01","2013-07-01","2013-10-01","2014-01-01","2014-04-01","2014-07-01","2014-10-01","2015-01-01","2015-04-01","2015-07-01","2015-10-01","2016-01-01","2016-04-01","2016-07-01","2016-10-01","2017-01-01","2017-04-01","2017-07-01","2017-10-01","2018-01-01","2018-04-01","2018-07-01","2018-10-01","2019-01-01","2019-04-01"],"y":[0.61856639950867986,0.45198401890083062,0.87287178049919589,-0.27184793266723517,1.9013449590126186,0.91487734626181094,0.79410964146013896,1.6456331640359423,1.3111896944382195,1.8857778772673583,1.5293336123326284,2.3195575416487202,1.809282167105053,-0.045090606803555033,0.35135318461438914,-0.29869338699288761,-0.89869875557102574,0.35940644782268549,0.42864100915203096,-1.4725025295399874,0.83524738243898611,1.6314874322645778,1.4112403459712652,1.0695915750005724,1.9796594970381776,0.91584534695154929,1.0473521621852555,1.2891401570625405,1.1717988524164724,0.54078143277109803,0.9411156110621377,1.4923451366069429,0.56022307316876407,2.1153292162249926,0.4190265384867331,0.80370279279193824,0.51659697626558199,-0.064957553115085886,0.96839261647829744,0.24851259973921458,-0.14305362067297267,-2.277835537125128,1.0909753940994804,1.3420279465389484,0.33443884795225642,0.0072807570438371272,0.46151212887615145,-0.68636675279343251,0.73388909329619167,0.30413540520939364,0.66814235894767648,1.7365066200037305,0.98384883775519683,2.015812652322424,1.7773140628120743,1.5810003094532732,0.82645055008576662,1.3912539121985645,0.73889767723702704,1.2871021313594966,1.6847758649143785,0.91384956643647541,1.8815216700032167,0.21609668825384176,0.87001801802166767,1.0837900215650009,1.7535634926721499,0.61147551655604815,0.09976547062624519,1.3554644312069541,1.1348444664966095,0.21133112004285692,1.7510779936037224,0.73554506057380564,0.88464617470975782,1.130580293629535,0.46287091453525164,0.46569964362657146,0.96344929349303499,0.43367269413643328,0.83807215721183326,0.30415224822046838,0.39537256853225955,-0.7636661366504427,-0.37673817763064221,0.82534748360938437,0.49735253440186256,-0.050052317948079406,1.8550267653187902,0.67654570493331789,1.0662220658923971,1.1848406952783108,0.38268878403542317,0.90549816753213719,1.106802421346309,0.87402382558749991,1.1373046854421531,0.77505850315375824,0.75962195601313454,1.0753242916431205,0.24857476422344149,0.87284989032774263,0.90215213263817873,0.69514618012771479,0.91806191616399246,1.0700389958259393,0.60359420503299788,0.79336064043253884,1.0485731200363446,0.44918438345735723,1.6894026298871267,1.1881299946718826,1.0064500585786007,1.7456110997876806,1.2955973952983868,1.4343579074440171,0.96559658032706608,1.4474719805205538,1.122359638080539,1.4545820126993902,1.5245704589775144,0.96121226060006393,0.97716909621858861,0.85641013321193782,0.39949971937947026,0.23614630465917941,0.34213043294144541,1.4842458564933381,0.30559197965835949,0.51213557913332153,0.72191276398552162,0.5730511174222741,0.469223438280153,1.116772543504041,1.4561676481678276,0.67576908285733595,0.885841720193703,0.62024912305336244,1.0997774904339508,1.0818205486621935,0.58177683051461315,1.1281613841871874,0.9659927116326017,0.2965152867693277,1.108946546955103,0.50532567491075042,0.60528083477535688,0.96309962427394424,0.55801093940068824,0.18516894930051819,0.56200944315651924,0.28440653556973672,-0.26612300054669191,0.1620192263617426,-0.75160125879616402,-0.93500719533796683,-0.22611780953116778,-0.405843686476004,0.68751976023069261,-0.14842452321452981,0.49323220243060462,0.79222239425256191,0.6969058131405248,0.65919794681370547,0.42444669623069586,0.22117719949523718,0.39080368544510691,0.18257696148236136,0.79975920345436435,0.14826832411838353,0.1630396947035706,0.44719232367036454,0.51719840815938056,0.071945195958811325,0.40590273403449117,0.85797592610408202,0.39315711289269473,1.08895373968938,1.070282590151983,1.2054265972464506,0.82726776563788462,0.79281273076148295,0.75942733134812812,0.4468239200960511,0.77825431744287243,0.71559142102817219,0.63491556349006828,0.61854533409189116,0.59333650119643977,0.59315340666827865,0.58473790051056795,1.1331455896359088,0.41696295782411852,0.98311190336257681,0.85318135333736222,0.3565120284084955,0.28288546871166886,1.1135167032879423],"text":["Quarter: 1970 Q1<br />Consumption:  0.618566400","Quarter: 1970 Q2<br />Consumption:  0.451984019","Quarter: 1970 Q3<br />Consumption:  0.872871780","Quarter: 1970 Q4<br />Consumption: -0.271847933","Quarter: 1971 Q1<br />Consumption:  1.901344959","Quarter: 1971 Q2<br />Consumption:  0.914877346","Quarter: 1971 Q3<br />Consumption:  0.794109641","Quarter: 1971 Q4<br />Consumption:  1.645633164","Quarter: 1972 Q1<br />Consumption:  1.311189694","Quarter: 1972 Q2<br />Consumption:  1.885777877","Quarter: 1972 Q3<br />Consumption:  1.529333612","Quarter: 1972 Q4<br />Consumption:  2.319557542","Quarter: 1973 Q1<br />Consumption:  1.809282167","Quarter: 1973 Q2<br />Consumption: -0.045090607","Quarter: 1973 Q3<br />Consumption:  0.351353185","Quarter: 1973 Q4<br />Consumption: -0.298693387","Quarter: 1974 Q1<br />Consumption: -0.898698756","Quarter: 1974 Q2<br />Consumption:  0.359406448","Quarter: 1974 Q3<br />Consumption:  0.428641009","Quarter: 1974 Q4<br />Consumption: -1.472502530","Quarter: 1975 Q1<br />Consumption:  0.835247382","Quarter: 1975 Q2<br />Consumption:  1.631487432","Quarter: 1975 Q3<br />Consumption:  1.411240346","Quarter: 1975 Q4<br />Consumption:  1.069591575","Quarter: 1976 Q1<br />Consumption:  1.979659497","Quarter: 1976 Q2<br />Consumption:  0.915845347","Quarter: 1976 Q3<br />Consumption:  1.047352162","Quarter: 1976 Q4<br />Consumption:  1.289140157","Quarter: 1977 Q1<br />Consumption:  1.171798852","Quarter: 1977 Q2<br />Consumption:  0.540781433","Quarter: 1977 Q3<br />Consumption:  0.941115611","Quarter: 1977 Q4<br />Consumption:  1.492345137","Quarter: 1978 Q1<br />Consumption:  0.560223073","Quarter: 1978 Q2<br />Consumption:  2.115329216","Quarter: 1978 Q3<br />Consumption:  0.419026538","Quarter: 1978 Q4<br />Consumption:  0.803702793","Quarter: 1979 Q1<br />Consumption:  0.516596976","Quarter: 1979 Q2<br />Consumption: -0.064957553","Quarter: 1979 Q3<br />Consumption:  0.968392616","Quarter: 1979 Q4<br />Consumption:  0.248512600","Quarter: 1980 Q1<br />Consumption: -0.143053621","Quarter: 1980 Q2<br />Consumption: -2.277835537","Quarter: 1980 Q3<br />Consumption:  1.090975394","Quarter: 1980 Q4<br />Consumption:  1.342027947","Quarter: 1981 Q1<br />Consumption:  0.334438848","Quarter: 1981 Q2<br />Consumption:  0.007280757","Quarter: 1981 Q3<br />Consumption:  0.461512129","Quarter: 1981 Q4<br />Consumption: -0.686366753","Quarter: 1982 Q1<br />Consumption:  0.733889093","Quarter: 1982 Q2<br />Consumption:  0.304135405","Quarter: 1982 Q3<br />Consumption:  0.668142359","Quarter: 1982 Q4<br />Consumption:  1.736506620","Quarter: 1983 Q1<br />Consumption:  0.983848838","Quarter: 1983 Q2<br />Consumption:  2.015812652","Quarter: 1983 Q3<br />Consumption:  1.777314063","Quarter: 1983 Q4<br />Consumption:  1.581000309","Quarter: 1984 Q1<br />Consumption:  0.826450550","Quarter: 1984 Q2<br />Consumption:  1.391253912","Quarter: 1984 Q3<br />Consumption:  0.738897677","Quarter: 1984 Q4<br />Consumption:  1.287102131","Quarter: 1985 Q1<br />Consumption:  1.684775865","Quarter: 1985 Q2<br />Consumption:  0.913849566","Quarter: 1985 Q3<br />Consumption:  1.881521670","Quarter: 1985 Q4<br />Consumption:  0.216096688","Quarter: 1986 Q1<br />Consumption:  0.870018018","Quarter: 1986 Q2<br />Consumption:  1.083790022","Quarter: 1986 Q3<br />Consumption:  1.753563493","Quarter: 1986 Q4<br />Consumption:  0.611475517","Quarter: 1987 Q1<br />Consumption:  0.099765471","Quarter: 1987 Q2<br />Consumption:  1.355464431","Quarter: 1987 Q3<br />Consumption:  1.134844466","Quarter: 1987 Q4<br />Consumption:  0.211331120","Quarter: 1988 Q1<br />Consumption:  1.751077994","Quarter: 1988 Q2<br />Consumption:  0.735545061","Quarter: 1988 Q3<br />Consumption:  0.884646175","Quarter: 1988 Q4<br />Consumption:  1.130580294","Quarter: 1989 Q1<br />Consumption:  0.462870915","Quarter: 1989 Q2<br />Consumption:  0.465699644","Quarter: 1989 Q3<br />Consumption:  0.963449293","Quarter: 1989 Q4<br />Consumption:  0.433672694","Quarter: 1990 Q1<br />Consumption:  0.838072157","Quarter: 1990 Q2<br />Consumption:  0.304152248","Quarter: 1990 Q3<br />Consumption:  0.395372569","Quarter: 1990 Q4<br />Consumption: -0.763666137","Quarter: 1991 Q1<br />Consumption: -0.376738178","Quarter: 1991 Q2<br />Consumption:  0.825347484","Quarter: 1991 Q3<br />Consumption:  0.497352534","Quarter: 1991 Q4<br />Consumption: -0.050052318","Quarter: 1992 Q1<br />Consumption:  1.855026765","Quarter: 1992 Q2<br />Consumption:  0.676545705","Quarter: 1992 Q3<br />Consumption:  1.066222066","Quarter: 1992 Q4<br />Consumption:  1.184840695","Quarter: 1993 Q1<br />Consumption:  0.382688784","Quarter: 1993 Q2<br />Consumption:  0.905498168","Quarter: 1993 Q3<br />Consumption:  1.106802421","Quarter: 1993 Q4<br />Consumption:  0.874023826","Quarter: 1994 Q1<br />Consumption:  1.137304685","Quarter: 1994 Q2<br />Consumption:  0.775058503","Quarter: 1994 Q3<br />Consumption:  0.759621956","Quarter: 1994 Q4<br />Consumption:  1.075324292","Quarter: 1995 Q1<br />Consumption:  0.248574764","Quarter: 1995 Q2<br />Consumption:  0.872849890","Quarter: 1995 Q3<br />Consumption:  0.902152133","Quarter: 1995 Q4<br />Consumption:  0.695146180","Quarter: 1996 Q1<br />Consumption:  0.918061916","Quarter: 1996 Q2<br />Consumption:  1.070038996","Quarter: 1996 Q3<br />Consumption:  0.603594205","Quarter: 1996 Q4<br />Consumption:  0.793360640","Quarter: 1997 Q1<br />Consumption:  1.048573120","Quarter: 1997 Q2<br />Consumption:  0.449184383","Quarter: 1997 Q3<br />Consumption:  1.689402630","Quarter: 1997 Q4<br />Consumption:  1.188129995","Quarter: 1998 Q1<br />Consumption:  1.006450059","Quarter: 1998 Q2<br />Consumption:  1.745611100","Quarter: 1998 Q3<br />Consumption:  1.295597395","Quarter: 1998 Q4<br />Consumption:  1.434357907","Quarter: 1999 Q1<br />Consumption:  0.965596580","Quarter: 1999 Q2<br />Consumption:  1.447471981","Quarter: 1999 Q3<br />Consumption:  1.122359638","Quarter: 1999 Q4<br />Consumption:  1.454582013","Quarter: 2000 Q1<br />Consumption:  1.524570459","Quarter: 2000 Q2<br />Consumption:  0.961212261","Quarter: 2000 Q3<br />Consumption:  0.977169096","Quarter: 2000 Q4<br />Consumption:  0.856410133","Quarter: 2001 Q1<br />Consumption:  0.399499719","Quarter: 2001 Q2<br />Consumption:  0.236146305","Quarter: 2001 Q3<br />Consumption:  0.342130433","Quarter: 2001 Q4<br />Consumption:  1.484245856","Quarter: 2002 Q1<br />Consumption:  0.305591980","Quarter: 2002 Q2<br />Consumption:  0.512135579","Quarter: 2002 Q3<br />Consumption:  0.721912764","Quarter: 2002 Q4<br />Consumption:  0.573051117","Quarter: 2003 Q1<br />Consumption:  0.469223438","Quarter: 2003 Q2<br />Consumption:  1.116772544","Quarter: 2003 Q3<br />Consumption:  1.456167648","Quarter: 2003 Q4<br />Consumption:  0.675769083","Quarter: 2004 Q1<br />Consumption:  0.885841720","Quarter: 2004 Q2<br />Consumption:  0.620249123","Quarter: 2004 Q3<br />Consumption:  1.099777490","Quarter: 2004 Q4<br />Consumption:  1.081820549","Quarter: 2005 Q1<br />Consumption:  0.581776831","Quarter: 2005 Q2<br />Consumption:  1.128161384","Quarter: 2005 Q3<br />Consumption:  0.965992712","Quarter: 2005 Q4<br />Consumption:  0.296515287","Quarter: 2006 Q1<br />Consumption:  1.108946547","Quarter: 2006 Q2<br />Consumption:  0.505325675","Quarter: 2006 Q3<br />Consumption:  0.605280835","Quarter: 2006 Q4<br />Consumption:  0.963099624","Quarter: 2007 Q1<br />Consumption:  0.558010939","Quarter: 2007 Q2<br />Consumption:  0.185168949","Quarter: 2007 Q3<br />Consumption:  0.562009443","Quarter: 2007 Q4<br />Consumption:  0.284406536","Quarter: 2008 Q1<br />Consumption: -0.266123001","Quarter: 2008 Q2<br />Consumption:  0.162019226","Quarter: 2008 Q3<br />Consumption: -0.751601259","Quarter: 2008 Q4<br />Consumption: -0.935007195","Quarter: 2009 Q1<br />Consumption: -0.226117810","Quarter: 2009 Q2<br />Consumption: -0.405843686","Quarter: 2009 Q3<br />Consumption:  0.687519760","Quarter: 2009 Q4<br />Consumption: -0.148424523","Quarter: 2010 Q1<br />Consumption:  0.493232202","Quarter: 2010 Q2<br />Consumption:  0.792222394","Quarter: 2010 Q3<br />Consumption:  0.696905813","Quarter: 2010 Q4<br />Consumption:  0.659197947","Quarter: 2011 Q1<br />Consumption:  0.424446696","Quarter: 2011 Q2<br />Consumption:  0.221177199","Quarter: 2011 Q3<br />Consumption:  0.390803685","Quarter: 2011 Q4<br />Consumption:  0.182576961","Quarter: 2012 Q1<br />Consumption:  0.799759203","Quarter: 2012 Q2<br />Consumption:  0.148268324","Quarter: 2012 Q3<br />Consumption:  0.163039695","Quarter: 2012 Q4<br />Consumption:  0.447192324","Quarter: 2013 Q1<br />Consumption:  0.517198408","Quarter: 2013 Q2<br />Consumption:  0.071945196","Quarter: 2013 Q3<br />Consumption:  0.405902734","Quarter: 2013 Q4<br />Consumption:  0.857975926","Quarter: 2014 Q1<br />Consumption:  0.393157113","Quarter: 2014 Q2<br />Consumption:  1.088953740","Quarter: 2014 Q3<br />Consumption:  1.070282590","Quarter: 2014 Q4<br />Consumption:  1.205426597","Quarter: 2015 Q1<br />Consumption:  0.827267766","Quarter: 2015 Q2<br />Consumption:  0.792812731","Quarter: 2015 Q3<br />Consumption:  0.759427331","Quarter: 2015 Q4<br />Consumption:  0.446823920","Quarter: 2016 Q1<br />Consumption:  0.778254317","Quarter: 2016 Q2<br />Consumption:  0.715591421","Quarter: 2016 Q3<br />Consumption:  0.634915563","Quarter: 2016 Q4<br />Consumption:  0.618545334","Quarter: 2017 Q1<br />Consumption:  0.593336501","Quarter: 2017 Q2<br />Consumption:  0.593153407","Quarter: 2017 Q3<br />Consumption:  0.584737901","Quarter: 2017 Q4<br />Consumption:  1.133145590","Quarter: 2018 Q1<br />Consumption:  0.416962958","Quarter: 2018 Q2<br />Consumption:  0.983111903","Quarter: 2018 Q3<br />Consumption:  0.853181353","Quarter: 2018 Q4<br />Consumption:  0.356512028","Quarter: 2019 Q1<br />Consumption:  0.282885469","Quarter: 2019 Q2<br />Consumption:  1.113516703"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(70,130,180,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":40.840182648401829,"r":7.3059360730593621,"b":22.648401826484022,"l":37.260273972602747},"plot_bgcolor":"rgba(235,235,235,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"title":{"text":"US consumption — quarterly % change","font":{"color":"rgba(0,0,0,1)","family":"","size":17.534246575342465},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"date","autorange":true,"range":["1967-07-16","2021-09-16"],"tickmode":"auto","ticktext":["1980 Q1","2000 Q1","2020 Q1"],"tickvals":[3652.0000000000005,10957,18262],"categoryorder":"array","categoryarray":["1980 Q1","2000 Q1","2020 Q1"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"y","title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":true,"range":[-2.5077051910638204,2.5494271955874126],"tickmode":"auto","ticktext":["-2","-1","0","1","2"],"tickvals":[-2,-1,0,1,2],"categoryorder":"array","categoryarray":["-2","-1","0","1","2"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"x","title":{"text":"% change","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"shapes":[],"showlegend":false,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.8897637795275593,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"18955539a772":{"x":{},"y":{},"type":"scatter"}},"cur_data":"18955539a772","visdat":{"18955539a772":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
+<div class="fragment">
 <div class="cell">
-<details open="" class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>us_change <span class="sc">|&gt;</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gg_tsdisplay</span>(Consumption, <span class="at">plot_type =</span> <span class="st">"partial"</span>, <span class="at">lag_max =</span> <span class="dv">16</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -851,21 +851,23 @@ y'_t = c + \phi_1 y'_{t-1} + \cdots + \phi_p y'_{t-p} + \theta_1 \varepsilon_{t-
 </div>
 </div>
 <p>The series appears stationary (<span class="math inline">d = 0</span>). The PACF shows significant spikes at lags 1–3, suggesting AR(3). Let’s fit that model:</p>
+</div>
+<div class="fragment">
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1" aria-hidden="true" tabindex="-1"></a>fit_us <span class="ot">&lt;-</span> us_change <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-2-2"><a href="#annotated-cell-2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-2-3" class="code-annotation-target"><a href="#annotated-cell-2-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">arima300 =</span> <span class="fu">ARIMA</span>(Consumption <span class="sc">~</span> <span class="fu">pdq</span>(<span class="dv">3</span>, <span class="dv">0</span>, <span class="dv">0</span>) <span class="sc">+</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>))</span>
-<span id="annotated-cell-2-4"><a href="#annotated-cell-2-4" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="annotated-cell-2-5"><a href="#annotated-cell-2-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="annotated-cell-2-6"><a href="#annotated-cell-2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">report</span>(fit_us)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-17"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-17-1"><a href="#annotated-cell-17-1" aria-hidden="true" tabindex="-1"></a>fit_us <span class="ot">&lt;-</span> us_change <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-17-2"><a href="#annotated-cell-17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-17" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-17-3" class="code-annotation-target"><a href="#annotated-cell-17-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">arima300 =</span> <span class="fu">ARIMA</span>(Consumption <span class="sc">~</span> <span class="fu">pdq</span>(<span class="dv">3</span>, <span class="dv">0</span>, <span class="dv">0</span>) <span class="sc">+</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>))</span>
+<span id="annotated-cell-17-4"><a href="#annotated-cell-17-4" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="annotated-cell-17-5"><a href="#annotated-cell-17-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-17-6"><a href="#annotated-cell-17-6" aria-hidden="true" tabindex="-1"></a><span class="fu">report</span>(fit_us)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-annotation">
 <dl class="code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-2" data-target-annotation="1">1</dt>
+<dt data-target-cell="annotated-cell-17" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-2" data-code-lines="3" data-code-annotation="1"><code>pdq()</code> sets the non-seasonal orders. <code>PDQ(0,0,0)</code> explicitly forces a non-seasonal model.</span>
+<span data-code-cell="annotated-cell-17" data-code-lines="3" data-code-annotation="1"><code>pdq()</code> sets the non-seasonal orders. <code>PDQ(0,0,0)</code> explicitly forces a non-seasonal model.</span>
 </dd>
 </dl>
 </div>
@@ -882,10 +884,18 @@ sigma^2 estimated as 0.3332:  log likelihood=-170.3
 AIC=350.6   AICc=350.91   BIC=367.04</code></pre>
 </div>
 </div>
+</div>
 </section>
 <section id="sec-model-selection" class="level2" data-number="2.3">
 <h2 data-number="2.3" class="anchored" data-anchor-id="sec-model-selection"><span class="header-section-number">2.3</span> Model Selection</h2>
-<p>When comparing candidate ARIMA models, we use <strong>information criteria</strong> — they balance goodness of fit against model complexity:</p>
+<p>When we fit a statistical model, we face a fundamental tension: a more complex model (more parameters) will always fit the observed data better, but it may simply be memorizing noise rather than capturing genuine structure. This is the <strong>bias-variance tradeoff</strong>.</p>
+<p><strong>Information criteria</strong> address this by penalizing model complexity — they reward goodness of fit but add a cost for each additional parameter estimated. The goal is to find the model that generalizes best, not the one that fits best in-sample.</p>
+<p>When comparing candidate ARIMA models, we use three related criteria:</p>
+<ul>
+<li><strong>AIC</strong> — Akaike Information Criterion</li>
+<li><strong>AIC<span class="math inline">_c</span></strong> — AIC corrected for small sample sizes</li>
+<li><strong>BIC</strong> — Bayesian Information Criterion (also known as Schwarz criterion)</li>
+</ul>
 <p><span class="math display">
 \text{AIC} = -2\log(L) + 2(p + q + k + 1)
 </span></p>
@@ -895,7 +905,28 @@ AIC=350.6   AICc=350.91   BIC=367.04</code></pre>
 <p><span class="math display">
 \text{BIC} = \text{AIC} + [\log(T) - 2](p + q + k + 1)
 </span></p>
-<p>where <span class="math inline">k = 1</span> if the model includes a constant, <span class="math inline">k = 0</span> otherwise. The preferred criterion is AIC<span class="math inline">_c</span>.</p>
+<p>where <span class="math inline">k = 1</span> if the model includes a constant, <span class="math inline">k = 0</span> otherwise. <strong>Lower is better</strong> for all three. The preferred criterion is AIC<span class="math inline">_c</span> — it converges to AIC as <span class="math inline">T</span> grows, but is more conservative with small samples.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>AIC vs.&nbsp;BIC — which to prefer?
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Both penalize complexity, but BIC applies a heavier penalty (it grows with <span class="math inline">\log T</span> rather than a fixed 2). In practice:</p>
+<ul>
+<li><strong>AIC<span class="math inline">_c</span></strong> tends to select slightly richer models and is generally preferred for forecasting.</li>
+<li><strong>BIC</strong> tends to select more parsimonious models and is preferred when interpretability matters.</li>
+</ul>
+<p>For this course, use <strong>AIC<span class="math inline">_c</span></strong> as the default.</p>
+</div>
+</div>
+</div>
 <div class="fragment">
 <div class="callout callout-style-simple callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -918,18 +949,18 @@ AIC=350.6   AICc=350.91   BIC=367.04</code></pre>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1" aria-hidden="true" tabindex="-1"></a>fit_us2 <span class="ot">&lt;-</span> us_change <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-3-2"><a href="#annotated-cell-3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-3-3" class="code-annotation-target"><a href="#annotated-cell-3-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">auto =</span> <span class="fu">ARIMA</span>(Consumption <span class="sc">~</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>))</span>
-<span id="annotated-cell-3-4"><a href="#annotated-cell-3-4" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="annotated-cell-3-5"><a href="#annotated-cell-3-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="annotated-cell-3-6"><a href="#annotated-cell-3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">report</span>(fit_us2)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1" aria-hidden="true" tabindex="-1"></a>fit_us2 <span class="ot">&lt;-</span> us_change <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-1-2"><a href="#annotated-cell-1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-1-3" class="code-annotation-target"><a href="#annotated-cell-1-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">auto =</span> <span class="fu">ARIMA</span>(Consumption <span class="sc">~</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>))</span>
+<span id="annotated-cell-1-4"><a href="#annotated-cell-1-4" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="annotated-cell-1-5"><a href="#annotated-cell-1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-1-6"><a href="#annotated-cell-1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">report</span>(fit_us2)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-annotation">
 <dl class="code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-3" data-target-annotation="1">1</dt>
+<dt data-target-cell="annotated-cell-1" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-3" data-code-lines="3" data-code-annotation="1">Leaving <code>pdq()</code> unspecified triggers automatic order selection. We still fix <code>PDQ(0,0,0)</code> to keep the non-seasonal constraint.</span>
+<span data-code-cell="annotated-cell-1" data-code-lines="3" data-code-annotation="1">Leaving <code>pdq()</code> unspecified triggers automatic order selection. We still fix <code>PDQ(0,0,0)</code> to keep the non-seasonal constraint.</span>
 </dd>
 </dl>
 </div>
@@ -963,26 +994,29 @@ AIC=351.77   AICc=352.21   BIC=371.5</code></pre>
 <li>Starts from a simple model and navigates through the order space by comparing AIC<span class="math inline">_c</span> values.</li>
 <li>Stops when no neighboring model improves AIC<span class="math inline">_c</span>.</li>
 </ol>
+<div class="fragment">
 <p><strong>Important:</strong> this is a heuristic search — it does <em>not</em> evaluate all possible combinations. It is fast and usually good, but not guaranteed to find the global optimum.</p>
 </div>
 </div>
 </div>
+</div>
+<div class="fragment">
 <p>You can also supply a <strong>range of values</strong> to explore, or request an exhaustive search:</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-4"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-4-1"><a href="#annotated-cell-4-1" aria-hidden="true" tabindex="-1"></a>fit_us3 <span class="ot">&lt;-</span> us_change <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-4-2"><a href="#annotated-cell-4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-4-3" class="code-annotation-target"><a href="#annotated-cell-4-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">semi_auto =</span> <span class="fu">ARIMA</span>(Consumption <span class="sc">~</span> <span class="fu">pdq</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="dv">0</span>, <span class="dv">0</span><span class="sc">:</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>))</span>
-<span id="annotated-cell-4-4"><a href="#annotated-cell-4-4" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="annotated-cell-4-5"><a href="#annotated-cell-4-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="annotated-cell-4-6"><a href="#annotated-cell-4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">report</span>(fit_us3)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-20"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-20-1"><a href="#annotated-cell-20-1" aria-hidden="true" tabindex="-1"></a>fit_us3 <span class="ot">&lt;-</span> us_change <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-20-2"><a href="#annotated-cell-20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-20" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-20-3" class="code-annotation-target"><a href="#annotated-cell-20-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">semi_auto =</span> <span class="fu">ARIMA</span>(Consumption <span class="sc">~</span> <span class="fu">pdq</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="dv">0</span>, <span class="dv">0</span><span class="sc">:</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>))</span>
+<span id="annotated-cell-20-4"><a href="#annotated-cell-20-4" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="annotated-cell-20-5"><a href="#annotated-cell-20-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-20-6"><a href="#annotated-cell-20-6" aria-hidden="true" tabindex="-1"></a><span class="fu">report</span>(fit_us3)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-annotation">
 <dl class="code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-4" data-target-annotation="1">1</dt>
+<dt data-target-cell="annotated-cell-20" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-4" data-code-lines="3" data-code-annotation="1">This evaluates all combinations of <span class="math inline">p \in \{1,2,3\}</span> and <span class="math inline">q \in \{0,1,2\}</span> and returns the one with the lowest AIC<span class="math inline">_c</span>.</span>
+<span data-code-cell="annotated-cell-20" data-code-lines="3" data-code-annotation="1">This evaluates all combinations of <span class="math inline">p \in \{1,2,3\}</span> and <span class="math inline">q \in \{0,1,2\}</span> and returns the one with the lowest AIC<span class="math inline">_c</span>.</span>
 </dd>
 </dl>
 </div>
@@ -1002,26 +1036,26 @@ AIC=350.6   AICc=350.91   BIC=367.04</code></pre>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-5"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-5-1"><a href="#annotated-cell-5-1" aria-hidden="true" tabindex="-1"></a>fit_us4 <span class="ot">&lt;-</span> us_change <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-5-2"><a href="#annotated-cell-5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(</span>
-<span id="annotated-cell-5-3"><a href="#annotated-cell-5-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">exhaustive =</span> <span class="fu">ARIMA</span>(</span>
-<span id="annotated-cell-5-4"><a href="#annotated-cell-5-4" aria-hidden="true" tabindex="-1"></a>      Consumption <span class="sc">~</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>),</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-5" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-5-5" class="code-annotation-target"><a href="#annotated-cell-5-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">stepwise      =</span> <span class="cn">FALSE</span>,</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-5" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-5-6" class="code-annotation-target"><a href="#annotated-cell-5-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">approximation =</span> <span class="cn">FALSE</span></span>
-<span id="annotated-cell-5-7"><a href="#annotated-cell-5-7" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="annotated-cell-5-8"><a href="#annotated-cell-5-8" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="annotated-cell-5-9"><a href="#annotated-cell-5-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="annotated-cell-5-10"><a href="#annotated-cell-5-10" aria-hidden="true" tabindex="-1"></a><span class="fu">report</span>(fit_us4)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-21"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-21-1"><a href="#annotated-cell-21-1" aria-hidden="true" tabindex="-1"></a>fit_us4 <span class="ot">&lt;-</span> us_change <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-21-2"><a href="#annotated-cell-21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(</span>
+<span id="annotated-cell-21-3"><a href="#annotated-cell-21-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">exhaustive =</span> <span class="fu">ARIMA</span>(</span>
+<span id="annotated-cell-21-4"><a href="#annotated-cell-21-4" aria-hidden="true" tabindex="-1"></a>      Consumption <span class="sc">~</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>),</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-21" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-21-5" class="code-annotation-target"><a href="#annotated-cell-21-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">stepwise      =</span> <span class="cn">FALSE</span>,</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-21" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-21-6" class="code-annotation-target"><a href="#annotated-cell-21-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">approximation =</span> <span class="cn">FALSE</span></span>
+<span id="annotated-cell-21-7"><a href="#annotated-cell-21-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="annotated-cell-21-8"><a href="#annotated-cell-21-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="annotated-cell-21-9"><a href="#annotated-cell-21-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-21-10"><a href="#annotated-cell-21-10" aria-hidden="true" tabindex="-1"></a><span class="fu">report</span>(fit_us4)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-annotation">
 <dl class="code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-5" data-target-annotation="1">1</dt>
+<dt data-target-cell="annotated-cell-21" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-5" data-code-lines="5" data-code-annotation="1"><code>stepwise = FALSE</code> explores all combinations rather than navigating step by step.</span>
+<span data-code-cell="annotated-cell-21" data-code-lines="5" data-code-annotation="1"><code>stepwise = FALSE</code> explores all combinations rather than navigating step by step.</span>
 </dd>
-<dt data-target-cell="annotated-cell-5" data-target-annotation="2">2</dt>
+<dt data-target-cell="annotated-cell-21" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-cell="annotated-cell-5" data-code-lines="6" data-code-annotation="2"><code>approximation = FALSE</code> uses exact likelihood rather than a faster approximation. More accurate but can be substantially slower on long series.</span>
+<span data-code-cell="annotated-cell-21" data-code-lines="6" data-code-annotation="2"><code>approximation = FALSE</code> uses exact likelihood rather than a faster approximation. More accurate but can be substantially slower on long series.</span>
 </dd>
 </dl>
 </div>
@@ -1038,6 +1072,8 @@ sigma^2 estimated as 0.3332:  log likelihood=-170.3
 AIC=350.6   AICc=350.91   BIC=367.04</code></pre>
 </div>
 </div>
+</div>
+<div class="fragment">
 <div class="callout callout-style-simple callout-tip">
 <div class="callout-body d-flex">
 <div class="callout-icon-container">
@@ -1045,6 +1081,7 @@ AIC=350.6   AICc=350.91   BIC=367.04</code></pre>
 </div>
 <div class="callout-body-container">
 <p>For exploratory work, automatic selection is fine. For a final model, use <code>stepwise = FALSE, approximation = FALSE</code> and compare the result with your manually identified candidate.</p>
+</div>
 </div>
 </div>
 </div>
@@ -1085,9 +1122,9 @@ AIC=350.6   AICc=350.91   BIC=367.04</code></pre>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>fit_us <span class="sc">|&gt;</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(arima300) <span class="sc">|&gt;</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gg_tsresiduals</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>fit_us <span class="sc">|&gt;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(arima300) <span class="sc">|&gt;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gg_tsresiduals</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -1100,17 +1137,17 @@ AIC=350.6   AICc=350.91   BIC=367.04</code></pre>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-7"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-7-1"><a href="#annotated-cell-7-1" aria-hidden="true" tabindex="-1"></a>fit_us <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-7-2"><a href="#annotated-cell-7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">augment</span>() <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-7-3"><a href="#annotated-cell-7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">features</span>(.innov, ljung_box,</span>
-<span id="annotated-cell-7-4"><a href="#annotated-cell-7-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">lag =</span> <span class="dv">10</span>,</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-7-5" class="code-annotation-target"><a href="#annotated-cell-7-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">dof =</span> <span class="dv">3</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1" aria-hidden="true" tabindex="-1"></a>fit_us <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-3-2"><a href="#annotated-cell-3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">augment</span>() <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-3-3"><a href="#annotated-cell-3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">features</span>(.innov, ljung_box,</span>
+<span id="annotated-cell-3-4"><a href="#annotated-cell-3-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">lag =</span> <span class="dv">10</span>,</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-3-5" class="code-annotation-target"><a href="#annotated-cell-3-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">dof =</span> <span class="dv">3</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-annotation">
 <dl class="code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-7" data-target-annotation="1">1</dt>
+<dt data-target-cell="annotated-cell-3" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-7" data-code-lines="5" data-code-annotation="1"><code>dof</code> should equal <span class="math inline">p + q</span> — the number of estimated AR and MA coefficients. For ARIMA(3,0,0), <code>dof = 3</code>. Omitting this inflates the test statistic and produces misleadingly small p-values.</span>
+<span data-code-cell="annotated-cell-3" data-code-lines="5" data-code-annotation="1"><code>dof</code> should equal <span class="math inline">p + q</span> — the number of estimated AR and MA coefficients. For ARIMA(3,0,0), <code>dof = 3</code>. Omitting this inflates the test statistic and produces misleadingly small p-values.</span>
 </dd>
 </dl>
 </div>
@@ -1129,14 +1166,14 @@ AIC=350.6   AICc=350.91   BIC=367.04</code></pre>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>fit_us <span class="sc">|&gt;</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(arima300) <span class="sc">|&gt;</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">10</span>) <span class="sc">|&gt;</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(us_change <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">year</span>(Quarter) <span class="sc">&gt;=</span> <span class="dv">2005</span>)) <span class="sc">+</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"US consumption — ARIMA(3,0,0) forecast"</span>,</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"% change"</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>fit_us <span class="sc">|&gt;</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(arima300) <span class="sc">|&gt;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">10</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(us_change <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">year</span>(Quarter) <span class="sc">&gt;=</span> <span class="dv">2005</span>)) <span class="sc">+</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"US consumption — ARIMA(3,0,0) forecast"</span>,</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"% change"</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -1172,32 +1209,32 @@ AIC=350.6   AICc=350.91   BIC=367.04</code></pre>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-9"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-9-1"><a href="#annotated-cell-9-1" aria-hidden="true" tabindex="-1"></a>fit_mex_stl <span class="ot">&lt;-</span> mexretail <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-9-2"><a href="#annotated-cell-9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-9" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-9-3" class="code-annotation-target"><a href="#annotated-cell-9-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">stl_arima =</span> <span class="fu">decomposition_model</span>(</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-9" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-9-4" class="code-annotation-target"><a href="#annotated-cell-9-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">STL</span>(<span class="fu">box_cox</span>(y, lambda) <span class="sc">~</span></span>
-<span id="annotated-cell-9-5"><a href="#annotated-cell-9-5" aria-hidden="true" tabindex="-1"></a>            <span class="fu">trend</span>(<span class="at">window =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
-<span id="annotated-cell-9-6"><a href="#annotated-cell-9-6" aria-hidden="true" tabindex="-1"></a>            <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>),</span>
-<span id="annotated-cell-9-7"><a href="#annotated-cell-9-7" aria-hidden="true" tabindex="-1"></a>          <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-9" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-9-8" class="code-annotation-target"><a href="#annotated-cell-9-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">ARIMA</span>(season_adjust)</span>
-<span id="annotated-cell-9-9"><a href="#annotated-cell-9-9" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="annotated-cell-9-10"><a href="#annotated-cell-9-10" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="annotated-cell-9-11"><a href="#annotated-cell-9-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="annotated-cell-9-12"><a href="#annotated-cell-9-12" aria-hidden="true" tabindex="-1"></a><span class="fu">report</span>(fit_mex_stl)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-5"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-5-1"><a href="#annotated-cell-5-1" aria-hidden="true" tabindex="-1"></a>fit_mex_stl <span class="ot">&lt;-</span> mexretail <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-5-2"><a href="#annotated-cell-5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-5" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-5-3" class="code-annotation-target"><a href="#annotated-cell-5-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">stl_arima =</span> <span class="fu">decomposition_model</span>(</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-5" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-5-4" class="code-annotation-target"><a href="#annotated-cell-5-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">STL</span>(<span class="fu">box_cox</span>(y, lambda) <span class="sc">~</span></span>
+<span id="annotated-cell-5-5"><a href="#annotated-cell-5-5" aria-hidden="true" tabindex="-1"></a>            <span class="fu">trend</span>(<span class="at">window =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="annotated-cell-5-6"><a href="#annotated-cell-5-6" aria-hidden="true" tabindex="-1"></a>            <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>),</span>
+<span id="annotated-cell-5-7"><a href="#annotated-cell-5-7" aria-hidden="true" tabindex="-1"></a>          <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-5" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-5-8" class="code-annotation-target"><a href="#annotated-cell-5-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">ARIMA</span>(season_adjust)</span>
+<span id="annotated-cell-5-9"><a href="#annotated-cell-5-9" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="annotated-cell-5-10"><a href="#annotated-cell-5-10" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="annotated-cell-5-11"><a href="#annotated-cell-5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-5-12"><a href="#annotated-cell-5-12" aria-hidden="true" tabindex="-1"></a><span class="fu">report</span>(fit_mex_stl)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-annotation">
 <dl class="code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-9" data-target-annotation="1">1</dt>
+<dt data-target-cell="annotated-cell-5" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-9" data-code-lines="3" data-code-annotation="1"><code>decomposition_model()</code> combines a decomposition method with a model for one or more of its components.</span>
+<span data-code-cell="annotated-cell-5" data-code-lines="3" data-code-annotation="1"><code>decomposition_model()</code> combines a decomposition method with a model for one or more of its components.</span>
 </dd>
-<dt data-target-cell="annotated-cell-9" data-target-annotation="2">2</dt>
+<dt data-target-cell="annotated-cell-5" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-cell="annotated-cell-9" data-code-lines="4" data-code-annotation="2">STL decomposes the Box-Cox-transformed series. The seasonal component is handled implicitly by the decomposition.</span>
+<span data-code-cell="annotated-cell-5" data-code-lines="4" data-code-annotation="2">STL decomposes the Box-Cox-transformed series. The seasonal component is handled implicitly by the decomposition.</span>
 </dd>
-<dt data-target-cell="annotated-cell-9" data-target-annotation="3">3</dt>
+<dt data-target-cell="annotated-cell-5" data-target-annotation="3">3</dt>
 <dd>
-<span data-code-cell="annotated-cell-9" data-code-lines="8" data-code-annotation="3"><code>ARIMA(season_adjust)</code> fits an ARIMA model automatically to the seasonally adjusted component. The seasonal part is re-added when generating forecasts.</span>
+<span data-code-cell="annotated-cell-5" data-code-lines="8" data-code-annotation="3"><code>ARIMA(season_adjust)</code> fits an ARIMA model automatically to the seasonally adjusted component. The seasonal part is re-added when generating forecasts.</span>
 </dd>
 </dl>
 </div>
@@ -1229,7 +1266,7 @@ sigma^2: 0 </code></pre>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>fit_mex_stl <span class="sc">|&gt;</span> <span class="fu">gg_tsresiduals</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fit_mex_stl <span class="sc">|&gt;</span> <span class="fu">gg_tsresiduals</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -1242,13 +1279,13 @@ sigma^2: 0 </code></pre>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>fit_mex_stl <span class="sc">|&gt;</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">24</span>) <span class="sc">|&gt;</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(mexretail <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">year</span>(date) <span class="sc">&gt;=</span> <span class="dv">2015</span>)) <span class="sc">+</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"mexretail — STL + ARIMA forecast"</span>,</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Index 2015=100"</span></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>fit_mex_stl <span class="sc">|&gt;</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">24</span>) <span class="sc">|&gt;</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(mexretail <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">year</span>(date) <span class="sc">&gt;=</span> <span class="dv">2015</span>)) <span class="sc">+</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"mexretail — STL + ARIMA forecast"</span>,</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Index 2015=100"</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -1316,12 +1353,12 @@ sigma^2: 0 </code></pre>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>mexretail <span class="sc">|&gt;</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gg_tsdisplay</span>(</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">difference</span>(<span class="fu">box_cox</span>(y, lambda), <span class="dv">12</span>) <span class="sc">|&gt;</span> <span class="fu">difference</span>(<span class="dv">1</span>),</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot_type =</span> <span class="st">"partial"</span>,</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">lag_max   =</span> <span class="dv">48</span></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>mexretail <span class="sc">|&gt;</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gg_tsdisplay</span>(</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">difference</span>(<span class="fu">box_cox</span>(y, lambda), <span class="dv">12</span>) <span class="sc">|&gt;</span> <span class="fu">difference</span>(<span class="dv">1</span>),</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot_type =</span> <span class="st">"partial"</span>,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">lag_max   =</span> <span class="dv">48</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -1352,34 +1389,34 @@ sigma^2: 0 </code></pre>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-13"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-13-1"><a href="#annotated-cell-13-1" aria-hidden="true" tabindex="-1"></a>fit_mex_sarima <span class="ot">&lt;-</span> mexretail <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-13-2"><a href="#annotated-cell-13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(</span>
-<span id="annotated-cell-13-3"><a href="#annotated-cell-13-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">sarima_011_110 =</span> <span class="fu">ARIMA</span>(<span class="fu">box_cox</span>(y, lambda) <span class="sc">~</span></span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-13" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-13-4" class="code-annotation-target"><a href="#annotated-cell-13-4" aria-hidden="true" tabindex="-1"></a>                             <span class="fu">pdq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">+</span> <span class="fu">PDQ</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>)),</span>
-<span id="annotated-cell-13-5"><a href="#annotated-cell-13-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">sarima_011_011 =</span> <span class="fu">ARIMA</span>(<span class="fu">box_cox</span>(y, lambda) <span class="sc">~</span></span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-13" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-13-6" class="code-annotation-target"><a href="#annotated-cell-13-6" aria-hidden="true" tabindex="-1"></a>                             <span class="fu">pdq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">+</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>)),</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-13" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-13-7" class="code-annotation-target"><a href="#annotated-cell-13-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">sarima_auto    =</span> <span class="fu">ARIMA</span>(<span class="fu">box_cox</span>(y, lambda),</span>
-<span id="annotated-cell-13-8"><a href="#annotated-cell-13-8" aria-hidden="true" tabindex="-1"></a>                           <span class="at">stepwise      =</span> <span class="cn">FALSE</span>,</span>
-<span id="annotated-cell-13-9"><a href="#annotated-cell-13-9" aria-hidden="true" tabindex="-1"></a>                           <span class="at">approximation =</span> <span class="cn">FALSE</span>)</span>
-<span id="annotated-cell-13-10"><a href="#annotated-cell-13-10" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="annotated-cell-13-11"><a href="#annotated-cell-13-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="annotated-cell-13-12"><a href="#annotated-cell-13-12" aria-hidden="true" tabindex="-1"></a><span class="fu">glance</span>(fit_mex_sarima) <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-13-13"><a href="#annotated-cell-13-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(AICc) <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-13-14"><a href="#annotated-cell-13-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(.model, AIC, AICc, BIC)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-9"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-9-1"><a href="#annotated-cell-9-1" aria-hidden="true" tabindex="-1"></a>fit_mex_sarima <span class="ot">&lt;-</span> mexretail <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-9-2"><a href="#annotated-cell-9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(</span>
+<span id="annotated-cell-9-3"><a href="#annotated-cell-9-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">sarima_011_110 =</span> <span class="fu">ARIMA</span>(<span class="fu">box_cox</span>(y, lambda) <span class="sc">~</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-9" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-9-4" class="code-annotation-target"><a href="#annotated-cell-9-4" aria-hidden="true" tabindex="-1"></a>                             <span class="fu">pdq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">+</span> <span class="fu">PDQ</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>)),</span>
+<span id="annotated-cell-9-5"><a href="#annotated-cell-9-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">sarima_011_011 =</span> <span class="fu">ARIMA</span>(<span class="fu">box_cox</span>(y, lambda) <span class="sc">~</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-9" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-9-6" class="code-annotation-target"><a href="#annotated-cell-9-6" aria-hidden="true" tabindex="-1"></a>                             <span class="fu">pdq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">+</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>)),</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-9" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-9-7" class="code-annotation-target"><a href="#annotated-cell-9-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">sarima_auto    =</span> <span class="fu">ARIMA</span>(<span class="fu">box_cox</span>(y, lambda),</span>
+<span id="annotated-cell-9-8"><a href="#annotated-cell-9-8" aria-hidden="true" tabindex="-1"></a>                           <span class="at">stepwise      =</span> <span class="cn">FALSE</span>,</span>
+<span id="annotated-cell-9-9"><a href="#annotated-cell-9-9" aria-hidden="true" tabindex="-1"></a>                           <span class="at">approximation =</span> <span class="cn">FALSE</span>)</span>
+<span id="annotated-cell-9-10"><a href="#annotated-cell-9-10" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="annotated-cell-9-11"><a href="#annotated-cell-9-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-9-12"><a href="#annotated-cell-9-12" aria-hidden="true" tabindex="-1"></a><span class="fu">glance</span>(fit_mex_sarima) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-9-13"><a href="#annotated-cell-9-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(AICc) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-9-14"><a href="#annotated-cell-9-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(.model, AIC, AICc, BIC)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-annotation">
 <dl class="code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-13" data-target-annotation="1">1</dt>
+<dt data-target-cell="annotated-cell-9" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-13" data-code-lines="4" data-code-annotation="1">First candidate from ACF/PACF: non-seasonal MA(1), seasonal AR(1).</span>
+<span data-code-cell="annotated-cell-9" data-code-lines="4" data-code-annotation="1">First candidate from ACF/PACF: non-seasonal MA(1), seasonal AR(1).</span>
 </dd>
-<dt data-target-cell="annotated-cell-13" data-target-annotation="2">2</dt>
+<dt data-target-cell="annotated-cell-9" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-cell="annotated-cell-13" data-code-lines="6" data-code-annotation="2">Second candidate: non-seasonal MA(1), seasonal MA(1) — a very common structure for monthly economic data.</span>
+<span data-code-cell="annotated-cell-9" data-code-lines="6" data-code-annotation="2">Second candidate: non-seasonal MA(1), seasonal MA(1) — a very common structure for monthly economic data.</span>
 </dd>
-<dt data-target-cell="annotated-cell-13" data-target-annotation="3">3</dt>
+<dt data-target-cell="annotated-cell-9" data-target-annotation="3">3</dt>
 <dd>
-<span data-code-cell="annotated-cell-13" data-code-lines="7" data-code-annotation="3">Exhaustive automatic search for comparison.</span>
+<span data-code-cell="annotated-cell-9" data-code-lines="7" data-code-annotation="3">Exhaustive automatic search for comparison.</span>
 </dd>
 </dl>
 </div>
@@ -1394,9 +1431,9 @@ sigma^2: 0 </code></pre>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>fit_mex_sarima <span class="sc">|&gt;</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(sarima_auto) <span class="sc">|&gt;</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">report</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>fit_mex_sarima <span class="sc">|&gt;</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(sarima_auto) <span class="sc">|&gt;</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">report</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Series: y 
@@ -1415,9 +1452,9 @@ AIC=1774.62   AICc=1774.95   BIC=1807.22</code></pre>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>fit_mex_sarima <span class="sc">|&gt;</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(sarima_auto) <span class="sc">|&gt;</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gg_tsresiduals</span>(<span class="at">lag_max =</span> <span class="dv">48</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>fit_mex_sarima <span class="sc">|&gt;</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(sarima_auto) <span class="sc">|&gt;</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gg_tsresiduals</span>(<span class="at">lag_max =</span> <span class="dv">48</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -1430,18 +1467,18 @@ AIC=1774.62   AICc=1774.95   BIC=1807.22</code></pre>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-16"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-16-1"><a href="#annotated-cell-16-1" aria-hidden="true" tabindex="-1"></a>fit_mex_sarima <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-16-2"><a href="#annotated-cell-16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(sarima_auto) <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-16-3"><a href="#annotated-cell-16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">augment</span>() <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-16-4"><a href="#annotated-cell-16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">features</span>(.innov, ljung_box,</span>
-<span id="annotated-cell-16-5"><a href="#annotated-cell-16-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">lag =</span> <span class="dv">24</span>,</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-16" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-16-6" class="code-annotation-target"><a href="#annotated-cell-16-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">dof =</span> <span class="dv">4</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-12"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-12-1"><a href="#annotated-cell-12-1" aria-hidden="true" tabindex="-1"></a>fit_mex_sarima <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-12-2"><a href="#annotated-cell-12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(sarima_auto) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-12-3"><a href="#annotated-cell-12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">augment</span>() <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-12-4"><a href="#annotated-cell-12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">features</span>(.innov, ljung_box,</span>
+<span id="annotated-cell-12-5"><a href="#annotated-cell-12-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">lag =</span> <span class="dv">24</span>,</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-12" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-12-6" class="code-annotation-target"><a href="#annotated-cell-12-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">dof =</span> <span class="dv">4</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-annotation">
 <dl class="code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-16" data-target-annotation="1">1</dt>
+<dt data-target-cell="annotated-cell-12" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-16" data-code-lines="6" data-code-annotation="1">Set <code>dof</code> to <span class="math inline">p + q + P + Q</span> for the fitted model. Adjust this value to match the order reported by <code>report()</code> above.</span>
+<span data-code-cell="annotated-cell-12" data-code-lines="6" data-code-annotation="1">Set <code>dof</code> to <span class="math inline">p + q + P + Q</span> for the fitted model. Adjust this value to match the order reported by <code>report()</code> above.</span>
 </dd>
 </dl>
 </div>
@@ -1462,36 +1499,36 @@ AIC=1774.62   AICc=1774.95   BIC=1807.22</code></pre>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>mex_train <span class="ot">&lt;-</span> mexretail <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">year</span>(date) <span class="sc">&lt;=</span> <span class="dv">2019</span>)</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>mex_test  <span class="ot">&lt;-</span> mexretail <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">year</span>(date) <span class="sc">&gt;</span>  <span class="dv">2019</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>mex_train <span class="ot">&lt;-</span> mexretail <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">year</span>(date) <span class="sc">&lt;=</span> <span class="dv">2019</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>mex_test  <span class="ot">&lt;-</span> mexretail <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">year</span>(date) <span class="sc">&gt;</span>  <span class="dv">2019</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>fit_compare <span class="ot">&lt;-</span> mex_train <span class="sc">|&gt;</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">stl_arima =</span> <span class="fu">decomposition_model</span>(</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">STL</span>(<span class="fu">box_cox</span>(y, lambda) <span class="sc">~</span></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>            <span class="fu">trend</span>(<span class="at">window =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>            <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>),</span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>          <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">ARIMA</span>(season_adjust)</span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">sarima =</span> <span class="fu">ARIMA</span>(<span class="fu">box_cox</span>(y, lambda),</span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>                   <span class="at">stepwise      =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>                   <span class="at">approximation =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>fit_compare <span class="ot">&lt;-</span> mex_train <span class="sc">|&gt;</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">stl_arima =</span> <span class="fu">decomposition_model</span>(</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">STL</span>(<span class="fu">box_cox</span>(y, lambda) <span class="sc">~</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>            <span class="fu">trend</span>(<span class="at">window =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>            <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>),</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>          <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">ARIMA</span>(season_adjust)</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">sarima =</span> <span class="fu">ARIMA</span>(<span class="fu">box_cox</span>(y, lambda),</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>                   <span class="at">stepwise      =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>                   <span class="at">approximation =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>fit_compare <span class="sc">|&gt;</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="fu">nrow</span>(mex_test)) <span class="sc">|&gt;</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">accuracy</span>(mexretail) <span class="sc">|&gt;</span></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(.model, RMSE, MAE, MAPE, MASE) <span class="sc">|&gt;</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(RMSE)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>fit_compare <span class="sc">|&gt;</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="fu">nrow</span>(mex_test)) <span class="sc">|&gt;</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">accuracy</span>(mexretail) <span class="sc">|&gt;</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(.model, RMSE, MAE, MAPE, MASE) <span class="sc">|&gt;</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(RMSE)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div data-pagedtable="false">
