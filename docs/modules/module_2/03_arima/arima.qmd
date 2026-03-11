@@ -531,10 +531,25 @@ mexretail |>
 ::: {.callout-note appearance="simple"}
 ## Reading the plot
 
-- **Non-seasonal lags (1–11):** ACF and PACF both show a spike at lag 1 → try $p = 1$ or $q = 1$.
-- **Seasonal lags (12, 24, 36):** PACF spike at lag 12 only → seasonal AR(1). ACF spike at lag 12 → could also be seasonal MA(1). Start with both.
+- **Non-seasonal lags (1–11):** 
+  - ACF: shows a spike at lag 4 → try $q = 4$.
+  - PACF: shows a spike at lag 3 → try $p = 3$.
+- **Seasonal lags (12, 24, 36):**
+  - ACF: spike at lag 12, and just barely at lag 24 → try $Q = 1$ or $Q = 2$.
+  - PACF: spikes at lag 12, 24, and slightly at 36 and 48  → seasonal AR(2), AR(3), or even AR(4).
 :::
 :::
+
+::: {.fragment}
+::: {.callout-tip appearance="simple"}
+## When ACF/PACF suggest large orders, start simple
+
+A strict reading of the ACF/PACF above could justify orders as large as AR(3), MA(4), SAR(4), SMA(2) — a model with over a dozen parameters. In practice, this is rarely a good starting point: high-order models are harder to estimate, more prone to overfitting, and — if specified manually — can fail to converge or return non-invertible roots altogether.
+
+A better strategy: start with a parsimonious candidate like $ARIMA(0,1,1)(0,1,1)_{12}$ or $ARIMA(1,1,1)(1,1,1)_{12}$, fit a few of the larger candidates suggested by the plots, and let AIC$_c$ arbitrate. You will often find that the simpler model performs comparably or better — and it will always be more stable.
+:::
+:::
+
 ```{r}
 #| label: sarima-fit
 #| message: false
@@ -545,7 +560,7 @@ mexretail_fit_sarima <- mexretail |>
                              pdq(0, 1, 1) + PDQ(1, 1, 0)), #<1>
     sarima_011_011 = ARIMA(box_cox(y, lambda) ~
                              pdq(0, 1, 1) + PDQ(0, 1, 1)), #<2>
-    sarima_auto    = ARIMA(box_cox(y, lambda),              #<3>
+    sarima_auto    = ARIMA(box_cox(y, lambda),             #<3>
                            stepwise      = FALSE,
                            approximation = FALSE)
   )
@@ -558,6 +573,7 @@ glance(mexretail_fit_sarima) |>
 1. First candidate from ACF/PACF: non-seasonal MA(1), seasonal AR(1).
 2. Second candidate: non-seasonal MA(1), seasonal MA(1) — a very common structure for monthly economic data.
 3. Exhaustive automatic search for comparison.
+
 ```{r}
 #| label: sarima-report
 #| message: false
@@ -601,6 +617,7 @@ Both approaches are valid for seasonal series. Let's compare them on `mexretail`
 mexretail_train <- mexretail |> filter(year(date) <= 2019)
 mexretail_test  <- mexretail |> filter(year(date) >  2019)
 ```
+
 ```{r}
 #| label: comparison-fit
 #| message: false
@@ -620,6 +637,7 @@ mexretail_fit <- mexretail_train |>
                    approximation = FALSE)
   )
 ```
+
 ```{r}
 #| label: comparison-accuracy
 #| message: false
