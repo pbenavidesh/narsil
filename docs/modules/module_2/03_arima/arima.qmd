@@ -179,7 +179,7 @@ Selecting the right ARIMA order involves three decisions:
    - **ACF cuts off** after lag $q$ → MA($q$) component.
    - Both decay gradually → mixed ARMA, try several combinations.
 
-3. **Compare candidates** using information criteria (see [Model Selection]).
+3. **Compare candidates** using information criteria (see [Model Selection](#sec-model-selection)).
 :::
 
 ::: {.fragment}
@@ -190,9 +190,9 @@ Real data rarely produces textbook-perfect ACF/PACF shapes. Use the plots to nar
 :::
 :::
 
-## Manual Specification {#sec-manual}
+## Manual and Automatic Specification {#sec-manual}
 
-In `fable`, ARIMA models are specified inside `model()` using the `ARIMA()` function. The order is controlled with `pdq()`:
+In `fable`, ARIMA models are specified inside `model()` using the `ARIMA()` function. The order is controlled with `pdq()` for non-seasonal terms and `PDQ()` for seasonal terms. When `pdq()` is left unspecified, `fable` searches for the best order automatically.
 ```{r}
 #| label: us-change-plot
 #| echo: false
@@ -220,25 +220,58 @@ us_change |>
   gg_tsdisplay(Consumption, plot_type = "partial", lag_max = 16)
 ```
 
-The series appears stationary ($d = 0$). The PACF shows significant spikes at lags 1–3, suggesting AR(3). Let's fit that model:
+The series appears stationary ($d = 0$). The PACF shows significant spikes at lags 1–3, suggesting AR(3). We can fit this manually, compare it against automatic selection strategies, and let AIC$_c$ arbitrate — all within a single `mable`:
 
 :::
 
 ::: {.fragment}
 ```{r}
-#| label: us-change-fit
+#| label: us-change-fit-all
 #| message: false
 
 us_change_fit <- us_change |>
   model(
-    arima300 = ARIMA(Consumption ~ pdq(3, 0, 0) + PDQ(0, 0, 0)) #<1>
+    manual     = ARIMA(Consumption ~ pdq(3, 0, 0) + PDQ(0, 0, 0)),     #<1>
+    auto       = ARIMA(Consumption ~ PDQ(0, 0, 0)),                     #<2>
+    semi_auto  = ARIMA(Consumption ~ pdq(1:3, 0, 0:2) + PDQ(0, 0, 0)), #<3>
+    exhaustive = ARIMA(Consumption ~ PDQ(0, 0, 0),
+                       stepwise      = FALSE,                           #<4>
+                       approximation = FALSE)                           #<5>
   )
 
-report(us_change_fit)
+glance(us_change_fit) |>
+  arrange(AICc) |>
+  select(.model, AIC, AICc, BIC)
 ```
 
-1. `pdq()` sets the non-seasonal orders. `PDQ(0,0,0)` explicitly forces a non-seasonal model.
+1. Manual specification using `pdq()`. `PDQ(0,0,0)` explicitly forces a non-seasonal model.
+2. Leaving `pdq()` unspecified triggers automatic stepwise order selection.
+3. Evaluates all combinations of $p \in \{1,2,3\}$ and $q \in \{0,1,2\}$, returns the lowest AIC$_c$.
+4. `stepwise = FALSE` explores all combinations rather than navigating step by step.
+5. `approximation = FALSE` uses exact likelihood. More accurate but slower on long series.
 
+:::
+
+::: {.fragment}
+::: {.callout-note appearance="simple"}
+## How does automatic selection work?
+
+`fable` implements a stepwise search algorithm (Hyndman & Khandakar, 2008) that:
+
+1. Determines $d$ using unit root tests.
+2. Starts from a simple model and navigates through the order space by comparing AIC$_c$ values.
+3. Stops when no neighboring model improves AIC$_c$.
+
+::: {.fragment}
+**Important:** this is a heuristic search — it does *not* evaluate all possible combinations. It is fast and usually good, but not guaranteed to find the global optimum.
+:::
+:::
+:::
+
+::: {.fragment}
+::: {.callout-tip appearance="simple"}
+For exploratory work, automatic selection is fine. For a final model, use `stepwise = FALSE, approximation = FALSE` and compare the result with your manually identified candidate.
+:::
 :::
 
 ## Model Selection {#sec-model-selection}
@@ -294,55 +327,6 @@ Information criteria are only comparable across models fitted to **identical dat
 :::
 :::
 
-## Automatic and Semi-Automatic Selection
-
-`ARIMA()` in `fable` can search for the best order automatically. We can consolidate all selection strategies into a single `mable` for direct comparison:
-```{r}
-#| label: us-change-fit-all
-#| message: false
-
-us_change_fit <- us_change |>
-  model(
-    manual     = ARIMA(Consumption ~ pdq(3, 0, 0) + PDQ(0, 0, 0)),
-    auto       = ARIMA(Consumption ~ PDQ(0, 0, 0)),                    #<1>
-    semi_auto  = ARIMA(Consumption ~ pdq(1:3, 0, 0:2) + PDQ(0, 0, 0)), #<2>
-    exhaustive = ARIMA(Consumption ~ PDQ(0, 0, 0),
-                       stepwise      = FALSE,                          #<3>
-                       approximation = FALSE)                          #<4>
-  )
-
-glance(us_change_fit) |>
-  arrange(AICc) |>
-  select(.model, AIC, AICc, BIC)
-```
-
-1. Leaving `pdq()` unspecified triggers automatic stepwise order selection. We still fix `PDQ(0,0,0)` to keep the non-seasonal constraint. 
-2. Evaluates all combinations of $p \in \{1,2,3\}$ and $q \in \{0,1,2\}$, returns the lowest AIC$_c$.
-3. `stepwise = FALSE` explores all combinations rather than navigating step by step.
-4. `approximation = FALSE` uses exact likelihood. More accurate but slower on long series.
-
-::: {.fragment}
-::: {.callout-note appearance="simple"}
-## How does automatic selection work?
-
-`fable` implements a stepwise search algorithm (Hyndman & Khandakar, 2008) that:
-
-1. Determines $d$ using unit root tests.
-2. Starts from a simple model and navigates through the order space by comparing AIC$_c$ values.
-3. Stops when no neighboring model improves AIC$_c$.
-
-::: {.fragment}
-**Important:** this is a heuristic search — it does *not* evaluate all possible combinations. It is fast and usually good, but not guaranteed to find the global optimum.
-:::
-:::
-:::
-
-::: {.fragment}
-::: {.callout-tip appearance="simple"}
-For exploratory work, automatic selection is fine. For a final model, use `stepwise = FALSE, approximation = FALSE` and compare the result with your manually identified candidate.
-:::
-:::
-
 ## Box-Jenkins Methodology
 
 ARIMA model building follows an iterative procedure known as the **Box-Jenkins methodology**:
@@ -384,10 +368,14 @@ us_change_fit |>
   augment() |>
   features(.innov, ljung_box,
            lag = 10,
-           dof = 3) #<1>
+           dof = us_change_fit |>                          #<1>
+                   select(manual) |>
+                   coefficients() |>
+                   filter(str_detect(term, "^ar|^ma")) |>
+                   nrow())
 ```
 
-1. `dof` should equal $p + q$ — the number of estimated AR and MA coefficients. For ARIMA(3,0,0), `dof = 3`. Omitting this inflates the test statistic and produces misleadingly small p-values.
+1. `dof` is computed dynamically as the number of estimated AR and MA coefficients, so it always matches the fitted model regardless of order.
 
 ## Forecasting
 
@@ -531,12 +519,12 @@ mexretail |>
 ::: {.callout-note appearance="simple"}
 ## Reading the plot
 
-- **Non-seasonal lags (1–11):** 
-  - ACF: shows a spike at lag 4 → try $q = 4$.
-  - PACF: shows a spike at lag 3 → try $p = 3$.
-- **Seasonal lags (12, 24, 36):**
-  - ACF: spike at lag 12, and just barely at lag 24 → try $Q = 1$ or $Q = 2$.
-  - PACF: spikes at lag 12, 24, and slightly at 36 and 48  → seasonal AR(2), AR(3), or even AR(4).
+- **Non-seasonal lags (1–11):**
+  - ACF: spike at lag 1, and up to lag 4 → try $q = 1$ up to $q = 4$.
+  - PACF: spikes at lags 1 and 2, borderline at lag 3 → try $p = 2$ or $p = 3$.
+- **Seasonal lags (12, 24, 36, 48):**
+  - ACF: spike at lag 12, barely at lag 24 → try $Q = 1$ or $Q = 2$.
+  - PACF: spikes at lags 12, 24, and slightly at 36 and 48 → try $P = 2$, $P = 3$, or even $P = 4$.
 :::
 :::
 
@@ -546,10 +534,9 @@ mexretail |>
 
 A strict reading of the ACF/PACF above could justify orders as large as AR(3), MA(4), SAR(4), SMA(2) — a model with over a dozen parameters. In practice, this is rarely a good starting point: high-order models are harder to estimate, more prone to overfitting, and — if specified manually — can fail to converge or return non-invertible roots altogether.
 
-A better strategy: start with a parsimonious candidate like $ARIMA(0,1,1)(0,1,1)_{12}$ or $ARIMA(1,1,1)(1,1,1)_{12}$, fit a few of the larger candidates suggested by the plots, and let AIC$_c$ arbitrate. You will often find that the simpler model performs comparably or better — and it will always be more stable.
+A better strategy: start with a parsimonious candidate like $\text{ARIMA}(0,1,1)(0,1,1)_{12}$ or $\text{ARIMA}(1,1,1)(1,1,1)_{12}$, fit a few of the larger candidates suggested by the plots, and let AIC$_c$ arbitrate. You will often find that the simpler model performs comparably or better — and it will always be more stable.
 :::
 :::
-
 ```{r}
 #| label: sarima-fit
 #| message: false
@@ -560,7 +547,7 @@ mexretail_fit_sarima <- mexretail |>
                              pdq(0, 1, 1) + PDQ(1, 1, 0)), #<1>
     sarima_011_011 = ARIMA(box_cox(y, lambda) ~
                              pdq(0, 1, 1) + PDQ(0, 1, 1)), #<2>
-    sarima_auto    = ARIMA(box_cox(y, lambda),             #<3>
+    sarima_auto    = ARIMA(box_cox(y, lambda),              #<3>
                            stepwise      = FALSE,
                            approximation = FALSE)
   )
@@ -573,7 +560,6 @@ glance(mexretail_fit_sarima) |>
 1. First candidate from ACF/PACF: non-seasonal MA(1), seasonal AR(1).
 2. Second candidate: non-seasonal MA(1), seasonal MA(1) — a very common structure for monthly economic data.
 3. Exhaustive automatic search for comparison.
-
 ```{r}
 #| label: sarima-report
 #| message: false
@@ -598,10 +584,14 @@ mexretail_fit_sarima |>
   augment() |>
   features(.innov, ljung_box,
            lag = 24,
-           dof = 4) #<1>
+           dof = mexretail_fit_sarima |>                        #<1>
+                   select(sarima_auto) |>
+                   coefficients() |>
+                   filter(str_detect(term, "^ar|^ma|^sar|^sma")) |>
+                   nrow())
 ```
 
-1. Set `dof` to $p + q + P + Q$ for the fitted model. Adjust this value to match the order reported by `report()` above.
+1. `dof` is computed dynamically as $p + q + P + Q$ for the fitted model, so it always reflects the actual order selected by the exhaustive search.
 
 # STL + ARIMA vs. SARIMA
 
@@ -617,7 +607,6 @@ Both approaches are valid for seasonal series. Let's compare them on `mexretail`
 mexretail_train <- mexretail |> filter(year(date) <= 2019)
 mexretail_test  <- mexretail |> filter(year(date) >  2019)
 ```
-
 ```{r}
 #| label: comparison-fit
 #| message: false
@@ -637,7 +626,6 @@ mexretail_fit <- mexretail_train |>
                    approximation = FALSE)
   )
 ```
-
 ```{r}
 #| label: comparison-accuracy
 #| message: false
@@ -650,7 +638,7 @@ mexretail_fit |>
   arrange(RMSE)
 ```
 ```{r}
-#| label: comparison-plot
+#| label: comparison-plot-facet
 #| message: false
 #| warning: false
 #| echo: false
@@ -664,9 +652,16 @@ p <- mexretail_fit |>
     subtitle = "80% prediction intervals"
   )
 
-p
 p +
   facet_wrap(vars(.model), ncol = 1)
+```
+```{r}
+#| label: comparison-plot-overlay
+#| message: false
+#| warning: false
+#| echo: false
+
+p
 ```
 
 ::: {.fragment}
