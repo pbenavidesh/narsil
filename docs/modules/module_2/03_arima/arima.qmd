@@ -668,14 +668,17 @@ fit_compare |>
 #| warning: false
 #| echo: false
 
-fit_compare |>
+p <- fit_compare |>
   forecast(h = nrow(mex_test)) |>
   autoplot(mexretail |> filter(year(date) >= 2015), level = 80) +
   labs(
     title    = "mexretail — STL + ARIMA vs. SARIMA",
     y        = "Index 2015=100",
     subtitle = "80% prediction intervals"
-  ) +
+  )
+
+p
+p +
   facet_wrap(vars(.model), ncol = 1)
 ```
 
