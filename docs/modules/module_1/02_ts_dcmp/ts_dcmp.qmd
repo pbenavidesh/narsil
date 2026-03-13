@@ -47,6 +47,7 @@ library(plotly)    #<1>
 #| layout-ncol: 2
 
 p1 <- tq_get("FARTCOIN-USD", from = "2024-01-01") |> 
+  drop_na() |> 
   as_tsibble(index = date) |>
   autoplot(close, color = "navyblue") +
   labs(
