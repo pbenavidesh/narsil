@@ -421,7 +421,7 @@ mexretail_fit_stl_arima <- mexretail |>
             trend(window = NULL) +
             season(window = "periodic"),
           robust = TRUE),
-      ARIMA(season_adjust)                 #<3>
+      ARIMA(season_adjust + PDQ(0,0,0))    #<3>
     )
   )
 
