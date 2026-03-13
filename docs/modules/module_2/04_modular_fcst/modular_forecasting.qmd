@@ -30,9 +30,9 @@ library(plotly)    #<1>
 :::
 
 :::{.callout-note collapse="true"}
-## Data setup: `mexretail` and `lambda`
+## Data setup: `mexretail`
 
-`mexretail` was first introduced in [Module 1 — Time Series Decomposition](../../module_1/02_ts_dcmp/ts_dcmp.qmd#ts-features--patterns) and has been our running dataset throughout Module 2. `lambda` was first computed in [Stationarity & Differencing](../02_stationarity/stationarity.qmd#automated-differencing-orders).
+`mexretail` was first introduced in [Module 1 — Time Series Decomposition](../../module_1/02_ts_dcmp/ts_dcmp.qmd#ts-features--patterns) and has been our running dataset throughout Module 2.
 
 ```{r}
 #| label: data-setup
@@ -46,10 +46,6 @@ mexretail <- tq_get(
   mutate(date = yearmonth(date)) |>
   rename(y = price) |>
   as_tsibble(index = date)
-
-lambda <- mexretail |>
-  features(y, features = guerrero) |>
-  pull(lambda_guerrero)
 
 mexretail_train <- mexretail |> filter(year(date) <= 2019)
 mexretail_test  <- mexretail |> filter(year(date) >  2019)
@@ -152,7 +148,7 @@ Rather than embedding the full `decomposition_model()` calls inside the `mable`,
 #| label: baseline-spec
 
 baseline_spec <- decomposition_model(        #<1>
-  STL(box_cox(y, lambda) ~
+  STL(log(y) ~
         trend(window = NULL) +
         season(window = "periodic"),
       robust = TRUE),
@@ -167,7 +163,7 @@ baseline_spec <- decomposition_model(        #<1>
 #| label: stl-ets-spec
 
 stl_ets_spec <- decomposition_model(         #<1>
-  STL(box_cox(y, lambda) ~
+  STL(log(y) ~
         trend(window = NULL) +
         season(window = "periodic"),
       robust = TRUE),
@@ -182,7 +178,7 @@ stl_ets_spec <- decomposition_model(         #<1>
 #| label: stl-arima-spec
 
 stl_arima_spec <- decomposition_model(       #<1>
-  STL(box_cox(y, lambda) ~
+  STL(log(y) ~
         trend(window = NULL) +
         season(window = "periodic"),
       robust = TRUE),
@@ -207,7 +203,7 @@ ETS models the trend-cycle; ARIMA models the seasonal pattern:
 #| label: stl-ets-arima-spec
 
 stl_ets_arima_spec <- decomposition_model(
-  STL(box_cox(y, lambda) ~
+  STL(log(y) ~
         trend(window = NULL) +
         season(window = "periodic"),
       robust = TRUE),
@@ -232,7 +228,7 @@ ARIMA models the trend-cycle; ETS models the seasonal pattern:
 #| label: stl-arima-ets-spec
 
 stl_arima_ets_spec <- decomposition_model(
-  STL(box_cox(y, lambda) ~
+  STL(log(y) ~
         trend(window = NULL) +
         season(window = "periodic"),
       robust = TRUE),
@@ -264,8 +260,8 @@ mexretail_fit <- mexretail_train |>
     stl_arima     = stl_arima_spec,
     stl_ets_arima = stl_ets_arima_spec,
     stl_arima_ets = stl_arima_ets_spec,
-    ets           = ETS(box_cox(y, lambda)),                 #<1>
-    sarima        = ARIMA(box_cox(y, lambda),                #<2>
+    ets           = ETS(log(y)),                             #<1>
+    sarima        = ARIMA(log(y),                            #<2>
                           stepwise      = FALSE,
                           approximation = FALSE)
   )
@@ -377,9 +373,11 @@ beer_test <- aus_production |>
   rename(y = Beer) |>
   select(Quarter, y) |>
   filter(!is.na(y), year(Quarter) > 2006)
+
+beer_full <- bind_rows(beer_train, beer_test)
 ```
 
-1. We rename `Beer` to `y` so the decomposition specs defined above can be reused directly — they all reference `y` as the response variable.
+1. We rename `Beer` to `y` — the same convention used for `mexretail`. This is what allows the specs defined above to be reused directly.
 
 ```{r}
 #| echo: false
@@ -393,50 +391,13 @@ beer_train |>
   )
 ```
 
-
 :::{.callout-tip appearance="simple"}
 ## Reusing model specs across series
 
-The specs defined in the previous section use `y` and `lambda` as the response variable and Box-Cox parameter respectively. Since `beer` has no strong heteroskedasticity, we can redefine the specs without Box-Cox — or simply use `y` directly. The key convention: **name your response variable `y`** and the same specs apply across series.
+Because both `mexretail` and `beer` use `log(y)` as the response variable, the specs defined above apply to both series without any modification. The `mable` for `beer` will look identical to the one for `mexretail` — the only difference is the `tsibble` being piped in.
+
+This is the payoff of two conventions working together: naming your response variable `y`, and defining specs outside the `mable`.
 :::
-
-:::{.content-hidden unless-format="revealjs"}
-## Beer-specific specs
-:::
-
-Since `beer` does not require a Box-Cox transformation, we define simplified specs for this series:
-
-```{r}
-#| label: beer-specs
-
-beer_baseline_spec <- decomposition_model(
-  STL(y ~ trend(window = NULL) + season(window = "periodic"), robust = TRUE),
-  RW(season_adjust ~ drift()),
-  SNAIVE(season_year)
-)
-
-beer_stl_ets_spec <- decomposition_model(
-  STL(y ~ trend(window = NULL) + season(window = "periodic"), robust = TRUE),
-  ETS(season_adjust ~ season("N"))
-)
-
-beer_stl_arima_spec <- decomposition_model(
-  STL(y ~ trend(window = NULL) + season(window = "periodic"), robust = TRUE),
-  ARIMA(season_adjust ~ PDQ(0, 0, 0))
-)
-
-beer_stl_ets_arima_spec <- decomposition_model(
-  STL(y ~ trend(window = NULL) + season(window = "periodic"), robust = TRUE),
-  ETS(season_adjust ~ season("N")),
-  ARIMA(season_year ~ pdq(0, 0, 0))
-)
-
-beer_stl_arima_ets_spec <- decomposition_model(
-  STL(y ~ trend(window = NULL) + season(window = "periodic"), robust = TRUE),
-  ARIMA(season_adjust ~ PDQ(0, 0, 0)),
-  ETS(season_year ~ trend("N"))
-)
-```
 
 :::{.content-hidden unless-format="revealjs"}
 ## Fitting all approaches
@@ -449,14 +410,16 @@ beer_stl_arima_ets_spec <- decomposition_model(
 
 beer_fit <- beer_train |>
   model(
-    baseline      = beer_baseline_spec,
-    stl_ets       = beer_stl_ets_spec,
-    stl_arima     = beer_stl_arima_spec,
-    stl_ets_arima = beer_stl_ets_arima_spec,
-    stl_arima_ets = beer_stl_arima_ets_spec,
-    ets           = ETS(y),
-    sarima        = ARIMA(y, stepwise = FALSE, approximation = FALSE)
+    baseline      = baseline_spec,
+    stl_ets       = stl_ets_spec,
+    stl_arima     = stl_arima_spec,
+    stl_ets_arima = stl_ets_arima_spec,
+    stl_arima_ets = stl_arima_ets_spec,
+    ets           = ETS(log(y)),
+    sarima        = ARIMA(log(y), stepwise = FALSE, approximation = FALSE)
   )
+
+beer_fit
 ```
 
 :::{.content-hidden unless-format="revealjs"}
@@ -480,8 +443,6 @@ beer_fc <- beer_fit |>
 #| message: false
 #| warning: false
 
-beer_full <- bind_rows(beer_train, beer_test)
-
 p <- beer_fc |>
   autoplot(beer_full |> filter(year(Quarter) >= 2000), level = 80) +
   facet_wrap(vars(.model), ncol = 2) +
@@ -503,8 +464,6 @@ ggplotly(p, dynamicTicks = TRUE)
 #| echo: false
 #| message: false
 #| warning: false
-
-beer_full <- bind_rows(beer_train, beer_test)
 
 beer_fc |>
   autoplot(beer_full |> filter(year(Quarter) >= 2000), level = 80) +
@@ -602,7 +561,7 @@ We started Module 2 with a single question: *can we do better than Drift and SNA
 
 - We built **ARIMA** models — combining differencing, AR, and MA terms into a unified framework, applied both inside STL and as a standalone seasonal model. ([ARIMA Models](../03_arima/arima.qmd))
 
-- Today, we discovered that `decomposition_model()` lets us **mix ETS and ARIMA freely** across components — and saw that naming specs separately keeps model comparison code clean and reusable.
+- Today, we discovered that `decomposition_model()` lets us **mix ETS and ARIMA freely** across components — and saw that naming specs separately keeps model comparison code clean and reusable across series.
 
 :::
 
