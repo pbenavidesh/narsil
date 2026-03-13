@@ -104,7 +104,7 @@ tibble::tribble(
 :::{.callout-note appearance="simple"}
 ## `decomposition_model()` is more flexible than it looked
 
-In the previous documents, we always let STL handle the seasonal component implicitly — which defaults to SNAIVE. But `decomposition_model()` lets you specify a model for *each* component separately. This opens up the mixed combinations in the middle of the table, and that is exactly what we explore today.
+In the previous sections, we always let STL handle the seasonal component implicitly — which defaults to SNAIVE. But `decomposition_model()` lets you specify a model for *each* component separately. This opens up the mixed combinations in the middle of the table, and that is exactly what we explore here.
 :::
 :::
 
@@ -133,7 +133,7 @@ Each component has its own characteristics, and we can choose the best model for
 | Component | What it contains | What to suppress |
 |:--|:--|:--|
 | `season_adjust` | trend + cycle + remainder | seasonality → `season("N")` / `PDQ(0,0,0)` |
-| `season_year` | seasonal pattern only | trend → `trend("N")` / `pdq(0,0,0)` |
+| `season_year` | seasonal pattern only | trend → `trend("N")` |
 
 :::
 :::
@@ -212,12 +212,11 @@ stl_ets_arima_spec <- decomposition_model(
         season(window = "periodic"),
       robust = TRUE),
   ETS(season_adjust ~ season("N")),          #<1>
-  ARIMA(season_year ~ pdq(0, 0, 0))          #<2>
+  ARIMA(season_year)
 )
 ```
 
 1. ETS with `season("N")` on the trend-cycle — no seasonality to model here.
-2. ARIMA with `pdq(0,0,0)` on the seasonal component — no non-seasonal AR/MA terms, since the component carries no trend or non-seasonal autocorrelation.
 
 :::{.content-hidden unless-format="revealjs"}
 ## STL + ARIMA + ETS {auto-animate="true"}
@@ -378,6 +377,12 @@ beer_test <- aus_production |>
   rename(y = Beer) |>
   select(Quarter, y) |>
   filter(!is.na(y), year(Quarter) > 2006)
+```
+
+1. We rename `Beer` to `y` so the decomposition specs defined above can be reused directly — they all reference `y` as the response variable.
+
+```{r}
+#| echo: false
 
 beer_train |>
   autoplot(y, color = "goldenrod3") +
@@ -388,7 +393,6 @@ beer_train |>
   )
 ```
 
-1. We rename `Beer` to `y` so the decomposition specs defined above can be reused directly — they all reference `y` as the response variable.
 
 :::{.callout-tip appearance="simple"}
 ## Reusing model specs across series
