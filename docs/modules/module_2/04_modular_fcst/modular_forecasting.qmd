@@ -1,0 +1,613 @@
+---
+title: "Modular Forecasting: Mixing ETS and ARIMA"
+format:
+  html: default
+  revealjs:
+    output-file: module_2_synthesis_pres.html
+---
+
+```{r}
+#| label: pkgs
+#| message: false
+#| include: false
+
+library(tidyverse)
+library(fpp3)
+```
+
+:::{.content-visible unless-format="revealjs"}
+
+```{r}
+#| label: pkgs_special
+#| message: false
+
+library(tidyquant) #<1>
+library(plotly)    #<1>
+```
+
+1. In addition to the regular packages, here we'll use `tidyquant` and `plotly`.
+
+:::
+
+:::{.callout-note collapse="true"}
+## Data setup: `mexretail` and `lambda`
+
+`mexretail` was first introduced in [Module 1 — Time Series Decomposition](../../module_1/02_ts_dcmp/ts_dcmp.qmd#ts-features--patterns) and has been our running dataset throughout Module 2. `lambda` was first computed in [Stationarity & Differencing](../02_stationarity/stationarity.qmd#automated-differencing-orders).
+
+```{r}
+#| label: data-setup
+#| message: false
+
+mexretail <- tq_get(
+  "MEXSLRTTO01IXOBM",
+  get = "economic.data",
+  from = "1985-01-01"
+) |>
+  mutate(date = yearmonth(date)) |>
+  rename(y = price) |>
+  as_tsibble(index = date)
+
+lambda <- mexretail |>
+  features(y, features = guerrero) |>
+  pull(lambda_guerrero)
+
+mexretail_train <- mexretail |> filter(year(date) <= 2019)
+mexretail_test  <- mexretail |> filter(year(date) >  2019)
+```
+
+:::
+
+# Where We Are
+
+:::{.content-hidden unless-format="revealjs"}
+##
+:::
+
+Module 2 has added two new model families to our toolkit. Together with `decomposition_model()`, they give us far more combinations than it might initially seem:
+
+:::{.content-visible unless-format="revealjs"}
+
+| Approach | Decomposition | Trend-cycle model | Seasonal model |
+|:--|:--:|:--:|:--:|
+| **M1 baseline** | STL | Drift | SNAIVE |
+| **STL + ETS** | STL | ETS | SNAIVE |
+| **STL + ARIMA** | STL | ARIMA | SNAIVE |
+| **STL + ETS + ARIMA** | STL | ETS | ARIMA |
+| **STL + ARIMA + ETS** | STL | ARIMA | ETS |
+| **ETS** | — | ETS | ETS |
+| **SARIMA** | — | ARIMA | ARIMA$(P,D,Q)_m$ |
+
+:::
+
+:::{.content-hidden unless-format="revealjs"}
+
+```{r}
+#| label: module-map-table
+#| echo: false
+
+tibble::tribble(
+  ~Approach,               ~Decomposition, ~`Trend-cycle`,  ~`Seasonal`,
+  "M1 baseline",           "STL",          "Drift",         "SNAIVE",
+  "STL + ETS",             "STL",          "ETS",           "SNAIVE",
+  "STL + ARIMA",           "STL",          "ARIMA",         "SNAIVE",
+  "STL + ETS + ARIMA",     "STL",          "ETS",           "ARIMA",
+  "STL + ARIMA + ETS",     "STL",          "ARIMA",         "ETS",
+  "ETS",                   "—",            "ETS",           "ETS",
+  "SARIMA",                "—",            "ARIMA",         "ARIMA(P,D,Q)m"
+) |>
+  knitr::kable()
+```
+
+:::
+
+:::{.fragment}
+:::{.callout-note appearance="simple"}
+## `decomposition_model()` is more flexible than it looked
+
+In the previous documents, we always let STL handle the seasonal component implicitly — which defaults to SNAIVE. But `decomposition_model()` lets you specify a model for *each* component separately. This opens up the mixed combinations in the middle of the table, and that is exactly what we explore today.
+:::
+:::
+
+# Mixing ETS and ARIMA inside `decomposition_model()`
+
+:::{.content-hidden unless-format="revealjs"}
+## The structure
+:::
+
+Recall the structure of `decomposition_model()`:
+
+```r
+decomposition_model(
+  <decomposition method>,
+  <model for season_adjust>,   # trend-cycle component
+  <model for season_year>      # seasonal component (defaults to SNAIVE if omitted)
+)
+```
+
+:::{.fragment}
+Each component has its own characteristics, and we can choose the best model for each one *independently*:
+
+:::{.callout-tip appearance="simple"}
+## The constraint logic
+
+| Component | What it contains | What to suppress |
+|:--|:--|:--|
+| `season_adjust` | trend + cycle + remainder | seasonality → `season("N")` / `PDQ(0,0,0)` |
+| `season_year` | seasonal pattern only | trend → `trend("N")` / `pdq(0,0,0)` |
+
+:::
+:::
+
+:::{.content-hidden unless-format="revealjs"}
+## Defining the model specs {auto-animate="true"}
+:::
+
+:::{.content-visible unless-format="revealjs"}
+## Defining the model specs
+:::
+
+Rather than embedding the full `decomposition_model()` calls inside the `mable`, we define them as named objects first. This keeps the model comparison code clean and makes each specification easy to inspect and reuse.
+
+```{r}
+#| label: baseline-spec
+
+baseline_spec <- decomposition_model(        #<1>
+  STL(box_cox(y, lambda) ~
+        trend(window = NULL) +
+        season(window = "periodic"),
+      robust = TRUE),
+  RW(season_adjust ~ drift()),
+  SNAIVE(season_year)
+)
+```
+
+1. Module 1 baseline: STL + Drift + SNAIVE. Our benchmark — every model must beat this. See [The Forecasting Workflow](../../forecasting_workflow.qmd).
+
+```{r}
+#| label: stl-ets-spec
+
+stl_ets_spec <- decomposition_model(         #<1>
+  STL(box_cox(y, lambda) ~
+        trend(window = NULL) +
+        season(window = "periodic"),
+      robust = TRUE),
+  ETS(season_adjust ~ season("N"))           #<2>
+)
+```
+
+1. STL + ETS on the seasonally adjusted series; seasonal component defaults to SNAIVE. See [Exponential Smoothing](../01_ets/ets.qmd).
+2. `season("N")` suppresses seasonality — STL already removed it from `season_adjust`.
+
+```{r}
+#| label: stl-arima-spec
+
+stl_arima_spec <- decomposition_model(       #<1>
+  STL(box_cox(y, lambda) ~
+        trend(window = NULL) +
+        season(window = "periodic"),
+      robust = TRUE),
+  ARIMA(season_adjust ~ PDQ(0, 0, 0))        #<2>
+)
+```
+
+1. STL + ARIMA on the seasonally adjusted series; seasonal component defaults to SNAIVE. See [ARIMA Models](../03_arima/arima.qmd#stl--arima).
+2. `PDQ(0,0,0)` suppresses seasonal ARIMA terms — not needed on the seasonally adjusted series.
+
+:::{.content-hidden unless-format="revealjs"}
+## STL + ETS + ARIMA {auto-animate="true"}
+:::
+
+:::{.content-visible unless-format="revealjs"}
+## STL + ETS + ARIMA
+:::
+
+ETS models the trend-cycle; ARIMA models the seasonal pattern:
+
+```{r}
+#| label: stl-ets-arima-spec
+
+stl_ets_arima_spec <- decomposition_model(
+  STL(box_cox(y, lambda) ~
+        trend(window = NULL) +
+        season(window = "periodic"),
+      robust = TRUE),
+  ETS(season_adjust ~ season("N")),          #<1>
+  ARIMA(season_year ~ pdq(0, 0, 0))          #<2>
+)
+```
+
+1. ETS with `season("N")` on the trend-cycle — no seasonality to model here.
+2. ARIMA with `pdq(0,0,0)` on the seasonal component — no non-seasonal AR/MA terms, since the component carries no trend or non-seasonal autocorrelation.
+
+:::{.content-hidden unless-format="revealjs"}
+## STL + ARIMA + ETS {auto-animate="true"}
+:::
+
+:::{.content-visible unless-format="revealjs"}
+## STL + ARIMA + ETS
+:::
+
+ARIMA models the trend-cycle; ETS models the seasonal pattern:
+
+```{r}
+#| label: stl-arima-ets-spec
+
+stl_arima_ets_spec <- decomposition_model(
+  STL(box_cox(y, lambda) ~
+        trend(window = NULL) +
+        season(window = "periodic"),
+      robust = TRUE),
+  ARIMA(season_adjust ~ PDQ(0, 0, 0)),       #<1>
+  ETS(season_year ~ trend("N"))              #<2>
+)
+```
+
+1. ARIMA with `PDQ(0,0,0)` on the trend-cycle — no seasonal ARIMA terms needed.
+2. ETS with `trend("N")` on the seasonal component — the seasonal pattern has no trend.
+
+# Revisiting `mexretail`
+
+:::{.content-hidden unless-format="revealjs"}
+## Fitting all approaches
+:::
+
+With the specs defined, the `mable` is straightforward to read — each row is a named approach:
+
+```{r}
+#| label: mexretail-fit
+#| message: false
+#| warning: false
+
+mexretail_fit <- mexretail_train |>
+  model(
+    baseline      = baseline_spec,
+    stl_ets       = stl_ets_spec,
+    stl_arima     = stl_arima_spec,
+    stl_ets_arima = stl_ets_arima_spec,
+    stl_arima_ets = stl_arima_ets_spec,
+    ets           = ETS(box_cox(y, lambda)),                 #<1>
+    sarima        = ARIMA(box_cox(y, lambda),                #<2>
+                          stepwise      = FALSE,
+                          approximation = FALSE)
+  )
+
+mexretail_fit
+```
+
+1. Full ETS without explicit decomposition — Holt-Winters handles everything internally. See [Exponential Smoothing](../01_ets/ets.qmd#methods-with-seasonality).
+2. Full SARIMA without explicit decomposition. See [ARIMA Models](../03_arima/arima.qmd#sarima).
+
+:::{.content-hidden unless-format="revealjs"}
+## Forecasts
+:::
+
+```{r}
+#| label: mexretail-fc
+#| message: false
+#| warning: false
+
+mexretail_fc <- mexretail_fit |>
+  forecast(h = nrow(mexretail_test))
+```
+
+:::{.content-visible unless-format="revealjs"}
+
+```{r}
+#| label: mexretail-fc-plot
+#| echo: false
+#| message: false
+#| warning: false
+
+p <- mexretail_fc |>
+  autoplot(mexretail |> filter(year(date) >= 2015), level = 80) +
+  facet_wrap(vars(.model), ncol = 2) +
+  labs(
+    title    = "mexretail — all approaches compared",
+    y        = "Index 2015=100",
+    subtitle = "80% prediction intervals"
+  )
+
+ggplotly(p, dynamicTicks = TRUE)
+```
+
+:::
+
+:::{.content-hidden unless-format="revealjs"}
+
+```{r}
+#| label: mexretail-fc-plot-pres
+#| echo: false
+#| message: false
+#| warning: false
+
+mexretail_fc |>
+  autoplot(mexretail |> filter(year(date) >= 2015), level = 80) +
+  facet_wrap(vars(.model), ncol = 2) +
+  labs(
+    title    = "mexretail — all approaches compared",
+    y        = "Index 2015=100",
+    subtitle = "80% prediction intervals"
+  )
+```
+
+:::
+
+:::{.content-hidden unless-format="revealjs"}
+## Accuracy on the test set
+:::
+
+```{r}
+#| label: mexretail-accuracy
+#| message: false
+#| warning: false
+
+mexretail_accu <- mexretail_fc |>
+  accuracy(mexretail) |>
+  select(.model, RMSE, MAE, MAPE, MASE) |>
+  arrange(RMSE)
+
+mexretail_accu
+```
+
+:::{.fragment}
+:::{.callout-tip appearance="simple"}
+## Reading the table
+
+A MASE below 1 means the model beats the SNAIVE benchmark. Check where `baseline` lands — that is the floor set in Module 1. Everything above it in this ranking is a genuine improvement.
+:::
+:::
+
+# A New Series: Australian Beer Production
+
+:::{.content-hidden unless-format="revealjs"}
+## Setup
+:::
+
+To check whether the rankings hold on a different series, we apply the same workflow to quarterly Australian beer production from `fpp3`:
+
+```{r}
+#| label: beer-setup
+#| message: false
+
+beer_train <- aus_production |>
+  rename(y = Beer) |>                  #<1>
+  select(Quarter, y) |>
+  filter(!is.na(y), year(Quarter) <= 2006)
+
+beer_test <- aus_production |>
+  rename(y = Beer) |>
+  select(Quarter, y) |>
+  filter(!is.na(y), year(Quarter) > 2006)
+
+beer_train |>
+  autoplot(y, color = "goldenrod3") +
+  labs(
+    title = "Australian beer production (train set)",
+    y     = "Megalitres",
+    x     = ""
+  )
+```
+
+1. We rename `Beer` to `y` so the decomposition specs defined above can be reused directly — they all reference `y` as the response variable.
+
+:::{.callout-tip appearance="simple"}
+## Reusing model specs across series
+
+The specs defined in the previous section use `y` and `lambda` as the response variable and Box-Cox parameter respectively. Since `beer` has no strong heteroskedasticity, we can redefine the specs without Box-Cox — or simply use `y` directly. The key convention: **name your response variable `y`** and the same specs apply across series.
+:::
+
+:::{.content-hidden unless-format="revealjs"}
+## Beer-specific specs
+:::
+
+Since `beer` does not require a Box-Cox transformation, we define simplified specs for this series:
+
+```{r}
+#| label: beer-specs
+
+beer_baseline_spec <- decomposition_model(
+  STL(y ~ trend(window = NULL) + season(window = "periodic"), robust = TRUE),
+  RW(season_adjust ~ drift()),
+  SNAIVE(season_year)
+)
+
+beer_stl_ets_spec <- decomposition_model(
+  STL(y ~ trend(window = NULL) + season(window = "periodic"), robust = TRUE),
+  ETS(season_adjust ~ season("N"))
+)
+
+beer_stl_arima_spec <- decomposition_model(
+  STL(y ~ trend(window = NULL) + season(window = "periodic"), robust = TRUE),
+  ARIMA(season_adjust ~ PDQ(0, 0, 0))
+)
+
+beer_stl_ets_arima_spec <- decomposition_model(
+  STL(y ~ trend(window = NULL) + season(window = "periodic"), robust = TRUE),
+  ETS(season_adjust ~ season("N")),
+  ARIMA(season_year ~ pdq(0, 0, 0))
+)
+
+beer_stl_arima_ets_spec <- decomposition_model(
+  STL(y ~ trend(window = NULL) + season(window = "periodic"), robust = TRUE),
+  ARIMA(season_adjust ~ PDQ(0, 0, 0)),
+  ETS(season_year ~ trend("N"))
+)
+```
+
+:::{.content-hidden unless-format="revealjs"}
+## Fitting all approaches
+:::
+
+```{r}
+#| label: beer-fit
+#| message: false
+#| warning: false
+
+beer_fit <- beer_train |>
+  model(
+    baseline      = beer_baseline_spec,
+    stl_ets       = beer_stl_ets_spec,
+    stl_arima     = beer_stl_arima_spec,
+    stl_ets_arima = beer_stl_ets_arima_spec,
+    stl_arima_ets = beer_stl_arima_ets_spec,
+    ets           = ETS(y),
+    sarima        = ARIMA(y, stepwise = FALSE, approximation = FALSE)
+  )
+```
+
+:::{.content-hidden unless-format="revealjs"}
+## Forecasts and accuracy
+:::
+
+```{r}
+#| label: beer-fc
+#| message: false
+#| warning: false
+
+beer_fc <- beer_fit |>
+  forecast(h = nrow(beer_test))
+```
+
+:::{.content-visible unless-format="revealjs"}
+
+```{r}
+#| label: beer-fc-plot
+#| echo: false
+#| message: false
+#| warning: false
+
+beer_full <- bind_rows(beer_train, beer_test)
+
+p <- beer_fc |>
+  autoplot(beer_full |> filter(year(Quarter) >= 2000), level = 80) +
+  facet_wrap(vars(.model), ncol = 2) +
+  labs(
+    title    = "Australian beer production — all approaches compared",
+    y        = "Megalitres",
+    subtitle = "80% prediction intervals"
+  )
+
+ggplotly(p, dynamicTicks = TRUE)
+```
+
+:::
+
+:::{.content-hidden unless-format="revealjs"}
+
+```{r}
+#| label: beer-fc-plot-pres
+#| echo: false
+#| message: false
+#| warning: false
+
+beer_full <- bind_rows(beer_train, beer_test)
+
+beer_fc |>
+  autoplot(beer_full |> filter(year(Quarter) >= 2000), level = 80) +
+  facet_wrap(vars(.model), ncol = 2) +
+  labs(
+    title    = "Australian beer — all approaches",
+    y        = "Megalitres",
+    subtitle = "80% prediction intervals"
+  )
+```
+
+:::
+
+```{r}
+#| label: beer-accuracy
+#| message: false
+#| warning: false
+
+beer_accu <- beer_fc |>
+  accuracy(beer_full) |>
+  select(.model, RMSE, MAE, MAPE, MASE) |>
+  arrange(RMSE)
+
+beer_accu
+```
+
+:::{.fragment}
+:::{.callout-note appearance="simple"}
+## Does the winner change?
+
+Compare the ranking here against `mexretail`. Does the same approach win on both series? What does that tell you about when mixed decomposition models add value — and when they don't?
+:::
+:::
+
+# When to Use Which
+
+:::{.content-hidden unless-format="revealjs"}
+##
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+| Approach | Seasonal pattern | Outlier robustness | Best when... |
+|:--|:--|:--|:--|
+| **STL + ETS** | Flexible, can evolve | High | Trend is smooth; seasonality stable |
+| **STL + ARIMA** | Flexible, can evolve | High | Trend has autocorrelation structure |
+| **STL + ETS + ARIMA** | Flexible, can evolve | High | Trend smooth; seasonal pattern has autocorrelation |
+| **STL + ARIMA + ETS** | Flexible, can evolve | High | Trend autocorrelated; seasonal is level-shifting |
+| **ETS** | Fixed structure | Moderate | Short series; no need for explicit decomposition |
+| **SARIMA** | Fixed structure | Lower | Compact model preferred; longer series |
+
+:::
+
+:::{.content-hidden unless-format="revealjs"}
+
+```{r}
+#| label: when-to-use-table
+#| echo: false
+
+tibble::tribble(
+  ~Approach,              ~`Seasonal pattern`,        ~`Outlier robustness`, ~`Best when...`,
+  "STL + ETS",            "Flexible, can evolve",     "High",                "Trend smooth; seasonality stable",
+  "STL + ARIMA",          "Flexible, can evolve",     "High",                "Trend has autocorrelation structure",
+  "STL + ETS + ARIMA",    "Flexible, can evolve",     "High",                "Trend smooth; seasonal has autocorrelation",
+  "STL + ARIMA + ETS",    "Flexible, can evolve",     "High",                "Trend autocorrelated; seasonal is level-shifting",
+  "ETS",                  "Fixed structure",           "Moderate",            "Short series; no explicit decomposition needed",
+  "SARIMA",               "Fixed structure",           "Lower",               "Compact model preferred; longer series"
+) |>
+  knitr::kable()
+```
+
+:::
+
+:::{.fragment}
+:::{.callout-important appearance="simple"}
+## The guiding principle
+
+No approach dominates universally. Always compare on a held-out test set. The mixed combinations (`stl_ets_arima`, `stl_arima_ets`) are not automatically better — they add flexibility but also complexity. Let the accuracy metrics decide.
+:::
+:::
+
+# Module 2 Wrap-Up
+
+:::{.content-hidden unless-format="revealjs"}
+##
+:::
+
+We started Module 2 with a single question: *can we do better than Drift and SNAIVE?*
+
+:::{.incremental}
+
+- We replaced **Drift** with **ETS** — adaptive smoothing that weights recent observations more heavily and handles a wide range of trend and seasonal patterns. ([Exponential Smoothing](../01_ets/ets.qmd))
+
+- We formalized **stationarity**, and learned to use Box-Cox transformations, differencing, and unit root tests to prepare a series for ARIMA modeling. ([Stationarity & Differencing](../02_stationarity/stationarity.qmd))
+
+- We built **ARIMA** models — combining differencing, AR, and MA terms into a unified framework, applied both inside STL and as a standalone seasonal model. ([ARIMA Models](../03_arima/arima.qmd))
+
+- Today, we discovered that `decomposition_model()` lets us **mix ETS and ARIMA freely** across components — and saw that naming specs separately keeps model comparison code clean and reusable.
+
+:::
+
+:::{.fragment}
+:::{.callout-note appearance="simple"}
+## What's still missing?
+
+All models in Module 2 are **univariate** — they only look at the history of the series itself, with no knowledge of the world outside: promotions, holidays, economic conditions, competitor behavior.
+
+In **Module 3**, we give our models that external context by introducing regression with time series errors.
+:::
+:::
