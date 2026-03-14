@@ -410,6 +410,7 @@ ARIMA prediction intervals are derived analytically from the model's MA represen
 `mexretail` is a monthly series with strong trend and seasonality. We already know how to handle it with STL decomposition. In Module 1 we combined STL with SNAIVE; in Module 2 we replaced SNAIVE with ETS. The natural next step is to replace it with ARIMA.
 
 The idea is the same: use STL to handle the seasonal pattern, and let ARIMA model the trend-cycle on the **seasonally adjusted series**.
+
 ```{r}
 #| label: stl-arima-fit
 #| message: false
@@ -418,10 +419,9 @@ mexretail_fit_stl_arima <- mexretail |>
   model(
     stl_arima = decomposition_model(       #<1>
       STL(box_cox(y, lambda) ~             #<2>
-            trend(window = NULL) +
             season(window = "periodic"),
           robust = TRUE),
-      ARIMA(season_adjust + PDQ(0,0,0))    #<3>
+      ARIMA(season_adjust ~ PDQ(0,0,0))    #<3>
     )
   )
 
