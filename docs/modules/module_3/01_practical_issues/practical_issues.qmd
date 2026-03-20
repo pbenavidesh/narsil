@@ -1,0 +1,699 @@
+---
+title: "Practical Forecasting Issues"
+format:
+  html:
+    other-links:
+      - text: "FPP3: Dealing with unusual observations"
+        href: https://otexts.com/fpp3/missing-outliers.html
+      - text: "FPP3: Keeping forecasts within constraints"
+        href: https://otexts.com/fpp3/transformations.html
+  revealjs:
+    output-file: practical_issues_pres.html
+---
+
+```{r}
+#| label: pkgs
+#| message: false
+#| include: false
+
+library(tidyverse)
+library(fpp3)
+```
+
+:::{.content-visible unless-format="revealjs"}
+
+```{r}
+#| label: pkgs_special
+#| message: false
+
+library(plotly) #<1>
+```
+
+1. In addition to the regular packages, we use `plotly` for interactive graphics.
+
+:::
+
+# Outliers
+
+:::{.content-hidden unless-format="revealjs"}
+
+##
+
+:::
+
+```{r}
+#| label: tourism-data
+#| include: false
+
+ah <- tourism |>
+  filter(
+    Region  == "Adelaide Hills",
+    Purpose == "Visiting"
+  )
+```
+
+:::{.content-visible unless-format="revealjs"}
+
+```{r}
+#| label: tourism-plot-html
+#| echo: false
+#| message: false
+
+p <- ah |>
+  autoplot(Trips, color = "steelblue") +
+  labs(
+    title   = "Quarterly overnight trips to Adelaide Hills",
+    y       = "Thousands of trips",
+    caption = "Source: Tourism Research Australia"
+  )
+
+ggplotly(p, dynamicTicks = TRUE)
+```
+
+:::
+
+:::{.content-hidden unless-format="revealjs"}
+
+```{r}
+#| label: tourism-plot-revealjs
+#| echo: false
+#| message: false
+
+ah |>
+  autoplot(Trips, color = "steelblue") +
+  labs(
+    title   = "Quarterly overnight trips to Adelaide Hills",
+    y       = "Thousands of trips",
+    caption = "Source: Tourism Research Australia"
+  )
+```
+
+:::
+
+> *What do you observe in this series? Think about trend, seasonality, variance — and anything else that catches your eye.*
+
+## What do we do with outliers?
+
+:::{.incremental}
+
+- In **cross-sectional** data, a common reaction is to **remove** outliers before modeling.
+- That intuition is reasonable — but in time series, simply deleting an observation creates a new problem: a **gap in the timeline**.
+- Time series models depend on the temporal ordering and regularity of observations. A missing period is not the same as a removed row.
+
+:::
+
+:::{.callout-important appearance="simple"}
+In time series, removing an outlier and leaving a gap is not a solution — it creates a missing value problem that must also be addressed.
+:::
+
+## Why not apply the IQR rule directly to the series?
+
+In cross-sectional data, outlier detection often works directly on the raw values:
+
+$$
+\text{outlier if } y < Q_1 - 1.5 \cdot \text{IQR} \quad \text{or} \quad y > Q_3 + 1.5 \cdot \text{IQR}
+$$
+
+:::{.incremental}
+
+- In time series, this **does not work** — and the reason is **trend**.
+- A series with an upward trend has values that naturally increase over time. Later observations will always appear "large" relative to the overall distribution — not because they are anomalous, but because the series has grown.
+- Applying the IQR rule directly would flag perfectly normal observations at the end of a trending series as outliers.
+
+:::
+
+:::{.fragment}
+
+:::{.callout-tip appearance="simple"}
+## The fix: decompose first, then inspect the remainder
+
+By removing the trend before applying the IQR rule, we isolate the variation that *cannot* be explained by the regular structure of the series. Only then does outlier detection make sense.
+:::
+
+:::
+
+## Formally identifying outliers via STL
+
+:::{.content-visible unless-format="revealjs"}
+
+### Using the remainder component
+
+:::
+
+We decompose the series with STL using `season(period = 1)` to remove **only the trend** — keeping seasonality in the remainder so it is not mistaken for an anomaly^[If you suspect outliers are hiding inside the seasonal pattern, you can use a full seasonal decomposition instead.]. We then apply the IQR rule to the remainder:
+
+$$
+\text{outlier if } R_t < Q_1 - c \cdot \text{IQR} \quad \text{or} \quad R_t > Q_3 + c \cdot \text{IQR}
+$$
+
+where $c = 1.5$ is the standard threshold and $c = 3$ flags only more extreme observations.
+
+```{r}
+#| label: stl-decomp
+#| message: false
+
+ah_dcmp <- ah |>
+  model(
+    stl = STL(Trips ~ season(period = 1), robust = TRUE) #<1>
+  ) |>
+  components()
+
+ah_dcmp |> autoplot()
+```
+
+1. `season(period = 1)` fits a non-seasonal STL — only the trend is extracted. This ensures the remainder reflects true anomalies and seasonal variation together, rather than having a genuine outlier absorbed into the seasonal component.
+
+```{r}
+#| label: outliers-detect
+
+c_threshold <- 1.5  #<1>
+
+ah_outliers <- ah_dcmp |>
+  filter(
+    remainder < quantile(remainder, 0.25) - c_threshold * IQR(remainder) |
+    remainder > quantile(remainder, 0.75) + c_threshold * IQR(remainder)
+  )
+
+ah_outliers
+```
+
+1. Changing `c_threshold` to `3` makes detection stricter — only more extreme remainders are flagged. Start with `1.5` and increase if too many periods are flagged.
+
+:::{.callout-note appearance="simple" collapse="true"}
+## Choosing the threshold: 1.5 vs. 3
+
+The value $c = 1.5$ is the standard Tukey fence used in boxplots — it flags observations that are moderately unusual. A value of $c = 3$ (the "far fence") is more conservative and only captures truly extreme values. In practice, start with `1.5`, inspect the flagged periods, and tighten the threshold if normal variation is being flagged.
+:::
+
+:::{.content-hidden unless-format="revealjs"}
+
+## What happens when we remove them?
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+### What happens when we remove them?
+
+:::
+
+```{r}
+#| label: remove-outliers
+
+ah_miss <- ah |>
+  anti_join(ah_outliers, by = "Quarter") |> #<1>
+  fill_gaps()                                #<2>
+
+ah_miss
+```
+
+1. `anti_join()` removes the flagged periods from the original data.
+2. `fill_gaps()` makes the missing periods explicit — they now appear as `NA` rows in the tsibble rather than simply not existing.
+
+:::{.fragment}
+
+```{r}
+#| label: plot-with-gaps
+#| echo: false
+
+p <- ah_miss |>
+  autoplot(Trips, color = "steelblue") +
+  labs(
+    title = "Adelaide Hills — after removing outliers",
+    y     = "Thousands of trips"
+  )
+
+ggplotly(p, dynamicTicks = TRUE)
+```
+
+:::
+
+We removed the outlier — but now there is a gap. The model still needs a value for that period.
+
+# Missing Values
+
+:::{.content-hidden unless-format="revealjs"}
+
+## Missing values in time series
+
+:::
+
+> *We have gaps. What do we do with them?*
+
+Some approaches that might seem right at first — but do not hold up under scrutiny:
+
+:::{.incremental}
+
+- Use the **mean** of the series → ignores trend and seasonality entirely
+- Use the **previous value** → that is NAIVE — reasonable, but ignores all future information
+- Use the **same period last year** → that is SNAIVE — better, but still mechanical
+- **Average the neighboring values** → which neighbors? How many? Sensitive to local anomalies, ignores global structure
+
+:::
+
+:::{.fragment}
+
+:::{.callout-tip appearance="simple"}
+All of these are simplified versions of models we have already studied. Can we do something more principled — something that uses the *full* structure of the series, including trend, seasonality, and autocorrelation?
+:::
+
+:::
+
+:::{.content-hidden unless-format="revealjs"}
+
+## Why not ETS?
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+### Why not ETS?
+
+:::
+
+A natural next suggestion: fit an ETS model to the available data and use it to fill the gaps.
+
+The problem: **ETS cannot be estimated when the series contains `NA` values.**
+
+:::{.incremental}
+
+ETS is built on weighted averages of all past observations:
+
+$$
+\hat{y}_{t} = \alpha y_{t-1} + \alpha(1-\alpha) y_{t-2} + \alpha(1-\alpha)^2 y_{t-3} + \cdots
+$$
+
+If any $y_t$ is `NA`, every weighted sum that includes it becomes `NA` — and the entire estimation collapses.
+
+:::
+
+:::{.fragment}
+
+```{r}
+#| label: na-arithmetic
+
+mean(c(10, 20, NA, 40))   #<1>
+10 + NA                   #<2>
+```
+
+1. `mean()` with a missing value returns `NA` — the average is undefined when one element is unknown.
+2. Any arithmetic involving `NA` propagates the missingness. ETS, as a chain of weighted sums over all observations, fails entirely if any single observation is missing.
+
+:::
+
+:::{.content-hidden unless-format="revealjs"}
+
+## ARIMA and interpolation
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+### ARIMA and interpolation
+
+:::
+
+ARIMA models **can handle missing values**. They use a state-space representation where the likelihood is computed period by period — missing observations are skipped in the likelihood update, and the state is propagated forward without an observation.
+
+The workflow:
+
+1. Fit an ARIMA model to the series containing `NA` values
+2. Use `interpolate()` to replace each `NA` with the model's conditional expectation for that period
+
+```{r}
+#| label: interpolate
+
+ah_fill <- ah_miss |>
+  model(ARIMA(Trips)) |>    #<1>
+  interpolate(ah_miss)      #<2>
+```
+
+1. ARIMA is fitted using all non-missing observations. The `NA` periods do not contribute to parameter estimation but are accounted for in the state propagation.
+2. `interpolate()` replaces each `NA` with the in-sample conditional expectation — the most likely value for that period given the surrounding data and the estimated model.
+
+:::{.content-hidden unless-format="revealjs"}
+
+## Comparing original, missing, and imputed values
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+### Comparing original, missing, and imputed values
+
+:::
+
+```{r}
+#| label: compare-table
+
+ah |>
+  rename(Trips_original = Trips) |>
+  left_join(
+    ah_miss |> rename(Trips_na      = Trips), by = "Quarter"
+  ) |>
+  left_join(
+    ah_fill |> rename(Trips_imputed = Trips), by = "Quarter"
+  ) |>
+  filter(Quarter %in% ah_outliers$Quarter) #<1>
+```
+
+1. Filter to show only the flagged periods, making the comparison between original, missing, and imputed values immediately clear.
+
+```{r}
+#| label: plot-imputed
+#| echo: false
+#| message: false
+
+ah_imputed_pts <- ah_fill |>              #<1>
+  semi_join(ah_outliers, by = "Quarter")
+
+p <- ah |>
+  autoplot(Trips, color = "grey70") +
+  autolayer(ah_fill, Trips, color = "steelblue") +
+  geom_point(                             #<2>
+    data  = ah_imputed_pts,
+    aes(x = Quarter, y = Trips),
+    color = "firebrick",
+    size  = 3,
+    shape = 18
+  ) +
+  geom_label(                             #<3>
+    data  = ah_imputed_pts,
+    aes(x = Quarter, y = Trips,
+        label = round(Trips, 1)),
+    color  = "firebrick",
+    vjust  = -0.6,
+    size   = 3
+  ) +
+  labs(
+    title    = "Adelaide Hills — original (grey) vs. imputed (blue)",
+    subtitle = "Red diamonds: imputed values replacing flagged outliers",
+    y        = "Thousands of trips",
+    caption  = "Source: Tourism Research Australia"
+  )
+
+ggplotly(p, dynamicTicks = TRUE)
+```
+
+1. Extract the imputed periods as a separate tibble for targeted highlighting — avoids the rendering issue that occurs when `autolayer` tries to draw a line segment over only 2–3 isolated points.
+2. `geom_point()` with a diamond shape (`shape = 18`) marks each imputed period clearly and reliably, regardless of how many periods were flagged.
+3. `geom_label()` shows the imputed value directly on the plot.
+
+:::{.callout-tip appearance="simple"}
+## Impact on forecasts
+
+A model trained on data that includes the anomalous observation will produce different — and usually worse — forecasts than one trained on the cleaned series. The outlier inflates variance estimates and can distort trend and seasonal parameter estimates, leading to wider and less accurate prediction intervals.
+:::
+
+# Keeping Forecasts Positive
+
+:::{.content-hidden unless-format="revealjs"}
+
+## The problem
+
+:::
+
+```{r}
+#| label: eggs-data
+#| include: false
+
+egg_prices <- prices |> filter(!is.na(eggs))
+
+eggs_fc <- egg_prices |>
+  model(ETS(eggs ~ trend("A"))) |>
+  forecast(h = 50)
+```
+
+:::{.content-hidden unless-format="revealjs"}
+
+```{r}
+#| label: eggs-no-line
+#| echo: false
+#| message: false
+#| warning: false
+
+eggs_fc |>
+  autoplot(egg_prices, level = 95) +
+  labs(
+    title = "Annual egg prices — ETS forecast",
+    y     = "USD cents (inflation-adjusted)"
+  )
+```
+
+:::
+
+:::{.fragment}
+
+:::{.content-hidden unless-format="revealjs"}
+
+```{r}
+#| label: eggs-with-line-revealjs
+#| echo: false
+#| message: false
+#| warning: false
+
+eggs_fc |>
+  autoplot(egg_prices, level = 95) +
+  geom_hline(yintercept = 0, color = "firebrick", linetype = "dashed") +
+  labs(
+    title   = "Annual egg prices — ETS forecast",
+    y       = "USD cents (inflation-adjusted)",
+    caption = "Dashed red line: zero."
+  )
+```
+
+:::
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+```{r}
+#| label: eggs-with-line-html
+#| echo: false
+#| message: false
+#| warning: false
+
+eggs_fc |>
+  autoplot(egg_prices, level = 95) +
+  geom_hline(yintercept = 0, color = "firebrick", linetype = "dashed") +
+  labs(
+    title   = "Annual egg prices — ETS forecast",
+    y       = "USD cents (inflation-adjusted)",
+    caption = "Dashed red line: zero. Notice anything?"
+  )
+```
+
+:::
+
+> *What do you observe? Does anything look strange about those prediction intervals?*
+
+:::{.content-hidden unless-format="revealjs"}
+
+## What's the problem?
+
+:::
+
+:::{.incremental}
+
+- The prediction intervals extend **below zero**.
+- A negative egg price has no real-world interpretation — prices cannot be negative.
+- The model does not know this. It fits a linear trend and extrapolates symmetrically in both directions.
+- This is not a bug — it is a consequence of a modeling choice we have not made yet.
+
+:::
+
+:::{.fragment}
+
+> *What mathematical transformation do you know that forces all output values to be strictly positive?*
+
+:::
+
+:::{.content-hidden unless-format="revealjs"}
+
+## The log transformation
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+### The log transformation
+
+:::
+
+:::{.incremental}
+
+- $\log(y_t)$ is defined only for $y_t > 0$, and $\log(y_t) \to -\infty$ as $y_t \to 0^+$.
+- When we model $\log(y_t)$ and back-transform with $\exp(\cdot)$, the result is **always strictly positive** — regardless of how far the trend extrapolates downward.
+- We saw this in Module 1 with Box-Cox transformations (the $\lambda = 0$ case). Here we use it explicitly as a forecasting constraint.
+
+:::
+
+```{r}
+#| label: eggs-log-forecast
+#| message: false
+#| warning: false
+
+egg_prices |>
+  model(ETS(log(eggs) ~ trend("A"))) |> #<1>
+  forecast(h = 50) |>
+  autoplot(egg_prices, level = 95) +
+  geom_hline(yintercept = 0, color = "firebrick", linetype = "dashed") +
+  labs(
+    title   = "Annual egg prices — ETS with log transformation",
+    y       = "USD cents (inflation-adjusted)"
+  )
+```
+
+1. The only change is wrapping `eggs` in `log()`. `fable` handles the back-transformation automatically — forecasts and prediction intervals are returned on the original scale.
+
+:::{.callout-note appearance="simple"}
+The log transformation is the simplest way to keep forecasts positive. It works well when the series is strictly positive and the variance grows with the level — both common features of price and volume data.
+:::
+
+# Keeping Forecasts within Bounds
+
+:::{.content-hidden unless-format="revealjs"}
+
+## When is this relevant?
+
+:::
+
+The log transformation handles a lower bound of zero. But what if we need to **constrain forecasts between two finite values** $[a, b]$?
+
+:::{.callout-tip appearance="simple" collapse="true"}
+## Real-world examples
+
+**Proportions and rates:**
+
+- Hotel or airline **occupancy rate** (0%–100%)
+- **Market share** of a product in a category (0%–100%)
+- **Unemployment rate** — bounded below at 0%, practically bounded above
+
+**Physical systems:**
+
+- **Water level in a dam or reservoir** — bounded between 0 m (empty) and maximum storage capacity. Particularly relevant in Mexico, where reservoir levels drive water supply and hydroelectric generation decisions.
+- **Temperature in an industrial process** — operating outside the allowed range causes product defects or safety incidents.
+- **Battery state of charge** (0%–100%)
+
+**Financial and regulatory:**
+
+- **Benchmark interest rate** — central banks operate within policy corridors; forecasts outside those bounds are not credible.
+- **Loan-to-value ratio** on a mortgage portfolio — bounded by regulation.
+- **Credit utilization rate** on a consumer loan portfolio (0%–100%)
+
+:::
+
+:::{.content-hidden unless-format="revealjs"}
+
+## The scaled logit transformation
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+### The scaled logit transformation
+
+:::
+
+The **scaled logit** maps any value in $(a, b)$ to the entire real line $(-\infty, +\infty)$:
+
+$$
+f(x) = \log\left(\frac{x - a}{b - x}\right)
+$$
+
+The inverse — used to back-transform forecasts to the original scale — is:
+
+$$
+f^{-1}(y) = \frac{(b - a)\, e^y}{1 + e^y} + a
+$$
+
+This guarantees that back-transformed forecasts always lie strictly within $(a, b)$.
+
+:::{.callout-note appearance="simple" collapse="true"}
+## Connection to the logistic function
+
+The standard logistic (sigmoid) function maps $\mathbb{R} \to (0, 1)$:
+
+$$
+\sigma(y) = \frac{e^y}{1 + e^y}
+$$
+
+The scaled logit is a linear rescaling of this to the interval $(a, b)$. The same structure appears in logistic regression, neural network activation functions, and ecological population models with a carrying capacity.
+:::
+
+```{r}
+#| label: scaled-logit-def
+
+scaled_logit <- function(x, lower = 0, upper = 1) {     #<1>
+  log((x - lower) / (upper - x))
+}
+
+inv_scaled_logit <- function(x, lower = 0, upper = 1) { #<2>
+  (upper - lower) * exp(x) / (1 + exp(x)) + lower
+}
+
+my_scaled_logit <- new_transformation(                   #<3>
+  scaled_logit,
+  inv_scaled_logit
+)
+```
+
+1. Forward transformation: maps $(a, b) \to \mathbb{R}$. Applied to the data before model fitting.
+2. Inverse transformation: maps $\mathbb{R} \to (a, b)$. Applied automatically by `fable` when back-transforming forecasts and prediction intervals.
+3. `new_transformation()` bundles both functions into a single transformation object that `fable` recognizes.
+
+:::{.content-hidden unless-format="revealjs"}
+
+## Applying the scaled logit
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+### Applying the scaled logit
+
+:::
+
+```{r}
+#| label: eggs-scaled-logit
+#| message: false
+#| warning: false
+
+egg_prices |>
+  model(
+    ETS(my_scaled_logit(eggs, lower = 50, upper = 400) ~ trend("A")) #<1>
+  ) |>
+  forecast(h = 50) |>
+  autoplot(egg_prices, level = 95) +
+  geom_hline(yintercept =  50, color = "firebrick", linetype = "dashed") +
+  geom_hline(yintercept = 400, color = "firebrick", linetype = "dashed") +
+  labs(
+    title   = "Annual egg prices — ETS within bounds [50, 400]",
+    y       = "USD cents (inflation-adjusted)",
+    caption = "Dashed red lines: lower bound (50) and upper bound (400)."
+  )
+```
+
+1. The bounds `lower = 50` and `upper = 400` reflect a plausible range for egg prices in this dataset. In practice, bounds should be informed by domain knowledge or regulatory constraints — not chosen to make the plot look neat.
+
+:::{.callout-warning appearance="simple"}
+The scaled logit requires that **all historical observations fall strictly within** $(a, b)$. If any observation equals or exceeds the bounds, the transformation is undefined. Always verify your data range before applying it.
+:::
+
+# Summary
+
+:::{.incremental}
+
+- **Outliers in time series** cannot be identified by applying the IQR rule to the raw series — trend distorts the distribution. Decompose first, then inspect the **remainder component**.
+- **Removing an outlier** creates a missing value that must be addressed. Simply deleting the row leaves a gap that most time series models cannot handle.
+- **ARIMA interpolation** provides a principled, model-based imputation that respects the full structure of the series — trend, seasonality, and autocorrelation.
+- **Log transformations** prevent forecasts from going negative — appropriate for prices, counts, and volumes.
+- **Scaled logit transformations** constrain forecasts to any finite interval $(a, b)$ — use them when domain knowledge or regulation defines hard bounds.
+
+:::
+
+:::{.callout-important appearance="simple"}
+## Key principle
+These are not just data-cleaning steps. They are **modeling decisions** that affect forecast distributions, prediction intervals, and the interpretability of results. Make them deliberately and document your reasoning.
+:::
