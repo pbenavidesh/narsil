@@ -80,6 +80,8 @@ The question we are addressing now is: **what if we gave our model access to ext
 
 :::
 
+:::{.content-visible unless-format="revealjs"}
+
 :::{.callout-note collapse="true"}
 ## Where we've been and where we're going
 
@@ -91,6 +93,8 @@ The question we are addressing now is: **what if we gave our model access to ext
 | 4 | Complex seasonality, robustness | Prophet, bootstrapping |
 
 Each module has asked: *what does my current model fail to capture?* The answer now is: information from other series.
+:::
+
 :::
 
 # The Linear Regression Model
@@ -116,6 +120,36 @@ where:
 - $\varepsilon_t$ is the **error term**: captures all other influences on $y_t$ not explicitly modeled.
 
 :::
+
+![*[(Hyndman, 2019)](https://otexts.com/fpp3/)*](linreg.png)
+
+:::{.callout-tip collapse="true"}
+## How are the $\beta$'s estimated? Ordinary Least Squares (OLS)
+
+We cannot observe the $\beta$'s directly — we estimate them from data. The **Ordinary Least Squares (OLS)** method chooses the estimates $\hat{\beta}_0, \hat{\beta}_1, \ldots, \hat{\beta}_k$ that minimize the **sum of squared residuals**:
+
+$$
+\min_{\hat{\boldsymbol{\beta}}} \sum_{t=1}^{T} \hat{\varepsilon}_t^2 = \sum_{t=1}^{T} \left(y_t - \hat{\beta}_0 - \hat{\beta}_1 x_{1t} - \cdots - \hat{\beta}_k x_{kt}\right)^2
+$$
+
+For the simple case ($k = 1$), taking partial derivatives and setting them to zero yields closed-form solutions:
+
+$$
+\hat{\beta}_1 = \frac{\sum x_t y_t - T\bar{x}\bar{y}}{\sum x_t^2 - T\bar{x}^2}, \qquad \hat{\beta}_0 = \bar{y} - \hat{\beta}_1 \bar{x}
+$$
+
+For the general case with $k$ predictors, the solution extends naturally to matrix form:
+
+$$
+\hat{\boldsymbol{\beta}} = (\mathbf{X}^\top \mathbf{X})^{-1} \mathbf{X}^\top \mathbf{y}
+$$
+
+where $\mathbf{X}$ is the **design matrix** — a column of ones (for the intercept) plus one column per predictor — and $\mathbf{y}$ is the vector of observed responses.
+
+In practice, R handles all of this internally. But knowing the objective function matters: OLS penalizes **large** residuals more than small ones (because of the square), and under the classical assumptions the Gauss-Markov theorem guarantees the estimates are **BLUE** (Best Linear Unbiased Estimators) — regardless of whether we have one predictor or twenty.
+
+:::
+
 
 :::{.content-hidden unless-format="revealjs"}
 
@@ -159,6 +193,8 @@ In time series forecasting, FPP3 uses **forecast variable** and **predictor vari
 
 The term was coined by Francis Galton while studying the relationship between parents' height and their children's height.
 
+![](regression.png)
+
 His finding: tall parents tend to have tall children, but on average their children are *not as tall as them*. Short parents tend to have children *taller than themselves*. There is a tendency to **regress toward the mean**.
 
 Without this regression to the mean, the distribution of heights across generations would diverge — we would eventually have people of Hobbit stature and people of giant stature, with nothing in between.
@@ -166,31 +202,9 @@ Without this regression to the mean, the distribution of heights across generati
 Modern regression analysis generalizes this idea: studying the dependence of one variable on one or more others to predict its **average value**.
 :::
 
-:::{.callout-tip collapse="true"}
-## How are the $\beta$'s estimated? Ordinary Least Squares (OLS)
-
-We cannot observe $\beta_0$ and $\beta_1$ directly — we estimate them from data. The **Ordinary Least Squares (OLS)** method chooses the estimates $\hat{\beta}_0$ and $\hat{\beta}_1$ that minimize the **sum of squared residuals**:
-
-$$
-\min_{\hat{\beta}_0, \hat{\beta}_1} \sum_{t=1}^{T} \hat{\varepsilon}_t^2 = \sum_{t=1}^{T} \left(y_t - \hat{\beta}_0 - \hat{\beta}_1 x_t\right)^2
-$$
-
-Taking partial derivatives and setting them to zero yields the **normal equations**, whose solution gives:
-
-$$
-\hat{\beta}_1 = \frac{\sum x_t y_t - T\bar{x}\bar{y}}{\sum x_t^2 - T\bar{x}^2}, \qquad \hat{\beta}_0 = \bar{y} - \hat{\beta}_1 \bar{x}
-$$
-
-In practice, R handles this for us. But knowing the objective function matters: OLS penalizes **large** residuals more than small ones (because of the square), and it produces estimators with desirable statistical properties under the classical assumptions — the Gauss-Markov theorem guarantees they are **BLUE** (Best Linear Unbiased Estimators), provided those assumptions hold.
-:::
 
 ## Regression and Causality
 
-:::{.content-hidden unless-format="revealjs"}
-
-##
-
-:::
 
 > *"A statistical relationship, however strong and suggestive, can never establish causal connexion: our ideas of causality must come from outside statistics, ultimately from some theory or other."*
 >
@@ -219,7 +233,10 @@ This is not a technicality — it is one of the most practically important ideas
 
 :::{.content-hidden unless-format="revealjs"}
 
-## Spurious correlations
+## 
+
+<iframe src="https://www.tylervigen.com/spurious-correlations" width="100%" height="500px" style="border:none;">
+</iframe>
 
 :::
 
@@ -227,31 +244,18 @@ This is not a technicality — it is one of the most practically important ideas
 
 ### Spurious correlations
 
-:::
-
 The web is full of striking examples where two completely unrelated time series happen to move together — these are called **spurious correlations**.
-
-:::{.content-visible unless-format="revealjs"}
 
 <iframe src="https://www.tylervigen.com/spurious-correlations" width="100%" height="600px" style="border:1px solid #ddd; border-radius:4px;">
 </iframe>
 
 :::
 
-:::{.content-hidden unless-format="revealjs"}
 
-## Spurious correlations
-
-<iframe src="https://www.tylervigen.com/spurious-correlations" width="100%" height="500px" style="border:none;">
-</iframe>
-
-:::
-
-:::{.callout-important appearance="simple"}
+:::{.callout-important}
 A regression model would happily fit a line through any of those charts. The model does not know the relationship is nonsense — **you** have to know. Causal direction requires theory, domain knowledge, or experimental design, not statistical strength alone.
 :::
 
-Keep this in mind for the rest of the module — and, frankly, for the rest of your career.
 
 ## What Does "Linear" Mean?
 
@@ -261,47 +265,38 @@ Keep this in mind for the rest of the module — and, frankly, for the rest of y
 
 :::
 
-Most students assume linear regression can only produce straight lines. Let's challenge that.
+
 
 *Are these models linear?*
 
-$$
-y_t = \beta_0 + \beta_1 x_t + \beta_2 x_t^2 + \varepsilon_t \qquad \text{(quadratic)}
-$$
+![](linear.png)
 
-$$
-\log y_t = \beta_0 + \beta_1 x_t + \varepsilon_t \qquad \text{(log-linear)}
-$$
 
-$$
-y_t = \beta_0 + \beta_1 x_t + \beta_2 x_t^2 + \beta_3 x_t^3 + \varepsilon_t \qquad \text{(cubic)}
-$$
 
-:::{.fragment}
-
-**Yes — all of them are linear regression models.**
-
-:::
 
 :::{.content-hidden unless-format="revealjs"}
 
-##
+## Linearity can be defined in two senses:
 
 :::
 
+::: {.content-visible unless-format="revealjs"}
+
 Linearity can be defined in two senses:
+
+:::
 
 :::{.incremental}
 
 1. **Linearity in the variables** — $E(y \mid x)$ is a linear function of $x$. This is the restrictive sense: only straight lines.
 
-2. **Linearity in the parameters** — $E(y \mid x)$ is linear in the $\beta$'s. This is what matters for OLS.
+2. **Linearity in the parameters** — $E(y \mid x)$ is linear in the $\beta$'s. 
 
 :::
 
 :::{.fragment}
 
-The three models above are all **nonlinear in $x$** but **linear in $\beta$** — so they can all be estimated by OLS. A linear regression model can produce a straight line, a parabola, an exponential curve, or a piecewise function, depending on the **functional form** chosen.
+The three models above are all **nonlinear in $x$** but **linear in $\beta$**. A linear regression model can produce a straight line, a parabola, an exponential curve, or a piecewise function, depending on the **functional form** chosen.
 
 :::
 
@@ -385,6 +380,7 @@ In `fable`, time series linear models use `TSLM()`:
 
 ```{r}
 #| label: us-change-simple-fit
+#| echo: true
 
 us_change_fit_simple <- us_change |>                   #<1>
   model(
@@ -457,6 +453,8 @@ If residuals are autocorrelated, OLS estimates are still unbiased but **no longe
 
 :::
 
+::: {.fragment}
+
 :::{.panel-tabset}
 
 ### Time series vs. fitted
@@ -519,7 +517,12 @@ augment(us_change_fit_simple) |>
 
 :::
 
+:::
+
+::: {.fragment}
 The residuals show clear autocorrelation. The simple model is not capturing all the dynamics of consumption. Let's improve it.
+
+:::
 
 # Multiple Linear Regression
 
