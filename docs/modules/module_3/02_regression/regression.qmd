@@ -546,14 +546,16 @@ $$
 
 ```{r}
 #| label: us-change-multiple-fit
+#| echo: true
 
 us_change_fit_mult <- us_change |>
   model(
-    multiple = TSLM(Consumption ~ Income + Production + Savings + Unemployment)
+    multiple = TSLM(Consumption ~ Income + Production + Savings + Unemployment) #<1>
   )
 
 report(us_change_fit_mult)
 ```
+1. The formula syntax is the same as the simple linear regression: just add more predictors with `+`.
 
 :::{.content-hidden unless-format="revealjs"}
 
@@ -567,12 +569,8 @@ report(us_change_fit_mult)
 
 :::
 
-:::{.panel-tabset}
-
-### Time series vs. fitted
-
 ```{r}
-#| label: us-change-compare-time
+#| label: us-change-compare-setup
 #| echo: false
 
 us_change_aug_simple <- augment(us_change_fit_simple) |>
@@ -581,46 +579,131 @@ us_change_aug_simple <- augment(us_change_fit_simple) |>
 us_change_aug_mult <- augment(us_change_fit_mult) |>
   mutate(.model = "Multiple")
 
-p <- bind_rows(us_change_aug_simple, us_change_aug_mult) |>
+us_change_aug_both <- bind_rows(us_change_aug_simple, us_change_aug_mult) |>
+  mutate(.model = factor(.model, levels = c("Simple", "Multiple")))
+```
+
+:::{.panel-tabset}
+
+### Time series vs. fitted
+
+:::{.content-visible unless-format="revealjs"}
+```{r}
+#| label: us-change-compare-time-html
+#| echo: false
+#| fig-cap: "Grey line = actual consumption; colored line = fitted values. The multiple model tracks the data much more closely."
+#| lightbox:
+#|   group: comparing-models
+
+p <- us_change_aug_both |>
   ggplot(aes(x = Quarter)) +
   geom_line(aes(y = Consumption), color = "grey50") +
   geom_line(aes(y = .fitted, color = .model)) +
-  facet_wrap(~.model, ncol = 1) +
-  labs(y = "% change", x = NULL, color = "Model") +
+  facet_wrap(~.model, ncol = 2) +
+  labs(y = "% change", x = NULL) +
   theme(legend.position = "none")
 
 ggplotly(p, dynamicTicks = TRUE)
 ```
 
+:::
+
+:::{.content-hidden unless-format="revealjs"}
+```{r}
+#| label: us-change-compare-time-revealjs
+#| echo: false
+#| fig-width: 10
+#| fig-height: 4
+#| fig-cap: "Grey line = actual consumption; colored line = fitted values. The multiple model tracks the data much more closely."
+#| lightbox:
+#|   group: comparing-models
+
+us_change_aug_both |>
+  ggplot(aes(x = Quarter)) +
+  geom_line(aes(y = Consumption), color = "grey50") +
+  geom_line(aes(y = .fitted, color = .model)) +
+  facet_wrap(~.model, ncol = 2) +
+  labs(y = "% change", x = NULL) +
+  theme(legend.position = "none")
+```
+
+:::
+
 ### Fitted vs. actual
 
+:::{.content-visible unless-format="revealjs"}
 ```{r}
-#| label: us-change-compare-scatter
+#| label: us-change-compare-scatter-html
 #| echo: false
+#| fig-cap: "Points closer to the 45° line indicate better fit. The multiple model shows a much tighter cloud."
+#| lightbox:
+#|   group: comparing-models
 
-bind_rows(us_change_aug_simple, us_change_aug_mult) |>
+p <- us_change_aug_both |>
   ggplot(aes(x = Consumption, y = .fitted, color = .model)) +
   geom_point(alpha = 0.6) +
   geom_abline(intercept = 0, slope = 1, color = "grey30") +
-  facet_wrap(~.model) +
+  facet_wrap(~.model, ncol = 2) +
+  labs(x = "Actual", y = "Fitted") +
+  theme(legend.position = "none")
+
+ggplotly(p)
+```
+
+:::
+
+:::{.content-hidden unless-format="revealjs"}
+```{r}
+#| label: us-change-compare-scatter-revealjs
+#| echo: false
+#| fig-width: 10
+#| fig-height: 4
+#| fig-cap: "Points closer to the 45° line indicate better fit. The multiple model shows a much tighter cloud."
+#| lightbox:
+#|   group: comparing-models
+
+us_change_aug_both |>
+  ggplot(aes(x = Consumption, y = .fitted, color = .model)) +
+  geom_point(alpha = 0.6) +
+  geom_abline(intercept = 0, slope = 1, color = "grey30") +
+  facet_wrap(~.model, ncol = 2) +
   labs(x = "Actual", y = "Fitted") +
   theme(legend.position = "none")
 ```
 
-### Residuals (multiple)
+:::
 
+### Residual diagnostics
 ```{r}
-#| label: us-change-mult-resid
+#| label: us-change-resid-simple
+#| echo: false
+#| fig-cap: "Simple model residuals: significant ACF spikes indicate remaining autocorrelation."
+#| lightbox:
+#|   group: comparing-models
+
+us_change_fit_simple |>
+  gg_tsresiduals() +
+  labs(title = "Simple model")
+```
+```{r}
+#| label: us-change-resid-mult
+#| echo: false
+#| fig-cap: "Multiple model residuals: ACF spikes are much reduced and the distribution is closer to normal."
+#| lightbox:
+#|   group: comparing-models
 
 us_change_fit_mult |>
-  gg_tsresiduals()
+  gg_tsresiduals() +
+  labs(title = "Multiple model")
 ```
 
 ### Residuals vs. predictors
-
 ```{r}
-#| label: us-change-mult-resid-pred
+#| label: us-change-resid-pred
 #| echo: false
+#| fig-cap: "Residuals from the multiple model vs. each predictor. No strong patterns suggest the linear specification is adequate."
+#| lightbox:
+#|   group: comparing-models
 
 left_join(
   us_change,
@@ -635,19 +718,19 @@ left_join(
   labs(x = "Predictor value", y = "Residual")
 ```
 
-### Ljung-Box (multiple)
-
+### Ljung-Box
 ```{r}
-#| label: us-change-mult-lb
+#| label: us-change-lb-both
 
-us_change_dof_mult <- us_change_fit_mult |>
-  tidy() |>
-  nrow()
-
-augment(us_change_fit_mult) |>
-  features(.resid, ljung_box,
-           lag = 10,
-           dof = us_change_dof_mult)
+bind_rows(
+  augment(us_change_fit_simple) |>
+    features(.resid, ljung_box, lag = 10, dof = 2) |>
+    mutate(.model = "Simple"),
+  augment(us_change_fit_mult) |>
+    features(.resid, ljung_box, lag = 10, dof = 5) |>
+    mutate(.model = "Multiple")
+) |>
+  select(.model, lb_stat, lb_pvalue)
 ```
 
 :::
@@ -687,6 +770,7 @@ The three standard criteria available from `glance()` in `fable`:
 
 ```{r}
 #| label: us-change-glance
+#| echo: true
 
 glance(us_change_fit_mult) |>
   select(adj_r_squared, AIC, AICc, BIC)
@@ -714,6 +798,7 @@ Fit all possible models and compare:
 
 ```{r}
 #| label: us-change-allsubsets
+#| echo: true
 
 us_change_fit_select <- us_change |>
   model(
@@ -739,6 +824,7 @@ Start with the full model and remove predictors one at a time:
 
 ```{r}
 #| label: us-change-backward
+#| echo: true
 
 us_change |>
   model(
@@ -759,6 +845,7 @@ Start with the intercept-only model and add predictors one at a time:
 
 ```{r}
 #| label: us-change-forward
+#| echo: true
 
 # Step 1: which single predictor is best?
 us_change |>
@@ -775,6 +862,7 @@ us_change |>
 
 ```{r}
 #| label: us-change-forward2
+#| echo: true
 
 # Step 2: add a second predictor to the best single-predictor model
 us_change |>
@@ -791,6 +879,7 @@ us_change |>
 
 :::
 
+::: {.fragment}
 :::{.callout-tip collapse="true"}
 ## AICc vs. BIC: which one to use?
 
@@ -800,6 +889,8 @@ Both penalize model complexity, but differently:
 - **BIC** is consistent: as $T \to \infty$, it will select the true model (if it's in the candidate set). It penalizes more heavily and selects smaller models.
 
 In forecasting contexts, **AICc is generally preferred** because we care more about predictive accuracy than model parsimony per se. When they disagree, consider whether interpretability or predictive accuracy is the primary goal.
+:::
+
 :::
 
 ## Multicollinearity
@@ -824,7 +915,7 @@ When two or more predictors are highly correlated, we have **multicollinearity**
 
 :::{.content-hidden unless-format="revealjs"}
 
-### Detecting it: VIF
+## Detecting multicollinearity: VIF
 
 :::
 
@@ -853,6 +944,7 @@ where $R_j^2$ is the $R^2$ obtained by regressing $x_j$ on all the *other* predi
 
 ```{r}
 #| label: us-change-vif
+#| eval: false
 
 us_change_fit_mult |>
   extract_fit_engine() |>   #<1>
@@ -1002,6 +1094,7 @@ These are especially useful for stress-testing and strategic planning.
 
 ```{r}
 #| label: us-change-scenarios
+#| eval: false
 
 us_change_fit_scen <- us_change |>
   model(TSLM(Consumption ~ Income + Savings + Unemployment))
