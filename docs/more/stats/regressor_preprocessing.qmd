@@ -17,9 +17,10 @@ library(fpp3)
 ```
 
 This document is a companion to the
-<!-- TODO: verify anchor -->
+
 [Linear Regression Models](../../modules/module_3/01_regression/regression.qmd)
 module. It addresses questions that frequently come up when building a `TSLM()`:
+
 *Do I need to scale my variables? Should I log-transform this regressor?
 How do I handle a categorical variable with more than two levels?*
 
@@ -86,23 +87,22 @@ us_change_scaled <- us_change |>                                # <1>
   mutate(across(                                                # <2>
     c(Income, Production, Savings, Unemployment),
     \(x) (x - mean(x, na.rm = TRUE)) / sd(x, na.rm = TRUE),   # <3>
-    .names = "{.col}_z"                                        # <4>
+    .names = "{.col}_z"                                        # <3>
   ))
 
-fit_original <- us_change |>                                   # <5>
+fit_original <- us_change |>                                   # <4>
   model(TSLM(Consumption ~ Income + Production))
 
-fit_scaled <- us_change_scaled |>                              # <6>
+fit_scaled <- us_change_scaled |>                              # <5>
   model(TSLM(Consumption ~ Income_z + Production_z))
 ```
 
 1. Start from `us_change`, the dataset used throughout the regression module.
 2. `across()` applies the same transformation to multiple columns at once.
-3. The anonymous function `\(x)` standardizes each selected column.
-4. `.names = "{.col}_z"` creates new columns with a `_z` suffix, preserving
-   the originals.
-5. Fit the model on the original scale.
-6. Fit the same model on the standardized scale.
+3. The anonymous function `\(x)` standardizes each selected column. `.names = "{.col}_z"` creates new columns with a `_z` suffix, preserving the originals.
+4. Fit the model on the original scale.
+5. Fit the same model on the standardized scale.
+
 ```{r}
 #| label: scaling-forecast-comparison
 #| message: false
