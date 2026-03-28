@@ -339,16 +339,16 @@ Work through these questions when choosing a regression approach:
 
 ```{mermaid}
 flowchart TD
-    A{Is the relationship\napproximately linear?} -->|Yes| B[Start with TSLM\nCheck residuals]
-    B --> C{Residuals\nautocorrelated?}
-    C -->|Yes| D[Dynamic regression\nARIMA errors]
+    A{Is the relationship <br/> approximately linear?} -->|Yes| B[Start with TSLM <br/> Check residuals]
+    B --> C{Residuals <br/> autocorrelated?}
+    C -->|Yes| D[Dynamic regression <br/> ARIMA errors]
     C -->|No| E[TSLM is sufficient]
 
     A -->|No| F{How much data?}
-    F -->|Small T < 200| G[SVR with RBF kernel\nor polynomial TSLM\nTime-ordered CV]
-    F -->|Large T ≥ 200| H{Series trends beyond\ntraining range?}
-    H -->|Yes| I[Detrend first\nthen tree/NN on residuals]
-    H -->|No| J[Random Forest or XGBoost\nwith lagged features]
+    F -->|Small T < 200| G[SVR with RBF kernel <br/> or polynomial TSLM <br/> Time-ordered CV]
+    F -->|Large T ≥ 200| H{Series trends beyond <br/> training range?}
+    H -->|Yes| I[Detrend first <br/> then tree/NN on residuals]
+    H -->|No| J[Random Forest or XGBoost <br/> with lagged features]
 ```
 
 
