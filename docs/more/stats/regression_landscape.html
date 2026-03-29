@@ -1,15 +1,13 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.9.36">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-
-<meta name="author" content="Pablo Benavides-Herrera">
-<meta name="description" content="A conceptual introduction to R for students coming from a Python background, focused on mental models, data workflows, and tidyverse-style thinking.">
-
-<title>R for Python Users – Time Series Forecasting</title>
+<meta name="author" content="">
+<meta name="dcterms.date" content="2026-03-28">
+<meta name="description" content="A conceptual map of regression models for forecasting — from OLS to SVR, tree-based methods, and neural networks — with guidance on when each approach is warranted.">
+<title>OLS and Beyond: Choosing the Right Regression Model – Time Series Forecasting</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -62,7 +60,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }
 </style>
 
-
 <script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../../../site_libs/clipboard/clipboard.min.js"></script>
@@ -86,8 +83,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../../../site_libs/bootstrap/bootstrap-580ada16e3cad840db67cac4c1c1d2c6.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="../../../site_libs/bootstrap/bootstrap-dark-390c7924c20b58663c45d23618c9e72d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../../../site_libs/bootstrap/bootstrap-580ada16e3cad840db67cac4c1c1d2c6.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
-<script id="quarto-search-options" type="application/json">{
+<link href="../../../site_libs/bootstrap/bootstrap-580ada16e3cad840db67cac4c1c1d2c6.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
@@ -113,18 +109,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
-}</script>
-<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-BRNYXN29K7"></script>
-
-<script type="text/plain" cookie-consent="tracking">
+}</script><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-BRNYXN29K7"></script><script type="text/plain" cookie-consent="tracking">
 
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
 gtag('config', 'G-BRNYXN29K7', { 'anonymize_ip': true});
-</script>
-
-<script type="text/javascript" charset="UTF-8">
+</script><script type="text/javascript" charset="UTF-8">
 document.addEventListener('DOMContentLoaded', function () {
 cookieconsent.run({
   "notice_banner_type":"simple",
@@ -139,32 +130,65 @@ cookieconsent.run({
 "language":"en"
   });
 });
-</script> 
-  
-<style>html{ scroll-behavior: smooth; }</style>
+</script><style>html{ scroll-behavior: smooth; }</style>
 <script type="application/json" class="js-hypothesis-config">
 {
   "theme": "classic"
 }
-</script>
-<script async="" src="https://hypothes.is/embed.js"></script>
-<script>
+</script><script async="" src="https://hypothes.is/embed.js"></script><script>
   window.document.addEventListener("DOMContentLoaded", function (_event) {
     document.body.classList.add('hypothesis-enabled');
   });
-</script>
-
-
-<link rel="stylesheet" href="../../../styles.css">
-<meta property="og:title" content="R for Python Users – Time Series Forecasting">
-<meta property="og:description" content="A conceptual introduction to R for students coming from a Python background, focused on mental models, data workflows, and tidyverse-style thinking.">
+</script><script src="../../../site_libs/quarto-diagram/mermaid.min.js"></script><script src="../../../site_libs/quarto-diagram/mermaid-init.js"></script><link href="../../../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+<link href="../../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="../../../site_libs/pagedtable-1.1/js/pagedtable.js"></script><script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script><script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script><script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script><link rel="stylesheet" href="../../../styles.css">
+<meta property="og:title" content="OLS and Beyond: Choosing the Right Regression Model – Time Series Forecasting">
+<meta property="og:description" content="A conceptual map of regression models for forecasting — from OLS to SVR, tree-based methods, and neural networks — with guidance on when each approach is warranted.">
 <meta property="og:site_name" content="Time Series Forecasting">
-<meta name="twitter:title" content="R for Python Users – Time Series Forecasting">
-<meta name="twitter:description" content="A conceptual introduction to R for students coming from a Python background, focused on mental models, data workflows, and tidyverse-style thinking.">
+<meta name="twitter:title" content="OLS and Beyond: Choosing the Right Regression Model – Time Series Forecasting">
+<meta name="twitter:description" content="A conceptual map of regression models for forecasting — from OLS to SVR, tree-based methods, and neural networks — with guidance on when each approach is warranted.">
 <meta name="twitter:creator" content="@PabsBenavides">
 <meta name="twitter:card" content="summary">
 </head>
-
 <body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
     const toggleBodyColorMode = (bsSheetEl) => {
       const mode = bsSheetEl.getAttribute("data-mode");
@@ -330,14 +354,10 @@ cookieconsent.run({
   </script>
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
-      <div class="navbar-container container-fluid">
+  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg " data-bs-theme="dark"><div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../../../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../../../images/iteso_logo_blanco.png" alt="" class="navbar-logo light-content">
-    <img src="../../../images/iteso_logo_blanco.png" alt="" class="navbar-logo dark-content">
-    </a>
+    <img src="../../../images/iteso_logo_blanco.png" alt="" class="navbar-logo light-content"><img src="../../../images/iteso_logo_blanco.png" alt="" class="navbar-logo dark-content"></a>
     <a class="navbar-brand" href="../../../index.html">
     <span class="navbar-title">Time Series Forecasting</span>
     </a>
@@ -348,7 +368,7 @@ cookieconsent.run({
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
-  <li class="nav-item">
+<li class="nav-item">
     <a class="nav-link" href="../../../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
@@ -374,7 +394,7 @@ cookieconsent.run({
 <span class="menu-text">Elendil TA</span></a>
   </li>  
 </ul>
-          </div> <!-- /navcollapse -->
+</div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools tools-wide">
     <a href="https://github.com/pbenavidesh/narsil" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-github"></i></a>
   <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
@@ -385,61 +405,75 @@ cookieconsent.run({
 </a>
 </div>
       </div> <!-- /container-fluid -->
-    </nav>
-  <div id="quarto-announcement" data-announcement-id="2b4c5f92d91c7d44181d7c33da3fea50" class="alert alert-primary hidden"><i class="bi bi-megaphone quarto-announcement-icon"></i><div class="quarto-announcement-content">
+    </nav><div id="quarto-announcement" data-announcement-id="2b4c5f92d91c7d44181d7c33da3fea50" class="alert alert-primary hidden">
+<i class="bi bi-megaphone quarto-announcement-icon"></i><div class="quarto-announcement-content">
 <p><strong>Happy new year 2026!</strong> - AI code assistant <a href="https://chatgpt.com/g/g-68e6907c12a48191a07fb0888500a7fa-elendil-ta">Elendil TA</a> is now available! Click the icon in the navbar to start using it.</p>
-</div><i class="bi bi-x-lg quarto-announcement-action"></i></div>
-</header>
-<!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+</div>
+<i class="bi bi-x-lg quarto-announcement-action"></i>
+</div>
+</header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#the-main-mindset-shift" id="toc-the-main-mindset-shift" class="nav-link active" data-scroll-target="#the-main-mindset-shift"><span class="header-section-number">1</span> The main mindset shift</a></li>
-  <li><a href="#imperative-vs-functional-style" id="toc-imperative-vs-functional-style" class="nav-link" data-scroll-target="#imperative-vs-functional-style"><span class="header-section-number">2</span> Imperative vs functional style</a></li>
-  <li><a href="#core-object-mapping-python-r" id="toc-core-object-mapping-python-r" class="nav-link" data-scroll-target="#core-object-mapping-python-r"><span class="header-section-number">3</span> Core object mapping (Python → R)</a></li>
-  <li><a href="#mutation-the-silent-trap-for-python-users" id="toc-mutation-the-silent-trap-for-python-users" class="nav-link" data-scroll-target="#mutation-the-silent-trap-for-python-users"><span class="header-section-number">4</span> Mutation: the silent trap for Python users</a></li>
-  <li><a href="#loops-just-because-you-can-doesnt-mean-you-should" id="toc-loops-just-because-you-can-doesnt-mean-you-should" class="nav-link" data-scroll-target="#loops-just-because-you-can-doesnt-mean-you-should"><span class="header-section-number">5</span> Loops: just because you can, doesn’t mean you should</a></li>
-  <li><a href="#indexing-brackets-vs-verbs" id="toc-indexing-brackets-vs-verbs" class="nav-link" data-scroll-target="#indexing-brackets-vs-verbs"><span class="header-section-number">6</span> Indexing: brackets vs verbs</a></li>
-  <li><a href="#equality-assignment-and-naming" id="toc-equality-assignment-and-naming" class="nav-link" data-scroll-target="#equality-assignment-and-naming"><span class="header-section-number">7</span> Equality, assignment, and naming</a></li>
-  <li><a href="#factors-the-weird-thing-you-didnt-ask-for" id="toc-factors-the-weird-thing-you-didnt-ask-for" class="nav-link" data-scroll-target="#factors-the-weird-thing-you-didnt-ask-for"><span class="header-section-number">8</span> Factors: the weird thing you didn’t ask for</a></li>
-  <li><a href="#what-you-actually-need-for-this-course" id="toc-what-you-actually-need-for-this-course" class="nav-link" data-scroll-target="#what-you-actually-need-for-this-course"><span class="header-section-number">9</span> What you actually need for this course</a></li>
-  <li><a href="#final-reassurance" id="toc-final-reassurance" class="nav-link" data-scroll-target="#final-reassurance"><span class="header-section-number">10</span> Final reassurance</a></li>
+<li><a href="#what-ols-actually-optimizes" id="toc-what-ols-actually-optimizes" class="nav-link active" data-scroll-target="#what-ols-actually-optimizes"><span class="header-section-number">1</span> What OLS Actually Optimizes</a></li>
+  <li><a href="#when-ols-is-the-right-tool" id="toc-when-ols-is-the-right-tool" class="nav-link" data-scroll-target="#when-ols-is-the-right-tool"><span class="header-section-number">2</span> When OLS Is the Right Tool</a></li>
+  <li>
+<a href="#regularization-penalized-ols" id="toc-regularization-penalized-ols" class="nav-link" data-scroll-target="#regularization-penalized-ols"><span class="header-section-number">3</span> Regularization: Penalized OLS</a>
+  <ul class="collapse">
+<li><a href="#the-bias-variance-tradeoff" id="toc-the-bias-variance-tradeoff" class="nav-link" data-scroll-target="#the-bias-variance-tradeoff"><span class="header-section-number">3.1</span> The bias-variance tradeoff</a></li>
+  <li><a href="#ridge-regression" id="toc-ridge-regression" class="nav-link" data-scroll-target="#ridge-regression"><span class="header-section-number">3.2</span> Ridge regression</a></li>
+  <li><a href="#lasso" id="toc-lasso" class="nav-link" data-scroll-target="#lasso"><span class="header-section-number">3.3</span> Lasso</a></li>
+  <li><a href="#elastic-net" id="toc-elastic-net" class="nav-link" data-scroll-target="#elastic-net"><span class="header-section-number">3.4</span> Elastic Net</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/pbenavidesh/narsil/edit/main/docs/more/r-tools/r_4_python_users.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/pbenavidesh/narsil/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+</li>
+  <li>
+<a href="#kernel-methods-and-svr" id="toc-kernel-methods-and-svr" class="nav-link" data-scroll-target="#kernel-methods-and-svr"><span class="header-section-number">4</span> Kernel Methods and SVR</a>
+  <ul class="collapse">
+<li><a href="#the-core-idea-mapping-to-a-higher-dimensional-space" id="toc-the-core-idea-mapping-to-a-higher-dimensional-space" class="nav-link" data-scroll-target="#the-core-idea-mapping-to-a-higher-dimensional-space"><span class="header-section-number">4.1</span> The core idea: mapping to a higher-dimensional space</a></li>
+  <li><a href="#the-kernel-trick" id="toc-the-kernel-trick" class="nav-link" data-scroll-target="#the-kernel-trick"><span class="header-section-number">4.2</span> The kernel trick</a></li>
+  <li><a href="#svr-for-time-series-forecasting" id="toc-svr-for-time-series-forecasting" class="nav-link" data-scroll-target="#svr-for-time-series-forecasting"><span class="header-section-number">4.3</span> SVR for time series forecasting</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#tree-based-methods" id="toc-tree-based-methods" class="nav-link" data-scroll-target="#tree-based-methods"><span class="header-section-number">5</span> Tree-Based Methods</a>
+  <ul class="collapse">
+<li><a href="#decision-trees-and-their-limitations" id="toc-decision-trees-and-their-limitations" class="nav-link" data-scroll-target="#decision-trees-and-their-limitations"><span class="header-section-number">5.1</span> Decision trees and their limitations</a></li>
+  <li><a href="#random-forests" id="toc-random-forests" class="nav-link" data-scroll-target="#random-forests"><span class="header-section-number">5.2</span> Random Forests</a></li>
+  <li><a href="#gradient-boosting-xgboost" id="toc-gradient-boosting-xgboost" class="nav-link" data-scroll-target="#gradient-boosting-xgboost"><span class="header-section-number">5.3</span> Gradient Boosting (XGBoost)</a></li>
+  <li><a href="#critical-limitations-for-forecasting" id="toc-critical-limitations-for-forecasting" class="nav-link" data-scroll-target="#critical-limitations-for-forecasting"><span class="header-section-number">5.4</span> Critical limitations for forecasting</a></li>
+  </ul>
+</li>
+  <li><a href="#neural-networks" id="toc-neural-networks" class="nav-link" data-scroll-target="#neural-networks"><span class="header-section-number">6</span> Neural Networks</a></li>
+  <li><a href="#a-decision-framework" id="toc-a-decision-framework" class="nav-link" data-scroll-target="#a-decision-framework"><span class="header-section-number">7</span> A Decision Framework</a></li>
+  </ul><div class="toc-actions"><ul><li><a href="https://github.com/pbenavidesh/narsil/edit/main/docs/more/stats/regression_landscape.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/pbenavidesh/narsil/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
-
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">R for Python Users</h1>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title">OLS and Beyond: Choosing the Right Regression Model</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">R</div>
+    <div class="quarto-category">stats</div>
   </div>
   </div>
 
 <div>
   <div class="description">
-    A conceptual introduction to R for students coming from a Python background, focused on mental models, data workflows, and tidyverse-style thinking.
+    A conceptual map of regression models for forecasting — from OLS to SVR, tree-based methods, and neural networks — with guidance on when each approach is warranted.
   </div>
 </div>
 
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Pablo Benavides-Herrera </p>
-          </div>
-  </div>
     
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">March 28, 2026</p>
+    </div>
+  </div>
   
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
@@ -452,252 +486,354 @@ cookieconsent.run({
   
 
 
-</header>
-
-
-<p>This document is <strong>optional</strong>, but highly recommended if you come from a Python background.</p>
-<p>The goal is <strong>not</strong> to teach R from scratch.<br>
-The goal is to help you <strong>translate mental models</strong> from Python to R, so that the rest of the course feels natural instead of frustrating.</p>
+</header><p>A student who has just learned <code>TSLM()</code> and already knows about XGBoost or random forests will reasonably ask: <em>why are we doing this?</em> This document answers that question honestly — including the cases where OLS loses.</p>
+<p>The goal is not to advocate for any single method, but to give you a mental map of the regression landscape so you can make deliberate choices rather than defaulting to whichever model you learned most recently.</p>
+<section id="what-ols-actually-optimizes" class="level1" data-number="1"><h1 data-number="1">
+<span class="header-section-number">1</span> What OLS Actually Optimizes</h1>
+<p>OLS finds the coefficient vector <span class="math inline">\boldsymbol{\beta}</span> that minimizes the residual sum of squares:</p>
+<p><span class="math display">
+\hat{\boldsymbol{\beta}} = \arg\min_{\boldsymbol{\beta}}
+\sum_{t=1}^{T} \left(y_t - \mathbf{x}_t^\top \boldsymbol{\beta}\right)^2
+</span></p>
+<p>Under the Gauss-Markov assumptions, this estimator is <strong>BLUE</strong>: Best Linear Unbiased Estimator. “Best” here means minimum variance among all linear unbiased estimators — not minimum forecast error in general.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Note
+<span class="screen-reader-only">Note</span>BLUE does not mean “best forecast”
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>If you already feel comfortable with R, you can safely skip this document and come back to it only if something feels confusing later on.</p>
+<p>Gauss-Markov guarantees efficiency <em>within the class of linear unbiased estimators</em>. A biased estimator (like Ridge regression) or a nonlinear estimator (like a tree) can have lower mean squared error in prediction if the bias-variance tradeoff favors them. This is the central tension in the rest of this document.</p>
 </div>
 </div>
-<hr>
-<section id="the-main-mindset-shift" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="the-main-mindset-shift"><span class="header-section-number">1</span> The main mindset shift</h2>
-<p>If you come from Python, you are used to thinking in terms of:</p>
-<ul>
-<li>step-by-step instructions<br>
-</li>
-<li>objects that are modified in place<br>
-</li>
-<li>explicit loops<br>
-</li>
-<li>“do this, then do that”</li>
-</ul>
-<p>R (especially the tidyverse) encourages a different way of thinking:</p>
-<ul>
-<li>transformations instead of instructions<br>
-</li>
-<li>immutable data objects<br>
-</li>
-<li>pipelines instead of loops<br>
-</li>
-<li>“what happens to the data as it flows”</li>
-</ul>
+<p>The closed-form solution is:</p>
+<p><span class="math display">
+\hat{\boldsymbol{\beta}} = \left(\mathbf{X}^\top \mathbf{X}\right)^{-1}
+\mathbf{X}^\top \mathbf{y}
+</span></p>
+<p>This requires <span class="math inline">\mathbf{X}^\top \mathbf{X}</span> to be invertible — which fails when regressors are perfectly collinear or when <span class="math inline">p &gt; T</span> (more predictors than observations). Both situations motivate regularization.</p>
+</section><section id="when-ols-is-the-right-tool" class="level1" data-number="2"><h1 data-number="2">
+<span class="header-section-number">2</span> When OLS Is the Right Tool</h1>
+<p>OLS tends to win — or at least perform competitively — in the following situations:</p>
+<p><strong>The relationship is genuinely (or approximately) linear.</strong> Many economic and business relationships are well-described by linear models, especially over the range of variation typically observed in historical data.</p>
+<p><strong>The sample is small.</strong> Flexible models like gradient boosting and neural networks have high variance when <span class="math inline">T</span> is small. OLS with a parsimonious specification often generalizes better out-of-sample.</p>
+<p><strong>Extrapolation is required.</strong> This is critical for forecasting. Tree-based methods cannot extrapolate beyond the range of the training data — they return the mean of the nearest leaf, which produces flat forecasts at the boundaries. OLS extrapolates linearly, which may or may not be correct, but at least produces sensible-looking forecasts for short horizons.</p>
+<p><strong>Interpretability is non-negotiable.</strong> In many business and policy contexts, a model that cannot be explained to a non-technical stakeholder will not be used, regardless of its accuracy. A TSLM with five regressors and interpretable coefficients survives in production for years.</p>
+<p><strong>Residual diagnostics matter.</strong> OLS provides a well-developed framework for diagnosing model misspecification through residual analysis — something significantly harder with black-box models.</p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+<span class="screen-reader-only">Tip</span>A useful question to ask before reaching for XGBoost
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>In tidyverse code, try to read pipelines <strong>out loud</strong>.<br>
-If it sounds like a sentence describing the data, you are probably doing it right.</p>
+<p><em>Is my forecast error large because the relationship is nonlinear, or because I am missing important regressors?</em> Adding the right variable to a TSLM often outperforms adding model complexity.</p>
 </div>
 </div>
-<hr>
-</section>
-<section id="imperative-vs-functional-style" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="imperative-vs-functional-style"><span class="header-section-number">2</span> Imperative vs functional style</h2>
-<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">R</a></li></ul>
-<div class="tab-content" data-group="language">
-<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df[df[<span class="st">"value"</span>] <span class="op">&gt;</span> <span class="dv">0</span>]</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"log_value"</span>] <span class="op">=</span> np.log(df[<span class="st">"value"</span>])</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.groupby(<span class="st">"id"</span>).mean()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<ul>
-<li>Each line modifies or reassigns <code>df</code></li>
-<li>State changes over time</li>
-<li>Order matters a lot</li>
-</ul>
-</div>
-<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(value <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">|&gt;</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">log_value =</span> <span class="fu">log</span>(value)) <span class="sc">|&gt;</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(id) <span class="sc">|&gt;</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), mean))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<ul>
-<li>Each step returns a new object</li>
-<li>No mutation in place</li>
-<li>The pipeline reads top to bottom</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="callout callout-style-default callout-note callout-titled">
+</section><section id="regularization-penalized-ols" class="level1" data-number="3"><h1 data-number="3">
+<span class="header-section-number">3</span> Regularization: Penalized OLS</h1>
+<section id="the-bias-variance-tradeoff" class="level2" data-number="3.1"><h2 data-number="3.1" class="anchored" data-anchor-id="the-bias-variance-tradeoff">
+<span class="header-section-number">3.1</span> The bias-variance tradeoff</h2>
+<p>When the number of candidate regressors is large relative to <span class="math inline">T</span>, OLS tends to overfit: it fits the training data well but generalizes poorly. Regularization addresses this by adding a penalty term to the loss function, deliberately introducing bias to reduce variance.</p>
+</section><section id="ridge-regression" class="level2" data-number="3.2"><h2 data-number="3.2" class="anchored" data-anchor-id="ridge-regression">
+<span class="header-section-number">3.2</span> Ridge regression</h2>
+<p>Ridge adds an <span class="math inline">\ell_2</span> penalty on the coefficients:</p>
+<p><span class="math display">
+\hat{\boldsymbol{\beta}}_{\text{ridge}} = \arg\min_{\boldsymbol{\beta}}
+\left\{
+\sum_{t=1}^{T}(y_t - \mathbf{x}_t^\top\boldsymbol{\beta})^2 +
+\lambda \sum_{j=1}^{p} \beta_j^2
+\right\}
+</span></p>
+<p>The penalty shrinks all coefficients toward zero but never sets any exactly to zero. Ridge is particularly useful when many regressors are correlated and each contributes a small amount of signal.</p>
+</section><section id="lasso" class="level2" data-number="3.3"><h2 data-number="3.3" class="anchored" data-anchor-id="lasso">
+<span class="header-section-number">3.3</span> Lasso</h2>
+<p>Lasso uses an <span class="math inline">\ell_1</span> penalty:</p>
+<p><span class="math display">
+\hat{\boldsymbol{\beta}}_{\text{lasso}} = \arg\min_{\boldsymbol{\beta}}
+\left\{
+\sum_{t=1}^{T}(y_t - \mathbf{x}_t^\top\boldsymbol{\beta})^2 +
+\lambda \sum_{j=1}^{p} |\beta_j|
+\right\}
+</span></p>
+<p>The <span class="math inline">\ell_1</span> penalty produces <strong>sparse solutions</strong>: many coefficients are set exactly to zero, performing automatic variable selection. This makes Lasso particularly attractive when you suspect only a small subset of your candidate regressors are truly relevant.</p>
+</section><section id="elastic-net" class="level2" data-number="3.4"><h2 data-number="3.4" class="anchored" data-anchor-id="elastic-net">
+<span class="header-section-number">3.4</span> Elastic Net</h2>
+<p>Elastic Net combines both penalties:</p>
+<p><span class="math display">
+\hat{\boldsymbol{\beta}}_{\text{EN}} = \arg\min_{\boldsymbol{\beta}}
+\left\{
+\sum_{t=1}^{T}(y_t - \mathbf{x}_t^\top\boldsymbol{\beta})^2 +
+\lambda_1 \sum_{j=1}^p |\beta_j| +
+\lambda_2 \sum_{j=1}^p \beta_j^2
+\right\}
+</span></p>
+<p>It inherits sparsity from Lasso and stability under correlated predictors from Ridge. In practice, it is the default choice when you are unsure which penalty to use.</p>
+<div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Note
+<span class="screen-reader-only">Important</span>Scaling is required for regularization
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Think of <code>|&gt;</code> as saying:<br>
-“take the result so far, <strong>and then</strong> apply the next transformation”.</p>
+<p>Because the penalty treats all <span class="math inline">\beta_j</span> equally, variables on different scales will be penalized unequally. Always standardize regressors before fitting a regularized model. See the companion document <a href="../../../docs/more/stats/preprocessing.html">Preprocessing Regressors</a> for details.</p>
 </div>
 </div>
-<hr>
-</section>
-<section id="core-object-mapping-python-r" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="core-object-mapping-python-r"><span class="header-section-number">3</span> Core object mapping (Python → R)</h2>
+<p>In R, <code>glmnet::glmnet()</code> implements all three. Cross-validation for <span class="math inline">\lambda</span> selection is handled by <code>glmnet::cv.glmnet()</code>. These are not currently integrated into <code>fable</code>, so regularized regression requires stepping outside the <code>tidyverts</code> ecosystem.</p>
+</section></section><section id="kernel-methods-and-svr" class="level1" data-number="4"><h1 data-number="4">
+<span class="header-section-number">4</span> Kernel Methods and SVR</h1>
+<section id="the-core-idea-mapping-to-a-higher-dimensional-space" class="level2" data-number="4.1"><h2 data-number="4.1" class="anchored" data-anchor-id="the-core-idea-mapping-to-a-higher-dimensional-space">
+<span class="header-section-number">4.1</span> The core idea: mapping to a higher-dimensional space</h2>
+<p>Support Vector Regression (SVR) extends the Support Vector Machine framework to continuous outputs. The key insight is that a relationship that is nonlinear in the original feature space <span class="math inline">\mathcal{X}</span> may become linear in a higher-dimensional feature space <span class="math inline">\mathcal{F}</span>, obtained via a mapping <span class="math inline">\phi: \mathcal{X} \to \mathcal{F}</span>.</p>
+<p>SVR finds the flattest function <span class="math inline">f(\mathbf{x}) = \mathbf{w}^\top
+\phi(\mathbf{x}) + b</span> that fits the training data within an <span class="math inline">\varepsilon</span>-tube:</p>
+<p><span class="math display">
+\min_{\mathbf{w}, b, \boldsymbol{\xi}, \boldsymbol{\xi}^*}
+\frac{1}{2}\|\mathbf{w}\|^2 +
+C \sum_{t=1}^T (\xi_t + \xi_t^*)
+</span></p>
+<p>subject to:</p>
+<p><span class="math display">
+\begin{align*}
+y_t - \mathbf{w}^\top \phi(\mathbf{x}_t) - b &amp;\leq \varepsilon + \xi_t \\
+\mathbf{w}^\top \phi(\mathbf{x}_t) + b - y_t &amp;\leq \varepsilon + \xi_t^* \\
+\xi_t, \xi_t^* &amp;\geq 0
+\end{align*}
+</span></p>
+<p>where <span class="math inline">C &gt; 0</span> controls the trade-off between flatness and tolerance for deviations beyond <span class="math inline">\varepsilon</span>, and <span class="math inline">\xi_t, \xi_t^*</span> are slack variables that penalize points outside the tube.</p>
+</section><section id="the-kernel-trick" class="level2" data-number="4.2"><h2 data-number="4.2" class="anchored" data-anchor-id="the-kernel-trick">
+<span class="header-section-number">4.2</span> The kernel trick</h2>
+<p>Computing <span class="math inline">\phi(\mathbf{x})</span> explicitly is often infeasible when <span class="math inline">\mathcal{F}</span> is very high-dimensional (or infinite-dimensional). The <strong>kernel trick</strong> exploits the fact that the dual formulation of the SVR problem only requires inner products <span class="math inline">\langle\phi(\mathbf{x}_i),
+\phi(\mathbf{x}_j)\rangle</span>, which can be computed directly via a kernel function:</p>
+<p><span class="math display">
+k(\mathbf{x}_i, \mathbf{x}_j) =
+\langle\phi(\mathbf{x}_i), \phi(\mathbf{x}_j)\rangle
+</span></p>
+<p>Common kernels:</p>
 <table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Python</th>
-<th>R</th>
-</tr>
-</thead>
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead><tr class="header">
+<th>Kernel</th>
+<th>Formula</th>
+<th>Use case</th>
+</tr></thead>
 <tbody>
 <tr class="odd">
-<td><code>pandas.DataFrame</code></td>
-<td><code>tibble</code></td>
+<td>Linear</td>
+<td><span class="math inline">\mathbf{x}_i^\top \mathbf{x}_j</span></td>
+<td>Equivalent to OLS/Ridge</td>
 </tr>
 <tr class="even">
-<td><code>Series</code></td>
-<td>vector</td>
+<td>RBF (Gaussian)</td>
+<td><span class="math inline">\exp\!\left(-\gamma\|\mathbf{x}_i - \mathbf{x}_j\|^2\right)</span></td>
+<td>Smooth nonlinear relationships</td>
 </tr>
 <tr class="odd">
-<td><code>NaN</code></td>
-<td><code>NA</code></td>
-</tr>
-<tr class="even">
-<td><code>df.copy()</code></td>
-<td>usually unnecessary</td>
-</tr>
-<tr class="odd">
-<td><code>for row in df</code></td>
-<td>avoid</td>
-</tr>
-<tr class="even">
-<td><code>df.groupby()</code></td>
-<td><code>group_by()</code></td>
-</tr>
-<tr class="odd">
-<td>method chaining</td>
-<td>pipe (<code>|&gt;</code>)</td>
-</tr>
-<tr class="even">
-<td><code>df.reset_index()</code></td>
-<td>rarely needed</td>
+<td>Polynomial</td>
+<td><span class="math inline">(\mathbf{x}_i^\top \mathbf{x}_j + c)^d</span></td>
+<td>Interactions up to degree <span class="math inline">d</span>
+</td>
 </tr>
 </tbody>
 </table>
-<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+<span class="screen-reader-only">Note</span>SVR with a linear kernel ≈ Ridge regression
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>In R, columns are <strong>vectors</strong>, not mini-dataframes.<br>
-This is one of the biggest conceptual differences — and one of R’s strengths.</p>
+<p>With a linear kernel, SVR and Ridge regression optimize similar objectives. The main difference is the <span class="math inline">\varepsilon</span>-insensitive loss in SVR vs.&nbsp;the squared loss in Ridge. SVR is less sensitive to outliers near the regression surface, while Ridge penalizes all deviations quadratically.</p>
 </div>
 </div>
-<hr>
-</section>
-<section id="mutation-the-silent-trap-for-python-users" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="mutation-the-silent-trap-for-python-users"><span class="header-section-number">4</span> Mutation: the silent trap for Python users</h2>
-<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">R</a></li></ul>
-<div class="tab-content" data-group="language">
-<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"x"</span>] <span class="op">=</span> df[<span class="st">"x"</span>] <span class="op">*</span> <span class="dv">2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>This modifies <code>df</code> in place.</p>
-</div>
-<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">x =</span> x <span class="sc">*</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>This <strong>does not</strong> modify <code>df</code> unless you reassign it.</p>
-<p>Correct usage:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">x =</span> x <span class="sc">*</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
+</section><section id="svr-for-time-series-forecasting" class="level2" data-number="4.3"><h2 data-number="4.3" class="anchored" data-anchor-id="svr-for-time-series-forecasting">
+<span class="header-section-number">4.3</span> SVR for time series forecasting</h2>
+<p>SVR does not natively handle temporal dependence — it treats observations as i.i.d. To use SVR for forecasting, you typically construct lagged features manually (embedding the time series into a feature matrix) and then apply SVR to the resulting regression problem. This is known as the <strong>NARX</strong> (Nonlinear AutoRegressive with eXogenous inputs) approach.</p>
+<p>Practical considerations for SVR in forecasting:</p>
+<ul>
+<li>Requires careful feature engineering (lag selection, exogenous variables).</li>
+<li>Hyperparameter tuning (<span class="math inline">C</span>, <span class="math inline">\varepsilon</span>, kernel parameters) is computationally expensive and sensitive to the choice of validation scheme. For time series, always use time-ordered cross-validation, never random k-fold.</li>
+<li>Does not extrapolate well with RBF kernels: predictions degrade for inputs far from the training distribution.</li>
+<li>Scaling is <strong>mandatory</strong>: SVR optimizes over <span class="math inline">\|\mathbf{w}\|^2</span>, which is scale-dependent. Unstandardized inputs will produce arbitrarily poor solutions.</li>
+</ul>
+<p>In R, <code>e1071::svm()</code> and <code>kernlab::ksvm()</code> implement SVR.</p>
+</section></section><section id="tree-based-methods" class="level1" data-number="5"><h1 data-number="5">
+<span class="header-section-number">5</span> Tree-Based Methods</h1>
+<section id="decision-trees-and-their-limitations" class="level2" data-number="5.1"><h2 data-number="5.1" class="anchored" data-anchor-id="decision-trees-and-their-limitations">
+<span class="header-section-number">5.1</span> Decision trees and their limitations</h2>
+<p>A regression tree recursively partitions the feature space into rectangular regions and predicts the mean of <span class="math inline">y</span> within each region. Individual trees have high variance — small changes in the training data produce very different trees.</p>
+</section><section id="random-forests" class="level2" data-number="5.2"><h2 data-number="5.2" class="anchored" data-anchor-id="random-forests">
+<span class="header-section-number">5.2</span> Random Forests</h2>
+<p>Random Forests reduce variance through two mechanisms: <strong>bagging</strong> (bootstrap aggregation of <span class="math inline">B</span> trees) and <strong>feature subsampling</strong> (each split considers only a random subset of <span class="math inline">p</span> features, decorrelating the trees).</p>
+<p>The prediction is:</p>
+<p><span class="math display">
+\hat{y} = \frac{1}{B} \sum_{b=1}^B T_b(\mathbf{x})
+</span></p>
+<p>where <span class="math inline">T_b</span> is the <span class="math inline">b</span>-th tree fitted on a bootstrap sample.</p>
+</section><section id="gradient-boosting-xgboost" class="level2" data-number="5.3"><h2 data-number="5.3" class="anchored" data-anchor-id="gradient-boosting-xgboost">
+<span class="header-section-number">5.3</span> Gradient Boosting (XGBoost)</h2>
+<p>Gradient boosting builds trees sequentially, with each tree fitted to the residuals of the ensemble so far. XGBoost adds <span class="math inline">\ell_1</span> and <span class="math inline">\ell_2</span> regularization on the tree structure itself, making it more robust to overfitting than vanilla gradient boosting.</p>
+</section><section id="critical-limitations-for-forecasting" class="level2" data-number="5.4"><h2 data-number="5.4" class="anchored" data-anchor-id="critical-limitations-for-forecasting">
+<span class="header-section-number">5.4</span> Critical limitations for forecasting</h2>
 <div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Warning
+<span class="screen-reader-only">Warning</span>Tree-based methods do not extrapolate
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>If you forget to reassign in R, <strong>nothing happens</strong>.<br>
-This is the most common source of “why didn’t my code work?” for Python users.</p>
+<p>This is the most important limitation for time series applications. A tree prediction is always a weighted average of observed training values. If the forecast horizon extends beyond the range of the training data — common in trending series — tree-based methods will produce flat or erratic forecasts.</p>
+<p>One workaround is to detrend the series before modeling and add the trend back after forecasting, but this reintroduces the need for a trend model (which OLS or ARIMA handle naturally).</p>
 </div>
 </div>
-<hr>
-</section>
-<section id="loops-just-because-you-can-doesnt-mean-you-should" class="level2" data-number="5">
-<h2 data-number="5" class="anchored" data-anchor-id="loops-just-because-you-can-doesnt-mean-you-should"><span class="header-section-number">5</span> Loops: just because you can, doesn’t mean you should</h2>
-<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false" href="">R</a></li></ul>
-<div class="tab-content" data-group="language">
-<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Python-style thinking applied to R (not recommended)</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(df)) {</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>x[i] <span class="ot">&lt;-</span> df<span class="sc">$</span>x[i] <span class="sc">*</span> <span class="dv">2</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Additional considerations:</p>
+<ul>
+<li>Require substantially more data than OLS to avoid overfitting.</li>
+<li>Hyperparameter tuning is non-trivial; improper tuning can produce worse results than a well-specified TSLM.</li>
+<li>Interpretability is limited, though tools like SHAP values partially address this.</li>
+<li>Temporal autocorrelation in residuals is not modeled; lagged features must be constructed manually.</li>
+</ul></section></section><section id="neural-networks" class="level1" data-number="6"><h1 data-number="6">
+<span class="header-section-number">6</span> Neural Networks</h1>
+<p>A brief orientation for completeness. Feed-forward neural networks approximate arbitrary functions through compositions of linear transformations and nonlinear activations. Recurrent architectures (LSTM, GRU) are designed specifically for sequential data.</p>
+<p>Practical context for time series forecasting:</p>
+<ul>
+<li>Neural networks require large amounts of data to outperform simpler methods. For single series with a few hundred observations, they rarely beat a well-specified ARIMA or ETS.</li>
+<li>They are the dominant approach for <strong>global forecasting models</strong> — single models trained across thousands of series simultaneously (e.g., N-BEATS, N-HiTS, Temporal Fusion Transformer).</li>
+<li>Training instability, vanishing gradients, and hyperparameter sensitivity make them operationally expensive compared to statistical models.</li>
+<li>In <code>fable</code>, <code>NNETAR()</code> implements a simple feed-forward network with lagged inputs — a practical entry point within the <code>tidyverts</code> ecosystem.</li>
+</ul></section><section id="a-decision-framework" class="level1" data-number="7"><h1 data-number="7">
+<span class="header-section-number">7</span> A Decision Framework</h1>
+<p>Work through these questions when choosing a regression approach:</p>
+<div class="cell" data-layout-align="default">
+<details open="" class="code-fold"><summary>Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>flowchart TD</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    A{Is the relationship &lt;br/&gt; approximately linear?} --&gt;|Yes| B[Start with TSLM &lt;br/&gt; Check residuals]</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    B --&gt; C{Residuals &lt;br/&gt; autocorrelated?}</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    C --&gt;|Yes| D[Dynamic regression &lt;br/&gt; ARIMA errors]</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    C --&gt;|No| E[TSLM is sufficient]</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    A --&gt;|No| F{How much data?}</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    F --&gt;|Small T &lt; 200| G[SVR with RBF kernel &lt;br/&gt; or polynomial TSLM &lt;br/&gt; Time-ordered CV]</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    F --&gt;|Large T ≥ 200| H{Series trends beyond &lt;br/&gt; training range?}</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    H --&gt;|Yes| I[Detrend first &lt;br/&gt; then tree/NN on residuals]</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    H --&gt;|No| J[Random Forest or XGBoost &lt;br/&gt; with lagged features]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details><div class="cell-output-display">
+<div>
+<p></p><figure class="figure"></figure><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    A{Is the relationship &lt;br/&gt; approximately linear?} --&gt;|Yes| B[Start with TSLM &lt;br/&gt; Check residuals]
+    B --&gt; C{Residuals &lt;br/&gt; autocorrelated?}
+    C --&gt;|Yes| D[Dynamic regression &lt;br/&gt; ARIMA errors]
+    C --&gt;|No| E[TSLM is sufficient]
+
+    A --&gt;|No| F{How much data?}
+    F --&gt;|Small T &lt; 200| G[SVR with RBF kernel &lt;br/&gt; or polynomial TSLM &lt;br/&gt; Time-ordered CV]
+    F --&gt;|Large T ≥ 200| H{Series trends beyond &lt;br/&gt; training range?}
+    H --&gt;|Yes| I[Detrend first &lt;br/&gt; then tree/NN on residuals]
+    H --&gt;|No| J[Random Forest or XGBoost &lt;br/&gt; with lagged features]
+</pre>
 </div>
-<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">x =</span> x <span class="sc">*</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p></p>
 </div>
 </div>
 </div>
-<div class="callout callout-style-default callout-tip callout-titled">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 13%">
+<col style="width: 21%">
+<col style="width: 21%">
+<col style="width: 21%">
+<col style="width: 21%">
+</colgroup>
+<thead><tr class="header">
+<th>Method</th>
+<th style="text-align: center;">Extrapolates?</th>
+<th style="text-align: center;">Interpretable?</th>
+<th style="text-align: center;">Needs large <span class="math inline">T</span>?</th>
+<th style="text-align: center;">Handles autocorrelation natively?</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>OLS / TSLM</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✗</td>
+<td style="text-align: center;">✗</td>
+</tr>
+<tr class="even">
+<td>Ridge / Lasso</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">Partial</td>
+<td style="text-align: center;">✗</td>
+<td style="text-align: center;">✗</td>
+</tr>
+<tr class="odd">
+<td>SVR (RBF)</td>
+<td style="text-align: center;">✗</td>
+<td style="text-align: center;">✗</td>
+<td style="text-align: center;">Partial</td>
+<td style="text-align: center;">✗</td>
+</tr>
+<tr class="even">
+<td>Random Forest</td>
+<td style="text-align: center;">✗</td>
+<td style="text-align: center;">✗</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✗</td>
+</tr>
+<tr class="odd">
+<td>XGBoost</td>
+<td style="text-align: center;">✗</td>
+<td style="text-align: center;">✗</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✗</td>
+</tr>
+<tr class="even">
+<td>NNETAR</td>
+<td style="text-align: center;">Partial</td>
+<td style="text-align: center;">✗</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">Partial</td>
+</tr>
+<tr class="odd">
+<td>ARIMA / ETS</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">Partial</td>
+<td style="text-align: center;">✗</td>
+<td style="text-align: center;">✓</td>
+</tr>
+</tbody>
+</table>
+<div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+<span class="screen-reader-only">Important</span>The most common mistake
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>If you feel the urge to write a <code>for</code> loop in R, stop and ask:<br>
-“Is this a vectorized operation?”</p>
-<p>In most cases, the answer is <strong>yes</strong>.</p>
-</div>
-</div>
-<hr>
-</section>
-<section id="indexing-brackets-vs-verbs" class="level2" data-number="6">
-<h2 data-number="6" class="anchored" data-anchor-id="indexing-brackets-vs-verbs"><span class="header-section-number">6</span> Indexing: brackets vs verbs</h2>
-<div class="tabset-margin-container"></div><div class="panel-tabset" data-group="language">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false" href="">R</a></li></ul>
-<div class="tab-content" data-group="language">
-<div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>df.iloc[<span class="dv">0</span>]</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>df.loc[df[<span class="st">"x"</span>] <span class="op">&gt;</span> <span class="dv">0</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>df[<span class="dv">1</span>, ]</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(x <span class="sc">&gt;</span> <span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
+<p>Reaching for XGBoost because it performs well in Kaggle competitions, without considering that most Kaggle problems are cross-sectional (no extrapolation required, large datasets, no temporal structure). Time series forecasting has a fundamentally different problem geometry.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -706,111 +842,16 @@ Tip
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Note
+<span class="screen-reader-only">Note</span>More complex ≠ more accurate
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Base R indexing exists, but in this course we will prefer tidyverse verbs<br>
-because they are clearer and less error-prone.</p>
+<p>In forecasting benchmarks (M4, M5 competitions), simple statistical methods consistently outperform complex ML models on short and medium horizons for individual series. The advantage of ML methods appears primarily at scale — when training globally across many series — and at long horizons with rich feature sets.</p>
 </div>
 </div>
-<hr>
-</section>
-<section id="equality-assignment-and-naming" class="level2" data-number="7">
-<h2 data-number="7" class="anchored" data-anchor-id="equality-assignment-and-naming"><span class="header-section-number">7</span> Equality, assignment, and naming</h2>
-<ul>
-<li><code>&lt;-</code> is the standard operator for assignment in this course<br>
-</li>
-<li><code>=</code> is used <strong>only</strong> for function arguments</li>
-<li><code>==</code> is for comparison</li>
-<li>Names are case-sensitive</li>
-<li>Avoid spaces in column names (or use backticks)</li>
-</ul>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Tip
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Using <code>&lt;-</code> consistently makes it easier to visually distinguish<br>
-<strong>assignment</strong> from <strong>function arguments</strong>, especially in longer pipelines.</p>
-</div>
-</div>
-<hr>
-</section>
-<section id="factors-the-weird-thing-you-didnt-ask-for" class="level2" data-number="8">
-<h2 data-number="8" class="anchored" data-anchor-id="factors-the-weird-thing-you-didnt-ask-for"><span class="header-section-number">8</span> Factors: the weird thing you didn’t ask for</h2>
-<p>R has a special type called <code>factor</code> (categorical variable).</p>
-<p>Sometimes you will see:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>and a column is a factor when you expected a string.</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>For now:</p>
-<ul>
-<li>don’t panic</li>
-<li>use <code>as.character()</code> if needed</li>
-<li>we will be explicit about factors when they matter</li>
-</ul>
-</div>
-</div>
-<hr>
-</section>
-<section id="what-you-actually-need-for-this-course" class="level2" data-number="9">
-<h2 data-number="9" class="anchored" data-anchor-id="what-you-actually-need-for-this-course"><span class="header-section-number">9</span> What you actually need for this course</h2>
-<p>You do <strong>not</strong> need to become an R expert.</p>
-<p>You need to be comfortable with:</p>
-<ul>
-<li><code>tibble</code></li>
-<li><code>filter()</code></li>
-<li><code>mutate()</code></li>
-<li><code>summarise()</code></li>
-<li><code>group_by()</code></li>
-<li>pipes (<code>|&gt;</code>)</li>
-</ul>
-<p>Everything else is secondary.</p>
-<hr>
-</section>
-<section id="final-reassurance" class="level2" data-number="10">
-<h2 data-number="10" class="anchored" data-anchor-id="final-reassurance"><span class="header-section-number">10</span> Final reassurance</h2>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Tip
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>If you are fluent in Python, you already have the hard skills:</p>
-<ul>
-<li>data thinking</li>
-<li>debugging intuition</li>
-<li>abstraction</li>
-</ul>
-<p>R is just a different dialect.</p>
-</div>
-</div>
-<p>Once the mental model clicks, the rest of the course will feel much lighter.</p>
 
 
-</section>
-
-<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
-<script id="quarto-html-after-body" type="application/javascript">
+</section><a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right
     if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
@@ -1229,21 +1270,18 @@ Tip
   });
   </script>
 </div> <!-- /content -->
-<footer class="footer">
-  <div class="nav-footer">
+<footer class="footer"><div class="nav-footer">
     <div class="nav-footer-left">
       &nbsp;
     </div>   
     <div class="nav-footer-center">
 
-<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/pbenavidesh/narsil/edit/main/docs/more/r-tools/r_4_python_users.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/pbenavidesh/narsil/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div><div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/pbenavidesh/narsil/edit/main/docs/more/stats/regression_landscape.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/pbenavidesh/narsil/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div><div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
     <div class="nav-footer-right">
       &nbsp;
     </div>
   </div>
 </footer>
-
-
 
 
 <script src="../../../site_libs/quarto-html/zenscroll-min.js"></script>

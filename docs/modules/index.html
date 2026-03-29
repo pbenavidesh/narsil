@@ -527,11 +527,48 @@ cookieconsent.run({
 </header>
 
 
-<p>Welcome to the <strong>Modules</strong> section of the course. Each module is a short, guided sequence of lessons with examples and practice opportunities.</p>
-<ul>
-<li><strong>Start here:</strong> <a href="../../docs/modules/module_1/00_intro/intro.html">Module 1 — Introduction</a></li>
-<li>Looking for practice? Go to <a href="../../docs/exercises/index.html">Exercises</a></li>
-</ul>
+<p>Welcome to the <strong>Modules</strong> section. Over the course of the semester, you’ll build <strong>one forecasting model</strong> and progressively improve it — adding smarter components, external context, and production-aware robustness with each module.</p>
+<section id="the-course-arc" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="the-course-arc"><span class="header-section-number">1</span> The course arc</h2>
+<svg width="100%" viewbox="0 0 680 220" xmlns="http://www.w3.org/2000/svg" style="font-family: inherit;">
+<defs>
+  <marker id="arr" viewbox="0 0 10 10" refx="8" refy="5" markerwidth="6" markerheight="6" orient="auto-start-reverse">
+    <path d="M2 1L8 5L2 9" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+  </marker>
+</defs>
+<rect x="30" y="30" width="138" height="66" rx="8" fill="#F1EFE8" stroke="#888780" stroke-width="0.5"></rect>
+<text x="99" y="57" text-anchor="middle" font-size="14" font-weight="500" fill="#2C2C2A">Module 1</text>
+<text x="99" y="76" text-anchor="middle" font-size="12" fill="#5F5E5A">Decomposition baseline</text>
+<rect x="198" y="30" width="138" height="66" rx="8" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.5"></rect>
+<text x="267" y="57" text-anchor="middle" font-size="14" font-weight="500" fill="#085041">Module 2</text>
+<text x="267" y="76" text-anchor="middle" font-size="12" fill="#0F6E56">ETS &amp; ARIMA filters</text>
+<rect x="366" y="30" width="138" height="66" rx="8" fill="#EEEDFE" stroke="#534AB7" stroke-width="0.5"></rect>
+<text x="435" y="57" text-anchor="middle" font-size="14" font-weight="500" fill="#26215C">Module 3</text>
+<text x="435" y="76" text-anchor="middle" font-size="12" fill="#534AB7">Exogenous variables</text>
+<rect x="534" y="30" width="116" height="66" rx="8" fill="#FAECE7" stroke="#993C1D" stroke-width="0.5"></rect>
+<text x="592" y="57" text-anchor="middle" font-size="14" font-weight="500" fill="#4A1B0C">Module 4</text>
+<text x="592" y="76" text-anchor="middle" font-size="12" fill="#993C1D">Robustness &amp; scale</text>
+<line x1="169" y1="63" x2="196" y2="63" stroke="#888" stroke-width="1" marker-end="url(#arr)"></line>
+<line x1="337" y1="63" x2="364" y2="63" stroke="#888" stroke-width="1" marker-end="url(#arr)"></line>
+<line x1="505" y1="63" x2="532" y2="63" stroke="#888" stroke-width="1" marker-end="url(#arr)"></line>
+<line x1="99" y1="97" x2="99" y2="115" stroke="#ccc" stroke-width="0.5" stroke-dasharray="3 3"></line>
+<line x1="267" y1="97" x2="267" y2="115" stroke="#ccc" stroke-width="0.5" stroke-dasharray="3 3"></line>
+<line x1="435" y1="97" x2="435" y2="115" stroke="#ccc" stroke-width="0.5" stroke-dasharray="3 3"></line>
+<line x1="592" y1="97" x2="592" y2="115" stroke="#ccc" stroke-width="0.5" stroke-dasharray="3 3"></line>
+<text x="99" y="128" text-anchor="middle" font-size="11" fill="#888">STL + SNAIVE + Drift</text>
+<text x="267" y="128" text-anchor="middle" font-size="11" fill="#888">STL + ETS / ARIMA</text>
+<text x="435" y="128" text-anchor="middle" font-size="11" fill="#888">ARIMA(y ~ xreg)</text>
+<text x="592" y="128" text-anchor="middle" font-size="11" fill="#888">Prophet + ensembles</text>
+<line x1="30" y1="148" x2="650" y2="148" stroke="#ddd" stroke-width="0.5"></line>
+<text x="99" y="168" text-anchor="middle" font-size="11" fill="#aaa" font-style="italic">Understand the series</text>
+<text x="267" y="168" text-anchor="middle" font-size="11" fill="#aaa" font-style="italic">Smarter trend/cycle</text>
+<text x="435" y="168" text-anchor="middle" font-size="11" fill="#aaa" font-style="italic">External context</text>
+<text x="592" y="168" text-anchor="middle" font-size="11" fill="#aaa" font-style="italic">Production-ready</text>
+<text x="99" y="196" text-anchor="middle" font-size="11" fill="#aaa">Ch. 2–5</text>
+<text x="267" y="196" text-anchor="middle" font-size="11" fill="#aaa">Ch. 8–9</text>
+<text x="435" y="196" text-anchor="middle" font-size="11" fill="#aaa">Ch. 7, 10</text>
+<text x="592" y="196" text-anchor="middle" font-size="11" fill="#aaa">Ch. 12–13</text>
+</svg>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -542,75 +579,73 @@ cookieconsent.run({
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Use the <strong>Modules</strong> sidebar to move lesson-by-lesson. Each lesson page includes explanations, code, and short checks to make sure ideas stick.</p>
+<p>Use the <strong>sidebar</strong> to move lesson-by-lesson through each module. Each lesson includes explanations, worked examples in R, and exercises to reinforce the ideas.</p>
 </div>
 </div>
-<section id="prerequisites-and-setup" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="prerequisites-and-setup"><span class="header-section-number">1</span> Prerequisites and setup</h2>
-<p>A dedicated setup page is coming soon. For now:</p>
-<ul>
-<li>Make sure you can open an <code>.Rproj</code>, run an <code>{r}</code> code chunk, and install packages in R.</li>
-<li>If something breaks, start with <a href="../../docs/modules/module_1/00_intro/intro.html">Module 1 — Introduction</a>, which includes the course expectations and workflow.</li>
-</ul>
 </section>
-<section id="course-map" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="course-map"><span class="header-section-number">2</span> Course map</h2>
-<section id="module-1-forecasting-models-based-on-decomposition-methods" class="level3" data-number="2.1">
-<h3 data-number="2.1" class="anchored" data-anchor-id="module-1-forecasting-models-based-on-decomposition-methods"><span class="header-section-number">2.1</span> Module 1: Forecasting models based on decomposition methods</h3>
-<p>You’ll build fundamentals: time series data structures, decomposition, and forecasting principles.</p>
+<section id="prerequisites-and-setup" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="prerequisites-and-setup"><span class="header-section-number">2</span> Prerequisites and setup</h2>
+<p>Make sure you can open an <code>.Rproj</code>, run an <code>{r}</code> code chunk, and install packages in R before starting. If you’re unsure, <a href="../../docs/modules/module_1/00_intro/intro.html">Module 1 — Introduction</a> covers the course workflow and expectations.</p>
+</section>
+<section id="course-map" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="course-map"><span class="header-section-number">3</span> Course map</h2>
+<section id="module-1-forecasting-models-based-on-decomposition-methods" class="level3" data-number="3.1">
+<h3 data-number="3.1" class="anchored" data-anchor-id="module-1-forecasting-models-based-on-decomposition-methods"><span class="header-section-number">3.1</span> Module 1: Forecasting models based on decomposition methods</h3>
+<p>Build the fundamentals: time series data structures, transformations, decomposition, and your first complete forecast. You’ll establish a benchmark model that every later module will try to beat.</p>
 <ul>
 <li><a href="../../docs/modules/module_1/00_intro/intro.html">1.0 Introduction</a></li>
 <li><a href="../../docs/modules/module_1/01_time_series/r_time_series.html">1.1 RStudio, R, and Time Series</a></li>
 <li><a href="../../docs/modules/module_1/02_ts_dcmp/ts_dcmp.html">1.2 Time Series Decomposition</a></li>
-<li><a href="../../docs/modules/module_1/03_fcst/forecasting.html">1.3 Forecasting principles</a></li>
+<li><a href="../../docs/modules/module_1/03_fcst/forecasting.html">1.3 Forecasting Principles</a></li>
 <li><a href="../../docs/modules/forecasting_workflow.html">1.4 The Forecasting Workflow</a></li>
 </ul>
-<p><strong>What’s next?</strong> Start with <a href="../../docs/modules/module_1/00_intro/intro.html">1.0 Introduction</a>, then continue in order using the sidebar.</p>
+<p><em>Once you have a working baseline, Module 2 replaces its naive components with smarter statistical filters →</em></p>
 <hr>
 </section>
-<section id="module-2-adding-ets-and-arima-filters" class="level3" data-number="2.2">
-<h3 data-number="2.2" class="anchored" data-anchor-id="module-2-adding-ets-and-arima-filters"><span class="header-section-number">2.2</span> Module 2: Adding ETS and ARIMA filters</h3>
-<p>You’ll expand to classical statistical forecasting families and diagnostics.</p>
+<section id="module-2-adding-ets-and-arima-filters" class="level3" data-number="3.2">
+<h3 data-number="3.2" class="anchored" data-anchor-id="module-2-adding-ets-and-arima-filters"><span class="header-section-number">3.2</span> Module 2: Adding ETS and ARIMA filters</h3>
+<p>Replace the benchmark components with exponential smoothing and ARIMA models. Learn to identify and correct non-stationarity, and combine decomposition with full statistical models.</p>
 <ul>
 <li><a href="../../docs/modules/module_2/01_ets/ets.html">2.1 Exponential Smoothing</a></li>
-<li><a href="../../docs/modules/module_2/02_stationarity/stationarity.html">2.2 Identifying Stationarity</a></li>
-<li>2.3 ARIMA models <em>(coming soon)</em></li>
-<li>2.4 Decomposition &amp; ETS/ARIMA <em>(coming soon)</em></li>
+<li><a href="../../docs/modules/module_2/02_stationarity/stationarity.html">2.2 Stationarity &amp; Differencing</a></li>
+<li><a href="../../docs/modules/module_2/03_arima/arima.html">2.3 ARIMA Models</a></li>
+<li><a href="../../docs/modules/module_2/04_modular_fcst/modular_forecasting.html">2.4 Modular Forecasting: Mixing ETS and ARIMA</a></li>
 </ul>
-<p><strong>What’s next?</strong> After Module 1, begin with <a href="../../docs/modules/module_2/01_ets/ets.html">2.1 Exponential Smoothing</a>.</p>
+<p><em>Your model now handles trend and autocorrelation well — Module 3 adds external information from outside the series →</em></p>
 <hr>
 </section>
-<section id="module-3-adding-exogenous-variables-to-the-model" class="level3" data-number="2.3">
-<h3 data-number="2.3" class="anchored" data-anchor-id="module-3-adding-exogenous-variables-to-the-model"><span class="header-section-number">2.3</span> Module 3: Adding exogenous variables to the model</h3>
-<p>You’ll incorporate external drivers and build stronger, more realistic forecasts.</p>
+<section id="module-3-regression-and-exogenous-variables" class="level3" data-number="3.3">
+<h3 data-number="3.3" class="anchored" data-anchor-id="module-3-regression-and-exogenous-variables"><span class="header-section-number">3.3</span> Module 3: Regression and exogenous variables</h3>
+<p>Incorporate external drivers and handle real data challenges. You’ll move from clean regression setups to dynamic models that combine regression with ARIMA errors, and close with Prophet as a practical industry tool.</p>
 <ul>
-<li><a href="module_3/01_regression/regression.qmd">3.1 Linear Regression Models</a></li>
-<li>3.2 Build dynamic regressions <em>(coming soon)</em></li>
-<li>3.3 Analyze the model’s performance <em>(coming soon)</em></li>
-<li>3.4 Choose the best variables for the model <em>(coming soon)</em></li>
+<li><a href="../../docs/modules/module_3/01_practical_issues/practical_issues.html">3.1 Practical Issues</a></li>
+<li><a href="../../docs/modules/module_3/02_regression/regression.html">3.2 Linear Regression Models</a></li>
+<li>3.3 Dynamic &amp; Harmonic Regression <em>(coming soon)</em></li>
+<li>3.4 Prophet <em>(coming soon)</em></li>
 </ul>
-<p><strong>What’s next?</strong> When available, start with <a href="module_3/01_regression/regression.qmd">3.1 Linear Regression Models</a> and follow the sequence.</p>
+<p><em>With external variables in the model, Module 4 focuses on making everything robust and production-ready →</em></p>
 <hr>
 </section>
-<section id="module-4-forecasting-at-scale" class="level3" data-number="2.4">
-<h3 data-number="2.4" class="anchored" data-anchor-id="module-4-forecasting-at-scale"><span class="header-section-number">2.4</span> Module 4: Forecasting at scale</h3>
-<p>You’ll learn approaches for multiple series, hierarchy, reconciliation, and scalable evaluation.</p>
+<section id="module-4-forecasting-at-scale" class="level3" data-number="3.4">
+<h3 data-number="3.4" class="anchored" data-anchor-id="module-4-forecasting-at-scale"><span class="header-section-number">3.4</span> Module 4: Forecasting at scale</h3>
+<p>Handle complexity: multiple seasonal patterns, uncertainty quantification, and forecast combinations. The final module ties everything together into a complete, production-aware workflow.</p>
 <ul>
-<li>4.1 Understanding the challenges and approaches when dealing with multiple time series <em>(coming soon)</em></li>
-<li>4.2 Applying hierarchical and reconciliation models <em>(coming soon)</em></li>
-<li>4.3 Efficient forecasting workflow <em>(coming soon)</em></li>
-<li>4.4 Evaluation of the global performance <em>(coming soon)</em></li>
+<li>4.1 Complex Seasonality <em>(coming soon)</em></li>
+<li>4.2 Bootstrapping, Bagging &amp; Model Combinations <em>(coming soon)</em></li>
+<li>4.3 Time Series Cross-Validation <em>(coming soon)</em></li>
+<li>4.4 Hierarchical &amp; Grouped Forecasting <em>(coming soon)</em></li>
 </ul>
-<p><strong>What’s next?</strong> Check back once lessons are published—this module will be best tackled after Modules 1–3.</p>
+<p><em>Complete Modules 1–3 before starting here.</em></p>
+<hr>
 </section>
 </section>
-<section id="recommended-study-loop" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="recommended-study-loop"><span class="header-section-number">3</span> Recommended study loop</h2>
+<section id="recommended-study-loop" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="recommended-study-loop"><span class="header-section-number">4</span> Recommended study loop</h2>
 <ol type="1">
-<li><strong>Read</strong> the lesson (focus on <em>why</em> the method works).</li>
-<li><strong>Run</strong> the code and check outputs.</li>
-<li><strong>Tweak</strong> one assumption (horizon, transformation, features) and observe what changes.</li>
-<li><strong>Practice</strong> with the matching exercise set.</li>
+<li><strong>Read</strong> the lesson — focus on <em>why</em> the method works and how it builds on what came before.</li>
+<li><strong>Run</strong> the code and verify the outputs on your machine.</li>
+<li><strong>Tweak</strong> one assumption (horizon, transformation, window) and observe what changes.</li>
+<li><strong>Practice</strong> with the matching exercise set in the <a href="../../docs/exercises/index.html">Exercises</a> section.</li>
 </ol>
 
 

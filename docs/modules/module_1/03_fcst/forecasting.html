@@ -596,7 +596,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">March 28, 2026</p>
+      <p class="date-modified">March 29, 2026</p>
     </div>
   </div>
     
@@ -640,10 +640,6 @@ window.Quarto = {
 </section><section id="visualize-1" class="level3" data-number="1.0.3"><h3 data-number="1.0.3" class="anchored" data-anchor-id="visualize-1">
 <span class="header-section-number">1.0.3</span> Visualize</h3>
 <div class="cell">
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: `gg_tsdisplay()` was deprecated in feasts 0.4.2.
-ℹ Please use `ggtime::gg_tsdisplay()` instead.</code></pre>
-</div>
 <div class="cell-output-display">
 <div>
 <figure class="figure"><p><a href="forecasting_files/figure-html/viz-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="forecasting_files/figure-html/viz-1.png" class="img-fluid figure-img" width="672"></a></p>
@@ -696,7 +692,7 @@ We mimic the real-world scenario: use past data to forecast the future.</p>
 </li>
 </ul>
 <div class="cell">
-<details open="" class="code-fold"><summary>Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bench_fit</span> <span class="op">&lt;-</span> <span class="va">gas_train</span> <span class="op">|&gt;</span> </span>
+<details open="" class="code-fold"><summary>Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bench_fit</span> <span class="op">&lt;-</span> <span class="va">gas_train</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">model</span><span class="op">(</span></span>
 <span>    mean   <span class="op">=</span> <span class="fu">MEAN</span><span class="op">(</span><span class="va">Gas</span><span class="op">)</span>,</span>
 <span>    naive  <span class="op">=</span> <span class="fu">NAIVE</span><span class="op">(</span><span class="va">Gas</span><span class="op">)</span>,</span>
@@ -709,13 +705,13 @@ We mimic the real-world scenario: use past data to forecast the future.</p>
 <span class="header-section-number">1.0.6</span> Forecast</h3>
 <p>Generate forecasts with a horizon equal to the test set length.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bench_fcst</span> <span class="op">&lt;-</span> <span class="va">bench_fit</span> <span class="op">|&gt;</span> </span>
+<details open="" class="code-fold"><summary>Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bench_fcst</span> <span class="op">&lt;-</span> <span class="va">bench_fit</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">forecast</span><span class="op">(</span>h <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">gas_test</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>(Optional) Plot forecasts:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bench_fcst</span> <span class="op">|&gt;</span> </span>
+<details open="" class="code-fold"><summary>Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bench_fcst</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">autoplot</span><span class="op">(</span><span class="va">gas_train</span>, level <span class="op">=</span> <span class="fl">95</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">autolayer</span><span class="op">(</span><span class="va">gas_test</span>, <span class="va">Gas</span>, alpha <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
@@ -728,7 +724,7 @@ e_{T+h} = y_{T+h} - \hat{y}_{T+h|T}
 </span></p>
 <p>Compute accuracy metrics:</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bench_acc</span> <span class="op">&lt;-</span> <span class="va">bench_fcst</span> <span class="op">|&gt;</span> </span>
+<details open="" class="code-fold"><summary>Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">bench_acc</span> <span class="op">&lt;-</span> <span class="va">bench_fcst</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">accuracy</span><span class="op">(</span><span class="va">gas_test</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">arrange</span><span class="op">(</span><span class="va">MASE</span><span class="op">)</span></span>
 <span></span>
@@ -799,7 +795,7 @@ e_{T+h} = y_{T+h} - \hat{y}_{T+h|T}
 <p>Once a benchmark is selected based on the test set, refit it using <strong>all available data</strong>, then forecast the desired future horizon.</p>
 <p>Example: refit <code>snaive</code> and forecast the next 8 quarters.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">final_fit</span> <span class="op">&lt;-</span> <span class="va">aus_production</span> <span class="op">|&gt;</span> </span>
+<details open="" class="code-fold"><summary>Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">final_fit</span> <span class="op">&lt;-</span> <span class="va">aus_production</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">model</span><span class="op">(</span></span>
 <span>    final_model <span class="op">=</span> <span class="fu">SNAIVE</span><span class="op">(</span><span class="va">Gas</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>

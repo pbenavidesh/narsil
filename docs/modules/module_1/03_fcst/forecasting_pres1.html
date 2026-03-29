@@ -344,7 +344,7 @@
 <div class="cell-output-display">
 <div>
 <figure>
-<p><a href="forecasting1_files/figure-revealjs/ts_viz-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img data-src="forecasting1_files/figure-revealjs/ts_viz-1.png" width="960"></a></p>
+<p><a href="forecasting1_files/figure-html/ts_viz-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img data-src="forecasting1_files/figure-html/ts_viz-1.png" width="672"></a></p>
 </figure>
 </div>
 </div>
@@ -918,44 +918,6 @@ They are meant to be <strong>hard to beat</strong>.</p>
         ]
       });
     </script>
-    
-    <script>
-      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
-      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
-      // slide changes (different for each slide format).
-      (function () {
-        // dispatch for htmlwidgets
-        function fireSlideEnter() {
-          const event = window.document.createEvent("Event");
-          event.initEvent("slideenter", true, true);
-          window.document.dispatchEvent(event);
-        }
-
-        function fireSlideChanged(previousSlide, currentSlide) {
-          fireSlideEnter();
-
-          // dispatch for shiny
-          if (window.jQuery) {
-            if (previousSlide) {
-              window.jQuery(previousSlide).trigger("hidden");
-            }
-            if (currentSlide) {
-              window.jQuery(currentSlide).trigger("shown");
-            }
-          }
-        }
-
-        // hookup for slidy
-        if (window.w3c_slidy) {
-          window.w3c_slidy.add_observer(function (slide_num) {
-            // slide_num starts at position 1
-            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
-          });
-        }
-
-      })();
-    </script>
-
     <script id="quarto-html-after-body" type="application/javascript">
       window.document.addEventListener("DOMContentLoaded", function (event) {
         const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
