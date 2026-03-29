@@ -253,6 +253,8 @@ glance(us_change_fit) |>
 
 :::
 
+
+
 ::: {.fragment}
 ::: {.callout-note appearance="simple"}
 ## How does automatic selection work?
@@ -273,6 +275,34 @@ glance(us_change_fit) |>
 ::: {.callout-tip appearance="simple"}
 For exploratory work, automatic selection is fine. For a final model, use `stepwise = FALSE, approximation = FALSE` and compare the result with your manually identified candidate.
 :::
+:::
+
+::: {.content-hidden unless-format="revealjs"}
+##
+
+:::
+
+::: {.callout-tip collapse="true"}
+## How much slower is exhaustive search?
+
+`stepwise = FALSE, approximation = FALSE` triggers a full search over all candidate models using exact likelihood. The difference in runtime can be dramatic:
+```{r}
+#| label: us-change-timing
+
+tictoc::tic("auto")
+us_change |>
+  model(ARIMA(Consumption ~ PDQ(0, 0, 0)))
+tictoc::toc()
+
+tictoc::tic("exhaustive")
+us_change |>
+  model(ARIMA(Consumption ~ PDQ(0, 0, 0),
+              stepwise      = FALSE,
+              approximation = FALSE))
+tictoc::toc()
+```
+
+Times will vary by hardware, but the **relative difference** is what matters. On longer series like `mexretail` (480+ monthly observations with seasonal structure), the gap is even more pronounced — which is why `freeze` is recommended for documents containing exhaustive ARIMA searches.
 :::
 
 ## Model Selection {#sec-model-selection}
