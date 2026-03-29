@@ -5,83 +5,122 @@ date-modified: ""
 sidebar: modules
 format:
   html:
-   toc: false
+    toc: false
 ---
 
-Welcome to the **Modules** section of the course. Each module is a short, guided sequence of lessons with examples and practice opportunities.
+Welcome to the **Modules** section. Over the course of the semester, you'll build **one forecasting model** and progressively improve it — adding smarter components, external context, and production-aware robustness with each module.
 
-- **Start here:** [Module 1 — Introduction](module_1/00_intro/intro.qmd)
-- Looking for practice? Go to [Exercises](../exercises/index.qmd)
+## The course arc
+
+```{=html}
+<svg width="100%" viewBox="0 0 680 220" xmlns="http://www.w3.org/2000/svg" style="font-family: inherit;">
+<defs>
+  <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M2 1L8 5L2 9" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </marker>
+</defs>
+<rect x="30"  y="30" width="138" height="66" rx="8" fill="#F1EFE8" stroke="#888780" stroke-width="0.5"/>
+<text x="99"  y="57" text-anchor="middle" font-size="14" font-weight="500" fill="#2C2C2A">Module 1</text>
+<text x="99"  y="76" text-anchor="middle" font-size="12" fill="#5F5E5A">Decomposition baseline</text>
+<rect x="198" y="30" width="138" height="66" rx="8" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.5"/>
+<text x="267" y="57" text-anchor="middle" font-size="14" font-weight="500" fill="#085041">Module 2</text>
+<text x="267" y="76" text-anchor="middle" font-size="12" fill="#0F6E56">ETS &amp; ARIMA filters</text>
+<rect x="366" y="30" width="138" height="66" rx="8" fill="#EEEDFE" stroke="#534AB7" stroke-width="0.5"/>
+<text x="435" y="57" text-anchor="middle" font-size="14" font-weight="500" fill="#26215C">Module 3</text>
+<text x="435" y="76" text-anchor="middle" font-size="12" fill="#534AB7">Exogenous variables</text>
+<rect x="534" y="30" width="116" height="66" rx="8" fill="#FAECE7" stroke="#993C1D" stroke-width="0.5"/>
+<text x="592" y="57" text-anchor="middle" font-size="14" font-weight="500" fill="#4A1B0C">Module 4</text>
+<text x="592" y="76" text-anchor="middle" font-size="12" fill="#993C1D">Robustness &amp; scale</text>
+<line x1="169" y1="63" x2="196" y2="63" stroke="#888" stroke-width="1" marker-end="url(#arr)"/>
+<line x1="337" y1="63" x2="364" y2="63" stroke="#888" stroke-width="1" marker-end="url(#arr)"/>
+<line x1="505" y1="63" x2="532" y2="63" stroke="#888" stroke-width="1" marker-end="url(#arr)"/>
+<line x1="99"  y1="97" x2="99"  y2="115" stroke="#ccc" stroke-width="0.5" stroke-dasharray="3 3"/>
+<line x1="267" y1="97" x2="267" y2="115" stroke="#ccc" stroke-width="0.5" stroke-dasharray="3 3"/>
+<line x1="435" y1="97" x2="435" y2="115" stroke="#ccc" stroke-width="0.5" stroke-dasharray="3 3"/>
+<line x1="592" y1="97" x2="592" y2="115" stroke="#ccc" stroke-width="0.5" stroke-dasharray="3 3"/>
+<text x="99"  y="128" text-anchor="middle" font-size="11" fill="#888">STL + SNAIVE + Drift</text>
+<text x="267" y="128" text-anchor="middle" font-size="11" fill="#888">STL + ETS / ARIMA</text>
+<text x="435" y="128" text-anchor="middle" font-size="11" fill="#888">ARIMA(y ~ xreg)</text>
+<text x="592" y="128" text-anchor="middle" font-size="11" fill="#888">Prophet + ensembles</text>
+<line x1="30" y1="148" x2="650" y2="148" stroke="#ddd" stroke-width="0.5"/>
+<text x="99"  y="168" text-anchor="middle" font-size="11" fill="#aaa" font-style="italic">Understand the series</text>
+<text x="267" y="168" text-anchor="middle" font-size="11" fill="#aaa" font-style="italic">Smarter trend/cycle</text>
+<text x="435" y="168" text-anchor="middle" font-size="11" fill="#aaa" font-style="italic">External context</text>
+<text x="592" y="168" text-anchor="middle" font-size="11" fill="#aaa" font-style="italic">Production-ready</text>
+<text x="99"  y="196" text-anchor="middle" font-size="11" fill="#aaa">Ch. 2–5</text>
+<text x="267" y="196" text-anchor="middle" font-size="11" fill="#aaa">Ch. 8–9</text>
+<text x="435" y="196" text-anchor="middle" font-size="11" fill="#aaa">Ch. 7, 10</text>
+<text x="592" y="196" text-anchor="middle" font-size="11" fill="#aaa">Ch. 12–13</text>
+</svg>
+```
 
 ::: {.callout-tip}
 ## How to navigate
-
-Use the **Modules** sidebar to move lesson-by-lesson. Each lesson page includes explanations, code, and short checks to make sure ideas stick.
+Use the **sidebar** to move lesson-by-lesson through each module. Each lesson includes explanations, worked examples in R, and exercises to reinforce the ideas.
 :::
 
 ## Prerequisites and setup
 
-A dedicated setup page is coming soon. For now:
-
-- Make sure you can open an `.Rproj`, run an `{r}` code chunk, and install packages in R.
-- If something breaks, start with [Module 1 — Introduction](module_1/00_intro/intro.qmd), which includes the course expectations and workflow.
+Make sure you can open an `.Rproj`, run an `{r}` code chunk, and install packages in R before starting. If you're unsure, [Module 1 — Introduction](module_1/00_intro/intro.qmd) covers the course workflow and expectations.
 
 ## Course map
 
 ### Module 1: Forecasting models based on decomposition methods
 
-You’ll build fundamentals: time series data structures, decomposition, and forecasting principles.
+Build the fundamentals: time series data structures, transformations, decomposition, and your first complete forecast. You'll establish a benchmark model that every later module will try to beat.
 
 - [1.0 Introduction](module_1/00_intro/intro.qmd)
 - [1.1 RStudio, R, and Time Series](module_1/01_time_series/r_time_series.qmd)
 - [1.2 Time Series Decomposition](module_1/02_ts_dcmp/ts_dcmp.qmd)
-- [1.3 Forecasting principles](module_1/03_fcst/forecasting.qmd)
+- [1.3 Forecasting Principles](module_1/03_fcst/forecasting.qmd)
 - [1.4 The Forecasting Workflow](forecasting_workflow.qmd)
 
-**What’s next?** Start with [1.0 Introduction](module_1/00_intro/intro.qmd), then continue in order using the sidebar.
+*Once you have a working baseline, Module 2 replaces its naive components with smarter statistical filters →*
 
 ---
 
 ### Module 2: Adding ETS and ARIMA filters
 
-You’ll expand to classical statistical forecasting families and diagnostics.
+Replace the benchmark components with exponential smoothing and ARIMA models. Learn to identify and correct non-stationarity, and combine decomposition with full statistical models.
 
 - [2.1 Exponential Smoothing](module_2/01_ets/ets.qmd)
-- [2.2 Identifying Stationarity](module_2/02_stationarity/stationarity.qmd)
-- 2.3 ARIMA models *(coming soon)*
-- 2.4 Decomposition & ETS/ARIMA *(coming soon)*
+- [2.2 Stationarity & Differencing](module_2/02_stationarity/stationarity.qmd)
+- [2.3 ARIMA Models](module_2/03_arima/arima.qmd)
+- [2.4 Modular Forecasting: Mixing ETS and ARIMA](module_2/04_modular_fcst/modular_forecasting.qmd)
 
-**What’s next?** After Module 1, begin with [2.1 Exponential Smoothing](module_2/01_ets/ets.qmd).
+*Your model now handles trend and autocorrelation well — Module 3 adds external information from outside the series →*
 
 ---
 
-### Module 3: Adding exogenous variables to the model
+### Module 3: Regression and exogenous variables
 
-You’ll incorporate external drivers and build stronger, more realistic forecasts.
+Incorporate external drivers and handle real data challenges. You'll move from clean regression setups to dynamic models that combine regression with ARIMA errors, and close with Prophet as a practical industry tool.
 
-- [3.1 Linear Regression Models](module_3/01_regression/regression.qmd)
-- 3.2 Build dynamic regressions *(coming soon)*
-- 3.3 Analyze the model's performance *(coming soon)*
-- 3.4 Choose the best variables for the model *(coming soon)*
+- [3.1 Practical Issues](module_3/01_practical_issues/practical_issues.qmd)
+- [3.2 Linear Regression Models](module_3/02_regression/regression.qmd)
+- 3.3 Dynamic & Harmonic Regression *(coming soon)*
+- 3.4 Prophet *(coming soon)*
 
-**What’s next?** When available, start with [3.1 Linear Regression Models](module_3/01_regression/regression.qmd) and follow the sequence.
+*With external variables in the model, Module 4 focuses on making everything robust and production-ready →*
 
 ---
 
 ### Module 4: Forecasting at scale
 
-You’ll learn approaches for multiple series, hierarchy, reconciliation, and scalable evaluation.
+Handle complexity: multiple seasonal patterns, uncertainty quantification, and forecast combinations. The final module ties everything together into a complete, production-aware workflow.
 
-- 4.1 Understanding the challenges and approaches when dealing with multiple time series *(coming soon)*
-- 4.2 Applying hierarchical and reconciliation models *(coming soon)*
-- 4.3 Efficient forecasting workflow *(coming soon)*
-- 4.4 Evaluation of the global performance *(coming soon)*
+- 4.1 Complex Seasonality *(coming soon)*
+- 4.2 Bootstrapping, Bagging & Model Combinations *(coming soon)*
+- 4.3 Time Series Cross-Validation *(coming soon)*
+- 4.4 Hierarchical & Grouped Forecasting *(coming soon)*
 
-**What’s next?** Check back once lessons are published—this module will be best tackled after Modules 1–3.
+*Complete Modules 1–3 before starting here.*
+
+---
 
 ## Recommended study loop
 
-1. **Read** the lesson (focus on *why* the method works).
-2. **Run** the code and check outputs.
-3. **Tweak** one assumption (horizon, transformation, features) and observe what changes.
-4. **Practice** with the matching exercise set.
+1. **Read** the lesson — focus on *why* the method works and how it builds on what came before.
+2. **Run** the code and verify the outputs on your machine.
+3. **Tweak** one assumption (horizon, transformation, window) and observe what changes.
+4. **Practice** with the matching exercise set in the [Exercises](../exercises/index.qmd) section.
