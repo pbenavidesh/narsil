@@ -1044,42 +1044,30 @@ This is not a trivial problem. It creates three distinct forecasting scenarios:
 
 This is the "true" forecast — it is what you would actually produce in a real deployment.
 
+
 ```{r}
 #| label: us-change-exante
 
-# Step 1: forecast each predictor independently
-us_change_fc_income <- us_change |>
-  model(ARIMA(Income)) |>
-  forecast(h = 8)
+us_change_future <- us_change |>
+  pivot_longer(-c(Quarter, Consumption), names_to = "variable") |> #<1>
+  model(arima = ARIMA(value)) |> #<2>
+  forecast(h = 8) |> #<3>
+  as_tsibble() |> #<4>
+  select(-c(.model, value)) |>
+  pivot_wider(names_from = variable, values_from = .mean) #<5>
 
-us_change_fc_prod <- us_change |>
-  model(ARIMA(Production)) |>
-  forecast(h = 8)
-
-us_change_fc_sav <- us_change |>
-  model(ARIMA(Savings)) |>
-  forecast(h = 8)
-
-us_change_fc_unemp <- us_change |>
-  model(ARIMA(Unemployment)) |>
-  forecast(h = 8)
-
-# Step 2: construct future data with forecasted predictor values
-us_change_future <- new_data(us_change, 8) |>
-  mutate(
-    Income       = us_change_fc_income |> pull(.mean),
-    Production   = us_change_fc_prod   |> pull(.mean),
-    Savings      = us_change_fc_sav    |> pull(.mean),
-    Unemployment = us_change_fc_unemp  |> pull(.mean)
-  )
-
-# Step 3: forecast consumption using the projected predictors
 us_change_fit_mult |>
   forecast(new_data = us_change_future) |>
   autoplot(us_change |> filter_index("2010 Q1" ~ .)) +
   labs(title = "Ex-ante forecast: US Consumption",
        y = "% change", x = NULL)
 ```
+
+1. Pivot to long format — each predictor becomes a separate series keyed by `variable`.
+2. A single `model()` call fits an ARIMA to each predictor automatically.
+3. A single `forecast()` produces 8-step-ahead forecasts for all predictors simultaneously.
+4. Convert back to tsibble — required by `forecast()` when passed as `new_data`.
+5. Pivot back to wide so each predictor has its own column, matching the structure expected by the regression model.
 
 ### Ex-post
 
