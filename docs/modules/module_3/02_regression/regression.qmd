@@ -1105,31 +1105,39 @@ us_change_fit_expost |>
 
 These are especially useful for stress-testing and strategic planning.
 
-```{r}
+
+````{r}
 #| label: us-change-scenarios
-#| eval: false
 
 us_change_fit_scen <- us_change |>
-  model(TSLM(Consumption ~ Income + Savings + Unemployment))
+  model(TSLM(Consumption ~ Income + Savings + Unemployment)) #<1>
 
 us_change_scenarios <- scenarios(
   optimistic = new_data(us_change, 4) |>
-    mutate(Income = c(0.5, 0.8, 0.6, 1.0),
-           Savings = c(0.1, -0.2, 0.1, -0.1),
-           Unemployment = -0.1),
+    mutate(Income = c(0.5, 0.8, 0.6, 1.0),          #<2>
+           Savings = c(0.1, -0.2, 0.1, -0.1),        #<2>
+           Unemployment = -0.1),                      #<2>
   pessimistic = new_data(us_change, 4) |>
-    mutate(Income = -0.5,
-           Savings = -0.4,
-           Unemployment = 0.2),
-  names_to = "Scenario"
+    mutate(Income = -0.5,                             #<3>
+           Savings = -0.4,                            #<3>
+           Unemployment = 0.2),                       #<3>
+  names_to = "Scenario"                               #<4>
 )
 
-us_change_fit_scen |>
-  forecast(new_data = us_change_scenarios) |>
-  autoplot(us_change |> filter_index("2014 Q1" ~ .)) +
+us_change |>
+  autoplot(Consumption) +
+  autolayer(forecast(us_change_fit_scen, new_data = us_change_scenarios)) + #<5>
   labs(title = "Scenario-based forecast: US Consumption",
        y = "% change", x = NULL)
-```
+````
+
+1. We fit a simpler model using only the three predictors with clearest economic interpretation.
+2. Optimistic scenario: income grows steadily, savings fluctuate mildly, unemployment falls slightly.
+3. Pessimistic scenario: income contracts, savings decline, unemployment rises.
+4. `names_to` labels each scenario in the output, making it easy to distinguish them in the plot.
+5. `autolayer()` overlays the scenario forecasts on the historical series without requiring matching key structures.
+
+
 
 :::
 
