@@ -916,6 +916,39 @@ When two or more predictors are highly correlated, we have **multicollinearity**
 
 :::{.content-hidden unless-format="revealjs"}
 
+### Detecting multicollinearity: VIF
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+### Detecting multicollinearity: VIF
+
+:::
+
+The **Variance Inflation Factor (VIF)** measures how much the variance of $\hat{\beta}_j$ is inflated by its correlation with the other predictors:
+
+$$
+\text{VIF}_j = \frac{1}{1 - R_j^2}
+$$
+
+where $R_j^2$ is the $R^2$ obtained by regressing $x_j$ on all the *other* predictors — a measure of how well one predictor can be linearly predicted by the rest.
+
+:::{.incremental}
+
+- $\text{VIF} = 1$: no collinearity with other predictors.
+- $\text{VIF} \in (1, 5)$: moderate — generally acceptable.
+- $\text{VIF} > 5$: concerning, examine carefully.
+- $\text{VIF} > 10$: severe — take action.
+
+:::
+
+:::{.callout-tip appearance="simple"}
+A quick visual check: if the `ggpairs` scatter matrix shows strong correlations *between predictors* (not between a predictor and $y$), multicollinearity is likely present. The VIF quantifies exactly how severe that problem is.
+:::
+
+:::{.content-hidden unless-format="revealjs"}
+
 ## Detecting multicollinearity: VIF
 
 :::
@@ -943,21 +976,9 @@ where $R_j^2$ is the $R^2$ obtained by regressing $x_j$ on all the *other* predi
 
 :::
 
-```{r}
-#| label: us-change-vif
-#| eval: false
-
-us_change_fit_mult |>
-  extract_fit_engine() |>   #<1>
-  vif()                     #<2>
-```
-
-1. `extract_fit_engine()` retrieves the underlying `lm` object from the `fable` mable, allowing us to use base-R or `car` diagnostics.
-2. `vif()` from the `car` package computes the VIF for each predictor.
-
 :::{.content-hidden unless-format="revealjs"}
 
-### What to do about it
+## What to do about multicollinearity
 
 :::
 
@@ -967,20 +988,23 @@ us_change_fit_mult |>
 
 :::
 
-If VIF values are large, you have several options:
+The answer depends critically on your goal.
 
-:::{.incremental}
+- **If your goal is forecasting** — which is ours — multicollinearity is largely harmless. The individual $\hat{\beta}$'s may be unstable, but their *joint contribution* to $\hat{y}_t$ is still well estimated. The model can produce excellent forecasts even when coefficients are hard to interpret individually.
 
-1. **Drop one of the correlated predictors** — if two predictors carry nearly the same information, keep the one with stronger theoretical justification or cleaner interpretability. This is often the right call during selection anyway.
-2. **Combine them** — create a composite index, take a ratio, or use the first principal component of the correlated group.
-3. **Use a penalized regression** (Ridge, Lasso) — these methods tolerate collinearity better than OLS by accepting a small bias in exchange for substantially lower variance. Outside this course's scope, but worth knowing.
-4. **Do nothing, intentionally** — if your goal is *prediction accuracy* rather than coefficient interpretation, multicollinearity may be acceptable. Forecasts can still be good even when individual $\hat{\beta}$'s are unstable.
 
-:::
-
+:::{.fragment}
 :::{.callout-warning appearance="simple"}
-If you have a large number of potential predictors with substantial collinearity among them, consider dimensionality reduction (e.g., PCA) before fitting. That is outside this course's scope, but it is a common preprocessing step in production forecasting systems.
+The one scenario where multicollinearity *does* hurt forecasting is if the correlation structure among predictors breaks down in the future — i.e., predictors that moved together historically start moving independently. In that case, the model never learned their individual effects well enough to adapt.
 :::
+:::
+
+- **If your goal is inference** — understanding the isolated effect of each predictor — multicollinearity is a real problem and should be addressed:
+
+1. **Drop one of the correlated predictors** — keep the one with stronger theoretical justification or cleaner interpretability.
+2. **Combine them** — create a composite index, take a ratio, or use the first principal component of the correlated group.
+3. **Use penalized regression** (Ridge, Lasso) — these accept a small bias in exchange for substantially lower variance. Outside this course's scope, but worth knowing.
+
 
 # Forecasting with Regression
 
