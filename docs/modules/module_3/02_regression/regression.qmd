@@ -1119,101 +1119,150 @@ us_change |>
 :::
 
 # Useful Predictors
-
+ 
 :::{.content-hidden unless-format="revealjs"}
-
-## Beyond exogenous variables
-
+ 
+## Can regression handle trend and seasonality?
+ 
 :::
-
-`TSLM()` provides built-in terms that are particularly useful when working with time series:
-
-:::{.incremental}
-
-- `trend()` — a deterministic linear trend ($t = 1, 2, \ldots, T$).
-- `season()` — seasonal dummy variables (one per season, with one omitted as baseline to avoid perfect collinearity).
-- `fourier(K)` — Fourier terms for flexible seasonality (covered in Module 4).
-
-:::
-
+ 
+We have seen regression with exogenous variables. But can `TSLM()` also handle the patterns we identified in Module 1 — **trend** and **seasonality**?
+ 
 :::{.fragment}
-
+ 
+**Yes** — through specially constructed predictors built directly into the formula.
+ 
+:::
+ 
 We will illustrate with quarterly beer production in Australia.
-
+ 
 ```{r}
 #| label: beer-data
-
+ 
 beer <- aus_production |>
   filter(year(Quarter) >= 1992) |>
   select(Quarter, Beer)
 ```
-
+ 
 ```{r}
 #| label: beer-plot
-
+#| echo: false
+ 
 beer |>
   autoplot(Beer) +
   labs(title = "Australian quarterly beer production",
        y = "Megalitres", x = NULL)
 ```
-
-:::
-
-## Trend and Seasonal Dummies
-
-```{r}
-#| label: beer-tslm
-
-beer_fit <- beer |>
-  model(
-    TSLM(Beer ~ trend() + season())  #<1>
-  )
-
-report(beer_fit)
-```
-
-1. `trend()` adds a linear time index; `season()` adds quarterly dummy variables.
-
-:::{.content-visible unless-format="revealjs"}
-
-### What the dummies actually look like
-
-:::
-
+ 
 :::{.content-hidden unless-format="revealjs"}
-
-## Under the hood: seasonal dummies
-
+ 
+## Seasonal dummy variables
+ 
 :::
-
-Seasonal dummies are created automatically by `season()`, but it helps to see them explicitly:
-
+ 
+:::{.content-visible unless-format="revealjs"}
+ 
+## Seasonal dummy variables
+ 
+:::
+ 
+To capture seasonality in a regression, we use **dummy variables** — binary indicators that take the value 1 for a specific season and 0 otherwise.
+ 
+- A quarterly series has 4 seasons. How many dummies do we need?
+- **Not 4 — only 3.** One season is left as the baseline (absorbed into the intercept).
+- Including all 4 would create perfect collinearity with the intercept: the **dummy variable trap**.
+ 
+:::{.fragment}
+ 
+This is analogous to a cross-sectional dummy: to distinguish male/female, you only need *one* binary variable — one category is always implicit in the intercept.
+ 
+:::
+ 
+:::{.content-hidden unless-format="revealjs"}
+ 
+## What the dummies look like
+ 
+:::
+ 
+:::{.content-visible unless-format="revealjs"}
+ 
+### What the dummies look like
+ 
+:::
+ 
 ```{r}
 #| label: beer-dummies-manual
 #| code-fold: true
-
+ 
 beer |>
   mutate(
-    t   = row_number(),
-    Q2  = if_else(quarter(Quarter) == 2, 1L, 0L),
-    Q3  = if_else(quarter(Quarter) == 3, 1L, 0L),
-    Q4  = if_else(quarter(Quarter) == 4, 1L, 0L)
+    t  = row_number(),
+    Q2 = if_else(quarter(Quarter) == 2, 1L, 0L),
+    Q3 = if_else(quarter(Quarter) == 3, 1L, 0L),
+    Q4 = if_else(quarter(Quarter) == 4, 1L, 0L)
   ) |>
   head(8)
 ```
-
+ 
 :::{.callout-warning appearance="simple"}
-**The dummy variable trap:** if you create dummies for all $m$ seasons and include an intercept, you have perfect multicollinearity. Always use $m - 1$ dummies. `TSLM()` handles this automatically.
+**The dummy variable trap:** if you create dummies for all $m$ seasons and include an intercept, you have perfect multicollinearity. Always use $m - 1$ dummies. `TSLM()` handles this automatically with `season()`.
 :::
-
+ 
+:::{.content-hidden unless-format="revealjs"}
+ 
+## Trend and seasonal dummies in R
+ 
+:::
+ 
+:::{.content-visible unless-format="revealjs"}
+ 
+## Trend and seasonal dummies in R
+ 
+:::
+ 
+`TSLM()` provides two built-in terms:
+ 
+:::{.incremental}
+ 
+- `trend()` — a deterministic linear trend: $\beta_1 t$ where $t = 1, 2, \ldots, T$.
+- `season()` — $m - 1$ seasonal dummy variables, with the first season as baseline.
+ 
+:::
+ 
+:::{.fragment}
+ 
+```{r}
+#| label: beer-tslm
+#| code-line-numbers: "|3"
+ 
+beer_fit <- beer |>
+  model(
+    TSLM(Beer ~ trend() + season()) #<1>
+  )
+ 
+report(beer_fit)
+```
+ 
+1. `trend()` adds a linear time index; `season()` adds quarterly dummies automatically.
+ 
+:::
+ 
+:::{.callout-note collapse="true"}
+## What about more complex seasonality? Fourier terms
+ 
+For series with multiple seasonal periods or very long seasons (daily, hourly data), `season()` becomes impractical — the number of dummies grows too large. An alternative is **Fourier terms**: pairs of sine and cosine waves that approximate the seasonal pattern with far fewer parameters.
+ 
+`TSLM()` supports this via `fourier(K)`, where $K$ controls how many Fourier pairs are included. We will cover this properly in Module 4 when we deal with complex seasonality.
+:::
+ 
 :::{.panel-tabset}
-
+ 
 ### Fitted vs. actual
-
+ 
 ```{r}
 #| label: beer-fitted
 #| echo: false
-
+ 
 p <- augment(beer_fit) |>
   ggplot(aes(x = Quarter)) +
   geom_line(aes(y = Beer, color = "Actual")) +
@@ -1221,59 +1270,134 @@ p <- augment(beer_fit) |>
   labs(y = "Megalitres", color = NULL,
        title = "Beer production: actual vs. fitted") +
   theme(legend.position = "top")
-
+ 
 ggplotly(p, dynamicTicks = TRUE)
 ```
-
+ 
 ### Residual diagnostics
-
+ 
 ```{r}
 #| label: beer-resid
-
+ 
 beer_fit |>
   gg_tsresiduals()
 ```
-
+ 
 :::
+ 
+There is a notable outlier in Q2 1994. We can detect it formally and then handle it with an intervention variable.
 
-There is a notable outlier in Q2 1994. We can handle it with an **intervention variable**.
 
-## Intervention Variables (Dummies)
-
-Dummy variables are not limited to capturing seasonality. They can capture specific events:
-
+## Intervention Variables and Outliers
+ 
+:::{.content-hidden unless-format="revealjs"}
+ 
+### Formal outlier detection
+ 
+:::
+ 
+Rather than eyeballing the residual plot, we can detect outliers formally — the same way we did in the practical issues document. The key idea is that applying the IQR rule directly to the raw series does not work in time series: a series with trend has naturally increasing values, so later observations always look "large" even when they are perfectly normal.
+ 
+:::{.fragment}
+ 
+The fix: **decompose first, then apply IQR to the remainder**. For `beer`, which has strong known seasonality, we use a full STL decomposition — including the seasonal component — so only genuine anomalies end up in the remainder^[When seasonality is weak or absent, `season(period = 1)` can be used to extract only the trend. See [Practical Forecasting Issues](../01_practical_issues/practical_issues.qmd) for the full workflow including NA imputation.].
+ 
+:::
+ 
+```{r}
+#| label: beer-stl-outlier
+ 
+beer_dcmp <- beer |>
+  model(
+    stl = STL(Beer ~ trend() + season(), robust = TRUE) #<1>
+  ) |>
+  components()
+ 
+beer_outliers <- beer_dcmp |>
+  select(Quarter, remainder) |>
+  mutate(
+    Q1  = quantile(remainder, 0.25),
+    Q3  = quantile(remainder, 0.75),
+    IQR = Q3 - Q1,
+    lower_15 = Q1 - 1.5 * IQR,  #<2>
+    upper_15 = Q3 + 1.5 * IQR,
+    lower_3  = Q1 - 3   * IQR,  #<3>
+    upper_3  = Q3 + 3   * IQR,
+    outlier_15 = remainder < lower_15 | remainder > upper_15,
+    outlier_3  = remainder < lower_3  | remainder > upper_3
+  )
+ 
+beer_outliers |>
+  filter(outlier_15) |>
+  select(Quarter, remainder, outlier_15, outlier_3)
+```
+ 
+1. Full STL with both trend and season — for a strongly seasonal series like `beer`, this prevents normal seasonal variation from being flagged as anomalies.
+2. Standard threshold ($c = 1.5$): flags moderate outliers.
+3. Stricter threshold ($c = 3$): flags only extreme observations. Use this when you want to be conservative.
+ 
+```{r}
+#| label: beer-outlier-plot
+#| echo: false
+ 
+beer |>
+  autoplot(Beer, color = "grey50") +
+  geom_point(
+    data = beer |> semi_join(beer_outliers |> filter(outlier_15), by = "Quarter"),
+    aes(y = Beer),
+    color = "firebrick", size = 3
+  ) +
+  labs(title = "Beer production: outliers detected via STL remainder (c = 1.5)",
+       y = "Megalitres", x = NULL)
+```
+ 
+:::{.content-hidden unless-format="revealjs"}
+ 
+### Types of intervention variables
+ 
+:::
+ 
+:::{.content-visible unless-format="revealjs"}
+ 
+### Types of intervention variables
+ 
+:::
+ 
+In regression, rather than removing the outlier and imputing, we **model it explicitly** with a dummy variable. This keeps all observations and lets the model account for the anomaly without distorting the other coefficients.
+ 
 :::{.incremental}
-
-- **Spike variable**: a 1 for a single anomalous period, 0 everywhere else. Captures a one-off shock.
+ 
+- **Spike variable**: 1 for a single anomalous period, 0 everywhere else. Captures a one-off shock.
 - **Level shift variable**: 0 before an event, 1 from the event onward. Captures a permanent change in level.
 - **Ramp variable**: 0 before an event, then increasing linearly. Captures a gradual structural shift.
-
+ 
 :::
-
+ 
 ```{r}
 #| label: beer-intervention
-
+#| code-line-numbers: "|3,4"
+ 
 beer_interv <- beer |>
   mutate(
     spike_Q2_1994 = if_else(Quarter == yearquarter("1994 Q2"), 1L, 0L), #<1>
     level_2000    = if_else(year(Quarter) >= 2000, 1L, 0L)              #<2>
   )
-
+ 
 beer_fit_interv <- beer_interv |>
   model(
     TSLM(Beer ~ trend() + season() + spike_Q2_1994 + level_2000)
   )
-
+ 
 report(beer_fit_interv)
 ```
-
-1. Spike: captures the single anomalous quarter.
-2. Level shift: allows a different intercept from year 2000 onward.
-
+ 
+1. Spike: 1 only in 1994 Q2, captures the single anomalous quarter.
+2. Level shift: 1 from year 2000 onward, allows a different intercept from that point.
+ 
 ```{r}
 #| label: beer-intervention-plot
 #| echo: false
-
+ 
 p <- augment(beer_fit_interv) |>
   ggplot(aes(x = Quarter)) +
   geom_line(aes(y = Beer, color = "Actual")) +
@@ -1281,12 +1405,12 @@ p <- augment(beer_fit_interv) |>
   labs(y = "Megalitres", color = NULL,
        title = "Beer production: model with intervention variables") +
   theme(legend.position = "top")
-
+ 
 ggplotly(p, dynamicTicks = TRUE)
 ```
-
+ 
 :::{.callout-tip appearance="simple"}
-Intervention variables in `TSLM()` are the same mechanism used in Module 4 for outlier handling — they give the model a way to account for known anomalies without distorting the other coefficient estimates.
+We will revisit outlier handling in Module 4, where we cover robust methods and automatic outlier detection. Intervention variables are the regression-world equivalent of those techniques — explicit rather than automatic.
 :::
 
 # Nonlinear Regression
