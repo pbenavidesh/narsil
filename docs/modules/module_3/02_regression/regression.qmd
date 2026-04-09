@@ -1414,78 +1414,256 @@ We will revisit outlier handling in Module 4, where we cover robust methods and 
 :::
 
 # Nonlinear Regression
-
+ 
 :::{.content-hidden unless-format="revealjs"}
-
+ 
 ## When a straight line isn't enough
-
+ 
 :::
-
-We established earlier that **linear in the parameters** does not mean a straight line. Three practically useful forms:
-
+ 
+We established earlier that **linear in the parameters** does not mean a straight line. Here are the three most practically useful nonlinear forms — all estimable by OLS.
+ 
+:::{.content-hidden unless-format="revealjs"}
+ 
+## Log transformations
+ 
+:::
+ 
 ## Log Transformations
-
-:::{.incremental}
-
-- **Log-log** (constant elasticity): $\log y_t = \beta_0 + \beta_1 \log x_t + \varepsilon_t$. Coefficients are elasticities: a 1% change in $x$ corresponds to a $\beta_1$% change in $y$.
-- **Log-lin** (exponential growth): $\log y_t = \beta_0 + \beta_1 t + \varepsilon_t$. Trend coefficient is the constant growth rate.
-- **Lin-log**: $y_t = \beta_0 + \beta_1 \log x_t + \varepsilon_t$. A 1% change in $x$ changes $y$ by $\beta_1 / 100$ units.
-
+ 
+What changes relative to a standard linear regression is not the estimation method — it is the **interpretation of the coefficients**.
+ 
+:::{.content-visible unless-format="revealjs"}
+ 
+| Model | Equation | Interpretation of $\hat{\beta}_1$ |
+|-------|----------|----------------------------------|
+| **Lin-lin** (standard) | $y_t = \beta_0 + \beta_1 x_t + \varepsilon_t$ | 1-unit $\uparrow x$ → $\hat{\beta}_1$-unit change in $y$ |
+| **Log-log** (elasticity) | $\log y_t = \beta_0 + \beta_1 \log x_t + \varepsilon_t$ | 1% $\uparrow x$ → $\hat{\beta}_1$% change in $y$ |
+| **Log-lin** (semi-elasticity) | $\log y_t = \beta_0 + \beta_1 x_t + \varepsilon_t$ | 1-unit $\uparrow x$ → $100\hat{\beta}_1$% change in $y$ |
+| **Lin-log** | $y_t = \beta_0 + \beta_1 \log x_t + \varepsilon_t$ | 1% $\uparrow x$ → $\hat{\beta}_1/100$-unit change in $y$ |
+ 
 :::
-
+ 
+:::{.content-hidden unless-format="revealjs"}
+ 
+| Model | Interpretation of $\hat{\beta}_1$ |
+|-------|------------------------------------|
+| Lin-lin | 1-unit $\uparrow x$ → $\hat{\beta}_1$-unit $\Delta y$ |
+| Log-log | 1% $\uparrow x$ → $\hat{\beta}_1$% $\Delta y$ (elasticity) |
+| Log-lin | 1-unit $\uparrow x$ → $100\hat{\beta}_1$% $\Delta y$ |
+| Lin-log | 1% $\uparrow x$ → $\hat{\beta}_1/100$-unit $\Delta y$ |
+ 
+:::
+ 
+:::{.callout-note collapse="true"}
+## What about other transformations?
+ 
+These interpretations hold cleanly **only for the natural logarithm** ($\ln$). Two common alternatives:
+ 
+- **Logarithm in a different base** (e.g., $\log_{10}$): the coefficient is scaled by $\ln(b)$ where $b$ is the base. The elasticity interpretation is preserved in shape but the numeric value changes — an unnecessary complication. Stick with $\ln$.
+ 
+- **Box-Cox** ($\lambda \neq 0, 1$): the response is on the scale $\frac{y^\lambda - 1}{\lambda}$, which has no clean verbal interpretation. Box-Cox is better used as a pre-processing transformation to stabilize variance before modeling (as in Module 1) than inside a regression model where you need to interpret the coefficients.
+:::
+ 
+:::{.content-hidden unless-format="revealjs"}
+ 
+## Piecewise linear trends
+ 
+:::
+ 
 ## Piecewise Linear Trends
-
-When the trend changes direction or slope at one or more points, a **piecewise linear model** (also called a *broken stick*) can be appropriate.
-
-We use the Boston Marathon winning times as an example — a series with clear structural breaks.
-
+ 
+When the trend changes slope at one or more points in time, a **piecewise linear model** fits separate linear segments joined at **knots**.
+ 
+We use the Boston Marathon winning times — a series with clear structural breaks.
+ 
 ```{r}
 #| label: boston-data
-
+ 
 boston_men <- boston_marathon |>
   filter(Event == "Men's open division") |>
   mutate(Minutes = as.numeric(Time) / 60)
-
+ 
 boston_men |>
   autoplot(Minutes) +
   labs(title = "Boston Marathon: men's open division winning times",
        y = "Minutes", x = NULL)
 ```
-
+ 
+:::{.content-hidden unless-format="revealjs"}
+ 
+## A linear trend first
+ 
+:::
+ 
+:::{.content-visible unless-format="revealjs"}
+ 
+### A linear trend first
+ 
+:::
+ 
+What does a single linear trend produce on this data?
+ 
+```{r}
+#| label: boston-linear-only
+ 
+boston_fit_linear <- boston_men |>
+  model(linear = TSLM(Minutes ~ trend()))
+ 
+boston_men |>
+  autoplot(Minutes, color = "grey60") +
+  geom_line(
+    data = fitted(boston_fit_linear),
+    aes(y = .fitted), color = "#0072B2"
+  ) +
+  autolayer(forecast(boston_fit_linear, h = 10),
+            alpha = 0.5, level = 95) +
+  labs(title = "Boston Marathon: linear trend",
+       y = "Minutes", x = NULL)
+```
+ 
+:::{.fragment}
+The forecast predicts times will keep falling indefinitely — eventually reaching zero. A single linear trend is the wrong functional form here.
+:::
+ 
+:::{.content-hidden unless-format="revealjs"}
+ 
+## Three functional forms
+ 
+:::
+ 
+:::{.content-visible unless-format="revealjs"}
+ 
+### Three functional forms
+ 
+:::
+ 
 ```{r}
 #| label: boston-fit
-
+#| code-line-numbers: "|4,5"
+ 
 boston_fit <- boston_men |>
   model(
     linear      = TSLM(Minutes ~ trend()),
-    exponential = TSLM(log(Minutes) ~ trend()),              #<1>
+    exponential = TSLM(log(Minutes) ~ trend()),                #<1>
     piecewise   = TSLM(Minutes ~ trend(knots = c(1940, 1980))) #<2>
   )
-
-boston_fc <- boston_fit |>
-  forecast(h = 10)
-
+ 
 boston_men |>
   autoplot(Minutes, color = "grey60") +
-  geom_line(data = fitted(boston_fit),
-            aes(y = .fitted, color = .model)) +
-  autolayer(boston_fc, alpha = 0.4, level = 95) +
+  geom_line(
+    data = fitted(boston_fit),
+    aes(y = .fitted, color = .model)
+  ) +
+  autolayer(forecast(boston_fit, h = 10),
+            alpha = 0.4, level = 95) +
   labs(title = "Boston Marathon: three functional forms",
        y = "Minutes", x = NULL, color = "Model") +
   theme(legend.position = "top")
 ```
-
-1. Log-transformed response: assumes exponentially declining times.
-2. `knots` specify the breakpoints where the slope is allowed to change.
-
+ 
+1. Log-transformed response: assumes times decrease at a declining rate.
+2. `knots` specify the years where the slope is allowed to change.
+ 
 ```{r}
 #| label: boston-accuracy
-
+ 
 accuracy(boston_fit) |>
   select(.model, RMSE, MAE, MAPE) |>
   arrange(MAPE)
 ```
-
+ 
+:::{.content-hidden unless-format="revealjs"}
+ 
+## The knot selection problem
+ 
+:::
+ 
+:::{.content-visible unless-format="revealjs"}
+ 
+### The knot selection problem
+ 
+:::
+ 
+A key limitation of piecewise regression: **we must choose the knots ourselves**. Different choices can produce very different forecasts, even when in-sample fit looks similar.
+ 
+```{r}
+#| label: boston-knots
+#| code-line-numbers: "|3,4,5"
+ 
+boston_fit_knots <- boston_men |>
+  model(
+    k1 = TSLM(Minutes ~ trend(knots = c(1940, 1980))),
+    k2 = TSLM(Minutes ~ trend(knots = c(1915, 1950))),
+    k3 = TSLM(Minutes ~ trend(knots = c(1950, 1970, 1990)))
+  )
+ 
+boston_men |>
+  autoplot(Minutes, color = "grey60") +
+  geom_line(
+    data = fitted(boston_fit_knots),
+    aes(y = .fitted, color = .model)
+  ) +
+  autolayer(forecast(boston_fit_knots, h = 10),
+            alpha = 0.4, level = 95) +
+  labs(title = "Different knots → very different forecasts",
+       y = "Minutes", x = NULL, color = "Model") +
+  theme(legend.position = "top")
+```
+ 
 :::{.callout-warning appearance="simple"}
-The piecewise model fits the historical data well, but notice what happens to the forecasts — particularly the linear and piecewise models. **Always inspect the forecast, not just the in-sample fit.** A model can fit the past perfectly and produce absurd predictions for the future.
+These models fit the historical data similarly well — but their forecasts diverge dramatically. **Always inspect the forecast, not just the in-sample fit.** This is one motivation for Prophet (Module 4), which detects changepoints automatically from the data rather than requiring manual specification.
+:::
+ 
+# Summary
+ 
+:::{.content-hidden unless-format="revealjs"}
+ 
+## What we covered
+ 
+:::
+ 
+:::{.content-visible unless-format="revealjs"}
+ 
+| Model | Formula | When to use |
+|-------|---------|-------------|
+| **Simple TSLM** | `TSLM(y ~ x)` | One meaningful exogenous predictor; baseline |
+| **Multiple TSLM** | `TSLM(y ~ x1 + x2 + ...)` | Several predictors; check multicollinearity |
+| **Trend + season** | `TSLM(y ~ trend() + season())` | Deterministic trend and/or fixed seasonality |
+| **Interventions** | `TSLM(y ~ ... + spike + shift)` | Known outliers or structural breaks |
+| **Log-log** | `TSLM(log(y) ~ log(x))` | Elasticity relationships |
+| **Log-lin** | `TSLM(log(y) ~ trend())` | Exponential growth/decay |
+| **Piecewise** | `TSLM(y ~ trend(knots = c(...)))` | Trend with known structural breaks |
+ 
+:::
+ 
+:::{.content-hidden unless-format="revealjs"}
+ 
+| Model | When to use |
+|-------|-------------|
+| Simple TSLM | One predictor; baseline |
+| Multiple TSLM | Several predictors; check VIF |
+| `trend() + season()` | Deterministic patterns |
+| Interventions | Known outliers / breaks |
+| Log-log | Elasticity relationships |
+| Log-lin | Exponential growth |
+| Piecewise | Known structural breaks |
+ 
+:::
+ 
+:::{.incremental}
+ 
+**Key takeaways:**
+ 
+- Regression adds *external context* that purely univariate models cannot capture.
+- Correlation ≠ causality — always.
+- Residual diagnostics are not optional: autocorrelated residuals invalidate inference.
+- Multicollinearity hurts interpretation, but usually not forecast accuracy.
+- For forecasting with regression you must decide what to do with future predictor values: ex-ante, ex-post, or scenario-based.
+- More flexible functional forms improve fit but require careful inspection of the forecasts.
+ 
+:::
+ 
+:::{.callout-note appearance="simple"}
+**Coming up in 3.3:** Dynamic regression — what happens when we let the error term $\varepsilon_t$ follow an ARIMA process instead of assuming white noise. This directly addresses the residual autocorrelation we saw in the simple model.
 :::
