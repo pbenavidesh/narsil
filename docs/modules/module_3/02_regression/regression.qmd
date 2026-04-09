@@ -916,39 +916,6 @@ When two or more predictors are highly correlated, we have **multicollinearity**
 
 :::{.content-hidden unless-format="revealjs"}
 
-### Detecting multicollinearity: VIF
-
-:::
-
-:::{.content-visible unless-format="revealjs"}
-
-### Detecting multicollinearity: VIF
-
-:::
-
-The **Variance Inflation Factor (VIF)** measures how much the variance of $\hat{\beta}_j$ is inflated by its correlation with the other predictors:
-
-$$
-\text{VIF}_j = \frac{1}{1 - R_j^2}
-$$
-
-where $R_j^2$ is the $R^2$ obtained by regressing $x_j$ on all the *other* predictors — a measure of how well one predictor can be linearly predicted by the rest.
-
-:::{.incremental}
-
-- $\text{VIF} = 1$: no collinearity with other predictors.
-- $\text{VIF} \in (1, 5)$: moderate — generally acceptable.
-- $\text{VIF} > 5$: concerning, examine carefully.
-- $\text{VIF} > 10$: severe — take action.
-
-:::
-
-:::{.callout-tip appearance="simple"}
-A quick visual check: if the `ggpairs` scatter matrix shows strong correlations *between predictors* (not between a predictor and $y$), multicollinearity is likely present. The VIF quantifies exactly how severe that problem is.
-:::
-
-:::{.content-hidden unless-format="revealjs"}
-
 ## Detecting multicollinearity: VIF
 
 :::
@@ -967,13 +934,15 @@ $$
 
 where $R_j^2$ is the $R^2$ obtained by regressing $x_j$ on all the *other* predictors — a measure of how well one predictor can be linearly predicted by the rest.
 
-:::{.incremental}
-
 - $\text{VIF} = 1$: no collinearity with other predictors.
 - $\text{VIF} \in (1, 5)$: moderate — generally acceptable.
 - $\text{VIF} > 5$: concerning, examine carefully.
 - $\text{VIF} > 10$: severe — take action.
 
+
+
+:::{.callout-tip appearance="simple"}
+A quick visual check: if the `ggpairs` scatter matrix shows strong correlations *between predictors* (not between a predictor and $y$), multicollinearity is likely present. The VIF quantifies exactly how severe that problem is.
 :::
 
 :::{.content-hidden unless-format="revealjs"}
@@ -1015,13 +984,21 @@ The one scenario where multicollinearity *does* hurt forecasting is if the corre
 :::
 
 Before we can forecast $y_t$ with regression, we need to ask: *what do we do with the predictors?*
-
+ 
 With univariate models, `forecast(h = n)` was sufficient — the model only needed its own history. Now the model needs **future values of $x_t$** to produce a forecast of $y_t$.
-
+ 
 :::{.fragment}
-
-This is not a trivial problem. It creates three distinct forecasting scenarios:
-
+ 
+What changes across the three forecasting types is precisely **what values we assign to the predictors**:
+ 
+:::
+ 
+:::{.incremental}
+ 
+- **Ex-ante**: we forecast the predictors first, then use those forecasts as inputs.
+- **Ex-post**: we use the actual realized values of the predictors.
+- **Scenario-based**: we construct hypothetical values for the predictors.
+ 
 :::
 
 :::{.content-hidden unless-format="revealjs"}
@@ -1159,6 +1136,8 @@ us_change |>
 
 :::
 
+:::{.fragment}
+
 We will illustrate with quarterly beer production in Australia.
 
 ```{r}
@@ -1167,12 +1146,18 @@ We will illustrate with quarterly beer production in Australia.
 beer <- aus_production |>
   filter(year(Quarter) >= 1992) |>
   select(Quarter, Beer)
+```
+
+```{r}
+#| label: beer-plot
 
 beer |>
   autoplot(Beer) +
   labs(title = "Australian quarterly beer production",
        y = "Megalitres", x = NULL)
 ```
+
+:::
 
 ## Trend and Seasonal Dummies
 
