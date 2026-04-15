@@ -61,12 +61,8 @@ vic_elec_daily <- vic_elec |>
   )
 ```
 
-# One Assumption Left to Fix
-
 :::{.content-hidden unless-format="revealjs"}
-
-## Where we left off
-
+## One Assumption Left to Fix
 :::
 
 In the [previous session](../02_regression/regression.qmd), we built a multiple regression model for US consumption:
@@ -102,9 +98,7 @@ If $\varepsilon_t$ is autocorrelated, OLS is still unbiased — but standard err
 :::
 
 :::{.content-hidden unless-format="revealjs"}
-
 ##
-
 :::
 
 The culprit is the **white noise assumption** on $\varepsilon_t$:
@@ -112,6 +106,7 @@ The culprit is the **white noise assumption** on $\varepsilon_t$:
 $$\varepsilon_t \overset{\text{iid}}{\sim} N(0, \sigma^2)$$
 
 What if instead of forcing this, we *modeled* whatever autocorrelation remains?
+
 
 :::{.fragment}
 
@@ -128,13 +123,9 @@ Same predictors. Same regression structure. One assumption relaxed.
 
 :::
 
-# Regression with ARIMA Errors
-
-:::{.content-hidden unless-format="revealjs"}
+# Dynamic Regression
 
 ## The Model
-
-:::
 
 The dynamic regression model replaces the white noise error $\varepsilon_t$ with $\eta_t$, which is allowed to follow an ARIMA process:
 
@@ -222,7 +213,7 @@ ARIMA(y ~ x1 + x2)
 ARIMA(y ~ x1 + x2 + pdq(d = 1))
 ```
 
-# Example: US Consumption
+## Example: US Consumption
 
 :::{.content-hidden unless-format="revealjs"}
 
@@ -395,13 +386,7 @@ us_change_fit_cv |>
 The dynamic regression model passes the Ljung-Box test — something the TSLM could not. By modeling the residual autocorrelation explicitly with ARIMA, we get **valid standard errors**, **correct prediction intervals**, and typically better out-of-sample accuracy.
 :::
 
-# Forecasting with Dynamic Regression
-
-:::{.content-hidden unless-format="revealjs"}
-
-## What changes vs. TSLM?
-
-:::
+## Forecasting
 
 Forecasting works exactly as in [Session 3.2](../02_regression/regression.qmd#forecasting-with-regression) — you still need future values of the predictors, and the same three strategies apply (ex-ante, ex-post, scenario-based).
 
@@ -510,6 +495,8 @@ model(ARIMA(value))         # best ARIMA for each predictor
 
 :::
 
+Overlaying both models on the same plot makes the interval comparison clearer than a faceted view:
+
 ```{r}
 #| label: us-interval-compare
 #| message: false
@@ -532,13 +519,7 @@ us_change_fit_dyn |>
 Dynamic regression intervals assume future predictor values are **known exactly**. When they are estimated (as in the scenario above), true uncertainty is larger than what the intervals show. This applies equally to TSLM — dynamic regression does not make this problem worse, it just fixes the autocorrelation problem.
 :::
 
-# A Second Example: Electricity Demand
-
-:::{.content-hidden unless-format="revealjs"}
-
-##
-
-:::
+## Example: Electricity Demand
 
 The `us_change` example was clean: stationary series, linear relationship. Electricity demand pushes two things further:
 
@@ -680,7 +661,7 @@ The choice of how to encode day type depends on the question you want to answer:
 - **Binary** — `Day_Type == "Weekday"`: distinguishes working days from non-working days (weekends + holidays collapsed together). Simpler, fewer parameters, often sufficient.
 - **Two dummies** — `Day_Type == "Weekday"` and `Day_Type == "Weekend"` (holidays as baseline): allows weekends and holidays to have different demand profiles. Useful if your data shows a meaningful difference between the two.
 
-::: {.fragment}
+:::{.fragment}
 Neither is universally better — let residual diagnostics and AIC$_c$ guide the choice.
 :::
 :::
@@ -746,7 +727,6 @@ forecast(vic_elec_fit, vic_elec_future_26) |>
        y = "Electricity demand (GW)")
 ```
 
-
 ### Heatwave
 
 ```{r}
@@ -763,6 +743,7 @@ vic_elec_future_hw <- new_data(vic_elec_daily, 14) |>
     )
   )
 ```
+
 1. A realistic meteorological forecast — considerably hotter than 26°C.
 
 ```{r}
@@ -775,16 +756,9 @@ forecast(vic_elec_fit, vic_elec_future_hw) |>
        y = "Electricity demand (GW)")
 ```
 
-
 :::
 
-# Lagged Predictors
-
-:::{.content-hidden unless-format="revealjs"}
-
-## When the Effect Is Not Instantaneous
-
-:::
+## Lagged Predictors
 
 So far we have assumed that the predictor $x_t$ affects $y_t$ **at the same point in time**. But many real-world relationships have a **delay**: the cause happens now, the effect shows up later.
 
@@ -804,6 +778,7 @@ Models that include $x_t$ at multiple lags are called **distributed lag models**
 $$y_t = \beta_0 + \delta_0 x_t + \delta_1 x_{t-1} + \delta_2 x_{t-2} + \cdots + \delta_k x_{t-k} + \eta_t$$
 
 Each $\delta_j$ captures the effect of $x$ that occurs $j$ periods after the predictor.
+
 :::
 
 :::{.content-hidden unless-format="revealjs"}
@@ -819,18 +794,6 @@ Each $\delta_j$ captures the effect of $x$ that occurs $j$ periods after the pre
 :::
 
 The `fpp3` package includes the `insurance` dataset: monthly US insurance quotes (a proxy for sales) and TV advertising expenditure:
-
-```{r}
-#| label: insurance-glimpse
-
-insurance
-```
-
-:::{.content-hidden unless-format="revealjs"}
-
-## Exploring the Relationship {auto-animate="true"}
-
-:::
 
 ```{r}
 #| label: insurance-plot
@@ -964,11 +927,7 @@ The last point is important: if $x_t$ is hard to forecast, using $x_{t-k}$ inste
 
 # Harmonic Regression
 
-:::{.content-hidden unless-format="revealjs"}
-
-## A Problem with `vic_elec_daily`
-
-:::
+## When Seasonal Dummies Aren't Enough
 
 The electricity demand example above used **daily** data. Demand has an obvious **annual** seasonal pattern ($m = 365$). If we wanted to capture it with dummy variables, we would need 364 of them.
 
@@ -1072,13 +1031,7 @@ Choose $K$ by minimizing AIC$_c$.
 
 :::
 
-# Example: Australian Café Spending
-
-:::{.content-hidden unless-format="revealjs"}
-
-## The Data
-
-:::
+## Example: Australian Café Spending
 
 Monthly retail turnover for cafés and restaurants in Australia (2004–2018). A clean example of a monthly series with strong, stable seasonality — ideal for comparing values of $K$:
 
@@ -1101,7 +1054,6 @@ aus_cafe |> autoplot(Turnover) +
   labs(title = "Australian café & restaurant turnover",
        y = "AUD (millions)", x = NULL)
 ```
-
 
 :::{.content-hidden unless-format="revealjs"}
 
@@ -1202,13 +1154,7 @@ cafe_fit |>
 - **K = 6**: Reproduces seasonal dummies exactly — can overfit the historical pattern
 :::
 
-# What Comes Next?
-
-:::{.content-hidden unless-format="revealjs"}
-
-##
-
-:::
+## What Comes Next?
 
 The café example had one seasonal period ($m = 12$, monthly). But what if a series has **more than one**?
 
@@ -1248,11 +1194,7 @@ We will answer these questions in **Module 4.1: Complex Seasonality**.
 
 # Summary
 
-:::{.content-hidden unless-format="revealjs"}
-
 ##
-
-:::
 
 :::{.incremental}
 
