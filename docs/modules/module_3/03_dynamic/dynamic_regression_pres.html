@@ -1,0 +1,1838 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<link href="../../../../images/narsil_logo.png" rel="icon" type="image/png">
+<script src="../../../../site_libs/cookie-consent/cookie-consent.js"></script>
+<link href="../../../../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
+<script src="../../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../../site_libs/quarto-html/tabby.min.js"></script>
+<script src="../../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../../site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-4e5466e430b1db38349d513585fd1d59.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.9.37">
+
+  <meta name="author" content="">
+  <title>Time Series Forecasting – Dynamic &amp; Harmonic Regression</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../../../../site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="../../../../site_libs/revealjs/dist/reveal.css">
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+      }
+    pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+    div.sourceCode
+      { color: #383a42;  }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #383a42; } /* Normal */
+    code span.al { color: #95da4c; background-color: #4d1f24; font-weight: bold; } /* Alert */
+    code span.an { color: #50a14f; } /* Annotation */
+    code span.at { color: #a626a4; } /* Attribute */
+    code span.bn { color: #986801; } /* BaseN */
+    code span.bu { color: #a626a4; } /* BuiltIn */
+    code span.cf { color: #a626a4; } /* ControlFlow */
+    code span.ch { color: #50a14f; } /* Char */
+    code span.cn { color: #986801; } /* Constant */
+    code span.co { color: #a0a1a7; font-style: italic; } /* Comment */
+    code span.cv { color: #e45649; font-style: italic; } /* CommentVar */
+    code span.do { color: #e45649; } /* Documentation */
+    code span.dt { color: #a626a4; } /* DataType */
+    code span.dv { color: #986801; } /* DecVal */
+    code span.er { color: #f44747; text-decoration: underline; } /* Error */
+    code span.ex { color: #4078f2; font-weight: bold; } /* Extension */
+    code span.fl { color: #986801; } /* Float */
+    code span.fu { color: #4078f2; } /* Function */
+    code span.im { color: #50a14f; } /* Import */
+    code span.in { color: #c45b00; } /* Information */
+    code span.kw { color: #a626a4; } /* Keyword */
+    code span.op { color: #a626a4; } /* Operator */
+    code span.ot { color: #27ae60; } /* Other */
+    code span.pp { color: #a626a4; } /* Preprocessor */
+    code span.re { color: #2980b9; background-color: #153042; } /* RegionMarker */
+    code span.sc { color: #0184bc; } /* SpecialChar */
+    code span.ss { color: #da4453; } /* SpecialString */
+    code span.st { color: #50a14f; } /* String */
+    code span.va { color: #e45649; } /* Variable */
+    code span.vs { color: #da4453; } /* VerbatimString */
+    code span.wa { color: #da4453; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../../../site_libs/revealjs/dist/theme/quarto-4d89f974941c4a3a96b7bf96b873e9d5.css">
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-BRNYXN29K7"></script>
+
+  <script type="text/plain" cookie-consent="tracking">
+
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-BRNYXN29K7', { 'anonymize_ip': true});
+  </script>
+  
+  <script type="text/javascript" charset="UTF-8">
+  document.addEventListener('DOMContentLoaded', function () {
+  cookieconsent.run({
+    "notice_banner_type":"simple",
+    "consent_type":"express",
+    "palette":"light",
+    "language":"en",
+    "page_load_consent_levels":["strictly-necessary"],
+    "notice_banner_reject_button_hide":false,
+    "preferences_center_close_button_hide":false,
+    "website_name":""
+    ,
+  "language":"en"
+    });
+  });
+  </script> 
+    
+  <link href="../../../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="../../../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="../../../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="../../../../site_libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="../../../../site_libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
+  <link href="../../../../site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <script type="application/json" class="js-hypothesis-config">
+  {
+    "theme": "classic"
+  }
+  </script>
+  <script async="" src="https://hypothes.is/embed.js"></script>
+  <script>
+    window.document.addEventListener("DOMContentLoaded", function (_event) {
+      document.body.classList.add('hypothesis-enabled');
+    });
+  </script>
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+  <link href="../../../../site_libs/htmltools-fill-0.5.9/fill.css" rel="stylesheet">
+  <script src="../../../../site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+  <script src="../../../../site_libs/plotly-binding-4.12.0/plotly.js"></script>
+  <script src="../../../../site_libs/typedarray-0.1/typedarray.min.js"></script>
+  <script src="../../../../site_libs/jquery-3.5.1/jquery.min.js"></script>
+  <link href="../../../../site_libs/crosstalk-1.2.2/css/crosstalk.min.css" rel="stylesheet">
+  <script src="../../../../site_libs/crosstalk-1.2.2/js/crosstalk.min.js"></script>
+  <link href="../../../../site_libs/plotly-htmlwidgets-css-2.25.2/plotly-htmlwidgets.css" rel="stylesheet">
+  <script src="../../../../site_libs/plotly-main-2.25.2/plotly-latest.min.js"></script>
+  <link href="../../../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+  <script src="../../../../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+<meta property="og:title" content="Dynamic &amp; Harmonic Regression – Time Series Forecasting">
+<meta property="og:site_name" content="Time Series Forecasting">
+<meta name="twitter:title" content="Dynamic &amp; Harmonic Regression – Time Series Forecasting">
+<meta name="twitter:creator" content="@PabsBenavides">
+<meta name="twitter:card" content="summary">
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Dynamic &amp; Harmonic Regression</h1>
+
+<div class="quarto-title-authors">
+</div>
+
+</section>
+<section>
+<section id="one-assumption-left-to-fix" class="title-slide slide level1 center">
+<h1>One Assumption Left to Fix</h1>
+
+</section>
+<section id="where-we-left-off" class="slide level2">
+<h2>Where we left off</h2>
+<p>In the <a href="../../../../docs/modules/module_3/02_regression/regression.html">previous session</a>, we built a multiple regression model for US consumption:</p>
+<p><span class="math display">y_{t,\text{Cons.}} = \beta_0 + \beta_1 x_{t,\text{Inc.}} + \beta_2 x_{t,\text{Prod.}} + \beta_3 x_{t,\text{Sav.}} + \beta_4 x_{t,\text{Unemp.}} + \varepsilon_t</span></p>
+<p>The model improved substantially over the simple version — <span class="math inline">\bar{R}^2</span> went from ~0.15 to ~0.75, and the residuals looked much closer to white noise.</p>
+<div class="fragment">
+<p>But “much closer” is not the same as “white noise.” Let’s check:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>us_change_fit_mult <span class="sc">|&gt;</span></span>
+<span id="cb1-2"><a></a>  <span class="fu">augment</span>() <span class="sc">|&gt;</span></span>
+<span id="cb1-3"><a></a>  <span class="fu">features</span>(.resid, ljung_box, <span class="at">lag =</span> <span class="dv">10</span>, <span class="at">dof =</span> <span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[".model"],"name":[1],"type":["chr"],"align":["left"]},{"label":["lb_stat"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["lb_pvalue"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"multiple","2":"18.86532","3":"0.002036368"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p>The p-value is not zero, but in practice with real data there is nearly always <em>some</em> residual autocorrelation left after TSLM. And that matters:</p>
+<div class="callout callout-warning callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>What autocorrelated residuals cost us</strong></p>
+</div>
+<div class="callout-content">
+<p>If <span class="math inline">\varepsilon_t</span> is autocorrelated, OLS is still unbiased — but standard errors are wrong, confidence intervals are wrong, and <strong>prediction intervals are wrong</strong>. The model is leaving structure on the table that could be captured.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="section" class="slide level2">
+<h2></h2>
+<p>The culprit is the <strong>white noise assumption</strong> on <span class="math inline">\varepsilon_t</span>:</p>
+<p><span class="math display">\varepsilon_t \overset{\text{iid}}{\sim} N(0, \sigma^2)</span></p>
+<p>What if instead of forcing this, we <em>modeled</em> whatever autocorrelation remains?</p>
+<div class="fragment">
+<div class="callout callout-note callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>The upgrade: relax the white noise assumption</strong></p>
+</div>
+<div class="callout-content">
+<table class="caption-top">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Model</th>
+<th style="text-align: left;">Error term</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">TSLM</td>
+<td style="text-align: left;"><span class="math inline">\varepsilon_t \overset{\text{iid}}{\sim} N(0,\sigma^2)</span> — must be white noise</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Dynamic regression</strong></td>
+<td style="text-align: left;"><span class="math inline">\eta_t \sim \text{ARIMA}(p,d,q)</span> — <strong>can be autocorrelated</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Same predictors. Same regression structure. One assumption relaxed.</p>
+</div>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="regression-with-arima-errors" class="title-slide slide level1 center">
+<h1>Regression with ARIMA Errors</h1>
+
+</section>
+<section id="the-model" class="slide level2">
+<h2>The Model</h2>
+<p>The dynamic regression model replaces the white noise error <span class="math inline">\varepsilon_t</span> with <span class="math inline">\eta_t</span>, which is allowed to follow an ARIMA process:</p>
+<p><span class="math display">y_t = \beta_0 + \beta_1 x_{1,t} + \cdots + \beta_k x_{k,t} + \eta_t</span></p>
+<p><span class="math display">\eta_t \sim \text{ARIMA}(p, d, q)(P, D, Q)_m</span></p>
+<div class="fragment">
+<p>The model still has white noise — it just lives one level deeper. There are now <strong>two distinct error terms</strong>:</p>
+<div class="callout callout-note callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Two error terms</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li class="fragment"><span class="math inline">\eta_t</span> — the <strong>regression error</strong>: how far <span class="math inline">y_t</span> is from the regression surface. Still autocorrelated, now modeled explicitly.</li>
+<li class="fragment"><span class="math inline">\varepsilon_t</span> — the <strong>ARIMA innovation</strong>: the white noise that drives <span class="math inline">\eta_t</span>. This is the only truly random component.</li>
+</ul>
+<p>We diagnose the model using <span class="math inline">\hat{\varepsilon}_t</span>, not <span class="math inline">\hat{\eta}_t</span>.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="stationarity" class="slide level2">
+<h2>Stationarity</h2>
+<div class="callout callout-warning callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>All variables must be stationary</strong></p>
+</div>
+<div class="callout-content">
+<p>Dynamic regression requires that both <span class="math inline">y_t</span> and all predictors <span class="math inline">x_{k,t}</span> are stationary. If any variable needs differencing, apply it to <strong>all variables simultaneously</strong>. Specifying <code>pdq(d = 1)</code> does this automatically.</p>
+<p>For <code>us_change</code>, all variables are already percentage changes — stationary by construction.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="fitting-in-r" class="slide level2">
+<h2>Fitting in R</h2>
+<p><code>ARIMA()</code> handles dynamic regression by simply adding predictors to the right-hand side of the formula — the same syntax as <code>TSLM()</code>:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a><span class="co"># TSLM — white noise errors assumed</span></span>
+<span id="cb2-2"><a></a><span class="fu">TSLM</span>(y <span class="sc">~</span> x1 <span class="sc">+</span> x2)</span>
+<span id="cb2-3"><a></a></span>
+<span id="cb2-4"><a></a><span class="co"># Dynamic regression — ARIMA errors, order chosen automatically</span></span>
+<span id="cb2-5"><a></a><span class="fu">ARIMA</span>(y <span class="sc">~</span> x1 <span class="sc">+</span> x2)</span>
+<span id="cb2-6"><a></a></span>
+<span id="cb2-7"><a></a><span class="co"># Force differencing on all variables</span></span>
+<span id="cb2-8"><a></a><span class="fu">ARIMA</span>(y <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> <span class="fu">pdq</span>(<span class="at">d =</span> <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section></section>
+<section>
+<section id="example-us-consumption" class="title-slide slide level1 center">
+<h1>Example: US Consumption</h1>
+
+</section>
+<section id="tslm-dynamic-regression" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">TSLM → Dynamic Regression</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb3-1" class="hljs-ln-code"><a></a>us_change <span class="sc">|&gt;</span></span>
+<span id="cb3-2" class="hljs-ln-code"><a></a>  <span class="fu">model</span>(</span>
+<span id="cb3-3" class="hljs-ln-code"><a></a>    <span class="at">tslm    =</span> <span class="fu">TSLM</span>(Consumption <span class="sc">~</span> Income <span class="sc">+</span> Production <span class="sc">+</span> Savings <span class="sc">+</span> Unemployment)</span>
+<span id="cb3-4" class="hljs-ln-code"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="tslm-dynamic-regression-1" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">TSLM → Dynamic Regression</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb4-1" class="hljs-ln-code"><a></a>us_change <span class="sc">|&gt;</span></span>
+<span id="cb4-2" class="hljs-ln-code"><a></a>  <span class="fu">model</span>(</span>
+<span id="cb4-3" class="hljs-ln-code"><a></a>    <span class="at">tslm    =</span> <span class="fu">TSLM</span>(Consumption <span class="sc">~</span> Income <span class="sc">+</span> Production <span class="sc">+</span> Savings <span class="sc">+</span> Unemployment),</span>
+<span id="cb4-4" class="hljs-ln-code"><a></a>    <span class="at">dynamic =</span> <span class="fu">ARIMA</span>(Consumption <span class="sc">~</span> Income <span class="sc">+</span> Production <span class="sc">+</span> Savings <span class="sc">+</span> Unemployment)</span>
+<span id="cb4-5" class="hljs-ln-code"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="fitting-the-dynamic-regression" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Fitting the Dynamic Regression</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="annotated-cell-2-1" class="hljs-ln-code"><a href="#annotated-cell-2-1"></a>us_change_fit_dyn <span class="ot">&lt;-</span> us_change <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-2-2" class="hljs-ln-code"><a href="#annotated-cell-2-2"></a>  <span class="fu">model</span>(</span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-2" data-target-annotation="1">1</button><span id="annotated-cell-2-3" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-2-3"></a>    <span class="at">tslm    =</span> <span class="fu">TSLM</span>(Consumption <span class="sc">~</span> Income <span class="sc">+</span> Production <span class="sc">+</span></span>
+<span id="annotated-cell-2-4" class="hljs-ln-code"><a href="#annotated-cell-2-4"></a>                     Savings <span class="sc">+</span> Unemployment),</span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-2" data-target-annotation="2">2</button><span id="annotated-cell-2-5" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-2-5"></a>    <span class="at">dynamic =</span> <span class="fu">ARIMA</span>(Consumption <span class="sc">~</span> Income <span class="sc">+</span> Production <span class="sc">+</span></span>
+<span id="annotated-cell-2-6" class="hljs-ln-code"><a href="#annotated-cell-2-6"></a>                      Savings <span class="sc">+</span> Unemployment)</span>
+<span id="annotated-cell-2-7" class="hljs-ln-code"><a href="#annotated-cell-2-7"></a>  )</span>
+<span id="annotated-cell-2-8" class="hljs-ln-code"><a href="#annotated-cell-2-8"></a></span>
+<span id="annotated-cell-2-9" class="hljs-ln-code"><a href="#annotated-cell-2-9"></a>us_change_fit_dyn <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-2-10" class="hljs-ln-code"><a href="#annotated-cell-2-10"></a>  <span class="fu">select</span>(dynamic) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-2-11" class="hljs-ln-code"><a href="#annotated-cell-2-11"></a>  <span class="fu">report</span>()</span><div class="code-annotation-gutter-bg hljs-ln-code"></div><div class="code-annotation-gutter hljs-ln-code"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-2" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="3" data-code-annotation="1">Our previous model — kept here for direct comparison.</span>
+</dd>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="5" data-code-annotation="2">Same predictors, same formula structure. <code>ARIMA()</code> selects the error order automatically via AIC<span class="math inline">_c</span>.</span>
+</dd>
+</dl>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Series: Consumption 
+Model: LM w/ ARIMA(0,1,2) errors 
+
+Coefficients:
+          ma1     ma2  Income  Production  Savings  Unemployment
+      -1.0882  0.1118  0.7472      0.0370  -0.0531       -0.2096
+s.e.   0.0692  0.0676  0.0403      0.0229   0.0029        0.0986
+
+sigma^2 estimated as 0.09588:  log likelihood=-47.13
+AIC=108.27   AICc=108.86   BIC=131.25</code></pre>
+</div>
+</div>
+</section>
+<section id="two-types-of-residuals" class="slide level2">
+<h2>Two Types of Residuals</h2>
+<p>We can extract both error types from the fitted model:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1"></a><span class="fu">bind_rows</span>(</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1">1</button><span id="annotated-cell-3-2" class="code-annotation-target"><a href="#annotated-cell-3-2"></a>  <span class="st">`</span><span class="at">Regression errors</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">as_tibble</span>(</span>
+<span id="annotated-cell-3-3"><a href="#annotated-cell-3-3"></a>    <span class="fu">residuals</span>(us_change_fit_dyn <span class="sc">|&gt;</span> <span class="fu">select</span>(dynamic),</span>
+<span id="annotated-cell-3-4"><a href="#annotated-cell-3-4"></a>              <span class="at">type =</span> <span class="st">"regression"</span>)),</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="2">2</button><span id="annotated-cell-3-5" class="code-annotation-target"><a href="#annotated-cell-3-5"></a>  <span class="st">`</span><span class="at">ARIMA innovations</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">as_tibble</span>(</span>
+<span id="annotated-cell-3-6"><a href="#annotated-cell-3-6"></a>    <span class="fu">residuals</span>(us_change_fit_dyn <span class="sc">|&gt;</span> <span class="fu">select</span>(dynamic),</span>
+<span id="annotated-cell-3-7"><a href="#annotated-cell-3-7"></a>              <span class="at">type =</span> <span class="st">"innovation"</span>)),</span>
+<span id="annotated-cell-3-8"><a href="#annotated-cell-3-8"></a>  <span class="at">.id =</span> <span class="st">"type"</span></span>
+<span id="annotated-cell-3-9"><a href="#annotated-cell-3-9"></a>) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-3-10"><a href="#annotated-cell-3-10"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Quarter, <span class="at">y =</span> .resid)) <span class="sc">+</span></span>
+<span id="annotated-cell-3-11"><a href="#annotated-cell-3-11"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="annotated-cell-3-12"><a href="#annotated-cell-3-12"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> type, <span class="at">nrow =</span> <span class="dv">2</span>, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
+<span id="annotated-cell-3-13"><a href="#annotated-cell-3-13"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="cn">NULL</span>, <span class="at">x =</span> <span class="cn">NULL</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-3" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-3" data-code-lines="2" data-code-annotation="1"><code>type = "regression"</code> → <span class="math inline">\hat{\eta}_t</span>: the regression residuals. These still have autocorrelation structure, now captured by the ARIMA component.</span>
+</dd>
+<dt data-target-cell="annotated-cell-3" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-3" data-code-lines="5" data-code-annotation="2"><code>type = "innovation"</code> → <span class="math inline">\hat{\varepsilon}_t</span>: what should be white noise. This is what we diagnose.</span>
+</dd>
+</dl>
+</div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="dynamic_regression_files/figure-html/us-two-residuals-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img data-src="dynamic_regression_files/figure-html/us-two-residuals-1.png" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="residual-diagnostics" class="slide level2">
+<h2>Residual Diagnostics</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>us_change_fit_dyn <span class="sc">|&gt;</span></span>
+<span id="cb6-2"><a></a>  <span class="fu">select</span>(dynamic) <span class="sc">|&gt;</span></span>
+<span id="cb6-3"><a></a>  <span class="fu">gg_tsresiduals</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="dynamic_regression_files/figure-html/us-diagnostics-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img data-src="dynamic_regression_files/figure-html/us-diagnostics-1.png" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-5"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-5-1"><a href="#annotated-cell-5-1"></a>us_change_fit_dyn <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-5-2"><a href="#annotated-cell-5-2"></a>  <span class="fu">select</span>(dynamic) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-5-3"><a href="#annotated-cell-5-3"></a>  <span class="fu">augment</span>() <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-5-4"><a href="#annotated-cell-5-4"></a>  <span class="fu">features</span>(.innov, ljung_box,</span>
+<span id="annotated-cell-5-5"><a href="#annotated-cell-5-5"></a>           <span class="at">lag =</span> <span class="dv">10</span>,</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-5" data-target-annotation="1">1</button><span id="annotated-cell-5-6" class="code-annotation-target"><a href="#annotated-cell-5-6"></a>           <span class="at">dof =</span> us_change_fit_dyn <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-5-7"><a href="#annotated-cell-5-7"></a>                   <span class="fu">select</span>(dynamic) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-5-8"><a href="#annotated-cell-5-8"></a>                   <span class="fu">coefficients</span>() <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-5-9"><a href="#annotated-cell-5-9"></a>                   <span class="fu">filter</span>(<span class="fu">str_detect</span>(term, <span class="st">"^ar|^ma"</span>)) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-5-10"><a href="#annotated-cell-5-10"></a>                   <span class="fu">nrow</span>())</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-5" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-5" data-code-lines="6" data-code-annotation="1"><code>dof</code> is computed dynamically as the number of estimated AR and MA coefficients — always matches the fitted model regardless of order selected.</span>
+</dd>
+</dl>
+</div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[".model"],"name":[1],"type":["chr"],"align":["left"]},{"label":["lb_stat"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["lb_pvalue"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"dynamic","2":"16.36015","3":"0.03750591"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section>
+<section id="does-it-actually-improve-things" class="slide level2">
+<h2>Does It Actually Improve Things?</h2>
+<p>Let’s compare the two models side by side on a held-out test set:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a>us_change_train <span class="ot">&lt;-</span> us_change <span class="sc">|&gt;</span> <span class="fu">filter_index</span>(. <span class="sc">~</span> <span class="st">"2015 Q4"</span>)</span>
+<span id="cb7-2"><a></a>us_change_test  <span class="ot">&lt;-</span> us_change <span class="sc">|&gt;</span> <span class="fu">filter_index</span>(<span class="st">"2016 Q1"</span> <span class="sc">~</span> .)</span>
+<span id="cb7-3"><a></a></span>
+<span id="cb7-4"><a></a>us_change_fit_cv <span class="ot">&lt;-</span> us_change_train <span class="sc">|&gt;</span></span>
+<span id="cb7-5"><a></a>  <span class="fu">model</span>(</span>
+<span id="cb7-6"><a></a>    <span class="at">tslm    =</span> <span class="fu">TSLM</span>(Consumption <span class="sc">~</span> Income <span class="sc">+</span> Production <span class="sc">+</span> Savings <span class="sc">+</span> Unemployment),</span>
+<span id="cb7-7"><a></a>    <span class="at">dynamic =</span> <span class="fu">ARIMA</span>(Consumption <span class="sc">~</span> Income <span class="sc">+</span> Production <span class="sc">+</span> Savings <span class="sc">+</span> Unemployment)</span>
+<span id="cb7-8"><a></a>  )</span>
+<span id="cb7-9"><a></a></span>
+<span id="cb7-10"><a></a>us_change_fit_cv <span class="sc">|&gt;</span></span>
+<span id="cb7-11"><a></a>  <span class="fu">forecast</span>(<span class="at">new_data =</span> us_change_test) <span class="sc">|&gt;</span></span>
+<span id="cb7-12"><a></a>  <span class="fu">accuracy</span>(us_change_test) <span class="sc">|&gt;</span></span>
+<span id="cb7-13"><a></a>  <span class="fu">select</span>(.model, RMSE, MAE, MAPE)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[".model"],"name":[1],"type":["chr"],"align":["left"]},{"label":["RMSE"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["MAE"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["MAPE"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"dynamic","2":"0.1240829","3":"0.1060388","4":"19.11745"},{"1":"tslm","2":"0.1426582","3":"0.1228563","4":"24.34260"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div class="callout callout-important callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Key insight</strong></p>
+</div>
+<div class="callout-content">
+<p>The dynamic regression model passes the Ljung-Box test — something the TSLM could not. By modeling the residual autocorrelation explicitly with ARIMA, we get <strong>valid standard errors</strong>, <strong>correct prediction intervals</strong>, and typically better out-of-sample accuracy.</p>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="forecasting-with-dynamic-regression" class="title-slide slide level1 center">
+<h1>Forecasting with Dynamic Regression</h1>
+
+</section>
+<section id="what-changes-vs.-tslm" class="slide level2">
+<h2>What changes vs.&nbsp;TSLM?</h2>
+<p>Forecasting works exactly as in <a href="../../../../docs/modules/module_3/02_regression/regression.html#forecasting-with-regression">Session 3.2</a> — you still need future values of the predictors, and the same three strategies apply (ex-ante, ex-post, scenario-based).</p>
+<div class="fragment">
+<p>The only practical difference: you use <code>new_data()</code> to build the future dataset and pass it to <code>forecast()</code>. The ARIMA component of the errors is projected forward automatically.</p>
+</div>
+</section>
+<section id="scenario-forecast" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Scenario Forecast</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb8-1" class="hljs-ln-code"><a></a>us_change_future <span class="ot">&lt;-</span> <span class="fu">new_data</span>(us_change, <span class="dv">8</span>)</span>
+<span id="cb8-2" class="hljs-ln-code"><a></a>us_change_future</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["Quarter"],"name":[1],"type":["qtr"],"align":["right"]}],"data":[{"1":"2019 Q3"},{"1":"2019 Q4"},{"1":"2020 Q1"},{"1":"2020 Q2"},{"1":"2020 Q3"},{"1":"2020 Q4"},{"1":"2021 Q1"},{"1":"2021 Q2"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section>
+<section id="scenario-forecast-1" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Scenario Forecast</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb9-1" class="hljs-ln-code"><a></a>us_change_future <span class="ot">&lt;-</span> <span class="fu">new_data</span>(us_change, <span class="dv">8</span>) <span class="sc">|&gt;</span></span>
+<span id="cb9-2" class="hljs-ln-code"><a></a>  <span class="fu">mutate</span>(</span>
+<span id="cb9-3" class="hljs-ln-code"><a></a>    <span class="at">Income       =</span> <span class="fu">mean</span>(us_change<span class="sc">$</span>Income),</span>
+<span id="cb9-4" class="hljs-ln-code"><a></a>    <span class="at">Production   =</span> <span class="fu">mean</span>(us_change<span class="sc">$</span>Production),</span>
+<span id="cb9-5" class="hljs-ln-code"><a></a>    <span class="at">Savings      =</span> <span class="fu">mean</span>(us_change<span class="sc">$</span>Savings),</span>
+<span id="cb9-6" class="hljs-ln-code"><a></a>    <span class="at">Unemployment =</span> <span class="fu">mean</span>(us_change<span class="sc">$</span>Unemployment)</span>
+<span id="cb9-7" class="hljs-ln-code"><a></a>  )</span>
+<span id="cb9-8" class="hljs-ln-code"><a></a>us_change_future</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["Quarter"],"name":[1],"type":["qtr"],"align":["right"]},{"label":["Income"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["Production"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Savings"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["Unemployment"],"name":[5],"type":["dbl"],"align":["right"]}],"data":[{"1":"2019 Q3","2":"0.7281687","3":"0.5070827","4":"1.392258","5":"0.001010101"},{"1":"2019 Q4","2":"0.7281687","3":"0.5070827","4":"1.392258","5":"0.001010101"},{"1":"2020 Q1","2":"0.7281687","3":"0.5070827","4":"1.392258","5":"0.001010101"},{"1":"2020 Q2","2":"0.7281687","3":"0.5070827","4":"1.392258","5":"0.001010101"},{"1":"2020 Q3","2":"0.7281687","3":"0.5070827","4":"1.392258","5":"0.001010101"},{"1":"2020 Q4","2":"0.7281687","3":"0.5070827","4":"1.392258","5":"0.001010101"},{"1":"2021 Q1","2":"0.7281687","3":"0.5070827","4":"1.392258","5":"0.001010101"},{"1":"2021 Q2","2":"0.7281687","3":"0.5070827","4":"1.392258","5":"0.001010101"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section>
+<section id="scenario-forecast-2" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Scenario Forecast</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-7"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-7" data-target-annotation="1">1</button><span id="annotated-cell-7-1" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-7-1"></a>us_change_future <span class="ot">&lt;-</span> <span class="fu">new_data</span>(us_change, <span class="dv">8</span>) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-7-2" class="hljs-ln-code"><a href="#annotated-cell-7-2"></a>  <span class="fu">mutate</span>(</span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-7" data-target-annotation="2">2</button><span id="annotated-cell-7-3" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-7-3"></a>    <span class="at">Income       =</span> <span class="fu">mean</span>(us_change<span class="sc">$</span>Income),</span>
+<span id="annotated-cell-7-4" class="hljs-ln-code"><a href="#annotated-cell-7-4"></a>    <span class="at">Production   =</span> <span class="fu">mean</span>(us_change<span class="sc">$</span>Production),</span>
+<span id="annotated-cell-7-5" class="hljs-ln-code"><a href="#annotated-cell-7-5"></a>    <span class="at">Savings      =</span> <span class="fu">mean</span>(us_change<span class="sc">$</span>Savings),</span>
+<span id="annotated-cell-7-6" class="hljs-ln-code"><a href="#annotated-cell-7-6"></a>    <span class="at">Unemployment =</span> <span class="fu">mean</span>(us_change<span class="sc">$</span>Unemployment)</span>
+<span id="annotated-cell-7-7" class="hljs-ln-code"><a href="#annotated-cell-7-7"></a>  )</span>
+<span id="annotated-cell-7-8" class="hljs-ln-code"><a href="#annotated-cell-7-8"></a></span>
+<span id="annotated-cell-7-9" class="hljs-ln-code"><a href="#annotated-cell-7-9"></a>us_change_fit_dyn <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-7-10" class="hljs-ln-code"><a href="#annotated-cell-7-10"></a>  <span class="fu">select</span>(dynamic) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-7-11" class="hljs-ln-code"><a href="#annotated-cell-7-11"></a>  <span class="fu">forecast</span>(<span class="at">new_data =</span> us_change_future) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-7-12" class="hljs-ln-code"><a href="#annotated-cell-7-12"></a>  <span class="fu">autoplot</span>(<span class="fu">tail</span>(us_change, <span class="dv">60</span>)) <span class="sc">+</span></span>
+<span id="annotated-cell-7-13" class="hljs-ln-code"><a href="#annotated-cell-7-13"></a>  <span class="fu">labs</span>(</span>
+<span id="annotated-cell-7-14" class="hljs-ln-code"><a href="#annotated-cell-7-14"></a>    <span class="at">title =</span> <span class="st">"US Consumption: dynamic regression forecast"</span>,</span>
+<span id="annotated-cell-7-15" class="hljs-ln-code"><a href="#annotated-cell-7-15"></a>    <span class="at">subtitle =</span> <span class="st">"Baseline scenario: all predictors at their historical mean"</span>,</span>
+<span id="annotated-cell-7-16" class="hljs-ln-code"><a href="#annotated-cell-7-16"></a>    <span class="at">y =</span> <span class="st">"% change"</span>, <span class="at">x =</span> <span class="cn">NULL</span></span>
+<span id="annotated-cell-7-17" class="hljs-ln-code"><a href="#annotated-cell-7-17"></a>  )</span><div class="code-annotation-gutter-bg hljs-ln-code"></div><div class="code-annotation-gutter hljs-ln-code"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-7" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-7" data-code-lines="1" data-code-annotation="1"><code>new_data()</code> creates 8 future rows preserving the tsibble index.</span>
+</dd>
+<dt data-target-cell="annotated-cell-7" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-7" data-code-lines="3" data-code-annotation="2">Baseline scenario: each predictor held at its long-run average.</span>
+</dd>
+</dl>
+</div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="dynamic_regression_files/figure-html/us-forecast-full-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img data-src="dynamic_regression_files/figure-html/us-forecast-full-1.png" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="tslm-vs.-dynamic-prediction-intervals" class="slide level2">
+<h2>TSLM vs.&nbsp;Dynamic: Prediction Intervals</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="dynamic_regression_files/figure-html/us-interval-compare-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img data-src="dynamic_regression_files/figure-html/us-interval-compare-1.png" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-warning callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>The prediction interval caveat</strong></p>
+</div>
+<div class="callout-content">
+<p>Dynamic regression intervals assume future predictor values are <strong>known exactly</strong>. When they are estimated (as in the scenario above), true uncertainty is larger than what the intervals show. This applies equally to TSLM — dynamic regression does not make this problem worse, it just fixes the autocorrelation problem.</p>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="a-second-example-electricity-demand" class="title-slide slide level1 center">
+<h1>A Second Example: Electricity Demand</h1>
+
+</section>
+<section id="why-a-second-example" class="slide level2">
+<h2>Why a Second Example?</h2>
+<p>The <code>us_change</code> example was clean: stationary series, linear relationship, one seasonal period. Electricity demand pushes two things further:</p>
+<ul>
+<li class="fragment">A <strong>nonlinear</strong> relationship between the predictor and the response</li>
+<li class="fragment">A <strong>categorical</strong> predictor (day type) alongside a continuous one</li>
+</ul>
+</section>
+<section id="the-data" class="slide level2">
+<h2>The Data</h2>
+<p>Daily electricity demand in Victoria, Australia (2014):</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="plotly html-widget html-fill-item" id="htmlwidget-0f7861dc65a46a43a8d4" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-0f7861dc65a46a43a8d4">{"x":{"data":[{"x":[26,34.5,32.100000000000001,18.800000000000001,18.100000000000001,20.5,15.4,28.899999999999999,23.399999999999999,20.100000000000001],"y":[175.18496186199999,228.91909595600001,213.897341764,177.74740577400001,181.331985508,189.68155756199999,206.50462444199999,187.16453987200001,167.04208985,166.73390342600001],"text":["Temperature: 26.0<br />Demand: 175.1850<br />Day_Type: Holiday","Temperature: 34.5<br />Demand: 228.9191<br />Day_Type: Holiday","Temperature: 32.1<br />Demand: 213.8973<br />Day_Type: Holiday","Temperature: 18.8<br />Demand: 177.7474<br />Day_Type: Holiday","Temperature: 18.1<br />Demand: 181.3320<br />Day_Type: Holiday","Temperature: 20.5<br />Demand: 189.6816<br />Day_Type: Holiday","Temperature: 15.4<br />Demand: 206.5046<br />Day_Type: Holiday","Temperature: 28.9<br />Demand: 187.1645<br />Day_Type: Holiday","Temperature: 23.4<br />Demand: 167.0421<br />Day_Type: Holiday","Temperature: 20.1<br />Demand: 166.7339<br />Day_Type: Holiday"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(228,26,28,1)","opacity":0.69999999999999996,"size":5.6692913385826778,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(228,26,28,1)"}},"hoveron":"points","name":"Holiday","legendgroup":"Holiday","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[23,22.199999999999999,19.600000000000001,20,27.399999999999999,32.399999999999999,34,30,42.399999999999999,41.5,43.200000000000003,43.100000000000001,24,23.100000000000001,23.300000000000001,29.600000000000001,22.399999999999999,41.399999999999999,24.5,29.199999999999999,26.800000000000001,33.899999999999999,25.699999999999999,30.5,35.100000000000001,35.600000000000001,24.699999999999999,26.199999999999999,26.899999999999999,26.600000000000001,26.600000000000001,25.300000000000001,30.199999999999999,25.399999999999999,20.300000000000001,20.399999999999999,24.300000000000001,32.700000000000003,21.800000000000001,21.5,23.5,25,33.299999999999997,26.399999999999999,20.800000000000001,22.5,31.100000000000001,21.800000000000001,22.699999999999999,26.199999999999999,24.699999999999999,24.100000000000001,22.199999999999999,30.699999999999999,22.899999999999999,18.800000000000001,24.399999999999999,26.899999999999999,25.300000000000001,21.5,30.100000000000001,32.899999999999999,26.600000000000001,18.199999999999999,19.699999999999999,24.5,22,17.800000000000001,18.899999999999999,18.899999999999999,20.699999999999999,21.100000000000001,21.600000000000001,24.300000000000001,17.600000000000001,19.199999999999999,18.300000000000001,21.300000000000001,22.300000000000001,17.600000000000001,15.6,13.9,16.399999999999999,16,16.199999999999999,18.399999999999999,18.300000000000001,19.899999999999999,20.100000000000001,20.199999999999999,22.399999999999999,22.800000000000001,22.800000000000001,21.600000000000001,23.100000000000001,20.899999999999999,20.300000000000001,20.800000000000001,21.699999999999999,18,15.800000000000001,17.699999999999999,16.399999999999999,16.399999999999999,18.100000000000001,16.699999999999999,15.4,18.300000000000001,16.199999999999999,16.199999999999999,16.5,17,15.800000000000001,14.199999999999999,12.199999999999999,15.1,14.4,14.300000000000001,15.699999999999999,15.6,14.5,13.1,13.1,16.600000000000001,12.4,12.4,15.699999999999999,14.300000000000001,13.300000000000001,14.699999999999999,14.4,13.1,12.9,14.6,12.1,13.800000000000001,12.9,12.199999999999999,13.4,14.9,15.9,16.699999999999999,16.5,18.899999999999999,19.300000000000001,9.8000000000000007,15.199999999999999,16.5,15.9,13.6,15.9,12.699999999999999,12.699999999999999,14.5,14.800000000000001,16.899999999999999,13.6,13.300000000000001,13.300000000000001,17.399999999999999,20.600000000000001,16.100000000000001,18.699999999999999,19.5,20,15,17.800000000000001,16.100000000000001,14.800000000000001,15.9,16.699999999999999,20.800000000000001,20.699999999999999,19.100000000000001,17.100000000000001,15.9,18,14.800000000000001,16.199999999999999,13.699999999999999,15.5,23,25.300000000000001,23.5,17,19.300000000000001,22.899999999999999,23.800000000000001,15.9,17.399999999999999,18.100000000000001,25,17.899999999999999,18.699999999999999,23.100000000000001,24.899999999999999,15.5,16.899999999999999,17.100000000000001,16.699999999999999,18.100000000000001,20.600000000000001,28.199999999999999,31.100000000000001,22.699999999999999,30.399999999999999,22.800000000000001,19.699999999999999,22.5,21.800000000000001,32.700000000000003,23.300000000000001,17.800000000000001,23.5,32.799999999999997,20.199999999999999,18.800000000000001,24.300000000000001,30.600000000000001,27.699999999999999,20.100000000000001,20.899999999999999,29.600000000000001,28.100000000000001,23,19.600000000000001,21.800000000000001,18.699999999999999,19.399999999999999,20.5,29,26,23.5,26.399999999999999,21.199999999999999,21.199999999999999,20.800000000000001,21.100000000000001,21.399999999999999,27.399999999999999,23.399999999999999,32.100000000000001,22.300000000000001,24,19.899999999999999,24.699999999999999,26.699999999999999,22.199999999999999,26.199999999999999,24.399999999999999,25.5],"y":[188.350595602,189.08556052200001,195.24108183199999,199.770460606,205.33886684199999,227.33365826199997,258.11062321600002,253.207812932,319.90470672600003,344.80266765599998,346.72306780399998,334.85586338600001,228.11304676600002,222.491505198,220.46110749799999,239.87924858399998,225.569833418,309.04075047600003,244.23308851599998,257.87371823799998,259.45958838400003,267.09423429400005,221.77983174799999,236.558023964,275.36262342199996,283.89401526,222.47682444999998,238.34293,251.912281374,251.11088054199999,242.57786244799999,215.79380890199999,232.202104534,222.77090912399999,210.137261596,211.71299486999999,220.98654280400001,237.558616126,220.73300598599999,216.802008594,214.83649136399998,227.55385962199998,254.83024238800002,234.79622046,216.74933621,215.89988485000001,240.332281464,220.76317634400002,219.17254285600001,223.84619471599999,212.09245668400001,216.782414066,215.99909863400001,226.49187993800001,222.35405805600001,213.16695584199999,214.722154706,217.379516628,221.64523680600001,215.07044349199998,229.85474559800002,252.87816638400002,236.08897255599999,222.67246730399998,219.01320879400001,218.47447634399998,226.201756238,225.59934418200001,223.88077097799999,220.39874308,212.90143927400001,216.10341986600002,218.360304206,215.11368572000001,219.84558753799999,218.90369703800002,217.97076699800002,222.725282768,226.89398751599998,227.83825056200001,234.15135243,234.875479598,237.88574822999999,240.61531435000001,240.36338904600001,241.350194426,236.74970233200003,229.35439094200001,230.01640465599999,224.46371095999999,216.95920508400002,212.63053643400002,217.062319264,224.37706387599999,221.94096546,222.48992668599999,221.56587294400001,226.05098972600001,226.917460584,230.292681426,234.660413654,231.84855444999999,232.58764708999999,235.01137710799998,230.997025364,232.08747946599999,234.6715011,235.77818619199999,241.09938010400001,243.61672252400001,237.21257707800001,241.32064945200003,244.756767862,244.58834474999998,252.89744983399999,239.69476055000001,245.35764913199998,261.774488502,248.24762010199998,243.38959462399998,241.59153925000001,255.00559693999998,254.81011255199999,245.08645090600001,247.86687202600001,249.05204299600001,241.26000296199999,242.97246376199999,257.59907242600002,257.98055023000001,247.654738106,258.828692886,264.18271463000002,253.52318994400002,259.80501126600001,256.23546869800003,258.82780334199998,268.98456433399997,267.23545474600002,269.35439535800003,253.27478474,242.07252700000001,246.404601926,237.88414774399999,239.61865251,263.314798322,256.61974377000001,250.481639172,246.81547927800003,252.00979397999998,243.56900636999998,261.05864082800002,262.47509844000001,253.51555816799998,249.853049548,244.954895408,250.250471944,248.265012146,247.30344116799998,242.79371562400001,231.16521164399998,239.12676042800001,236.93225351999999,233.073962462,233.12211449400002,233.82076382,236.26964391600001,238.223979566,241.45169734199999,241.70538181200001,233.516562276,218.22762549800001,222.727432448,222.02129169200001,226.73725464999998,231.36829174399998,225.46406487199999,235.698203312,236.13288313199999,241.150931614,230.36401564400001,217.468430896,215.15635596199999,215.46607728000001,217.79783882800001,214.79959746200001,207.73045367200001,218.17463464400001,224.69419311600001,224.90238728399999,212.365593856,220.77132927600002,216.51532547800002,221.08990057,217.99558691000001,214.05575420600002,221.18164062,228.66460016600001,226.04415517999999,224.403837372,214.741426864,212.65731740599998,222.803362792,232.982681754,224.74708222199999,228.031393366,212.42466206999998,220.76739799399999,218.75960698,218.70145409000003,226.66629143599999,200.7506267,206.21910687399998,212.02754662199999,226.86137636000001,211.403746152,215.166368216,222.21828137599999,239.191247226,224.29770661800001,208.039017008,211.84900755199999,217.29329812,228.76368395199998,215.41137535600001,222.04411859200002,213.975113182,217.91527415799999,214.96740545599999,212.7103295,242.79525753199999,232.767969846,228.16751905999999,235.780096528,224.449081208,215.69831934999999,217.047085896,219.748324072,215.89641582200002,219.04091819999999,227.74931183799998,231.62586415000001,213.77564335400001,216.44738395799999,206.09843197399999,230.291012744,219.995396454,193.18940929800002,191.59631740399999,186.10090791599998,186.198469614],"text":["Temperature: 23.0<br />Demand: 188.3506<br />Day_Type: Weekday","Temperature: 22.2<br />Demand: 189.0856<br />Day_Type: Weekday","Temperature: 19.6<br />Demand: 195.2411<br />Day_Type: Weekday","Temperature: 20.0<br />Demand: 199.7705<br />Day_Type: Weekday","Temperature: 27.4<br />Demand: 205.3389<br />Day_Type: Weekday","Temperature: 32.4<br />Demand: 227.3337<br />Day_Type: Weekday","Temperature: 34.0<br />Demand: 258.1106<br />Day_Type: Weekday","Temperature: 30.0<br />Demand: 253.2078<br />Day_Type: Weekday","Temperature: 42.4<br />Demand: 319.9047<br />Day_Type: Weekday","Temperature: 41.5<br />Demand: 344.8027<br />Day_Type: Weekday","Temperature: 43.2<br />Demand: 346.7231<br />Day_Type: Weekday","Temperature: 43.1<br />Demand: 334.8559<br />Day_Type: Weekday","Temperature: 24.0<br />Demand: 228.1130<br />Day_Type: Weekday","Temperature: 23.1<br />Demand: 222.4915<br />Day_Type: Weekday","Temperature: 23.3<br />Demand: 220.4611<br />Day_Type: Weekday","Temperature: 29.6<br />Demand: 239.8792<br />Day_Type: Weekday","Temperature: 22.4<br />Demand: 225.5698<br />Day_Type: Weekday","Temperature: 41.4<br />Demand: 309.0408<br />Day_Type: Weekday","Temperature: 24.5<br />Demand: 244.2331<br />Day_Type: Weekday","Temperature: 29.2<br />Demand: 257.8737<br />Day_Type: Weekday","Temperature: 26.8<br />Demand: 259.4596<br />Day_Type: Weekday","Temperature: 33.9<br />Demand: 267.0942<br />Day_Type: Weekday","Temperature: 25.7<br />Demand: 221.7798<br />Day_Type: Weekday","Temperature: 30.5<br />Demand: 236.5580<br />Day_Type: Weekday","Temperature: 35.1<br />Demand: 275.3626<br />Day_Type: Weekday","Temperature: 35.6<br />Demand: 283.8940<br />Day_Type: Weekday","Temperature: 24.7<br />Demand: 222.4768<br />Day_Type: Weekday","Temperature: 26.2<br />Demand: 238.3429<br />Day_Type: Weekday","Temperature: 26.9<br />Demand: 251.9123<br />Day_Type: Weekday","Temperature: 26.6<br />Demand: 251.1109<br />Day_Type: Weekday","Temperature: 26.6<br />Demand: 242.5779<br />Day_Type: Weekday","Temperature: 25.3<br />Demand: 215.7938<br />Day_Type: Weekday","Temperature: 30.2<br />Demand: 232.2021<br />Day_Type: Weekday","Temperature: 25.4<br />Demand: 222.7709<br />Day_Type: Weekday","Temperature: 20.3<br />Demand: 210.1373<br />Day_Type: Weekday","Temperature: 20.4<br />Demand: 211.7130<br />Day_Type: Weekday","Temperature: 24.3<br />Demand: 220.9865<br />Day_Type: Weekday","Temperature: 32.7<br />Demand: 237.5586<br />Day_Type: Weekday","Temperature: 21.8<br />Demand: 220.7330<br />Day_Type: Weekday","Temperature: 21.5<br />Demand: 216.8020<br />Day_Type: Weekday","Temperature: 23.5<br />Demand: 214.8365<br />Day_Type: Weekday","Temperature: 25.0<br />Demand: 227.5539<br />Day_Type: Weekday","Temperature: 33.3<br />Demand: 254.8302<br />Day_Type: Weekday","Temperature: 26.4<br />Demand: 234.7962<br />Day_Type: Weekday","Temperature: 20.8<br />Demand: 216.7493<br />Day_Type: Weekday","Temperature: 22.5<br />Demand: 215.8999<br />Day_Type: Weekday","Temperature: 31.1<br />Demand: 240.3323<br />Day_Type: Weekday","Temperature: 21.8<br />Demand: 220.7632<br />Day_Type: Weekday","Temperature: 22.7<br />Demand: 219.1725<br />Day_Type: Weekday","Temperature: 26.2<br />Demand: 223.8462<br />Day_Type: Weekday","Temperature: 24.7<br />Demand: 212.0925<br />Day_Type: Weekday","Temperature: 24.1<br />Demand: 216.7824<br />Day_Type: Weekday","Temperature: 22.2<br />Demand: 215.9991<br />Day_Type: Weekday","Temperature: 30.7<br />Demand: 226.4919<br />Day_Type: Weekday","Temperature: 22.9<br />Demand: 222.3541<br />Day_Type: Weekday","Temperature: 18.8<br />Demand: 213.1670<br />Day_Type: Weekday","Temperature: 24.4<br />Demand: 214.7222<br />Day_Type: Weekday","Temperature: 26.9<br />Demand: 217.3795<br />Day_Type: Weekday","Temperature: 25.3<br />Demand: 221.6452<br />Day_Type: Weekday","Temperature: 21.5<br />Demand: 215.0704<br />Day_Type: Weekday","Temperature: 30.1<br />Demand: 229.8547<br />Day_Type: Weekday","Temperature: 32.9<br />Demand: 252.8782<br />Day_Type: Weekday","Temperature: 26.6<br />Demand: 236.0890<br />Day_Type: Weekday","Temperature: 18.2<br />Demand: 222.6725<br />Day_Type: Weekday","Temperature: 19.7<br />Demand: 219.0132<br />Day_Type: Weekday","Temperature: 24.5<br />Demand: 218.4745<br />Day_Type: Weekday","Temperature: 22.0<br />Demand: 226.2018<br />Day_Type: Weekday","Temperature: 17.8<br />Demand: 225.5993<br />Day_Type: Weekday","Temperature: 18.9<br />Demand: 223.8808<br />Day_Type: Weekday","Temperature: 18.9<br />Demand: 220.3987<br />Day_Type: Weekday","Temperature: 20.7<br />Demand: 212.9014<br />Day_Type: Weekday","Temperature: 21.1<br />Demand: 216.1034<br />Day_Type: Weekday","Temperature: 21.6<br />Demand: 218.3603<br />Day_Type: Weekday","Temperature: 24.3<br />Demand: 215.1137<br />Day_Type: Weekday","Temperature: 17.6<br />Demand: 219.8456<br />Day_Type: Weekday","Temperature: 19.2<br />Demand: 218.9037<br />Day_Type: Weekday","Temperature: 18.3<br />Demand: 217.9708<br />Day_Type: Weekday","Temperature: 21.3<br />Demand: 222.7253<br />Day_Type: Weekday","Temperature: 22.3<br />Demand: 226.8940<br />Day_Type: Weekday","Temperature: 17.6<br />Demand: 227.8383<br />Day_Type: Weekday","Temperature: 15.6<br />Demand: 234.1514<br />Day_Type: Weekday","Temperature: 13.9<br />Demand: 234.8755<br />Day_Type: Weekday","Temperature: 16.4<br />Demand: 237.8857<br />Day_Type: Weekday","Temperature: 16.0<br />Demand: 240.6153<br />Day_Type: Weekday","Temperature: 16.2<br />Demand: 240.3634<br />Day_Type: Weekday","Temperature: 18.4<br />Demand: 241.3502<br />Day_Type: Weekday","Temperature: 18.3<br />Demand: 236.7497<br />Day_Type: Weekday","Temperature: 19.9<br />Demand: 229.3544<br />Day_Type: Weekday","Temperature: 20.1<br />Demand: 230.0164<br />Day_Type: Weekday","Temperature: 20.2<br />Demand: 224.4637<br />Day_Type: Weekday","Temperature: 22.4<br />Demand: 216.9592<br />Day_Type: Weekday","Temperature: 22.8<br />Demand: 212.6305<br />Day_Type: Weekday","Temperature: 22.8<br />Demand: 217.0623<br />Day_Type: Weekday","Temperature: 21.6<br />Demand: 224.3771<br />Day_Type: Weekday","Temperature: 23.1<br />Demand: 221.9410<br />Day_Type: Weekday","Temperature: 20.9<br />Demand: 222.4899<br />Day_Type: Weekday","Temperature: 20.3<br />Demand: 221.5659<br />Day_Type: Weekday","Temperature: 20.8<br />Demand: 226.0510<br />Day_Type: Weekday","Temperature: 21.7<br />Demand: 226.9175<br />Day_Type: Weekday","Temperature: 18.0<br />Demand: 230.2927<br />Day_Type: Weekday","Temperature: 15.8<br />Demand: 234.6604<br />Day_Type: Weekday","Temperature: 17.7<br />Demand: 231.8486<br />Day_Type: Weekday","Temperature: 16.4<br />Demand: 232.5876<br />Day_Type: Weekday","Temperature: 16.4<br />Demand: 235.0114<br />Day_Type: Weekday","Temperature: 18.1<br />Demand: 230.9970<br />Day_Type: Weekday","Temperature: 16.7<br />Demand: 232.0875<br />Day_Type: Weekday","Temperature: 15.4<br />Demand: 234.6715<br />Day_Type: Weekday","Temperature: 18.3<br />Demand: 235.7782<br />Day_Type: Weekday","Temperature: 16.2<br />Demand: 241.0994<br />Day_Type: Weekday","Temperature: 16.2<br />Demand: 243.6167<br />Day_Type: Weekday","Temperature: 16.5<br />Demand: 237.2126<br />Day_Type: Weekday","Temperature: 17.0<br />Demand: 241.3206<br />Day_Type: Weekday","Temperature: 15.8<br />Demand: 244.7568<br />Day_Type: Weekday","Temperature: 14.2<br />Demand: 244.5883<br />Day_Type: Weekday","Temperature: 12.2<br />Demand: 252.8974<br />Day_Type: Weekday","Temperature: 15.1<br />Demand: 239.6948<br />Day_Type: Weekday","Temperature: 14.4<br />Demand: 245.3576<br />Day_Type: Weekday","Temperature: 14.3<br />Demand: 261.7745<br />Day_Type: Weekday","Temperature: 15.7<br />Demand: 248.2476<br />Day_Type: Weekday","Temperature: 15.6<br />Demand: 243.3896<br />Day_Type: Weekday","Temperature: 14.5<br />Demand: 241.5915<br />Day_Type: Weekday","Temperature: 13.1<br />Demand: 255.0056<br />Day_Type: Weekday","Temperature: 13.1<br />Demand: 254.8101<br />Day_Type: Weekday","Temperature: 16.6<br />Demand: 245.0865<br />Day_Type: Weekday","Temperature: 12.4<br />Demand: 247.8669<br />Day_Type: Weekday","Temperature: 12.4<br />Demand: 249.0520<br />Day_Type: Weekday","Temperature: 15.7<br />Demand: 241.2600<br />Day_Type: Weekday","Temperature: 14.3<br />Demand: 242.9725<br />Day_Type: Weekday","Temperature: 13.3<br />Demand: 257.5991<br />Day_Type: Weekday","Temperature: 14.7<br />Demand: 257.9806<br />Day_Type: Weekday","Temperature: 14.4<br />Demand: 247.6547<br />Day_Type: Weekday","Temperature: 13.1<br />Demand: 258.8287<br />Day_Type: Weekday","Temperature: 12.9<br />Demand: 264.1827<br />Day_Type: Weekday","Temperature: 14.6<br />Demand: 253.5232<br />Day_Type: Weekday","Temperature: 12.1<br />Demand: 259.8050<br />Day_Type: Weekday","Temperature: 13.8<br />Demand: 256.2355<br />Day_Type: Weekday","Temperature: 12.9<br />Demand: 258.8278<br />Day_Type: Weekday","Temperature: 12.2<br />Demand: 268.9846<br />Day_Type: Weekday","Temperature: 13.4<br />Demand: 267.2355<br />Day_Type: Weekday","Temperature: 14.9<br />Demand: 269.3544<br />Day_Type: Weekday","Temperature: 15.9<br />Demand: 253.2748<br />Day_Type: Weekday","Temperature: 16.7<br />Demand: 242.0725<br />Day_Type: Weekday","Temperature: 16.5<br />Demand: 246.4046<br />Day_Type: Weekday","Temperature: 18.9<br />Demand: 237.8841<br />Day_Type: Weekday","Temperature: 19.3<br />Demand: 239.6187<br />Day_Type: Weekday","Temperature:  9.8<br />Demand: 263.3148<br />Day_Type: Weekday","Temperature: 15.2<br />Demand: 256.6197<br />Day_Type: Weekday","Temperature: 16.5<br />Demand: 250.4816<br />Day_Type: Weekday","Temperature: 15.9<br />Demand: 246.8155<br />Day_Type: Weekday","Temperature: 13.6<br />Demand: 252.0098<br />Day_Type: Weekday","Temperature: 15.9<br />Demand: 243.5690<br />Day_Type: Weekday","Temperature: 12.7<br />Demand: 261.0586<br />Day_Type: Weekday","Temperature: 12.7<br />Demand: 262.4751<br />Day_Type: Weekday","Temperature: 14.5<br />Demand: 253.5156<br />Day_Type: Weekday","Temperature: 14.8<br />Demand: 249.8530<br />Day_Type: Weekday","Temperature: 16.9<br />Demand: 244.9549<br />Day_Type: Weekday","Temperature: 13.6<br />Demand: 250.2505<br />Day_Type: Weekday","Temperature: 13.3<br />Demand: 248.2650<br />Day_Type: Weekday","Temperature: 13.3<br />Demand: 247.3034<br />Day_Type: Weekday","Temperature: 17.4<br />Demand: 242.7937<br />Day_Type: Weekday","Temperature: 20.6<br />Demand: 231.1652<br />Day_Type: Weekday","Temperature: 16.1<br />Demand: 239.1268<br />Day_Type: Weekday","Temperature: 18.7<br />Demand: 236.9323<br />Day_Type: Weekday","Temperature: 19.5<br />Demand: 233.0740<br />Day_Type: Weekday","Temperature: 20.0<br />Demand: 233.1221<br />Day_Type: Weekday","Temperature: 15.0<br />Demand: 233.8208<br />Day_Type: Weekday","Temperature: 17.8<br />Demand: 236.2696<br />Day_Type: Weekday","Temperature: 16.1<br />Demand: 238.2240<br />Day_Type: Weekday","Temperature: 14.8<br />Demand: 241.4517<br />Day_Type: Weekday","Temperature: 15.9<br />Demand: 241.7054<br />Day_Type: Weekday","Temperature: 16.7<br />Demand: 233.5166<br />Day_Type: Weekday","Temperature: 20.8<br />Demand: 218.2276<br />Day_Type: Weekday","Temperature: 20.7<br />Demand: 222.7274<br />Day_Type: Weekday","Temperature: 19.1<br />Demand: 222.0213<br />Day_Type: Weekday","Temperature: 17.1<br />Demand: 226.7373<br />Day_Type: Weekday","Temperature: 15.9<br />Demand: 231.3683<br />Day_Type: Weekday","Temperature: 18.0<br />Demand: 225.4641<br />Day_Type: Weekday","Temperature: 14.8<br />Demand: 235.6982<br />Day_Type: Weekday","Temperature: 16.2<br />Demand: 236.1329<br />Day_Type: Weekday","Temperature: 13.7<br />Demand: 241.1509<br />Day_Type: Weekday","Temperature: 15.5<br />Demand: 230.3640<br />Day_Type: Weekday","Temperature: 23.0<br />Demand: 217.4684<br />Day_Type: Weekday","Temperature: 25.3<br />Demand: 215.1564<br />Day_Type: Weekday","Temperature: 23.5<br />Demand: 215.4661<br />Day_Type: Weekday","Temperature: 17.0<br />Demand: 217.7978<br />Day_Type: Weekday","Temperature: 19.3<br />Demand: 214.7996<br />Day_Type: Weekday","Temperature: 22.9<br />Demand: 207.7305<br />Day_Type: Weekday","Temperature: 23.8<br />Demand: 218.1746<br />Day_Type: Weekday","Temperature: 15.9<br />Demand: 224.6942<br />Day_Type: Weekday","Temperature: 17.4<br />Demand: 224.9024<br />Day_Type: Weekday","Temperature: 18.1<br />Demand: 212.3656<br />Day_Type: Weekday","Temperature: 25.0<br />Demand: 220.7713<br />Day_Type: Weekday","Temperature: 17.9<br />Demand: 216.5153<br />Day_Type: Weekday","Temperature: 18.7<br />Demand: 221.0899<br />Day_Type: Weekday","Temperature: 23.1<br />Demand: 217.9956<br />Day_Type: Weekday","Temperature: 24.9<br />Demand: 214.0558<br />Day_Type: Weekday","Temperature: 15.5<br />Demand: 221.1816<br />Day_Type: Weekday","Temperature: 16.9<br />Demand: 228.6646<br />Day_Type: Weekday","Temperature: 17.1<br />Demand: 226.0442<br />Day_Type: Weekday","Temperature: 16.7<br />Demand: 224.4038<br />Day_Type: Weekday","Temperature: 18.1<br />Demand: 214.7414<br />Day_Type: Weekday","Temperature: 20.6<br />Demand: 212.6573<br />Day_Type: Weekday","Temperature: 28.2<br />Demand: 222.8034<br />Day_Type: Weekday","Temperature: 31.1<br />Demand: 232.9827<br />Day_Type: Weekday","Temperature: 22.7<br />Demand: 224.7471<br />Day_Type: Weekday","Temperature: 30.4<br />Demand: 228.0314<br />Day_Type: Weekday","Temperature: 22.8<br />Demand: 212.4247<br />Day_Type: Weekday","Temperature: 19.7<br />Demand: 220.7674<br />Day_Type: Weekday","Temperature: 22.5<br />Demand: 218.7596<br />Day_Type: Weekday","Temperature: 21.8<br />Demand: 218.7015<br />Day_Type: Weekday","Temperature: 32.7<br />Demand: 226.6663<br />Day_Type: Weekday","Temperature: 23.3<br />Demand: 200.7506<br />Day_Type: Weekday","Temperature: 17.8<br />Demand: 206.2191<br />Day_Type: Weekday","Temperature: 23.5<br />Demand: 212.0275<br />Day_Type: Weekday","Temperature: 32.8<br />Demand: 226.8614<br />Day_Type: Weekday","Temperature: 20.2<br />Demand: 211.4037<br />Day_Type: Weekday","Temperature: 18.8<br />Demand: 215.1664<br />Day_Type: Weekday","Temperature: 24.3<br />Demand: 222.2183<br />Day_Type: Weekday","Temperature: 30.6<br />Demand: 239.1912<br />Day_Type: Weekday","Temperature: 27.7<br />Demand: 224.2977<br />Day_Type: Weekday","Temperature: 20.1<br />Demand: 208.0390<br />Day_Type: Weekday","Temperature: 20.9<br />Demand: 211.8490<br />Day_Type: Weekday","Temperature: 29.6<br />Demand: 217.2933<br />Day_Type: Weekday","Temperature: 28.1<br />Demand: 228.7637<br />Day_Type: Weekday","Temperature: 23.0<br />Demand: 215.4114<br />Day_Type: Weekday","Temperature: 19.6<br />Demand: 222.0441<br />Day_Type: Weekday","Temperature: 21.8<br />Demand: 213.9751<br />Day_Type: Weekday","Temperature: 18.7<br />Demand: 217.9153<br />Day_Type: Weekday","Temperature: 19.4<br />Demand: 214.9674<br />Day_Type: Weekday","Temperature: 20.5<br />Demand: 212.7103<br />Day_Type: Weekday","Temperature: 29.0<br />Demand: 242.7953<br />Day_Type: Weekday","Temperature: 26.0<br />Demand: 232.7680<br />Day_Type: Weekday","Temperature: 23.5<br />Demand: 228.1675<br />Day_Type: Weekday","Temperature: 26.4<br />Demand: 235.7801<br />Day_Type: Weekday","Temperature: 21.2<br />Demand: 224.4491<br />Day_Type: Weekday","Temperature: 21.2<br />Demand: 215.6983<br />Day_Type: Weekday","Temperature: 20.8<br />Demand: 217.0471<br />Day_Type: Weekday","Temperature: 21.1<br />Demand: 219.7483<br />Day_Type: Weekday","Temperature: 21.4<br />Demand: 215.8964<br />Day_Type: Weekday","Temperature: 27.4<br />Demand: 219.0409<br />Day_Type: Weekday","Temperature: 23.4<br />Demand: 227.7493<br />Day_Type: Weekday","Temperature: 32.1<br />Demand: 231.6259<br />Day_Type: Weekday","Temperature: 22.3<br />Demand: 213.7756<br />Day_Type: Weekday","Temperature: 24.0<br />Demand: 216.4474<br />Day_Type: Weekday","Temperature: 19.9<br />Demand: 206.0984<br />Day_Type: Weekday","Temperature: 24.7<br />Demand: 230.2910<br />Day_Type: Weekday","Temperature: 26.7<br />Demand: 219.9954<br />Day_Type: Weekday","Temperature: 22.2<br />Demand: 193.1894<br />Day_Type: Weekday","Temperature: 26.2<br />Demand: 191.5963<br />Day_Type: Weekday","Temperature: 24.4<br />Demand: 186.1009<br />Day_Type: Weekday","Temperature: 25.5<br />Demand: 186.1985<br />Day_Type: Weekday"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(55,126,184,1)","opacity":0.69999999999999996,"size":5.6692913385826778,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(55,126,184,1)"}},"hoveron":"points","name":"Weekday","legendgroup":"Weekday","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[20.300000000000001,26.100000000000001,23.300000000000001,22.5,23.699999999999999,22.300000000000001,20.300000000000001,27,29.199999999999999,38.600000000000001,40,39.5,28.699999999999999,23,19.600000000000001,22.899999999999999,23.100000000000001,22.300000000000001,27.800000000000001,32.700000000000003,29.100000000000001,20.300000000000001,19.399999999999999,18.699999999999999,23.600000000000001,25.899999999999999,24.100000000000001,24.300000000000001,22.399999999999999,21.5,17.300000000000001,18.300000000000001,19.199999999999999,17.199999999999999,17,13.699999999999999,16.300000000000001,19.699999999999999,20,21.399999999999999,17.100000000000001,20.199999999999999,18.399999999999999,14.9,16.800000000000001,14.9,15.199999999999999,16,15,15.4,12.699999999999999,11,15.199999999999999,13.9,11.1,14.9,13.199999999999999,13.199999999999999,14.9,16.800000000000001,13.4,14.199999999999999,14.6,13.6,13.300000000000001,15.699999999999999,19.899999999999999,16.300000000000001,21,21,18.899999999999999,20.699999999999999,18.5,20.100000000000001,16.800000000000001,17.199999999999999,23.300000000000001,27.899999999999999,26.199999999999999,19.199999999999999,21.199999999999999,27.5,24.199999999999999,28.800000000000001,19.800000000000001,24.5,20.699999999999999,16.600000000000001,34.600000000000001,19.399999999999999,18,18.100000000000001,30.800000000000001,25,24.300000000000001,34.100000000000001,22.5,17.699999999999999,31.199999999999999,25.899999999999999,23,33.299999999999997,22.199999999999999,31.199999999999999],"y":[173.79758667199999,169.732848004,203.026639426,187.66118505599999,221.518377536,187.12604800599999,181.46589076800001,182.01992387599998,241.28325097600001,263.12295415800003,271.28344858999998,246.40376787400001,215.03879953399999,175.91489823200001,187.08581244199999,178.268219582,193.71099489199997,183.601370704,194.52547197400003,200.61670796599998,192.726517774,173.03602896999999,186.58495331200001,179.34765169799999,185.47414017999998,181.81655706800001,192.43167910400001,190.85517634999999,189.730219148,180.79740535600001,183.793998112,178.94975404799999,189.352187122,186.17611611999999,205.59375624799998,203.667041488,206.34550193000001,192.715953152,188.99906581799999,181.50746808399998,195.66685866999998,190.31111951,201.03825657600001,199.71285975800001,202.432333296,196.71966185799999,212.13656198800001,203.35819459000001,211.04943644399998,205.688831308,218.874063062,220.29531030199999,218.40672302599998,212.914845934,227.02899140599999,220.93972133599999,223.482490216,215.77484077,223.15676804200001,211.21604189799999,227.57694229000001,221.63501138400002,217.18736035999999,212.91359125400001,221.14626868400001,210.59772477599998,202.58000963799998,200.86066939600002,193.010548572,189.32914645999998,198.10497010199998,186.01042186800001,196.583377262,185.043838964,199.898901276,187.05702389800001,184.72685140999999,177.31589496800001,183.74868257400001,165.56818029199999,186.35047940600001,181.65367191199999,192.15932884999998,184.04564766999999,193.472940924,183.27914811000002,188.26312765599999,186.252188144,205.99086686199999,176.24966050600003,189.80822543600001,182.219639038,196.12845288599999,187.54242462599998,193.938652932,212.40576475400002,192.51312530199999,185.88711813200001,209.28780369,197.307076094,189.195122822,203.71343535599999,173.634635774,188.115341712],"text":["Temperature: 20.3<br />Demand: 173.7976<br />Day_Type: Weekend","Temperature: 26.1<br />Demand: 169.7328<br />Day_Type: Weekend","Temperature: 23.3<br />Demand: 203.0266<br />Day_Type: Weekend","Temperature: 22.5<br />Demand: 187.6612<br />Day_Type: Weekend","Temperature: 23.7<br />Demand: 221.5184<br />Day_Type: Weekend","Temperature: 22.3<br />Demand: 187.1260<br />Day_Type: Weekend","Temperature: 20.3<br />Demand: 181.4659<br />Day_Type: Weekend","Temperature: 27.0<br />Demand: 182.0199<br />Day_Type: Weekend","Temperature: 29.2<br />Demand: 241.2833<br />Day_Type: Weekend","Temperature: 38.6<br />Demand: 263.1230<br />Day_Type: Weekend","Temperature: 40.0<br />Demand: 271.2834<br />Day_Type: Weekend","Temperature: 39.5<br />Demand: 246.4038<br />Day_Type: Weekend","Temperature: 28.7<br />Demand: 215.0388<br />Day_Type: Weekend","Temperature: 23.0<br />Demand: 175.9149<br />Day_Type: Weekend","Temperature: 19.6<br />Demand: 187.0858<br />Day_Type: Weekend","Temperature: 22.9<br />Demand: 178.2682<br />Day_Type: Weekend","Temperature: 23.1<br />Demand: 193.7110<br />Day_Type: Weekend","Temperature: 22.3<br />Demand: 183.6014<br />Day_Type: Weekend","Temperature: 27.8<br />Demand: 194.5255<br />Day_Type: Weekend","Temperature: 32.7<br />Demand: 200.6167<br />Day_Type: Weekend","Temperature: 29.1<br />Demand: 192.7265<br />Day_Type: Weekend","Temperature: 20.3<br />Demand: 173.0360<br />Day_Type: Weekend","Temperature: 19.4<br />Demand: 186.5850<br />Day_Type: Weekend","Temperature: 18.7<br />Demand: 179.3477<br />Day_Type: Weekend","Temperature: 23.6<br />Demand: 185.4741<br />Day_Type: Weekend","Temperature: 25.9<br />Demand: 181.8166<br />Day_Type: Weekend","Temperature: 24.1<br />Demand: 192.4317<br />Day_Type: Weekend","Temperature: 24.3<br />Demand: 190.8552<br />Day_Type: Weekend","Temperature: 22.4<br />Demand: 189.7302<br />Day_Type: Weekend","Temperature: 21.5<br />Demand: 180.7974<br />Day_Type: Weekend","Temperature: 17.3<br />Demand: 183.7940<br />Day_Type: Weekend","Temperature: 18.3<br />Demand: 178.9498<br />Day_Type: Weekend","Temperature: 19.2<br />Demand: 189.3522<br />Day_Type: Weekend","Temperature: 17.2<br />Demand: 186.1761<br />Day_Type: Weekend","Temperature: 17.0<br />Demand: 205.5938<br />Day_Type: Weekend","Temperature: 13.7<br />Demand: 203.6670<br />Day_Type: Weekend","Temperature: 16.3<br />Demand: 206.3455<br />Day_Type: Weekend","Temperature: 19.7<br />Demand: 192.7160<br />Day_Type: Weekend","Temperature: 20.0<br />Demand: 188.9991<br />Day_Type: Weekend","Temperature: 21.4<br />Demand: 181.5075<br />Day_Type: Weekend","Temperature: 17.1<br />Demand: 195.6669<br />Day_Type: Weekend","Temperature: 20.2<br />Demand: 190.3111<br />Day_Type: Weekend","Temperature: 18.4<br />Demand: 201.0383<br />Day_Type: Weekend","Temperature: 14.9<br />Demand: 199.7129<br />Day_Type: Weekend","Temperature: 16.8<br />Demand: 202.4323<br />Day_Type: Weekend","Temperature: 14.9<br />Demand: 196.7197<br />Day_Type: Weekend","Temperature: 15.2<br />Demand: 212.1366<br />Day_Type: Weekend","Temperature: 16.0<br />Demand: 203.3582<br />Day_Type: Weekend","Temperature: 15.0<br />Demand: 211.0494<br />Day_Type: Weekend","Temperature: 15.4<br />Demand: 205.6888<br />Day_Type: Weekend","Temperature: 12.7<br />Demand: 218.8741<br />Day_Type: Weekend","Temperature: 11.0<br />Demand: 220.2953<br />Day_Type: Weekend","Temperature: 15.2<br />Demand: 218.4067<br />Day_Type: Weekend","Temperature: 13.9<br />Demand: 212.9148<br />Day_Type: Weekend","Temperature: 11.1<br />Demand: 227.0290<br />Day_Type: Weekend","Temperature: 14.9<br />Demand: 220.9397<br />Day_Type: Weekend","Temperature: 13.2<br />Demand: 223.4825<br />Day_Type: Weekend","Temperature: 13.2<br />Demand: 215.7748<br />Day_Type: Weekend","Temperature: 14.9<br />Demand: 223.1568<br />Day_Type: Weekend","Temperature: 16.8<br />Demand: 211.2160<br />Day_Type: Weekend","Temperature: 13.4<br />Demand: 227.5769<br />Day_Type: Weekend","Temperature: 14.2<br />Demand: 221.6350<br />Day_Type: Weekend","Temperature: 14.6<br />Demand: 217.1874<br />Day_Type: Weekend","Temperature: 13.6<br />Demand: 212.9136<br />Day_Type: Weekend","Temperature: 13.3<br />Demand: 221.1463<br />Day_Type: Weekend","Temperature: 15.7<br />Demand: 210.5977<br />Day_Type: Weekend","Temperature: 19.9<br />Demand: 202.5800<br />Day_Type: Weekend","Temperature: 16.3<br />Demand: 200.8607<br />Day_Type: Weekend","Temperature: 21.0<br />Demand: 193.0105<br />Day_Type: Weekend","Temperature: 21.0<br />Demand: 189.3291<br />Day_Type: Weekend","Temperature: 18.9<br />Demand: 198.1050<br />Day_Type: Weekend","Temperature: 20.7<br />Demand: 186.0104<br />Day_Type: Weekend","Temperature: 18.5<br />Demand: 196.5834<br />Day_Type: Weekend","Temperature: 20.1<br />Demand: 185.0438<br />Day_Type: Weekend","Temperature: 16.8<br />Demand: 199.8989<br />Day_Type: Weekend","Temperature: 17.2<br />Demand: 187.0570<br />Day_Type: Weekend","Temperature: 23.3<br />Demand: 184.7269<br />Day_Type: Weekend","Temperature: 27.9<br />Demand: 177.3159<br />Day_Type: Weekend","Temperature: 26.2<br />Demand: 183.7487<br />Day_Type: Weekend","Temperature: 19.2<br />Demand: 165.5682<br />Day_Type: Weekend","Temperature: 21.2<br />Demand: 186.3505<br />Day_Type: Weekend","Temperature: 27.5<br />Demand: 181.6537<br />Day_Type: Weekend","Temperature: 24.2<br />Demand: 192.1593<br />Day_Type: Weekend","Temperature: 28.8<br />Demand: 184.0456<br />Day_Type: Weekend","Temperature: 19.8<br />Demand: 193.4729<br />Day_Type: Weekend","Temperature: 24.5<br />Demand: 183.2791<br />Day_Type: Weekend","Temperature: 20.7<br />Demand: 188.2631<br />Day_Type: Weekend","Temperature: 16.6<br />Demand: 186.2522<br />Day_Type: Weekend","Temperature: 34.6<br />Demand: 205.9909<br />Day_Type: Weekend","Temperature: 19.4<br />Demand: 176.2497<br />Day_Type: Weekend","Temperature: 18.0<br />Demand: 189.8082<br />Day_Type: Weekend","Temperature: 18.1<br />Demand: 182.2196<br />Day_Type: Weekend","Temperature: 30.8<br />Demand: 196.1285<br />Day_Type: Weekend","Temperature: 25.0<br />Demand: 187.5424<br />Day_Type: Weekend","Temperature: 24.3<br />Demand: 193.9387<br />Day_Type: Weekend","Temperature: 34.1<br />Demand: 212.4058<br />Day_Type: Weekend","Temperature: 22.5<br />Demand: 192.5131<br />Day_Type: Weekend","Temperature: 17.7<br />Demand: 185.8871<br />Day_Type: Weekend","Temperature: 31.2<br />Demand: 209.2878<br />Day_Type: Weekend","Temperature: 25.9<br />Demand: 197.3071<br />Day_Type: Weekend","Temperature: 23.0<br />Demand: 189.1951<br />Day_Type: Weekend","Temperature: 33.3<br />Demand: 203.7134<br />Day_Type: Weekend","Temperature: 22.2<br />Demand: 173.6346<br />Day_Type: Weekend","Temperature: 31.2<br />Demand: 188.1153<br />Day_Type: Weekend"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(77,175,74,1)","opacity":0.69999999999999996,"size":5.6692913385826778,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(77,175,74,1)"}},"hoveron":"points","name":"Weekend","legendgroup":"Weekend","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":40.840182648401829,"r":7.3059360730593621,"b":37.260273972602747,"l":43.105022831050235},"plot_bgcolor":"rgba(235,235,235,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"title":{"text":"U-shaped relationship between temperature and demand","font":{"color":"rgba(0,0,0,1)","family":"","size":17.534246575342465},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[8.1300000000000008,44.870000000000005],"tickmode":"array","ticktext":["10","20","30","40"],"tickvals":[10,20,30,40],"categoryorder":"array","categoryarray":["10","20","30","40"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"y","title":{"text":"Maximum daily temperature (°C)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[156.51043591639998,355.78081217959999],"tickmode":"array","ticktext":["200","250","300","350"],"tickvals":[200,250,300,350],"categoryorder":"array","categoryarray":["200","250","300","350"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"x","title":{"text":"Demand (GW)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"shapes":[],"showlegend":true,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.8897637795275593,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498},"title":{"text":"Day type","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"1c7b7dadc32d":{"x":{},"y":{},"colour":{},"type":"scatter"}},"cur_data":"1c7b7dadc32d","visdat":{"1c7b7dadc32d":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+<section id="section-1" class="slide level2 scrollable">
+<h2></h2>
+<p>Two patterns are immediately clear:</p>
+<ol type="1">
+<li class="fragment"><strong>U-shaped (quadratic) relationship</strong> with temperature — both very hot and very cold days increase demand.</li>
+<li class="fragment"><strong>Day type</strong> matters: weekdays &gt; weekends &gt; holidays.</li>
+</ol>
+<div class="fragment">
+<p>This gives us the model:</p>
+<p><span class="math display">y_t = \beta_0 + \beta_1 T_t + \beta_2 T_t^2 + \beta_3 D_{\text{Weekday}} + \eta_t, \quad \eta_t \sim \text{ARIMA}</span></p>
+</div>
+</section>
+<section id="fitting-the-model" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Fitting the Model</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb10-1" class="hljs-ln-code"><a></a>vic_elec_daily <span class="sc">|&gt;</span></span>
+<span id="cb10-2" class="hljs-ln-code"><a></a>  <span class="fu">model</span>(</span>
+<span id="cb10-3" class="hljs-ln-code"><a></a>    <span class="fu">ARIMA</span>(Demand <span class="sc">~</span> Temperature)</span>
+<span id="cb10-4" class="hljs-ln-code"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="fitting-the-model-1" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Fitting the Model</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb11-1" class="hljs-ln-code"><a></a>vic_elec_daily <span class="sc">|&gt;</span></span>
+<span id="cb11-2" class="hljs-ln-code"><a></a>  <span class="fu">model</span>(</span>
+<span id="cb11-3" class="hljs-ln-code"><a></a>    <span class="fu">ARIMA</span>(Demand <span class="sc">~</span> Temperature <span class="sc">+</span> <span class="fu">I</span>(Temperature<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb11-4" class="hljs-ln-code"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="fitting-the-model-2" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Fitting the Model</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb12-1" class="hljs-ln-code"><a></a>vic_elec_daily <span class="sc">|&gt;</span></span>
+<span id="cb12-2" class="hljs-ln-code"><a></a>  <span class="fu">model</span>(</span>
+<span id="cb12-3" class="hljs-ln-code"><a></a>    <span class="fu">ARIMA</span>(Demand <span class="sc">~</span> Temperature <span class="sc">+</span> <span class="fu">I</span>(Temperature<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb12-4" class="hljs-ln-code"><a></a>            (Day_Type <span class="sc">==</span> <span class="st">"Weekday"</span>))</span>
+<span id="cb12-5" class="hljs-ln-code"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="fitting-the-model-3" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Fitting the Model</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-8"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="annotated-cell-8-1" class="hljs-ln-code"><a href="#annotated-cell-8-1"></a>vic_elec_fit <span class="ot">&lt;-</span> vic_elec_daily <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-8-2" class="hljs-ln-code"><a href="#annotated-cell-8-2"></a>  <span class="fu">model</span>(</span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-8" data-target-annotation="1">1</button><span id="annotated-cell-8-3" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-8-3"></a>    <span class="fu">ARIMA</span>(Demand <span class="sc">~</span> Temperature <span class="sc">+</span> <span class="fu">I</span>(Temperature<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span></span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-8" data-target-annotation="2">2</button><span id="annotated-cell-8-4" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-8-4"></a>            (Day_Type <span class="sc">==</span> <span class="st">"Weekday"</span>))</span>
+<span id="annotated-cell-8-5" class="hljs-ln-code"><a href="#annotated-cell-8-5"></a>  )</span>
+<span id="annotated-cell-8-6" class="hljs-ln-code"><a href="#annotated-cell-8-6"></a></span>
+<span id="annotated-cell-8-7" class="hljs-ln-code"><a href="#annotated-cell-8-7"></a><span class="fu">report</span>(vic_elec_fit)</span><div class="code-annotation-gutter-bg hljs-ln-code"></div><div class="code-annotation-gutter hljs-ln-code"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-8" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-8" data-code-lines="3" data-code-annotation="1"><code>I(Temperature^2)</code> adds the quadratic term. The <code>I()</code> wrapper is required to protect arithmetic inside the formula.</span>
+</dd>
+<dt data-target-cell="annotated-cell-8" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-8" data-code-lines="4" data-code-annotation="2">A logical expression that becomes a binary indicator: <code>TRUE</code> (1) for weekdays, <code>FALSE</code> (0) otherwise.</span>
+</dd>
+</dl>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Series: Demand 
+Model: LM w/ ARIMA(2,1,2)(2,0,0)[7] errors 
+
+Coefficients:
+          ar1     ar2      ma1      ma2    sar1    sar2  Temperature
+      -0.1093  0.7226  -0.0182  -0.9381  0.1958  0.4175      -7.6135
+s.e.   0.0779  0.0739   0.0494   0.0493  0.0525  0.0570       0.4482
+      I(Temperature^2)  Day_Type == "Weekday"TRUE
+                0.1810                    30.4040
+s.e.            0.0085                     1.3254
+
+sigma^2 estimated as 44.91:  log likelihood=-1206.11
+AIC=2432.21   AICc=2432.84   BIC=2471.18</code></pre>
+</div>
+</div>
+</section>
+<section id="diagnostics-scenario-forecast" class="slide level2">
+<h2>Diagnostics &amp; Scenario Forecast</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a>vic_elec_fit <span class="sc">|&gt;</span> <span class="fu">gg_tsresiduals</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="dynamic_regression_files/figure-html/elec-diagnostics-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img data-src="dynamic_regression_files/figure-html/elec-diagnostics-1.png" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a>vic_elec_fit <span class="sc">|&gt;</span></span>
+<span id="cb15-2"><a></a>  <span class="fu">augment</span>() <span class="sc">|&gt;</span></span>
+<span id="cb15-3"><a></a>  <span class="fu">features</span>(.innov, ljung_box, <span class="at">dof =</span> <span class="dv">8</span>, <span class="at">lag =</span> <span class="dv">14</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[".model"],"name":[1],"type":["chr"],"align":["left"]},{"label":["lb_stat"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["lb_pvalue"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"ARIMA(Demand ~ Temperature + I(Temperature^2) + (Day_Type == \\n    \"Weekday\"))","2":"28.39768","3":"7.906581e-05"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div class="callout callout-note callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Heteroscedastic residuals</strong></p>
+</div>
+<div class="callout-content">
+<p>Variance is higher during January–February (Australian summer peak). Point estimates remain valid, but prediction intervals may be too narrow for extreme temperature periods.</p>
+</div>
+</div>
+</div>
+<div class="panel-tabset">
+<ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">Conservative (26°C)</a></li><li><a href="#tabset-1-2">Heatwave</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a>vic_elec_future_26 <span class="ot">&lt;-</span> <span class="fu">new_data</span>(vic_elec_daily, <span class="dv">14</span>) <span class="sc">|&gt;</span></span>
+<span id="cb16-2"><a></a>  <span class="fu">mutate</span>(</span>
+<span id="cb16-3"><a></a>    <span class="at">Temperature =</span> <span class="dv">26</span>,</span>
+<span id="cb16-4"><a></a>    <span class="at">Holiday     =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="fu">rep</span>(<span class="cn">FALSE</span>, <span class="dv">13</span>)),</span>
+<span id="cb16-5"><a></a>    <span class="at">Day_Type    =</span> <span class="fu">case_when</span>(</span>
+<span id="cb16-6"><a></a>      Holiday              <span class="sc">~</span> <span class="st">"Holiday"</span>,</span>
+<span id="cb16-7"><a></a>      <span class="fu">wday</span>(Date) <span class="sc">%in%</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">6</span>  <span class="sc">~</span> <span class="st">"Weekday"</span>,</span>
+<span id="cb16-8"><a></a>      <span class="cn">TRUE</span>                 <span class="sc">~</span> <span class="st">"Weekend"</span></span>
+<span id="cb16-9"><a></a>    )</span>
+<span id="cb16-10"><a></a>  )</span>
+<span id="cb16-11"><a></a></span>
+<span id="cb16-12"><a></a><span class="fu">forecast</span>(vic_elec_fit, vic_elec_future_26) <span class="sc">|&gt;</span></span>
+<span id="cb16-13"><a></a>  <span class="fu">autoplot</span>(vic_elec_daily) <span class="sc">+</span></span>
+<span id="cb16-14"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Scenario: constant 26°C"</span>,</span>
+<span id="cb16-15"><a></a>       <span class="at">y =</span> <span class="st">"Electricity demand (GW)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="dynamic_regression_files/figure-html/elec-forecast-conservative-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img data-src="dynamic_regression_files/figure-html/elec-forecast-conservative-1.png" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-1-2">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-25"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-25-1"><a href="#annotated-cell-25-1"></a>vic_elec_future_hw <span class="ot">&lt;-</span> <span class="fu">new_data</span>(vic_elec_daily, <span class="dv">14</span>) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-25-2"><a href="#annotated-cell-25-2"></a>  <span class="fu">mutate</span>(</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-25" data-target-annotation="1">1</button><span id="annotated-cell-25-3" class="code-annotation-target"><a href="#annotated-cell-25-3"></a>    <span class="at">Temperature =</span> <span class="fu">c</span>(<span class="fu">seq</span>(<span class="dv">31</span>, <span class="dv">34</span>), <span class="dv">33</span>, <span class="fu">rep</span>(<span class="dv">34</span>, <span class="dv">3</span>), <span class="fu">rep</span>(<span class="dv">33</span>, <span class="dv">6</span>)),</span>
+<span id="annotated-cell-25-4"><a href="#annotated-cell-25-4"></a>    <span class="at">Holiday     =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="fu">rep</span>(<span class="cn">FALSE</span>, <span class="dv">13</span>)),</span>
+<span id="annotated-cell-25-5"><a href="#annotated-cell-25-5"></a>    <span class="at">Day_Type    =</span> <span class="fu">case_when</span>(</span>
+<span id="annotated-cell-25-6"><a href="#annotated-cell-25-6"></a>      Holiday              <span class="sc">~</span> <span class="st">"Holiday"</span>,</span>
+<span id="annotated-cell-25-7"><a href="#annotated-cell-25-7"></a>      <span class="fu">wday</span>(Date) <span class="sc">%in%</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">6</span>  <span class="sc">~</span> <span class="st">"Weekday"</span>,</span>
+<span id="annotated-cell-25-8"><a href="#annotated-cell-25-8"></a>      <span class="cn">TRUE</span>                 <span class="sc">~</span> <span class="st">"Weekend"</span></span>
+<span id="annotated-cell-25-9"><a href="#annotated-cell-25-9"></a>    )</span>
+<span id="annotated-cell-25-10"><a href="#annotated-cell-25-10"></a>  )</span>
+<span id="annotated-cell-25-11"><a href="#annotated-cell-25-11"></a></span>
+<span id="annotated-cell-25-12"><a href="#annotated-cell-25-12"></a><span class="fu">forecast</span>(vic_elec_fit, vic_elec_future_hw) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-25-13"><a href="#annotated-cell-25-13"></a>  <span class="fu">autoplot</span>(vic_elec_daily) <span class="sc">+</span></span>
+<span id="annotated-cell-25-14"><a href="#annotated-cell-25-14"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Scenario: rising temperatures (heatwave)"</span>,</span>
+<span id="annotated-cell-25-15"><a href="#annotated-cell-25-15"></a>       <span class="at">y =</span> <span class="st">"Electricity demand (GW)"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-25" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-25" data-code-lines="3" data-code-annotation="1">A realistic meteorological forecast — considerably hotter than 26°C.</span>
+</dd>
+</dl>
+</div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="dynamic_regression_files/figure-html/elec-forecast-heatwave-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7"><img data-src="dynamic_regression_files/figure-html/elec-forecast-heatwave-1.png" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="harmonic-regression" class="title-slide slide level1 center">
+<h1>Harmonic Regression</h1>
+
+</section>
+<section id="a-problem-with-vic_elec_daily" class="slide level2">
+<h2>A Problem with <code>vic_elec_daily</code></h2>
+<p>The electricity demand example above used <strong>daily</strong> data. Demand has an obvious <strong>annual</strong> seasonal pattern (<span class="math inline">m = 365</span>). If we wanted to capture it with dummy variables, we would need 364 of them.</p>
+<div class="fragment">
+<p>That is impractical. The same problem appears with:</p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Data frequency</th>
+<th style="text-align: center;">Seasonal period</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Daily (annual cycle)</td>
+<td style="text-align: center;"><span class="math inline">m = 365</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Weekly</td>
+<td style="text-align: center;"><span class="math inline">m = 52</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Half-hourly (daily cycle)</td>
+<td style="text-align: center;"><span class="math inline">m = 48</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="fragment">
+<div class="callout callout-tip callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Recall from Session 3.2</strong></p>
+</div>
+<div class="callout-content">
+<p>We first saw Fourier terms mentioned as a footnote in <code>regression.qmd</code> — they were promised as the solution for large <span class="math inline">m</span>. This is where we deliver on that promise.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="fourier-terms" class="slide level2">
+<h2>Fourier Terms</h2>
+<p>Any periodic pattern can be approximated by a sum of sine and cosine waves:</p>
+<p><span class="math display">S_K(t) = \sum_{k=1}^{K} \left[ a_k \cos\!\left(\frac{2\pi k t}{m}\right) + b_k \sin\!\left(\frac{2\pi k t}{m}\right) \right]</span></p>
+<ul>
+<li class="fragment"><span class="math inline">m</span> — seasonal period</li>
+<li class="fragment"><span class="math inline">K</span> — number of Fourier pairs (controls flexibility)</li>
+<li class="fragment"><span class="math inline">K = m/2</span> — equivalent to <span class="math inline">m-1</span> seasonal dummies</li>
+</ul>
+<div class="fragment">
+<div class="callout callout-important callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>The key parameter: <span class="math inline">K</span></strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li class="fragment"><strong>Small <span class="math inline">K</span></strong> → smooth, slowly-varying seasonal pattern</li>
+<li class="fragment"><strong>Large <span class="math inline">K</span></strong> → complex, flexible seasonal pattern (but more parameters)</li>
+<li class="fragment"><strong><span class="math inline">K = m/2</span></strong> → identical to using <span class="math inline">m - 1</span> seasonal dummies</li>
+</ul>
+<p>Choose <span class="math inline">K</span> by minimizing AIC<span class="math inline">_c</span>.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="advantages-and-limitations" class="slide level2">
+<h2>Advantages and Limitations</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong>Advantages over seasonal dummies:</strong></p>
+<ul>
+<li class="fragment">Works for <strong>any</strong> <span class="math inline">m</span>, no matter how large</li>
+<li class="fragment">Handles <strong>multiple seasonalities</strong> simultaneously</li>
+<li class="fragment">Smooth patterns with small <span class="math inline">K</span> → fewer parameters</li>
+<li class="fragment">Short-run dynamics handled by ARIMA errors</li>
+</ul>
+</div><div class="column" style="width:50%;">
+<p><strong>Limitations:</strong></p>
+<ul>
+<li class="fragment">Seasonal pattern assumed <strong>fixed</strong> over time</li>
+<li class="fragment">Requires choosing <span class="math inline">K</span></li>
+<li class="fragment">Less intuitive than dummies for small <span class="math inline">m</span></li>
+</ul>
+</div></div>
+</section></section>
+<section>
+<section id="example-australian-café-spending" class="title-slide slide level1 center">
+<h1>Example: Australian Café Spending</h1>
+
+</section>
+<section id="the-data-2" class="slide level2">
+<h2>The Data</h2>
+<p>Monthly retail turnover for cafés and restaurants in Australia (2004–2018). A clean example of a monthly series with strong, stable seasonality — ideal for comparing values of <span class="math inline">K</span>:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a>aus_cafe <span class="ot">&lt;-</span> aus_retail <span class="sc">|&gt;</span></span>
+<span id="cb17-2"><a></a>  <span class="fu">filter</span>(</span>
+<span id="cb17-3"><a></a>    Industry <span class="sc">==</span> <span class="st">"Cafes, restaurants and takeaway food services"</span>,</span>
+<span id="cb17-4"><a></a>    <span class="fu">year</span>(Month) <span class="sc">%in%</span> <span class="dv">2004</span><span class="sc">:</span><span class="dv">2018</span></span>
+<span id="cb17-5"><a></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb17-6"><a></a>  <span class="fu">summarise</span>(<span class="at">Turnover =</span> <span class="fu">sum</span>(Turnover))</span>
+<span id="cb17-7"><a></a></span>
+<span id="cb17-8"><a></a>aus_cafe <span class="sc">|&gt;</span> <span class="fu">autoplot</span>(Turnover) <span class="sc">+</span></span>
+<span id="cb17-9"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Australian café &amp; restaurant turnover"</span>,</span>
+<span id="cb17-10"><a></a>       <span class="at">y =</span> <span class="st">"AUD (millions)"</span>, <span class="at">x =</span> <span class="cn">NULL</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="dynamic_regression_files/figure-html/cafe-data-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8"><img data-src="dynamic_regression_files/figure-html/cafe-data-1.png" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="fitting-multiple-values-of-k" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Fitting Multiple Values of K</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb18-1" class="hljs-ln-code"><a></a>aus_cafe <span class="sc">|&gt;</span></span>
+<span id="cb18-2" class="hljs-ln-code"><a></a>  <span class="fu">model</span>(</span>
+<span id="cb18-3" class="hljs-ln-code"><a></a>    <span class="st">`</span><span class="at">K = 1</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">ARIMA</span>(<span class="fu">log</span>(Turnover) <span class="sc">~</span> <span class="fu">fourier</span>(<span class="at">K =</span> <span class="dv">1</span>) <span class="sc">+</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>))</span>
+<span id="cb18-4" class="hljs-ln-code"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="fitting-multiple-values-of-k-1" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Fitting Multiple Values of K</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb19-1" class="hljs-ln-code"><a></a>aus_cafe <span class="sc">|&gt;</span></span>
+<span id="cb19-2" class="hljs-ln-code"><a></a>  <span class="fu">model</span>(</span>
+<span id="cb19-3" class="hljs-ln-code"><a></a>    <span class="st">`</span><span class="at">K = 1</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">ARIMA</span>(<span class="fu">log</span>(Turnover) <span class="sc">~</span> <span class="fu">fourier</span>(<span class="at">K =</span> <span class="dv">1</span>) <span class="sc">+</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)),</span>
+<span id="cb19-4" class="hljs-ln-code"><a></a>    <span class="st">`</span><span class="at">K = 2</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">ARIMA</span>(<span class="fu">log</span>(Turnover) <span class="sc">~</span> <span class="fu">fourier</span>(<span class="at">K =</span> <span class="dv">2</span>) <span class="sc">+</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)),</span>
+<span id="cb19-5" class="hljs-ln-code"><a></a>    <span class="st">`</span><span class="at">K = 3</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">ARIMA</span>(<span class="fu">log</span>(Turnover) <span class="sc">~</span> <span class="fu">fourier</span>(<span class="at">K =</span> <span class="dv">3</span>) <span class="sc">+</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>))</span>
+<span id="cb19-6" class="hljs-ln-code"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="fitting-multiple-values-of-k-2" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Fitting Multiple Values of K</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-12"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="annotated-cell-12-1" class="hljs-ln-code"><a href="#annotated-cell-12-1"></a>cafe_fit <span class="ot">&lt;-</span> aus_cafe <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-12-2" class="hljs-ln-code"><a href="#annotated-cell-12-2"></a>  <span class="fu">model</span>(</span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-12" data-target-annotation="1">1</button><span id="annotated-cell-12-3" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-12-3"></a>    <span class="st">`</span><span class="at">K = 1</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">ARIMA</span>(<span class="fu">log</span>(Turnover) <span class="sc">~</span> <span class="fu">fourier</span>(<span class="at">K =</span> <span class="dv">1</span>) <span class="sc">+</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)),</span>
+<span id="annotated-cell-12-4" class="hljs-ln-code"><a href="#annotated-cell-12-4"></a>    <span class="st">`</span><span class="at">K = 2</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">ARIMA</span>(<span class="fu">log</span>(Turnover) <span class="sc">~</span> <span class="fu">fourier</span>(<span class="at">K =</span> <span class="dv">2</span>) <span class="sc">+</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)),</span>
+<span id="annotated-cell-12-5" class="hljs-ln-code"><a href="#annotated-cell-12-5"></a>    <span class="st">`</span><span class="at">K = 3</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">ARIMA</span>(<span class="fu">log</span>(Turnover) <span class="sc">~</span> <span class="fu">fourier</span>(<span class="at">K =</span> <span class="dv">3</span>) <span class="sc">+</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)),</span>
+<span id="annotated-cell-12-6" class="hljs-ln-code"><a href="#annotated-cell-12-6"></a>    <span class="st">`</span><span class="at">K = 4</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">ARIMA</span>(<span class="fu">log</span>(Turnover) <span class="sc">~</span> <span class="fu">fourier</span>(<span class="at">K =</span> <span class="dv">4</span>) <span class="sc">+</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)),</span>
+<span id="annotated-cell-12-7" class="hljs-ln-code"><a href="#annotated-cell-12-7"></a>    <span class="st">`</span><span class="at">K = 5</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">ARIMA</span>(<span class="fu">log</span>(Turnover) <span class="sc">~</span> <span class="fu">fourier</span>(<span class="at">K =</span> <span class="dv">5</span>) <span class="sc">+</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)),</span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-12" data-target-annotation="2">2</button><span id="annotated-cell-12-8" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-12-8"></a>    <span class="st">`</span><span class="at">K = 6</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">ARIMA</span>(<span class="fu">log</span>(Turnover) <span class="sc">~</span> <span class="fu">fourier</span>(<span class="at">K =</span> <span class="dv">6</span>) <span class="sc">+</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>))</span>
+<span id="annotated-cell-12-9" class="hljs-ln-code"><a href="#annotated-cell-12-9"></a>  )</span>
+<span id="annotated-cell-12-10" class="hljs-ln-code"><a href="#annotated-cell-12-10"></a></span>
+<span id="annotated-cell-12-11" class="hljs-ln-code"><a href="#annotated-cell-12-11"></a><span class="fu">glance</span>(cafe_fit) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-12-12" class="hljs-ln-code"><a href="#annotated-cell-12-12"></a>  <span class="fu">select</span>(.model, AICc, BIC) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-12-13" class="hljs-ln-code"><a href="#annotated-cell-12-13"></a>  <span class="fu">arrange</span>(AICc)</span><div class="code-annotation-gutter-bg hljs-ln-code"></div><div class="code-annotation-gutter hljs-ln-code"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-12" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-12" data-code-lines="3" data-code-annotation="1"><code>PDQ(0,0,0)</code> suppresses seasonal ARIMA terms — Fourier handles the seasonality entirely.</span>
+</dd>
+<dt data-target-cell="annotated-cell-12" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-12" data-code-lines="8" data-code-annotation="2">For monthly data (<span class="math inline">m = 12</span>), <span class="math inline">K = 6</span> is exactly equivalent to using 11 seasonal dummies.</span>
+</dd>
+</dl>
+</div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[".model"],"name":[1],"type":["chr"],"align":["left"]},{"label":["AICc"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["BIC"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"K = 6","2":"-917.5004","3":"-875.4380"},{"1":"K = 5","2":"-916.9078","3":"-874.8454"},{"1":"K = 4","2":"-818.2098","3":"-770.5697"},{"1":"K = 3","2":"-761.3329","3":"-724.9638"},{"1":"K = 2","2":"-697.8271","3":"-661.4579"},{"1":"K = 1","2":"-615.4056","3":"-587.7842"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section>
+<section id="comparing-forecasts-across-k" class="slide level2">
+<h2>Comparing Forecasts Across K</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a></a>cafe_fit <span class="sc">|&gt;</span></span>
+<span id="cb20-2"><a></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"2 years"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb20-3"><a></a>  <span class="fu">autoplot</span>(aus_cafe, <span class="at">level =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb20-4"><a></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> .model, <span class="at">ncol =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb20-5"><a></a>  <span class="fu">labs</span>(</span>
+<span id="cb20-6"><a></a>    <span class="at">title =</span> <span class="st">"Effect of K on seasonal shape"</span>,</span>
+<span id="cb20-7"><a></a>    <span class="at">y =</span> <span class="st">"Turnover (AUD millions)"</span>, <span class="at">x =</span> <span class="cn">NULL</span></span>
+<span id="cb20-8"><a></a>  ) <span class="sc">+</span></span>
+<span id="cb20-9"><a></a>  <span class="fu">guides</span>(<span class="at">colour =</span> <span class="st">"none"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="dynamic_regression_files/figure-html/cafe-forecast-comparison-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9"><img data-src="dynamic_regression_files/figure-html/cafe-forecast-comparison-1.png" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-note callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>What to look for</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li class="fragment"><strong>K = 1–2</strong>: Very smooth, nearly sinusoidal — misses the multi-peak retail calendar</li>
+<li class="fragment"><strong>K = 3–4</strong>: Usually the AIC<span class="math inline">_c</span> winner; captures the main features of Australian retail seasonality</li>
+<li class="fragment"><strong>K = 6</strong>: Reproduces seasonal dummies exactly — can overfit the historical pattern</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="multiple-seasonalities" class="slide level2">
+<h2>Multiple Seasonalities</h2>
+<p>The real power of Fourier terms appears with <strong>nested seasonal periods</strong>. Half-hourly electricity demand, for instance, has three simultaneous cycles:</p>
+<ul>
+<li class="fragment"><strong>Daily</strong> cycle (<span class="math inline">m = 48</span> half-hours)</li>
+<li class="fragment"><strong>Weekly</strong> cycle (<span class="math inline">m = 336</span> half-hours)</li>
+<li class="fragment"><strong>Annual</strong> cycle (<span class="math inline">m \approx 17{,}520</span> half-hours)</li>
+</ul>
+<div class="fragment">
+<p><code>fable</code>’s <code>fourier()</code> handles this with the <code>period</code> argument:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-28"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-28-1"><a href="#annotated-cell-28-1"></a><span class="fu">TSLM</span>(demand <span class="sc">~</span> mean_temp <span class="sc">+</span> <span class="fu">I</span>(mean_temp<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> day_type <span class="sc">+</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-28" data-target-annotation="1">1</button><span id="annotated-cell-28-2" class="code-annotation-target"><a href="#annotated-cell-28-2"></a>       <span class="fu">fourier</span>(<span class="at">period =</span> <span class="st">"day"</span>,  <span class="at">K =</span> <span class="dv">4</span>) <span class="sc">+</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-28" data-target-annotation="2">2</button><span id="annotated-cell-28-3" class="code-annotation-target"><a href="#annotated-cell-28-3"></a>       <span class="fu">fourier</span>(<span class="at">period =</span> <span class="st">"week"</span>, <span class="at">K =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-28" data-target-annotation="3">3</button><span id="annotated-cell-28-4" class="code-annotation-target"><a href="#annotated-cell-28-4"></a>       <span class="fu">fourier</span>(<span class="at">period =</span> <span class="st">"year"</span>, <span class="at">K =</span> <span class="dv">6</span>))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-28" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-28" data-code-lines="2" data-code-annotation="1">Within-day rhythm: 24-hour cycle.</span>
+</dd>
+<dt data-target-cell="annotated-cell-28" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-28" data-code-lines="3" data-code-annotation="2">Within-week rhythm: weekday/weekend pattern.</span>
+</dd>
+<dt data-target-cell="annotated-cell-28" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-28" data-code-lines="4" data-code-annotation="3">Annual seasonal pattern.</span>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="callout callout-note callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Coming up in Module 4</strong></p>
+</div>
+<div class="callout-content">
+<p>In <strong>4.1 Complex Seasonality</strong> we will fit exactly this kind of model on <code>vic_elec</code> aggregated by hour — three nested periods, real data, with all the challenges that come with it. What you’ve seen here is the foundation.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-warning callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Computation time</strong></p>
+</div>
+<div class="callout-content">
+<p><code>ARIMA()</code> with multiple Fourier terms on thousands of rows can take several minutes. Start with <code>TSLM()</code> to explore values of <span class="math inline">K</span>, then switch to <code>ARIMA()</code> once you have settled on a configuration.</p>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="summary" class="title-slide slide level1 center">
+<h1>Summary</h1>
+
+</section>
+<section id="section-2" class="slide level2">
+<h2></h2>
+<ul>
+<li class="fragment"><p>The TSLM from Session 3.2 had one remaining weakness: <strong>autocorrelated residuals</strong>. Dynamic regression fixes this by letting the error term follow an ARIMA process instead of assuming white noise.</p></li>
+<li class="fragment"><p>The model has two error terms: regression errors <span class="math inline">\eta_t</span> (modeled by ARIMA) and innovations <span class="math inline">\varepsilon_t</span> (white noise). <strong>Diagnose using <span class="math inline">\hat{\varepsilon}_t</span></strong> — the innovations, not the regression residuals.</p></li>
+<li class="fragment"><p><strong>All variables must be stationary.</strong> If differencing is needed, apply it to all simultaneously using <code>pdq(d = 1)</code>.</p></li>
+<li class="fragment"><p>Forecasting still requires <strong>future values of the predictors</strong> — the same ex-ante / ex-post / scenario strategies from Session 3.2 apply.</p></li>
+<li class="fragment"><p><strong>Harmonic regression</strong> extends the framework to large or multiple seasonal periods using Fourier terms. Choose <span class="math inline">K</span> by minimizing AIC<span class="math inline">_c</span>.</p></li>
+</ul>
+<div class="fragment">
+<div class="callout callout-tip callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>The full Module 3 picture</strong></p>
+</div>
+<div class="callout-content">
+<table class="caption-top">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Session</th>
+<th style="text-align: left;">Model</th>
+<th style="text-align: left;">What was added</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">3.1</td>
+<td style="text-align: left;">Practical issues</td>
+<td style="text-align: left;">Transformations, outliers, cross-validation</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">3.2</td>
+<td style="text-align: left;">TSLM</td>
+<td style="text-align: left;">External predictors; <span class="math inline">\varepsilon_t</span> white noise (required)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>3.3</strong></td>
+<td style="text-align: left;"><strong>ARIMA(y ~ x)</strong></td>
+<td style="text-align: left;"><strong>Same predictors; <span class="math inline">\eta_t \sim</span> ARIMA (relaxed)</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">3.4</td>
+<td style="text-align: left;">Prophet</td>
+<td style="text-align: left;">Automatic changepoints, complex seasonality</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+
+</section></section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<p><img src="../../../../images/iteso_logo.png" class="slide-logo"></p>
+<div class="footer footer-default">
+<p>Time Series Forecasting</p>
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="../../../../site_libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="../../../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="../../../../site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="../../../../site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="../../../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="../../../../site_libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
+  <script src="../../../../site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="../../../../site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="../../../../site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="../../../../site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': false,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"8\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'chalkboard': {"buttons":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: true,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: true,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'slide',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1600,
+
+        height: 900,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 3.0e-2,
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, RevealChalkboard, QuartoSupport,
+
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp("https:\/\/pbenavidesh\.github\.io\/narsil\/");
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+                // target, if specified
+                link.setAttribute("target", "_blank");
+                if (link.getAttribute("rel") === null) {
+                  link.setAttribute("rel", "noopener");
+                }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+            let selectedAnnoteEl;
+            const selectorForAnnotation = ( cell, annotation) => {
+              let cellAttr = 'data-code-cell="' + cell + '"';
+              let lineAttr = 'data-code-annotation="' +  annotation + '"';
+              const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+              return selector;
+            }
+            const selectCodeLines = (annoteEl) => {
+              const doc = window.document;
+              const targetCell = annoteEl.getAttribute("data-target-cell");
+              const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+              const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+              const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+              const lineIds = lines.map((line) => {
+                return targetCell + "-" + line;
+              })
+              let top = null;
+              let height = null;
+              let parent = null;
+              if (lineIds.length > 0) {
+                  //compute the position of the single el (top and bottom and make a div)
+                  const el = window.document.getElementById(lineIds[0]);
+                  top = el.offsetTop;
+                  height = el.offsetHeight;
+                  parent = el.parentElement.parentElement;
+                if (lineIds.length > 1) {
+                  const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+                  const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+                  height = bottom - top;
+                }
+                if (top !== null && height !== null && parent !== null) {
+                  // cook up a div (if necessary) and position it 
+                  let div = window.document.getElementById("code-annotation-line-highlight");
+                  if (div === null) {
+                    div = window.document.createElement("div");
+                    div.setAttribute("id", "code-annotation-line-highlight");
+                    div.style.position = 'absolute';
+                    parent.appendChild(div);
+                  }
+                  div.style.top = top - 2 + "px";
+                  div.style.height = height + 4 + "px";
+                  div.style.left = 0;
+                  let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+                  if (gutterDiv === null) {
+                    gutterDiv = window.document.createElement("div");
+                    gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                    gutterDiv.style.position = 'absolute';
+                    const codeCell = window.document.getElementById(targetCell);
+                    const gutter = codeCell.querySelector('.code-annotation-gutter');
+                    gutter.appendChild(gutterDiv);
+                  }
+                  gutterDiv.style.top = top - 2 + "px";
+                  gutterDiv.style.height = height + 4 + "px";
+                }
+                selectedAnnoteEl = annoteEl;
+              }
+            };
+            const unselectCodeLines = () => {
+              const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+              elementsIds.forEach((elId) => {
+                const div = window.document.getElementById(elId);
+                if (div) {
+                  div.remove();
+                }
+              });
+              selectedAnnoteEl = undefined;
+            };
+              // Handle positioning of the toggle
+          window.addEventListener(
+            "resize",
+            throttle(() => {
+              elRect = undefined;
+              if (selectedAnnoteEl) {
+                selectCodeLines(selectedAnnoteEl);
+              }
+            }, 10)
+          );
+          function throttle(fn, ms) {
+          let throttle = false;
+          let timer;
+            return (...args) => {
+              if(!throttle) { // first call gets through
+                  fn.apply(this, args);
+                  throttle = true;
+              } else { // all the others get throttled
+                  if(timer) clearTimeout(timer); // cancel #2
+                  timer = setTimeout(() => {
+                    fn.apply(this, args);
+                    timer = throttle = false;
+                  }, ms);
+              }
+            };
+          }
+            const annoteTargets = window.document.querySelectorAll('.code-annotation-anchor');
+            for (let i=0; i<annoteTargets.length; i++) {
+              const annoteTarget = annoteTargets[i];
+              const targetCell = annoteTarget.getAttribute("data-target-cell");
+              const targetAnnotation = annoteTarget.getAttribute("data-target-annotation");
+              const contentFn = () => {
+                const content = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+                if (content) {
+                  const tipContent = content.cloneNode(true);
+                  tipContent.classList.add("code-annotation-tip-content");
+                  return tipContent.outerHTML;
+                }
+              }
+              const config = {
+                allowHTML: true,
+                content: contentFn,
+                onShow: (instance) => {
+                  selectCodeLines(instance.reference);
+                  instance.reference.classList.add('code-annotation-active');
+                  window.tippy.hideAll();
+                },
+                onHide: (instance) => {
+                  unselectCodeLines();
+                  instance.reference.classList.remove('code-annotation-active');
+                },
+                maxWidth: 300,
+                delay: [50, 0],
+                duration: [200, 0],
+                offset: [5, 10],
+                arrow: true,
+                appendTo: function(el) {
+                  return el.parentElement.parentElement.parentElement;
+                },
+                interactive: true,
+                interactiveBorder: 10,
+                theme: 'light-border',
+                placement: 'right',
+                popperOptions: {
+                  modifiers: [
+                  {
+                    name: 'flip',
+                    options: {
+                      flipVariations: false, // true by default
+                      allowedAutoPlacements: ['right'],
+                      fallbackPlacements: ['right', 'top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'left'],
+                    },
+                  },
+                  {
+                    name: 'preventOverflow',
+                    options: {
+                      mainAxis: false,
+                      altAxis: false
+                    }
+                  }
+                  ]        
+                }      
+              };
+              window.tippy(annoteTarget, config); 
+            }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    <script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+    (function() {
+      let previousOnload = window.onload;
+      window.onload = () => {
+        if (previousOnload) {
+          previousOnload();
+        }
+        lightboxQuarto.on('slide_before_load', (data) => {
+          const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+          const href = trigger.getAttribute('href');
+          if (href !== null) {
+            const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+            if (imgEl !== null) {
+              const srcAttr = imgEl.getAttribute("src");
+              if (srcAttr && srcAttr.startsWith("data:")) {
+                slideConfig.href = srcAttr;
+              }
+            }
+          } 
+        });
+      
+        lightboxQuarto.on('slide_after_load', (data) => {
+          const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(slideNode);
+          }
+        });
+      
+      };
+      
+    })();
+              </script>
+    
+
+</body></html>
