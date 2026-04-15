@@ -427,12 +427,16 @@ us_change_future
 ```{r}
 #| label: us-future-2
 
-us_change_future <- new_data(us_change, 8) |>
-  mutate(across(Income:Unemployment, \(x) mean(us_change[[cur_column()]])))
+us_change_future <- us_change |>
+  pivot_longer(-c(Quarter, Consumption), names_to = "variable") |>
+  model(MEAN(value)) |>
+  forecast(h = 8) |>
+  as_tsibble() |>
+  select(-c(.model, value)) |>
+  pivot_wider(names_from = variable, values_from = .mean)
+
 us_change_future
 ```
-
-
 
 :::
 
@@ -451,24 +455,48 @@ us_change_future
 ```{r}
 #| label: us-forecast-full
 
-us_change_future <- new_data(us_change, 8) |>                        #<1>
-  mutate(across(Income:Unemployment,                                  #<2>
-                \(x) mean(us_change[[cur_column()]])))               #<3>
+us_change_future <- us_change |>
+  pivot_longer(-c(Quarter, Consumption),      #<1>
+               names_to = "variable") |>
+  model(MEAN(value)) |>                       #<2>
+  forecast(h = 8) |>                          #<3>
+  as_tsibble() |>
+  select(-c(.model, value)) |>
+  pivot_wider(names_from  = variable,         #<4>
+              values_from = .mean)
 
 us_change_fit_dyn |>
   select(dynamic) |>
   forecast(new_data = us_change_future) |>
   autoplot(tail(us_change, 60)) +
   labs(
-    title = "US Consumption: dynamic regression forecast",
-    subtitle = "Baseline scenario: all predictors at their historical mean",
+    title    = "US Consumption: dynamic regression forecast",
+    subtitle = "Baseline scenario: predictors forecast with MEAN",
     y = "% change", x = NULL
   )
 ```
 
-1. `new_data()` creates 8 future rows preserving the tsibble index.
-2. `across(Income:Unemployment, ...)` applies the same operation to all four predictor columns at once.
-3. The anonymous function `\(x)` receives each column; `cur_column()` returns its name so we can look it up in `us_change`.
+1. Pivot the four predictor columns to long format — each variable becomes its own series, identified by `variable`.
+2. A single `model()` call fits `MEAN` to each predictor simultaneously.
+3. A single `forecast()` produces 8-step-ahead forecasts for all predictors at once.
+4. Pivot back to wide format so each predictor has its own column, matching the structure that `forecast()` expects in `new_data`.
+
+:::{.callout-tip appearance="simple"}
+## Swapping the forecast method
+
+Because the predictors go through a proper `model() |> forecast()` pipeline, changing the scenario is a one-word edit:
+
+```{r}
+#| eval: false
+
+model(MEAN(value))          # flat forecast at the historical mean
+model(NAIVE(value))         # last observed value carried forward
+model(RW(value ~ drift()))  # linear extrapolation of the recent trend
+model(ARIMA(value))         # best ARIMA for each predictor
+```
+
+`MEAN` is appropriate here because all `us_change` variables are stationary percentage changes — the historical mean is a reasonable "neutral" projection. For predictors with trend, `RW(drift)` or `ARIMA` would be more honest.
+:::
 
 :::{.content-hidden unless-format="revealjs"}
 
