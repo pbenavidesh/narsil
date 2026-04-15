@@ -1,0 +1,1040 @@
+---
+title: "Dynamic & Harmonic Regression"
+format:
+  html:
+    other-links:
+      - text: FPP3 Chapter 10
+        href: https://otexts.com/fpp3/dynamic.html
+  revealjs:
+    output-file: dynamic_regression_pres.html
+freeze: auto
+---
+
+:::{.content-visible unless-format="revealjs"}
+
+```{r}
+#| label: pkgs
+#| message: false
+#| include: false
+
+library(tidyverse)
+library(fpp3)
+```
+
+```{r}
+#| label: pkgs_special
+#| message: false
+
+library(plotly) #<1>
+```
+
+1. In addition to the regular packages, here we'll use `plotly` for interactive plots.
+
+:::
+
+```{r}
+#| label: data-setup
+#| include: false
+#| message: false
+
+us_change <- fpp3::us_change
+
+us_change_fit_mult <- us_change |>
+  model(
+    multiple = TSLM(Consumption ~ Income + Production + Savings + Unemployment)
+  )
+
+vic_elec_daily <- vic_elec |>
+  filter(year(Time) == 2014) |>
+  index_by(Date = date(Time)) |>
+  summarise(
+    Demand      = sum(Demand) / 1e3,
+    Temperature = max(Temperature),
+    Holiday     = any(Holiday)
+  ) |>
+  mutate(
+    Day_Type = case_when(
+      Holiday              ~ "Holiday",
+      wday(Date) %in% 2:6  ~ "Weekday",
+      TRUE                 ~ "Weekend"
+    )
+  )
+```
+
+# One Assumption Left to Fix
+
+:::{.content-hidden unless-format="revealjs"}
+
+## Where we left off
+
+:::
+
+In the [previous session](../02_regression/regression.qmd), we built a multiple regression model for US consumption:
+
+$$y_{t,\text{Cons.}} = \beta_0 + \beta_1 x_{t,\text{Inc.}} + \beta_2 x_{t,\text{Prod.}} + \beta_3 x_{t,\text{Sav.}} + \beta_4 x_{t,\text{Unemp.}} + \varepsilon_t$$
+
+The model improved substantially over the simple version — $\bar{R}^2$ went from ~0.15 to ~0.75, and the residuals looked much closer to white noise.
+
+:::{.fragment}
+
+But "much closer" is not the same as "white noise." Let's check:
+
+```{r}
+#| label: mult-resid-check
+
+us_change_fit_mult |>
+  augment() |>
+  features(.resid, ljung_box, lag = 10, dof = 5)
+```
+
+:::
+
+:::{.fragment}
+
+The p-value is not zero, but in practice with real data there is nearly always *some* residual autocorrelation left after TSLM. And that matters:
+
+:::{.callout-warning appearance="simple"}
+## What autocorrelated residuals cost us
+
+If $\varepsilon_t$ is autocorrelated, OLS is still unbiased — but standard errors are wrong, confidence intervals are wrong, and **prediction intervals are wrong**. The model is leaving structure on the table that could be captured.
+:::
+
+:::
+
+:::{.content-hidden unless-format="revealjs"}
+
+##
+
+:::
+
+The culprit is the **white noise assumption** on $\varepsilon_t$:
+
+$$\varepsilon_t \overset{\text{iid}}{\sim} N(0, \sigma^2)$$
+
+What if instead of forcing this, we *modeled* whatever autocorrelation remains?
+
+:::{.fragment}
+
+:::{.callout-note appearance="simple"}
+## The upgrade: relax the white noise assumption
+
+| Model | Error term |
+|:---|:---|
+| TSLM | $\varepsilon_t \overset{\text{iid}}{\sim} N(0,\sigma^2)$ — must be white noise |
+| **Dynamic regression** | $\eta_t \sim \text{ARIMA}(p,d,q)$ — **can be autocorrelated** |
+
+Same predictors. Same regression structure. One assumption relaxed.
+:::
+
+:::
+
+# Regression with ARIMA Errors
+
+:::{.content-hidden unless-format="revealjs"}
+
+## The Model
+
+:::
+
+The dynamic regression model replaces the white noise error $\varepsilon_t$ with $\eta_t$, which is allowed to follow an ARIMA process:
+
+$$y_t = \beta_0 + \beta_1 x_{1,t} + \cdots + \beta_k x_{k,t} + \eta_t$$
+
+$$\eta_t \sim \text{ARIMA}(p, d, q)(P, D, Q)_m$$
+
+:::{.fragment}
+
+The model still has white noise — it just lives one level deeper. There are now **two distinct error terms**:
+
+:::{.callout-note appearance="simple"}
+## Two error terms
+
+- $\eta_t$ — the **regression error**: how far $y_t$ is from the regression surface. Still autocorrelated, now modeled explicitly.
+- $\varepsilon_t$ — the **ARIMA innovation**: the white noise that drives $\eta_t$. This is the only truly random component.
+
+We diagnose the model using $\hat{\varepsilon}_t$, not $\hat{\eta}_t$.
+:::
+
+:::
+
+:::{.content-hidden unless-format="revealjs"}
+
+## Stationarity
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+### Stationarity
+
+:::
+
+:::{.callout-warning appearance="simple"}
+## All variables must be stationary
+
+Dynamic regression requires that both $y_t$ and all predictors $x_{k,t}$ are stationary. If any variable needs differencing, apply it to **all variables simultaneously**. Specifying `pdq(d = 1)` does this automatically.
+
+For `us_change`, all variables are already percentage changes — stationary by construction.
+:::
+
+:::{.content-hidden unless-format="revealjs"}
+
+## Fitting in R
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+### Fitting in R
+
+:::
+
+`ARIMA()` handles dynamic regression by simply adding predictors to the right-hand side of the formula — the same syntax as `TSLM()`:
+
+```{r}
+#| eval: false
+
+# TSLM — white noise errors assumed
+TSLM(y ~ x1 + x2)
+
+# Dynamic regression — ARIMA errors, order chosen automatically
+ARIMA(y ~ x1 + x2)
+
+# Force differencing on all variables
+ARIMA(y ~ x1 + x2 + pdq(d = 1))
+```
+
+# Example: US Consumption
+
+:::{.content-hidden unless-format="revealjs"}
+
+## TSLM → Dynamic Regression {auto-animate="true"}
+
+```{r}
+#| label: us-tslm-show
+#| eval: false
+
+us_change |>
+  model(
+    tslm    = TSLM(Consumption ~ Income + Production + Savings + Unemployment)
+  )
+```
+
+## TSLM → Dynamic Regression {auto-animate="true"}
+
+```{r}
+#| label: us-both-show
+#| eval: false
+
+us_change |>
+  model(
+    tslm    = TSLM(Consumption ~ Income + Production + Savings + Unemployment),
+    dynamic = ARIMA(Consumption ~ Income + Production + Savings + Unemployment)
+  )
+```
+
+:::
+
+:::{.content-hidden unless-format="revealjs"}
+
+## Fitting the Dynamic Regression {auto-animate="true"}
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+### Fitting the Dynamic Regression
+
+:::
+
+```{r}
+#| label: us-dynamic-fit
+
+us_change_fit_dyn <- us_change |>
+  model(
+    tslm    = TSLM(Consumption ~ Income + Production +      #<1>
+                     Savings + Unemployment),
+    dynamic = ARIMA(Consumption ~ Income + Production +     #<2>
+                      Savings + Unemployment)
+  )
+
+us_change_fit_dyn |>
+  select(dynamic) |>
+  report()
+```
+
+1. Our previous model — kept here for direct comparison.
+2. Same predictors, same formula structure. `ARIMA()` selects the error order automatically via AIC$_c$.
+
+:::{.content-hidden unless-format="revealjs"}
+
+## Two Types of Residuals
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+### Two Types of Residuals
+
+:::
+
+We can extract both error types from the fitted model:
+
+```{r}
+#| label: us-two-residuals
+
+bind_rows(
+  `Regression errors` = as_tibble(                               #<1>
+    residuals(us_change_fit_dyn |> select(dynamic),
+              type = "regression")),
+  `ARIMA innovations` = as_tibble(                               #<2>
+    residuals(us_change_fit_dyn |> select(dynamic),
+              type = "innovation")),
+  .id = "type"
+) |>
+  ggplot(aes(x = Quarter, y = .resid)) +
+  geom_line() +
+  facet_wrap(~ type, nrow = 2, scales = "free_y") +
+  labs(y = NULL, x = NULL)
+```
+
+1. `type = "regression"` → $\hat{\eta}_t$: the regression residuals. These still have autocorrelation structure, now captured by the ARIMA component.
+2. `type = "innovation"` → $\hat{\varepsilon}_t$: what should be white noise. This is what we diagnose.
+
+:::{.content-hidden unless-format="revealjs"}
+
+## Residual Diagnostics
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+### Residual Diagnostics
+
+:::
+
+```{r}
+#| label: us-diagnostics
+
+us_change_fit_dyn |>
+  select(dynamic) |>
+  gg_tsresiduals()
+```
+
+```{r}
+#| label: us-ljungbox
+
+us_change_fit_dyn |>
+  select(dynamic) |>
+  augment() |>
+  features(.innov, ljung_box,
+           lag = 10,
+           dof = us_change_fit_dyn |>                   #<1>
+                   select(dynamic) |>
+                   coefficients() |>
+                   filter(str_detect(term, "^ar|^ma")) |>
+                   nrow())
+```
+
+1. `dof` is computed dynamically as the number of estimated AR and MA coefficients — always matches the fitted model regardless of order selected.
+
+:::{.content-hidden unless-format="revealjs"}
+
+## Does It Actually Improve Things?
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+### Does It Actually Improve Things?
+
+:::
+
+Let's compare the two models side by side on a held-out test set:
+
+```{r}
+#| label: us-accuracy-compare
+#| message: false
+
+us_change_train <- us_change |> filter_index(. ~ "2015 Q4")
+us_change_test  <- us_change |> filter_index("2016 Q1" ~ .)
+
+us_change_fit_cv <- us_change_train |>
+  model(
+    tslm    = TSLM(Consumption ~ Income + Production + Savings + Unemployment),
+    dynamic = ARIMA(Consumption ~ Income + Production + Savings + Unemployment)
+  )
+
+us_change_fit_cv |>
+  forecast(new_data = us_change_test) |>
+  accuracy(us_change_test) |>
+  select(.model, RMSE, MAE, MAPE)
+```
+
+:::{.callout-important appearance="simple"}
+## Key insight
+
+The dynamic regression model passes the Ljung-Box test — something the TSLM could not. By modeling the residual autocorrelation explicitly with ARIMA, we get **valid standard errors**, **correct prediction intervals**, and typically better out-of-sample accuracy.
+:::
+
+# Forecasting with Dynamic Regression
+
+:::{.content-hidden unless-format="revealjs"}
+
+## What changes vs. TSLM?
+
+:::
+
+Forecasting works exactly as in [Session 3.2](../02_regression/regression.qmd#forecasting-with-regression) — you still need future values of the predictors, and the same three strategies apply (ex-ante, ex-post, scenario-based).
+
+:::{.fragment}
+
+The only practical difference: you use `new_data()` to build the future dataset and pass it to `forecast()`. The ARIMA component of the errors is projected forward automatically.
+
+:::
+
+:::{.content-hidden unless-format="revealjs"}
+
+## Scenario Forecast {auto-animate="true"}
+
+```{r}
+#| label: us-future-1
+
+us_change_future <- new_data(us_change, 8)
+us_change_future
+```
+
+## Scenario Forecast {auto-animate="true"}
+
+```{r}
+#| label: us-future-2
+
+us_change_future <- new_data(us_change, 8) |>
+  mutate(
+    Income       = mean(us_change$Income),
+    Production   = mean(us_change$Production),
+    Savings      = mean(us_change$Savings),
+    Unemployment = mean(us_change$Unemployment)
+  )
+us_change_future
+```
+
+:::
+
+:::{.content-hidden unless-format="revealjs"}
+
+## Scenario Forecast {auto-animate="true"}
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+### Scenario Forecast
+
+:::
+
+```{r}
+#| label: us-forecast-full
+
+us_change_future <- new_data(us_change, 8) |>          #<1>
+  mutate(
+    Income       = mean(us_change$Income),             #<2>
+    Production   = mean(us_change$Production),
+    Savings      = mean(us_change$Savings),
+    Unemployment = mean(us_change$Unemployment)
+  )
+
+us_change_fit_dyn |>
+  select(dynamic) |>
+  forecast(new_data = us_change_future) |>
+  autoplot(tail(us_change, 60)) +
+  labs(
+    title = "US Consumption: dynamic regression forecast",
+    subtitle = "Baseline scenario: all predictors at their historical mean",
+    y = "% change", x = NULL
+  )
+```
+
+1. `new_data()` creates 8 future rows preserving the tsibble index.
+2. Baseline scenario: each predictor held at its long-run average.
+
+:::{.content-hidden unless-format="revealjs"}
+
+## TSLM vs. Dynamic: Prediction Intervals
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+### TSLM vs. Dynamic: Prediction Intervals
+
+:::
+
+```{r}
+#| label: us-interval-compare
+#| message: false
+#| echo: false
+
+us_change_fit_dyn |>
+  forecast(new_data = us_change_future) |>
+  autoplot(tail(us_change, 60), level = 80) +
+  facet_wrap(~ .model) +
+  labs(
+    title = "Modeling ARIMA errors narrows prediction intervals",
+    subtitle = "80% prediction intervals shown",
+    y = "% change", x = NULL
+  )
+```
+
+:::{.callout-warning appearance="simple"}
+## The prediction interval caveat
+
+Dynamic regression intervals assume future predictor values are **known exactly**. When they are estimated (as in the scenario above), true uncertainty is larger than what the intervals show. This applies equally to TSLM — dynamic regression does not make this problem worse, it just fixes the autocorrelation problem.
+:::
+
+# A Second Example: Electricity Demand
+
+:::{.content-hidden unless-format="revealjs"}
+
+## Why a Second Example?
+
+:::
+
+The `us_change` example was clean: stationary series, linear relationship, one seasonal period. Electricity demand pushes two things further:
+
+:::{.incremental}
+
+- A **nonlinear** relationship between the predictor and the response
+- A **categorical** predictor (day type) alongside a continuous one
+
+:::
+
+:::{.content-hidden unless-format="revealjs"}
+
+## The Data
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+### The Data
+
+:::
+
+Daily electricity demand in Victoria, Australia (2014):
+
+```{r}
+#| label: elec-scatter
+#| echo: false
+
+p <- vic_elec_daily |>
+  ggplot(aes(x = Temperature, y = Demand, colour = Day_Type)) +
+  geom_point(alpha = 0.7) +
+  scale_color_brewer(palette = "Set1") +
+  labs(
+    title = "U-shaped relationship between temperature and demand",
+    x = "Maximum daily temperature (°C)",
+    y = "Demand (GW)",
+    colour = "Day type"
+  )
+
+ggplotly(p)
+```
+
+:::{.content-hidden unless-format="revealjs"}
+
+##
+
+:::
+
+Two patterns are immediately clear:
+
+:::{.incremental}
+
+1. **U-shaped (quadratic) relationship** with temperature — both very hot and very cold days increase demand.
+2. **Day type** matters: weekdays > weekends > holidays.
+
+:::
+
+:::{.fragment}
+
+This gives us the model:
+
+$$y_t = \beta_0 + \beta_1 T_t + \beta_2 T_t^2 + \beta_3 D_{\text{Weekday}} + \eta_t, \quad \eta_t \sim \text{ARIMA}$$
+
+:::
+
+:::{.content-hidden unless-format="revealjs"}
+
+## Fitting the Model {auto-animate="true"}
+
+```{r}
+#| label: elec-fit-1
+#| eval: false
+
+vic_elec_daily |>
+  model(
+    ARIMA(Demand ~ Temperature)
+  )
+```
+
+## Fitting the Model {auto-animate="true"}
+
+```{r}
+#| label: elec-fit-2
+#| eval: false
+
+vic_elec_daily |>
+  model(
+    ARIMA(Demand ~ Temperature + I(Temperature^2))
+  )
+```
+
+## Fitting the Model {auto-animate="true"}
+
+```{r}
+#| label: elec-fit-3
+#| eval: false
+
+vic_elec_daily |>
+  model(
+    ARIMA(Demand ~ Temperature + I(Temperature^2) +
+            (Day_Type == "Weekday"))
+  )
+```
+
+:::
+
+:::{.content-hidden unless-format="revealjs"}
+
+## Fitting the Model {auto-animate="true"}
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+### Fitting the Model
+
+:::
+
+```{r}
+#| label: elec-fit-full
+
+vic_elec_fit <- vic_elec_daily |>
+  model(
+    ARIMA(Demand ~ Temperature + I(Temperature^2) +  #<1>
+            (Day_Type == "Weekday"))                  #<2>
+  )
+
+report(vic_elec_fit)
+```
+
+1. `I(Temperature^2)` adds the quadratic term. The `I()` wrapper is required to protect arithmetic inside the formula.
+2. A logical expression that becomes a binary indicator: `TRUE` (1) for weekdays, `FALSE` (0) otherwise.
+
+:::{.content-hidden unless-format="revealjs"}
+
+## Diagnostics & Scenario Forecast
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+### Diagnostics & Scenario Forecast
+
+:::
+
+```{r}
+#| label: elec-diagnostics
+
+vic_elec_fit |> gg_tsresiduals()
+```
+
+```{r}
+#| label: elec-ljung
+
+vic_elec_fit |>
+  augment() |>
+  features(.innov, ljung_box, dof = 8, lag = 14)
+```
+
+:::{.callout-note appearance="simple"}
+## Heteroscedastic residuals
+
+Variance is higher during January–February (Australian summer peak). Point estimates remain valid, but prediction intervals may be too narrow for extreme temperature periods.
+:::
+
+:::{.panel-tabset}
+
+### Conservative (26°C)
+
+```{r}
+#| label: elec-forecast-conservative
+
+vic_elec_future_26 <- new_data(vic_elec_daily, 14) |>
+  mutate(
+    Temperature = 26,
+    Holiday     = c(TRUE, rep(FALSE, 13)),
+    Day_Type    = case_when(
+      Holiday              ~ "Holiday",
+      wday(Date) %in% 2:6  ~ "Weekday",
+      TRUE                 ~ "Weekend"
+    )
+  )
+
+forecast(vic_elec_fit, vic_elec_future_26) |>
+  autoplot(vic_elec_daily) +
+  labs(title = "Scenario: constant 26°C",
+       y = "Electricity demand (GW)")
+```
+
+### Heatwave
+
+```{r}
+#| label: elec-forecast-heatwave
+
+vic_elec_future_hw <- new_data(vic_elec_daily, 14) |>
+  mutate(
+    Temperature = c(seq(31, 34), 33, rep(34, 3), rep(33, 6)), #<1>
+    Holiday     = c(TRUE, rep(FALSE, 13)),
+    Day_Type    = case_when(
+      Holiday              ~ "Holiday",
+      wday(Date) %in% 2:6  ~ "Weekday",
+      TRUE                 ~ "Weekend"
+    )
+  )
+
+forecast(vic_elec_fit, vic_elec_future_hw) |>
+  autoplot(vic_elec_daily) +
+  labs(title = "Scenario: rising temperatures (heatwave)",
+       y = "Electricity demand (GW)")
+```
+
+1. A realistic meteorological forecast — considerably hotter than 26°C.
+
+:::
+
+# Harmonic Regression
+
+:::{.content-hidden unless-format="revealjs"}
+
+## A Problem with `vic_elec_daily`
+
+:::
+
+The electricity demand example above used **daily** data. Demand has an obvious **annual** seasonal pattern ($m = 365$). If we wanted to capture it with dummy variables, we would need 364 of them.
+
+:::{.fragment}
+
+That is impractical. The same problem appears with:
+
+| Data frequency | Seasonal period |
+|:---|:---:|
+| Daily (annual cycle) | $m = 365$ |
+| Weekly | $m = 52$ |
+| Half-hourly (daily cycle) | $m = 48$ |
+
+:::
+
+:::{.fragment}
+
+:::{.callout-tip appearance="simple"}
+## Recall from Session 3.2
+
+We first saw Fourier terms mentioned as a footnote in `regression.qmd` — they were promised as the solution for large $m$. This is where we deliver on that promise.
+:::
+
+:::
+
+:::{.content-hidden unless-format="revealjs"}
+
+## Fourier Terms
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+### Fourier Terms
+
+:::
+
+Any periodic pattern can be approximated by a sum of sine and cosine waves:
+
+$$S_K(t) = \sum_{k=1}^{K} \left[ a_k \cos\!\left(\frac{2\pi k t}{m}\right) + b_k \sin\!\left(\frac{2\pi k t}{m}\right) \right]$$
+
+- $m$ — seasonal period
+- $K$ — number of Fourier pairs (controls flexibility)
+- $K = m/2$ — equivalent to $m-1$ seasonal dummies
+
+:::{.fragment}
+
+:::{.callout-important appearance="simple"}
+## The key parameter: $K$
+
+- **Small $K$** → smooth, slowly-varying seasonal pattern
+- **Large $K$** → complex, flexible seasonal pattern (but more parameters)
+- **$K = m/2$** → identical to using $m - 1$ seasonal dummies
+
+Choose $K$ by minimizing AIC$_c$.
+:::
+
+:::
+
+:::{.content-hidden unless-format="revealjs"}
+
+## Advantages and Limitations
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+### Advantages and Limitations
+
+:::
+
+::: {.columns}
+
+::: {.column width="50%"}
+
+**Advantages over seasonal dummies:**
+
+:::{.incremental}
+
+- Works for **any** $m$, no matter how large
+- Handles **multiple seasonalities** simultaneously
+- Smooth patterns with small $K$ → fewer parameters
+- Short-run dynamics handled by ARIMA errors
+
+:::
+
+:::
+
+::: {.column width="50%"}
+
+**Limitations:**
+
+:::{.incremental}
+
+- Seasonal pattern assumed **fixed** over time
+- Requires choosing $K$
+- Less intuitive than dummies for small $m$
+
+:::
+
+:::
+
+:::
+
+# Example: Australian Café Spending
+
+:::{.content-hidden unless-format="revealjs"}
+
+## The Data
+
+:::
+
+Monthly retail turnover for cafés and restaurants in Australia (2004–2018). A clean example of a monthly series with strong, stable seasonality — ideal for comparing values of $K$:
+
+```{r}
+#| label: cafe-data
+
+aus_cafe <- aus_retail |>
+  filter(
+    Industry == "Cafes, restaurants and takeaway food services",
+    year(Month) %in% 2004:2018
+  ) |>
+  summarise(Turnover = sum(Turnover))
+
+aus_cafe |> autoplot(Turnover) +
+  labs(title = "Australian café & restaurant turnover",
+       y = "AUD (millions)", x = NULL)
+```
+
+:::{.content-hidden unless-format="revealjs"}
+
+## Fitting Multiple Values of K {auto-animate="true"}
+
+```{r}
+#| label: cafe-fit-1
+#| eval: false
+
+aus_cafe |>
+  model(
+    `K = 1` = ARIMA(log(Turnover) ~ fourier(K = 1) + PDQ(0, 0, 0))
+  )
+```
+
+## Fitting Multiple Values of K {auto-animate="true"}
+
+```{r}
+#| label: cafe-fit-2
+#| eval: false
+
+aus_cafe |>
+  model(
+    `K = 1` = ARIMA(log(Turnover) ~ fourier(K = 1) + PDQ(0, 0, 0)),
+    `K = 2` = ARIMA(log(Turnover) ~ fourier(K = 2) + PDQ(0, 0, 0)),
+    `K = 3` = ARIMA(log(Turnover) ~ fourier(K = 3) + PDQ(0, 0, 0))
+  )
+```
+
+:::
+
+:::{.content-hidden unless-format="revealjs"}
+
+## Fitting Multiple Values of K {auto-animate="true"}
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+### Fitting Multiple Values of K
+
+:::
+
+```{r}
+#| label: cafe-fit-full
+#| message: false
+
+cafe_fit <- aus_cafe |>
+  model(
+    `K = 1` = ARIMA(log(Turnover) ~ fourier(K = 1) + PDQ(0, 0, 0)), #<1>
+    `K = 2` = ARIMA(log(Turnover) ~ fourier(K = 2) + PDQ(0, 0, 0)),
+    `K = 3` = ARIMA(log(Turnover) ~ fourier(K = 3) + PDQ(0, 0, 0)),
+    `K = 4` = ARIMA(log(Turnover) ~ fourier(K = 4) + PDQ(0, 0, 0)),
+    `K = 5` = ARIMA(log(Turnover) ~ fourier(K = 5) + PDQ(0, 0, 0)),
+    `K = 6` = ARIMA(log(Turnover) ~ fourier(K = 6) + PDQ(0, 0, 0))  #<2>
+  )
+
+glance(cafe_fit) |>
+  select(.model, AICc, BIC) |>
+  arrange(AICc)
+```
+
+1. `PDQ(0,0,0)` suppresses seasonal ARIMA terms — Fourier handles the seasonality entirely.
+2. For monthly data ($m = 12$), $K = 6$ is exactly equivalent to using 11 seasonal dummies.
+
+:::{.content-hidden unless-format="revealjs"}
+
+## Comparing Forecasts Across K
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+### Comparing Forecasts Across K
+
+:::
+
+```{r}
+#| label: cafe-forecast-comparison
+
+cafe_fit |>
+  forecast(h = "2 years") |>
+  autoplot(aus_cafe, level = NULL) +
+  facet_wrap(~ .model, ncol = 2) +
+  labs(
+    title = "Effect of K on seasonal shape",
+    y = "Turnover (AUD millions)", x = NULL
+  ) +
+  guides(colour = "none")
+```
+
+:::{.callout-note appearance="simple"}
+## What to look for
+
+- **K = 1–2**: Very smooth, nearly sinusoidal — misses the multi-peak retail calendar
+- **K = 3–4**: Usually the AIC$_c$ winner; captures the main features of Australian retail seasonality
+- **K = 6**: Reproduces seasonal dummies exactly — can overfit the historical pattern
+:::
+
+:::{.content-hidden unless-format="revealjs"}
+
+## Multiple Seasonalities
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+### Multiple Seasonalities
+
+:::
+
+The real power of Fourier terms appears with **nested seasonal periods**. Half-hourly electricity demand, for instance, has three simultaneous cycles:
+
+:::{.incremental}
+
+- **Daily** cycle ($m = 48$ half-hours)
+- **Weekly** cycle ($m = 336$ half-hours)
+- **Annual** cycle ($m \approx 17{,}520$ half-hours)
+
+:::
+
+:::{.fragment}
+
+`fable`'s `fourier()` handles this with the `period` argument:
+
+```{r}
+#| eval: false
+
+TSLM(demand ~ mean_temp + I(mean_temp^2) + day_type +
+       fourier(period = "day",  K = 4) +   #<1>
+       fourier(period = "week", K = 3) +   #<2>
+       fourier(period = "year", K = 6))    #<3>
+```
+
+1. Within-day rhythm: 24-hour cycle.
+2. Within-week rhythm: weekday/weekend pattern.
+3. Annual seasonal pattern.
+
+:::
+
+:::{.callout-note appearance="simple"}
+## Coming up in Module 4
+
+In **4.1 Complex Seasonality** we will fit exactly this kind of model on `vic_elec` aggregated by hour — three nested periods, real data, with all the challenges that come with it. What you've seen here is the foundation.
+:::
+
+:::{.callout-warning appearance="simple"}
+## Computation time
+
+`ARIMA()` with multiple Fourier terms on thousands of rows can take several minutes. Start with `TSLM()` to explore values of $K$, then switch to `ARIMA()` once you have settled on a configuration.
+:::
+
+# Summary
+
+:::{.content-hidden unless-format="revealjs"}
+
+##
+
+:::
+
+:::{.incremental}
+
+- The TSLM from Session 3.2 had one remaining weakness: **autocorrelated residuals**. Dynamic regression fixes this by letting the error term follow an ARIMA process instead of assuming white noise.
+
+- The model has two error terms: regression errors $\eta_t$ (modeled by ARIMA) and innovations $\varepsilon_t$ (white noise). **Diagnose using $\hat{\varepsilon}_t$** — the innovations, not the regression residuals.
+
+- **All variables must be stationary.** If differencing is needed, apply it to all simultaneously using `pdq(d = 1)`.
+
+- Forecasting still requires **future values of the predictors** — the same ex-ante / ex-post / scenario strategies from Session 3.2 apply.
+
+- **Harmonic regression** extends the framework to large or multiple seasonal periods using Fourier terms. Choose $K$ by minimizing AIC$_c$.
+
+:::
+
+:::{.fragment}
+
+:::{.callout-tip appearance="simple"}
+## The full Module 3 picture
+
+| Session | Model | What was added |
+|:---|:---|:---|
+| 3.1 | Practical issues | Transformations, outliers, cross-validation |
+| 3.2 | TSLM | External predictors; $\varepsilon_t$ white noise (required) |
+| **3.3** | **ARIMA(y ~ x)** | **Same predictors; $\eta_t \sim$ ARIMA (relaxed)** |
+| 3.4 | Prophet | Automatic changepoints, complex seasonality |
+
+:::
+
+:::
