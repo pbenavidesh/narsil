@@ -10,8 +10,6 @@ format:
 freeze: auto
 ---
 
-:::{.content-visible unless-format="revealjs"}
-
 ```{r}
 #| label: pkgs
 #| message: false
@@ -20,6 +18,8 @@ freeze: auto
 library(tidyverse)
 library(fpp3)
 ```
+
+:::{.content-visible unless-format="revealjs"}
 
 ```{r}
 #| label: pkgs_special
@@ -159,22 +159,40 @@ We diagnose the model using $\hat{\varepsilon}_t$, not $\hat{\eta}_t$.
 
 :::{.content-hidden unless-format="revealjs"}
 
-## Stationarity
+## Stationarity: Models in Levels vs. in Differences
 
 :::
 
 :::{.content-visible unless-format="revealjs"}
 
-### Stationarity
+### Stationarity: Models in Levels vs. in Differences
 
 :::
 
 :::{.callout-warning appearance="simple"}
 ## All variables must be stationary
 
-Dynamic regression requires that both $y_t$ and all predictors $x_{k,t}$ are stationary. If any variable needs differencing, apply it to **all variables simultaneously**. Specifying `pdq(d = 1)` does this automatically.
+Dynamic regression requires that both $y_t$ and all predictors $x_{k,t}$ are stationary. Check each variable with unit root tests before fitting.
+:::
 
-For `us_change`, all variables are already percentage changes — stationary by construction.
+When differencing is needed, there are two natural cases:
+
+:::{.incremental}
+
+- **Model in levels** — no variable requires differencing. The regression is fitted directly on the original (or transformed) series. This is the most common case when all variables are already stationary, as in `us_change`.
+
+- **Model in differences** — one or more variables need differencing to achieve stationarity. In this case, **all variables are differenced simultaneously** to keep the model internally consistent. Specifying `pdq(d = 1)` in `ARIMA()` does this automatically.
+
+:::
+
+:::{.fragment}
+
+:::{.callout-note appearance="simple"}
+## Stochastic vs. deterministic trends
+
+A closely related question is whether a trend in the data is **deterministic** (captured by a `trend()` term in TSLM — predictable, fixed slope) or **stochastic** (captured by differencing in ARIMA — the trend wanders randomly over time). In practice, stochastic trends are far more common in economic and business data. See [FPP3 §10.1](https://otexts.com/fpp3/stochastic-and-deterministic-trends.html) for a detailed comparison with forecasting implications.
+:::
+
 :::
 
 :::{.content-hidden unless-format="revealjs"}
@@ -200,7 +218,7 @@ TSLM(y ~ x1 + x2)
 # Dynamic regression — ARIMA errors, order chosen automatically
 ARIMA(y ~ x1 + x2)
 
-# Force differencing on all variables
+# Model in differences: force differencing on all variables
 ARIMA(y ~ x1 + x2 + pdq(d = 1))
 ```
 
@@ -216,7 +234,7 @@ ARIMA(y ~ x1 + x2 + pdq(d = 1))
 
 us_change |>
   model(
-    tslm    = TSLM(Consumption ~ Income + Production + Savings + Unemployment)
+    tslm = TSLM(Consumption ~ Income + Production + Savings + Unemployment)
   )
 ```
 
@@ -410,14 +428,11 @@ us_change_future
 #| label: us-future-2
 
 us_change_future <- new_data(us_change, 8) |>
-  mutate(
-    Income       = mean(us_change$Income),
-    Production   = mean(us_change$Production),
-    Savings      = mean(us_change$Savings),
-    Unemployment = mean(us_change$Unemployment)
-  )
+  mutate(across(Income:Unemployment, \(x) mean(us_change[[cur_column()]])))
 us_change_future
 ```
+
+
 
 :::
 
@@ -436,13 +451,9 @@ us_change_future
 ```{r}
 #| label: us-forecast-full
 
-us_change_future <- new_data(us_change, 8) |>          #<1>
-  mutate(
-    Income       = mean(us_change$Income),             #<2>
-    Production   = mean(us_change$Production),
-    Savings      = mean(us_change$Savings),
-    Unemployment = mean(us_change$Unemployment)
-  )
+us_change_future <- new_data(us_change, 8) |>                        #<1>
+  mutate(across(Income:Unemployment,                                  #<2>
+                \(x) mean(us_change[[cur_column()]])))               #<3>
 
 us_change_fit_dyn |>
   select(dynamic) |>
@@ -456,7 +467,8 @@ us_change_fit_dyn |>
 ```
 
 1. `new_data()` creates 8 future rows preserving the tsibble index.
-2. Baseline scenario: each predictor held at its long-run average.
+2. `across(Income:Unemployment, ...)` applies the same operation to all four predictor columns at once.
+3. The anonymous function `\(x)` receives each column; `cur_column()` returns its name so we can look it up in `us_change`.
 
 :::{.content-hidden unless-format="revealjs"}
 
@@ -473,18 +485,18 @@ us_change_fit_dyn |>
 ```{r}
 #| label: us-interval-compare
 #| message: false
-#| echo: false
 
 us_change_fit_dyn |>
   forecast(new_data = us_change_future) |>
-  autoplot(tail(us_change, 60), level = 80) +
-  facet_wrap(~ .model) +
+  autoplot(tail(us_change, 60), level = 80, alpha = 0.6) +   #<1>
   labs(
     title = "Modeling ARIMA errors narrows prediction intervals",
     subtitle = "80% prediction intervals shown",
     y = "% change", x = NULL
   )
 ```
+
+1. Both models are overlaid on the same axes. The difference in interval width is immediately visible.
 
 :::{.callout-warning appearance="simple"}
 ## The prediction interval caveat
@@ -500,7 +512,7 @@ Dynamic regression intervals assume future predictor values are **known exactly*
 
 :::
 
-The `us_change` example was clean: stationary series, linear relationship, one seasonal period. Electricity demand pushes two things further:
+The `us_change` example was clean: stationary series, linear relationship. Electricity demand pushes two things further:
 
 :::{.incremental}
 
@@ -560,7 +572,7 @@ Two patterns are immediately clear:
 
 This gives us the model:
 
-$$y_t = \beta_0 + \beta_1 T_t + \beta_2 T_t^2 + \beta_3 D_{\text{Weekday}} + \eta_t, \quad \eta_t \sim \text{ARIMA}$$
+$$y_t = \beta_0 + \beta_1 T_t + \beta_2 T_t^2 + \beta_3 D_{\text{day type}} + \eta_t, \quad \eta_t \sim \text{ARIMA}$$
 
 :::
 
@@ -623,7 +635,7 @@ vic_elec_daily |>
 vic_elec_fit <- vic_elec_daily |>
   model(
     dynamic = ARIMA(Demand ~ Temperature + I(Temperature^2) +  #<1>
-            (Day_Type == "Weekday"))                  #<2>
+            (Day_Type == "Weekday"))                            #<2>
   )
 
 report(vic_elec_fit)
@@ -631,6 +643,17 @@ report(vic_elec_fit)
 
 1. `I(Temperature^2)` adds the quadratic term. The `I()` wrapper is required to protect arithmetic inside the formula.
 2. A logical expression that becomes a binary indicator: `TRUE` (1) for weekdays, `FALSE` (0) otherwise.
+
+:::{.callout-tip appearance="simple"}
+## How many day-type categories?
+
+The choice of how to encode day type depends on the question you want to answer:
+
+- **Binary** — `Day_Type == "Weekday"`: distinguishes working days from non-working days (weekends + holidays collapsed together). Simpler, fewer parameters, often sufficient.
+- **Two dummies** — `Day_Type == "Weekday"` and `Day_Type == "Weekend"` (holidays as baseline): allows weekends and holidays to have different demand profiles. Useful if your data shows a meaningful difference between the two.
+
+Neither is universally better — let residual diagnostics and AIC$_c$ guide the choice.
+:::
 
 :::{.content-hidden unless-format="revealjs"}
 
@@ -712,6 +735,190 @@ forecast(vic_elec_fit, vic_elec_future_hw) |>
 
 1. A realistic meteorological forecast — considerably hotter than 26°C.
 
+:::
+
+# Lagged Predictors
+
+:::{.content-hidden unless-format="revealjs"}
+
+## When the Effect Is Not Instantaneous
+
+:::
+
+So far we have assumed that the predictor $x_t$ affects $y_t$ **at the same point in time**. But many real-world relationships have a **delay**: the cause happens now, the effect shows up later.
+
+:::{.incremental}
+
+- **Advertising** spend in month $t$ drives sales in months $t$, $t+1$, $t+2$, ... as the message reaches new customers gradually.
+- **Interest rate** changes take months to affect housing starts or consumer credit.
+- **Rainfall** in January affects agricultural output in March or April.
+- **Hiring** a new employee today affects productivity in weeks $t+4$, $t+5$, ... after onboarding.
+
+:::
+
+:::{.fragment}
+
+Models that include $x_t$ at multiple lags are called **distributed lag models**:
+
+$$y_t = \beta_0 + \delta_0 x_t + \delta_1 x_{t-1} + \delta_2 x_{t-2} + \cdots + \delta_k x_{t-k} + \eta_t$$
+
+Each $\delta_j$ captures the effect of $x$ that occurs $j$ periods after the predictor.
+:::
+
+:::{.content-hidden unless-format="revealjs"}
+
+## Example: Advertising and Sales {auto-animate="true"}
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+### Example: Advertising and Sales
+
+:::
+
+The `fpp3` package includes the `insurance` dataset: monthly US insurance quotes (a proxy for sales) and TV advertising expenditure:
+
+```{r}
+#| label: insurance-glimpse
+
+insurance
+```
+
+:::{.content-hidden unless-format="revealjs"}
+
+## Exploring the Relationship {auto-animate="true"}
+
+:::
+
+```{r}
+#| label: insurance-plot
+#| echo: false
+
+p <- insurance |>
+  pivot_longer(c(Quotes, TVadverts), names_to = "var", values_to = "value") |>
+  ggplot(aes(x = Month, y = value)) +
+  geom_line(color = "steelblue") +
+  facet_wrap(~ var, nrow = 2, scales = "free_y", strip.position = "right") +
+  labs(y = NULL, x = NULL,
+       title = "Insurance quotes and TV advertising spend")
+
+ggplotly(p, dynamicTicks = TRUE)
+```
+
+:::{.content-hidden unless-format="revealjs"}
+
+## Fitting Distributed Lag Models {auto-animate="true"}
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+### Fitting Distributed Lag Models
+
+:::
+
+We fit four models with increasing lag depth to find how long the advertising effect persists:
+
+```{r}
+#| label: insurance-fit
+#| message: false
+
+insurance_fit <- insurance |>
+  model(
+    lag0 = ARIMA(Quotes ~ pdq(d = 0) +                        #<1>
+                   TVadverts),
+    lag1 = ARIMA(Quotes ~ pdq(d = 0) +
+                   TVadverts + lag(TVadverts)),                 #<2>
+    lag2 = ARIMA(Quotes ~ pdq(d = 0) +
+                   TVadverts + lag(TVadverts) +
+                   lag(TVadverts, 2)),                         #<3>
+    lag3 = ARIMA(Quotes ~ pdq(d = 0) +
+                   TVadverts + lag(TVadverts) +
+                   lag(TVadverts, 2) + lag(TVadverts, 3))
+  )
+
+glance(insurance_fit) |>
+  select(.model, AICc) |>
+  arrange(AICc)
+```
+
+1. `pdq(d = 0)` fixes the differencing order to zero — both series are stationary.
+2. `lag(TVadverts)` is $x_{t-1}$: advertising from the previous month.
+3. `lag(TVadverts, 2)` is $x_{t-2}$: advertising from two months ago.
+
+:::{.content-hidden unless-format="revealjs"}
+
+## Best Model & Interpretation
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+### Best Model & Interpretation
+
+:::
+
+```{r}
+#| label: insurance-report
+
+insurance_fit |>
+  select(lag1) |>
+  report()
+```
+
+:::{.callout-note appearance="simple"}
+## Reading the lag coefficients
+
+The coefficient on `TVadverts` ($\delta_0$) is the **immediate effect**: one unit increase in advertising this month increases quotes by $\delta_0$ units *this* month.
+
+The coefficient on `lag(TVadverts)` ($\delta_1$) is the **one-period carry-over**: the additional effect that arrives one month later.
+
+Together, the **total effect** of a sustained 1-unit increase in advertising is $\delta_0 + \delta_1 + \cdots$ — the sum of all lag coefficients.
+:::
+
+:::{.content-hidden unless-format="revealjs"}
+
+## Forecasting with Lagged Predictors
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+### Forecasting with Lagged Predictors
+
+:::
+
+When forecasting, you need future values of $x_t$ *and* the most recent observed values of $x$ to fill in the lags:
+
+```{r}
+#| label: insurance-forecast
+
+insurance_future <- new_data(insurance, 20) |>
+  mutate(TVadverts = 8)                                        #<1>
+
+insurance_fit |>
+  select(lag1) |>
+  forecast(new_data = insurance_future) |>
+  autoplot(insurance) +
+  labs(title = "Insurance quotes forecast: lag-1 distributed lag model",
+       subtitle = "Scenario: advertising held constant at 8",
+       y = "Quotes (thousands)", x = NULL)
+```
+
+1. We assume a constant advertising level of 8 for the forecast horizon — a simple scenario.
+
+:::{.callout-tip appearance="simple"}
+## When to use lagged predictors vs. current predictors
+
+| Situation | Prefer |
+|:---|:---|
+| Effect is immediate (prices, temperature) | Current $x_t$ |
+| Effect has a known delay (advertising, policy) | $x_t$ + lags |
+| Delay length is unknown | Fit models with 0, 1, 2, ... lags and compare with AIC$_c$ |
+| Predictor is hard to forecast | Lags are known at forecast time — a practical advantage |
+
+The last point is important: if $x_t$ is hard to forecast, using $x_{t-k}$ instead means the predictor is already observed when you need to make the forecast. Lags can turn an ex-ante problem into an ex-post one.
 :::
 
 # Harmonic Regression
@@ -948,57 +1155,48 @@ cafe_fit |>
 - **K = 6**: Reproduces seasonal dummies exactly — can overfit the historical pattern
 :::
 
+# What Comes Next?
+
 :::{.content-hidden unless-format="revealjs"}
 
-## Multiple Seasonalities
+##
 
 :::
 
-:::{.content-visible unless-format="revealjs"}
+The café example had one seasonal period ($m = 12$, monthly). But what if a series has **more than one**?
 
-### Multiple Seasonalities
+:::{.fragment}
 
-:::
+Consider electricity demand measured every **30 minutes**:
 
-The real power of Fourier terms appears with **nested seasonal periods**. Half-hourly electricity demand, for instance, has three simultaneous cycles:
+```{r}
+#| label: elec-hourly-plot
+#| echo: false
 
-:::{.incremental}
+p <- vic_elec |>
+  filter(year(Time) == 2014, month(Time) == 1) |>
+  autoplot(Demand, color = "steelblue") +
+  labs(
+    title = "Half-hourly electricity demand — January 2014",
+    subtitle = "How many seasonal patterns can you see?",
+    y = "Demand (MWh)", x = NULL
+  )
 
-- **Daily** cycle ($m = 48$ half-hours)
-- **Weekly** cycle ($m = 336$ half-hours)
-- **Annual** cycle ($m \approx 17{,}520$ half-hours)
+ggplotly(p, dynamicTicks = TRUE)
+```
 
 :::
 
 :::{.fragment}
 
-`fable`'s `fourier()` handles this with the `period` argument:
-
-```{r}
-#| eval: false
-
-TSLM(demand ~ mean_temp + I(mean_temp^2) + day_type +
-       fourier(period = "day",  K = 4) +   #<1>
-       fourier(period = "week", K = 3) +   #<2>
-       fourier(period = "year", K = 6))    #<3>
-```
-
-1. Within-day rhythm: 24-hour cycle.
-2. Within-week rhythm: weekday/weekend pattern.
-3. Annual seasonal pattern.
-
-:::
-
 :::{.callout-note appearance="simple"}
-## Coming up in Module 4
+## A question to think about
 
-In **4.1 Complex Seasonality** we will fit exactly this kind of model on `vic_elec` aggregated by hour — three nested periods, real data, with all the challenges that come with it. What you've seen here is the foundation.
+How would you model this series with the tools you have now? What would happen if you tried `season()` dummies? What about Fourier terms — how many `period` arguments would you need, and how would you choose $K$ for each one?
+
+We will answer these questions in **Module 4.1: Complex Seasonality**.
 :::
 
-:::{.callout-warning appearance="simple"}
-## Computation time
-
-`ARIMA()` with multiple Fourier terms on thousands of rows can take several minutes. Start with `TSLM()` to explore values of $K$, then switch to `ARIMA()` once you have settled on a configuration.
 :::
 
 # Summary
@@ -1015,9 +1213,9 @@ In **4.1 Complex Seasonality** we will fit exactly this kind of model on `vic_el
 
 - The model has two error terms: regression errors $\eta_t$ (modeled by ARIMA) and innovations $\varepsilon_t$ (white noise). **Diagnose using $\hat{\varepsilon}_t$** — the innovations, not the regression residuals.
 
-- **All variables must be stationary.** If differencing is needed, apply it to all simultaneously using `pdq(d = 1)`.
+- When differencing is needed, a **model in differences** applies it to all variables simultaneously. When no differencing is needed, the model is fitted **in levels**. Stochastic trends are handled by differencing; deterministic trends by `trend()`.
 
-- Forecasting still requires **future values of the predictors** — the same ex-ante / ex-post / scenario strategies from Session 3.2 apply.
+- Forecasting still requires **future values of the predictors** — the same ex-ante / ex-post / scenario strategies from Session 3.2 apply. **Lagged predictors** are a practical advantage when the predictor is hard to forecast: the lag is already observed at forecast time.
 
 - **Harmonic regression** extends the framework to large or multiple seasonal periods using Fourier terms. Choose $K$ by minimizing AIC$_c$.
 
