@@ -12,17 +12,17 @@
 <link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-4e5466e430b1db38349d513585fd1d59.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
-<link href="../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.37">
-<meta name="author" content="">
-<title>Time Series Forecasting – Forecasting Foundations</title>
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-<link rel="stylesheet" href="../../../../site_libs/revealjs/dist/reset.css">
-<link rel="stylesheet" href="../../../../site_libs/revealjs/dist/reveal.css">
-<style>
+<link href="../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.9.37">
+
+  <meta name="author" content="">
+  <title>Time Series Forecasting – Forecasting Foundations</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../../../../site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="../../../../site_libs/revealjs/dist/reveal.css">
+  <style>
     /* Default styles provided by pandoc.
     ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
     */
@@ -104,8 +104,9 @@
     code span.vs { color: #da4453; } /* VerbatimString */
     code span.wa { color: #da4453; } /* Warning */
   </style>
-<link rel="stylesheet" href="../../../../site_libs/revealjs/dist/theme/quarto-4d89f974941c4a3a96b7bf96b873e9d5.css">
-<script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script><script>document.addEventListener("DOMContentLoaded", function () {
+  <link rel="stylesheet" href="../../../../site_libs/revealjs/dist/theme/quarto-4d89f974941c4a3a96b7bf96b873e9d5.css">
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
  var mathElements = document.getElementsByClassName("math");
  var macros = [];
  for (var i = 0; i < mathElements.length; i++) {
@@ -118,14 +119,19 @@
     fleqn: false
    });
 }}});
-  </script><script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
-<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-BRNYXN29K7"></script><script type="text/plain" cookie-consent="tracking">
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-BRNYXN29K7"></script>
+
+  <script type="text/plain" cookie-consent="tracking">
 
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'G-BRNYXN29K7', { 'anonymize_ip': true});
-  </script><script type="text/javascript" charset="UTF-8">
+  </script>
+  
+  <script type="text/javascript" charset="UTF-8">
   document.addEventListener('DOMContentLoaded', function () {
   cookieconsent.run({
     "notice_banner_type":"simple",
@@ -140,21 +146,26 @@
   "language":"en"
     });
   });
-  </script><link href="../../../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
-<link href="../../../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
-<link href="../../../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
-<link href="../../../../site_libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
-<link href="../../../../site_libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
-<link href="../../../../site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
-<script type="application/json" class="js-hypothesis-config">
+  </script> 
+    
+  <link href="../../../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="../../../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="../../../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="../../../../site_libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="../../../../site_libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
+  <link href="../../../../site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <script type="application/json" class="js-hypothesis-config">
   {
     "theme": "classic"
   }
-  </script><script async="" src="https://hypothes.is/embed.js"></script><script>
+  </script>
+  <script async="" src="https://hypothes.is/embed.js"></script>
+  <script>
     window.document.addEventListener("DOMContentLoaded", function (_event) {
       document.body.classList.add('hypothesis-enabled');
     });
-  </script><style type="text/css">
+  </script>
+  <style type="text/css">
     .reveal div.sourceCode {
       margin: 0;
       overflow: auto;
@@ -242,8 +253,8 @@
       margin-right: 0; 
     }
   </style>
-<link href="../../../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
-<script src="../../../../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+  <link href="../../../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+  <script src="../../../../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
 <meta property="og:title" content="Forecasting Foundations – Time Series Forecasting">
 <meta property="og:site_name" content="Time Series Forecasting">
 <meta name="twitter:title" content="Forecasting Foundations – Time Series Forecasting">
@@ -254,31 +265,37 @@
   <div class="reveal">
     <div class="slides">
 
-<section id="title-slide" class="quarto-title-block center"><h1 class="title">Forecasting Foundations</h1>
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Forecasting Foundations</h1>
 
 <div class="quarto-title-authors">
 </div>
 
-</section><section><section id="a-tidy-forecasting-workflow" class="title-slide slide level1 center"><h1>A tidy forecasting workflow</h1>
+</section>
+<section>
+<section id="a-tidy-forecasting-workflow" class="title-slide slide level1 center">
+<h1>A tidy forecasting workflow</h1>
 <p><a href="fcst_wf.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img data-src="fcst_wf.png"></a></p>
-</section><section id="foundations" class="slide level2"><h2>Foundations</h2>
+</section>
+<section id="foundations" class="slide level2">
+<h2>Foundations</h2>
 <p>Forecasting requires methodological discipline:</p>
 <ul>
 <li class="fragment">Split the data (train/test)</li>
-<li class="fragment">Establish <strong>benchmark models</strong>
-</li>
+<li class="fragment">Establish <strong>benchmark models</strong></li>
 <li class="fragment">Forecast</li>
 <li class="fragment">Measure accuracy</li>
 <li class="fragment">Select a baseline</li>
 <li class="fragment">Refit and produce the final forecast</li>
-</ul></section><section id="example-dataset" class="slide level2"><h2>Example dataset</h2>
+</ul>
+</section>
+<section id="example-dataset" class="slide level2">
+<h2>Example dataset</h2>
 <p>We use a built-in dataset from <code>fpp3</code>: <code>aus_production</code>.</p>
 <ul>
-<li class="fragment">It is already a <code>tsibble</code>
-</li>
+<li class="fragment">It is already a <code>tsibble</code></li>
 <li class="fragment">It contains multiple economic production series</li>
-<li class="fragment">We focus on <code>Gas</code>
-</li>
+<li class="fragment">We focus on <code>Gas</code></li>
 </ul>
 <div class="cell">
 <div class="cell-output-display">
@@ -289,16 +306,21 @@
 </div>
 </div>
 </div>
-</section><section id="visualize" class="slide level2"><h2>Visualize</h2>
+</section>
+<section id="visualize" class="slide level2">
+<h2>Visualize</h2>
 <div class="cell">
 <div class="cell-output-display">
 <div>
-<figure><p><a href="forecasting_files/figure-html/viz-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img data-src="forecasting_files/figure-html/viz-1.png" width="672"></a></p>
+<figure>
+<p><a href="forecasting_files/figure-html/viz-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img data-src="forecasting_files/figure-html/viz-1.png" width="672"></a></p>
 </figure>
 </div>
 </div>
 </div>
-</section><section id="traintest-split" class="slide level2"><h2>Train/test split</h2>
+</section>
+<section id="traintest-split" class="slide level2">
+<h2>Train/test split</h2>
 <ul>
 <li class="fragment">Split the series into <strong>training</strong> and <strong>test</strong> sets.</li>
 <li class="fragment">The test set length should match the <strong>forecast horizon</strong>.</li>
@@ -310,18 +332,16 @@
     212       6 </code></pre>
 </div>
 </div>
-</section><section id="benchmark-models" class="slide level2"><h2>Benchmark models</h2>
+</section>
+<section id="benchmark-models" class="slide level2">
+<h2>Benchmark models</h2>
 <p>Before fitting complex models, we establish benchmarks.</p>
 <p>Common benchmark methods in tidyverts:</p>
 <ul>
-<li class="fragment">Mean method: <code>MEAN()</code>
-</li>
-<li class="fragment">Naïve method: <code>NAIVE()</code>
-</li>
-<li class="fragment">Seasonal naïve method: <code>SNAIVE()</code>
-</li>
-<li class="fragment">Drift method: <code>RW(... drift())</code>
-</li>
+<li class="fragment">Mean method: <code>MEAN()</code></li>
+<li class="fragment">Naïve method: <code>NAIVE()</code></li>
+<li class="fragment">Seasonal naïve method: <code>SNAIVE()</code></li>
+<li class="fragment">Drift method: <code>RW(... drift())</code></li>
 </ul>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a>bench_fit <span class="ot">&lt;-</span> gas_train <span class="sc">|&gt;</span> </span>
@@ -332,7 +352,9 @@
 <span id="cb2-6"><a></a>    <span class="at">drift  =</span> <span class="fu">RW</span>(Gas <span class="sc">~</span> <span class="fu">drift</span>())</span>
 <span id="cb2-7"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-</section><section id="forecast" class="slide level2"><h2>Forecast</h2>
+</section>
+<section id="forecast" class="slide level2">
+<h2>Forecast</h2>
 <p>Generate forecasts with a horizon equal to the test set length.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>bench_fcst <span class="ot">&lt;-</span> bench_fit <span class="sc">|&gt;</span> </span>
@@ -344,7 +366,9 @@
 <span id="cb4-2"><a></a>  <span class="fu">autoplot</span>(gas_train, <span class="at">level =</span> <span class="dv">95</span>) <span class="sc">|&gt;</span> </span>
 <span id="cb4-3"><a></a>  <span class="fu">autolayer</span>(gas_test, Gas, <span class="at">alpha =</span> <span class="fl">0.7</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-</section><section id="forecast-accuracy" class="slide level2"><h2>Forecast accuracy</h2>
+</section>
+<section id="forecast-accuracy" class="slide level2">
+<h2>Forecast accuracy</h2>
 <p>We measure forecast accuracy using forecast errors:</p>
 <p><span class="math display">
 e_{T+h} = y_{T+h} - \hat{y}_{T+h|T}
@@ -361,7 +385,10 @@ e_{T+h} = y_{T+h} - \hat{y}_{T+h|T}
 <ul>
 <li class="fragment">Prefer models that perform well on <strong>MASE</strong> (scale-independent).</li>
 <li class="fragment">For seasonal data, <code>snaive</code> is often a strong benchmark.</li>
-</ul></section><section id="error-metrics" class="slide level2"><h2>Error metrics</h2>
+</ul>
+</section>
+<section id="error-metrics" class="slide level2">
+<h2>Error metrics</h2>
 <p>Using forecast errors, we can compute summary metrics:</p>
 <table class="caption-top" style="width:98%;">
 <caption>Common error metrics</caption>
@@ -371,12 +398,14 @@ e_{T+h} = y_{T+h} - \hat{y}_{T+h|T}
 <col style="width: 34%">
 <col style="width: 35%">
 </colgroup>
-<thead><tr class="header">
+<thead>
+<tr class="header">
 <th>Scale</th>
 <th>Metric</th>
 <th>Description</th>
 <th>Formula</th>
-</tr></thead>
+</tr>
+</thead>
 <tbody>
 <tr class="odd">
 <td>Scale-dependent</td>
@@ -412,7 +441,10 @@ e_{T+h} = y_{T+h} - \hat{y}_{T+h|T}
 </ul></td>
 </tr>
 </tbody>
-</table></section><section id="refit-and-forecast" class="slide level2"><h2>Refit and forecast</h2>
+</table>
+</section>
+<section id="refit-and-forecast" class="slide level2">
+<h2>Refit and forecast</h2>
 <p>Once a benchmark is selected based on the test set, refit it using <strong>all available data</strong>, then forecast the desired future horizon.</p>
 <p>Example: refit <code>snaive</code> and forecast the next 8 quarters.</p>
 <div class="cell">
@@ -424,7 +456,9 @@ e_{T+h} = y_{T+h} - \hat{y}_{T+h|T}
 <span id="cb6-6"><a></a>final_fcst <span class="ot">&lt;-</span> final_fit <span class="sc">|&gt;</span> </span>
 <span id="cb6-7"><a></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"8 quarters"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-</section><section id="communicate" class="slide level2"><h2>Communicate</h2>
+</section>
+<section id="communicate" class="slide level2">
+<h2>Communicate</h2>
 <p>Forecasting is not finished when numbers are produced.<br>
 Results must be communicated clearly and honestly.</p>
 <p>Minimum communication checklist:</p>
@@ -438,7 +472,7 @@ Results must be communicated clearly and honestly.</p>
 
 
 </section></section>
-</div>
+    </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <p><img src="../../../../images/iteso_logo.png" class="slide-logo"></p>
 <div class="footer footer-default">
@@ -446,7 +480,23 @@ Results must be communicated clearly and honestly.</p>
 </div>
 </div></div>
 
-  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="../../../../site_libs/revealjs/dist/reveal.js"></script><!-- reveal.js plugins --><script src="../../../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script><script src="../../../../site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script><script src="../../../../site_libs/revealjs/plugin/reveal-menu/menu.js"></script><script src="../../../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script><script src="../../../../site_libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script><script src="../../../../site_libs/revealjs/plugin/quarto-support/support.js"></script><script src="../../../../site_libs/revealjs/plugin/notes/notes.js"></script><script src="../../../../site_libs/revealjs/plugin/search/search.js"></script><script src="../../../../site_libs/revealjs/plugin/zoom/zoom.js"></script><script>window.define = window.backupDefine; window.backupDefine = undefined;</script><script>
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="../../../../site_libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="../../../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="../../../../site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="../../../../site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="../../../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="../../../../site_libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
+  <script src="../../../../site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="../../../../site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="../../../../site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="../../../../site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
 
       // Full list of configuration options available at:
       // https://revealjs.com/config/
@@ -620,7 +670,8 @@ Results must be communicated clearly and honestly.</p>
           RevealZoom
         ]
       });
-    </script><script id="quarto-html-after-body" type="application/javascript">
+    </script>
+    <script id="quarto-html-after-body" type="application/javascript">
       window.document.addEventListener("DOMContentLoaded", function (event) {
         const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
         tabsets.forEach(function(tabset) {
@@ -944,7 +995,8 @@ Results must be communicated clearly and honestly.</p>
           }
         }
       });
-      </script><script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+      </script>
+    <script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
     (function() {
       let previousOnload = window.onload;
       window.onload = () => {
@@ -976,6 +1028,6 @@ Results must be communicated clearly and honestly.</p>
       
     })();
               </script>
-
+    
 
 </body></html>

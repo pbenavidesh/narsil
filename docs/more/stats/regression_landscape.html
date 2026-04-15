@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.9.37">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
 <meta name="author" content="">
 <meta name="dcterms.date" content="2026-03-28">
 <meta name="description" content="A conceptual map of regression models for forecasting — from OLS to SVR, tree-based methods, and neural networks — with guidance on when each approach is warranted.">
+
 <title>OLS and Beyond: Choosing the Right Regression Model – Time Series Forecasting</title>
 <style>
 /* Default styles provided by pandoc.
@@ -60,6 +63,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }
 </style>
 
+
 <script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../../../site_libs/clipboard/clipboard.min.js"></script>
@@ -83,7 +87,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../../../site_libs/bootstrap/bootstrap-244213f7cd4a3a5e5d1c08c87522056e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="../../../site_libs/bootstrap/bootstrap-dark-92e08c8be67608124ff67ff086707056.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../../../site_libs/bootstrap/bootstrap-244213f7cd4a3a5e5d1c08c87522056e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+<link href="../../../site_libs/bootstrap/bootstrap-244213f7cd4a3a5e5d1c08c87522056e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
@@ -109,13 +114,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
-}</script><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-BRNYXN29K7"></script><script type="text/plain" cookie-consent="tracking">
+}</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-BRNYXN29K7"></script>
+
+<script type="text/plain" cookie-consent="tracking">
 
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
 gtag('config', 'G-BRNYXN29K7', { 'anonymize_ip': true});
-</script><script type="text/javascript" charset="UTF-8">
+</script>
+
+<script type="text/javascript" charset="UTF-8">
 document.addEventListener('DOMContentLoaded', function () {
 cookieconsent.run({
   "notice_banner_type":"simple",
@@ -130,18 +140,28 @@ cookieconsent.run({
 "language":"en"
   });
 });
-</script><style>html{ scroll-behavior: smooth; }</style>
+</script> 
+  
+<style>html{ scroll-behavior: smooth; }</style>
 <script type="application/json" class="js-hypothesis-config">
 {
   "theme": "classic"
 }
-</script><script async="" src="https://hypothes.is/embed.js"></script><script>
+</script>
+<script async="" src="https://hypothes.is/embed.js"></script>
+<script>
   window.document.addEventListener("DOMContentLoaded", function (_event) {
     document.body.classList.add('hypothesis-enabled');
   });
-</script><script src="../../../site_libs/quarto-diagram/mermaid.min.js"></script><script src="../../../site_libs/quarto-diagram/mermaid-init.js"></script><link href="../../../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+</script>
+<script src="../../../site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="../../../site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="../../../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 <link href="../../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
-<script src="../../../site_libs/pagedtable-1.1/js/pagedtable.js"></script><script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script><script>document.addEventListener("DOMContentLoaded", function () {
+<script src="../../../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
  var mathElements = document.getElementsByClassName("math");
  var macros = [];
  for (var i = 0; i < mathElements.length; i++) {
@@ -154,7 +174,9 @@ cookieconsent.run({
     fleqn: false
    });
 }}});
-  </script><script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+
 <script type="text/javascript">
 const typesetMath = (el) => {
   if (window.MathJax) {
@@ -180,7 +202,9 @@ const typesetMath = (el) => {
 window.Quarto = {
   typesetMath
 };
-</script><link rel="stylesheet" href="../../../styles.css">
+</script>
+
+<link rel="stylesheet" href="../../../styles.css">
 <meta property="og:title" content="OLS and Beyond: Choosing the Right Regression Model – Time Series Forecasting">
 <meta property="og:description" content="A conceptual map of regression models for forecasting — from OLS to SVR, tree-based methods, and neural networks — with guidance on when each approach is warranted.">
 <meta property="og:site_name" content="Time Series Forecasting">
@@ -189,6 +213,7 @@ window.Quarto = {
 <meta name="twitter:creator" content="@PabsBenavides">
 <meta name="twitter:card" content="summary">
 </head>
+
 <body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
     const toggleBodyColorMode = (bsSheetEl) => {
       const mode = bsSheetEl.getAttribute("data-mode");
@@ -354,10 +379,14 @@ window.Quarto = {
   </script>
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg " data-bs-theme="dark"><div class="navbar-container container-fluid">
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../../../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../../../images/iteso_logo_blanco.png" alt="" class="navbar-logo light-content"><img src="../../../images/iteso_logo_blanco.png" alt="" class="navbar-logo dark-content"></a>
+    <img src="../../../images/iteso_logo_blanco.png" alt="" class="navbar-logo light-content">
+    <img src="../../../images/iteso_logo_blanco.png" alt="" class="navbar-logo dark-content">
+    </a>
     <a class="navbar-brand" href="../../../index.html">
     <span class="navbar-title">Time Series Forecasting</span>
     </a>
@@ -368,7 +397,7 @@ window.Quarto = {
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
-<li class="nav-item">
+  <li class="nav-item">
     <a class="nav-link" href="../../../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
@@ -394,7 +423,7 @@ window.Quarto = {
 <span class="menu-text">Elendil TA</span></a>
   </li>  
 </ul>
-</div> <!-- /navcollapse -->
+          </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools tools-wide">
     <a href="https://github.com/pbenavidesh/narsil" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-github"></i></a>
   <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
@@ -405,53 +434,53 @@ window.Quarto = {
 </a>
 </div>
       </div> <!-- /container-fluid -->
-    </nav><div id="quarto-announcement" data-announcement-id="2b4c5f92d91c7d44181d7c33da3fea50" class="alert alert-primary hidden">
-<i class="bi bi-megaphone quarto-announcement-icon"></i><div class="quarto-announcement-content">
+    </nav>
+  <div id="quarto-announcement" data-announcement-id="2b4c5f92d91c7d44181d7c33da3fea50" class="alert alert-primary hidden"><i class="bi bi-megaphone quarto-announcement-icon"></i><div class="quarto-announcement-content">
 <p><strong>Happy new year 2026!</strong> - AI code assistant <a href="https://chatgpt.com/g/g-68e6907c12a48191a07fb0888500a7fa-elendil-ta">Elendil TA</a> is now available! Click the icon in the navbar to start using it.</p>
-</div>
-<i class="bi bi-x-lg quarto-announcement-action"></i>
-</div>
-</header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+</div><i class="bi bi-x-lg quarto-announcement-action"></i></div>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
    
   <ul>
-<li><a href="#what-ols-actually-optimizes" id="toc-what-ols-actually-optimizes" class="nav-link active" data-scroll-target="#what-ols-actually-optimizes"><span class="header-section-number">1</span> What OLS Actually Optimizes</a></li>
+  <li><a href="#what-ols-actually-optimizes" id="toc-what-ols-actually-optimizes" class="nav-link active" data-scroll-target="#what-ols-actually-optimizes"><span class="header-section-number">1</span> What OLS Actually Optimizes</a></li>
   <li><a href="#when-ols-is-the-right-tool" id="toc-when-ols-is-the-right-tool" class="nav-link" data-scroll-target="#when-ols-is-the-right-tool"><span class="header-section-number">2</span> When OLS Is the Right Tool</a></li>
-  <li>
-<a href="#regularization-penalized-ols" id="toc-regularization-penalized-ols" class="nav-link" data-scroll-target="#regularization-penalized-ols"><span class="header-section-number">3</span> Regularization: Penalized OLS</a>
+  <li><a href="#regularization-penalized-ols" id="toc-regularization-penalized-ols" class="nav-link" data-scroll-target="#regularization-penalized-ols"><span class="header-section-number">3</span> Regularization: Penalized OLS</a>
   <ul class="collapse">
-<li><a href="#the-bias-variance-tradeoff" id="toc-the-bias-variance-tradeoff" class="nav-link" data-scroll-target="#the-bias-variance-tradeoff"><span class="header-section-number">3.1</span> The bias-variance tradeoff</a></li>
+  <li><a href="#the-bias-variance-tradeoff" id="toc-the-bias-variance-tradeoff" class="nav-link" data-scroll-target="#the-bias-variance-tradeoff"><span class="header-section-number">3.1</span> The bias-variance tradeoff</a></li>
   <li><a href="#ridge-regression" id="toc-ridge-regression" class="nav-link" data-scroll-target="#ridge-regression"><span class="header-section-number">3.2</span> Ridge regression</a></li>
   <li><a href="#lasso" id="toc-lasso" class="nav-link" data-scroll-target="#lasso"><span class="header-section-number">3.3</span> Lasso</a></li>
   <li><a href="#elastic-net" id="toc-elastic-net" class="nav-link" data-scroll-target="#elastic-net"><span class="header-section-number">3.4</span> Elastic Net</a></li>
-  </ul>
-</li>
-  <li>
-<a href="#kernel-methods-and-svr" id="toc-kernel-methods-and-svr" class="nav-link" data-scroll-target="#kernel-methods-and-svr"><span class="header-section-number">4</span> Kernel Methods and SVR</a>
+  </ul></li>
+  <li><a href="#kernel-methods-and-svr" id="toc-kernel-methods-and-svr" class="nav-link" data-scroll-target="#kernel-methods-and-svr"><span class="header-section-number">4</span> Kernel Methods and SVR</a>
   <ul class="collapse">
-<li><a href="#the-core-idea-mapping-to-a-higher-dimensional-space" id="toc-the-core-idea-mapping-to-a-higher-dimensional-space" class="nav-link" data-scroll-target="#the-core-idea-mapping-to-a-higher-dimensional-space"><span class="header-section-number">4.1</span> The core idea: mapping to a higher-dimensional space</a></li>
+  <li><a href="#the-core-idea-mapping-to-a-higher-dimensional-space" id="toc-the-core-idea-mapping-to-a-higher-dimensional-space" class="nav-link" data-scroll-target="#the-core-idea-mapping-to-a-higher-dimensional-space"><span class="header-section-number">4.1</span> The core idea: mapping to a higher-dimensional space</a></li>
   <li><a href="#the-kernel-trick" id="toc-the-kernel-trick" class="nav-link" data-scroll-target="#the-kernel-trick"><span class="header-section-number">4.2</span> The kernel trick</a></li>
   <li><a href="#svr-for-time-series-forecasting" id="toc-svr-for-time-series-forecasting" class="nav-link" data-scroll-target="#svr-for-time-series-forecasting"><span class="header-section-number">4.3</span> SVR for time series forecasting</a></li>
-  </ul>
-</li>
-  <li>
-<a href="#tree-based-methods" id="toc-tree-based-methods" class="nav-link" data-scroll-target="#tree-based-methods"><span class="header-section-number">5</span> Tree-Based Methods</a>
+  </ul></li>
+  <li><a href="#tree-based-methods" id="toc-tree-based-methods" class="nav-link" data-scroll-target="#tree-based-methods"><span class="header-section-number">5</span> Tree-Based Methods</a>
   <ul class="collapse">
-<li><a href="#decision-trees-and-their-limitations" id="toc-decision-trees-and-their-limitations" class="nav-link" data-scroll-target="#decision-trees-and-their-limitations"><span class="header-section-number">5.1</span> Decision trees and their limitations</a></li>
+  <li><a href="#decision-trees-and-their-limitations" id="toc-decision-trees-and-their-limitations" class="nav-link" data-scroll-target="#decision-trees-and-their-limitations"><span class="header-section-number">5.1</span> Decision trees and their limitations</a></li>
   <li><a href="#random-forests" id="toc-random-forests" class="nav-link" data-scroll-target="#random-forests"><span class="header-section-number">5.2</span> Random Forests</a></li>
   <li><a href="#gradient-boosting-xgboost" id="toc-gradient-boosting-xgboost" class="nav-link" data-scroll-target="#gradient-boosting-xgboost"><span class="header-section-number">5.3</span> Gradient Boosting (XGBoost)</a></li>
   <li><a href="#critical-limitations-for-forecasting" id="toc-critical-limitations-for-forecasting" class="nav-link" data-scroll-target="#critical-limitations-for-forecasting"><span class="header-section-number">5.4</span> Critical limitations for forecasting</a></li>
-  </ul>
-</li>
+  </ul></li>
   <li><a href="#neural-networks" id="toc-neural-networks" class="nav-link" data-scroll-target="#neural-networks"><span class="header-section-number">6</span> Neural Networks</a></li>
   <li><a href="#a-decision-framework" id="toc-a-decision-framework" class="nav-link" data-scroll-target="#a-decision-framework"><span class="header-section-number">7</span> A Decision Framework</a></li>
-  </ul><div class="toc-actions"><ul><li><a href="https://github.com/pbenavidesh/narsil/edit/main/docs/more/stats/regression_landscape.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/pbenavidesh/narsil/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/pbenavidesh/narsil/edit/main/docs/more/stats/regression_landscape.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/pbenavidesh/narsil/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
 <h1 class="title">OLS and Beyond: Choosing the Right Regression Model</h1>
   <div class="quarto-categories">
     <div class="quarto-category">stats</div>
@@ -486,10 +515,13 @@ window.Quarto = {
   
 
 
-</header><p>A student who has just learned <code>TSLM()</code> and already knows about XGBoost or random forests will reasonably ask: <em>why are we doing this?</em> This document answers that question honestly — including the cases where OLS loses.</p>
+</header>
+
+
+<p>A student who has just learned <code>TSLM()</code> and already knows about XGBoost or random forests will reasonably ask: <em>why are we doing this?</em> This document answers that question honestly — including the cases where OLS loses.</p>
 <p>The goal is not to advocate for any single method, but to give you a mental map of the regression landscape so you can make deliberate choices rather than defaulting to whichever model you learned most recently.</p>
-<section id="what-ols-actually-optimizes" class="level1" data-number="1"><h1 data-number="1">
-<span class="header-section-number">1</span> What OLS Actually Optimizes</h1>
+<section id="what-ols-actually-optimizes" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> What OLS Actually Optimizes</h1>
 <p>OLS finds the coefficient vector <span class="math inline">\boldsymbol{\beta}</span> that minimizes the residual sum of squares:</p>
 <p><span class="math display">
 \hat{\boldsymbol{\beta}} = \arg\min_{\boldsymbol{\beta}}
@@ -515,8 +547,9 @@ window.Quarto = {
 \mathbf{X}^\top \mathbf{y}
 </span></p>
 <p>This requires <span class="math inline">\mathbf{X}^\top \mathbf{X}</span> to be invertible — which fails when regressors are perfectly collinear or when <span class="math inline">p &gt; T</span> (more predictors than observations). Both situations motivate regularization.</p>
-</section><section id="when-ols-is-the-right-tool" class="level1" data-number="2"><h1 data-number="2">
-<span class="header-section-number">2</span> When OLS Is the Right Tool</h1>
+</section>
+<section id="when-ols-is-the-right-tool" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> When OLS Is the Right Tool</h1>
 <p>OLS tends to win — or at least perform competitively — in the following situations:</p>
 <p><strong>The relationship is genuinely (or approximately) linear.</strong> Many economic and business relationships are well-described by linear models, especially over the range of variation typically observed in historical data.</p>
 <p><strong>The sample is small.</strong> Flexible models like gradient boosting and neural networks have high variance when <span class="math inline">T</span> is small. OLS with a parsimonious specification often generalizes better out-of-sample.</p>
@@ -536,13 +569,15 @@ window.Quarto = {
 <p><em>Is my forecast error large because the relationship is nonlinear, or because I am missing important regressors?</em> Adding the right variable to a TSLM often outperforms adding model complexity.</p>
 </div>
 </div>
-</section><section id="regularization-penalized-ols" class="level1" data-number="3"><h1 data-number="3">
-<span class="header-section-number">3</span> Regularization: Penalized OLS</h1>
-<section id="the-bias-variance-tradeoff" class="level2" data-number="3.1"><h2 data-number="3.1" class="anchored" data-anchor-id="the-bias-variance-tradeoff">
-<span class="header-section-number">3.1</span> The bias-variance tradeoff</h2>
+</section>
+<section id="regularization-penalized-ols" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Regularization: Penalized OLS</h1>
+<section id="the-bias-variance-tradeoff" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="the-bias-variance-tradeoff"><span class="header-section-number">3.1</span> The bias-variance tradeoff</h2>
 <p>When the number of candidate regressors is large relative to <span class="math inline">T</span>, OLS tends to overfit: it fits the training data well but generalizes poorly. Regularization addresses this by adding a penalty term to the loss function, deliberately introducing bias to reduce variance.</p>
-</section><section id="ridge-regression" class="level2" data-number="3.2"><h2 data-number="3.2" class="anchored" data-anchor-id="ridge-regression">
-<span class="header-section-number">3.2</span> Ridge regression</h2>
+</section>
+<section id="ridge-regression" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="ridge-regression"><span class="header-section-number">3.2</span> Ridge regression</h2>
 <p>Ridge adds an <span class="math inline">\ell_2</span> penalty on the coefficients:</p>
 <p><span class="math display">
 \hat{\boldsymbol{\beta}}_{\text{ridge}} = \arg\min_{\boldsymbol{\beta}}
@@ -552,8 +587,9 @@ window.Quarto = {
 \right\}
 </span></p>
 <p>The penalty shrinks all coefficients toward zero but never sets any exactly to zero. Ridge is particularly useful when many regressors are correlated and each contributes a small amount of signal.</p>
-</section><section id="lasso" class="level2" data-number="3.3"><h2 data-number="3.3" class="anchored" data-anchor-id="lasso">
-<span class="header-section-number">3.3</span> Lasso</h2>
+</section>
+<section id="lasso" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="lasso"><span class="header-section-number">3.3</span> Lasso</h2>
 <p>Lasso uses an <span class="math inline">\ell_1</span> penalty:</p>
 <p><span class="math display">
 \hat{\boldsymbol{\beta}}_{\text{lasso}} = \arg\min_{\boldsymbol{\beta}}
@@ -563,8 +599,9 @@ window.Quarto = {
 \right\}
 </span></p>
 <p>The <span class="math inline">\ell_1</span> penalty produces <strong>sparse solutions</strong>: many coefficients are set exactly to zero, performing automatic variable selection. This makes Lasso particularly attractive when you suspect only a small subset of your candidate regressors are truly relevant.</p>
-</section><section id="elastic-net" class="level2" data-number="3.4"><h2 data-number="3.4" class="anchored" data-anchor-id="elastic-net">
-<span class="header-section-number">3.4</span> Elastic Net</h2>
+</section>
+<section id="elastic-net" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="elastic-net"><span class="header-section-number">3.4</span> Elastic Net</h2>
 <p>Elastic Net combines both penalties:</p>
 <p><span class="math display">
 \hat{\boldsymbol{\beta}}_{\text{EN}} = \arg\min_{\boldsymbol{\beta}}
@@ -589,10 +626,12 @@ window.Quarto = {
 </div>
 </div>
 <p>In R, <code>glmnet::glmnet()</code> implements all three. Cross-validation for <span class="math inline">\lambda</span> selection is handled by <code>glmnet::cv.glmnet()</code>. These are not currently integrated into <code>fable</code>, so regularized regression requires stepping outside the <code>tidyverts</code> ecosystem.</p>
-</section></section><section id="kernel-methods-and-svr" class="level1" data-number="4"><h1 data-number="4">
-<span class="header-section-number">4</span> Kernel Methods and SVR</h1>
-<section id="the-core-idea-mapping-to-a-higher-dimensional-space" class="level2" data-number="4.1"><h2 data-number="4.1" class="anchored" data-anchor-id="the-core-idea-mapping-to-a-higher-dimensional-space">
-<span class="header-section-number">4.1</span> The core idea: mapping to a higher-dimensional space</h2>
+</section>
+</section>
+<section id="kernel-methods-and-svr" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Kernel Methods and SVR</h1>
+<section id="the-core-idea-mapping-to-a-higher-dimensional-space" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="the-core-idea-mapping-to-a-higher-dimensional-space"><span class="header-section-number">4.1</span> The core idea: mapping to a higher-dimensional space</h2>
 <p>Support Vector Regression (SVR) extends the Support Vector Machine framework to continuous outputs. The key insight is that a relationship that is nonlinear in the original feature space <span class="math inline">\mathcal{X}</span> may become linear in a higher-dimensional feature space <span class="math inline">\mathcal{F}</span>, obtained via a mapping <span class="math inline">\phi: \mathcal{X} \to \mathcal{F}</span>.</p>
 <p>SVR finds the flattest function <span class="math inline">f(\mathbf{x}) = \mathbf{w}^\top
 \phi(\mathbf{x}) + b</span> that fits the training data within an <span class="math inline">\varepsilon</span>-tube:</p>
@@ -610,8 +649,9 @@ y_t - \mathbf{w}^\top \phi(\mathbf{x}_t) - b &amp;\leq \varepsilon + \xi_t \\
 \end{align*}
 </span></p>
 <p>where <span class="math inline">C &gt; 0</span> controls the trade-off between flatness and tolerance for deviations beyond <span class="math inline">\varepsilon</span>, and <span class="math inline">\xi_t, \xi_t^*</span> are slack variables that penalize points outside the tube.</p>
-</section><section id="the-kernel-trick" class="level2" data-number="4.2"><h2 data-number="4.2" class="anchored" data-anchor-id="the-kernel-trick">
-<span class="header-section-number">4.2</span> The kernel trick</h2>
+</section>
+<section id="the-kernel-trick" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="the-kernel-trick"><span class="header-section-number">4.2</span> The kernel trick</h2>
 <p>Computing <span class="math inline">\phi(\mathbf{x})</span> explicitly is often infeasible when <span class="math inline">\mathcal{F}</span> is very high-dimensional (or infinite-dimensional). The <strong>kernel trick</strong> exploits the fact that the dual formulation of the SVR problem only requires inner products <span class="math inline">\langle\phi(\mathbf{x}_i),
 \phi(\mathbf{x}_j)\rangle</span>, which can be computed directly via a kernel function:</p>
 <p><span class="math display">
@@ -625,11 +665,13 @@ k(\mathbf{x}_i, \mathbf{x}_j) =
 <col style="width: 33%">
 <col style="width: 33%">
 </colgroup>
-<thead><tr class="header">
+<thead>
+<tr class="header">
 <th>Kernel</th>
 <th>Formula</th>
 <th>Use case</th>
-</tr></thead>
+</tr>
+</thead>
 <tbody>
 <tr class="odd">
 <td>Linear</td>
@@ -644,8 +686,7 @@ k(\mathbf{x}_i, \mathbf{x}_j) =
 <tr class="odd">
 <td>Polynomial</td>
 <td><span class="math inline">(\mathbf{x}_i^\top \mathbf{x}_j + c)^d</span></td>
-<td>Interactions up to degree <span class="math inline">d</span>
-</td>
+<td>Interactions up to degree <span class="math inline">d</span></td>
 </tr>
 </tbody>
 </table>
@@ -662,8 +703,9 @@ k(\mathbf{x}_i, \mathbf{x}_j) =
 <p>With a linear kernel, SVR and Ridge regression optimize similar objectives. The main difference is the <span class="math inline">\varepsilon</span>-insensitive loss in SVR vs.&nbsp;the squared loss in Ridge. SVR is less sensitive to outliers near the regression surface, while Ridge penalizes all deviations quadratically.</p>
 </div>
 </div>
-</section><section id="svr-for-time-series-forecasting" class="level2" data-number="4.3"><h2 data-number="4.3" class="anchored" data-anchor-id="svr-for-time-series-forecasting">
-<span class="header-section-number">4.3</span> SVR for time series forecasting</h2>
+</section>
+<section id="svr-for-time-series-forecasting" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="svr-for-time-series-forecasting"><span class="header-section-number">4.3</span> SVR for time series forecasting</h2>
 <p>SVR does not natively handle temporal dependence — it treats observations as i.i.d. To use SVR for forecasting, you typically construct lagged features manually (embedding the time series into a feature matrix) and then apply SVR to the resulting regression problem. This is known as the <strong>NARX</strong> (Nonlinear AutoRegressive with eXogenous inputs) approach.</p>
 <p>Practical considerations for SVR in forecasting:</p>
 <ul>
@@ -673,24 +715,29 @@ k(\mathbf{x}_i, \mathbf{x}_j) =
 <li>Scaling is <strong>mandatory</strong>: SVR optimizes over <span class="math inline">\|\mathbf{w}\|^2</span>, which is scale-dependent. Unstandardized inputs will produce arbitrarily poor solutions.</li>
 </ul>
 <p>In R, <code>e1071::svm()</code> and <code>kernlab::ksvm()</code> implement SVR.</p>
-</section></section><section id="tree-based-methods" class="level1" data-number="5"><h1 data-number="5">
-<span class="header-section-number">5</span> Tree-Based Methods</h1>
-<section id="decision-trees-and-their-limitations" class="level2" data-number="5.1"><h2 data-number="5.1" class="anchored" data-anchor-id="decision-trees-and-their-limitations">
-<span class="header-section-number">5.1</span> Decision trees and their limitations</h2>
+</section>
+</section>
+<section id="tree-based-methods" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Tree-Based Methods</h1>
+<section id="decision-trees-and-their-limitations" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="decision-trees-and-their-limitations"><span class="header-section-number">5.1</span> Decision trees and their limitations</h2>
 <p>A regression tree recursively partitions the feature space into rectangular regions and predicts the mean of <span class="math inline">y</span> within each region. Individual trees have high variance — small changes in the training data produce very different trees.</p>
-</section><section id="random-forests" class="level2" data-number="5.2"><h2 data-number="5.2" class="anchored" data-anchor-id="random-forests">
-<span class="header-section-number">5.2</span> Random Forests</h2>
+</section>
+<section id="random-forests" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="random-forests"><span class="header-section-number">5.2</span> Random Forests</h2>
 <p>Random Forests reduce variance through two mechanisms: <strong>bagging</strong> (bootstrap aggregation of <span class="math inline">B</span> trees) and <strong>feature subsampling</strong> (each split considers only a random subset of <span class="math inline">p</span> features, decorrelating the trees).</p>
 <p>The prediction is:</p>
 <p><span class="math display">
 \hat{y} = \frac{1}{B} \sum_{b=1}^B T_b(\mathbf{x})
 </span></p>
 <p>where <span class="math inline">T_b</span> is the <span class="math inline">b</span>-th tree fitted on a bootstrap sample.</p>
-</section><section id="gradient-boosting-xgboost" class="level2" data-number="5.3"><h2 data-number="5.3" class="anchored" data-anchor-id="gradient-boosting-xgboost">
-<span class="header-section-number">5.3</span> Gradient Boosting (XGBoost)</h2>
+</section>
+<section id="gradient-boosting-xgboost" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="gradient-boosting-xgboost"><span class="header-section-number">5.3</span> Gradient Boosting (XGBoost)</h2>
 <p>Gradient boosting builds trees sequentially, with each tree fitted to the residuals of the ensemble so far. XGBoost adds <span class="math inline">\ell_1</span> and <span class="math inline">\ell_2</span> regularization on the tree structure itself, making it more robust to overfitting than vanilla gradient boosting.</p>
-</section><section id="critical-limitations-for-forecasting" class="level2" data-number="5.4"><h2 data-number="5.4" class="anchored" data-anchor-id="critical-limitations-for-forecasting">
-<span class="header-section-number">5.4</span> Critical limitations for forecasting</h2>
+</section>
+<section id="critical-limitations-for-forecasting" class="level2" data-number="5.4">
+<h2 data-number="5.4" class="anchored" data-anchor-id="critical-limitations-for-forecasting"><span class="header-section-number">5.4</span> Critical limitations for forecasting</h2>
 <div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -711,8 +758,11 @@ k(\mathbf{x}_i, \mathbf{x}_j) =
 <li>Hyperparameter tuning is non-trivial; improper tuning can produce worse results than a well-specified TSLM.</li>
 <li>Interpretability is limited, though tools like SHAP values partially address this.</li>
 <li>Temporal autocorrelation in residuals is not modeled; lagged features must be constructed manually.</li>
-</ul></section></section><section id="neural-networks" class="level1" data-number="6"><h1 data-number="6">
-<span class="header-section-number">6</span> Neural Networks</h1>
+</ul>
+</section>
+</section>
+<section id="neural-networks" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Neural Networks</h1>
 <p>A brief orientation for completeness. Feed-forward neural networks approximate arbitrary functions through compositions of linear transformations and nonlinear activations. Recurrent architectures (LSTM, GRU) are designed specifically for sequential data.</p>
 <p>Practical context for time series forecasting:</p>
 <ul>
@@ -720,11 +770,15 @@ k(\mathbf{x}_i, \mathbf{x}_j) =
 <li>They are the dominant approach for <strong>global forecasting models</strong> — single models trained across thousands of series simultaneously (e.g., N-BEATS, N-HiTS, Temporal Fusion Transformer).</li>
 <li>Training instability, vanishing gradients, and hyperparameter sensitivity make them operationally expensive compared to statistical models.</li>
 <li>In <code>fable</code>, <code>NNETAR()</code> implements a simple feed-forward network with lagged inputs — a practical entry point within the <code>tidyverts</code> ecosystem.</li>
-</ul></section><section id="a-decision-framework" class="level1" data-number="7"><h1 data-number="7">
-<span class="header-section-number">7</span> A Decision Framework</h1>
+</ul>
+</section>
+<section id="a-decision-framework" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> A Decision Framework</h1>
 <p>Work through these questions when choosing a regression approach:</p>
 <div class="cell" data-layout-align="default">
-<details open="" class="code-fold"><summary>Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>flowchart TD</span>
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>flowchart TD</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    A{Is the relationship &lt;br/&gt; approximately linear?} --&gt;|Yes| B[Start with TSLM &lt;br/&gt; Check residuals]</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    B --&gt; C{Residuals &lt;br/&gt; autocorrelated?}</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    C --&gt;|Yes| D[Dynamic regression &lt;br/&gt; ARIMA errors]</span>
@@ -735,9 +789,10 @@ k(\mathbf{x}_i, \mathbf{x}_j) =
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    F --&gt;|Large T ≥ 200| H{Series trends beyond &lt;br/&gt; training range?}</span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    H --&gt;|Yes| I[Detrend first &lt;br/&gt; then tree/NN on residuals]</span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    H --&gt;|No| J[Random Forest or XGBoost &lt;br/&gt; with lagged features]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details><div class="cell-output-display">
+</details>
+<div class="cell-output-display">
 <div>
-<p></p><figure class="figure"></figure><p></p>
+<p></p><figure class="figure"><p></p>
 <div>
 <pre class="mermaid mermaid-js">flowchart TD
     A{Is the relationship &lt;br/&gt; approximately linear?} --&gt;|Yes| B[Start with TSLM &lt;br/&gt; Check residuals]
@@ -752,7 +807,7 @@ k(\mathbf{x}_i, \mathbf{x}_j) =
     H --&gt;|No| J[Random Forest or XGBoost &lt;br/&gt; with lagged features]
 </pre>
 </div>
-<p></p>
+<p></p></figure><p></p>
 </div>
 </div>
 </div>
@@ -764,13 +819,15 @@ k(\mathbf{x}_i, \mathbf{x}_j) =
 <col style="width: 21%">
 <col style="width: 21%">
 </colgroup>
-<thead><tr class="header">
+<thead>
+<tr class="header">
 <th>Method</th>
 <th style="text-align: center;">Extrapolates?</th>
 <th style="text-align: center;">Interpretable?</th>
 <th style="text-align: center;">Needs large <span class="math inline">T</span>?</th>
 <th style="text-align: center;">Handles autocorrelation natively?</th>
-</tr></thead>
+</tr>
+</thead>
 <tbody>
 <tr class="odd">
 <td>OLS / TSLM</td>
@@ -851,7 +908,10 @@ k(\mathbf{x}_i, \mathbf{x}_j) =
 </div>
 
 
-</section><a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right
     if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
@@ -1270,7 +1330,8 @@ k(\mathbf{x}_i, \mathbf{x}_j) =
   });
   </script>
 </div> <!-- /content -->
-<footer class="footer"><div class="nav-footer">
+<footer class="footer">
+  <div class="nav-footer">
     <div class="nav-footer-left">
       &nbsp;
     </div>   
@@ -1282,6 +1343,8 @@ k(\mathbf{x}_i, \mathbf{x}_j) =
     </div>
   </div>
 </footer>
+
+
 
 
 <script src="../../../site_libs/quarto-html/zenscroll-min.js"></script>

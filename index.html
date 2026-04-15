@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.9.37">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
 <meta name="author" content="">
+
 <title>Time Series Forecasting</title>
 <style>
 /* Default styles provided by pandoc.
@@ -58,6 +61,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }
 </style>
 
+
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="site_libs/quarto-nav/headroom.min.js"></script>
 <script src="site_libs/clipboard/clipboard.min.js"></script>
@@ -84,7 +88,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/bootstrap/bootstrap-244213f7cd4a3a5e5d1c08c87522056e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
-<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
@@ -110,13 +115,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
-}</script><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-BRNYXN29K7"></script><script type="text/plain" cookie-consent="tracking">
+}</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-BRNYXN29K7"></script>
+
+<script type="text/plain" cookie-consent="tracking">
 
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
 gtag('config', 'G-BRNYXN29K7', { 'anonymize_ip': true});
-</script><script type="text/javascript" charset="UTF-8">
+</script>
+
+<script type="text/javascript" charset="UTF-8">
 document.addEventListener('DOMContentLoaded', function () {
 cookieconsent.run({
   "notice_banner_type":"simple",
@@ -131,17 +141,25 @@ cookieconsent.run({
 "language":"en"
   });
 });
-</script><style>html{ scroll-behavior: smooth; }</style>
+</script> 
+  
+<style>html{ scroll-behavior: smooth; }</style>
 <script type="application/json" class="js-hypothesis-config">
 {
   "theme": "classic"
 }
-</script><script async="" src="https://hypothes.is/embed.js"></script><script>
+</script>
+<script async="" src="https://hypothes.is/embed.js"></script>
+<script>
   window.document.addEventListener("DOMContentLoaded", function (_event) {
     document.body.classList.add('hypothesis-enabled');
   });
-</script><link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
-<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script><link rel="stylesheet" href="styles.css">
+</script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+
+
+<link rel="stylesheet" href="styles.css">
 <link rel="stylesheet" href="index_styles.css">
 <meta property="og:title" content="Time Series Forecasting">
 <meta property="og:description" content="">
@@ -153,6 +171,7 @@ cookieconsent.run({
 <meta name="twitter:creator" content="@PabsBenavides">
 <meta name="twitter:card" content="summary_large_image">
 </head>
+
 <body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
     const toggleBodyColorMode = (bsSheetEl) => {
       const mode = bsSheetEl.getAttribute("data-mode");
@@ -318,10 +337,14 @@ cookieconsent.run({
   </script>
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg " data-bs-theme="dark"><div class="navbar-container container-fluid">
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="./index.html" class="navbar-brand navbar-brand-logo">
-    <img src="./images/iteso_logo_blanco.png" alt="" class="navbar-logo light-content"><img src="./images/iteso_logo_blanco.png" alt="" class="navbar-logo dark-content"></a>
+    <img src="./images/iteso_logo_blanco.png" alt="" class="navbar-logo light-content">
+    <img src="./images/iteso_logo_blanco.png" alt="" class="navbar-logo dark-content">
+    </a>
     <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">Time Series Forecasting</span>
     </a>
@@ -332,7 +355,7 @@ cookieconsent.run({
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
-<li class="nav-item">
+  <li class="nav-item">
     <a class="nav-link active" href="./index.html" aria-current="page"> 
 <span class="menu-text">Home</span></a>
   </li>  
@@ -358,7 +381,7 @@ cookieconsent.run({
 <span class="menu-text">Elendil TA</span></a>
   </li>  
 </ul>
-</div> <!-- /navcollapse -->
+          </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools tools-wide">
     <a href="https://github.com/pbenavidesh/narsil" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-github"></i></a>
   <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
@@ -369,30 +392,35 @@ cookieconsent.run({
 </a>
 </div>
       </div> <!-- /container-fluid -->
-    </nav><div id="quarto-announcement" data-announcement-id="2b4c5f92d91c7d44181d7c33da3fea50" class="alert alert-primary hidden">
-<i class="bi bi-megaphone quarto-announcement-icon"></i><div class="quarto-announcement-content">
+    </nav>
+  <div id="quarto-announcement" data-announcement-id="2b4c5f92d91c7d44181d7c33da3fea50" class="alert alert-primary hidden"><i class="bi bi-megaphone quarto-announcement-icon"></i><div class="quarto-announcement-content">
 <p><strong>Happy new year 2026!</strong> - AI code assistant <a href="https://chatgpt.com/g/g-68e6907c12a48191a07fb0888500a7fa-elendil-ta">Elendil TA</a> is now available! Click the icon in the navbar to start using it.</p>
-</div>
-<i class="bi bi-x-lg quarto-announcement-action"></i>
-</div>
-</header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+</div><i class="bi bi-x-lg quarto-announcement-action"></i></div>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     
 <!-- main -->
-<main class="content column-page" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header><p><a href="images/narsil_cover.webp" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="images/narsil_cover.webp" class="img-fluid" style="width:100.0%"></a></p>
+<main class="content column-page" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+
+
+
+
+
+<p><a href="images/narsil_cover.webp" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="images/narsil_cover.webp" class="img-fluid" style="width:100.0%"></a></p>
 <p>Welcome to the Time Series Forecasting course at ITESO. Here you will find all the materials and resources needed for the course.</p>
-<section id="time-series-forecasting-with-r" class="level1" data-number="1"><h1 data-number="1">
-<span class="header-section-number">1</span> Time Series Forecasting with R</h1>
+<section id="time-series-forecasting-with-r" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Time Series Forecasting with R</h1>
 <p>Modern forecasting workflows using <a href="https://r4ds.hadley.nz/data-tidy.html#sec-tidy-data"><strong>tidy data principles</strong></a> with the <strong>tidyverts</strong> ecosystem.</p>
 <div class="columns">
 <div class="column" style="width:60%;">
-<section id="what-youll-learn" class="level2" data-number="1.1"><h2 data-number="1.1" class="anchored" data-anchor-id="what-youll-learn">
-<span class="header-section-number">1.1</span> What you’ll learn</h2>
+<section id="what-youll-learn" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="what-youll-learn"><span class="header-section-number">1.1</span> What you’ll learn</h2>
 <ul>
 <li>Build tidy time series with <a href="https://tsibble.tidyverts.org"><strong>tsibble</strong></a> and modern data pipelines</li>
-<li>Create forecasts with <strong>ETS</strong>, <strong>ARIMA</strong>, and regression-based models via <a href="https://fable.tidyverts.org/"><strong>fable</strong></a>
-</li>
+<li>Create forecasts with <strong>ETS</strong>, <strong>ARIMA</strong>, and regression-based models via <a href="https://fable.tidyverts.org/"><strong>fable</strong></a></li>
 <li>Engineer time features and diagnose models with <a href="https://feasts.tidyverts.org/"><strong>feasts</strong></a>)</li>
 <li>Evaluate with time-aware resampling and communicate uncertainty</li>
 <li>Scale to multiple series and hierarchies when needed</li>
@@ -412,8 +440,8 @@ cookieconsent.run({
 </div>
 </section>
 </div><div class="column" style="width:40%;">
-<section id="start-here" class="level2" data-number="1.2"><h2 data-number="1.2" class="anchored" data-anchor-id="start-here">
-<span class="header-section-number">1.2</span> Start here</h2>
+<section id="start-here" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="start-here"><span class="header-section-number">1.2</span> Start here</h2>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -430,62 +458,75 @@ Note
 <ul>
 <li><a href="./docs/modules/index.html">Modules</a></li>
 <li><a href="./docs/exercises/index.html">In-class exercises</a></li>
-</ul></section>
+</ul>
+</section>
 </div>
 </div>
 <hr>
-<section id="course-map" class="level2" data-number="1.3"><h2 data-number="1.3" class="anchored" data-anchor-id="course-map">
-<span class="header-section-number">1.3</span> Course map</h2>
+<section id="course-map" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="course-map"><span class="header-section-number">1.3</span> Course map</h2>
 <div class="columns">
 <div class="column">
-<section id="foundations" class="level3" data-number="1.3.1"><h3 data-number="1.3.1" class="anchored" data-anchor-id="foundations">
-<span class="header-section-number">1.3.1</span> 1. Foundations</h3>
+<section id="foundations" class="level3" data-number="1.3.1">
+<h3 data-number="1.3.1" class="anchored" data-anchor-id="foundations"><span class="header-section-number">1.3.1</span> 1. Foundations</h3>
 <ul>
 <li>tidy data + time indexes</li>
-<li>
-<code>tsibble</code> keys, gaps, and intervals</li>
-</ul></section><section id="patterns-features" class="level3" data-number="1.3.2"><h3 data-number="1.3.2" class="anchored" data-anchor-id="patterns-features">
-<span class="header-section-number">1.3.2</span> 2. Patterns &amp; features</h3>
+<li><code>tsibble</code> keys, gaps, and intervals</li>
+</ul>
+</section>
+<section id="patterns-features" class="level3" data-number="1.3.2">
+<h3 data-number="1.3.2" class="anchored" data-anchor-id="patterns-features"><span class="header-section-number">1.3.2</span> 2. Patterns &amp; features</h3>
 <ul>
 <li>seasonality, trend, decomposition</li>
 <li>diagnostics and features (<code>feasts</code>)</li>
-</ul></section>
+</ul>
+</section>
 </div><div class="column">
-<section id="core-forecasting-models" class="level3" data-number="1.3.3"><h3 data-number="1.3.3" class="anchored" data-anchor-id="core-forecasting-models">
-<span class="header-section-number">1.3.3</span> 3. Core forecasting models</h3>
+<section id="core-forecasting-models" class="level3" data-number="1.3.3">
+<h3 data-number="1.3.3" class="anchored" data-anchor-id="core-forecasting-models"><span class="header-section-number">1.3.3</span> 3. Core forecasting models</h3>
 <ul>
 <li>ETS + ARIMA</li>
 <li>model comparison and selection</li>
-</ul></section><section id="regression-workflows" class="level3" data-number="1.3.4"><h3 data-number="1.3.4" class="anchored" data-anchor-id="regression-workflows">
-<span class="header-section-number">1.3.4</span> 4. Regression workflows</h3>
+</ul>
+</section>
+<section id="regression-workflows" class="level3" data-number="1.3.4">
+<h3 data-number="1.3.4" class="anchored" data-anchor-id="regression-workflows"><span class="header-section-number">1.3.4</span> 4. Regression workflows</h3>
 <ul>
 <li>time features, events, and covariates</li>
 <li>forecast reconciliation ideas</li>
-</ul></section>
+</ul>
+</section>
 </div><div class="column">
-<section id="evaluation-communication" class="level3" data-number="1.3.5"><h3 data-number="1.3.5" class="anchored" data-anchor-id="evaluation-communication">
-<span class="header-section-number">1.3.5</span> 5. Evaluation &amp; communication</h3>
+<section id="evaluation-communication" class="level3" data-number="1.3.5">
+<h3 data-number="1.3.5" class="anchored" data-anchor-id="evaluation-communication"><span class="header-section-number">1.3.5</span> 5. Evaluation &amp; communication</h3>
 <ul>
 <li>time series CV and backtesting</li>
 <li>uncertainty, intervals, and narratives</li>
-</ul></section><section id="multiple-series" class="level3" data-number="1.3.6"><h3 data-number="1.3.6" class="anchored" data-anchor-id="multiple-series">
-<span class="header-section-number">1.3.6</span> 6. Multiple series</h3>
+</ul>
+</section>
+<section id="multiple-series" class="level3" data-number="1.3.6">
+<h3 data-number="1.3.6" class="anchored" data-anchor-id="multiple-series"><span class="header-section-number">1.3.6</span> 6. Multiple series</h3>
 <ul>
 <li>grouped models</li>
 <li>hierarchies and reconciliation</li>
-</ul></section>
+</ul>
+</section>
 </div>
 </div>
-<hr></section><section id="quick-setup-check" class="level2" data-number="1.4"><h2 data-number="1.4" class="anchored" data-anchor-id="quick-setup-check">
-<span class="header-section-number">1.4</span> Quick setup check</h2>
+<hr>
+</section>
+<section id="quick-setup-check" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="quick-setup-check"><span class="header-section-number">1.4</span> Quick setup check</h2>
 <p>Run this once after installing packages to confirm your environment.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tsibble.tidyverts.org">tsibble</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://fable.tidyverts.org">fable</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://feasts.tidyverts.org/">feasts</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tsibble)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fable)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(feasts)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <div class="callout callout-style-default callout-warning callout-titled">
@@ -499,33 +540,32 @@ Note
 </div>
 <div class="callout-body-container callout-body">
 <ul>
-<li>
-<strong>Data leakage</strong>: don’t let future information sneak into features.</li>
-<li>
-<strong>Random CV</strong>: use <strong>time-aware</strong> resampling/backtesting.</li>
-<li>
-<strong>Overfitting</strong>: a more complex model isn’t automatically better.</li>
+<li><strong>Data leakage</strong>: don’t let future information sneak into features.</li>
+<li><strong>Random CV</strong>: use <strong>time-aware</strong> resampling/backtesting.</li>
+<li><strong>Overfitting</strong>: a more complex model isn’t automatically better.</li>
 </ul>
 </div>
 </div>
-<hr></section><section id="primary-toolchain" class="level2" data-number="1.5"><h2 data-number="1.5" class="anchored" data-anchor-id="primary-toolchain">
-<span class="header-section-number">1.5</span> Primary toolchain</h2>
+<hr>
+</section>
+<section id="primary-toolchain" class="level2" data-number="1.5">
+<h2 data-number="1.5" class="anchored" data-anchor-id="primary-toolchain"><span class="header-section-number">1.5</span> Primary toolchain</h2>
 <p>We’ll use a tidy workflow centered on:</p>
 <ul>
-<li>
-<strong>tidyverse</strong> for data wrangling</li>
-<li>
-<strong>tsibble</strong> for time-aware tibbles</li>
-<li>
-<strong>fable</strong> for modeling and forecasting</li>
-<li>
-<strong>feasts</strong> for decomposition, features, and diagnostics</li>
+<li><strong>tidyverse</strong> for data wrangling</li>
+<li><strong>tsibble</strong> for time-aware tibbles</li>
+<li><strong>fable</strong> for modeling and forecasting</li>
+<li><strong>feasts</strong> for decomposition, features, and diagnostics</li>
 </ul>
 <p>Recommended reading: <a href="https://otexts.com/fpp3/"><em>Forecasting: Principles and Practice</em></a> (free online).</p>
 <hr>
 
 
-</section></section><a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+</section>
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right
     if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
@@ -944,7 +984,8 @@ Note
   });
   </script>
 </div> <!-- /content -->
-<footer class="footer"><div class="nav-footer">
+<footer class="footer">
+  <div class="nav-footer">
     <div class="nav-footer-left">
       &nbsp;
     </div>   
@@ -955,7 +996,8 @@ Note
       &nbsp;
     </div>
   </div>
-</footer><script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+</footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
 (function() {
   let previousOnload = window.onload;
   window.onload = () => {
@@ -987,6 +1029,8 @@ Note
   
 })();
           </script>
+
+
 
 
 <script src="site_libs/quarto-html/zenscroll-min.js"></script>
