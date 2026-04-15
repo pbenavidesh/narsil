@@ -303,11 +303,11 @@ We can extract both error types from the fitted model:
 
 bind_rows(
   `Regression errors` = as_tibble(                               #<1>
-    residuals(us_change_fit_dyn |> select(dynamic),
-              type = "regression")),
+    residuals(us_change_fit_dyn |> select(dynamic),              #<1>
+              type = "regression")),                             #<1>
   `ARIMA innovations` = as_tibble(                               #<2>
-    residuals(us_change_fit_dyn |> select(dynamic),
-              type = "innovation")),
+    residuals(us_change_fit_dyn |> select(dynamic),              #<2>
+              type = "innovation")),                             #<2>
   .id = "type"
 ) |>
   ggplot(aes(x = Quarter, y = .resid)) +
@@ -680,7 +680,9 @@ The choice of how to encode day type depends on the question you want to answer:
 - **Binary** — `Day_Type == "Weekday"`: distinguishes working days from non-working days (weekends + holidays collapsed together). Simpler, fewer parameters, often sufficient.
 - **Two dummies** — `Day_Type == "Weekday"` and `Day_Type == "Weekend"` (holidays as baseline): allows weekends and holidays to have different demand profiles. Useful if your data shows a meaningful difference between the two.
 
+::: {.fragment}
 Neither is universally better — let residual diagnostics and AIC$_c$ guide the choice.
+:::
 :::
 
 :::{.content-hidden unless-format="revealjs"}
@@ -732,12 +734,18 @@ vic_elec_future_26 <- new_data(vic_elec_daily, 14) |>
       TRUE                 ~ "Weekend"
     )
   )
+```
+
+```{r}
+#| label: elec-forecast-conservative-plot
+#| echo: false
 
 forecast(vic_elec_fit, vic_elec_future_26) |>
   autoplot(vic_elec_daily) +
   labs(title = "Scenario: constant 26°C",
        y = "Electricity demand (GW)")
 ```
+
 
 ### Heatwave
 
@@ -754,6 +762,12 @@ vic_elec_future_hw <- new_data(vic_elec_daily, 14) |>
       TRUE                 ~ "Weekend"
     )
   )
+```
+1. A realistic meteorological forecast — considerably hotter than 26°C.
+
+```{r}
+#| label: elec-forecast-heatwave-plot
+#| echo: false
 
 forecast(vic_elec_fit, vic_elec_future_hw) |>
   autoplot(vic_elec_daily) +
@@ -761,7 +775,6 @@ forecast(vic_elec_fit, vic_elec_future_hw) |>
        y = "Electricity demand (GW)")
 ```
 
-1. A realistic meteorological forecast — considerably hotter than 26°C.
 
 :::
 
@@ -999,7 +1012,6 @@ $$S_K(t) = \sum_{k=1}^{K} \left[ a_k \cos\!\left(\frac{2\pi k t}{m}\right) + b_k
 
 - $m$ — seasonal period
 - $K$ — number of Fourier pairs (controls flexibility)
-- $K = m/2$ — equivalent to $m-1$ seasonal dummies
 
 :::{.fragment}
 
@@ -1079,11 +1091,17 @@ aus_cafe <- aus_retail |>
     year(Month) %in% 2004:2018
   ) |>
   summarise(Turnover = sum(Turnover))
+```
+
+```{r}
+#| label: cafe-plot
+#| echo: false
 
 aus_cafe |> autoplot(Turnover) +
   labs(title = "Australian café & restaurant turnover",
        y = "AUD (millions)", x = NULL)
 ```
+
 
 :::{.content-hidden unless-format="revealjs"}
 
@@ -1163,6 +1181,7 @@ glance(cafe_fit) |>
 
 ```{r}
 #| label: cafe-forecast-comparison
+#| echo: false
 
 cafe_fit |>
   forecast(h = "2 years") |>
