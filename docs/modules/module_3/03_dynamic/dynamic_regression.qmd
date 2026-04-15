@@ -496,7 +496,7 @@ Dynamic regression intervals assume future predictor values are **known exactly*
 
 :::{.content-hidden unless-format="revealjs"}
 
-## Why a Second Example?
+##
 
 :::
 
@@ -622,7 +622,7 @@ vic_elec_daily |>
 
 vic_elec_fit <- vic_elec_daily |>
   model(
-    ARIMA(Demand ~ Temperature + I(Temperature^2) +  #<1>
+    dynamic = ARIMA(Demand ~ Temperature + I(Temperature^2) +  #<1>
             (Day_Type == "Weekday"))                  #<2>
   )
 
@@ -931,7 +931,7 @@ glance(cafe_fit) |>
 
 cafe_fit |>
   forecast(h = "2 years") |>
-  autoplot(aus_cafe, level = NULL) +
+  autoplot(aus_cafe) +
   facet_wrap(~ .model, ncol = 2) +
   labs(
     title = "Effect of K on seasonal shape",
