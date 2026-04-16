@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<link href="../../../../images/narsil_logo.png" rel="icon" type="image/png">
+<script src="../../../../site_libs/cookie-consent/cookie-consent.js"></script>
+<link href="../../../../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
+<script src="../../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../../site_libs/quarto-html/tabby.min.js"></script>
+<script src="../../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../../site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-4e5466e430b1db38349d513585fd1d59.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.9.37">
+
+  <meta name="author" content="">
+  <title>Time Series Forecasting – Prophet</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../../../../site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="../../../../site_libs/revealjs/dist/reveal.css">
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+      }
+    pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+    div.sourceCode
+      { color: #383a42;  }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #383a42; } /* Normal */
+    code span.al { color: #95da4c; background-color: #4d1f24; font-weight: bold; } /* Alert */
+    code span.an { color: #50a14f; } /* Annotation */
+    code span.at { color: #a626a4; } /* Attribute */
+    code span.bn { color: #986801; } /* BaseN */
+    code span.bu { color: #a626a4; } /* BuiltIn */
+    code span.cf { color: #a626a4; } /* ControlFlow */
+    code span.ch { color: #50a14f; } /* Char */
+    code span.cn { color: #986801; } /* Constant */
+    code span.co { color: #a0a1a7; font-style: italic; } /* Comment */
+    code span.cv { color: #e45649; font-style: italic; } /* CommentVar */
+    code span.do { color: #e45649; } /* Documentation */
+    code span.dt { color: #a626a4; } /* DataType */
+    code span.dv { color: #986801; } /* DecVal */
+    code span.er { color: #f44747; text-decoration: underline; } /* Error */
+    code span.ex { color: #4078f2; font-weight: bold; } /* Extension */
+    code span.fl { color: #986801; } /* Float */
+    code span.fu { color: #4078f2; } /* Function */
+    code span.im { color: #50a14f; } /* Import */
+    code span.in { color: #c45b00; } /* Information */
+    code span.kw { color: #a626a4; } /* Keyword */
+    code span.op { color: #a626a4; } /* Operator */
+    code span.ot { color: #27ae60; } /* Other */
+    code span.pp { color: #a626a4; } /* Preprocessor */
+    code span.re { color: #2980b9; background-color: #153042; } /* RegionMarker */
+    code span.sc { color: #0184bc; } /* SpecialChar */
+    code span.ss { color: #da4453; } /* SpecialString */
+    code span.st { color: #50a14f; } /* String */
+    code span.va { color: #e45649; } /* Variable */
+    code span.vs { color: #da4453; } /* VerbatimString */
+    code span.wa { color: #da4453; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../../../site_libs/revealjs/dist/theme/quarto-4d89f974941c4a3a96b7bf96b873e9d5.css">
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-BRNYXN29K7"></script>
+
+  <script type="text/plain" cookie-consent="tracking">
+
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-BRNYXN29K7', { 'anonymize_ip': true});
+  </script>
+  
+  <script type="text/javascript" charset="UTF-8">
+  document.addEventListener('DOMContentLoaded', function () {
+  cookieconsent.run({
+    "notice_banner_type":"simple",
+    "consent_type":"express",
+    "palette":"light",
+    "language":"en",
+    "page_load_consent_levels":["strictly-necessary"],
+    "notice_banner_reject_button_hide":false,
+    "preferences_center_close_button_hide":false,
+    "website_name":""
+    ,
+  "language":"en"
+    });
+  });
+  </script> 
+    
+  <link href="../../../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="../../../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="../../../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="../../../../site_libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="../../../../site_libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
+  <link href="../../../../site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <script type="application/json" class="js-hypothesis-config">
+  {
+    "theme": "classic"
+  }
+  </script>
+  <script async="" src="https://hypothes.is/embed.js"></script>
+  <script>
+    window.document.addEventListener("DOMContentLoaded", function (_event) {
+      document.body.classList.add('hypothesis-enabled');
+    });
+  </script>
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+  <link href="../../../../site_libs/htmltools-fill-0.5.9/fill.css" rel="stylesheet">
+  <script src="../../../../site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+  <script src="../../../../site_libs/plotly-binding-4.12.0/plotly.js"></script>
+  <script src="../../../../site_libs/typedarray-0.1/typedarray.min.js"></script>
+  <script src="../../../../site_libs/jquery-3.5.1/jquery.min.js"></script>
+  <link href="../../../../site_libs/crosstalk-1.2.2/css/crosstalk.min.css" rel="stylesheet">
+  <script src="../../../../site_libs/crosstalk-1.2.2/js/crosstalk.min.js"></script>
+  <link href="../../../../site_libs/plotly-htmlwidgets-css-2.25.2/plotly-htmlwidgets.css" rel="stylesheet">
+  <script src="../../../../site_libs/plotly-main-2.25.2/plotly-latest.min.js"></script>
+  <link href="../../../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+  <script src="../../../../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+<meta property="og:title" content="Prophet – Time Series Forecasting">
+<meta property="og:site_name" content="Time Series Forecasting">
+<meta name="twitter:title" content="Prophet – Time Series Forecasting">
+<meta name="twitter:creator" content="@PabsBenavides">
+<meta name="twitter:card" content="summary">
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Prophet</h1>
+
+<div class="quarto-title-authors">
+</div>
+
+</section>
+<section>
+<section id="where-we-are" class="title-slide slide level1 center">
+<h1>Where We Are</h1>
+
+</section>
+<section id="section" class="slide level2">
+<h2></h2>
+<p>Look at how far our model has come since Module 1:</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Module</th>
+<th style="text-align: left;">What we added</th>
+<th style="text-align: left;">Model</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">Decomposition + benchmark</td>
+<td style="text-align: left;">STL + Drift + SNAIVE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">Smarter trend-cycle</td>
+<td style="text-align: left;">STL + ETS / ARIMA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3.1–2</td>
+<td style="text-align: left;">External context</td>
+<td style="text-align: left;">TSLM, dynamic regression</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">3.3</td>
+<td style="text-align: left;">Harmonic regression</td>
+<td style="text-align: left;">ARIMA + Fourier terms</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3.4</td>
+<td style="text-align: left;">Automated &amp; interpretable</td>
+<td style="text-align: left;">Prophet</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="fragment">
+<p>Every previous model required us to make choices manually: how many AR terms? Which regressors? Where do the knots go?</p>
+</div>
+<div class="fragment">
+<div class="callout callout-note callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>The knot problem we left open</strong></p>
+</div>
+<div class="callout-content">
+<p>In <a href="../../../../docs/modules/module_3/02_regression/regression.html">Linear Regression</a>, we saw that piecewise TSLM is sensitive to <em>where</em> we place the knots — different choices produce dramatically different forecasts, even with similar in-sample fit. Prophet solves this automatically.</p>
+</div>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="what-is-prophet" class="title-slide slide level1 center">
+<h1>What Is Prophet?</h1>
+
+</section>
+<section id="section-1" class="slide level2">
+<h2></h2>
+<p><strong>Prophet</strong> is a forecasting procedure developed by Meta (Facebook) and released as open source in 2017. It was designed for business time series — daily, weekly, and yearly data with strong seasonal effects, holidays, and shifting trends.</p>
+<div class="fragment">
+<blockquote>
+<p><em>“Prophet is a procedure for forecasting time series data based on an additive model where non-linear trends are fit with yearly, weekly, and daily seasonality, plus holiday effects. It works best with time series that have strong seasonal effects and several seasons of historical data.”</em></p>
+<p>— <a href="https://facebook.github.io/prophet/">facebook.github.io/prophet</a></p>
+</blockquote>
+</div>
+</section>
+<section id="section-2" class="slide level2">
+<h2></h2>
+<p>At its core, Prophet fits a <strong>decomposition model</strong>:</p>
+<p><span class="math display">y(t) = g(t) + s(t) + h(t) + \varepsilon_t</span></p>
+<ul>
+<li class="fragment"><span class="math inline">g(t)</span> — <strong>trend</strong>: piecewise linear or logistic growth, with changepoints detected automatically.</li>
+<li class="fragment"><span class="math inline">s(t)</span> — <strong>seasonality</strong>: Fourier series approximating yearly, weekly, or daily patterns.</li>
+<li class="fragment"><span class="math inline">h(t)</span> — <strong>holidays / special events</strong>: user-supplied dummy variables with windowed effects.</li>
+<li class="fragment"><span class="math inline">\varepsilon_t</span> — <strong>noise</strong>: assumed i.i.d. normal.</li>
+</ul>
+<div class="fragment">
+<div class="callout callout-important callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Sound familiar?</strong></p>
+</div>
+<div class="callout-content">
+<p>This is exactly what we’ve been building all semester — trend + seasonality + external effects. Prophet just automates the specification and fits it in a Bayesian framework using Stan.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="section-3" class="slide level2 scrollable">
+<h2></h2>
+<p>The key innovation over piecewise TSLM is <strong>automatic changepoint detection</strong>. Prophet:</p>
+<ol type="1">
+<li class="fragment">Places a large number of <em>potential</em> changepoints uniformly in the first <code>changepoint_range</code> proportion of the data (default: 80%).</li>
+<li class="fragment">Uses a sparse prior (Laplace) to shrink most changepoint magnitudes to zero — only genuine structural breaks survive.</li>
+<li class="fragment">The user can tune <code>n_changepoints</code> (default 25) and <code>changepoint_prior_scale</code> (flexibility of trend changes).</li>
+</ol>
+<div class="fragment">
+<p>No more guessing where the knots go.</p>
+</div>
+</section>
+<section id="section-4" class="slide level2">
+<h2></h2>
+<div class="callout callout-warning callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Prophet is not always better than ARIMA</strong></p>
+</div>
+<div class="callout-content">
+<p>Prophet was designed for <em>at-scale</em>, analyst-friendly forecasting. On many classical monthly or quarterly economic series, a well-specified ARIMA or ETS will outperform it. Always compare on a held-out test set.</p>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="setup-fable.prophet" class="title-slide slide level1 center">
+<h1>Setup: <code>fable.prophet</code></h1>
+
+</section>
+<section id="section-5" class="slide level2">
+<h2></h2>
+<p>Prophet is available in R through two packages:</p>
+<ul>
+<li class="fragment"><code>prophet</code> — the original package. Works standalone, does not integrate with <code>fable</code>.</li>
+<li class="fragment"><code>fable.prophet</code> — a <code>fable</code>-compatible wrapper by Mitchell O’Hara-Wild. Lets us use Prophet inside <code>model()</code>, <code>forecast()</code>, <code>accuracy()</code>, and all the tools we already know.</li>
+</ul>
+<div class="fragment">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-14"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-14" data-target-annotation="1">1</button><span id="annotated-cell-14-1" class="code-annotation-target"><a href="#annotated-cell-14-1"></a><span class="fu">install.packages</span>(<span class="st">"fable.prophet"</span>)</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-14" data-target-annotation="2">2</button><span id="annotated-cell-14-2" class="code-annotation-target"><a href="#annotated-cell-14-2"></a><span class="fu">library</span>(fable.prophet)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-14" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-14" data-code-lines="1" data-code-annotation="1"><code>fable.prophet</code> is now available on CRAN.</span>
+</dd>
+<dt data-target-cell="annotated-cell-14" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-14" data-code-lines="2" data-code-annotation="2">Load it alongside <code>fpp3</code> — the <code>prophet()</code> function is then available inside <code>model()</code>.</span>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="callout callout-note callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Dependency: Stan</strong></p>
+</div>
+<div class="callout-content">
+<p><code>fable.prophet</code> depends on <code>rstan</code> and <code>prophet</code>. On first install, R will also install Stan and its dependencies. This can take a few minutes — plan accordingly before class.</p>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="model-specification" class="title-slide slide level1 center">
+<h1>Model Specification</h1>
+
+</section>
+<section id="section-6" class="slide level2">
+<h2></h2>
+<p>Inside <code>model()</code>, Prophet is specified with the <code>prophet()</code> function. Like <code>ARIMA()</code> and <code>ETS()</code>, it can be fully automatic or manually specified.</p>
+<div class="fragment">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="co"># Automatic — Prophet chooses everything</span></span>
+<span id="cb1-2"><a></a><span class="fu">prophet</span>(y)</span>
+<span id="cb1-3"><a></a></span>
+<span id="cb1-4"><a></a><span class="co"># Manual — explicit components</span></span>
+<span id="cb1-5"><a></a><span class="fu">prophet</span>(y <span class="sc">~</span> <span class="fu">growth</span>(<span class="st">"linear"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"year"</span>, <span class="at">type =</span> <span class="st">"multiplicative"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</section>
+<section id="section-7" class="slide level2">
+<h2></h2>
+<p>The <code>growth()</code> term specifies the trend model:</p>
+<ul>
+<li class="fragment"><code>growth("linear")</code> — piecewise linear trend. Best for series that grow or decline without a natural ceiling.</li>
+<li class="fragment"><code>growth("logistic")</code> — logistic growth (S-curve). Requires a <code>capacity</code> column in the data specifying the theoretical maximum.</li>
+</ul>
+<div class="fragment">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-16"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-16-1"><a href="#annotated-cell-16-1"></a><span class="fu">prophet</span>(y <span class="sc">~</span> <span class="fu">growth</span>(<span class="st">"linear"</span>,</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-16" data-target-annotation="1">1</button><span id="annotated-cell-16-2" class="code-annotation-target"><a href="#annotated-cell-16-2"></a>                   <span class="at">n_changepoints    =</span> <span class="dv">25</span>,</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-16" data-target-annotation="2">2</button><span id="annotated-cell-16-3" class="code-annotation-target"><a href="#annotated-cell-16-3"></a>                   <span class="at">changepoint_range =</span> <span class="fl">0.8</span>,</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-16" data-target-annotation="3">3</button><span id="annotated-cell-16-4" class="code-annotation-target"><a href="#annotated-cell-16-4"></a>                   <span class="at">changepoint_prior_scale =</span> <span class="fl">0.05</span>))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-16" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-16" data-code-lines="2" data-code-annotation="1">Number of potential changepoints to consider (default: 25).</span>
+</dd>
+<dt data-target-cell="annotated-cell-16" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-16" data-code-lines="3" data-code-annotation="2">Proportion of history where changepoints can occur (default: 0.8).</span>
+</dd>
+<dt data-target-cell="annotated-cell-16" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-16" data-code-lines="4" data-code-annotation="3">Flexibility of trend changes — larger = more flexible, smaller = more rigid (default: 0.05).</span>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+</section>
+<section id="section-8" class="slide level2">
+<h2></h2>
+<p>The <code>season()</code> term adds a Fourier-approximated seasonal pattern:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1"></a><span class="fu">prophet</span>(y <span class="sc">~</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1">1</button><span id="annotated-cell-1-2" class="code-annotation-target"><a href="#annotated-cell-1-2"></a>  <span class="fu">season</span>(<span class="st">"year"</span>,  <span class="at">period =</span> <span class="fl">365.25</span>, <span class="at">order =</span> <span class="dv">10</span>, <span class="at">type =</span> <span class="st">"additive"</span>) <span class="sc">+</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="2">2</button><span id="annotated-cell-1-3" class="code-annotation-target"><a href="#annotated-cell-1-3"></a>  <span class="fu">season</span>(<span class="st">"week"</span>,  <span class="at">period =</span> <span class="dv">7</span>,      <span class="at">order =</span> <span class="dv">3</span>,  <span class="at">type =</span> <span class="st">"multiplicative"</span>) <span class="sc">+</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="3">3</button><span id="annotated-cell-1-4" class="code-annotation-target"><a href="#annotated-cell-1-4"></a>  <span class="fu">season</span>(<span class="st">"day"</span>,   <span class="at">period =</span> <span class="dv">1</span>,      <span class="at">order =</span> <span class="dv">5</span>,  <span class="at">type =</span> <span class="st">"additive"</span>))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-1" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-1" data-code-lines="2" data-code-annotation="1">Annual seasonality — 10 Fourier pairs; additive (level of seasonality does not change with the series level).</span>
+</dd>
+<dt data-target-cell="annotated-cell-1" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-1" data-code-lines="3" data-code-annotation="2">Weekly seasonality — 3 Fourier pairs; multiplicative (seasonality scales with the series level).</span>
+</dd>
+<dt data-target-cell="annotated-cell-1" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-1" data-code-lines="4" data-code-annotation="3">Daily seasonality — only relevant for sub-daily data.</span>
+</dd>
+</dl>
+</div>
+</div>
+<div class="callout callout-tip callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong><code>order</code> = Fourier K</strong></p>
+</div>
+<div class="callout-content">
+<p>The <code>order</code> argument in <code>season()</code> is the same <span class="math inline">K</span> we used in harmonic regression (<code>fourier(K = ...)</code>). Higher <span class="math inline">K</span> → more flexible seasonal shape, but more parameters. Start with the default and adjust if residuals show seasonal structure.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="section-9" class="slide level2">
+<h2></h2>
+</section></section>
+<section>
+<section id="application-lax-passengers" class="title-slide slide level1 center">
+<h1>Application: LAX Passengers</h1>
+
+</section>
+<section id="section-10" class="slide level2">
+<h2></h2>
+<p>We’ll apply Prophet to monthly passenger counts at <strong>Los Angeles International Airport (LAX)</strong>, broken down by domestic and international flights — a dataset with a clear piecewise trend, multiplicative seasonality, and a major structural break (the 2001 and 2008 shocks).</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1"></a>lax_passengers <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(</span>
+<span id="annotated-cell-2-2"><a href="#annotated-cell-2-2"></a>  <span class="st">"https://raw.githubusercontent.com/mitchelloharawild/fable.prophet/master/data-raw/lax_passengers.csv"</span></span>
+<span id="annotated-cell-2-3"><a href="#annotated-cell-2-3"></a>)</span>
+<span id="annotated-cell-2-4"><a href="#annotated-cell-2-4"></a></span>
+<span id="annotated-cell-2-5"><a href="#annotated-cell-2-5"></a>lax_passengers <span class="ot">&lt;-</span> lax_passengers <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1">1</button><span id="annotated-cell-2-6" class="code-annotation-target"><a href="#annotated-cell-2-6"></a>  <span class="fu">mutate</span>(<span class="at">datetime =</span> lubridate<span class="sc">::</span><span class="fu">mdy_hms</span>(ReportPeriod)) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-2-7"><a href="#annotated-cell-2-7"></a>  <span class="fu">group_by</span>(</span>
+<span id="annotated-cell-2-8"><a href="#annotated-cell-2-8"></a>    <span class="at">month =</span> <span class="fu">yearmonth</span>(datetime),</span>
+<span id="annotated-cell-2-9"><a href="#annotated-cell-2-9"></a>    <span class="at">type  =</span> Domestic_International</span>
+<span id="annotated-cell-2-10"><a href="#annotated-cell-2-10"></a>  ) <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="2">2</button><span id="annotated-cell-2-11" class="code-annotation-target"><a href="#annotated-cell-2-11"></a>  <span class="fu">summarise</span>(<span class="at">passengers =</span> <span class="fu">sum</span>(Passenger_Count), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="3">3</button><span id="annotated-cell-2-12" class="code-annotation-target"><a href="#annotated-cell-2-12"></a>  <span class="fu">as_tsibble</span>(<span class="at">index =</span> month, <span class="at">key =</span> type)</span>
+<span id="annotated-cell-2-13"><a href="#annotated-cell-2-13"></a></span>
+<span id="annotated-cell-2-14"><a href="#annotated-cell-2-14"></a>lax_passengers</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-2" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="6" data-code-annotation="1">Parse the date-time string into a proper datetime object.</span>
+</dd>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="11" data-code-annotation="2">Sum all passenger categories within each month and travel type.</span>
+</dd>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="12" data-code-annotation="3">Convert to <code>tsibble</code> — <code>type</code> (Domestic / International) is the key variable.</span>
+</dd>
+</dl>
+</div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["month"],"name":[1],"type":["mth"],"align":["right"]},{"label":["type"],"name":[2],"type":["chr"],"align":["left"]},{"label":["passengers"],"name":[3],"type":["int"],"align":["right"]}],"data":[{"1":"2006 ene.","2":"Domestic","3":"3315937"},{"1":"2006 feb.","2":"Domestic","3":"3045963"},{"1":"2006 mar.","2":"Domestic","3":"3711057"},{"1":"2006 abr.","2":"Domestic","3":"3683040"},{"1":"2006 may.","2":"Domestic","3":"3743141"},{"1":"2006 jun.","2":"Domestic","3":"3994798"},{"1":"2006 jul.","2":"Domestic","3":"4236581"},{"1":"2006 ago.","2":"Domestic","3":"4128492"},{"1":"2006 sep.","2":"Domestic","3":"3386421"},{"1":"2006 oct.","2":"Domestic","3":"3598030"},{"1":"2006 nov.","2":"Domestic","3":"3598667"},{"1":"2006 dic.","2":"Domestic","3":"3687799"},{"1":"2007 ene.","2":"Domestic","3":"3405786"},{"1":"2007 feb.","2":"Domestic","3":"3132949"},{"1":"2007 mar.","2":"Domestic","3":"3831056"},{"1":"2007 abr.","2":"Domestic","3":"3770188"},{"1":"2007 may.","2":"Domestic","3":"3836418"},{"1":"2007 jun.","2":"Domestic","3":"4109298"},{"1":"2007 jul.","2":"Domestic","3":"4338862"},{"1":"2007 ago.","2":"Domestic","3":"4291709"},{"1":"2007 sep.","2":"Domestic","3":"3436534"},{"1":"2007 oct.","2":"Domestic","3":"3685955"},{"1":"2007 nov.","2":"Domestic","3":"3635609"},{"1":"2007 dic.","2":"Domestic","3":"3716251"},{"1":"2008 ene.","2":"Domestic","3":"3346971"},{"1":"2008 feb.","2":"Domestic","3":"3217623"},{"1":"2008 mar.","2":"Domestic","3":"3750590"},{"1":"2008 abr.","2":"Domestic","3":"3572612"},{"1":"2008 may.","2":"Domestic","3":"3807792"},{"1":"2008 jun.","2":"Domestic","3":"4034316"},{"1":"2008 jul.","2":"Domestic","3":"4186909"},{"1":"2008 ago.","2":"Domestic","3":"4122921"},{"1":"2008 sep.","2":"Domestic","3":"3192616"},{"1":"2008 oct.","2":"Domestic","3":"3408667"},{"1":"2008 nov.","2":"Domestic","3":"3114755"},{"1":"2008 dic.","2":"Domestic","3":"3381284"},{"1":"2009 ene.","2":"Domestic","3":"3014383"},{"1":"2009 feb.","2":"Domestic","3":"2761601"},{"1":"2009 mar.","2":"Domestic","3":"3377779"},{"1":"2009 abr.","2":"Domestic","3":"3412972"},{"1":"2009 may.","2":"Domestic","3":"3497204"},{"1":"2009 jun.","2":"Domestic","3":"3774227"},{"1":"2009 jul.","2":"Domestic","3":"4114999"},{"1":"2009 ago.","2":"Domestic","3":"3967986"},{"1":"2009 sep.","2":"Domestic","3":"3285664"},{"1":"2009 oct.","2":"Domestic","3":"3493306"},{"1":"2009 nov.","2":"Domestic","3":"3245576"},{"1":"2009 dic.","2":"Domestic","3":"3474216"},{"1":"2010 ene.","2":"Domestic","3":"3245075"},{"1":"2010 feb.","2":"Domestic","3":"2831926"},{"1":"2010 mar.","2":"Domestic","3":"3532959"},{"1":"2010 abr.","2":"Domestic","3":"3439845"},{"1":"2010 may.","2":"Domestic","3":"3626471"},{"1":"2010 jun.","2":"Domestic","3":"3887760"},{"1":"2010 jul.","2":"Domestic","3":"4143874"},{"1":"2010 ago.","2":"Domestic","3":"4101959"},{"1":"2010 sep.","2":"Domestic","3":"3432692"},{"1":"2010 oct.","2":"Domestic","3":"3682677"},{"1":"2010 nov.","2":"Domestic","3":"3483901"},{"1":"2010 dic.","2":"Domestic","3":"3725006"},{"1":"2011 ene.","2":"Domestic","3":"3311036"},{"1":"2011 feb.","2":"Domestic","3":"2989739"},{"1":"2011 mar.","2":"Domestic","3":"3634367"},{"1":"2011 abr.","2":"Domestic","3":"3681121"},{"1":"2011 may.","2":"Domestic","3":"4027351"},{"1":"2011 jun.","2":"Domestic","3":"4139190"},{"1":"2011 jul.","2":"Domestic","3":"4419758"},{"1":"2011 ago.","2":"Domestic","3":"4311627"},{"1":"2011 sep.","2":"Domestic","3":"3605849"},{"1":"2011 oct.","2":"Domestic","3":"3745491"},{"1":"2011 nov.","2":"Domestic","3":"3626855"},{"1":"2011 dic.","2":"Domestic","3":"3638344"},{"1":"2012 ene.","2":"Domestic","3":"3501096"},{"1":"2012 feb.","2":"Domestic","3":"3293171"},{"1":"2012 mar.","2":"Domestic","3":"3880636"},{"1":"2012 abr.","2":"Domestic","3":"3782508"},{"1":"2012 may.","2":"Domestic","3":"3971107"},{"1":"2012 jun.","2":"Domestic","3":"4181372"},{"1":"2012 jul.","2":"Domestic","3":"4505945"},{"1":"2012 ago.","2":"Domestic","3":"4452064"},{"1":"2012 sep.","2":"Domestic","3":"3634688"},{"1":"2012 oct.","2":"Domestic","3":"3802226"},{"1":"2012 nov.","2":"Domestic","3":"3666610"},{"1":"2012 dic.","2":"Domestic","3":"3863784"},{"1":"2013 ene.","2":"Domestic","3":"3631094"},{"1":"2013 feb.","2":"Domestic","3":"3301697"},{"1":"2013 mar.","2":"Domestic","3":"4136911"},{"1":"2013 abr.","2":"Domestic","3":"3927687"},{"1":"2013 may.","2":"Domestic","3":"4210814"},{"1":"2013 jun.","2":"Domestic","3":"4507505"},{"1":"2013 jul.","2":"Domestic","3":"4689742"},{"1":"2013 ago.","2":"Domestic","3":"4571785"},{"1":"2013 sep.","2":"Domestic","3":"3815427"},{"1":"2013 oct.","2":"Domestic","3":"4046692"},{"1":"2013 nov.","2":"Domestic","3":"3717072"},{"1":"2013 dic.","2":"Domestic","3":"4259092"},{"1":"2014 ene.","2":"Domestic","3":"3877670"},{"1":"2014 feb.","2":"Domestic","3":"3483695"},{"1":"2014 mar.","2":"Domestic","3":"4278427"},{"1":"2014 abr.","2":"Domestic","3":"4230441"},{"1":"2014 may.","2":"Domestic","3":"4426610"},{"1":"2014 jun.","2":"Domestic","3":"4765850"},{"1":"2014 jul.","2":"Domestic","3":"4996506"},{"1":"2014 ago.","2":"Domestic","3":"4835813"},{"1":"2014 sep.","2":"Domestic","3":"4035823"},{"1":"2014 oct.","2":"Domestic","3":"4321305"},{"1":"2014 nov.","2":"Domestic","3":"3969051"},{"1":"2014 dic.","2":"Domestic","3":"4339011"},{"1":"2015 ene.","2":"Domestic","3":"3855840"},{"1":"2015 feb.","2":"Domestic","3":"3591899"},{"1":"2015 mar.","2":"Domestic","3":"4438362"},{"1":"2015 abr.","2":"Domestic","3":"4345205"},{"1":"2015 may.","2":"Domestic","3":"4622356"},{"1":"2015 jun.","2":"Domestic","3":"4903244"},{"1":"2015 jul.","2":"Domestic","3":"5179541"},{"1":"2015 ago.","2":"Domestic","3":"5024078"},{"1":"2015 sep.","2":"Domestic","3":"4283849"},{"1":"2015 oct.","2":"Domestic","3":"4630920"},{"1":"2015 nov.","2":"Domestic","3":"4450250"},{"1":"2015 dic.","2":"Domestic","3":"4655803"},{"1":"2016 ene.","2":"Domestic","3":"4296107"},{"1":"2016 feb.","2":"Domestic","3":"3960323"},{"1":"2016 mar.","2":"Domestic","3":"4737864"},{"1":"2016 abr.","2":"Domestic","3":"4583897"},{"1":"2016 may.","2":"Domestic","3":"4919302"},{"1":"2016 jun.","2":"Domestic","3":"5419692"},{"1":"2016 jul.","2":"Domestic","3":"5583966"},{"1":"2016 ago.","2":"Domestic","3":"5359178"},{"1":"2016 sep.","2":"Domestic","3":"4684869"},{"1":"2016 oct.","2":"Domestic","3":"4936605"},{"1":"2016 nov.","2":"Domestic","3":"4735585"},{"1":"2016 dic.","2":"Domestic","3":"4865684"},{"1":"2017 ene.","2":"Domestic","3":"4449434"},{"1":"2017 feb.","2":"Domestic","3":"3999177"},{"1":"2017 mar.","2":"Domestic","3":"4907598"},{"1":"2017 abr.","2":"Domestic","3":"4870135"},{"1":"2017 may.","2":"Domestic","3":"5085333"},{"1":"2017 jun.","2":"Domestic","3":"5456452"},{"1":"2017 jul.","2":"Domestic","3":"5662491"},{"1":"2017 ago.","2":"Domestic","3":"5509693"},{"1":"2017 sep.","2":"Domestic","3":"4739872"},{"1":"2017 oct.","2":"Domestic","3":"5160304"},{"1":"2017 nov.","2":"Domestic","3":"4891079"},{"1":"2017 dic.","2":"Domestic","3":"4997001"},{"1":"2018 ene.","2":"Domestic","3":"4616186"},{"1":"2018 feb.","2":"Domestic","3":"4282782"},{"1":"2018 mar.","2":"Domestic","3":"5134354"},{"1":"2018 abr.","2":"Domestic","3":"5073331"},{"1":"2018 may.","2":"Domestic","3":"5351468"},{"1":"2018 jun.","2":"Domestic","3":"5615201"},{"1":"2018 jul.","2":"Domestic","3":"5847496"},{"1":"2018 ago.","2":"Domestic","3":"5647063"},{"1":"2018 sep.","2":"Domestic","3":"4774099"},{"1":"2018 oct.","2":"Domestic","3":"5132670"},{"1":"2018 nov.","2":"Domestic","3":"4983499"},{"1":"2018 dic.","2":"Domestic","3":"5119482"},{"1":"2019 ene.","2":"Domestic","3":"4685933"},{"1":"2019 feb.","2":"Domestic","3":"4334938"},{"1":"2019 mar.","2":"Domestic","3":"5322333"},{"1":"2006 ene.","2":"International","3":"1440222"},{"1":"2006 feb.","2":"International","3":"1204192"},{"1":"2006 mar.","2":"International","3":"1379237"},{"1":"2006 abr.","2":"International","3":"1404834"},{"1":"2006 may.","2":"International","3":"1434267"},{"1":"2006 jun.","2":"International","3":"1515225"},{"1":"2006 jul.","2":"International","3":"1683142"},{"1":"2006 ago.","2":"International","3":"1616751"},{"1":"2006 sep.","2":"International","3":"1321562"},{"1":"2006 oct.","2":"International","3":"1300391"},{"1":"2006 nov.","2":"International","3":"1226392"},{"1":"2006 dic.","2":"International","3":"1384533"},{"1":"2007 ene.","2":"International","3":"1400030"},{"1":"2007 feb.","2":"International","3":"1172344"},{"1":"2007 mar.","2":"International","3":"1410758"},{"1":"2007 abr.","2":"International","3":"1402926"},{"1":"2007 may.","2":"International","3":"1420511"},{"1":"2007 jun.","2":"International","3":"1517165"},{"1":"2007 jul.","2":"International","3":"1713987"},{"1":"2007 ago.","2":"International","3":"1647839"},{"1":"2007 sep.","2":"International","3":"1369408"},{"1":"2007 oct.","2":"International","3":"1384087"},{"1":"2007 nov.","2":"International","3":"1337446"},{"1":"2007 dic.","2":"International","3":"1471467"},{"1":"2008 ene.","2":"International","3":"1463844"},{"1":"2008 feb.","2":"International","3":"1233787"},{"1":"2008 mar.","2":"International","3":"1483089"},{"1":"2008 abr.","2":"International","3":"1377223"},{"1":"2008 may.","2":"International","3":"1440195"},{"1":"2008 jun.","2":"International","3":"1505557"},{"1":"2008 jul.","2":"International","3":"1604659"},{"1":"2008 ago.","2":"International","3":"1592364"},{"1":"2008 sep.","2":"International","3":"1272428"},{"1":"2008 oct.","2":"International","3":"1272631"},{"1":"2008 nov.","2":"International","3":"1161613"},{"1":"2008 dic.","2":"International","3":"1276304"},{"1":"2009 ene.","2":"International","3":"1254006"},{"1":"2009 feb.","2":"International","3":"1030099"},{"1":"2009 mar.","2":"International","3":"1194316"},{"1":"2009 abr.","2":"International","3":"1228496"},{"1":"2009 may.","2":"International","3":"1148652"},{"1":"2009 jun.","2":"International","3":"1266264"},{"1":"2009 jul.","2":"International","3":"1489411"},{"1":"2009 ago.","2":"International","3":"1469456"},{"1":"2009 sep.","2":"International","3":"1225195"},{"1":"2009 oct.","2":"International","3":"1268326"},{"1":"2009 nov.","2":"International","3":"1174133"},{"1":"2009 dic.","2":"International","3":"1352576"},{"1":"2010 ene.","2":"International","3":"1364645"},{"1":"2010 feb.","2":"International","3":"1128393"},{"1":"2010 mar.","2":"International","3":"1279067"},{"1":"2010 abr.","2":"International","3":"1247101"},{"1":"2010 may.","2":"International","3":"1330125"},{"1":"2010 jun.","2":"International","3":"1423634"},{"1":"2010 jul.","2":"International","3":"1548987"},{"1":"2010 ago.","2":"International","3":"1515887"},{"1":"2010 sep.","2":"International","3":"1262703"},{"1":"2010 oct.","2":"International","3":"1305408"},{"1":"2010 nov.","2":"International","3":"1205181"},{"1":"2010 dic.","2":"International","3":"1324851"},{"1":"2011 ene.","2":"International","3":"1352145"},{"1":"2011 feb.","2":"International","3":"1131797"},{"1":"2011 mar.","2":"International","3":"1317432"},{"1":"2011 abr.","2":"International","3":"1347095"},{"1":"2011 may.","2":"International","3":"1449713"},{"1":"2011 jun.","2":"International","3":"1492526"},{"1":"2011 jul.","2":"International","3":"1651584"},{"1":"2011 ago.","2":"International","3":"1606897"},{"1":"2011 sep.","2":"International","3":"1374471"},{"1":"2011 oct.","2":"International","3":"1379113"},{"1":"2011 nov.","2":"International","3":"1238251"},{"1":"2011 dic.","2":"International","3":"1390300"},{"1":"2012 ene.","2":"International","3":"1412393"},{"1":"2012 feb.","2":"International","3":"1163341"},{"1":"2012 mar.","2":"International","3":"1371921"},{"1":"2012 abr.","2":"International","3":"1378620"},{"1":"2012 may.","2":"International","3":"1441839"},{"1":"2012 jun.","2":"International","3":"1558532"},{"1":"2012 jul.","2":"International","3":"1684381"},{"1":"2012 ago.","2":"International","3":"1641281"},{"1":"2012 sep.","2":"International","3":"1419569"},{"1":"2012 oct.","2":"International","3":"1389245"},{"1":"2012 nov.","2":"International","3":"1277063"},{"1":"2012 dic.","2":"International","3":"1414729"},{"1":"2013 ene.","2":"International","3":"1419642"},{"1":"2013 feb.","2":"International","3":"1180594"},{"1":"2013 mar.","2":"International","3":"1408612"},{"1":"2013 abr.","2":"International","3":"1382810"},{"1":"2013 may.","2":"International","3":"1503142"},{"1":"2013 jun.","2":"International","3":"1607009"},{"1":"2013 jul.","2":"International","3":"1779236"},{"1":"2013 ago.","2":"International","3":"1758383"},{"1":"2013 sep.","2":"International","3":"1492826"},{"1":"2013 oct.","2":"International","3":"1469113"},{"1":"2013 nov.","2":"International","3":"1339933"},{"1":"2013 dic.","2":"International","3":"1510839"},{"1":"2014 ene.","2":"International","3":"1541947"},{"1":"2014 feb.","2":"International","3":"1282289"},{"1":"2014 mar.","2":"International","3":"1506667"},{"1":"2014 abr.","2":"International","3":"1529696"},{"1":"2014 may.","2":"International","3":"1654399"},{"1":"2014 jun.","2":"International","3":"1758197"},{"1":"2014 jul.","2":"International","3":"1875571"},{"1":"2014 ago.","2":"International","3":"1881827"},{"1":"2014 sep.","2":"International","3":"1537637"},{"1":"2014 oct.","2":"International","3":"1544581"},{"1":"2014 nov.","2":"International","3":"1411394"},{"1":"2014 dic.","2":"International","3":"1582545"},{"1":"2015 ene.","2":"International","3":"1583354"},{"1":"2015 feb.","2":"International","3":"1358696"},{"1":"2015 mar.","2":"International","3":"1588235"},{"1":"2015 abr.","2":"International","3":"1593110"},{"1":"2015 may.","2":"International","3":"1734621"},{"1":"2015 jun.","2":"International","3":"1887034"},{"1":"2015 jul.","2":"International","3":"2095978"},{"1":"2015 ago.","2":"International","3":"2085096"},{"1":"2015 sep.","2":"International","3":"1743221"},{"1":"2015 oct.","2":"International","3":"1744132"},{"1":"2015 nov.","2":"International","3":"1566739"},{"1":"2015 dic.","2":"International","3":"1739163"},{"1":"2016 ene.","2":"International","3":"1772602"},{"1":"2016 feb.","2":"International","3":"1506520"},{"1":"2016 mar.","2":"International","3":"1738410"},{"1":"2016 abr.","2":"International","3":"1721868"},{"1":"2016 may.","2":"International","3":"1864699"},{"1":"2016 jun.","2":"International","3":"2069986"},{"1":"2016 jul.","2":"International","3":"2305429"},{"1":"2016 ago.","2":"International","3":"2235832"},{"1":"2016 sep.","2":"International","3":"1918247"},{"1":"2016 oct.","2":"International","3":"1928633"},{"1":"2016 nov.","2":"International","3":"1760533"},{"1":"2016 dic.","2":"International","3":"2006577"},{"1":"2017 ene.","2":"International","3":"1995153"},{"1":"2017 feb.","2":"International","3":"1605067"},{"1":"2017 mar.","2":"International","3":"1871802"},{"1":"2017 abr.","2":"International","3":"2004102"},{"1":"2017 may.","2":"International","3":"2082118"},{"1":"2017 jun.","2":"International","3":"2270430"},{"1":"2017 jul.","2":"International","3":"2513538"},{"1":"2017 ago.","2":"International","3":"2420389"},{"1":"2017 sep.","2":"International","3":"2045217"},{"1":"2017 oct.","2":"International","3":"2026289"},{"1":"2017 nov.","2":"International","3":"1894894"},{"1":"2017 dic.","2":"International","3":"2100932"},{"1":"2018 ene.","2":"International","3":"2070921"},{"1":"2018 feb.","2":"International","3":"1760497"},{"1":"2018 mar.","2":"International","3":"2095733"},{"1":"2018 abr.","2":"International","3":"2087037"},{"1":"2018 may.","2":"International","3":"2193409"},{"1":"2018 jun.","2":"International","3":"2397268"},{"1":"2018 jul.","2":"International","3":"2582934"},{"1":"2018 ago.","2":"International","3":"2490347"},{"1":"2018 sep.","2":"International","3":"2108425"},{"1":"2018 oct.","2":"International","3":"2124616"},{"1":"2018 nov.","2":"International","3":"1959826"},{"1":"2018 dic.","2":"International","3":"2085713"},{"1":"2019 ene.","2":"International","3":"2080077"},{"1":"2019 feb.","2":"International","3":"1731463"},{"1":"2019 mar.","2":"International","3":"2046465"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section>
+<section id="section-11" class="slide level2">
+<h2></h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a>p <span class="ot">&lt;-</span> lax_passengers <span class="sc">|&gt;</span></span>
+<span id="cb2-2"><a></a>  <span class="fu">autoplot</span>(passengers) <span class="sc">+</span></span>
+<span id="cb2-3"><a></a>  <span class="fu">labs</span>(<span class="at">title   =</span> <span class="st">"Monthly passengers at LAX"</span>,</span>
+<span id="cb2-4"><a></a>       <span class="at">y        =</span> <span class="st">"Passengers"</span>,</span>
+<span id="cb2-5"><a></a>       <span class="at">x        =</span> <span class="cn">NULL</span>,</span>
+<span id="cb2-6"><a></a>       <span class="at">color    =</span> <span class="st">"Type"</span>) <span class="sc">+</span></span>
+<span id="cb2-7"><a></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span>
+<span id="cb2-8"><a></a></span>
+<span id="cb2-9"><a></a><span class="fu">ggplotly</span>(p, <span class="at">dynamicTicks =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="plotly html-widget html-fill-item" id="htmlwidget-b12f442c1c19c18b5bb2" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-b12f442c1c19c18b5bb2">{"x":{"data":[{"x":["2006-01-01","2006-02-01","2006-03-01","2006-04-01","2006-05-01","2006-06-01","2006-07-01","2006-08-01","2006-09-01","2006-10-01","2006-11-01","2006-12-01","2007-01-01","2007-02-01","2007-03-01","2007-04-01","2007-05-01","2007-06-01","2007-07-01","2007-08-01","2007-09-01","2007-10-01","2007-11-01","2007-12-01","2008-01-01","2008-02-01","2008-03-01","2008-04-01","2008-05-01","2008-06-01","2008-07-01","2008-08-01","2008-09-01","2008-10-01","2008-11-01","2008-12-01","2009-01-01","2009-02-01","2009-03-01","2009-04-01","2009-05-01","2009-06-01","2009-07-01","2009-08-01","2009-09-01","2009-10-01","2009-11-01","2009-12-01","2010-01-01","2010-02-01","2010-03-01","2010-04-01","2010-05-01","2010-06-01","2010-07-01","2010-08-01","2010-09-01","2010-10-01","2010-11-01","2010-12-01","2011-01-01","2011-02-01","2011-03-01","2011-04-01","2011-05-01","2011-06-01","2011-07-01","2011-08-01","2011-09-01","2011-10-01","2011-11-01","2011-12-01","2012-01-01","2012-02-01","2012-03-01","2012-04-01","2012-05-01","2012-06-01","2012-07-01","2012-08-01","2012-09-01","2012-10-01","2012-11-01","2012-12-01","2013-01-01","2013-02-01","2013-03-01","2013-04-01","2013-05-01","2013-06-01","2013-07-01","2013-08-01","2013-09-01","2013-10-01","2013-11-01","2013-12-01","2014-01-01","2014-02-01","2014-03-01","2014-04-01","2014-05-01","2014-06-01","2014-07-01","2014-08-01","2014-09-01","2014-10-01","2014-11-01","2014-12-01","2015-01-01","2015-02-01","2015-03-01","2015-04-01","2015-05-01","2015-06-01","2015-07-01","2015-08-01","2015-09-01","2015-10-01","2015-11-01","2015-12-01","2016-01-01","2016-02-01","2016-03-01","2016-04-01","2016-05-01","2016-06-01","2016-07-01","2016-08-01","2016-09-01","2016-10-01","2016-11-01","2016-12-01","2017-01-01","2017-02-01","2017-03-01","2017-04-01","2017-05-01","2017-06-01","2017-07-01","2017-08-01","2017-09-01","2017-10-01","2017-11-01","2017-12-01","2018-01-01","2018-02-01","2018-03-01","2018-04-01","2018-05-01","2018-06-01","2018-07-01","2018-08-01","2018-09-01","2018-10-01","2018-11-01","2018-12-01","2019-01-01","2019-02-01","2019-03-01"],"y":[3315937,3045963,3711057,3683040,3743141,3994798,4236581,4128492,3386421,3598030,3598667,3687799,3405786,3132949,3831056,3770188,3836418,4109298,4338862,4291709,3436534,3685955,3635609,3716251,3346971,3217623,3750590,3572612,3807792,4034316,4186909,4122921,3192616,3408667,3114755,3381284,3014383,2761601,3377779,3412972,3497204,3774227,4114999,3967986,3285664,3493306,3245576,3474216,3245075,2831926,3532959,3439845,3626471,3887760,4143874,4101959,3432692,3682677,3483901,3725006,3311036,2989739,3634367,3681121,4027351,4139190,4419758,4311627,3605849,3745491,3626855,3638344,3501096,3293171,3880636,3782508,3971107,4181372,4505945,4452064,3634688,3802226,3666610,3863784,3631094,3301697,4136911,3927687,4210814,4507505,4689742,4571785,3815427,4046692,3717072,4259092,3877670,3483695,4278427,4230441,4426610,4765850,4996506,4835813,4035823,4321305,3969051,4339011,3855840,3591899,4438362,4345205,4622356,4903244,5179541,5024078,4283849,4630920,4450250,4655803,4296107,3960323,4737864,4583897,4919302,5419692,5583966,5359178,4684869,4936605,4735585,4865684,4449434,3999177,4907598,4870135,5085333,5456452,5662491,5509693,4739872,5160304,4891079,4997001,4616186,4282782,5134354,5073331,5351468,5615201,5847496,5647063,4774099,5132670,4983499,5119482,4685933,4334938,5322333],"text":["month: 2006 ene.<br />passengers: 3315937<br />interaction(type, sep = \"/\"): Domestic","month: 2006 feb.<br />passengers: 3045963<br />interaction(type, sep = \"/\"): Domestic","month: 2006 mar.<br />passengers: 3711057<br />interaction(type, sep = \"/\"): Domestic","month: 2006 abr.<br />passengers: 3683040<br />interaction(type, sep = \"/\"): Domestic","month: 2006 may.<br />passengers: 3743141<br />interaction(type, sep = \"/\"): Domestic","month: 2006 jun.<br />passengers: 3994798<br />interaction(type, sep = \"/\"): Domestic","month: 2006 jul.<br />passengers: 4236581<br />interaction(type, sep = \"/\"): Domestic","month: 2006 ago.<br />passengers: 4128492<br />interaction(type, sep = \"/\"): Domestic","month: 2006 sep.<br />passengers: 3386421<br />interaction(type, sep = \"/\"): Domestic","month: 2006 oct.<br />passengers: 3598030<br />interaction(type, sep = \"/\"): Domestic","month: 2006 nov.<br />passengers: 3598667<br />interaction(type, sep = \"/\"): Domestic","month: 2006 dic.<br />passengers: 3687799<br />interaction(type, sep = \"/\"): Domestic","month: 2007 ene.<br />passengers: 3405786<br />interaction(type, sep = \"/\"): Domestic","month: 2007 feb.<br />passengers: 3132949<br />interaction(type, sep = \"/\"): Domestic","month: 2007 mar.<br />passengers: 3831056<br />interaction(type, sep = \"/\"): Domestic","month: 2007 abr.<br />passengers: 3770188<br />interaction(type, sep = \"/\"): Domestic","month: 2007 may.<br />passengers: 3836418<br />interaction(type, sep = \"/\"): Domestic","month: 2007 jun.<br />passengers: 4109298<br />interaction(type, sep = \"/\"): Domestic","month: 2007 jul.<br />passengers: 4338862<br />interaction(type, sep = \"/\"): Domestic","month: 2007 ago.<br />passengers: 4291709<br />interaction(type, sep = \"/\"): Domestic","month: 2007 sep.<br />passengers: 3436534<br />interaction(type, sep = \"/\"): Domestic","month: 2007 oct.<br />passengers: 3685955<br />interaction(type, sep = \"/\"): Domestic","month: 2007 nov.<br />passengers: 3635609<br />interaction(type, sep = \"/\"): Domestic","month: 2007 dic.<br />passengers: 3716251<br />interaction(type, sep = \"/\"): Domestic","month: 2008 ene.<br />passengers: 3346971<br />interaction(type, sep = \"/\"): Domestic","month: 2008 feb.<br />passengers: 3217623<br />interaction(type, sep = \"/\"): Domestic","month: 2008 mar.<br />passengers: 3750590<br />interaction(type, sep = \"/\"): Domestic","month: 2008 abr.<br />passengers: 3572612<br />interaction(type, sep = \"/\"): Domestic","month: 2008 may.<br />passengers: 3807792<br />interaction(type, sep = \"/\"): Domestic","month: 2008 jun.<br />passengers: 4034316<br />interaction(type, sep = \"/\"): Domestic","month: 2008 jul.<br />passengers: 4186909<br />interaction(type, sep = \"/\"): Domestic","month: 2008 ago.<br />passengers: 4122921<br />interaction(type, sep = \"/\"): Domestic","month: 2008 sep.<br />passengers: 3192616<br />interaction(type, sep = \"/\"): Domestic","month: 2008 oct.<br />passengers: 3408667<br />interaction(type, sep = \"/\"): Domestic","month: 2008 nov.<br />passengers: 3114755<br />interaction(type, sep = \"/\"): Domestic","month: 2008 dic.<br />passengers: 3381284<br />interaction(type, sep = \"/\"): Domestic","month: 2009 ene.<br />passengers: 3014383<br />interaction(type, sep = \"/\"): Domestic","month: 2009 feb.<br />passengers: 2761601<br />interaction(type, sep = \"/\"): Domestic","month: 2009 mar.<br />passengers: 3377779<br />interaction(type, sep = \"/\"): Domestic","month: 2009 abr.<br />passengers: 3412972<br />interaction(type, sep = \"/\"): Domestic","month: 2009 may.<br />passengers: 3497204<br />interaction(type, sep = \"/\"): Domestic","month: 2009 jun.<br />passengers: 3774227<br />interaction(type, sep = \"/\"): Domestic","month: 2009 jul.<br />passengers: 4114999<br />interaction(type, sep = \"/\"): Domestic","month: 2009 ago.<br />passengers: 3967986<br />interaction(type, sep = \"/\"): Domestic","month: 2009 sep.<br />passengers: 3285664<br />interaction(type, sep = \"/\"): Domestic","month: 2009 oct.<br />passengers: 3493306<br />interaction(type, sep = \"/\"): Domestic","month: 2009 nov.<br />passengers: 3245576<br />interaction(type, sep = \"/\"): Domestic","month: 2009 dic.<br />passengers: 3474216<br />interaction(type, sep = \"/\"): Domestic","month: 2010 ene.<br />passengers: 3245075<br />interaction(type, sep = \"/\"): Domestic","month: 2010 feb.<br />passengers: 2831926<br />interaction(type, sep = \"/\"): Domestic","month: 2010 mar.<br />passengers: 3532959<br />interaction(type, sep = \"/\"): Domestic","month: 2010 abr.<br />passengers: 3439845<br />interaction(type, sep = \"/\"): Domestic","month: 2010 may.<br />passengers: 3626471<br />interaction(type, sep = \"/\"): Domestic","month: 2010 jun.<br />passengers: 3887760<br />interaction(type, sep = \"/\"): Domestic","month: 2010 jul.<br />passengers: 4143874<br />interaction(type, sep = \"/\"): Domestic","month: 2010 ago.<br />passengers: 4101959<br />interaction(type, sep = \"/\"): Domestic","month: 2010 sep.<br />passengers: 3432692<br />interaction(type, sep = \"/\"): Domestic","month: 2010 oct.<br />passengers: 3682677<br />interaction(type, sep = \"/\"): Domestic","month: 2010 nov.<br />passengers: 3483901<br />interaction(type, sep = \"/\"): Domestic","month: 2010 dic.<br />passengers: 3725006<br />interaction(type, sep = \"/\"): Domestic","month: 2011 ene.<br />passengers: 3311036<br />interaction(type, sep = \"/\"): Domestic","month: 2011 feb.<br />passengers: 2989739<br />interaction(type, sep = \"/\"): Domestic","month: 2011 mar.<br />passengers: 3634367<br />interaction(type, sep = \"/\"): Domestic","month: 2011 abr.<br />passengers: 3681121<br />interaction(type, sep = \"/\"): Domestic","month: 2011 may.<br />passengers: 4027351<br />interaction(type, sep = \"/\"): Domestic","month: 2011 jun.<br />passengers: 4139190<br />interaction(type, sep = \"/\"): Domestic","month: 2011 jul.<br />passengers: 4419758<br />interaction(type, sep = \"/\"): Domestic","month: 2011 ago.<br />passengers: 4311627<br />interaction(type, sep = \"/\"): Domestic","month: 2011 sep.<br />passengers: 3605849<br />interaction(type, sep = \"/\"): Domestic","month: 2011 oct.<br />passengers: 3745491<br />interaction(type, sep = \"/\"): Domestic","month: 2011 nov.<br />passengers: 3626855<br />interaction(type, sep = \"/\"): Domestic","month: 2011 dic.<br />passengers: 3638344<br />interaction(type, sep = \"/\"): Domestic","month: 2012 ene.<br />passengers: 3501096<br />interaction(type, sep = \"/\"): Domestic","month: 2012 feb.<br />passengers: 3293171<br />interaction(type, sep = \"/\"): Domestic","month: 2012 mar.<br />passengers: 3880636<br />interaction(type, sep = \"/\"): Domestic","month: 2012 abr.<br />passengers: 3782508<br />interaction(type, sep = \"/\"): Domestic","month: 2012 may.<br />passengers: 3971107<br />interaction(type, sep = \"/\"): Domestic","month: 2012 jun.<br />passengers: 4181372<br />interaction(type, sep = \"/\"): Domestic","month: 2012 jul.<br />passengers: 4505945<br />interaction(type, sep = \"/\"): Domestic","month: 2012 ago.<br />passengers: 4452064<br />interaction(type, sep = \"/\"): Domestic","month: 2012 sep.<br />passengers: 3634688<br />interaction(type, sep = \"/\"): Domestic","month: 2012 oct.<br />passengers: 3802226<br />interaction(type, sep = \"/\"): Domestic","month: 2012 nov.<br />passengers: 3666610<br />interaction(type, sep = \"/\"): Domestic","month: 2012 dic.<br />passengers: 3863784<br />interaction(type, sep = \"/\"): Domestic","month: 2013 ene.<br />passengers: 3631094<br />interaction(type, sep = \"/\"): Domestic","month: 2013 feb.<br />passengers: 3301697<br />interaction(type, sep = \"/\"): Domestic","month: 2013 mar.<br />passengers: 4136911<br />interaction(type, sep = \"/\"): Domestic","month: 2013 abr.<br />passengers: 3927687<br />interaction(type, sep = \"/\"): Domestic","month: 2013 may.<br />passengers: 4210814<br />interaction(type, sep = \"/\"): Domestic","month: 2013 jun.<br />passengers: 4507505<br />interaction(type, sep = \"/\"): Domestic","month: 2013 jul.<br />passengers: 4689742<br />interaction(type, sep = \"/\"): Domestic","month: 2013 ago.<br />passengers: 4571785<br />interaction(type, sep = \"/\"): Domestic","month: 2013 sep.<br />passengers: 3815427<br />interaction(type, sep = \"/\"): Domestic","month: 2013 oct.<br />passengers: 4046692<br />interaction(type, sep = \"/\"): Domestic","month: 2013 nov.<br />passengers: 3717072<br />interaction(type, sep = \"/\"): Domestic","month: 2013 dic.<br />passengers: 4259092<br />interaction(type, sep = \"/\"): Domestic","month: 2014 ene.<br />passengers: 3877670<br />interaction(type, sep = \"/\"): Domestic","month: 2014 feb.<br />passengers: 3483695<br />interaction(type, sep = \"/\"): Domestic","month: 2014 mar.<br />passengers: 4278427<br />interaction(type, sep = \"/\"): Domestic","month: 2014 abr.<br />passengers: 4230441<br />interaction(type, sep = \"/\"): Domestic","month: 2014 may.<br />passengers: 4426610<br />interaction(type, sep = \"/\"): Domestic","month: 2014 jun.<br />passengers: 4765850<br />interaction(type, sep = \"/\"): Domestic","month: 2014 jul.<br />passengers: 4996506<br />interaction(type, sep = \"/\"): Domestic","month: 2014 ago.<br />passengers: 4835813<br />interaction(type, sep = \"/\"): Domestic","month: 2014 sep.<br />passengers: 4035823<br />interaction(type, sep = \"/\"): Domestic","month: 2014 oct.<br />passengers: 4321305<br />interaction(type, sep = \"/\"): Domestic","month: 2014 nov.<br />passengers: 3969051<br />interaction(type, sep = \"/\"): Domestic","month: 2014 dic.<br />passengers: 4339011<br />interaction(type, sep = \"/\"): Domestic","month: 2015 ene.<br />passengers: 3855840<br />interaction(type, sep = \"/\"): Domestic","month: 2015 feb.<br />passengers: 3591899<br />interaction(type, sep = \"/\"): Domestic","month: 2015 mar.<br />passengers: 4438362<br />interaction(type, sep = \"/\"): Domestic","month: 2015 abr.<br />passengers: 4345205<br />interaction(type, sep = \"/\"): Domestic","month: 2015 may.<br />passengers: 4622356<br />interaction(type, sep = \"/\"): Domestic","month: 2015 jun.<br />passengers: 4903244<br />interaction(type, sep = \"/\"): Domestic","month: 2015 jul.<br />passengers: 5179541<br />interaction(type, sep = \"/\"): Domestic","month: 2015 ago.<br />passengers: 5024078<br />interaction(type, sep = \"/\"): Domestic","month: 2015 sep.<br />passengers: 4283849<br />interaction(type, sep = \"/\"): Domestic","month: 2015 oct.<br />passengers: 4630920<br />interaction(type, sep = \"/\"): Domestic","month: 2015 nov.<br />passengers: 4450250<br />interaction(type, sep = \"/\"): Domestic","month: 2015 dic.<br />passengers: 4655803<br />interaction(type, sep = \"/\"): Domestic","month: 2016 ene.<br />passengers: 4296107<br />interaction(type, sep = \"/\"): Domestic","month: 2016 feb.<br />passengers: 3960323<br />interaction(type, sep = \"/\"): Domestic","month: 2016 mar.<br />passengers: 4737864<br />interaction(type, sep = \"/\"): Domestic","month: 2016 abr.<br />passengers: 4583897<br />interaction(type, sep = \"/\"): Domestic","month: 2016 may.<br />passengers: 4919302<br />interaction(type, sep = \"/\"): Domestic","month: 2016 jun.<br />passengers: 5419692<br />interaction(type, sep = \"/\"): Domestic","month: 2016 jul.<br />passengers: 5583966<br />interaction(type, sep = \"/\"): Domestic","month: 2016 ago.<br />passengers: 5359178<br />interaction(type, sep = \"/\"): Domestic","month: 2016 sep.<br />passengers: 4684869<br />interaction(type, sep = \"/\"): Domestic","month: 2016 oct.<br />passengers: 4936605<br />interaction(type, sep = \"/\"): Domestic","month: 2016 nov.<br />passengers: 4735585<br />interaction(type, sep = \"/\"): Domestic","month: 2016 dic.<br />passengers: 4865684<br />interaction(type, sep = \"/\"): Domestic","month: 2017 ene.<br />passengers: 4449434<br />interaction(type, sep = \"/\"): Domestic","month: 2017 feb.<br />passengers: 3999177<br />interaction(type, sep = \"/\"): Domestic","month: 2017 mar.<br />passengers: 4907598<br />interaction(type, sep = \"/\"): Domestic","month: 2017 abr.<br />passengers: 4870135<br />interaction(type, sep = \"/\"): Domestic","month: 2017 may.<br />passengers: 5085333<br />interaction(type, sep = \"/\"): Domestic","month: 2017 jun.<br />passengers: 5456452<br />interaction(type, sep = \"/\"): Domestic","month: 2017 jul.<br />passengers: 5662491<br />interaction(type, sep = \"/\"): Domestic","month: 2017 ago.<br />passengers: 5509693<br />interaction(type, sep = \"/\"): Domestic","month: 2017 sep.<br />passengers: 4739872<br />interaction(type, sep = \"/\"): Domestic","month: 2017 oct.<br />passengers: 5160304<br />interaction(type, sep = \"/\"): Domestic","month: 2017 nov.<br />passengers: 4891079<br />interaction(type, sep = \"/\"): Domestic","month: 2017 dic.<br />passengers: 4997001<br />interaction(type, sep = \"/\"): Domestic","month: 2018 ene.<br />passengers: 4616186<br />interaction(type, sep = \"/\"): Domestic","month: 2018 feb.<br />passengers: 4282782<br />interaction(type, sep = \"/\"): Domestic","month: 2018 mar.<br />passengers: 5134354<br />interaction(type, sep = \"/\"): Domestic","month: 2018 abr.<br />passengers: 5073331<br />interaction(type, sep = \"/\"): Domestic","month: 2018 may.<br />passengers: 5351468<br />interaction(type, sep = \"/\"): Domestic","month: 2018 jun.<br />passengers: 5615201<br />interaction(type, sep = \"/\"): Domestic","month: 2018 jul.<br />passengers: 5847496<br />interaction(type, sep = \"/\"): Domestic","month: 2018 ago.<br />passengers: 5647063<br />interaction(type, sep = \"/\"): Domestic","month: 2018 sep.<br />passengers: 4774099<br />interaction(type, sep = \"/\"): Domestic","month: 2018 oct.<br />passengers: 5132670<br />interaction(type, sep = \"/\"): Domestic","month: 2018 nov.<br />passengers: 4983499<br />interaction(type, sep = \"/\"): Domestic","month: 2018 dic.<br />passengers: 5119482<br />interaction(type, sep = \"/\"): Domestic","month: 2019 ene.<br />passengers: 4685933<br />interaction(type, sep = \"/\"): Domestic","month: 2019 feb.<br />passengers: 4334938<br />interaction(type, sep = \"/\"): Domestic","month: 2019 mar.<br />passengers: 5322333<br />interaction(type, sep = \"/\"): Domestic"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(248,118,109,1)","dash":"solid"},"hoveron":"points","name":"Domestic","legendgroup":"Domestic","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":["2006-01-01","2006-02-01","2006-03-01","2006-04-01","2006-05-01","2006-06-01","2006-07-01","2006-08-01","2006-09-01","2006-10-01","2006-11-01","2006-12-01","2007-01-01","2007-02-01","2007-03-01","2007-04-01","2007-05-01","2007-06-01","2007-07-01","2007-08-01","2007-09-01","2007-10-01","2007-11-01","2007-12-01","2008-01-01","2008-02-01","2008-03-01","2008-04-01","2008-05-01","2008-06-01","2008-07-01","2008-08-01","2008-09-01","2008-10-01","2008-11-01","2008-12-01","2009-01-01","2009-02-01","2009-03-01","2009-04-01","2009-05-01","2009-06-01","2009-07-01","2009-08-01","2009-09-01","2009-10-01","2009-11-01","2009-12-01","2010-01-01","2010-02-01","2010-03-01","2010-04-01","2010-05-01","2010-06-01","2010-07-01","2010-08-01","2010-09-01","2010-10-01","2010-11-01","2010-12-01","2011-01-01","2011-02-01","2011-03-01","2011-04-01","2011-05-01","2011-06-01","2011-07-01","2011-08-01","2011-09-01","2011-10-01","2011-11-01","2011-12-01","2012-01-01","2012-02-01","2012-03-01","2012-04-01","2012-05-01","2012-06-01","2012-07-01","2012-08-01","2012-09-01","2012-10-01","2012-11-01","2012-12-01","2013-01-01","2013-02-01","2013-03-01","2013-04-01","2013-05-01","2013-06-01","2013-07-01","2013-08-01","2013-09-01","2013-10-01","2013-11-01","2013-12-01","2014-01-01","2014-02-01","2014-03-01","2014-04-01","2014-05-01","2014-06-01","2014-07-01","2014-08-01","2014-09-01","2014-10-01","2014-11-01","2014-12-01","2015-01-01","2015-02-01","2015-03-01","2015-04-01","2015-05-01","2015-06-01","2015-07-01","2015-08-01","2015-09-01","2015-10-01","2015-11-01","2015-12-01","2016-01-01","2016-02-01","2016-03-01","2016-04-01","2016-05-01","2016-06-01","2016-07-01","2016-08-01","2016-09-01","2016-10-01","2016-11-01","2016-12-01","2017-01-01","2017-02-01","2017-03-01","2017-04-01","2017-05-01","2017-06-01","2017-07-01","2017-08-01","2017-09-01","2017-10-01","2017-11-01","2017-12-01","2018-01-01","2018-02-01","2018-03-01","2018-04-01","2018-05-01","2018-06-01","2018-07-01","2018-08-01","2018-09-01","2018-10-01","2018-11-01","2018-12-01","2019-01-01","2019-02-01","2019-03-01"],"y":[1440222,1204192,1379237,1404834,1434267,1515225,1683142,1616751,1321562,1300391,1226392,1384533,1400030,1172344,1410758,1402926,1420511,1517165,1713987,1647839,1369408,1384087,1337446,1471467,1463844,1233787,1483089,1377223,1440195,1505557,1604659,1592364,1272428,1272631,1161613,1276304,1254006,1030099,1194316,1228496,1148652,1266264,1489411,1469456,1225195,1268326,1174133,1352576,1364645,1128393,1279067,1247101,1330125,1423634,1548987,1515887,1262703,1305408,1205181,1324851,1352145,1131797,1317432,1347095,1449713,1492526,1651584,1606897,1374471,1379113,1238251,1390300,1412393,1163341,1371921,1378620,1441839,1558532,1684381,1641281,1419569,1389245,1277063,1414729,1419642,1180594,1408612,1382810,1503142,1607009,1779236,1758383,1492826,1469113,1339933,1510839,1541947,1282289,1506667,1529696,1654399,1758197,1875571,1881827,1537637,1544581,1411394,1582545,1583354,1358696,1588235,1593110,1734621,1887034,2095978,2085096,1743221,1744132,1566739,1739163,1772602,1506520,1738410,1721868,1864699,2069986,2305429,2235832,1918247,1928633,1760533,2006577,1995153,1605067,1871802,2004102,2082118,2270430,2513538,2420389,2045217,2026289,1894894,2100932,2070921,1760497,2095733,2087037,2193409,2397268,2582934,2490347,2108425,2124616,1959826,2085713,2080077,1731463,2046465],"text":["month: 2006 ene.<br />passengers: 1440222<br />interaction(type, sep = \"/\"): International","month: 2006 feb.<br />passengers: 1204192<br />interaction(type, sep = \"/\"): International","month: 2006 mar.<br />passengers: 1379237<br />interaction(type, sep = \"/\"): International","month: 2006 abr.<br />passengers: 1404834<br />interaction(type, sep = \"/\"): International","month: 2006 may.<br />passengers: 1434267<br />interaction(type, sep = \"/\"): International","month: 2006 jun.<br />passengers: 1515225<br />interaction(type, sep = \"/\"): International","month: 2006 jul.<br />passengers: 1683142<br />interaction(type, sep = \"/\"): International","month: 2006 ago.<br />passengers: 1616751<br />interaction(type, sep = \"/\"): International","month: 2006 sep.<br />passengers: 1321562<br />interaction(type, sep = \"/\"): International","month: 2006 oct.<br />passengers: 1300391<br />interaction(type, sep = \"/\"): International","month: 2006 nov.<br />passengers: 1226392<br />interaction(type, sep = \"/\"): International","month: 2006 dic.<br />passengers: 1384533<br />interaction(type, sep = \"/\"): International","month: 2007 ene.<br />passengers: 1400030<br />interaction(type, sep = \"/\"): International","month: 2007 feb.<br />passengers: 1172344<br />interaction(type, sep = \"/\"): International","month: 2007 mar.<br />passengers: 1410758<br />interaction(type, sep = \"/\"): International","month: 2007 abr.<br />passengers: 1402926<br />interaction(type, sep = \"/\"): International","month: 2007 may.<br />passengers: 1420511<br />interaction(type, sep = \"/\"): International","month: 2007 jun.<br />passengers: 1517165<br />interaction(type, sep = \"/\"): International","month: 2007 jul.<br />passengers: 1713987<br />interaction(type, sep = \"/\"): International","month: 2007 ago.<br />passengers: 1647839<br />interaction(type, sep = \"/\"): International","month: 2007 sep.<br />passengers: 1369408<br />interaction(type, sep = \"/\"): International","month: 2007 oct.<br />passengers: 1384087<br />interaction(type, sep = \"/\"): International","month: 2007 nov.<br />passengers: 1337446<br />interaction(type, sep = \"/\"): International","month: 2007 dic.<br />passengers: 1471467<br />interaction(type, sep = \"/\"): International","month: 2008 ene.<br />passengers: 1463844<br />interaction(type, sep = \"/\"): International","month: 2008 feb.<br />passengers: 1233787<br />interaction(type, sep = \"/\"): International","month: 2008 mar.<br />passengers: 1483089<br />interaction(type, sep = \"/\"): International","month: 2008 abr.<br />passengers: 1377223<br />interaction(type, sep = \"/\"): International","month: 2008 may.<br />passengers: 1440195<br />interaction(type, sep = \"/\"): International","month: 2008 jun.<br />passengers: 1505557<br />interaction(type, sep = \"/\"): International","month: 2008 jul.<br />passengers: 1604659<br />interaction(type, sep = \"/\"): International","month: 2008 ago.<br />passengers: 1592364<br />interaction(type, sep = \"/\"): International","month: 2008 sep.<br />passengers: 1272428<br />interaction(type, sep = \"/\"): International","month: 2008 oct.<br />passengers: 1272631<br />interaction(type, sep = \"/\"): International","month: 2008 nov.<br />passengers: 1161613<br />interaction(type, sep = \"/\"): International","month: 2008 dic.<br />passengers: 1276304<br />interaction(type, sep = \"/\"): International","month: 2009 ene.<br />passengers: 1254006<br />interaction(type, sep = \"/\"): International","month: 2009 feb.<br />passengers: 1030099<br />interaction(type, sep = \"/\"): International","month: 2009 mar.<br />passengers: 1194316<br />interaction(type, sep = \"/\"): International","month: 2009 abr.<br />passengers: 1228496<br />interaction(type, sep = \"/\"): International","month: 2009 may.<br />passengers: 1148652<br />interaction(type, sep = \"/\"): International","month: 2009 jun.<br />passengers: 1266264<br />interaction(type, sep = \"/\"): International","month: 2009 jul.<br />passengers: 1489411<br />interaction(type, sep = \"/\"): International","month: 2009 ago.<br />passengers: 1469456<br />interaction(type, sep = \"/\"): International","month: 2009 sep.<br />passengers: 1225195<br />interaction(type, sep = \"/\"): International","month: 2009 oct.<br />passengers: 1268326<br />interaction(type, sep = \"/\"): International","month: 2009 nov.<br />passengers: 1174133<br />interaction(type, sep = \"/\"): International","month: 2009 dic.<br />passengers: 1352576<br />interaction(type, sep = \"/\"): International","month: 2010 ene.<br />passengers: 1364645<br />interaction(type, sep = \"/\"): International","month: 2010 feb.<br />passengers: 1128393<br />interaction(type, sep = \"/\"): International","month: 2010 mar.<br />passengers: 1279067<br />interaction(type, sep = \"/\"): International","month: 2010 abr.<br />passengers: 1247101<br />interaction(type, sep = \"/\"): International","month: 2010 may.<br />passengers: 1330125<br />interaction(type, sep = \"/\"): International","month: 2010 jun.<br />passengers: 1423634<br />interaction(type, sep = \"/\"): International","month: 2010 jul.<br />passengers: 1548987<br />interaction(type, sep = \"/\"): International","month: 2010 ago.<br />passengers: 1515887<br />interaction(type, sep = \"/\"): International","month: 2010 sep.<br />passengers: 1262703<br />interaction(type, sep = \"/\"): International","month: 2010 oct.<br />passengers: 1305408<br />interaction(type, sep = \"/\"): International","month: 2010 nov.<br />passengers: 1205181<br />interaction(type, sep = \"/\"): International","month: 2010 dic.<br />passengers: 1324851<br />interaction(type, sep = \"/\"): International","month: 2011 ene.<br />passengers: 1352145<br />interaction(type, sep = \"/\"): International","month: 2011 feb.<br />passengers: 1131797<br />interaction(type, sep = \"/\"): International","month: 2011 mar.<br />passengers: 1317432<br />interaction(type, sep = \"/\"): International","month: 2011 abr.<br />passengers: 1347095<br />interaction(type, sep = \"/\"): International","month: 2011 may.<br />passengers: 1449713<br />interaction(type, sep = \"/\"): International","month: 2011 jun.<br />passengers: 1492526<br />interaction(type, sep = \"/\"): International","month: 2011 jul.<br />passengers: 1651584<br />interaction(type, sep = \"/\"): International","month: 2011 ago.<br />passengers: 1606897<br />interaction(type, sep = \"/\"): International","month: 2011 sep.<br />passengers: 1374471<br />interaction(type, sep = \"/\"): International","month: 2011 oct.<br />passengers: 1379113<br />interaction(type, sep = \"/\"): International","month: 2011 nov.<br />passengers: 1238251<br />interaction(type, sep = \"/\"): International","month: 2011 dic.<br />passengers: 1390300<br />interaction(type, sep = \"/\"): International","month: 2012 ene.<br />passengers: 1412393<br />interaction(type, sep = \"/\"): International","month: 2012 feb.<br />passengers: 1163341<br />interaction(type, sep = \"/\"): International","month: 2012 mar.<br />passengers: 1371921<br />interaction(type, sep = \"/\"): International","month: 2012 abr.<br />passengers: 1378620<br />interaction(type, sep = \"/\"): International","month: 2012 may.<br />passengers: 1441839<br />interaction(type, sep = \"/\"): International","month: 2012 jun.<br />passengers: 1558532<br />interaction(type, sep = \"/\"): International","month: 2012 jul.<br />passengers: 1684381<br />interaction(type, sep = \"/\"): International","month: 2012 ago.<br />passengers: 1641281<br />interaction(type, sep = \"/\"): International","month: 2012 sep.<br />passengers: 1419569<br />interaction(type, sep = \"/\"): International","month: 2012 oct.<br />passengers: 1389245<br />interaction(type, sep = \"/\"): International","month: 2012 nov.<br />passengers: 1277063<br />interaction(type, sep = \"/\"): International","month: 2012 dic.<br />passengers: 1414729<br />interaction(type, sep = \"/\"): International","month: 2013 ene.<br />passengers: 1419642<br />interaction(type, sep = \"/\"): International","month: 2013 feb.<br />passengers: 1180594<br />interaction(type, sep = \"/\"): International","month: 2013 mar.<br />passengers: 1408612<br />interaction(type, sep = \"/\"): International","month: 2013 abr.<br />passengers: 1382810<br />interaction(type, sep = \"/\"): International","month: 2013 may.<br />passengers: 1503142<br />interaction(type, sep = \"/\"): International","month: 2013 jun.<br />passengers: 1607009<br />interaction(type, sep = \"/\"): International","month: 2013 jul.<br />passengers: 1779236<br />interaction(type, sep = \"/\"): International","month: 2013 ago.<br />passengers: 1758383<br />interaction(type, sep = \"/\"): International","month: 2013 sep.<br />passengers: 1492826<br />interaction(type, sep = \"/\"): International","month: 2013 oct.<br />passengers: 1469113<br />interaction(type, sep = \"/\"): International","month: 2013 nov.<br />passengers: 1339933<br />interaction(type, sep = \"/\"): International","month: 2013 dic.<br />passengers: 1510839<br />interaction(type, sep = \"/\"): International","month: 2014 ene.<br />passengers: 1541947<br />interaction(type, sep = \"/\"): International","month: 2014 feb.<br />passengers: 1282289<br />interaction(type, sep = \"/\"): International","month: 2014 mar.<br />passengers: 1506667<br />interaction(type, sep = \"/\"): International","month: 2014 abr.<br />passengers: 1529696<br />interaction(type, sep = \"/\"): International","month: 2014 may.<br />passengers: 1654399<br />interaction(type, sep = \"/\"): International","month: 2014 jun.<br />passengers: 1758197<br />interaction(type, sep = \"/\"): International","month: 2014 jul.<br />passengers: 1875571<br />interaction(type, sep = \"/\"): International","month: 2014 ago.<br />passengers: 1881827<br />interaction(type, sep = \"/\"): International","month: 2014 sep.<br />passengers: 1537637<br />interaction(type, sep = \"/\"): International","month: 2014 oct.<br />passengers: 1544581<br />interaction(type, sep = \"/\"): International","month: 2014 nov.<br />passengers: 1411394<br />interaction(type, sep = \"/\"): International","month: 2014 dic.<br />passengers: 1582545<br />interaction(type, sep = \"/\"): International","month: 2015 ene.<br />passengers: 1583354<br />interaction(type, sep = \"/\"): International","month: 2015 feb.<br />passengers: 1358696<br />interaction(type, sep = \"/\"): International","month: 2015 mar.<br />passengers: 1588235<br />interaction(type, sep = \"/\"): International","month: 2015 abr.<br />passengers: 1593110<br />interaction(type, sep = \"/\"): International","month: 2015 may.<br />passengers: 1734621<br />interaction(type, sep = \"/\"): International","month: 2015 jun.<br />passengers: 1887034<br />interaction(type, sep = \"/\"): International","month: 2015 jul.<br />passengers: 2095978<br />interaction(type, sep = \"/\"): International","month: 2015 ago.<br />passengers: 2085096<br />interaction(type, sep = \"/\"): International","month: 2015 sep.<br />passengers: 1743221<br />interaction(type, sep = \"/\"): International","month: 2015 oct.<br />passengers: 1744132<br />interaction(type, sep = \"/\"): International","month: 2015 nov.<br />passengers: 1566739<br />interaction(type, sep = \"/\"): International","month: 2015 dic.<br />passengers: 1739163<br />interaction(type, sep = \"/\"): International","month: 2016 ene.<br />passengers: 1772602<br />interaction(type, sep = \"/\"): International","month: 2016 feb.<br />passengers: 1506520<br />interaction(type, sep = \"/\"): International","month: 2016 mar.<br />passengers: 1738410<br />interaction(type, sep = \"/\"): International","month: 2016 abr.<br />passengers: 1721868<br />interaction(type, sep = \"/\"): International","month: 2016 may.<br />passengers: 1864699<br />interaction(type, sep = \"/\"): International","month: 2016 jun.<br />passengers: 2069986<br />interaction(type, sep = \"/\"): International","month: 2016 jul.<br />passengers: 2305429<br />interaction(type, sep = \"/\"): International","month: 2016 ago.<br />passengers: 2235832<br />interaction(type, sep = \"/\"): International","month: 2016 sep.<br />passengers: 1918247<br />interaction(type, sep = \"/\"): International","month: 2016 oct.<br />passengers: 1928633<br />interaction(type, sep = \"/\"): International","month: 2016 nov.<br />passengers: 1760533<br />interaction(type, sep = \"/\"): International","month: 2016 dic.<br />passengers: 2006577<br />interaction(type, sep = \"/\"): International","month: 2017 ene.<br />passengers: 1995153<br />interaction(type, sep = \"/\"): International","month: 2017 feb.<br />passengers: 1605067<br />interaction(type, sep = \"/\"): International","month: 2017 mar.<br />passengers: 1871802<br />interaction(type, sep = \"/\"): International","month: 2017 abr.<br />passengers: 2004102<br />interaction(type, sep = \"/\"): International","month: 2017 may.<br />passengers: 2082118<br />interaction(type, sep = \"/\"): International","month: 2017 jun.<br />passengers: 2270430<br />interaction(type, sep = \"/\"): International","month: 2017 jul.<br />passengers: 2513538<br />interaction(type, sep = \"/\"): International","month: 2017 ago.<br />passengers: 2420389<br />interaction(type, sep = \"/\"): International","month: 2017 sep.<br />passengers: 2045217<br />interaction(type, sep = \"/\"): International","month: 2017 oct.<br />passengers: 2026289<br />interaction(type, sep = \"/\"): International","month: 2017 nov.<br />passengers: 1894894<br />interaction(type, sep = \"/\"): International","month: 2017 dic.<br />passengers: 2100932<br />interaction(type, sep = \"/\"): International","month: 2018 ene.<br />passengers: 2070921<br />interaction(type, sep = \"/\"): International","month: 2018 feb.<br />passengers: 1760497<br />interaction(type, sep = \"/\"): International","month: 2018 mar.<br />passengers: 2095733<br />interaction(type, sep = \"/\"): International","month: 2018 abr.<br />passengers: 2087037<br />interaction(type, sep = \"/\"): International","month: 2018 may.<br />passengers: 2193409<br />interaction(type, sep = \"/\"): International","month: 2018 jun.<br />passengers: 2397268<br />interaction(type, sep = \"/\"): International","month: 2018 jul.<br />passengers: 2582934<br />interaction(type, sep = \"/\"): International","month: 2018 ago.<br />passengers: 2490347<br />interaction(type, sep = \"/\"): International","month: 2018 sep.<br />passengers: 2108425<br />interaction(type, sep = \"/\"): International","month: 2018 oct.<br />passengers: 2124616<br />interaction(type, sep = \"/\"): International","month: 2018 nov.<br />passengers: 1959826<br />interaction(type, sep = \"/\"): International","month: 2018 dic.<br />passengers: 2085713<br />interaction(type, sep = \"/\"): International","month: 2019 ene.<br />passengers: 2080077<br />interaction(type, sep = \"/\"): International","month: 2019 feb.<br />passengers: 1731463<br />interaction(type, sep = \"/\"): International","month: 2019 mar.<br />passengers: 2046465<br />interaction(type, sep = \"/\"): International"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(0,191,196,1)","dash":"solid"},"hoveron":"points","name":"International","legendgroup":"International","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":40.840182648401829,"r":7.3059360730593621,"b":22.648401826484022,"l":54.794520547945211},"plot_bgcolor":"rgba(235,235,235,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"title":{"text":"Monthly passengers at LAX","font":{"color":"rgba(0,0,0,1)","family":"","size":17.534246575342465},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"date","autorange":true,"range":["2005-05-05","2019-10-27"],"tickmode":"auto","ticktext":["2010 ene.","2015 ene."],"tickvals":[14610,16436],"categoryorder":"array","categoryarray":["2010 ene.","2015 ene."],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"y","title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":true,"range":[789229.15000000002,6088365.8499999996],"tickmode":"auto","ticktext":["1e+06","2e+06","3e+06","4e+06","5e+06","6e+06"],"tickvals":[1000000,2000000,3000000,4000000,5000000,6000000],"categoryorder":"array","categoryarray":["1e+06","2e+06","3e+06","4e+06","5e+06","6e+06"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"x","title":{"text":"Passengers","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"shapes":[],"showlegend":true,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.8897637795275593,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498},"orientation":"h","x":0.5,"y":1.02,"xanchor":"center","yanchor":"bottom","title":{"text":"type","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"7a206b6128fb":{"x":{},"y":{},"colour":{},"type":"scatter"}},"cur_data":"7a206b6128fb","visdat":{"7a206b6128fb":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<div class="callout callout-tip callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>The meme check</strong></p>
+</div>
+<div class="callout-content">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><a href="https://i.imgflip.com/2/1ur9b0.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img data-src="https://i.imgflip.com/2/1ur9b0.jpg" class="quarto-figure quarto-figure-center" style="width:60.0%"></a></p>
+</figure>
+</div>
+<p><em>Spending three hours choosing knots manually vs.&nbsp;discovering Prophet does it for you.</em></p>
+</div>
+</div>
+</div>
+</section>
+<section id="section-12" class="slide level2">
+<h2></h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>lax_train <span class="ot">&lt;-</span> lax_passengers <span class="sc">|&gt;</span> <span class="fu">filter_index</span>(<span class="sc">~</span> <span class="st">"2017 Dec."</span>)</span>
+<span id="cb3-2"><a></a>lax_test  <span class="ot">&lt;-</span> lax_passengers <span class="sc">|&gt;</span> <span class="fu">filter_index</span>(<span class="st">"2018 Jan."</span> <span class="sc">~</span> .)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="section-13" class="slide level2">
+<h2></h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-5"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-5-1"><a href="#annotated-cell-5-1"></a>lax_fit <span class="ot">&lt;-</span> lax_train <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-5-2"><a href="#annotated-cell-5-2"></a>  <span class="fu">model</span>(</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-5" data-target-annotation="1">1</button><span id="annotated-cell-5-3" class="code-annotation-target"><a href="#annotated-cell-5-3"></a>    <span class="at">Prophet     =</span> <span class="fu">prophet</span>(passengers <span class="sc">~</span></span>
+<span id="annotated-cell-5-4"><a href="#annotated-cell-5-4"></a>                    <span class="fu">growth</span>(<span class="st">"linear"</span>) <span class="sc">+</span></span>
+<span id="annotated-cell-5-5"><a href="#annotated-cell-5-5"></a>                    <span class="fu">season</span>(<span class="st">"year"</span>, <span class="at">type =</span> <span class="st">"multiplicative"</span>)),</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-5" data-target-annotation="2">2</button><span id="annotated-cell-5-6" class="code-annotation-target"><a href="#annotated-cell-5-6"></a>    <span class="at">Prophet_auto =</span> <span class="fu">prophet</span>(passengers),</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-5" data-target-annotation="3">3</button><span id="annotated-cell-5-7" class="code-annotation-target"><a href="#annotated-cell-5-7"></a>    <span class="at">ARIMA       =</span> <span class="fu">ARIMA</span>(passengers),</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-5" data-target-annotation="4">4</button><span id="annotated-cell-5-8" class="code-annotation-target"><a href="#annotated-cell-5-8"></a>    <span class="at">ETS         =</span> <span class="fu">ETS</span>(passengers),</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-5" data-target-annotation="5">5</button><span id="annotated-cell-5-9" class="code-annotation-target"><a href="#annotated-cell-5-9"></a>    <span class="at">Harmonic    =</span> <span class="fu">ARIMA</span>(passengers <span class="sc">~</span> <span class="fu">fourier</span>(<span class="at">K =</span> <span class="dv">3</span>) <span class="sc">+</span> <span class="fu">PDQ</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>))</span>
+<span id="annotated-cell-5-10"><a href="#annotated-cell-5-10"></a>  )</span>
+<span id="annotated-cell-5-11"><a href="#annotated-cell-5-11"></a></span>
+<span id="annotated-cell-5-12"><a href="#annotated-cell-5-12"></a>lax_fit</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-5" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-5" data-code-lines="3" data-code-annotation="1">Manual Prophet: piecewise linear trend + multiplicative annual seasonality.</span>
+</dd>
+<dt data-target-cell="annotated-cell-5" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-5" data-code-lines="6" data-code-annotation="2">Automatic Prophet: lets the algorithm decide on all components.</span>
+</dd>
+<dt data-target-cell="annotated-cell-5" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-5" data-code-lines="7" data-code-annotation="3">Automatic ARIMA — our Module 2 benchmark.</span>
+</dd>
+<dt data-target-cell="annotated-cell-5" data-target-annotation="4">4</dt>
+<dd>
+<span data-code-cell="annotated-cell-5" data-code-lines="8" data-code-annotation="4">Automatic ETS — our other Module 2 benchmark.</span>
+</dd>
+<dt data-target-cell="annotated-cell-5" data-target-annotation="5">5</dt>
+<dd>
+<span data-code-cell="annotated-cell-5" data-code-lines="9" data-code-annotation="5">Harmonic regression: ARIMA errors + Fourier seasonality (Module 3.3).</span>
+</dd>
+</dl>
+</div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["type"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Prophet"],"name":[2],"type":["lst_mdl"],"align":["right"]},{"label":["Prophet_auto"],"name":[3],"type":["lst_mdl"],"align":["right"]},{"label":["ARIMA"],"name":[4],"type":["lst_mdl"],"align":["right"]},{"label":["ETS"],"name":[5],"type":["lst_mdl"],"align":["right"]},{"label":["Harmonic"],"name":[6],"type":["lst_mdl"],"align":["right"]}],"data":[{"1":"Domestic","2":"<lst_mdl>","3":"<lst_mdl>","4":"<lst_mdl>","5":"<lst_mdl>","6":"<lst_mdl>"},{"1":"International","2":"<lst_mdl>","3":"<lst_mdl>","4":"<lst_mdl>","5":"<lst_mdl>","6":"<lst_mdl>"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section>
+<section id="section-14" class="slide level2">
+<h2></h2>
+<p>One of Prophet’s biggest advantages in practice: <strong>interpretable components</strong> that you can show to a non-technical audience.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>lax_fit <span class="sc">|&gt;</span></span>
+<span id="cb4-2"><a></a>  <span class="fu">select</span>(type, Prophet) <span class="sc">|&gt;</span></span>
+<span id="cb4-3"><a></a>  <span class="fu">components</span>() <span class="sc">|&gt;</span></span>
+<span id="cb4-4"><a></a>  <span class="fu">autoplot</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="prophet_files/figure-html/lax-components-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img data-src="prophet_files/figure-html/lax-components-1.png" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="section-15" class="slide level2">
+<h2></h2>
+<p>We can also visualize the seasonal component overlaid by year — useful to check if the seasonal <em>shape</em> is stable over time:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-7"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-7-1"><a href="#annotated-cell-7-1"></a>lax_fit <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-7-2"><a href="#annotated-cell-7-2"></a>  <span class="fu">select</span>(type, Prophet) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-7-3"><a href="#annotated-cell-7-3"></a>  <span class="fu">components</span>() <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-7-4"><a href="#annotated-cell-7-4"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="1">1</button><span id="annotated-cell-7-5" class="code-annotation-target"><a href="#annotated-cell-7-5"></a>    <span class="at">x      =</span> lubridate<span class="sc">::</span><span class="fu">month</span>(month, <span class="at">label =</span> <span class="cn">TRUE</span>),</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="2">2</button><span id="annotated-cell-7-6" class="code-annotation-target"><a href="#annotated-cell-7-6"></a>    <span class="at">y      =</span> year,</span>
+<span id="annotated-cell-7-7"><a href="#annotated-cell-7-7"></a>    <span class="at">colour =</span> type,</span>
+<span id="annotated-cell-7-8"><a href="#annotated-cell-7-8"></a>    <span class="at">group  =</span> <span class="fu">interaction</span>(type, lubridate<span class="sc">::</span><span class="fu">year</span>(month))</span>
+<span id="annotated-cell-7-9"><a href="#annotated-cell-7-9"></a>  )) <span class="sc">+</span></span>
+<span id="annotated-cell-7-10"><a href="#annotated-cell-7-10"></a>  <span class="fu">geom_line</span>(<span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="annotated-cell-7-11"><a href="#annotated-cell-7-11"></a>  <span class="fu">labs</span>(</span>
+<span id="annotated-cell-7-12"><a href="#annotated-cell-7-12"></a>    <span class="at">title =</span> <span class="st">"Annual seasonal component by year"</span>,</span>
+<span id="annotated-cell-7-13"><a href="#annotated-cell-7-13"></a>    <span class="at">x     =</span> <span class="st">"Month"</span>,</span>
+<span id="annotated-cell-7-14"><a href="#annotated-cell-7-14"></a>    <span class="at">y     =</span> <span class="st">"Seasonal effect"</span>,</span>
+<span id="annotated-cell-7-15"><a href="#annotated-cell-7-15"></a>    <span class="at">color =</span> <span class="st">"Type"</span></span>
+<span id="annotated-cell-7-16"><a href="#annotated-cell-7-16"></a>  ) <span class="sc">+</span></span>
+<span id="annotated-cell-7-17"><a href="#annotated-cell-7-17"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-7" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-7" data-code-lines="5" data-code-annotation="1">Extract the month name from the time index for the x-axis.</span>
+</dd>
+<dt data-target-cell="annotated-cell-7" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-7" data-code-lines="6" data-code-annotation="2"><code>year</code> is the name of the annual seasonal component extracted by <code>components()</code>.</span>
+</dd>
+</dl>
+</div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="prophet_files/figure-html/lax-seasonal-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img data-src="prophet_files/figure-html/lax-seasonal-1.png" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-note callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>What to look for</strong></p>
+</div>
+<div class="callout-content">
+<p>If the seasonal lines are stacked consistently, the shape is stable across years — a multiplicative model is appropriate. If lines diverge or change shape dramatically, you may need to reconsider the specification.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="section-16" class="slide level2">
+<h2></h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>lax_fc <span class="ot">&lt;-</span> lax_fit <span class="sc">|&gt;</span></span>
+<span id="cb5-2"><a></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"2 years"</span>)</span>
+<span id="cb5-3"><a></a></span>
+<span id="cb5-4"><a></a>lax_fc <span class="sc">|&gt;</span></span>
+<span id="cb5-5"><a></a>  <span class="fu">autoplot</span>(</span>
+<span id="cb5-6"><a></a>    lax_passengers <span class="sc">|&gt;</span> <span class="fu">filter_index</span>(<span class="st">"2012 Jan."</span> <span class="sc">~</span> .),</span>
+<span id="cb5-7"><a></a>    <span class="at">level =</span> <span class="dv">80</span></span>
+<span id="cb5-8"><a></a>  ) <span class="sc">+</span></span>
+<span id="cb5-9"><a></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> type, <span class="at">ncol =</span> <span class="dv">1</span>, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
+<span id="cb5-10"><a></a>  <span class="fu">labs</span>(</span>
+<span id="cb5-11"><a></a>    <span class="at">title  =</span> <span class="st">"LAX passenger forecasts — 2018–2019"</span>,</span>
+<span id="cb5-12"><a></a>    <span class="at">y      =</span> <span class="st">"Passengers"</span>,</span>
+<span id="cb5-13"><a></a>    <span class="at">x      =</span> <span class="cn">NULL</span>,</span>
+<span id="cb5-14"><a></a>    <span class="at">color  =</span> <span class="st">"Model"</span></span>
+<span id="cb5-15"><a></a>  ) <span class="sc">+</span></span>
+<span id="cb5-16"><a></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="prophet_files/figure-html/lax-forecast-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img data-src="prophet_files/figure-html/lax-forecast-1.png" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="section-17" class="slide level2">
+<h2></h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>lax_accu <span class="ot">&lt;-</span> lax_fc <span class="sc">|&gt;</span></span>
+<span id="cb6-2"><a></a>  <span class="fu">accuracy</span>(lax_test) <span class="sc">|&gt;</span></span>
+<span id="cb6-3"><a></a>  <span class="fu">select</span>(.model, type, RMSE, MAE, MAPE) <span class="sc">|&gt;</span></span>
+<span id="cb6-4"><a></a>  <span class="fu">arrange</span>(type, MAPE)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: The future dataset is incomplete, incomplete out-of-sample data will be treated as missing. 
+9 observations are missing between 2019 abr. and 2019 dic.</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>lax_accu</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[".model"],"name":[1],"type":["chr"],"align":["left"]},{"label":["type"],"name":[2],"type":["chr"],"align":["left"]},{"label":["RMSE"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["MAE"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["MAPE"],"name":[5],"type":["dbl"],"align":["right"]}],"data":[{"1":"ARIMA","2":"Domestic","3":"100043.00","4":"77673.32","5":"1.583190"},{"1":"ETS","2":"Domestic","3":"119137.56","4":"88995.69","5":"1.876256"},{"1":"Prophet","2":"Domestic","3":"146161.67","4":"122913.70","5":"2.399613"},{"1":"Harmonic","2":"Domestic","3":"141166.43","4":"116314.23","5":"2.409729"},{"1":"Prophet_auto","2":"Domestic","3":"186931.37","4":"153384.32","5":"3.186104"},{"1":"ETS","2":"International","3":"62613.94","4":"53964.33","5":"2.484129"},{"1":"ARIMA","2":"International","3":"92158.85","4":"71348.62","5":"3.523768"},{"1":"Harmonic","2":"International","3":"118158.25","4":"99641.93","5":"4.631982"},{"1":"Prophet","2":"International","3":"131623.03","4":"108914.20","5":"5.250790"},{"1":"Prophet_auto","2":"International","3":"162241.84","4":"130686.08","5":"6.574595"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div class="callout callout-warning callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Check accuracy <em>by key</em></strong></p>
+</div>
+<div class="callout-content">
+<p>When your <code>tsibble</code> has a key variable (like <code>type</code> here), <code>accuracy()</code> returns one row per model <em>per key</em>. A model that performs best for Domestic passengers may not be best for International — always check both.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="section-18" class="slide level2">
+<h2></h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a>lax_fit <span class="sc">|&gt;</span></span>
+<span id="cb9-2"><a></a>  <span class="fu">select</span>(type, Prophet) <span class="sc">|&gt;</span></span>
+<span id="cb9-3"><a></a>  <span class="fu">filter</span>(type <span class="sc">==</span> <span class="st">"Domestic"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb9-4"><a></a>  <span class="fu">gg_tsresiduals</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="prophet_files/figure-html/lax-resid-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img data-src="prophet_files/figure-html/lax-resid-1.png" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="changepoints-diagnosing-the-trend" class="title-slide slide level1 center">
+<h1>Changepoints: Diagnosing the Trend</h1>
+
+</section>
+<section id="section-19" class="slide level2">
+<h2></h2>
+<p>We can extract the changepoints Prophet detected and plot them against the original series — a powerful diagnostic for communicating with stakeholders.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a><span class="co"># Extract trend component to visualize changepoints</span></span>
+<span id="cb10-2"><a></a>lax_fit <span class="sc">|&gt;</span></span>
+<span id="cb10-3"><a></a>  <span class="fu">select</span>(type, Prophet) <span class="sc">|&gt;</span></span>
+<span id="cb10-4"><a></a>  <span class="fu">filter</span>(type <span class="sc">==</span> <span class="st">"Domestic"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb10-5"><a></a>  <span class="fu">components</span>() <span class="sc">|&gt;</span></span>
+<span id="cb10-6"><a></a>  <span class="fu">autoplot</span>(trend) <span class="sc">+</span></span>
+<span id="cb10-7"><a></a>  <span class="fu">labs</span>(</span>
+<span id="cb10-8"><a></a>    <span class="at">title =</span> <span class="st">"Prophet trend component with detected changepoints"</span>,</span>
+<span id="cb10-9"><a></a>    <span class="at">y     =</span> <span class="st">"Trend"</span>,</span>
+<span id="cb10-10"><a></a>    <span class="at">x     =</span> <span class="cn">NULL</span></span>
+<span id="cb10-11"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="prophet_files/figure-html/lax-changepoints-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img data-src="prophet_files/figure-html/lax-changepoints-1.png" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="model-comparison" class="title-slide slide level1 center">
+<h1>Model Comparison</h1>
+
+</section>
+<section id="section-20" class="slide level2">
+<h2></h2>
+<p>Let’s put all models side by side — zooming in on the test period:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>p <span class="ot">&lt;-</span> lax_fc <span class="sc">|&gt;</span></span>
+<span id="cb11-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> month, <span class="at">y =</span> .mean, <span class="at">color =</span> .model)) <span class="sc">+</span></span>
+<span id="cb11-3"><a></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb11-4"><a></a>  <span class="fu">geom_line</span>(</span>
+<span id="cb11-5"><a></a>    <span class="at">data  =</span> lax_passengers <span class="sc">|&gt;</span> <span class="fu">filter_index</span>(<span class="st">"2015 Jan."</span> <span class="sc">~</span> .),</span>
+<span id="cb11-6"><a></a>    <span class="fu">aes</span>(<span class="at">y =</span> passengers, <span class="at">color =</span> <span class="cn">NULL</span>),</span>
+<span id="cb11-7"><a></a>    <span class="at">color =</span> <span class="st">"grey30"</span>,</span>
+<span id="cb11-8"><a></a>    <span class="at">linewidth =</span> <span class="fl">0.8</span></span>
+<span id="cb11-9"><a></a>  ) <span class="sc">+</span></span>
+<span id="cb11-10"><a></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> type, <span class="at">ncol =</span> <span class="dv">1</span>, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
+<span id="cb11-11"><a></a>  <span class="fu">labs</span>(</span>
+<span id="cb11-12"><a></a>    <span class="at">title =</span> <span class="st">"All models: point forecast comparison"</span>,</span>
+<span id="cb11-13"><a></a>    <span class="at">y     =</span> <span class="st">"Passengers"</span>,</span>
+<span id="cb11-14"><a></a>    <span class="at">x     =</span> <span class="cn">NULL</span>,</span>
+<span id="cb11-15"><a></a>    <span class="at">color =</span> <span class="st">"Model"</span></span>
+<span id="cb11-16"><a></a>  ) <span class="sc">+</span></span>
+<span id="cb11-17"><a></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span>
+<span id="cb11-18"><a></a></span>
+<span id="cb11-19"><a></a><span class="fu">ggplotly</span>(p)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="plotly html-widget html-fill-item" id="htmlwidget-fb386a53ffff8a890268" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-fb386a53ffff8a890268">{"x":{"data":[{"x":[17532,17563,17591,17622,17652,17683,17713,17744,17775,17805,17836,17866,17897,17928,17956,17987,18017,18048,18078,18109,18140,18170,18201,18231],"y":[4659165.0559936557,4289005.0370399263,5120584.8589384491,5036109.6595851034,5290578.3905900083,5659544.5348755606,5873318.9322397001,5710255.5923441127,4966235.4952727966,5295001.1833179481,5053832.2537836991,5230103.3807656653,4862393.495202329,4492233.4762485996,5323813.2981471214,5239338.0987937758,5493806.8297986798,5862772.974084232,6076547.3714483716,5913484.0315527841,5169463.9344814681,5498229.6225266196,5257060.6929923706,5433331.8199743368],"text":["month: 2018 ene.<br />.mean: 4659165<br />.model: ARIMA","month: 2018 feb.<br />.mean: 4289005<br />.model: ARIMA","month: 2018 mar.<br />.mean: 5120585<br />.model: ARIMA","month: 2018 abr.<br />.mean: 5036110<br />.model: ARIMA","month: 2018 may.<br />.mean: 5290578<br />.model: ARIMA","month: 2018 jun.<br />.mean: 5659545<br />.model: ARIMA","month: 2018 jul.<br />.mean: 5873319<br />.model: ARIMA","month: 2018 ago.<br />.mean: 5710256<br />.model: ARIMA","month: 2018 sep.<br />.mean: 4966235<br />.model: ARIMA","month: 2018 oct.<br />.mean: 5295001<br />.model: ARIMA","month: 2018 nov.<br />.mean: 5053832<br />.model: ARIMA","month: 2018 dic.<br />.mean: 5230103<br />.model: ARIMA","month: 2019 ene.<br />.mean: 4862393<br />.model: ARIMA","month: 2019 feb.<br />.mean: 4492233<br />.model: ARIMA","month: 2019 mar.<br />.mean: 5323813<br />.model: ARIMA","month: 2019 abr.<br />.mean: 5239338<br />.model: ARIMA","month: 2019 may.<br />.mean: 5493807<br />.model: ARIMA","month: 2019 jun.<br />.mean: 5862773<br />.model: ARIMA","month: 2019 jul.<br />.mean: 6076547<br />.model: ARIMA","month: 2019 ago.<br />.mean: 5913484<br />.model: ARIMA","month: 2019 sep.<br />.mean: 5169464<br />.model: ARIMA","month: 2019 oct.<br />.mean: 5498230<br />.model: ARIMA","month: 2019 nov.<br />.mean: 5257061<br />.model: ARIMA","month: 2019 dic.<br />.mean: 5433332<br />.model: ARIMA"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(248,118,109,1)","dash":"solid"},"hoveron":"points","name":"ARIMA","legendgroup":"ARIMA","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[17532,17563,17591,17622,17652,17683,17713,17744,17775,17805,17836,17866,17897,17928,17956,17987,18017,18048,18078,18109,18140,18170,18201,18231],"y":[2105174.2220572885,1777733.4297992047,2027140.8959964339,2096360.7078201165,2200798.0838190373,2381099.5297811907,2608297.4597983249,2538106.1872719564,2187925.2255320502,2179934.0082655773,2034503.6822295098,2242775.6500958619,2247021.3981236983,1919580.6058656145,2168988.0720628435,2238207.8838865263,2342645.2598854471,2522946.7058476005,2750144.6358647346,2679953.3633383662,2329772.40159846,2321781.1843319871,2176350.8582959194,2384622.8261622712],"text":["month: 2018 ene.<br />.mean: 2105174<br />.model: ARIMA","month: 2018 feb.<br />.mean: 1777733<br />.model: ARIMA","month: 2018 mar.<br />.mean: 2027141<br />.model: ARIMA","month: 2018 abr.<br />.mean: 2096361<br />.model: ARIMA","month: 2018 may.<br />.mean: 2200798<br />.model: ARIMA","month: 2018 jun.<br />.mean: 2381100<br />.model: ARIMA","month: 2018 jul.<br />.mean: 2608297<br />.model: ARIMA","month: 2018 ago.<br />.mean: 2538106<br />.model: ARIMA","month: 2018 sep.<br />.mean: 2187925<br />.model: ARIMA","month: 2018 oct.<br />.mean: 2179934<br />.model: ARIMA","month: 2018 nov.<br />.mean: 2034504<br />.model: ARIMA","month: 2018 dic.<br />.mean: 2242776<br />.model: ARIMA","month: 2019 ene.<br />.mean: 2247021<br />.model: ARIMA","month: 2019 feb.<br />.mean: 1919581<br />.model: ARIMA","month: 2019 mar.<br />.mean: 2168988<br />.model: ARIMA","month: 2019 abr.<br />.mean: 2238208<br />.model: ARIMA","month: 2019 may.<br />.mean: 2342645<br />.model: ARIMA","month: 2019 jun.<br />.mean: 2522947<br />.model: ARIMA","month: 2019 jul.<br />.mean: 2750145<br />.model: ARIMA","month: 2019 ago.<br />.mean: 2679953<br />.model: ARIMA","month: 2019 sep.<br />.mean: 2329772<br />.model: ARIMA","month: 2019 oct.<br />.mean: 2321781<br />.model: ARIMA","month: 2019 nov.<br />.mean: 2176351<br />.model: ARIMA","month: 2019 dic.<br />.mean: 2384623<br />.model: ARIMA"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(248,118,109,1)","dash":"solid"},"hoveron":"points","name":"ARIMA","legendgroup":"ARIMA","showlegend":false,"xaxis":"x","yaxis":"y2","hoverinfo":"text","frame":null},{"x":[17532,17563,17591,17622,17652,17683,17713,17744,17775,17805,17836,17866,17897,17928,17956,17987,18017,18048,18078,18109,18140,18170,18201,18231],"y":[4719117.1306578536,4420552.0489695519,5145977.0365782185,5069349.407233106,5293297.5407073023,5584954.1997571085,5819911.037573155,5715573.6649071602,4961543.0815803837,5200341.1475477628,5014424.92668413,5233865.1679010931,4902867.1762807714,4604302.0945924707,5329727.0822011372,5253099.4528560238,5477047.586330221,5768704.2453800272,6003661.0831960728,5899323.710530079,5145293.1272033025,5384091.1931706807,5198174.9723070487,5417615.2135240119],"text":["month: 2018 ene.<br />.mean: 4719117<br />.model: ETS","month: 2018 feb.<br />.mean: 4420552<br />.model: ETS","month: 2018 mar.<br />.mean: 5145977<br />.model: ETS","month: 2018 abr.<br />.mean: 5069349<br />.model: ETS","month: 2018 may.<br />.mean: 5293298<br />.model: ETS","month: 2018 jun.<br />.mean: 5584954<br />.model: ETS","month: 2018 jul.<br />.mean: 5819911<br />.model: ETS","month: 2018 ago.<br />.mean: 5715574<br />.model: ETS","month: 2018 sep.<br />.mean: 4961543<br />.model: ETS","month: 2018 oct.<br />.mean: 5200341<br />.model: ETS","month: 2018 nov.<br />.mean: 5014425<br />.model: ETS","month: 2018 dic.<br />.mean: 5233865<br />.model: ETS","month: 2019 ene.<br />.mean: 4902867<br />.model: ETS","month: 2019 feb.<br />.mean: 4604302<br />.model: ETS","month: 2019 mar.<br />.mean: 5329727<br />.model: ETS","month: 2019 abr.<br />.mean: 5253099<br />.model: ETS","month: 2019 may.<br />.mean: 5477048<br />.model: ETS","month: 2019 jun.<br />.mean: 5768704<br />.model: ETS","month: 2019 jul.<br />.mean: 6003661<br />.model: ETS","month: 2019 ago.<br />.mean: 5899324<br />.model: ETS","month: 2019 sep.<br />.mean: 5145293<br />.model: ETS","month: 2019 oct.<br />.mean: 5384091<br />.model: ETS","month: 2019 nov.<br />.mean: 5198175<br />.model: ETS","month: 2019 dic.<br />.mean: 5417615<br />.model: ETS"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(163,165,0,1)","dash":"solid"},"hoveron":"points","name":"ETS","legendgroup":"ETS","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[17532,17563,17591,17622,17652,17683,17713,17744,17775,17805,17836,17866,17897,17928,17956,17987,18017,18048,18078,18109,18140,18170,18201,18231],"y":[2114295.7974868226,1749323.9770979374,2032306.9500779097,2024453.4789101614,2116873.1237909705,2266898.9626254458,2511690.742095618,2448138.9053292056,2044382.6033848489,2042661.4849410988,1880012.9551487928,2102216.3790685758,2114296.0256115203,1749324.1658435252,2032307.1693563138,2024453.6973412051,2116873.3521937518,2266899.2072154605,2511691.0130977603,2448139.16947434,2044382.8239661714,2042661.7053367191,1880013.1579952382,2102216.6058899486],"text":["month: 2018 ene.<br />.mean: 2114296<br />.model: ETS","month: 2018 feb.<br />.mean: 1749324<br />.model: ETS","month: 2018 mar.<br />.mean: 2032307<br />.model: ETS","month: 2018 abr.<br />.mean: 2024453<br />.model: ETS","month: 2018 may.<br />.mean: 2116873<br />.model: ETS","month: 2018 jun.<br />.mean: 2266899<br />.model: ETS","month: 2018 jul.<br />.mean: 2511691<br />.model: ETS","month: 2018 ago.<br />.mean: 2448139<br />.model: ETS","month: 2018 sep.<br />.mean: 2044383<br />.model: ETS","month: 2018 oct.<br />.mean: 2042661<br />.model: ETS","month: 2018 nov.<br />.mean: 1880013<br />.model: ETS","month: 2018 dic.<br />.mean: 2102216<br />.model: ETS","month: 2019 ene.<br />.mean: 2114296<br />.model: ETS","month: 2019 feb.<br />.mean: 1749324<br />.model: ETS","month: 2019 mar.<br />.mean: 2032307<br />.model: ETS","month: 2019 abr.<br />.mean: 2024454<br />.model: ETS","month: 2019 may.<br />.mean: 2116873<br />.model: ETS","month: 2019 jun.<br />.mean: 2266899<br />.model: ETS","month: 2019 jul.<br />.mean: 2511691<br />.model: ETS","month: 2019 ago.<br />.mean: 2448139<br />.model: ETS","month: 2019 sep.<br />.mean: 2044383<br />.model: ETS","month: 2019 oct.<br />.mean: 2042662<br />.model: ETS","month: 2019 nov.<br />.mean: 1880013<br />.model: ETS","month: 2019 dic.<br />.mean: 2102217<br />.model: ETS"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(163,165,0,1)","dash":"solid"},"hoveron":"points","name":"ETS","legendgroup":"ETS","showlegend":false,"xaxis":"x","yaxis":"y2","hoverinfo":"text","frame":null},{"x":[17532,17563,17591,17622,17652,17683,17713,17744,17775,17805,17836,17866,17897,17928,17956,17987,18017,18048,18078,18109,18140,18170,18201,18231],"y":[4762447.3218680872,4436486.4893945977,5158006.5493694795,5029427.670437634,5326309.9772263672,5559935.2156500015,5755229.3252598662,5727204.6255116891,4967419.1336706635,5035879.0542043857,5141899.2522051381,5088499.9517436493,4824233.5234494358,4667495.1472023018,5148324.403589475,5255115.8140339851,5385198.9143985547,5682430.8366689989,5918383.48483897,5772921.2549813092,5163287.5604946688,5094916.283744812,5289286.9341253266,5212441.8136390848],"text":["month: 2018 ene.<br />.mean: 4762447<br />.model: Harmonic","month: 2018 feb.<br />.mean: 4436486<br />.model: Harmonic","month: 2018 mar.<br />.mean: 5158007<br />.model: Harmonic","month: 2018 abr.<br />.mean: 5029428<br />.model: Harmonic","month: 2018 may.<br />.mean: 5326310<br />.model: Harmonic","month: 2018 jun.<br />.mean: 5559935<br />.model: Harmonic","month: 2018 jul.<br />.mean: 5755229<br />.model: Harmonic","month: 2018 ago.<br />.mean: 5727205<br />.model: Harmonic","month: 2018 sep.<br />.mean: 4967419<br />.model: Harmonic","month: 2018 oct.<br />.mean: 5035879<br />.model: Harmonic","month: 2018 nov.<br />.mean: 5141899<br />.model: Harmonic","month: 2018 dic.<br />.mean: 5088500<br />.model: Harmonic","month: 2019 ene.<br />.mean: 4824234<br />.model: Harmonic","month: 2019 feb.<br />.mean: 4667495<br />.model: Harmonic","month: 2019 mar.<br />.mean: 5148324<br />.model: Harmonic","month: 2019 abr.<br />.mean: 5255116<br />.model: Harmonic","month: 2019 may.<br />.mean: 5385199<br />.model: Harmonic","month: 2019 jun.<br />.mean: 5682431<br />.model: Harmonic","month: 2019 jul.<br />.mean: 5918383<br />.model: Harmonic","month: 2019 ago.<br />.mean: 5772921<br />.model: Harmonic","month: 2019 sep.<br />.mean: 5163288<br />.model: Harmonic","month: 2019 oct.<br />.mean: 5094916<br />.model: Harmonic","month: 2019 nov.<br />.mean: 5289287<br />.model: Harmonic","month: 2019 dic.<br />.mean: 5212442<br />.model: Harmonic"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(0,191,125,1)","dash":"solid"},"hoveron":"points","name":"Harmonic","legendgroup":"Harmonic","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[17532,17563,17591,17622,17652,17683,17713,17744,17775,17805,17836,17866,17897,17928,17956,17987,18017,18048,18078,18109,18140,18170,18201,18231],"y":[2023964.1857996003,1851988.075533712,2034569.7293191669,1984050.6932803472,2131855.9883247912,2217934.2255606903,2327002.070456306,2366650.9538093312,2060082.4438642673,1957957.9226454992,1987545.5873655071,2054314.4866732082,2019498.9094065295,1895529.1415900702,1973711.3151994329,2039559.7667978457,2097979.75018179,2224054.4025213453,2344792.000067336,2335490.7017654032,2092072.1812103463,1935335.2569681134,1995657.2897369515,2060242.310902037],"text":["month: 2018 ene.<br />.mean: 2023964<br />.model: Harmonic","month: 2018 feb.<br />.mean: 1851988<br />.model: Harmonic","month: 2018 mar.<br />.mean: 2034570<br />.model: Harmonic","month: 2018 abr.<br />.mean: 1984051<br />.model: Harmonic","month: 2018 may.<br />.mean: 2131856<br />.model: Harmonic","month: 2018 jun.<br />.mean: 2217934<br />.model: Harmonic","month: 2018 jul.<br />.mean: 2327002<br />.model: Harmonic","month: 2018 ago.<br />.mean: 2366651<br />.model: Harmonic","month: 2018 sep.<br />.mean: 2060082<br />.model: Harmonic","month: 2018 oct.<br />.mean: 1957958<br />.model: Harmonic","month: 2018 nov.<br />.mean: 1987546<br />.model: Harmonic","month: 2018 dic.<br />.mean: 2054314<br />.model: Harmonic","month: 2019 ene.<br />.mean: 2019499<br />.model: Harmonic","month: 2019 feb.<br />.mean: 1895529<br />.model: Harmonic","month: 2019 mar.<br />.mean: 1973711<br />.model: Harmonic","month: 2019 abr.<br />.mean: 2039560<br />.model: Harmonic","month: 2019 may.<br />.mean: 2097980<br />.model: Harmonic","month: 2019 jun.<br />.mean: 2224054<br />.model: Harmonic","month: 2019 jul.<br />.mean: 2344792<br />.model: Harmonic","month: 2019 ago.<br />.mean: 2335491<br />.model: Harmonic","month: 2019 sep.<br />.mean: 2092072<br />.model: Harmonic","month: 2019 oct.<br />.mean: 1935335<br />.model: Harmonic","month: 2019 nov.<br />.mean: 1995657<br />.model: Harmonic","month: 2019 dic.<br />.mean: 2060242<br />.model: Harmonic"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(0,191,125,1)","dash":"solid"},"hoveron":"points","name":"Harmonic","legendgroup":"Harmonic","showlegend":false,"xaxis":"x","yaxis":"y2","hoverinfo":"text","frame":null},{"x":[17532,17563,17591,17622,17652,17683,17713,17744,17775,17805,17836,17866,17897,17928,17956,17987,18017,18048,18078,18109,18140,18170,18201,18231],"y":[4660926.3750136252,4247132.9065982802,5179194.4855465228,5115230.9463997008,5393661.556595617,5754394.6356636696,6081474.4188106051,5935730.7029148526,4956000.5831527645,5292590.3308998998,5050399.7498945612,5299989.78324157,4865876.9096397776,4488578.7173602581,5372060.240380574,5364014.9516423922,5652797.9613265051,5998161.8393193819,6366281.1732113352,6214312.7974867085,5172805.2926329942,5524182.9426960759,5304454.426799844,5517661.7503557205],"text":["month: 2018 ene.<br />.mean: 4660926<br />.model: Prophet","month: 2018 feb.<br />.mean: 4247133<br />.model: Prophet","month: 2018 mar.<br />.mean: 5179194<br />.model: Prophet","month: 2018 abr.<br />.mean: 5115231<br />.model: Prophet","month: 2018 may.<br />.mean: 5393662<br />.model: Prophet","month: 2018 jun.<br />.mean: 5754395<br />.model: Prophet","month: 2018 jul.<br />.mean: 6081474<br />.model: Prophet","month: 2018 ago.<br />.mean: 5935731<br />.model: Prophet","month: 2018 sep.<br />.mean: 4956001<br />.model: Prophet","month: 2018 oct.<br />.mean: 5292590<br />.model: Prophet","month: 2018 nov.<br />.mean: 5050400<br />.model: Prophet","month: 2018 dic.<br />.mean: 5299990<br />.model: Prophet","month: 2019 ene.<br />.mean: 4865877<br />.model: Prophet","month: 2019 feb.<br />.mean: 4488579<br />.model: Prophet","month: 2019 mar.<br />.mean: 5372060<br />.model: Prophet","month: 2019 abr.<br />.mean: 5364015<br />.model: Prophet","month: 2019 may.<br />.mean: 5652798<br />.model: Prophet","month: 2019 jun.<br />.mean: 5998162<br />.model: Prophet","month: 2019 jul.<br />.mean: 6366281<br />.model: Prophet","month: 2019 ago.<br />.mean: 6214313<br />.model: Prophet","month: 2019 sep.<br />.mean: 5172805<br />.model: Prophet","month: 2019 oct.<br />.mean: 5524183<br />.model: Prophet","month: 2019 nov.<br />.mean: 5304454<br />.model: Prophet","month: 2019 dic.<br />.mean: 5517662<br />.model: Prophet"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(0,176,246,1)","dash":"solid"},"hoveron":"points","name":"Prophet","legendgroup":"Prophet","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[17532,17563,17591,17622,17652,17683,17713,17744,17775,17805,17836,17866,17897,17928,17956,17987,18017,18048,18078,18109,18140,18170,18201,18231],"y":[2150716.1954734647,1791998.9552983844,2101612.4064081181,2128079.1791577702,2249481.0102727665,2420045.2979061422,2685132.2896116185,2634785.0454352405,2207425.843325566,2219411.9251386393,2047850.3514208845,2289869.6273383792,2321322.729079789,1946864.1202727875,2253849.062207202,2294106.722917838,2432437.2598063103,2595839.9180064714,2892803.8595830398,2842791.4897232391,2371938.2724841265,2391729.5782143469,2204704.065909578,2454060.429248523],"text":["month: 2018 ene.<br />.mean: 2150716<br />.model: Prophet","month: 2018 feb.<br />.mean: 1791999<br />.model: Prophet","month: 2018 mar.<br />.mean: 2101612<br />.model: Prophet","month: 2018 abr.<br />.mean: 2128079<br />.model: Prophet","month: 2018 may.<br />.mean: 2249481<br />.model: Prophet","month: 2018 jun.<br />.mean: 2420045<br />.model: Prophet","month: 2018 jul.<br />.mean: 2685132<br />.model: Prophet","month: 2018 ago.<br />.mean: 2634785<br />.model: Prophet","month: 2018 sep.<br />.mean: 2207426<br />.model: Prophet","month: 2018 oct.<br />.mean: 2219412<br />.model: Prophet","month: 2018 nov.<br />.mean: 2047850<br />.model: Prophet","month: 2018 dic.<br />.mean: 2289870<br />.model: Prophet","month: 2019 ene.<br />.mean: 2321323<br />.model: Prophet","month: 2019 feb.<br />.mean: 1946864<br />.model: Prophet","month: 2019 mar.<br />.mean: 2253849<br />.model: Prophet","month: 2019 abr.<br />.mean: 2294107<br />.model: Prophet","month: 2019 may.<br />.mean: 2432437<br />.model: Prophet","month: 2019 jun.<br />.mean: 2595840<br />.model: Prophet","month: 2019 jul.<br />.mean: 2892804<br />.model: Prophet","month: 2019 ago.<br />.mean: 2842791<br />.model: Prophet","month: 2019 sep.<br />.mean: 2371938<br />.model: Prophet","month: 2019 oct.<br />.mean: 2391730<br />.model: Prophet","month: 2019 nov.<br />.mean: 2204704<br />.model: Prophet","month: 2019 dic.<br />.mean: 2454060<br />.model: Prophet"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(0,176,246,1)","dash":"solid"},"hoveron":"points","name":"Prophet","legendgroup":"Prophet","showlegend":false,"xaxis":"x","yaxis":"y2","hoverinfo":"text","frame":null},{"x":[17532,17563,17591,17622,17652,17683,17713,17744,17775,17805,17836,17866,17897,17928,17956,17987,18017,18048,18078,18109,18140,18170,18201,18231],"y":[4749345.941122992,4463931.072475872,5191223.146434322,5150857.0967458738,5370540.0047788071,5651404.8906367347,5908289.7791645685,5826055.557519122,5033542.5049681608,5277536.5513591357,5130743.0314951902,5309646.9582181638,5012708.7195921345,4744582.3353210781,5401192.260513314,5372014.0405380856,5647570.7340313084,5862292.0695735468,6114137.3031371972,6050795.3470262652,5302860.2708433867,5550094.2518134629,5401425.5947278021,5556671.8794403467],"text":["month: 2018 ene.<br />.mean: 4749346<br />.model: Prophet_auto","month: 2018 feb.<br />.mean: 4463931<br />.model: Prophet_auto","month: 2018 mar.<br />.mean: 5191223<br />.model: Prophet_auto","month: 2018 abr.<br />.mean: 5150857<br />.model: Prophet_auto","month: 2018 may.<br />.mean: 5370540<br />.model: Prophet_auto","month: 2018 jun.<br />.mean: 5651405<br />.model: Prophet_auto","month: 2018 jul.<br />.mean: 5908290<br />.model: Prophet_auto","month: 2018 ago.<br />.mean: 5826056<br />.model: Prophet_auto","month: 2018 sep.<br />.mean: 5033543<br />.model: Prophet_auto","month: 2018 oct.<br />.mean: 5277537<br />.model: Prophet_auto","month: 2018 nov.<br />.mean: 5130743<br />.model: Prophet_auto","month: 2018 dic.<br />.mean: 5309647<br />.model: Prophet_auto","month: 2019 ene.<br />.mean: 5012709<br />.model: Prophet_auto","month: 2019 feb.<br />.mean: 4744582<br />.model: Prophet_auto","month: 2019 mar.<br />.mean: 5401192<br />.model: Prophet_auto","month: 2019 abr.<br />.mean: 5372014<br />.model: Prophet_auto","month: 2019 may.<br />.mean: 5647571<br />.model: Prophet_auto","month: 2019 jun.<br />.mean: 5862292<br />.model: Prophet_auto","month: 2019 jul.<br />.mean: 6114137<br />.model: Prophet_auto","month: 2019 ago.<br />.mean: 6050795<br />.model: Prophet_auto","month: 2019 sep.<br />.mean: 5302860<br />.model: Prophet_auto","month: 2019 oct.<br />.mean: 5550094<br />.model: Prophet_auto","month: 2019 nov.<br />.mean: 5401426<br />.model: Prophet_auto","month: 2019 dic.<br />.mean: 5556672<br />.model: Prophet_auto"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(231,107,243,1)","dash":"solid"},"hoveron":"points","name":"Prophet_auto","legendgroup":"Prophet_auto","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[17532,17563,17591,17622,17652,17683,17713,17744,17775,17805,17836,17866,17897,17928,17956,17987,18017,18048,18078,18109,18140,18170,18201,18231],"y":[2140805.6730141887,1925507.8901860954,2141219.4434629348,2140497.2460232913,2237775.9757312695,2349010.1071498231,2528987.0778645179,2483947.0218909262,2243195.2548184674,2226372.3866993831,2143032.4209193792,2315471.4134328379,2322448.2649096157,2084703.5959456044,2274838.861511745,2309527.4089027513,2386719.5790741635,2541018.250318191,2696128.0122781871,2690627.1793765011,2382177.100004748,2409865.8765349369,2297123.3868653718,2447688.2174431542],"text":["month: 2018 ene.<br />.mean: 2140806<br />.model: Prophet_auto","month: 2018 feb.<br />.mean: 1925508<br />.model: Prophet_auto","month: 2018 mar.<br />.mean: 2141219<br />.model: Prophet_auto","month: 2018 abr.<br />.mean: 2140497<br />.model: Prophet_auto","month: 2018 may.<br />.mean: 2237776<br />.model: Prophet_auto","month: 2018 jun.<br />.mean: 2349010<br />.model: Prophet_auto","month: 2018 jul.<br />.mean: 2528987<br />.model: Prophet_auto","month: 2018 ago.<br />.mean: 2483947<br />.model: Prophet_auto","month: 2018 sep.<br />.mean: 2243195<br />.model: Prophet_auto","month: 2018 oct.<br />.mean: 2226372<br />.model: Prophet_auto","month: 2018 nov.<br />.mean: 2143032<br />.model: Prophet_auto","month: 2018 dic.<br />.mean: 2315471<br />.model: Prophet_auto","month: 2019 ene.<br />.mean: 2322448<br />.model: Prophet_auto","month: 2019 feb.<br />.mean: 2084704<br />.model: Prophet_auto","month: 2019 mar.<br />.mean: 2274839<br />.model: Prophet_auto","month: 2019 abr.<br />.mean: 2309527<br />.model: Prophet_auto","month: 2019 may.<br />.mean: 2386720<br />.model: Prophet_auto","month: 2019 jun.<br />.mean: 2541018<br />.model: Prophet_auto","month: 2019 jul.<br />.mean: 2696128<br />.model: Prophet_auto","month: 2019 ago.<br />.mean: 2690627<br />.model: Prophet_auto","month: 2019 sep.<br />.mean: 2382177<br />.model: Prophet_auto","month: 2019 oct.<br />.mean: 2409866<br />.model: Prophet_auto","month: 2019 nov.<br />.mean: 2297123<br />.model: Prophet_auto","month: 2019 dic.<br />.mean: 2447688<br />.model: Prophet_auto"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(231,107,243,1)","dash":"solid"},"hoveron":"points","name":"Prophet_auto","legendgroup":"Prophet_auto","showlegend":false,"xaxis":"x","yaxis":"y2","hoverinfo":"text","frame":null},{"x":[16436,16467,16495,16526,16556,16587,16617,16648,16679,16709,16740,16770,16801,16832,16861,16892,16922,16953,16983,17014,17045,17075,17106,17136,17167,17198,17226,17257,17287,17318,17348,17379,17410,17440,17471,17501,17532,17563,17591,17622,17652,17683,17713,17744,17775,17805,17836,17866,17897,17928,17956],"y":[3855840,3591899,4438362,4345205,4622356,4903244,5179541,5024078,4283849,4630920,4450250,4655803,4296107,3960323,4737864,4583897,4919302,5419692,5583966,5359178,4684869,4936605,4735585,4865684,4449434,3999177,4907598,4870135,5085333,5456452,5662491,5509693,4739872,5160304,4891079,4997001,4616186,4282782,5134354,5073331,5351468,5615201,5847496,5647063,4774099,5132670,4983499,5119482,4685933,4334938,5322333],"text":["month: 2015 ene.<br />passengers: 3855840","month: 2015 feb.<br />passengers: 3591899","month: 2015 mar.<br />passengers: 4438362","month: 2015 abr.<br />passengers: 4345205","month: 2015 may.<br />passengers: 4622356","month: 2015 jun.<br />passengers: 4903244","month: 2015 jul.<br />passengers: 5179541","month: 2015 ago.<br />passengers: 5024078","month: 2015 sep.<br />passengers: 4283849","month: 2015 oct.<br />passengers: 4630920","month: 2015 nov.<br />passengers: 4450250","month: 2015 dic.<br />passengers: 4655803","month: 2016 ene.<br />passengers: 4296107","month: 2016 feb.<br />passengers: 3960323","month: 2016 mar.<br />passengers: 4737864","month: 2016 abr.<br />passengers: 4583897","month: 2016 may.<br />passengers: 4919302","month: 2016 jun.<br />passengers: 5419692","month: 2016 jul.<br />passengers: 5583966","month: 2016 ago.<br />passengers: 5359178","month: 2016 sep.<br />passengers: 4684869","month: 2016 oct.<br />passengers: 4936605","month: 2016 nov.<br />passengers: 4735585","month: 2016 dic.<br />passengers: 4865684","month: 2017 ene.<br />passengers: 4449434","month: 2017 feb.<br />passengers: 3999177","month: 2017 mar.<br />passengers: 4907598","month: 2017 abr.<br />passengers: 4870135","month: 2017 may.<br />passengers: 5085333","month: 2017 jun.<br />passengers: 5456452","month: 2017 jul.<br />passengers: 5662491","month: 2017 ago.<br />passengers: 5509693","month: 2017 sep.<br />passengers: 4739872","month: 2017 oct.<br />passengers: 5160304","month: 2017 nov.<br />passengers: 4891079","month: 2017 dic.<br />passengers: 4997001","month: 2018 ene.<br />passengers: 4616186","month: 2018 feb.<br />passengers: 4282782","month: 2018 mar.<br />passengers: 5134354","month: 2018 abr.<br />passengers: 5073331","month: 2018 may.<br />passengers: 5351468","month: 2018 jun.<br />passengers: 5615201","month: 2018 jul.<br />passengers: 5847496","month: 2018 ago.<br />passengers: 5647063","month: 2018 sep.<br />passengers: 4774099","month: 2018 oct.<br />passengers: 5132670","month: 2018 nov.<br />passengers: 4983499","month: 2018 dic.<br />passengers: 5119482","month: 2019 ene.<br />passengers: 4685933","month: 2019 feb.<br />passengers: 4334938","month: 2019 mar.<br />passengers: 5322333"],"type":"scatter","mode":"lines","line":{"width":3.0236220472440949,"color":"rgba(77,77,77,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[16436,16467,16495,16526,16556,16587,16617,16648,16679,16709,16740,16770,16801,16832,16861,16892,16922,16953,16983,17014,17045,17075,17106,17136,17167,17198,17226,17257,17287,17318,17348,17379,17410,17440,17471,17501,17532,17563,17591,17622,17652,17683,17713,17744,17775,17805,17836,17866,17897,17928,17956],"y":[1583354,1358696,1588235,1593110,1734621,1887034,2095978,2085096,1743221,1744132,1566739,1739163,1772602,1506520,1738410,1721868,1864699,2069986,2305429,2235832,1918247,1928633,1760533,2006577,1995153,1605067,1871802,2004102,2082118,2270430,2513538,2420389,2045217,2026289,1894894,2100932,2070921,1760497,2095733,2087037,2193409,2397268,2582934,2490347,2108425,2124616,1959826,2085713,2080077,1731463,2046465],"text":["month: 2015 ene.<br />passengers: 1583354","month: 2015 feb.<br />passengers: 1358696","month: 2015 mar.<br />passengers: 1588235","month: 2015 abr.<br />passengers: 1593110","month: 2015 may.<br />passengers: 1734621","month: 2015 jun.<br />passengers: 1887034","month: 2015 jul.<br />passengers: 2095978","month: 2015 ago.<br />passengers: 2085096","month: 2015 sep.<br />passengers: 1743221","month: 2015 oct.<br />passengers: 1744132","month: 2015 nov.<br />passengers: 1566739","month: 2015 dic.<br />passengers: 1739163","month: 2016 ene.<br />passengers: 1772602","month: 2016 feb.<br />passengers: 1506520","month: 2016 mar.<br />passengers: 1738410","month: 2016 abr.<br />passengers: 1721868","month: 2016 may.<br />passengers: 1864699","month: 2016 jun.<br />passengers: 2069986","month: 2016 jul.<br />passengers: 2305429","month: 2016 ago.<br />passengers: 2235832","month: 2016 sep.<br />passengers: 1918247","month: 2016 oct.<br />passengers: 1928633","month: 2016 nov.<br />passengers: 1760533","month: 2016 dic.<br />passengers: 2006577","month: 2017 ene.<br />passengers: 1995153","month: 2017 feb.<br />passengers: 1605067","month: 2017 mar.<br />passengers: 1871802","month: 2017 abr.<br />passengers: 2004102","month: 2017 may.<br />passengers: 2082118","month: 2017 jun.<br />passengers: 2270430","month: 2017 jul.<br />passengers: 2513538","month: 2017 ago.<br />passengers: 2420389","month: 2017 sep.<br />passengers: 2045217","month: 2017 oct.<br />passengers: 2026289","month: 2017 nov.<br />passengers: 1894894","month: 2017 dic.<br />passengers: 2100932","month: 2018 ene.<br />passengers: 2070921","month: 2018 feb.<br />passengers: 1760497","month: 2018 mar.<br />passengers: 2095733","month: 2018 abr.<br />passengers: 2087037","month: 2018 may.<br />passengers: 2193409","month: 2018 jun.<br />passengers: 2397268","month: 2018 jul.<br />passengers: 2582934","month: 2018 ago.<br />passengers: 2490347","month: 2018 sep.<br />passengers: 2108425","month: 2018 oct.<br />passengers: 2124616","month: 2018 nov.<br />passengers: 1959826","month: 2018 dic.<br />passengers: 2085713","month: 2019 ene.<br />passengers: 2080077","month: 2019 feb.<br />passengers: 1731463","month: 2019 mar.<br />passengers: 2046465"],"type":"scatter","mode":"lines","line":{"width":3.0236220472440949,"color":"rgba(77,77,77,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y2","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":52.529680365296812,"r":7.3059360730593621,"b":22.648401826484022,"l":66.484018264840202},"plot_bgcolor":"rgba(235,235,235,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"title":{"text":"All models: point forecast comparison","font":{"color":"rgba(0,0,0,1)","family":"","size":17.534246575342465},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[16346.25,18320.75],"tickmode":"array","ticktext":["2016 ene.","2018 ene.","2020 ene."],"tickvals":[16801,17532,18262],"categoryorder":"array","categoryarray":["2016 ene.","2018 ene.","2020 ene."],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"y2","title":"","hoverformat":".2f"},"yaxis":{"domain":[0.51484018264840181,1],"automargin":true,"type":"linear","autorange":false,"range":[3453179.8913394334,6505000.2818719018],"tickmode":"array","ticktext":["3500000","4000000","4500000","5000000","5500000","6000000","6500000"],"tickvals":[3500000,4000000,4500000,5000000,5500000,6000000,6500000],"categoryorder":"array","categoryarray":["3500000","4000000","4500000","5000000","5500000","6000000","6500000"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"x","title":"","hoverformat":".2f"},"annotations":[{"text":"Passengers","x":0,"y":0.5,"showarrow":false,"ax":0,"ay":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"xref":"paper","yref":"paper","textangle":-90,"xanchor":"right","yanchor":"center","annotationType":"axis","xshift":-51.14155251141554},{"text":"Domestic","x":0.5,"y":1,"showarrow":false,"ax":0,"ay":0,"font":{"color":"rgba(26,26,26,1)","family":"","size":11.68949771689498},"xref":"paper","yref":"paper","textangle":-0,"xanchor":"center","yanchor":"bottom"},{"text":"International","x":0.5,"y":0.48515981735159819,"showarrow":false,"ax":0,"ay":0,"font":{"color":"rgba(26,26,26,1)","family":"","size":11.68949771689498},"xref":"paper","yref":"paper","textangle":-0,"xanchor":"center","yanchor":"bottom"}],"shapes":[{"type":"rect","fillcolor":"rgba(217,217,217,1)","line":{"color":"transparent","width":0.66417600664176002,"linetype":"solid"},"yref":"paper","xref":"paper","layer":"below","x0":0,"x1":1,"y0":0,"y1":23.37899543378996,"yanchor":1,"ysizemode":"pixel"},{"type":"rect","fillcolor":"rgba(217,217,217,1)","line":{"color":"transparent","width":0.66417600664176002,"linetype":"solid"},"yref":"paper","xref":"paper","layer":"below","x0":0,"x1":1,"y0":0,"y1":23.37899543378996,"yanchor":0.48515981735159819,"ysizemode":"pixel"}],"yaxis2":{"type":"linear","autorange":false,"range":[1281990.607020848,2969509.2525621918],"tickmode":"array","ticktext":["1500000","2000000","2500000"],"tickvals":[1500000,2000000,2500000],"categoryorder":"array","categoryarray":["1500000","2000000","2500000"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"domain":[0,0.48515981735159819],"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"x","title":"","hoverformat":".2f"},"showlegend":true,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.8897637795275593,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498},"orientation":"h","x":0.5,"y":1.02,"xanchor":"center","yanchor":"bottom","title":{"text":"Model","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"7a205c058f0":{"x":{},"y":{},"colour":{},"type":"scatter"},"7a205e5b5898":{"x":{},"y":{}}},"cur_data":"7a205c058f0","visdat":{"7a205c058f0":["function (y) ","x"],"7a205e5b5898":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+<section id="section-21" class="slide level2">
+<h2></h2>
+</section></section>
+<section>
+<section id="summary" class="title-slide slide level1 center">
+<h1>Summary</h1>
+
+</section>
+<section id="what-we-covered" class="slide level2">
+<h2>What we covered</h2>
+<p><strong>Key takeaways:</strong></p>
+<ul>
+<li class="fragment">Prophet is a <strong>decomposition model</strong> — trend + seasonality + holidays + noise — fitting the same structure we’ve built all semester, but in an automated, Bayesian framework.</li>
+<li class="fragment">The key innovation is <strong>automatic changepoint detection</strong>: no manual knot selection required.</li>
+<li class="fragment">In <code>fable</code>, Prophet fits into the same <code>model()</code> → <code>forecast()</code> → <code>accuracy()</code> workflow — no new syntax to learn.</li>
+<li class="fragment">Prophet is not universally better: on short, classical economic series, ARIMA and ETS often win. <strong>Always compare on a held-out test set.</strong></li>
+<li class="fragment">Components are interpretable and easy to communicate to non-technical stakeholders — a real practical advantage.</li>
+</ul>
+<div class="callout callout-note callout-style-simple">
+<div class="callout-body">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-content">
+<p><strong>Coming up in Module 4:</strong> We’ve now seen all the main model families. In Module 4, we tackle what happens when data has <em>multiple</em> seasonal periods simultaneously (daily + weekly + yearly), and how to make our models robust to outliers, missing values, and real-world messiness — including ensembling the models we’ve built throughout the semester.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="further-resources" class="slide level2">
+<h2>Further resources</h2>
+<div style="text-align:center;">
+<iframe width="720" height="405" src="https://www.youtube.com/embed/pOYAXv15r3A" title="Prophet: Forecasting at Scale — PyData" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="">
+</iframe>
+</div>
+<p><em>Talk by the Prophet team at PyData — covers the motivation, the math, and practical use cases (30 min).</em></p>
+
+
+</section></section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<p><img src="../../../../images/iteso_logo.png" class="slide-logo"></p>
+<div class="footer footer-default">
+<p>Time Series Forecasting</p>
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="../../../../site_libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="../../../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="../../../../site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="../../../../site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="../../../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="../../../../site_libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
+  <script src="../../../../site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="../../../../site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="../../../../site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="../../../../site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': false,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"8\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'chalkboard': {"buttons":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: true,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: true,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'slide',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1600,
+
+        height: 900,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 3.0e-2,
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, RevealChalkboard, QuartoSupport,
+
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp("https:\/\/pbenavidesh\.github\.io\/narsil\/");
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+                // target, if specified
+                link.setAttribute("target", "_blank");
+                if (link.getAttribute("rel") === null) {
+                  link.setAttribute("rel", "noopener");
+                }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+            let selectedAnnoteEl;
+            const selectorForAnnotation = ( cell, annotation) => {
+              let cellAttr = 'data-code-cell="' + cell + '"';
+              let lineAttr = 'data-code-annotation="' +  annotation + '"';
+              const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+              return selector;
+            }
+            const selectCodeLines = (annoteEl) => {
+              const doc = window.document;
+              const targetCell = annoteEl.getAttribute("data-target-cell");
+              const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+              const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+              const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+              const lineIds = lines.map((line) => {
+                return targetCell + "-" + line;
+              })
+              let top = null;
+              let height = null;
+              let parent = null;
+              if (lineIds.length > 0) {
+                  //compute the position of the single el (top and bottom and make a div)
+                  const el = window.document.getElementById(lineIds[0]);
+                  top = el.offsetTop;
+                  height = el.offsetHeight;
+                  parent = el.parentElement.parentElement;
+                if (lineIds.length > 1) {
+                  const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+                  const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+                  height = bottom - top;
+                }
+                if (top !== null && height !== null && parent !== null) {
+                  // cook up a div (if necessary) and position it 
+                  let div = window.document.getElementById("code-annotation-line-highlight");
+                  if (div === null) {
+                    div = window.document.createElement("div");
+                    div.setAttribute("id", "code-annotation-line-highlight");
+                    div.style.position = 'absolute';
+                    parent.appendChild(div);
+                  }
+                  div.style.top = top - 2 + "px";
+                  div.style.height = height + 4 + "px";
+                  div.style.left = 0;
+                  let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+                  if (gutterDiv === null) {
+                    gutterDiv = window.document.createElement("div");
+                    gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                    gutterDiv.style.position = 'absolute';
+                    const codeCell = window.document.getElementById(targetCell);
+                    const gutter = codeCell.querySelector('.code-annotation-gutter');
+                    gutter.appendChild(gutterDiv);
+                  }
+                  gutterDiv.style.top = top - 2 + "px";
+                  gutterDiv.style.height = height + 4 + "px";
+                }
+                selectedAnnoteEl = annoteEl;
+              }
+            };
+            const unselectCodeLines = () => {
+              const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+              elementsIds.forEach((elId) => {
+                const div = window.document.getElementById(elId);
+                if (div) {
+                  div.remove();
+                }
+              });
+              selectedAnnoteEl = undefined;
+            };
+              // Handle positioning of the toggle
+          window.addEventListener(
+            "resize",
+            throttle(() => {
+              elRect = undefined;
+              if (selectedAnnoteEl) {
+                selectCodeLines(selectedAnnoteEl);
+              }
+            }, 10)
+          );
+          function throttle(fn, ms) {
+          let throttle = false;
+          let timer;
+            return (...args) => {
+              if(!throttle) { // first call gets through
+                  fn.apply(this, args);
+                  throttle = true;
+              } else { // all the others get throttled
+                  if(timer) clearTimeout(timer); // cancel #2
+                  timer = setTimeout(() => {
+                    fn.apply(this, args);
+                    timer = throttle = false;
+                  }, ms);
+              }
+            };
+          }
+            const annoteTargets = window.document.querySelectorAll('.code-annotation-anchor');
+            for (let i=0; i<annoteTargets.length; i++) {
+              const annoteTarget = annoteTargets[i];
+              const targetCell = annoteTarget.getAttribute("data-target-cell");
+              const targetAnnotation = annoteTarget.getAttribute("data-target-annotation");
+              const contentFn = () => {
+                const content = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+                if (content) {
+                  const tipContent = content.cloneNode(true);
+                  tipContent.classList.add("code-annotation-tip-content");
+                  return tipContent.outerHTML;
+                }
+              }
+              const config = {
+                allowHTML: true,
+                content: contentFn,
+                onShow: (instance) => {
+                  selectCodeLines(instance.reference);
+                  instance.reference.classList.add('code-annotation-active');
+                  window.tippy.hideAll();
+                },
+                onHide: (instance) => {
+                  unselectCodeLines();
+                  instance.reference.classList.remove('code-annotation-active');
+                },
+                maxWidth: 300,
+                delay: [50, 0],
+                duration: [200, 0],
+                offset: [5, 10],
+                arrow: true,
+                appendTo: function(el) {
+                  return el.parentElement.parentElement.parentElement;
+                },
+                interactive: true,
+                interactiveBorder: 10,
+                theme: 'light-border',
+                placement: 'right',
+                popperOptions: {
+                  modifiers: [
+                  {
+                    name: 'flip',
+                    options: {
+                      flipVariations: false, // true by default
+                      allowedAutoPlacements: ['right'],
+                      fallbackPlacements: ['right', 'top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'left'],
+                    },
+                  },
+                  {
+                    name: 'preventOverflow',
+                    options: {
+                      mainAxis: false,
+                      altAxis: false
+                    }
+                  }
+                  ]        
+                }      
+              };
+              window.tippy(annoteTarget, config); 
+            }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    <script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+    (function() {
+      let previousOnload = window.onload;
+      window.onload = () => {
+        if (previousOnload) {
+          previousOnload();
+        }
+        lightboxQuarto.on('slide_before_load', (data) => {
+          const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+          const href = trigger.getAttribute('href');
+          if (href !== null) {
+            const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+            if (imgEl !== null) {
+              const srcAttr = imgEl.getAttribute("src");
+              if (srcAttr && srcAttr.startsWith("data:")) {
+                slideConfig.href = srcAttr;
+              }
+            }
+          } 
+        });
+      
+        lightboxQuarto.on('slide_after_load', (data) => {
+          const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(slideNode);
+          }
+        });
+      
+      };
+      
+    })();
+              </script>
+    
+
+</body></html>
