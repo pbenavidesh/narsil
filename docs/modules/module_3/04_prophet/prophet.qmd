@@ -226,10 +226,12 @@ library(fable.prophet)            #<2>
 
 :::
 
+:::{.fragment}
 :::{.callout-note appearance="simple"}
 ## Dependency: Stan
 
 `fable.prophet` depends on `rstan` and `prophet`. On first install, R will also install Stan and its dependencies. This can take a few minutes — plan accordingly before class.
+:::
 :::
 
 # Model Specification
@@ -327,11 +329,6 @@ prophet(y ~
 The `order` argument in `season()` is the same $K$ we used in harmonic regression (`fourier(K = ...)`). Higher $K$ → more flexible seasonal shape, but more parameters. Start with the default and adjust if residuals show seasonal structure.
 :::
 
-:::{.content-hidden unless-format="revealjs"}
-
-##
-
-:::
 
 :::{.content-visible unless-format="revealjs"}
 
@@ -407,6 +404,7 @@ lax_passengers
 
 ```{r}
 #| label: lax-plot
+#| echo: false
 
 p <- lax_passengers |>
   autoplot(passengers) +
@@ -419,7 +417,7 @@ p <- lax_passengers |>
 ggplotly(p, dynamicTicks = TRUE)
 ```
 
-:::{.content-visible unless-format="revealjs"}
+:::{.notes}
 
 A few things to note from the plot:
 
@@ -437,17 +435,9 @@ A few things to note from the plot:
 *Spending three hours choosing knots manually vs. discovering Prophet does it for you.*
 :::
 
-:::{.content-hidden unless-format="revealjs"}
-
-##
-
-:::
-
-:::{.content-visible unless-format="revealjs"}
 
 ## Train / test split
 
-:::
 
 ```{r}
 #| label: lax-split
@@ -462,17 +452,9 @@ The test set covers 2018–2019 (24 months of out-of-sample evaluation). We inte
 
 :::
 
-:::{.content-hidden unless-format="revealjs"}
-
-##
-
-:::
-
-:::{.content-visible unless-format="revealjs"}
 
 ## Fit models
 
-:::
 
 ```{r}
 #| label: lax-fit
