@@ -1147,7 +1147,7 @@
     "href": "docs/modules/module_3/04_prophet/prophet.html#when-to-use-prophet",
     "title": "Prophet",
     "section": "2.3 When to use Prophet",
-    "text": "2.3 When to use Prophet\n\n\n\nSituation\nUse Prophet?\n\n\n\n\nSub-daily data (hourly, daily) with multiple seasonal cycles\n✅\n\n\nBusiness data with holidays and known events\n✅\n\n\nNeed interpretable components for stakeholders\n✅\n\n\nSeveral seasons of history available\n✅\n\n\nShort series (&lt; 2 full seasonal cycles)\n❌\n\n\nSeries with no clear trend or seasonality\n❌\n\n\nNeed formal inference on model parameters\n❌\n\n\nNeed prediction intervals from theory, not simulation\n⚠️\n\n\n\n\n\n\n\n\n\nWarningProphet is not always better than ARIMA\n\n\n\nProphet was designed for at-scale, analyst-friendly forecasting. On many classical monthly or quarterly economic series, a well-specified ARIMA or ETS will outperform it. Always compare on a held-out test set.",
+    "text": "2.3 When to use Prophet\n\n\n\nSituation\nUse Prophet?\n\n\n\n\nSub-daily data (hourly, daily) with multiple seasonal cycles\n✅\n\n\nBusiness data with holidays and known events\n✅\n\n\nNeed interpretable components for stakeholders\n✅\n\n\nSeveral seasons of history available\n✅\n\n\nShort series (&lt; 2 full seasonal cycles)\n❌\n\n\nSeries with no clear trend or seasonality\n❌\n\n\nNeed formal inference on model parameters\n❌\n\n\nNeed prediction intervals from theory, not simulation\n⚠️\n\n\n\n:::\n\n\n\n\n\n\nWarningProphet is not always better than ARIMA\n\n\n\nProphet was designed for at-scale, analyst-friendly forecasting. On many classical monthly or quarterly economic series, a well-specified ARIMA or ETS will outperform it. Always compare on a held-out test set.",
     "crumbs": [
       "3. Regression and exogenous variables",
       "3.4 Prophet"
@@ -1202,7 +1202,7 @@
     "href": "docs/modules/module_3/04_prophet/prophet.html#exploratory-analysis",
     "title": "Prophet",
     "section": "5.2 Exploratory analysis",
-    "text": "5.2 Exploratory analysis\n\n\nCode\np &lt;- lax_passengers |&gt;\n  autoplot(passengers) +\n  labs(title   = \"Monthly passengers at LAX\",\n       y        = \"Passengers\",\n       x        = NULL,\n       color    = \"Type\") +\n  theme(legend.position = \"top\")\n\nggplotly(p, dynamicTicks = TRUE)\n\n\n\n\n\n\nA few things to note from the plot:\n\nPiecewise trend: visible drops around 2001 (9/11) and 2008–2009 (financial crisis). The trend clearly changes slope at these points — this is exactly what automatic changepoint detection handles.\nMultiplicative seasonality: the seasonal swings grow proportionally with the series level, suggesting a multiplicative model.\nInternational &lt; Domestic throughout, but both share a similar seasonal shape.\n\n\n\n\n\n\n\nTipThe meme check\n\n\n\n\n\n\n\n\nSpending three hours choosing knots manually vs. discovering Prophet does it for you.",
+    "text": "5.2 Exploratory analysis\n\n\n\n\n\n\n\nA few things to note from the plot:\n\nPiecewise trend: visible drops around 2001 (9/11) and 2008–2009 (financial crisis). The trend clearly changes slope at these points — this is exactly what automatic changepoint detection handles.\nMultiplicative seasonality: the seasonal swings grow proportionally with the series level, suggesting a multiplicative model.\nInternational &lt; Domestic throughout, but both share a similar seasonal shape.\n\n\n\n\n\n\n\n\nTipThe meme check\n\n\n\n\n\n\n\n\nSpending three hours choosing knots manually vs. discovering Prophet does it for you.",
     "crumbs": [
       "3. Regression and exogenous variables",
       "3.4 Prophet"
@@ -1268,7 +1268,7 @@
     "href": "docs/modules/module_3/04_prophet/prophet.html#accuracy",
     "title": "Prophet",
     "section": "5.8 Accuracy",
-    "text": "5.8 Accuracy\n\n\nCode\nlax_accu &lt;- lax_fc |&gt;\n  accuracy(lax_test) |&gt;\n  select(.model, type, RMSE, MAE, MAPE) |&gt;\n  arrange(type, MAPE)\n\n\nWarning: The future dataset is incomplete, incomplete out-of-sample data will be treated as missing. \n9 observations are missing between 2019 abr. and 2019 dic.\n\n\nCode\nlax_accu\n\n\n\n  \n\n\n\n\n\n\n\n\n\nWarningCheck accuracy by key\n\n\n\nWhen your tsibble has a key variable (like type here), accuracy() returns one row per model per key. A model that performs best for Domestic passengers may not be best for International — always check both.",
+    "text": "5.8 Accuracy\n\n\nCode\nlax_accu &lt;- lax_fc |&gt;\n  accuracy(lax_test) |&gt;\n  select(.model, type, RMSE, MAE, MAPE) |&gt;\n  arrange(type, MAPE)\n\n\nWarning: The future dataset is incomplete, incomplete out-of-sample data will be treated as missing. \n9 observations are missing between 2019 Apr and 2019 Dec\n\n\nCode\nlax_accu\n\n\n\n  \n\n\n\n\n\n\n\n\n\nWarningCheck accuracy by key\n\n\n\nWhen your tsibble has a key variable (like type here), accuracy() returns one row per model per key. A model that performs best for Domestic passengers may not be best for International — always check both.",
     "crumbs": [
       "3. Regression and exogenous variables",
       "3.4 Prophet"
@@ -1347,113 +1347,113 @@
     "text": "The key innovation over piecewise TSLM is automatic changepoint detection. Prophet:\n\nPlaces a large number of potential changepoints uniformly in the first changepoint_range proportion of the data (default: 80%).\nUses a sparse prior (Laplace) to shrink most changepoint magnitudes to zero — only genuine structural breaks survive.\nThe user can tune n_changepoints (default 25) and changepoint_prior_scale (flexibility of trend changes).\n\n\nNo more guessing where the knots go."
   },
   {
+    "objectID": "docs/modules/module_3/04_prophet/prophet_pres.html#when-to-use-prophet",
+    "href": "docs/modules/module_3/04_prophet/prophet_pres.html#when-to-use-prophet",
+    "title": "Prophet",
+    "section": "When to use Prophet",
+    "text": "When to use Prophet\n\n\n\nSituation\nUse Prophet?\n\n\n\n\nSub-daily data (hourly, daily) with multiple seasonal cycles\n✅\n\n\nBusiness data with holidays and known events\n✅\n\n\nNeed interpretable components for stakeholders\n✅\n\n\nSeveral seasons of history available\n✅\n\n\nShort series (&lt; 2 full seasonal cycles)\n❌\n\n\nSeries with no clear trend or seasonality\n❌\n\n\nNeed formal inference on model parameters\n❌\n\n\nNeed prediction intervals from theory, not simulation\n⚠️\n\n\n\n:::\n\n\n\n\n\n\nProphet is not always better than ARIMA\n\n\nProphet was designed for at-scale, analyst-friendly forecasting. On many classical monthly or quarterly economic series, a well-specified ARIMA or ETS will outperform it. Always compare on a held-out test set."
+  },
+  {
     "objectID": "docs/modules/module_3/04_prophet/prophet_pres.html#section-4",
     "href": "docs/modules/module_3/04_prophet/prophet_pres.html#section-4",
     "title": "Prophet",
     "section": "",
-    "text": "Prophet is not always better than ARIMA\n\n\nProphet was designed for at-scale, analyst-friendly forecasting. On many classical monthly or quarterly economic series, a well-specified ARIMA or ETS will outperform it. Always compare on a held-out test set."
+    "text": "Prophet is available in R through two packages:\n\nprophet — the original package. Works standalone, does not integrate with fable.\nfable.prophet — a fable-compatible wrapper by Mitchell O’Hara-Wild. Lets us use Prophet inside model(), forecast(), accuracy(), and all the tools we already know.\n\n\n\n1install.packages(\"fable.prophet\")\n2library(fable.prophet)\n\n\n1\n\nfable.prophet is now available on CRAN.\n\n2\n\nLoad it alongside fpp3 — the prophet() function is then available inside model().\n\n\n\n\n\n\n\n\n\n\n\n\nDependency: Stan\n\n\nfable.prophet depends on rstan and prophet. On first install, R will also install Stan and its dependencies. This can take a few minutes — plan accordingly before class."
   },
   {
     "objectID": "docs/modules/module_3/04_prophet/prophet_pres.html#section-5",
     "href": "docs/modules/module_3/04_prophet/prophet_pres.html#section-5",
     "title": "Prophet",
     "section": "",
-    "text": "Prophet is available in R through two packages:\n\nprophet — the original package. Works standalone, does not integrate with fable.\nfable.prophet — a fable-compatible wrapper by Mitchell O’Hara-Wild. Lets us use Prophet inside model(), forecast(), accuracy(), and all the tools we already know.\n\n\n\n1install.packages(\"fable.prophet\")\n2library(fable.prophet)\n\n\n1\n\nfable.prophet is now available on CRAN.\n\n2\n\nLoad it alongside fpp3 — the prophet() function is then available inside model().\n\n\n\n\n\n\n\n\n\n\n\nDependency: Stan\n\n\nfable.prophet depends on rstan and prophet. On first install, R will also install Stan and its dependencies. This can take a few minutes — plan accordingly before class."
+    "text": "Inside model(), Prophet is specified with the prophet() function. Like ARIMA() and ETS(), it can be fully automatic or manually specified.\n\n\n# Automatic — Prophet chooses everything\nprophet(y)\n\n# Manual — explicit components\nprophet(y ~ growth(\"linear\") + season(\"year\", type = \"multiplicative\"))"
   },
   {
     "objectID": "docs/modules/module_3/04_prophet/prophet_pres.html#section-6",
     "href": "docs/modules/module_3/04_prophet/prophet_pres.html#section-6",
     "title": "Prophet",
     "section": "",
-    "text": "Inside model(), Prophet is specified with the prophet() function. Like ARIMA() and ETS(), it can be fully automatic or manually specified.\n\n\n# Automatic — Prophet chooses everything\nprophet(y)\n\n# Manual — explicit components\nprophet(y ~ growth(\"linear\") + season(\"year\", type = \"multiplicative\"))"
+    "text": "The growth() term specifies the trend model:\n\ngrowth(\"linear\") — piecewise linear trend. Best for series that grow or decline without a natural ceiling.\ngrowth(\"logistic\") — logistic growth (S-curve). Requires a capacity column in the data specifying the theoretical maximum.\n\n\n\nprophet(y ~ growth(\"linear\",\n1                   n_changepoints    = 25,\n2                   changepoint_range = 0.8,\n3                   changepoint_prior_scale = 0.05))\n\n\n1\n\nNumber of potential changepoints to consider (default: 25).\n\n2\n\nProportion of history where changepoints can occur (default: 0.8).\n\n3\n\nFlexibility of trend changes — larger = more flexible, smaller = more rigid (default: 0.05)."
   },
   {
     "objectID": "docs/modules/module_3/04_prophet/prophet_pres.html#section-7",
     "href": "docs/modules/module_3/04_prophet/prophet_pres.html#section-7",
     "title": "Prophet",
     "section": "",
-    "text": "The growth() term specifies the trend model:\n\ngrowth(\"linear\") — piecewise linear trend. Best for series that grow or decline without a natural ceiling.\ngrowth(\"logistic\") — logistic growth (S-curve). Requires a capacity column in the data specifying the theoretical maximum.\n\n\n\nprophet(y ~ growth(\"linear\",\n1                   n_changepoints    = 25,\n2                   changepoint_range = 0.8,\n3                   changepoint_prior_scale = 0.05))\n\n\n1\n\nNumber of potential changepoints to consider (default: 25).\n\n2\n\nProportion of history where changepoints can occur (default: 0.8).\n\n3\n\nFlexibility of trend changes — larger = more flexible, smaller = more rigid (default: 0.05)."
+    "text": "The season() term adds a Fourier-approximated seasonal pattern:\n\nprophet(y ~\n1  season(\"year\",  period = 365.25, order = 10, type = \"additive\") +\n2  season(\"week\",  period = 7,      order = 3,  type = \"multiplicative\") +\n3  season(\"day\",   period = 1,      order = 5,  type = \"additive\"))\n\n\n1\n\nAnnual seasonality — 10 Fourier pairs; additive (level of seasonality does not change with the series level).\n\n2\n\nWeekly seasonality — 3 Fourier pairs; multiplicative (seasonality scales with the series level).\n\n3\n\nDaily seasonality — only relevant for sub-daily data.\n\n\n\n\n\n\n\n\n\n\norder = Fourier K\n\n\nThe order argument in season() is the same K we used in harmonic regression (fourier(K = ...)). Higher K → more flexible seasonal shape, but more parameters. Start with the default and adjust if residuals show seasonal structure."
   },
   {
     "objectID": "docs/modules/module_3/04_prophet/prophet_pres.html#section-8",
     "href": "docs/modules/module_3/04_prophet/prophet_pres.html#section-8",
     "title": "Prophet",
     "section": "",
-    "text": "The season() term adds a Fourier-approximated seasonal pattern:\n\nprophet(y ~\n1  season(\"year\",  period = 365.25, order = 10, type = \"additive\") +\n2  season(\"week\",  period = 7,      order = 3,  type = \"multiplicative\") +\n3  season(\"day\",   period = 1,      order = 5,  type = \"additive\"))\n\n\n1\n\nAnnual seasonality — 10 Fourier pairs; additive (level of seasonality does not change with the series level).\n\n2\n\nWeekly seasonality — 3 Fourier pairs; multiplicative (seasonality scales with the series level).\n\n3\n\nDaily seasonality — only relevant for sub-daily data.\n\n\n\n\n\n\n\n\n\n\norder = Fourier K\n\n\nThe order argument in season() is the same K we used in harmonic regression (fourier(K = ...)). Higher K → more flexible seasonal shape, but more parameters. Start with the default and adjust if residuals show seasonal structure."
+    "text": "We’ll apply Prophet to monthly passenger counts at Los Angeles International Airport (LAX), broken down by domestic and international flights — a dataset with a clear piecewise trend, multiplicative seasonality, and a major structural break (the 2001 and 2008 shocks).\n\nlax_passengers &lt;- read.csv(\n  \"https://raw.githubusercontent.com/mitchelloharawild/fable.prophet/master/data-raw/lax_passengers.csv\"\n)\n\nlax_passengers &lt;- lax_passengers |&gt;\n1  mutate(datetime = lubridate::mdy_hms(ReportPeriod)) |&gt;\n  group_by(\n    month = yearmonth(datetime),\n    type  = Domestic_International\n  ) |&gt;\n2  summarise(passengers = sum(Passenger_Count), .groups = \"drop\") |&gt;\n3  as_tsibble(index = month, key = type)\n\nlax_passengers\n\n\n1\n\nParse the date-time string into a proper datetime object.\n\n2\n\nSum all passenger categories within each month and travel type.\n\n3\n\nConvert to tsibble — type (Domestic / International) is the key variable."
+  },
+  {
+    "objectID": "docs/modules/module_3/04_prophet/prophet_pres.html#section-9",
+    "href": "docs/modules/module_3/04_prophet/prophet_pres.html#section-9",
+    "title": "Prophet",
+    "section": "",
+    "text": "A few things to note from the plot:\n\nPiecewise trend: visible drops around 2001 (9/11) and 2008–2009 (financial crisis). The trend clearly changes slope at these points — this is exactly what automatic changepoint detection handles.\nMultiplicative seasonality: the seasonal swings grow proportionally with the series level, suggesting a multiplicative model.\nInternational &lt; Domestic throughout, but both share a similar seasonal shape.\n\n\n\n\n\n\n\n\nThe meme check\n\n\n\n\n\n\n\nSpending three hours choosing knots manually vs. discovering Prophet does it for you."
+  },
+  {
+    "objectID": "docs/modules/module_3/04_prophet/prophet_pres.html#train-test-split",
+    "href": "docs/modules/module_3/04_prophet/prophet_pres.html#train-test-split",
+    "title": "Prophet",
+    "section": "Train / test split",
+    "text": "Train / test split\n\nlax_train &lt;- lax_passengers |&gt; filter_index(~ \"2017 Dec.\")\nlax_test  &lt;- lax_passengers |&gt; filter_index(\"2018 Jan.\" ~ .)"
+  },
+  {
+    "objectID": "docs/modules/module_3/04_prophet/prophet_pres.html#fit-models",
+    "href": "docs/modules/module_3/04_prophet/prophet_pres.html#fit-models",
+    "title": "Prophet",
+    "section": "Fit models",
+    "text": "Fit models\n\nlax_fit &lt;- lax_train |&gt;\n  model(\n1    Prophet     = prophet(passengers ~\n                    growth(\"linear\") +\n                    season(\"year\", type = \"multiplicative\")),\n2    Prophet_auto = prophet(passengers),\n3    ARIMA       = ARIMA(passengers),\n4    ETS         = ETS(passengers),\n5    Harmonic    = ARIMA(passengers ~ fourier(K = 3) + PDQ(0,0,0))\n  )\n\nlax_fit\n\n\n1\n\nManual Prophet: piecewise linear trend + multiplicative annual seasonality.\n\n2\n\nAutomatic Prophet: lets the algorithm decide on all components.\n\n3\n\nAutomatic ARIMA — our Module 2 benchmark.\n\n4\n\nAutomatic ETS — our other Module 2 benchmark.\n\n5\n\nHarmonic regression: ARIMA errors + Fourier seasonality (Module 3.3)."
   },
   {
     "objectID": "docs/modules/module_3/04_prophet/prophet_pres.html#section-10",
     "href": "docs/modules/module_3/04_prophet/prophet_pres.html#section-10",
     "title": "Prophet",
     "section": "",
-    "text": "We’ll apply Prophet to monthly passenger counts at Los Angeles International Airport (LAX), broken down by domestic and international flights — a dataset with a clear piecewise trend, multiplicative seasonality, and a major structural break (the 2001 and 2008 shocks).\n\nlax_passengers &lt;- read.csv(\n  \"https://raw.githubusercontent.com/mitchelloharawild/fable.prophet/master/data-raw/lax_passengers.csv\"\n)\n\nlax_passengers &lt;- lax_passengers |&gt;\n1  mutate(datetime = lubridate::mdy_hms(ReportPeriod)) |&gt;\n  group_by(\n    month = yearmonth(datetime),\n    type  = Domestic_International\n  ) |&gt;\n2  summarise(passengers = sum(Passenger_Count), .groups = \"drop\") |&gt;\n3  as_tsibble(index = month, key = type)\n\nlax_passengers\n\n\n1\n\nParse the date-time string into a proper datetime object.\n\n2\n\nSum all passenger categories within each month and travel type.\n\n3\n\nConvert to tsibble — type (Domestic / International) is the key variable."
+    "text": "One of Prophet’s biggest advantages in practice: interpretable components that you can show to a non-technical audience.\n\nlax_fit |&gt;\n  select(type, Prophet) |&gt;\n  components() |&gt;\n  autoplot()"
   },
   {
     "objectID": "docs/modules/module_3/04_prophet/prophet_pres.html#section-11",
     "href": "docs/modules/module_3/04_prophet/prophet_pres.html#section-11",
     "title": "Prophet",
     "section": "",
-    "text": "p &lt;- lax_passengers |&gt;\n  autoplot(passengers) +\n  labs(title   = \"Monthly passengers at LAX\",\n       y        = \"Passengers\",\n       x        = NULL,\n       color    = \"Type\") +\n  theme(legend.position = \"top\")\n\nggplotly(p, dynamicTicks = TRUE)\n\n\n\n\n\n\n\n\n\n\n\nThe meme check\n\n\n\n\n\n\n\nSpending three hours choosing knots manually vs. discovering Prophet does it for you."
+    "text": "We can also visualize the seasonal component overlaid by year — useful to check if the seasonal shape is stable over time:\n\nlax_fit |&gt;\n  select(type, Prophet) |&gt;\n  components() |&gt;\n  ggplot(aes(\n1    x      = lubridate::month(month, label = TRUE),\n2    y      = year,\n    colour = type,\n    group  = interaction(type, lubridate::year(month))\n  )) +\n  geom_line(alpha = 0.7) +\n  labs(\n    title = \"Annual seasonal component by year\",\n    x     = \"Month\",\n    y     = \"Seasonal effect\",\n    color = \"Type\"\n  ) +\n  theme(legend.position = \"top\")\n\n\n1\n\nExtract the month name from the time index for the x-axis.\n\n2\n\nyear is the name of the annual seasonal component extracted by components().\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nWhat to look for\n\n\nIf the seasonal lines are stacked consistently, the shape is stable across years — a multiplicative model is appropriate. If lines diverge or change shape dramatically, you may need to reconsider the specification."
   },
   {
     "objectID": "docs/modules/module_3/04_prophet/prophet_pres.html#section-12",
     "href": "docs/modules/module_3/04_prophet/prophet_pres.html#section-12",
     "title": "Prophet",
     "section": "",
-    "text": "lax_train &lt;- lax_passengers |&gt; filter_index(~ \"2017 Dec.\")\nlax_test  &lt;- lax_passengers |&gt; filter_index(\"2018 Jan.\" ~ .)"
+    "text": "lax_fc &lt;- lax_fit |&gt;\n  forecast(h = \"2 years\")\n\nlax_fc |&gt;\n  autoplot(\n    lax_passengers |&gt; filter_index(\"2012 Jan.\" ~ .),\n    level = 80\n  ) +\n  facet_wrap(~ type, ncol = 1, scales = \"free_y\") +\n  labs(\n    title  = \"LAX passenger forecasts — 2018–2019\",\n    y      = \"Passengers\",\n    x      = NULL,\n    color  = \"Model\"\n  ) +\n  theme(legend.position = \"top\")"
   },
   {
     "objectID": "docs/modules/module_3/04_prophet/prophet_pres.html#section-13",
     "href": "docs/modules/module_3/04_prophet/prophet_pres.html#section-13",
     "title": "Prophet",
     "section": "",
-    "text": "lax_fit &lt;- lax_train |&gt;\n  model(\n1    Prophet     = prophet(passengers ~\n                    growth(\"linear\") +\n                    season(\"year\", type = \"multiplicative\")),\n2    Prophet_auto = prophet(passengers),\n3    ARIMA       = ARIMA(passengers),\n4    ETS         = ETS(passengers),\n5    Harmonic    = ARIMA(passengers ~ fourier(K = 3) + PDQ(0,0,0))\n  )\n\nlax_fit\n\n\n1\n\nManual Prophet: piecewise linear trend + multiplicative annual seasonality.\n\n2\n\nAutomatic Prophet: lets the algorithm decide on all components.\n\n3\n\nAutomatic ARIMA — our Module 2 benchmark.\n\n4\n\nAutomatic ETS — our other Module 2 benchmark.\n\n5\n\nHarmonic regression: ARIMA errors + Fourier seasonality (Module 3.3)."
+    "text": "lax_accu &lt;- lax_fc |&gt;\n  accuracy(lax_test) |&gt;\n  select(.model, type, RMSE, MAE, MAPE) |&gt;\n  arrange(type, MAPE)\n\nWarning: The future dataset is incomplete, incomplete out-of-sample data will be treated as missing. \n9 observations are missing between 2019 Apr and 2019 Dec\n\nlax_accu\n\n\n  \n\n\n\n\n\n\n\n\n\nCheck accuracy by key\n\n\nWhen your tsibble has a key variable (like type here), accuracy() returns one row per model per key. A model that performs best for Domestic passengers may not be best for International — always check both."
   },
   {
     "objectID": "docs/modules/module_3/04_prophet/prophet_pres.html#section-14",
     "href": "docs/modules/module_3/04_prophet/prophet_pres.html#section-14",
     "title": "Prophet",
     "section": "",
-    "text": "One of Prophet’s biggest advantages in practice: interpretable components that you can show to a non-technical audience.\n\nlax_fit |&gt;\n  select(type, Prophet) |&gt;\n  components() |&gt;\n  autoplot()"
+    "text": "lax_fit |&gt;\n  select(type, Prophet) |&gt;\n  filter(type == \"Domestic\") |&gt;\n  gg_tsresiduals()"
   },
   {
     "objectID": "docs/modules/module_3/04_prophet/prophet_pres.html#section-15",
     "href": "docs/modules/module_3/04_prophet/prophet_pres.html#section-15",
     "title": "Prophet",
     "section": "",
-    "text": "We can also visualize the seasonal component overlaid by year — useful to check if the seasonal shape is stable over time:\n\nlax_fit |&gt;\n  select(type, Prophet) |&gt;\n  components() |&gt;\n  ggplot(aes(\n1    x      = lubridate::month(month, label = TRUE),\n2    y      = year,\n    colour = type,\n    group  = interaction(type, lubridate::year(month))\n  )) +\n  geom_line(alpha = 0.7) +\n  labs(\n    title = \"Annual seasonal component by year\",\n    x     = \"Month\",\n    y     = \"Seasonal effect\",\n    color = \"Type\"\n  ) +\n  theme(legend.position = \"top\")\n\n\n1\n\nExtract the month name from the time index for the x-axis.\n\n2\n\nyear is the name of the annual seasonal component extracted by components().\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nWhat to look for\n\n\nIf the seasonal lines are stacked consistently, the shape is stable across years — a multiplicative model is appropriate. If lines diverge or change shape dramatically, you may need to reconsider the specification."
+    "text": "We can extract the changepoints Prophet detected and plot them against the original series — a powerful diagnostic for communicating with stakeholders.\n\n# Extract trend component to visualize changepoints\nlax_fit |&gt;\n  select(type, Prophet) |&gt;\n  filter(type == \"Domestic\") |&gt;\n  components() |&gt;\n  autoplot(trend) +\n  labs(\n    title = \"Prophet trend component with detected changepoints\",\n    y     = \"Trend\",\n    x     = NULL\n  )"
   },
   {
     "objectID": "docs/modules/module_3/04_prophet/prophet_pres.html#section-16",
     "href": "docs/modules/module_3/04_prophet/prophet_pres.html#section-16",
-    "title": "Prophet",
-    "section": "",
-    "text": "lax_fc &lt;- lax_fit |&gt;\n  forecast(h = \"2 years\")\n\nlax_fc |&gt;\n  autoplot(\n    lax_passengers |&gt; filter_index(\"2012 Jan.\" ~ .),\n    level = 80\n  ) +\n  facet_wrap(~ type, ncol = 1, scales = \"free_y\") +\n  labs(\n    title  = \"LAX passenger forecasts — 2018–2019\",\n    y      = \"Passengers\",\n    x      = NULL,\n    color  = \"Model\"\n  ) +\n  theme(legend.position = \"top\")"
-  },
-  {
-    "objectID": "docs/modules/module_3/04_prophet/prophet_pres.html#section-17",
-    "href": "docs/modules/module_3/04_prophet/prophet_pres.html#section-17",
-    "title": "Prophet",
-    "section": "",
-    "text": "lax_accu &lt;- lax_fc |&gt;\n  accuracy(lax_test) |&gt;\n  select(.model, type, RMSE, MAE, MAPE) |&gt;\n  arrange(type, MAPE)\n\nWarning: The future dataset is incomplete, incomplete out-of-sample data will be treated as missing. \n9 observations are missing between 2019 abr. and 2019 dic.\n\nlax_accu\n\n\n  \n\n\n\n\n\n\n\n\n\nCheck accuracy by key\n\n\nWhen your tsibble has a key variable (like type here), accuracy() returns one row per model per key. A model that performs best for Domestic passengers may not be best for International — always check both."
-  },
-  {
-    "objectID": "docs/modules/module_3/04_prophet/prophet_pres.html#section-18",
-    "href": "docs/modules/module_3/04_prophet/prophet_pres.html#section-18",
-    "title": "Prophet",
-    "section": "",
-    "text": "lax_fit |&gt;\n  select(type, Prophet) |&gt;\n  filter(type == \"Domestic\") |&gt;\n  gg_tsresiduals()"
-  },
-  {
-    "objectID": "docs/modules/module_3/04_prophet/prophet_pres.html#section-19",
-    "href": "docs/modules/module_3/04_prophet/prophet_pres.html#section-19",
-    "title": "Prophet",
-    "section": "",
-    "text": "We can extract the changepoints Prophet detected and plot them against the original series — a powerful diagnostic for communicating with stakeholders.\n\n# Extract trend component to visualize changepoints\nlax_fit |&gt;\n  select(type, Prophet) |&gt;\n  filter(type == \"Domestic\") |&gt;\n  components() |&gt;\n  autoplot(trend) +\n  labs(\n    title = \"Prophet trend component with detected changepoints\",\n    y     = \"Trend\",\n    x     = NULL\n  )"
-  },
-  {
-    "objectID": "docs/modules/module_3/04_prophet/prophet_pres.html#section-20",
-    "href": "docs/modules/module_3/04_prophet/prophet_pres.html#section-20",
     "title": "Prophet",
     "section": "",
     "text": "Let’s put all models side by side — zooming in on the test period:\n\np &lt;- lax_fc |&gt;\n  ggplot(aes(x = month, y = .mean, color = .model)) +\n  geom_line() +\n  geom_line(\n    data  = lax_passengers |&gt; filter_index(\"2015 Jan.\" ~ .),\n    aes(y = passengers, color = NULL),\n    color = \"grey30\",\n    linewidth = 0.8\n  ) +\n  facet_wrap(~ type, ncol = 1, scales = \"free_y\") +\n  labs(\n    title = \"All models: point forecast comparison\",\n    y     = \"Passengers\",\n    x     = NULL,\n    color = \"Model\"\n  ) +\n  theme(legend.position = \"top\")\n\nggplotly(p)"
@@ -3022,7 +3022,7 @@
     "href": "docs/modules/module_2/03_arima/arima_pres.html#section",
     "title": "ARIMA Models",
     "section": "",
-    "text": "How much slower is exhaustive search?\n\n\nstepwise = FALSE, approximation = FALSE triggers a full search over all candidate models using exact likelihood. The difference in runtime can be dramatic:\n\ntictoc::tic(\"auto\")\nus_change |&gt;\n  model(ARIMA(Consumption ~ PDQ(0, 0, 0)))\n\n\n  \n\n\ntictoc::toc()\n\nauto: 0.147 sec elapsed\n\ntictoc::tic(\"exhaustive\")\nus_change |&gt;\n  model(ARIMA(Consumption ~ PDQ(0, 0, 0),\n              stepwise      = FALSE,\n              approximation = FALSE))\n\n\n  \n\n\ntictoc::toc()\n\nexhaustive: 0.683 sec elapsed\n\n\nTimes will vary by hardware, but the relative difference is what matters. On longer series like mexretail (480+ monthly observations with seasonal structure), the gap is even more pronounced — which is why freeze is recommended for documents containing exhaustive ARIMA searches."
+    "text": "How much slower is exhaustive search?\n\n\nstepwise = FALSE, approximation = FALSE triggers a full search over all candidate models using exact likelihood. The difference in runtime can be dramatic:\n\ntictoc::tic(\"auto\")\nus_change |&gt;\n  model(ARIMA(Consumption ~ PDQ(0, 0, 0)))\n\n\n  \n\n\ntictoc::toc()\n\nauto: 0.143 sec elapsed\n\ntictoc::tic(\"exhaustive\")\nus_change |&gt;\n  model(ARIMA(Consumption ~ PDQ(0, 0, 0),\n              stepwise      = FALSE,\n              approximation = FALSE))\n\n\n  \n\n\ntictoc::toc()\n\nexhaustive: 0.681 sec elapsed\n\n\nTimes will vary by hardware, but the relative difference is what matters. On longer series like mexretail (480+ monthly observations with seasonal structure), the gap is even more pronounced — which is why freeze is recommended for documents containing exhaustive ARIMA searches."
   },
   {
     "objectID": "docs/modules/module_2/03_arima/arima_pres.html#sec-model-selection",
@@ -3147,7 +3147,7 @@
     "href": "docs/modules/module_2/03_arima/arima.html#sec-manual",
     "title": "ARIMA Models",
     "section": "2.2 Manual and Automatic Specification",
-    "text": "2.2 Manual and Automatic Specification\nIn fable, ARIMA models are specified inside model() using the ARIMA() function. The order is controlled with pdq() for non-seasonal terms and PDQ() for seasonal terms. When pdq() is left unspecified, fable searches for the best order automatically.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nThe series appears stationary (d = 0). The PACF shows significant spikes at lags 1–3, suggesting AR(3). We can fit this manually, compare it against automatic selection strategies, and let AIC_c arbitrate — all within a single mable:\n\n\n\n\nCode\nus_change_fit &lt;- us_change |&gt;\n  model(\n1    manual     = ARIMA(Consumption ~ pdq(3, 0, 0) + PDQ(0, 0, 0)),\n2    auto       = ARIMA(Consumption ~ PDQ(0, 0, 0)),\n3    semi_auto  = ARIMA(Consumption ~ pdq(1:3, 0, 0:2) + PDQ(0, 0, 0)),\n    exhaustive = ARIMA(Consumption ~ PDQ(0, 0, 0),\n4                       stepwise      = FALSE,\n5                       approximation = FALSE)\n  )\n\nglance(us_change_fit) |&gt;\n  arrange(AICc) |&gt;\n  select(.model, AIC, AICc, BIC)\n\n\n\n1\n\nManual specification using pdq(). PDQ(0,0,0) explicitly forces a non-seasonal model.\n\n2\n\nLeaving pdq() unspecified triggers automatic stepwise order selection.\n\n3\n\nEvaluates all combinations of p \\in \\{1,2,3\\} and q \\in \\{0,1,2\\}, returns the lowest AIC_c.\n\n4\n\nstepwise = FALSE explores all combinations rather than navigating step by step.\n\n5\n\napproximation = FALSE uses exact likelihood. More accurate but slower on long series.\n\n\n\n\n\n  \n\n\n\n\n\n\n\n\n\n\n\nNoteHow does automatic selection work?\n\n\n\nfable implements a stepwise search algorithm (Hyndman & Khandakar, 2008) that:\n\nDetermines d using unit root tests.\nStarts from a simple model and navigates through the order space by comparing AIC_c values.\nStops when no neighboring model improves AIC_c.\n\n\nImportant: this is a heuristic search — it does not evaluate all possible combinations. It is fast and usually good, but not guaranteed to find the global optimum.\n\n\n\n\n\n\n\n\n\n\n\nFor exploratory work, automatic selection is fine. For a final model, use stepwise = FALSE, approximation = FALSE and compare the result with your manually identified candidate.\n\n\n\n\n\n\n\n\n\n\nTipHow much slower is exhaustive search?\n\n\n\n\n\nstepwise = FALSE, approximation = FALSE triggers a full search over all candidate models using exact likelihood. The difference in runtime can be dramatic:\n\n\nCode\ntictoc::tic(\"auto\")\nus_change |&gt;\n  model(ARIMA(Consumption ~ PDQ(0, 0, 0)))\n\n\n\n  \n\n\n\nCode\ntictoc::toc()\n\n\nauto: 0.147 sec elapsed\n\n\nCode\ntictoc::tic(\"exhaustive\")\nus_change |&gt;\n  model(ARIMA(Consumption ~ PDQ(0, 0, 0),\n              stepwise      = FALSE,\n              approximation = FALSE))\n\n\n\n  \n\n\n\nCode\ntictoc::toc()\n\n\nexhaustive: 0.683 sec elapsed\n\n\nTimes will vary by hardware, but the relative difference is what matters. On longer series like mexretail (480+ monthly observations with seasonal structure), the gap is even more pronounced — which is why freeze is recommended for documents containing exhaustive ARIMA searches.",
+    "text": "2.2 Manual and Automatic Specification\nIn fable, ARIMA models are specified inside model() using the ARIMA() function. The order is controlled with pdq() for non-seasonal terms and PDQ() for seasonal terms. When pdq() is left unspecified, fable searches for the best order automatically.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nThe series appears stationary (d = 0). The PACF shows significant spikes at lags 1–3, suggesting AR(3). We can fit this manually, compare it against automatic selection strategies, and let AIC_c arbitrate — all within a single mable:\n\n\n\n\nCode\nus_change_fit &lt;- us_change |&gt;\n  model(\n1    manual     = ARIMA(Consumption ~ pdq(3, 0, 0) + PDQ(0, 0, 0)),\n2    auto       = ARIMA(Consumption ~ PDQ(0, 0, 0)),\n3    semi_auto  = ARIMA(Consumption ~ pdq(1:3, 0, 0:2) + PDQ(0, 0, 0)),\n    exhaustive = ARIMA(Consumption ~ PDQ(0, 0, 0),\n4                       stepwise      = FALSE,\n5                       approximation = FALSE)\n  )\n\nglance(us_change_fit) |&gt;\n  arrange(AICc) |&gt;\n  select(.model, AIC, AICc, BIC)\n\n\n\n1\n\nManual specification using pdq(). PDQ(0,0,0) explicitly forces a non-seasonal model.\n\n2\n\nLeaving pdq() unspecified triggers automatic stepwise order selection.\n\n3\n\nEvaluates all combinations of p \\in \\{1,2,3\\} and q \\in \\{0,1,2\\}, returns the lowest AIC_c.\n\n4\n\nstepwise = FALSE explores all combinations rather than navigating step by step.\n\n5\n\napproximation = FALSE uses exact likelihood. More accurate but slower on long series.\n\n\n\n\n\n  \n\n\n\n\n\n\n\n\n\n\n\nNoteHow does automatic selection work?\n\n\n\nfable implements a stepwise search algorithm (Hyndman & Khandakar, 2008) that:\n\nDetermines d using unit root tests.\nStarts from a simple model and navigates through the order space by comparing AIC_c values.\nStops when no neighboring model improves AIC_c.\n\n\nImportant: this is a heuristic search — it does not evaluate all possible combinations. It is fast and usually good, but not guaranteed to find the global optimum.\n\n\n\n\n\n\n\n\n\n\n\nFor exploratory work, automatic selection is fine. For a final model, use stepwise = FALSE, approximation = FALSE and compare the result with your manually identified candidate.\n\n\n\n\n\n\n\n\n\n\nTipHow much slower is exhaustive search?\n\n\n\n\n\nstepwise = FALSE, approximation = FALSE triggers a full search over all candidate models using exact likelihood. The difference in runtime can be dramatic:\n\n\nCode\ntictoc::tic(\"auto\")\nus_change |&gt;\n  model(ARIMA(Consumption ~ PDQ(0, 0, 0)))\n\n\n\n  \n\n\n\nCode\ntictoc::toc()\n\n\nauto: 0.143 sec elapsed\n\n\nCode\ntictoc::tic(\"exhaustive\")\nus_change |&gt;\n  model(ARIMA(Consumption ~ PDQ(0, 0, 0),\n              stepwise      = FALSE,\n              approximation = FALSE))\n\n\n\n  \n\n\n\nCode\ntictoc::toc()\n\n\nexhaustive: 0.681 sec elapsed\n\n\nTimes will vary by hardware, but the relative difference is what matters. On longer series like mexretail (480+ monthly observations with seasonal structure), the gap is even more pronounced — which is why freeze is recommended for documents containing exhaustive ARIMA searches.",
     "crumbs": [
       "2. Adding ETS and ARIMA filters",
       "2.3 ARIMA models"
