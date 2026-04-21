@@ -103,7 +103,7 @@ c_threshold <- 1.5
 nsw_outliers <- nsw_dcmp |>
   filter(abs(remainder) > c_threshold * IQR(remainder))   #<1>
 
-nsw_outliers |> select(Quarter, Takings, remainder)
+nsw_outliers |> select(Date, `log(Takings)`, remainder)
 ```
 
 1. Flag quarters where the STL remainder exceeds 1.5 × IQR in absolute value — the standard Tukey fence used throughout the course.
@@ -144,7 +144,7 @@ The test set covers 2015 Q1 – 2016 Q2: **6 quarters** of out-of-sample evaluat
 
 nsw |>
   pivot_longer(c(Takings, CPI), names_to = "variable", values_to = "value") |>
-  ggplot(aes(x = Quarter, y = value)) +
+  ggplot(aes(x = Date, y = value)) +
   geom_line(colour = "steelblue") +
   facet_wrap(~ variable, scales = "free_y", ncol = 1) +
   labs(title = "Takings and CPI — New South Wales", x = NULL)
