@@ -2262,347 +2262,277 @@
     "text": "2 Running Code\nWhen you click the Render button a document will be generated that includes both content and the output of embedded code. You can embed code like this:\n\n\nCode\n1 + 1\n\n\n[1] 2\n\n\nYou can add options to executable code like this\n\n\n[1] 4\n\n\nThe echo: false option disables the printing of code (only output is displayed)."
   },
   {
-    "objectID": "docs/exercises/posts/26-02-04 - ts_dcmp.html",
-    "href": "docs/exercises/posts/26-02-04 - ts_dcmp.html",
-    "title": "Descomposición de series de tiempo",
+    "objectID": "docs/exercises/posts/26-02-11 - fcst.html",
+    "href": "docs/exercises/posts/26-02-11 - fcst.html",
+    "title": "Pronósticos con métodos benchmark",
     "section": "",
     "text": "Code\nlibrary(tidyverse)\nlibrary(fpp3)"
   },
   {
-    "objectID": "docs/exercises/posts/26-02-04 - ts_dcmp.html#pkgs",
-    "href": "docs/exercises/posts/26-02-04 - ts_dcmp.html#pkgs",
-    "title": "Descomposición de series de tiempo",
+    "objectID": "docs/exercises/posts/26-02-11 - fcst.html#traintest",
+    "href": "docs/exercises/posts/26-02-11 - fcst.html#traintest",
+    "title": "Pronósticos con métodos benchmark",
+    "section": "1 Train/test",
+    "text": "1 Train/test\nVamos a hacer pronósticos a 3 años, por lo que necesitamos dejar los últimos 3 años como el conjunto de test.\n\n\nCode\ngas_train &lt;- aus_production |&gt; \n  filter_index(. ~ \"2007 Q2\")\n\ngas_train"
+  },
+  {
+    "objectID": "docs/exercises/posts/26-02-11 - fcst.html#visualize",
+    "href": "docs/exercises/posts/26-02-11 - fcst.html#visualize",
+    "title": "Pronósticos con métodos benchmark",
+    "section": "2 Visualize",
+    "text": "2 Visualize\n\n\nCode\ngas_train |&gt; \n  autoplot(Gas)\n\n\n\n\n\n\n\n\n\nIntentamos estabilizar la varianza con logaritmos.\n\n\nCode\ngas_train |&gt; \n  autoplot(log(Gas))\n\n\n\n\n\n\n\n\n\nParece que todavía no es completamente estable (ahora al inicio la varianza es mayor).\nProbemos con Box-Cox:\n\n\nCode\ngas_lambda &lt;- gas_train |&gt; \n  features(Gas, guerrero) |&gt; \n  pull()\n\ngas_lambda\n\n\n[1] 0.1037006\n\n\nCode\ngas_train |&gt; \n  autoplot(box_cox(Gas, gas_lambda))\n\n\n\n\n\n\n\n\n\nParece que mejora un poco.\n\n2.1 Descomposición STL\nVamos a separar la serie transformada usando STL.\n\n\nCode\ngas_train |&gt; \n  model(\n    stl = STL(box_cox(Gas, gas_lambda), robust = TRUE)\n  ) |&gt; \n    components() |&gt; \n  autoplot()"
+  },
+  {
+    "objectID": "docs/exercises/posts/26-02-11 - fcst.html#especificación-de-modelos",
+    "href": "docs/exercises/posts/26-02-11 - fcst.html#especificación-de-modelos",
+    "title": "Pronósticos con métodos benchmark",
+    "section": "3 Especificación de modelos",
+    "text": "3 Especificación de modelos\nPrimero vamos a probar los 4 modelos benchmark por separado, y posteriormente vamos a crear un modelo a partir de la descomposición que hicimos arriba.\n\n\nCode\ngas_fit &lt;- gas_train |&gt; \n  model(\n    media = MEAN(box_cox(Gas, gas_lambda)),\n    naive = NAIVE(box_cox(Gas, gas_lambda)),\n    snaive = SNAIVE(box_cox(Gas, gas_lambda)),\n    drift = RW(box_cox(Gas, gas_lambda) ~ drift())\n  )\n\ngas_fit"
+  },
+  {
+    "objectID": "docs/exercises/posts/26-02-11 - fcst.html#evaluación",
+    "href": "docs/exercises/posts/26-02-11 - fcst.html#evaluación",
+    "title": "Pronósticos con métodos benchmark",
+    "section": "4 Evaluación",
+    "text": "4 Evaluación\n\n\nCode\ngas_aug &lt;- gas_fit |&gt; \n  augment()\n\ngas_fit |&gt; \n  select(media) |&gt;\n  gg_tsresiduals() +\n  labs(\n    title = \"Residuos del modelo media\"\n  )\n\n\n\n\n\n\n\n\n\nCode\ngas_aug |&gt; \n  ggplot(aes(x = Quarter, y = .innov)) + \n  geom_line() +\n  facet_wrap(vars(.model), scales = \"free_y\") + \n  labs(\n    title = \"Innovaciones de los modelos benchmark\"\n  )\n\n\n\n\n\n\n\n\n\n\n4.0.1 Tests de Portmanteau de autocorrelación\nLa prueba de Box-Pierce:\n\n\nCode\ngas_aug |&gt; \n  features(.innov, box_pierce, lag = 8, dof = 0)\n\n\n\n  \n\n\n\nLa prueba de Ljung-Box\n\n\nCode\ngas_aug |&gt; \n  features(.innov, ljung_box, lag = 8, dof = 0) |&gt; \n  mutate(decision = if_else(lb_pvalue &lt; 0.05, \"Rechazar H0: Residuos autocorrelacionados\", \"No rechazar H0: Residuos no autocorrelacionados\"))\n\n\n\n  \n\n\n\n\n\n4.1 Pronóstico a partir de descomposición\n\n\nCode\ngas_fit_stl &lt;- gas_train |&gt; \n  model(\n    stlf = decomposition_model(\n      STL(box_cox(Gas, gas_lambda), robust = TRUE),\n      SNAIVE(season_year),\n      RW(season_adjust ~ drift())\n    )\n  )\n\ngas_fit_stl\n\n\n\n  \n\n\n\n\n\nCode\ngas_fit_stl |&gt; \n  gg_tsresiduals()\n\n\n\n\n\n\n\n\n\nCode\ngas_fit_stl |&gt; \n  augment() |&gt; \n  features(.innov, ljung_box, lag = 8, dof = 0)\n\n\n\n  \n\n\n\n\n\nCode\ngas_fit_todos &lt;- gas_train |&gt; \n  model(\n    media = MEAN(box_cox(Gas, gas_lambda)),\n    naive = NAIVE(box_cox(Gas, gas_lambda)),\n    snaive = SNAIVE(box_cox(Gas, gas_lambda)),\n    drift = RW(box_cox(Gas, gas_lambda) ~ drift()),\n    stlf = decomposition_model(\n      STL(box_cox(Gas, gas_lambda), robust = TRUE),\n      SNAIVE(season_year),\n      RW(season_adjust ~ drift())\n    )\n  )"
+  },
+  {
+    "objectID": "docs/exercises/posts/26-02-11 - fcst.html#pronóstico",
+    "href": "docs/exercises/posts/26-02-11 - fcst.html#pronóstico",
+    "title": "Pronósticos con métodos benchmark",
+    "section": "5 Pronóstico",
+    "text": "5 Pronóstico\n\n\nCode\ngas_fc_todos &lt;- gas_fit_todos |&gt; \n  forecast(h = \"3 years\")\n\ngas_fc_todos\n\n\n\n  \n\n\n\nCode\ngas_fc_todos |&gt; \n  autoplot(aus_production) +\n  facet_wrap(vars(.model), scales = \"free_y\")\n\n\n\n\n\n\n\n\n\nCode\ngas_fc_todos |&gt; \n  autoplot(aus_production, level = NULL, linewidth = 1)\n\n\n\n\n\n\n\n\n\n\n5.1 Métricas de error (Accuracy)\n\n\nCode\ngas_fc_todos |&gt; \n  accuracy(aus_production) |&gt; \n  arrange(RMSE)\n\n\n\n  \n\n\n\nEl mejor modelo parece ser el SNAIVE. Vamos a utilizar este para hacer el pronóstico final.\n\n\nCode\naus_production |&gt; \n  model(\n    snaive = SNAIVE(box_cox(Gas, gas_lambda))\n  ) |&gt; \n    forecast(h = \"3 years\") |&gt;\n    autoplot(aus_production)"
+  },
+  {
+    "objectID": "docs/more/stats/regression_landscape.html",
+    "href": "docs/more/stats/regression_landscape.html",
+    "title": "OLS and Beyond: Choosing the Right Regression Model",
     "section": "",
-    "text": "Code\nlibrary(tidyverse)\nlibrary(fpp3)"
+    "text": "A student who has just learned TSLM() and already knows about XGBoost or random forests will reasonably ask: why are we doing this? This document answers that question honestly — including the cases where OLS loses.\nThe goal is not to advocate for any single method, but to give you a mental map of the regression landscape so you can make deliberate choices rather than defaulting to whichever model you learned most recently."
   },
   {
-    "objectID": "docs/exercises/posts/26-02-04 - ts_dcmp.html#descarga-de-datos-del-fred-usando-tidyquant",
-    "href": "docs/exercises/posts/26-02-04 - ts_dcmp.html#descarga-de-datos-del-fred-usando-tidyquant",
-    "title": "Descomposición de series de tiempo",
-    "section": "2 Descarga de datos del FRED usando tidyquant",
-    "text": "2 Descarga de datos del FRED usando tidyquant\n\n\nCode\nur_cal &lt;- tidyquant::tq_get(\n  x    = \"CAURN\",\n  get  = \"economic.data\",\n  from = \"1976-01-01\",\n  to   = \"2025-09-01\"\n)\n\n\nRegistered S3 method overwritten by 'quantmod':\n  method            from\n  as.zoo.data.frame zoo \n\n\nCode\nur_cal\n\n\n\n  \n\n\n\n\n2.1 exportar a csv\n\n\nCode\nur_cal |&gt; # se pone el pipe con CTRL/CMD + SHIFT + M\n  write_csv(\"ur_cal.csv\")"
+    "objectID": "docs/more/stats/regression_landscape.html#the-bias-variance-tradeoff",
+    "href": "docs/more/stats/regression_landscape.html#the-bias-variance-tradeoff",
+    "title": "OLS and Beyond: Choosing the Right Regression Model",
+    "section": "3.1 The bias-variance tradeoff",
+    "text": "3.1 The bias-variance tradeoff\nWhen the number of candidate regressors is large relative to T, OLS tends to overfit: it fits the training data well but generalizes poorly. Regularization addresses this by adding a penalty term to the loss function, deliberately introducing bias to reduce variance."
   },
   {
-    "objectID": "docs/exercises/posts/26-02-04 - ts_dcmp.html#descomposición-stl",
-    "href": "docs/exercises/posts/26-02-04 - ts_dcmp.html#descomposición-stl",
-    "title": "Descomposición de series de tiempo",
-    "section": "3 Descomposición STL",
-    "text": "3 Descomposición STL\n\n\nCode\nur_cal\n\n\n\n  \n\n\n\n\n3.1 Convertir la tabla a tsibble\nLa tabla es una tibble y necesitamos que sea una tsibble. Podemos convertirla utilizando la función as_tsibble(), y especificando el index (variable temporal). En caso de que la tabla contenga más de una serie de tiempo, es necesario especificar también el key (columna(s) que le indican a R cómo distinguir a cada serie).\n\n\nCode\nur_cal_tsb &lt;- ur_cal |&gt;\n  as_tsibble(index = date)\n\nur_cal_tsb\n\n\n\n  \n\n\n\nLa tsibble está mal porque R cree que la serie tiene una periodicidad diaria y no mensual. Esto se controla con el formato de la fecha. Vamos a convertir la fecha a formato año-mes (yearmonth).\n\n\nCode\nur_cal_tsb &lt;- ur_cal |&gt;\n1  mutate(date = yearmonth(date)) |&gt;\n2  as_tsibble(index = date)\n\nur_cal_tsb\n\n\n\n1\n\nConvertimos la columna date a formato yearmonth. también existen funciones como yearquarter() y yearweek().\n\n2\n\nConvertimos la tabla a tsibble, especificando la columna date como índice temporal.\n\n\n\n\n\n  \n\n\n\nAhora sí, podemos hacer la descomposición STL utilizando la función model() y la función STL().\n\n\n3.2 Descomposición STL\n\n\nCode\nur_cal_dcmp &lt;- ur_cal_tsb |&gt;\n  model(\n1    stl = STL(price, robust = TRUE)\n  )\n\nur_cal_dcmp |&gt; \n2  components() |&gt;\n3  autoplot()\n\n\n\n1\n\nEspecificamos que queremos hacer una descomposición STL de la variable price.\n\n2\n\nExtraemos los componentes de la descomposición utilizando la función components().\n\n3\n\nGraficamos los componentes utilizando la función autoplot()."
+    "objectID": "docs/more/stats/regression_landscape.html#ridge-regression",
+    "href": "docs/more/stats/regression_landscape.html#ridge-regression",
+    "title": "OLS and Beyond: Choosing the Right Regression Model",
+    "section": "3.2 Ridge regression",
+    "text": "3.2 Ridge regression\nRidge adds an \\ell_2 penalty on the coefficients:\n\n\\hat{\\boldsymbol{\\beta}}_{\\text{ridge}} = \\arg\\min_{\\boldsymbol{\\beta}}\n\\left\\{\n\\sum_{t=1}^{T}(y_t - \\mathbf{x}_t^\\top\\boldsymbol{\\beta})^2 +\n\\lambda \\sum_{j=1}^{p} \\beta_j^2\n\\right\\}\n\nThe penalty shrinks all coefficients toward zero but never sets any exactly to zero. Ridge is particularly useful when many regressors are correlated and each contributes a small amount of signal."
   },
   {
-    "objectID": "docs/more/stats/expectation_variance_cov.html",
-    "href": "docs/more/stats/expectation_variance_cov.html",
-    "title": "Expectation, variance, and covariance: measuring uncertainty",
+    "objectID": "docs/more/stats/regression_landscape.html#lasso",
+    "href": "docs/more/stats/regression_landscape.html#lasso",
+    "title": "OLS and Beyond: Choosing the Right Regression Model",
+    "section": "3.3 Lasso",
+    "text": "3.3 Lasso\nLasso uses an \\ell_1 penalty:\n\n\\hat{\\boldsymbol{\\beta}}_{\\text{lasso}} = \\arg\\min_{\\boldsymbol{\\beta}}\n\\left\\{\n\\sum_{t=1}^{T}(y_t - \\mathbf{x}_t^\\top\\boldsymbol{\\beta})^2 +\n\\lambda \\sum_{j=1}^{p} |\\beta_j|\n\\right\\}\n\nThe \\ell_1 penalty produces sparse solutions: many coefficients are set exactly to zero, performing automatic variable selection. This makes Lasso particularly attractive when you suspect only a small subset of your candidate regressors are truly relevant."
+  },
+  {
+    "objectID": "docs/more/stats/regression_landscape.html#elastic-net",
+    "href": "docs/more/stats/regression_landscape.html#elastic-net",
+    "title": "OLS and Beyond: Choosing the Right Regression Model",
+    "section": "3.4 Elastic Net",
+    "text": "3.4 Elastic Net\nElastic Net combines both penalties:\n\n\\hat{\\boldsymbol{\\beta}}_{\\text{EN}} = \\arg\\min_{\\boldsymbol{\\beta}}\n\\left\\{\n\\sum_{t=1}^{T}(y_t - \\mathbf{x}_t^\\top\\boldsymbol{\\beta})^2 +\n\\lambda_1 \\sum_{j=1}^p |\\beta_j| +\n\\lambda_2 \\sum_{j=1}^p \\beta_j^2\n\\right\\}\n\nIt inherits sparsity from Lasso and stability under correlated predictors from Ridge. In practice, it is the default choice when you are unsure which penalty to use.\n\n\n\n\n\n\nImportantScaling is required for regularization\n\n\n\nBecause the penalty treats all \\beta_j equally, variables on different scales will be penalized unequally. Always standardize regressors before fitting a regularized model. See the companion document Preprocessing Regressors for details.\n\n\nIn R, glmnet::glmnet() implements all three. Cross-validation for \\lambda selection is handled by glmnet::cv.glmnet(). These are not currently integrated into fable, so regularized regression requires stepping outside the tidyverts ecosystem."
+  },
+  {
+    "objectID": "docs/more/stats/regression_landscape.html#the-core-idea-mapping-to-a-higher-dimensional-space",
+    "href": "docs/more/stats/regression_landscape.html#the-core-idea-mapping-to-a-higher-dimensional-space",
+    "title": "OLS and Beyond: Choosing the Right Regression Model",
+    "section": "4.1 The core idea: mapping to a higher-dimensional space",
+    "text": "4.1 The core idea: mapping to a higher-dimensional space\nSupport Vector Regression (SVR) extends the Support Vector Machine framework to continuous outputs. The key insight is that a relationship that is nonlinear in the original feature space \\mathcal{X} may become linear in a higher-dimensional feature space \\mathcal{F}, obtained via a mapping \\phi: \\mathcal{X} \\to \\mathcal{F}.\nSVR finds the flattest function f(\\mathbf{x}) = \\mathbf{w}^\\top\n\\phi(\\mathbf{x}) + b that fits the training data within an \\varepsilon-tube:\n\n\\min_{\\mathbf{w}, b, \\boldsymbol{\\xi}, \\boldsymbol{\\xi}^*}\n\\frac{1}{2}\\|\\mathbf{w}\\|^2 +\nC \\sum_{t=1}^T (\\xi_t + \\xi_t^*)\n\nsubject to:\n\n\\begin{align*}\ny_t - \\mathbf{w}^\\top \\phi(\\mathbf{x}_t) - b &\\leq \\varepsilon + \\xi_t \\\\\n\\mathbf{w}^\\top \\phi(\\mathbf{x}_t) + b - y_t &\\leq \\varepsilon + \\xi_t^* \\\\\n\\xi_t, \\xi_t^* &\\geq 0\n\\end{align*}\n\nwhere C &gt; 0 controls the trade-off between flatness and tolerance for deviations beyond \\varepsilon, and \\xi_t, \\xi_t^* are slack variables that penalize points outside the tube."
+  },
+  {
+    "objectID": "docs/more/stats/regression_landscape.html#the-kernel-trick",
+    "href": "docs/more/stats/regression_landscape.html#the-kernel-trick",
+    "title": "OLS and Beyond: Choosing the Right Regression Model",
+    "section": "4.2 The kernel trick",
+    "text": "4.2 The kernel trick\nComputing \\phi(\\mathbf{x}) explicitly is often infeasible when \\mathcal{F} is very high-dimensional (or infinite-dimensional). The kernel trick exploits the fact that the dual formulation of the SVR problem only requires inner products \\langle\\phi(\\mathbf{x}_i),\n\\phi(\\mathbf{x}_j)\\rangle, which can be computed directly via a kernel function:\n\nk(\\mathbf{x}_i, \\mathbf{x}_j) =\n\\langle\\phi(\\mathbf{x}_i), \\phi(\\mathbf{x}_j)\\rangle\n\nCommon kernels:\n\n\n\n\n\n\n\n\nKernel\nFormula\nUse case\n\n\n\n\nLinear\n\\mathbf{x}_i^\\top \\mathbf{x}_j\nEquivalent to OLS/Ridge\n\n\nRBF (Gaussian)\n\\exp\\!\\left(-\\gamma\\|\\mathbf{x}_i - \\mathbf{x}_j\\|^2\\right)\nSmooth nonlinear relationships\n\n\nPolynomial\n(\\mathbf{x}_i^\\top \\mathbf{x}_j + c)^d\nInteractions up to degree d\n\n\n\n\n\n\n\n\n\nNoteSVR with a linear kernel ≈ Ridge regression\n\n\n\nWith a linear kernel, SVR and Ridge regression optimize similar objectives. The main difference is the \\varepsilon-insensitive loss in SVR vs. the squared loss in Ridge. SVR is less sensitive to outliers near the regression surface, while Ridge penalizes all deviations quadratically."
+  },
+  {
+    "objectID": "docs/more/stats/regression_landscape.html#svr-for-time-series-forecasting",
+    "href": "docs/more/stats/regression_landscape.html#svr-for-time-series-forecasting",
+    "title": "OLS and Beyond: Choosing the Right Regression Model",
+    "section": "4.3 SVR for time series forecasting",
+    "text": "4.3 SVR for time series forecasting\nSVR does not natively handle temporal dependence — it treats observations as i.i.d. To use SVR for forecasting, you typically construct lagged features manually (embedding the time series into a feature matrix) and then apply SVR to the resulting regression problem. This is known as the NARX (Nonlinear AutoRegressive with eXogenous inputs) approach.\nPractical considerations for SVR in forecasting:\n\nRequires careful feature engineering (lag selection, exogenous variables).\nHyperparameter tuning (C, \\varepsilon, kernel parameters) is computationally expensive and sensitive to the choice of validation scheme. For time series, always use time-ordered cross-validation, never random k-fold.\nDoes not extrapolate well with RBF kernels: predictions degrade for inputs far from the training distribution.\nScaling is mandatory: SVR optimizes over \\|\\mathbf{w}\\|^2, which is scale-dependent. Unstandardized inputs will produce arbitrarily poor solutions.\n\nIn R, e1071::svm() and kernlab::ksvm() implement SVR."
+  },
+  {
+    "objectID": "docs/more/stats/regression_landscape.html#decision-trees-and-their-limitations",
+    "href": "docs/more/stats/regression_landscape.html#decision-trees-and-their-limitations",
+    "title": "OLS and Beyond: Choosing the Right Regression Model",
+    "section": "5.1 Decision trees and their limitations",
+    "text": "5.1 Decision trees and their limitations\nA regression tree recursively partitions the feature space into rectangular regions and predicts the mean of y within each region. Individual trees have high variance — small changes in the training data produce very different trees."
+  },
+  {
+    "objectID": "docs/more/stats/regression_landscape.html#random-forests",
+    "href": "docs/more/stats/regression_landscape.html#random-forests",
+    "title": "OLS and Beyond: Choosing the Right Regression Model",
+    "section": "5.2 Random Forests",
+    "text": "5.2 Random Forests\nRandom Forests reduce variance through two mechanisms: bagging (bootstrap aggregation of B trees) and feature subsampling (each split considers only a random subset of p features, decorrelating the trees).\nThe prediction is:\n\n\\hat{y} = \\frac{1}{B} \\sum_{b=1}^B T_b(\\mathbf{x})\n\nwhere T_b is the b-th tree fitted on a bootstrap sample."
+  },
+  {
+    "objectID": "docs/more/stats/regression_landscape.html#gradient-boosting-xgboost",
+    "href": "docs/more/stats/regression_landscape.html#gradient-boosting-xgboost",
+    "title": "OLS and Beyond: Choosing the Right Regression Model",
+    "section": "5.3 Gradient Boosting (XGBoost)",
+    "text": "5.3 Gradient Boosting (XGBoost)\nGradient boosting builds trees sequentially, with each tree fitted to the residuals of the ensemble so far. XGBoost adds \\ell_1 and \\ell_2 regularization on the tree structure itself, making it more robust to overfitting than vanilla gradient boosting."
+  },
+  {
+    "objectID": "docs/more/stats/regression_landscape.html#critical-limitations-for-forecasting",
+    "href": "docs/more/stats/regression_landscape.html#critical-limitations-for-forecasting",
+    "title": "OLS and Beyond: Choosing the Right Regression Model",
+    "section": "5.4 Critical limitations for forecasting",
+    "text": "5.4 Critical limitations for forecasting\n\n\n\n\n\n\nWarningTree-based methods do not extrapolate\n\n\n\nThis is the most important limitation for time series applications. A tree prediction is always a weighted average of observed training values. If the forecast horizon extends beyond the range of the training data — common in trending series — tree-based methods will produce flat or erratic forecasts.\nOne workaround is to detrend the series before modeling and add the trend back after forecasting, but this reintroduces the need for a trend model (which OLS or ARIMA handle naturally).\n\n\nAdditional considerations:\n\nRequire substantially more data than OLS to avoid overfitting.\nHyperparameter tuning is non-trivial; improper tuning can produce worse results than a well-specified TSLM.\nInterpretability is limited, though tools like SHAP values partially address this.\nTemporal autocorrelation in residuals is not modeled; lagged features must be constructed manually."
+  },
+  {
+    "objectID": "docs/more/stats/correlation.html",
+    "href": "docs/more/stats/correlation.html",
+    "title": "Correlation, dependence, and time series pitfalls",
     "section": "",
-    "text": "This document is optional, but strongly recommended.\nOnce uncertainty is represented through random variables, the next step is to quantify it.\nExpectation, variance, and covariance are the core mathematical tools we use to describe:\nThey appear everywhere in forecasting, whether explicitly or implicitly."
+    "text": "This document is optional, but strongly recommended.\nCorrelation is one of the most commonly used statistical tools — and one of the most frequently misunderstood.\nIn time series, this misunderstanding can lead to serious modeling errors."
   },
   {
-    "objectID": "docs/more/stats/expectation_variance_cov.html#expectation-the-long-run-average",
-    "href": "docs/more/stats/expectation_variance_cov.html#expectation-the-long-run-average",
-    "title": "Expectation, variance, and covariance: measuring uncertainty",
-    "section": "1 Expectation: the long-run average",
-    "text": "1 Expectation: the long-run average\nThe expectation (or expected value) of a random variable describes its typical value in the long run.\nFor a discrete random variable X with probability mass function p(x),\n\n\\mathbb{E}[X] = \\sum_x x \\, p(x).\n\nFor a continuous random variable with density f(x),\n\n\\mathbb{E}[X] = \\int_{-\\infty}^{\\infty} x \\, f(x)\\, dx.\n\n\n\n\n\n\n\nTip\n\n\n\nExpectation is not what you expect to observe next.\nIt is what you would obtain on average, across many repetitions.\n\n\nIn forecasting, expectation often corresponds to:\n\nthe point forecast,\nthe mean of a forecast distribution,\nthe baseline around which uncertainty is measured."
+    "objectID": "docs/more/stats/correlation.html#from-covariance-to-correlation",
+    "href": "docs/more/stats/correlation.html#from-covariance-to-correlation",
+    "title": "Correlation, dependence, and time series pitfalls",
+    "section": "1 From covariance to correlation",
+    "text": "1 From covariance to correlation\nRecall that the covariance between two random variables X and Y is defined as\n\n\\operatorname{Cov}(X, Y) = \\mathbb{E}[(X - \\mu_X)(Y - \\mu_Y)].\n\nCovariance measures whether large values of X tend to occur with large (or small) values of Y.\nHowever, covariance depends on the scale of the variables.\nTo address this, we define the correlation coefficient:\n\n\\rho(X,Y) =\n\\frac{\\operatorname{Cov}(X,Y)}\n{\\sqrt{\\operatorname{Var}(X)\\operatorname{Var}(Y)}}.\n\nBy construction,\n\n-1 \\le \\rho(X,Y) \\le 1."
   },
   {
-    "objectID": "docs/more/stats/expectation_variance_cov.html#linearity-of-expectation-this-matters-a-lot",
-    "href": "docs/more/stats/expectation_variance_cov.html#linearity-of-expectation-this-matters-a-lot",
-    "title": "Expectation, variance, and covariance: measuring uncertainty",
-    "section": "2 Linearity of expectation (this matters a lot)",
-    "text": "2 Linearity of expectation (this matters a lot)\nOne of the most important properties of expectation is linearity:\n\n\\mathbb{E}[aX + b] = a\\,\\mathbb{E}[X] + b,\n\nfor constants a and b.\nEven more importantly,\n\n\\mathbb{E}[X + Y] = \\mathbb{E}[X] + \\mathbb{E}[Y],\n\nregardless of whether X and Y are independent.\n\n\n\n\n\n\nImportant\n\n\n\nLinearity of expectation holds without independence.\nThis fact underlies many results in time series and forecasting."
+    "objectID": "docs/more/stats/correlation.html#what-correlation-actually-measures",
+    "href": "docs/more/stats/correlation.html#what-correlation-actually-measures",
+    "title": "Correlation, dependence, and time series pitfalls",
+    "section": "2 What correlation actually measures",
+    "text": "2 What correlation actually measures\nCorrelation measures linear association between two random variables.\nIf \\rho(X,Y) \\neq 0, there is evidence of a linear relationship.\nIf \\rho(X,Y) = 0, there is no linear relationship.\n\n\n\n\n\n\nNote\n\n\n\nZero correlation does not imply independence.\nIt only implies absence of linear dependence.\n\n\nThere exist dependent random variables with zero correlation."
   },
   {
-    "objectID": "docs/more/stats/expectation_variance_cov.html#variance-how-uncertain-is-a-random-variable",
-    "href": "docs/more/stats/expectation_variance_cov.html#variance-how-uncertain-is-a-random-variable",
-    "title": "Expectation, variance, and covariance: measuring uncertainty",
-    "section": "3 Variance: how uncertain is a random variable?",
-    "text": "3 Variance: how uncertain is a random variable?\nExpectation alone is not enough.\nTwo random variables may have the same mean but very different levels of uncertainty.\nThe variance of X measures how much values fluctuate around their expectation:\n\n\\operatorname{Var}(X) = \\mathbb{E}\\big[(X - \\mu)^2\\big],\n\\qquad \\mu = \\mathbb{E}[X].\n\nAn equivalent and often more convenient expression is:\n\n\\operatorname{Var}(X) = \\mathbb{E}[X^2] - \\mu^2.\n\n\n\n\n\n\n\nNote\n\n\n\nVariance is measured in squared units.\nThe standard deviation \\sigma = \\sqrt{\\operatorname{Var}(X)} restores the original scale.\n\n\nIn forecasting, variance captures:\n\nforecast uncertainty,\nvolatility,\nthe typical size of forecast errors."
+    "objectID": "docs/more/stats/correlation.html#dependence-is-broader-than-correlation",
+    "href": "docs/more/stats/correlation.html#dependence-is-broader-than-correlation",
+    "title": "Correlation, dependence, and time series pitfalls",
+    "section": "3 Dependence is broader than correlation",
+    "text": "3 Dependence is broader than correlation\nTwo random variables X and Y are independent if their joint distribution factorizes:\n\nf_{X,Y}(x,y) = f_X(x) f_Y(y).\n\nIndependence is a strong condition.\nCorrelation, by contrast, captures only one specific aspect of dependence.\n\n\n\n\n\n\nImportant\n\n\n\nIndependence \\Rightarrow zero correlation\nZero correlation \\nRightarrow independence\n\n\nThis distinction is often ignored — with consequences."
   },
   {
-    "objectID": "docs/more/stats/expectation_variance_cov.html#how-variance-reacts-to-transformations",
-    "href": "docs/more/stats/expectation_variance_cov.html#how-variance-reacts-to-transformations",
-    "title": "Expectation, variance, and covariance: measuring uncertainty",
-    "section": "4 How variance reacts to transformations",
-    "text": "4 How variance reacts to transformations\nVariance behaves very differently from expectation under transformations.\nFor constants a and b,\n\n\\operatorname{Var}(aX + b) = a^2 \\operatorname{Var}(X).\n\nAdding a constant does nothing to variance.\nScaling a variable scales variance quadratically.\n\n\n\n\n\n\nWarning\n\n\n\nVariance is sensitive to scale.\nThis is why transformations (e.g., logarithms) can dramatically change model behavior."
+    "objectID": "docs/more/stats/correlation.html#why-time-series-make-this-worse",
+    "href": "docs/more/stats/correlation.html#why-time-series-make-this-worse",
+    "title": "Correlation, dependence, and time series pitfalls",
+    "section": "4 Why time series make this worse",
+    "text": "4 Why time series make this worse\nIn time series, observations are not independent across time.\nWe work with a sequence of random variables \\{Y_t\\}, where dependence across time is the norm, not the exception.\nCorrelation computed directly on time series data is therefore affected by:\n\ntrends,\nseasonality,\npersistence,\nshared temporal structure."
   },
   {
-    "objectID": "docs/more/stats/expectation_variance_cov.html#covariance-measuring-dependence",
-    "href": "docs/more/stats/expectation_variance_cov.html#covariance-measuring-dependence",
-    "title": "Expectation, variance, and covariance: measuring uncertainty",
-    "section": "5 Covariance: measuring dependence",
-    "text": "5 Covariance: measuring dependence\nVariance describes uncertainty of a single random variable.\nCovariance describes how two random variables vary together.\nFor random variables X and Y,\n\n\\operatorname{Cov}(X, Y)\n= \\mathbb{E}\\big[(X - \\mu_X)(Y - \\mu_Y)\\big]\n= \\mathbb{E}[XY] - \\mu_X \\mu_Y.\n\n\nPositive covariance: large values of X tend to occur with large values of Y\nNegative covariance: large values of X tend to occur with small values of Y\n\n\n\n\n\n\n\nNote\n\n\n\nIf X and Y are independent, then\n\\operatorname{Cov}(X,Y) = 0.\nThe converse is not generally true."
+    "objectID": "docs/more/stats/correlation.html#spurious-correlation",
+    "href": "docs/more/stats/correlation.html#spurious-correlation",
+    "title": "Correlation, dependence, and time series pitfalls",
+    "section": "5 Spurious correlation",
+    "text": "5 Spurious correlation\nConsider two unrelated time series, each with a strong trend.\nEven if the underlying processes are independent, their sample correlation can be large.\nThis phenomenon is known as spurious correlation.\n\n\n\n\n\n\nWarning\n\n\n\nHigh correlation does not imply meaningful dependence\nwhen time series share common structure.\n\n\nThis is one of the most common pitfalls in applied forecasting."
   },
   {
-    "objectID": "docs/more/stats/expectation_variance_cov.html#covariance-in-time-series",
-    "href": "docs/more/stats/expectation_variance_cov.html#covariance-in-time-series",
-    "title": "Expectation, variance, and covariance: measuring uncertainty",
-    "section": "6 Covariance in time series",
-    "text": "6 Covariance in time series\nIn time series analysis, covariance appears in a very specific form.\nGiven a sequence \\{Y_t\\}, we define the lag-h covariance as:\n\n\\operatorname{Cov}(Y_t, Y_{t-h}).\n\nThis quantity measures how observations relate to their own past.\n\n\n\n\n\n\nImportant\n\n\n\nAutocovariance is the foundation of:\n\nautocorrelation,\nstationarity,\nAR and MA models.\n\n\n\nIf you understand covariance, you are already halfway to understanding time series models."
+    "objectID": "docs/more/stats/correlation.html#correlation-across-time-autocorrelation",
+    "href": "docs/more/stats/correlation.html#correlation-across-time-autocorrelation",
+    "title": "Correlation, dependence, and time series pitfalls",
+    "section": "6 Correlation across time: autocorrelation",
+    "text": "6 Correlation across time: autocorrelation\nIn time series analysis, correlation most often appears as autocorrelation.\nThe lag-h autocorrelation is defined as\n\n\\rho(h) =\n\\frac{\\operatorname{Cov}(Y_t, Y_{t-h})}\n{\\operatorname{Var}(Y_t)}.\n\nAutocorrelation measures linear dependence across time, not across variables.\n\n\n\n\n\n\nTip\n\n\n\nAutocorrelation is not a nuisance.\nIt is the signal that time series models are built to capture."
   },
   {
-    "objectID": "docs/more/stats/expectation_variance_cov.html#correlation-preview-not-the-full-story",
-    "href": "docs/more/stats/expectation_variance_cov.html#correlation-preview-not-the-full-story",
-    "title": "Expectation, variance, and covariance: measuring uncertainty",
-    "section": "7 Correlation (preview, not the full story)",
-    "text": "7 Correlation (preview, not the full story)\nCovariance depends on scale, which makes comparisons difficult.\nThe correlation coefficient rescales covariance:\n\n\\rho(X,Y) =\n\\frac{\\operatorname{Cov}(X,Y)}\n{\\sqrt{\\operatorname{Var}(X)\\operatorname{Var}(Y)}}.\n\nCorrelation lies between -1 and 1, but:\n\n\n\n\n\n\nWarning\n\n\n\nCorrelation measures linear association, not general dependence.\nThis distinction becomes critical in time series.\n\n\nCorrelation deserves its own refresher — and it will get one."
+    "objectID": "docs/more/stats/correlation.html#why-correlation-is-not-enough",
+    "href": "docs/more/stats/correlation.html#why-correlation-is-not-enough",
+    "title": "Correlation, dependence, and time series pitfalls",
+    "section": "7 Why correlation is not enough",
+    "text": "7 Why correlation is not enough\nCorrelation answers a narrow question:\n\nIs there a linear relationship?\n\nForecasting requires a broader understanding of dependence:\n\nhow long dependence persists,\nhow it decays over time,\nwhether it is stable.\n\nThese questions cannot be answered by a single correlation coefficient."
   },
   {
-    "objectID": "docs/more/stats/expectation_variance_cov.html#where-this-shows-up-in-the-course",
-    "href": "docs/more/stats/expectation_variance_cov.html#where-this-shows-up-in-the-course",
-    "title": "Expectation, variance, and covariance: measuring uncertainty",
+    "objectID": "docs/more/stats/correlation.html#where-this-shows-up-in-the-course",
+    "href": "docs/more/stats/correlation.html#where-this-shows-up-in-the-course",
+    "title": "Correlation, dependence, and time series pitfalls",
     "section": "8 Where this shows up in the course",
-    "text": "8 Where this shows up in the course\nExpectation, variance, and covariance appear throughout the course:\n\npoint forecasts and forecast distributions,\nforecast error evaluation,\nresidual diagnostics,\nautocorrelation functions,\nstationarity assumptions.\n\nThey are not optional background — they are the mathematical backbone of forecasting."
+    "text": "8 Where this shows up in the course\nThis refresher is foundational for:\n\nautocorrelation and partial autocorrelation functions,\nstationarity assumptions,\nAR and MA models,\nresidual diagnostics.\n\nMisunderstanding correlation leads directly to misinterpreting these tools."
   },
   {
-    "objectID": "docs/more/stats/expectation_variance_cov.html#what-you-do-not-need-yet",
-    "href": "docs/more/stats/expectation_variance_cov.html#what-you-do-not-need-yet",
-    "title": "Expectation, variance, and covariance: measuring uncertainty",
+    "objectID": "docs/more/stats/correlation.html#what-you-do-not-need-yet",
+    "href": "docs/more/stats/correlation.html#what-you-do-not-need-yet",
+    "title": "Correlation, dependence, and time series pitfalls",
     "section": "9 What you do not need yet",
-    "text": "9 What you do not need yet\nAt this stage, you do not need:\n\nhigher-order moments,\ndistribution-specific formulas,\nclosed-form derivations.\n\nThose concepts matter, but only once the core quantities are fully internalized."
+    "text": "9 What you do not need yet\nAt this stage, you do not need:\n\nnonlinear dependence measures,\ncopulas,\nmutual information.\n\nThose tools exist, but linear dependence is צור enough for the models covered in this course."
   },
   {
-    "objectID": "docs/more/stats/expectation_variance_cov.html#takeaway",
-    "href": "docs/more/stats/expectation_variance_cov.html#takeaway",
-    "title": "Expectation, variance, and covariance: measuring uncertainty",
+    "objectID": "docs/more/stats/correlation.html#takeaway",
+    "href": "docs/more/stats/correlation.html#takeaway",
+    "title": "Correlation, dependence, and time series pitfalls",
     "section": "10 Takeaway",
-    "text": "10 Takeaway\n\n\n\n\n\n\nImportant\n\n\n\nExpectation describes the center.\nVariance describes uncertainty.\nCovariance describes dependence.\nTogether, they define how time series behave."
+    "text": "10 Takeaway\n\n\n\n\n\n\nImportant\n\n\n\nCorrelation measures linear association.\nDependence is broader.\nIn time series, confusing the two leads to spurious conclusions."
   },
   {
-    "objectID": "docs/more/stats/random_variables.html",
-    "href": "docs/more/stats/random_variables.html",
-    "title": "Random variables: uncertainty as an object",
+    "objectID": "docs/more/stats/preprocessing.html",
+    "href": "docs/more/stats/preprocessing.html",
+    "title": "Preprocessing Regressors for Forecasting",
     "section": "",
-    "text": "This document is optional, but strongly recommended.\nIn forecasting, we do not only analyze observed data.\nWe analyze uncertainty about future values.\nRandom variables are the mathematical objects that allow us to make that uncertainty explicit, formal, and usable."
+    "text": "This document is a companion to the\nLinear Regression Models module. It addresses questions that frequently come up when building a TSLM():\nDo I need to scale my variables? Should I log-transform this regressor? How do I handle a categorical variable with more than two levels?\nThe short answer to all three: it depends — and this document explains on what."
   },
   {
-    "objectID": "docs/more/stats/random_variables.html#from-data-to-uncertainty",
-    "href": "docs/more/stats/random_variables.html#from-data-to-uncertainty",
-    "title": "Random variables: uncertainty as an object",
-    "section": "1 From data to uncertainty",
-    "text": "1 From data to uncertainty\nSuppose you observe a time series:\n\ndaily sales\n\nhourly electricity demand\n\nmonthly inflation\n\nAt time t, the value is known.\nAt time t+1, it is not.\nThat future value is not just “unknown” — it is uncertain.\nA random variable is how we represent that uncertainty mathematically.\n\n\n\n\n\n\nTip\n\n\n\nIn forecasting, uncertainty is not a nuisance.\nIt is the object of interest."
+    "objectID": "docs/more/stats/preprocessing.html#what-scaling-does-and-does-not-do",
+    "href": "docs/more/stats/preprocessing.html#what-scaling-does-and-does-not-do",
+    "title": "Preprocessing Regressors for Forecasting",
+    "section": "1.1 What scaling does (and does not do)",
+    "text": "1.1 What scaling does (and does not do)\nStandardization transforms a variable x into:\n\nz = \\frac{x - \\bar{x}}{s_x}\n\nso that z has mean 0 and standard deviation 1. Min-max normalization maps the variable to [0, 1]:\n\nz = \\frac{x - x_{\\min}}{x_{\\max} - x_{\\min}}\n\nBoth are linear transformations. Because OLS estimates are equivariant under linear transformations of the regressors, scaling does not change predicted values, residuals, or goodness-of-fit metrics. It only rescales the coefficients.\n\n\n\n\n\n\nImportantKey takeaway\n\n\n\nScaling is irrelevant for forecast quality in OLS-based models like TSLM(). Predicted values \\hat{y} are identical whether you scale or not."
   },
   {
-    "objectID": "docs/more/stats/random_variables.html#what-is-a-random-variable",
-    "href": "docs/more/stats/random_variables.html#what-is-a-random-variable",
-    "title": "Random variables: uncertainty as an object",
-    "section": "2 What is a random variable?",
-    "text": "2 What is a random variable?\nConceptually, a random variable represents a quantity whose value is not fixed in advance.\nIn forecasting, it typically represents:\n\na future observation,\na forecast error,\nor a simulated outcome.\n\nFormally, a random variable is a function\n\nX : \\Omega \\rightarrow \\mathbb{R},\n\nwhich assigns a real number to each possible outcome of an uncertain process.\n\n\n\n\n\n\nNote\n\n\n\nYou do not need to work explicitly with sample spaces or probability axioms in this course.\nThe important point is that a random variable is a mathematical representation of uncertainty."
+    "objectID": "docs/more/stats/preprocessing.html#when-scaling-does-matter",
+    "href": "docs/more/stats/preprocessing.html#when-scaling-does-matter",
+    "title": "Preprocessing Regressors for Forecasting",
+    "section": "1.2 When scaling does matter",
+    "text": "1.2 When scaling does matter\nThere are two situations where scaling genuinely changes the result:\nRegularized regression (Ridge, Lasso, Elastic Net). The penalty term \\lambda \\sum_j \\beta_j^2 treats all coefficients equally. If x_1 is measured in millions of pesos and x_2 is a rate between 0 and 1, the penalty will shrink \\hat\\beta_2 much more aggressively than \\hat\\beta_1 simply because of scale differences — not because x_2 is less important. Scaling before regularization is therefore required.\nComparing coefficient magnitudes. If you want to interpret which regressor has the largest effect size (not just the largest coefficient), standardized coefficients (also called beta coefficients) make the comparison meaningful. This is an inferential use, not a forecasting use.\n\n\n\n\n\n\nNoteTSLM() does not regularize\n\n\n\nfable’s TSLM() uses ordinary least squares without any penalty term. Scaling is therefore unnecessary for TSLM() models."
   },
   {
-    "objectID": "docs/more/stats/random_variables.html#discrete-and-continuous-random-variables",
-    "href": "docs/more/stats/random_variables.html#discrete-and-continuous-random-variables",
-    "title": "Random variables: uncertainty as an object",
-    "section": "3 Discrete and continuous random variables",
-    "text": "3 Discrete and continuous random variables\nRandom variables are commonly classified into two types.\n\n3.1 Discrete random variables\nA discrete random variable takes values in a countable set.\nExamples:\n\nnumber of customers tomorrow,\nnumber of units sold in an hour,\nnumber of failures in a week.\n\nUncertainty is described by a probability mass function (PMF):\n\np(x) = \\mathbb{P}(X = x),\n\nwith the properties\n\np(x) \\ge 0, \\qquad \\sum_x p(x) = 1.\n\n\n\n\n3.2 Continuous random variables\nA continuous random variable takes values in a continuum.\nExamples:\n\nelectricity demand,\ntemperature,\nforecast errors.\n\nUncertainty is described by a probability density function (PDF) f(x), satisfying\n\n\\int_{-\\infty}^{\\infty} f(x)\\,dx = 1.\n\nProbabilities are assigned to intervals, not points:\n\n\\mathbb{P}(a \\le X \\le b) = \\int_a^b f(x)\\,dx.\n\n\n\n\n\n\n\nWarning\n\n\n\nFor continuous random variables,\n\n\\mathbb{P}(X = x) = 0\n\nfor any single value x.\nThis is not a technicality — it is a core conceptual distinction."
+    "objectID": "docs/more/stats/preprocessing.html#a-quick-illustration",
+    "href": "docs/more/stats/preprocessing.html#a-quick-illustration",
+    "title": "Preprocessing Regressors for Forecasting",
+    "section": "1.3 A quick illustration",
+    "text": "1.3 A quick illustration\n\n\nCode\n1us_change_scaled &lt;- us_change |&gt;\n2  mutate(across(\n    c(Income, Production, Savings, Unemployment),\n3    \\(x) (x - mean(x, na.rm = TRUE)) / sd(x, na.rm = TRUE),\n    .names = \"{.col}_z\"\n  ))\n\n4fit_original &lt;- us_change |&gt;\n  model(TSLM(Consumption ~ Income + Production))\n\n5fit_scaled &lt;- us_change_scaled |&gt;\n  model(TSLM(Consumption ~ Income_z + Production_z))\n\n\n\n1\n\nStart from us_change, the dataset used throughout the regression module.\n\n2\n\nacross() applies the same transformation to multiple columns at once.\n\n3\n\nThe anonymous function \\(x) standardizes each selected column. .names = \"{.col}_z\" creates new columns with a _z suffix, preserving the originals.\n\n4\n\nFit the model on the original scale.\n\n5\n\nFit the same model on the standardized scale.\n\n\n\n\n\n\nCode\n1fc_original &lt;- fit_original |&gt;\n  forecast(us_change |&gt; tail(8))\n\n2fc_scaled &lt;- fit_scaled |&gt;\n  forecast(us_change_scaled |&gt; tail(8))\n\n3bind_cols(\n  fc_original |&gt; as_tibble() |&gt; select(.mean) |&gt; rename(original = .mean),\n  fc_scaled   |&gt; as_tibble() |&gt; select(.mean) |&gt; rename(scaled   = .mean)\n)\n\n\n\n1\n\nForecast using the original-scale model.\n\n2\n\nForecast using the standardized model.\n\n3\n\nSide-by-side comparison. The columns should be identical (within floating- point precision).\n\n\n\n\n\n  \n\n\n\n\n\n\n\n\n\nTipTry it yourself\n\n\n\nCompute accuracy() for both models. Do the RMSE and MAE differ?"
   },
   {
-    "objectID": "docs/more/stats/random_variables.html#distributions-as-models-not-data-summaries",
-    "href": "docs/more/stats/random_variables.html#distributions-as-models-not-data-summaries",
-    "title": "Random variables: uncertainty as an object",
-    "section": "4 Distributions as models, not data summaries",
-    "text": "4 Distributions as models, not data summaries\nA distribution describes how a random variable behaves.\nIt answers questions such as:\n\nWhich values are more likely?\nHow spread out are the possibilities?\nHow extreme outcomes behave?\n\nCrucially:\n\n\n\n\n\n\nImportant\n\n\n\nA distribution is not the same as a histogram.\n\nA histogram summarizes observed data.\nA distribution is a model for uncertainty.\n\n\n\nIn forecasting, distributions are assumptions — useful, but always assumptions."
+    "objectID": "docs/more/stats/preprocessing.html#transforming-y-back-transformation-and-bias",
+    "href": "docs/more/stats/preprocessing.html#transforming-y-back-transformation-and-bias",
+    "title": "Preprocessing Regressors for Forecasting",
+    "section": "2.1 Transforming y: back-transformation and bias",
+    "text": "2.1 Transforming y: back-transformation and bias\nYou already saw Box-Cox and log transformations applied to y in the decomposition module. The same logic applies inside a regression: if your series has multiplicative seasonality or variance that grows with the level, transforming y before fitting can stabilize residuals and improve forecast intervals.\nIn fable, the transformation is applied directly inside the model formula and back-transformation is handled automatically:\n\n\nCode\nmodel(TSLM(log(Consumption) ~ Income + Production))\n\n\n\n\n\n\n\n\nWarningBack-transformation introduces bias\n\n\n\nWhen you back-transform a forecast from log scale, e^{\\hat{y}} is the median of the forecast distribution, not the mean. fable corrects for this automatically when using forecast(), but it is worth knowing when interpreting point forecasts from other tools."
   },
   {
-    "objectID": "docs/more/stats/random_variables.html#random-variables-in-time-series",
-    "href": "docs/more/stats/random_variables.html#random-variables-in-time-series",
-    "title": "Random variables: uncertainty as an object",
-    "section": "5 Random variables in time series",
-    "text": "5 Random variables in time series\nIn time series analysis, we typically work with a sequence of random variables\n\n\\{Y_t\\}_{t=1}^T.\n\nIt is essential to distinguish between:\n\nY_t: the random variable,\ny_t: its observed realization.\n\n\n\n\n\n\n\nTip\n\n\n\nUppercase letters denote random variables.\nLowercase letters denote observed values.\nThis distinction will appear repeatedly throughout the course.\n\n\nEach future time point corresponds to its own random variable.\nA forecast is therefore not a single number, but a distribution over possible values."
+    "objectID": "docs/more/stats/preprocessing.html#transforming-regressors-linearizing-relationships",
+    "href": "docs/more/stats/preprocessing.html#transforming-regressors-linearizing-relationships",
+    "title": "Preprocessing Regressors for Forecasting",
+    "section": "2.2 Transforming regressors: linearizing relationships",
+    "text": "2.2 Transforming regressors: linearizing relationships\nTransforming a regressor x is about linearizing the relationship between x and y. OLS assumes the relationship is linear in the parameters — but the regressors themselves can be nonlinear functions of the original variables.\nCommon cases:\n\n\n\nRelationship\nTransform\nFormula\n\n\n\n\nDiminishing returns\nLog\ny \\sim \\log(x)\n\n\nMultiplicative\nBoth log\n\\log(y) \\sim \\log(x)\n\n\nQuadratic\nPolynomial\ny \\sim x + x^2\n\n\nExponential growth\nLog y only\n\\log(y) \\sim x\n\n\n\n\n\nCode\n1model(TSLM(Consumption ~ log(Income) + Production))\n2model(TSLM(Consumption ~ Income + I(Income^2)))\n\n\n\n1\n\nLog-transform Income to capture diminishing marginal effects.\n\n2\n\nAdd a quadratic term for Income. The I() wrapper tells R to treat Income^2 arithmetically, not as a formula interaction.\n\n\n\n\n\n\n\n\n\n\nNoteThis is different from transforming y\n\n\n\nTransforming a regressor changes the shape of the relationship between x and y. Transforming y changes the distributional assumptions about the residuals. Both can be done simultaneously."
   },
   {
-    "objectID": "docs/more/stats/random_variables.html#why-this-matters-for-forecasting",
-    "href": "docs/more/stats/random_variables.html#why-this-matters-for-forecasting",
-    "title": "Random variables: uncertainty as an object",
-    "section": "6 Why this matters for forecasting",
-    "text": "6 Why this matters for forecasting\nRandom variables and distributions appear throughout the course, even when not explicitly mentioned:\n\nforecast distributions and intervals,\nresiduals and forecast errors,\nsimulation-based forecasting,\nmodel diagnostics.\n\nWhenever you reason about uncertainty, you are implicitly working with random variables.\n\n\n\n\n\n\nNote\n\n\n\nPoint forecasts are summaries.\nDistributions carry the full information."
+    "objectID": "docs/more/stats/preprocessing.html#from-categories-to-numbers-dummy-encoding",
+    "href": "docs/more/stats/preprocessing.html#from-categories-to-numbers-dummy-encoding",
+    "title": "Preprocessing Regressors for Forecasting",
+    "section": "3.1 From categories to numbers: dummy encoding",
+    "text": "3.1 From categories to numbers: dummy encoding\nOLS cannot directly use a text variable. A categorical variable with k levels is converted into k - 1 binary (0/1) dummy variables. The omitted level becomes the reference category, and every coefficient is interpreted relative to it.\n\n\n\n\n\n\nImportantWhy k - 1 and not k?\n\n\n\nIncluding all k dummies would create perfect multicollinearity (the dummy variable trap): the k columns always sum to 1, which is identical to the intercept column. OLS cannot invert the design matrix in that case.\n\n\nIn R, factors are automatically expanded into dummies by lm() and therefore by TSLM(). You rarely need to create them manually:\n\n\nCode\nus_employment |&gt;\n  filter(Title %in% c(\"Mining and Logging\", \"Construction\", \"Manufacturing\")) |&gt;\n1  model(TSLM(Employed ~ trend() + season() + Title))\n\n\n\n1\n\nTitle is a character/factor variable. TSLM() will automatically create two dummies (three levels minus one reference)."
   },
   {
-    "objectID": "docs/more/stats/random_variables.html#what-you-do-not-need-right-now",
-    "href": "docs/more/stats/random_variables.html#what-you-do-not-need-right-now",
-    "title": "Random variables: uncertainty as an object",
-    "section": "7 What you do not need right now",
-    "text": "7 What you do not need right now\nAt this stage, you do not need:\n\nprobability axioms,\nmanual probability calculations,\nanalytical derivations of densities.\n\nThose belong to a probability theory course.\nHere, random variables are tools for thinking, not objects of proof."
+    "objectID": "docs/more/stats/preprocessing.html#choosing-the-reference-category",
+    "href": "docs/more/stats/preprocessing.html#choosing-the-reference-category",
+    "title": "Preprocessing Regressors for Forecasting",
+    "section": "3.2 Choosing the reference category",
+    "text": "3.2 Choosing the reference category\nR picks the reference level alphabetically by default. You can change it with relevel() if a different baseline makes more interpretive sense:\n\n\nCode\ndata |&gt;\n1  mutate(quarter = relevel(factor(quarter), ref = \"Q1\")) |&gt;\n  model(TSLM(y ~ trend() + quarter))\n\n\n\n1\n\nSet Q1 as the reference so that all quarterly dummies are interpreted as deviations from Q1.\n\n\n\n\n\n\n\n\n\n\nTipseason() in TSLM() already handles this\n\n\n\nWhen you use season() inside TSLM(), fable creates the seasonal dummies for you and drops one level automatically. You only need manual dummy encoding when your categorical variable is not the time index’s seasonal period — for example, a product category, a region, or a promotional event type."
   },
   {
-    "objectID": "docs/more/stats/random_variables.html#where-this-shows-up-in-the-course",
-    "href": "docs/more/stats/random_variables.html#where-this-shows-up-in-the-course",
-    "title": "Random variables: uncertainty as an object",
-    "section": "8 Where this shows up in the course",
-    "text": "8 Where this shows up in the course\nThis refresher prepares you for:\n\nresidual analysis,\nforecast uncertainty and intervals,\ndiagnostic checks,\nsimulation-based methods.\n\nLater refreshers will build on this foundation to introduce:\n\nexpectation and variance,\ncovariance and correlation,\nstationarity and noise."
+    "objectID": "docs/more/stats/preprocessing.html#what-an-interaction-says",
+    "href": "docs/more/stats/preprocessing.html#what-an-interaction-says",
+    "title": "Preprocessing Regressors for Forecasting",
+    "section": "4.1 What an interaction says",
+    "text": "4.1 What an interaction says\nAn interaction x_1 \\times x_2 allows the effect of x_1 on y to depend on the value of x_2. Without an interaction, OLS assumes the two effects are additive and independent.\nIn forecasting terms: maybe the effect of a promotional discount (promo) on sales is larger during the holiday season (holiday = 1) than during the rest of the year. That is an interaction.\n\n\nCode\n1model(TSLM(Sales ~ trend() + season() + promo * holiday))\nmodel(TSLM(Sales ~ trend() + season() + promo + holiday +\n2             promo:holiday))\n\n\n\n1\n\nThe * shorthand expands to main effects plus the interaction term.\n\n2\n\nThe : operator adds only the interaction term, assuming the main effects are already included.\n\n\n\n\n\n\n\n\n\n\nWarningInteractions increase model complexity fast\n\n\n\nWith p regressors, you can form \\binom{p}{2} pairwise interactions. Adding all of them will almost certainly overfit, especially with short time series. Only include interactions that have a clear theoretical justification."
   },
   {
-    "objectID": "docs/more/stats/random_variables.html#takeaway",
-    "href": "docs/more/stats/random_variables.html#takeaway",
-    "title": "Random variables: uncertainty as an object",
-    "section": "9 Takeaway",
-    "text": "9 Takeaway\nIf you remember only one idea, make it this:\n\n\n\n\n\n\nImportant\n\n\n\nIn forecasting, future values are random variables,\nand models describe their distributions — not certainties."
-  },
-  {
-    "objectID": "docs/more/index.html",
-    "href": "docs/more/index.html",
-    "title": "More",
-    "section": "",
-    "text": "These materials are optional and are not required to pass the course.\nThey are meant to help you:\n\nRefresh prerequisite concepts (statistics, probability, regression)\nWork more comfortably in R and the tidyverse ecosystem\nImprove your workflow and reproducibility (projects, Quarto, organization)\n\nYou are encouraged to use them as needed.\n\n\n\n\n\n\n   \n    \n    \n      Order By\n      Default\n      \n        Title\n      \n      \n        Date - Oldest\n      \n      \n        Date - Newest\n      \n      \n        Author\n      \n    \n  \n    \n      \n      \n    \n\n\n\n\n\n\n\n\n\n\nCorrelation, dependence, and time series pitfalls\n\n\n\nStat refreshers\n\n\n\nA refresher on correlation and statistical dependence, with an emphasis on why correlation can be misleading in time series data.\n\n\n\n\n\nPablo Benavides-Herrera\n\n3 min\n\n\n\n\n\n\n\n\n\n\n\nExpectation, variance, and covariance: measuring uncertainty\n\n\n\nStat refreshers\n\n\n\nA refresher on expectation, variance, and covariance, focused on how uncertainty and dependence are quantified in time series.\n\n\n\n\n\nPablo Benavides-Herrera\n\n3 min\n\n\n\n\n\n\n\n\n\n\n\nOLS and Beyond: Choosing the Right Regression Model\n\n\n\nstats\n\n\n\nA conceptual map of regression models for forecasting — from OLS to SVR, tree-based methods, and neural networks — with guidance on when each approach is warranted.\n\n\n\n\n\nMar 28, 2026\n\n9 min\n\n\n\n\n\n\n\n\n\n\n\nPipes and the tidyverse mental model\n\n\n\nR\n\n\n\nHow to think in tidyverse pipelines: understanding pipes, data flow, and readable transformations in R.\n\n\n\n\n\nPablo Benavides-Herrera\n\n4 min\n\n\n\n\n\n\n\n\n\n\n\nPreprocessing Regressors for Forecasting\n\n\n\nstats\n\n\n\nA practical guide to preparing explanatory variables before fitting a TSLM: scaling, transformations, categorical encoding, interactions, and a pre-flight checklist.\n\n\n\n\n\nMar 28, 2026\n\n10 min\n\n\n\n\n\n\n\n\n\n\n\nR for Python Users\n\n\n\nR\n\n\n\nA conceptual introduction to R for students coming from a Python background, focused on mental models, data workflows, and tidyverse-style thinking.\n\n\n\n\n\nPablo Benavides-Herrera\n\n4 min\n\n\n\n\n\n\n\n\n\n\n\nRandom variables: uncertainty as an object\n\n\n\nStat refreshers\n\n\n\nA mathematically grounded refresher on random variables and distributions, focused on how uncertainty is represented and used in time series forecasting.\n\n\n\n\n\nPablo Benavides-Herrera\n\n3 min\n\n\n\n\n\n\n\n\n\n\n\ntsibble: thinking in keys and time\n\n\n\nR\n\n\n\nAn introduction to tsibble and the core ideas of time, keys, and structure in tidyverts-based time series workflows.\n\n\n\n\n\nPablo Benavides-Herrera\n\n4 min\n\n\n\n\nNo matching items\n Back to top"
-  },
-  {
-    "objectID": "docs/more/r-tools/r_4_python_users.html",
-    "href": "docs/more/r-tools/r_4_python_users.html",
-    "title": "R for Python Users",
-    "section": "",
-    "text": "This document is optional, but highly recommended if you come from a Python background.\nThe goal is not to teach R from scratch.\nThe goal is to help you translate mental models from Python to R, so that the rest of the course feels natural instead of frustrating."
-  },
-  {
-    "objectID": "docs/more/r-tools/r_4_python_users.html#the-main-mindset-shift",
-    "href": "docs/more/r-tools/r_4_python_users.html#the-main-mindset-shift",
-    "title": "R for Python Users",
-    "section": "1 The main mindset shift",
-    "text": "1 The main mindset shift\nIf you come from Python, you are used to thinking in terms of:\n\nstep-by-step instructions\n\nobjects that are modified in place\n\nexplicit loops\n\n“do this, then do that”\n\nR (especially the tidyverse) encourages a different way of thinking:\n\ntransformations instead of instructions\n\nimmutable data objects\n\npipelines instead of loops\n\n“what happens to the data as it flows”\n\n\n\n\n\n\n\nTip\n\n\n\nIn tidyverse code, try to read pipelines out loud.\nIf it sounds like a sentence describing the data, you are probably doing it right."
-  },
-  {
-    "objectID": "docs/more/r-tools/r_4_python_users.html#imperative-vs-functional-style",
-    "href": "docs/more/r-tools/r_4_python_users.html#imperative-vs-functional-style",
-    "title": "R for Python Users",
-    "section": "2 Imperative vs functional style",
-    "text": "2 Imperative vs functional style\n\nPythonR\n\n\ndf = df[df[\"value\"] &gt; 0]\ndf[\"log_value\"] = np.log(df[\"value\"])\ndf = df.groupby(\"id\").mean()\n\nEach line modifies or reassigns df\nState changes over time\nOrder matters a lot\n\n\n\ndf |&gt;\n  filter(value &gt; 0) |&gt;\n  mutate(log_value = log(value)) |&gt;\n  group_by(id) |&gt;\n  summarise(across(everything(), mean))\n\nEach step returns a new object\nNo mutation in place\nThe pipeline reads top to bottom\n\n\n\n\n\n\n\n\n\n\nNote\n\n\n\nThink of |&gt; as saying:\n“take the result so far, and then apply the next transformation”."
-  },
-  {
-    "objectID": "docs/more/r-tools/r_4_python_users.html#core-object-mapping-python-r",
-    "href": "docs/more/r-tools/r_4_python_users.html#core-object-mapping-python-r",
-    "title": "R for Python Users",
-    "section": "3 Core object mapping (Python → R)",
-    "text": "3 Core object mapping (Python → R)\n\n\n\nPython\nR\n\n\n\n\npandas.DataFrame\ntibble\n\n\nSeries\nvector\n\n\nNaN\nNA\n\n\ndf.copy()\nusually unnecessary\n\n\nfor row in df\navoid\n\n\ndf.groupby()\ngroup_by()\n\n\nmethod chaining\npipe (|&gt;)\n\n\ndf.reset_index()\nrarely needed\n\n\n\n\n\n\n\n\n\nTip\n\n\n\nIn R, columns are vectors, not mini-dataframes.\nThis is one of the biggest conceptual differences — and one of R’s strengths."
-  },
-  {
-    "objectID": "docs/more/r-tools/r_4_python_users.html#mutation-the-silent-trap-for-python-users",
-    "href": "docs/more/r-tools/r_4_python_users.html#mutation-the-silent-trap-for-python-users",
-    "title": "R for Python Users",
-    "section": "4 Mutation: the silent trap for Python users",
-    "text": "4 Mutation: the silent trap for Python users\n\nPythonR\n\n\ndf[\"x\"] = df[\"x\"] * 2\nThis modifies df in place.\n\n\ndf |&gt;\n  mutate(x = x * 2)\nThis does not modify df unless you reassign it.\nCorrect usage:\ndf &lt;- df |&gt;\n  mutate(x = x * 2)\n\n\n\n\n\n\n\n\n\nWarning\n\n\n\nIf you forget to reassign in R, nothing happens.\nThis is the most common source of “why didn’t my code work?” for Python users."
-  },
-  {
-    "objectID": "docs/more/r-tools/r_4_python_users.html#loops-just-because-you-can-doesnt-mean-you-should",
-    "href": "docs/more/r-tools/r_4_python_users.html#loops-just-because-you-can-doesnt-mean-you-should",
-    "title": "R for Python Users",
-    "section": "5 Loops: just because you can, doesn’t mean you should",
-    "text": "5 Loops: just because you can, doesn’t mean you should\n\nPythonR\n\n\n# Python-style thinking applied to R (not recommended)\nfor (i in 1:nrow(df)) {\n  df$x[i] &lt;- df$x[i] * 2\n}\n\n\ndf |&gt;\n  mutate(x = x * 2)\n\n\n\n\n\n\n\n\n\nTip\n\n\n\nIf you feel the urge to write a for loop in R, stop and ask:\n“Is this a vectorized operation?”\nIn most cases, the answer is yes."
-  },
-  {
-    "objectID": "docs/more/r-tools/r_4_python_users.html#indexing-brackets-vs-verbs",
-    "href": "docs/more/r-tools/r_4_python_users.html#indexing-brackets-vs-verbs",
-    "title": "R for Python Users",
-    "section": "6 Indexing: brackets vs verbs",
-    "text": "6 Indexing: brackets vs verbs\n\nPythonR\n\n\ndf.iloc[0]\ndf.loc[df[\"x\"] &gt; 0]\n\n\ndf[1, ]\ndf |&gt;\n  filter(x &gt; 0)\n\n\n\n\n\n\n\n\n\nNote\n\n\n\nBase R indexing exists, but in this course we will prefer tidyverse verbs\nbecause they are clearer and less error-prone."
-  },
-  {
-    "objectID": "docs/more/r-tools/r_4_python_users.html#equality-assignment-and-naming",
-    "href": "docs/more/r-tools/r_4_python_users.html#equality-assignment-and-naming",
-    "title": "R for Python Users",
-    "section": "7 Equality, assignment, and naming",
-    "text": "7 Equality, assignment, and naming\n\n&lt;- is the standard operator for assignment in this course\n\n= is used only for function arguments\n== is for comparison\nNames are case-sensitive\nAvoid spaces in column names (or use backticks)\n\n\n\n\n\n\n\nTip\n\n\n\nUsing &lt;- consistently makes it easier to visually distinguish\nassignment from function arguments, especially in longer pipelines."
-  },
-  {
-    "objectID": "docs/more/r-tools/r_4_python_users.html#factors-the-weird-thing-you-didnt-ask-for",
-    "href": "docs/more/r-tools/r_4_python_users.html#factors-the-weird-thing-you-didnt-ask-for",
-    "title": "R for Python Users",
-    "section": "8 Factors: the weird thing you didn’t ask for",
-    "text": "8 Factors: the weird thing you didn’t ask for\nR has a special type called factor (categorical variable).\nSometimes you will see:\nstr(df)\nand a column is a factor when you expected a string.\n\n\n\n\n\n\nNote\n\n\n\nFor now:\n\ndon’t panic\nuse as.character() if needed\nwe will be explicit about factors when they matter"
-  },
-  {
-    "objectID": "docs/more/r-tools/r_4_python_users.html#what-you-actually-need-for-this-course",
-    "href": "docs/more/r-tools/r_4_python_users.html#what-you-actually-need-for-this-course",
-    "title": "R for Python Users",
-    "section": "9 What you actually need for this course",
-    "text": "9 What you actually need for this course\nYou do not need to become an R expert.\nYou need to be comfortable with:\n\ntibble\nfilter()\nmutate()\nsummarise()\ngroup_by()\npipes (|&gt;)\n\nEverything else is secondary."
-  },
-  {
-    "objectID": "docs/more/r-tools/r_4_python_users.html#final-reassurance",
-    "href": "docs/more/r-tools/r_4_python_users.html#final-reassurance",
-    "title": "R for Python Users",
-    "section": "10 Final reassurance",
-    "text": "10 Final reassurance\n\n\n\n\n\n\nTip\n\n\n\nIf you are fluent in Python, you already have the hard skills:\n\ndata thinking\ndebugging intuition\nabstraction\n\nR is just a different dialect.\n\n\nOnce the mental model clicks, the rest of the course will feel much lighter."
-  },
-  {
-    "objectID": "docs/more/r-tools/pipes_tidyverse.html",
-    "href": "docs/more/r-tools/pipes_tidyverse.html",
-    "title": "Pipes and the tidyverse mental model",
-    "section": "",
-    "text": "This document is optional, but strongly recommended.\nIf you are new to R or come from another language, understanding pipes will make the entire course easier, clearer, and more enjoyable."
-  },
-  {
-    "objectID": "docs/more/r-tools/pipes_tidyverse.html#what-a-pipe-really-means",
-    "href": "docs/more/r-tools/pipes_tidyverse.html#what-a-pipe-really-means",
-    "title": "Pipes and the tidyverse mental model",
-    "section": "1 What a pipe really means",
-    "text": "1 What a pipe really means\nIn tidyverse-style R, the pipe operator |&gt; means:\n\n“take the result of the previous step and pass it as the input of the next one”\n\nA useful way to read a pipeline is to mentally replace |&gt; with the word “then”.\nFor example:\ndf |&gt;\n  filter(value &gt; 0) |&gt;\n  summarise(mean_value = mean(value))\ncan be read as:\n\n“take df, then filter rows where value &gt; 0, then compute the mean of value.”\n\n\n\n\n\n\n\nTip\n\n\n\nIf you can read a pipeline out loud using “then” and it still makes sense,\nyou are probably writing clear tidyverse code.\n\n\n\n\n\n\n\n\nFor more on style, including guidance on pipes, see\nR for Data Science (2e) — Workflow: code style (Pipes)."
-  },
-  {
-    "objectID": "docs/more/r-tools/pipes_tidyverse.html#tidyverse-code-with-and-without-pipes",
-    "href": "docs/more/r-tools/pipes_tidyverse.html#tidyverse-code-with-and-without-pipes",
-    "title": "Pipes and the tidyverse mental model",
-    "section": "2 Tidyverse code with and without pipes",
-    "text": "2 Tidyverse code with and without pipes\n\nWithout pipesWith pipes\n\n\ndf_filtered &lt;- filter(df, value &gt; 0)\ndf_transformed &lt;- mutate(df_filtered, log_value = log(value))\ndf_grouped &lt;- group_by(df_transformed, id)\ndf_summary &lt;- summarise(df_grouped, mean_value = mean(log_value))\n\nExplicit intermediate objects\n\nMore typing\n\nEasier to lose the “story” of the data\n\n\n\ndf |&gt;\n  filter(value &gt; 0) |&gt;\n  mutate(log_value = log(value)) |&gt;\n  group_by(id) |&gt;\n  summarise(mean_value = mean(log_value))\n\nOne clear data flow\n\nNo temporary variables\n\nEasier to read, explain, and debug"
-  },
-  {
-    "objectID": "docs/more/r-tools/pipes_tidyverse.html#the-tidyverse-mental-model",
-    "href": "docs/more/r-tools/pipes_tidyverse.html#the-tidyverse-mental-model",
-    "title": "Pipes and the tidyverse mental model",
-    "section": "3 The tidyverse mental model",
-    "text": "3 The tidyverse mental model\nA tidyverse pipeline usually follows this pattern:\n\nstart with a dataset\n\nfilter rows\n\ncreate or transform variables\n\ngroup the data\n\nsummarise\n\nThis is not a strict rule, but a very common and effective structure.\n\n\n\n\n\n\nNote\n\n\n\nMost tidyverse verbs return a new tibble.\nThe original data is never modified unless you explicitly reassign it.\n\n\n\n\n\n\n\n\nIf you want a broader overview of how the pieces fit together, see\nR for Data Science (2e) — Introduction."
-  },
-  {
-    "objectID": "docs/more/r-tools/pipes_tidyverse.html#pipes-are-not-magic",
-    "href": "docs/more/r-tools/pipes_tidyverse.html#pipes-are-not-magic",
-    "title": "Pipes and the tidyverse mental model",
-    "section": "4 Pipes are not magic",
-    "text": "4 Pipes are not magic\nThe pipe does not change what functions do.\nIt only changes how inputs are passed.\n\n\n4.1 Without pipes\nsummarise(\n  group_by(\n    mutate(\n      filter(df, value &gt; 0),\n      log_value = log(value)\n    ),\n    id\n  ),\n  mean_value = mean(log_value)\n)\n\n\n4.2 With pipes\ndf |&gt;\n  filter(value &gt; 0) |&gt;\n  mutate(log_value = log(value)) |&gt;\n  group_by(id) |&gt;\n  summarise(mean_value = mean(log_value))\n\n\n\n\n\n\n\n\nTip\n\n\n\nIf you can rewrite a pipeline as nested function calls,\nthen the pipeline is doing exactly what you think it is."
-  },
-  {
-    "objectID": "docs/more/r-tools/pipes_tidyverse.html#pipes-and-column-references",
-    "href": "docs/more/r-tools/pipes_tidyverse.html#pipes-and-column-references",
-    "title": "Pipes and the tidyverse mental model",
-    "section": "5 Pipes and column references",
-    "text": "5 Pipes and column references\nInside tidyverse verbs, column names are used directly.\ndf |&gt;\n  summarise(mean_value = mean(value, na.rm = TRUE))\nNo $, no indexing, no extra syntax.\n\n\n\n\n\n\nNote\n\n\n\nThis works because tidyverse uses data-masking:\ncolumn names are looked up automatically inside the data.\n\n\n\n\n\n\n\n\nYou do not need to master these details for this course.\nIf you are curious about what’s happening under the hood, see\nR for Data Science (2e) — Functions."
-  },
-  {
-    "objectID": "docs/more/r-tools/pipes_tidyverse.html#why-we-avoid-in-this-course",
-    "href": "docs/more/r-tools/pipes_tidyverse.html#why-we-avoid-in-this-course",
-    "title": "Pipes and the tidyverse mental model",
-    "section": "6 Why we avoid $ in this course",
-    "text": "6 Why we avoid $ in this course\n\nIt breaks the pipeline mental model\n\nIt mixes different styles of R\n\nIt becomes confusing with grouped data\n\nFor clarity and consistency, we will stick to tidyverse verbs and pipelines."
-  },
-  {
-    "objectID": "docs/more/r-tools/pipes_tidyverse.html#common-pipe-mistakes",
-    "href": "docs/more/r-tools/pipes_tidyverse.html#common-pipe-mistakes",
-    "title": "Pipes and the tidyverse mental model",
-    "section": "7 Common pipe mistakes",
-    "text": "7 Common pipe mistakes\n\n7.1 Breaking the pipeline\ndf |&gt;\n  filter(value &gt; 0)\n\nmutate(log_value = log(value))\nThe second line does not receive the result of the pipeline.\nCorrect:\ndf |&gt;\n  filter(value &gt; 0) |&gt;\n  mutate(log_value = log(value))\n\n\n\n7.2 Forgetting reassignment\ndf |&gt;\n  mutate(x = x * 2)\nNothing changes.\nCorrect:\ndf &lt;- df |&gt;\n  mutate(x = x * 2)\n\n\n\n\n\n\nWarning\n\n\n\nIf you forget to reassign, the pipeline runs but the result is discarded."
-  },
-  {
-    "objectID": "docs/more/r-tools/pipes_tidyverse.html#pipes-and-readability",
-    "href": "docs/more/r-tools/pipes_tidyverse.html#pipes-and-readability",
-    "title": "Pipes and the tidyverse mental model",
-    "section": "8 Pipes and readability",
-    "text": "8 Pipes and readability\nPipelines are about clarity, not cleverness.\nPrefer this:\ndf |&gt;\n  filter(value &gt; 0) |&gt;\n  group_by(id) |&gt;\n  summarise(mean_value = mean(value))\nOver this:\ndf |&gt; filter(value &gt; 0) |&gt; group_by(id) |&gt; summarise(mean_value = mean(value))\n\n\n\n\n\n\nTip\n\n\n\nOne verb per line is a good default.\n\n\n\n\n\n\n\n\nFor more examples of filter(), mutate(), group_by(), and summarise(), see\nR for Data Science (2e) — Data transformation."
-  },
-  {
-    "objectID": "docs/more/r-tools/pipes_tidyverse.html#when-not-to-use-pipes",
-    "href": "docs/more/r-tools/pipes_tidyverse.html#when-not-to-use-pipes",
-    "title": "Pipes and the tidyverse mental model",
-    "section": "9 When not to use pipes",
-    "text": "9 When not to use pipes\nPipes work best for linear transformations.\nThey are less useful for:\n\ncomplex branching logic\n\ndeeply nested conditionals\n\nnon–data-centric code\n\nEven so, in this course we will often prefer pipelines for consistency.\ndf |&gt;\n  summarise(mean_value = mean(value, na.rm = TRUE))"
-  },
-  {
-    "objectID": "docs/more/r-tools/pipes_tidyverse.html#pipes-in-this-course",
-    "href": "docs/more/r-tools/pipes_tidyverse.html#pipes-in-this-course",
-    "title": "Pipes and the tidyverse mental model",
-    "section": "10 Pipes in this course",
-    "text": "10 Pipes in this course\nThroughout the course:\n\nall data manipulation examples will use pipes\n\ntidyverse verbs will be preferred\n\nclarity will be valued over clever tricks\n\nIf something feels confusing, read the pipeline top to bottom, step by step —\nusing “then” as you go."
-  },
-  {
-    "objectID": "docs/more/r-tools/pipes_tidyverse.html#final-takeaway",
-    "href": "docs/more/r-tools/pipes_tidyverse.html#final-takeaway",
-    "title": "Pipes and the tidyverse mental model",
-    "section": "11 Final takeaway",
-    "text": "11 Final takeaway\n\n\n\n\n\n\nTip\n\n\n\nIf you understand pipes, you understand most of tidyverse-based R.\n\n\nEverything else in the course builds on this idea."
+    "objectID": "docs/more/stats/preprocessing.html#polynomial-terms",
+    "href": "docs/more/stats/preprocessing.html#polynomial-terms",
+    "title": "Preprocessing Regressors for Forecasting",
+    "section": "4.2 Polynomial terms",
+    "text": "4.2 Polynomial terms\nFor a smooth nonlinear relationship, polynomial regression adds powers of a regressor:\n\ny_t = \\beta_0 + \\beta_1 x_t + \\beta_2 x_t^2 + \\varepsilon_t\n\n\n\nCode\n1model(TSLM(y ~ x + I(x^2) + I(x^3)))\n\n\n\n1\n\nAlways wrap polynomial terms in I() inside a formula. Without it, ^ has a different meaning in R’s formula syntax.\n\n\n\n\n\n\n\n\n\n\nNotePolynomial vs. splines\n\n\n\nHigh-degree polynomials oscillate wildly near the boundaries of the data. Splines (piecewise polynomials with smooth joins) are generally preferred for capturing smooth nonlinearities — see splines::bs() or splines::ns() for use inside lm() and TSLM()."
   },
   {
     "objectID": "docs/more/r-tools/tsibble.html",
@@ -2696,284 +2626,417 @@
     "text": "12 Final takeaway\n\n\n\n\n\n\nTip\n\n\n\nIf tidyverse pipelines describe how data changes,\ntsibbles describe what kind of time-based data you have.\n\n\nGet the structure right, and the models will make sense."
   },
   {
-    "objectID": "docs/more/stats/preprocessing.html",
-    "href": "docs/more/stats/preprocessing.html",
-    "title": "Preprocessing Regressors for Forecasting",
+    "objectID": "docs/more/r-tools/pipes_tidyverse.html",
+    "href": "docs/more/r-tools/pipes_tidyverse.html",
+    "title": "Pipes and the tidyverse mental model",
     "section": "",
-    "text": "This document is a companion to the\nLinear Regression Models module. It addresses questions that frequently come up when building a TSLM():\nDo I need to scale my variables? Should I log-transform this regressor? How do I handle a categorical variable with more than two levels?\nThe short answer to all three: it depends — and this document explains on what."
+    "text": "This document is optional, but strongly recommended.\nIf you are new to R or come from another language, understanding pipes will make the entire course easier, clearer, and more enjoyable."
   },
   {
-    "objectID": "docs/more/stats/preprocessing.html#what-scaling-does-and-does-not-do",
-    "href": "docs/more/stats/preprocessing.html#what-scaling-does-and-does-not-do",
-    "title": "Preprocessing Regressors for Forecasting",
-    "section": "1.1 What scaling does (and does not do)",
-    "text": "1.1 What scaling does (and does not do)\nStandardization transforms a variable x into:\n\nz = \\frac{x - \\bar{x}}{s_x}\n\nso that z has mean 0 and standard deviation 1. Min-max normalization maps the variable to [0, 1]:\n\nz = \\frac{x - x_{\\min}}{x_{\\max} - x_{\\min}}\n\nBoth are linear transformations. Because OLS estimates are equivariant under linear transformations of the regressors, scaling does not change predicted values, residuals, or goodness-of-fit metrics. It only rescales the coefficients.\n\n\n\n\n\n\nImportantKey takeaway\n\n\n\nScaling is irrelevant for forecast quality in OLS-based models like TSLM(). Predicted values \\hat{y} are identical whether you scale or not."
+    "objectID": "docs/more/r-tools/pipes_tidyverse.html#what-a-pipe-really-means",
+    "href": "docs/more/r-tools/pipes_tidyverse.html#what-a-pipe-really-means",
+    "title": "Pipes and the tidyverse mental model",
+    "section": "1 What a pipe really means",
+    "text": "1 What a pipe really means\nIn tidyverse-style R, the pipe operator |&gt; means:\n\n“take the result of the previous step and pass it as the input of the next one”\n\nA useful way to read a pipeline is to mentally replace |&gt; with the word “then”.\nFor example:\ndf |&gt;\n  filter(value &gt; 0) |&gt;\n  summarise(mean_value = mean(value))\ncan be read as:\n\n“take df, then filter rows where value &gt; 0, then compute the mean of value.”\n\n\n\n\n\n\n\nTip\n\n\n\nIf you can read a pipeline out loud using “then” and it still makes sense,\nyou are probably writing clear tidyverse code.\n\n\n\n\n\n\n\n\nFor more on style, including guidance on pipes, see\nR for Data Science (2e) — Workflow: code style (Pipes)."
   },
   {
-    "objectID": "docs/more/stats/preprocessing.html#when-scaling-does-matter",
-    "href": "docs/more/stats/preprocessing.html#when-scaling-does-matter",
-    "title": "Preprocessing Regressors for Forecasting",
-    "section": "1.2 When scaling does matter",
-    "text": "1.2 When scaling does matter\nThere are two situations where scaling genuinely changes the result:\nRegularized regression (Ridge, Lasso, Elastic Net). The penalty term \\lambda \\sum_j \\beta_j^2 treats all coefficients equally. If x_1 is measured in millions of pesos and x_2 is a rate between 0 and 1, the penalty will shrink \\hat\\beta_2 much more aggressively than \\hat\\beta_1 simply because of scale differences — not because x_2 is less important. Scaling before regularization is therefore required.\nComparing coefficient magnitudes. If you want to interpret which regressor has the largest effect size (not just the largest coefficient), standardized coefficients (also called beta coefficients) make the comparison meaningful. This is an inferential use, not a forecasting use.\n\n\n\n\n\n\nNoteTSLM() does not regularize\n\n\n\nfable’s TSLM() uses ordinary least squares without any penalty term. Scaling is therefore unnecessary for TSLM() models."
+    "objectID": "docs/more/r-tools/pipes_tidyverse.html#tidyverse-code-with-and-without-pipes",
+    "href": "docs/more/r-tools/pipes_tidyverse.html#tidyverse-code-with-and-without-pipes",
+    "title": "Pipes and the tidyverse mental model",
+    "section": "2 Tidyverse code with and without pipes",
+    "text": "2 Tidyverse code with and without pipes\n\nWithout pipesWith pipes\n\n\ndf_filtered &lt;- filter(df, value &gt; 0)\ndf_transformed &lt;- mutate(df_filtered, log_value = log(value))\ndf_grouped &lt;- group_by(df_transformed, id)\ndf_summary &lt;- summarise(df_grouped, mean_value = mean(log_value))\n\nExplicit intermediate objects\n\nMore typing\n\nEasier to lose the “story” of the data\n\n\n\ndf |&gt;\n  filter(value &gt; 0) |&gt;\n  mutate(log_value = log(value)) |&gt;\n  group_by(id) |&gt;\n  summarise(mean_value = mean(log_value))\n\nOne clear data flow\n\nNo temporary variables\n\nEasier to read, explain, and debug"
   },
   {
-    "objectID": "docs/more/stats/preprocessing.html#a-quick-illustration",
-    "href": "docs/more/stats/preprocessing.html#a-quick-illustration",
-    "title": "Preprocessing Regressors for Forecasting",
-    "section": "1.3 A quick illustration",
-    "text": "1.3 A quick illustration\n\n\nCode\n1us_change_scaled &lt;- us_change |&gt;\n2  mutate(across(\n    c(Income, Production, Savings, Unemployment),\n3    \\(x) (x - mean(x, na.rm = TRUE)) / sd(x, na.rm = TRUE),\n    .names = \"{.col}_z\"\n  ))\n\n4fit_original &lt;- us_change |&gt;\n  model(TSLM(Consumption ~ Income + Production))\n\n5fit_scaled &lt;- us_change_scaled |&gt;\n  model(TSLM(Consumption ~ Income_z + Production_z))\n\n\n\n1\n\nStart from us_change, the dataset used throughout the regression module.\n\n2\n\nacross() applies the same transformation to multiple columns at once.\n\n3\n\nThe anonymous function \\(x) standardizes each selected column. .names = \"{.col}_z\" creates new columns with a _z suffix, preserving the originals.\n\n4\n\nFit the model on the original scale.\n\n5\n\nFit the same model on the standardized scale.\n\n\n\n\n\n\nCode\n1fc_original &lt;- fit_original |&gt;\n  forecast(us_change |&gt; tail(8))\n\n2fc_scaled &lt;- fit_scaled |&gt;\n  forecast(us_change_scaled |&gt; tail(8))\n\n3bind_cols(\n  fc_original |&gt; as_tibble() |&gt; select(.mean) |&gt; rename(original = .mean),\n  fc_scaled   |&gt; as_tibble() |&gt; select(.mean) |&gt; rename(scaled   = .mean)\n)\n\n\n\n1\n\nForecast using the original-scale model.\n\n2\n\nForecast using the standardized model.\n\n3\n\nSide-by-side comparison. The columns should be identical (within floating- point precision).\n\n\n\n\n\n  \n\n\n\n\n\n\n\n\n\nTipTry it yourself\n\n\n\nCompute accuracy() for both models. Do the RMSE and MAE differ?"
+    "objectID": "docs/more/r-tools/pipes_tidyverse.html#the-tidyverse-mental-model",
+    "href": "docs/more/r-tools/pipes_tidyverse.html#the-tidyverse-mental-model",
+    "title": "Pipes and the tidyverse mental model",
+    "section": "3 The tidyverse mental model",
+    "text": "3 The tidyverse mental model\nA tidyverse pipeline usually follows this pattern:\n\nstart with a dataset\n\nfilter rows\n\ncreate or transform variables\n\ngroup the data\n\nsummarise\n\nThis is not a strict rule, but a very common and effective structure.\n\n\n\n\n\n\nNote\n\n\n\nMost tidyverse verbs return a new tibble.\nThe original data is never modified unless you explicitly reassign it.\n\n\n\n\n\n\n\n\nIf you want a broader overview of how the pieces fit together, see\nR for Data Science (2e) — Introduction."
   },
   {
-    "objectID": "docs/more/stats/preprocessing.html#transforming-y-back-transformation-and-bias",
-    "href": "docs/more/stats/preprocessing.html#transforming-y-back-transformation-and-bias",
-    "title": "Preprocessing Regressors for Forecasting",
-    "section": "2.1 Transforming y: back-transformation and bias",
-    "text": "2.1 Transforming y: back-transformation and bias\nYou already saw Box-Cox and log transformations applied to y in the decomposition module. The same logic applies inside a regression: if your series has multiplicative seasonality or variance that grows with the level, transforming y before fitting can stabilize residuals and improve forecast intervals.\nIn fable, the transformation is applied directly inside the model formula and back-transformation is handled automatically:\n\n\nCode\nmodel(TSLM(log(Consumption) ~ Income + Production))\n\n\n\n\n\n\n\n\nWarningBack-transformation introduces bias\n\n\n\nWhen you back-transform a forecast from log scale, e^{\\hat{y}} is the median of the forecast distribution, not the mean. fable corrects for this automatically when using forecast(), but it is worth knowing when interpreting point forecasts from other tools."
+    "objectID": "docs/more/r-tools/pipes_tidyverse.html#pipes-are-not-magic",
+    "href": "docs/more/r-tools/pipes_tidyverse.html#pipes-are-not-magic",
+    "title": "Pipes and the tidyverse mental model",
+    "section": "4 Pipes are not magic",
+    "text": "4 Pipes are not magic\nThe pipe does not change what functions do.\nIt only changes how inputs are passed.\n\n\n4.1 Without pipes\nsummarise(\n  group_by(\n    mutate(\n      filter(df, value &gt; 0),\n      log_value = log(value)\n    ),\n    id\n  ),\n  mean_value = mean(log_value)\n)\n\n\n4.2 With pipes\ndf |&gt;\n  filter(value &gt; 0) |&gt;\n  mutate(log_value = log(value)) |&gt;\n  group_by(id) |&gt;\n  summarise(mean_value = mean(log_value))\n\n\n\n\n\n\n\n\nTip\n\n\n\nIf you can rewrite a pipeline as nested function calls,\nthen the pipeline is doing exactly what you think it is."
   },
   {
-    "objectID": "docs/more/stats/preprocessing.html#transforming-regressors-linearizing-relationships",
-    "href": "docs/more/stats/preprocessing.html#transforming-regressors-linearizing-relationships",
-    "title": "Preprocessing Regressors for Forecasting",
-    "section": "2.2 Transforming regressors: linearizing relationships",
-    "text": "2.2 Transforming regressors: linearizing relationships\nTransforming a regressor x is about linearizing the relationship between x and y. OLS assumes the relationship is linear in the parameters — but the regressors themselves can be nonlinear functions of the original variables.\nCommon cases:\n\n\n\nRelationship\nTransform\nFormula\n\n\n\n\nDiminishing returns\nLog\ny \\sim \\log(x)\n\n\nMultiplicative\nBoth log\n\\log(y) \\sim \\log(x)\n\n\nQuadratic\nPolynomial\ny \\sim x + x^2\n\n\nExponential growth\nLog y only\n\\log(y) \\sim x\n\n\n\n\n\nCode\n1model(TSLM(Consumption ~ log(Income) + Production))\n2model(TSLM(Consumption ~ Income + I(Income^2)))\n\n\n\n1\n\nLog-transform Income to capture diminishing marginal effects.\n\n2\n\nAdd a quadratic term for Income. The I() wrapper tells R to treat Income^2 arithmetically, not as a formula interaction.\n\n\n\n\n\n\n\n\n\n\nNoteThis is different from transforming y\n\n\n\nTransforming a regressor changes the shape of the relationship between x and y. Transforming y changes the distributional assumptions about the residuals. Both can be done simultaneously."
+    "objectID": "docs/more/r-tools/pipes_tidyverse.html#pipes-and-column-references",
+    "href": "docs/more/r-tools/pipes_tidyverse.html#pipes-and-column-references",
+    "title": "Pipes and the tidyverse mental model",
+    "section": "5 Pipes and column references",
+    "text": "5 Pipes and column references\nInside tidyverse verbs, column names are used directly.\ndf |&gt;\n  summarise(mean_value = mean(value, na.rm = TRUE))\nNo $, no indexing, no extra syntax.\n\n\n\n\n\n\nNote\n\n\n\nThis works because tidyverse uses data-masking:\ncolumn names are looked up automatically inside the data.\n\n\n\n\n\n\n\n\nYou do not need to master these details for this course.\nIf you are curious about what’s happening under the hood, see\nR for Data Science (2e) — Functions."
   },
   {
-    "objectID": "docs/more/stats/preprocessing.html#from-categories-to-numbers-dummy-encoding",
-    "href": "docs/more/stats/preprocessing.html#from-categories-to-numbers-dummy-encoding",
-    "title": "Preprocessing Regressors for Forecasting",
-    "section": "3.1 From categories to numbers: dummy encoding",
-    "text": "3.1 From categories to numbers: dummy encoding\nOLS cannot directly use a text variable. A categorical variable with k levels is converted into k - 1 binary (0/1) dummy variables. The omitted level becomes the reference category, and every coefficient is interpreted relative to it.\n\n\n\n\n\n\nImportantWhy k - 1 and not k?\n\n\n\nIncluding all k dummies would create perfect multicollinearity (the dummy variable trap): the k columns always sum to 1, which is identical to the intercept column. OLS cannot invert the design matrix in that case.\n\n\nIn R, factors are automatically expanded into dummies by lm() and therefore by TSLM(). You rarely need to create them manually:\n\n\nCode\nus_employment |&gt;\n  filter(Title %in% c(\"Mining and Logging\", \"Construction\", \"Manufacturing\")) |&gt;\n1  model(TSLM(Employed ~ trend() + season() + Title))\n\n\n\n1\n\nTitle is a character/factor variable. TSLM() will automatically create two dummies (three levels minus one reference)."
+    "objectID": "docs/more/r-tools/pipes_tidyverse.html#why-we-avoid-in-this-course",
+    "href": "docs/more/r-tools/pipes_tidyverse.html#why-we-avoid-in-this-course",
+    "title": "Pipes and the tidyverse mental model",
+    "section": "6 Why we avoid $ in this course",
+    "text": "6 Why we avoid $ in this course\n\nIt breaks the pipeline mental model\n\nIt mixes different styles of R\n\nIt becomes confusing with grouped data\n\nFor clarity and consistency, we will stick to tidyverse verbs and pipelines."
   },
   {
-    "objectID": "docs/more/stats/preprocessing.html#choosing-the-reference-category",
-    "href": "docs/more/stats/preprocessing.html#choosing-the-reference-category",
-    "title": "Preprocessing Regressors for Forecasting",
-    "section": "3.2 Choosing the reference category",
-    "text": "3.2 Choosing the reference category\nR picks the reference level alphabetically by default. You can change it with relevel() if a different baseline makes more interpretive sense:\n\n\nCode\ndata |&gt;\n1  mutate(quarter = relevel(factor(quarter), ref = \"Q1\")) |&gt;\n  model(TSLM(y ~ trend() + quarter))\n\n\n\n1\n\nSet Q1 as the reference so that all quarterly dummies are interpreted as deviations from Q1.\n\n\n\n\n\n\n\n\n\n\nTipseason() in TSLM() already handles this\n\n\n\nWhen you use season() inside TSLM(), fable creates the seasonal dummies for you and drops one level automatically. You only need manual dummy encoding when your categorical variable is not the time index’s seasonal period — for example, a product category, a region, or a promotional event type."
+    "objectID": "docs/more/r-tools/pipes_tidyverse.html#common-pipe-mistakes",
+    "href": "docs/more/r-tools/pipes_tidyverse.html#common-pipe-mistakes",
+    "title": "Pipes and the tidyverse mental model",
+    "section": "7 Common pipe mistakes",
+    "text": "7 Common pipe mistakes\n\n7.1 Breaking the pipeline\ndf |&gt;\n  filter(value &gt; 0)\n\nmutate(log_value = log(value))\nThe second line does not receive the result of the pipeline.\nCorrect:\ndf |&gt;\n  filter(value &gt; 0) |&gt;\n  mutate(log_value = log(value))\n\n\n\n7.2 Forgetting reassignment\ndf |&gt;\n  mutate(x = x * 2)\nNothing changes.\nCorrect:\ndf &lt;- df |&gt;\n  mutate(x = x * 2)\n\n\n\n\n\n\nWarning\n\n\n\nIf you forget to reassign, the pipeline runs but the result is discarded."
   },
   {
-    "objectID": "docs/more/stats/preprocessing.html#what-an-interaction-says",
-    "href": "docs/more/stats/preprocessing.html#what-an-interaction-says",
-    "title": "Preprocessing Regressors for Forecasting",
-    "section": "4.1 What an interaction says",
-    "text": "4.1 What an interaction says\nAn interaction x_1 \\times x_2 allows the effect of x_1 on y to depend on the value of x_2. Without an interaction, OLS assumes the two effects are additive and independent.\nIn forecasting terms: maybe the effect of a promotional discount (promo) on sales is larger during the holiday season (holiday = 1) than during the rest of the year. That is an interaction.\n\n\nCode\n1model(TSLM(Sales ~ trend() + season() + promo * holiday))\nmodel(TSLM(Sales ~ trend() + season() + promo + holiday +\n2             promo:holiday))\n\n\n\n1\n\nThe * shorthand expands to main effects plus the interaction term.\n\n2\n\nThe : operator adds only the interaction term, assuming the main effects are already included.\n\n\n\n\n\n\n\n\n\n\nWarningInteractions increase model complexity fast\n\n\n\nWith p regressors, you can form \\binom{p}{2} pairwise interactions. Adding all of them will almost certainly overfit, especially with short time series. Only include interactions that have a clear theoretical justification."
+    "objectID": "docs/more/r-tools/pipes_tidyverse.html#pipes-and-readability",
+    "href": "docs/more/r-tools/pipes_tidyverse.html#pipes-and-readability",
+    "title": "Pipes and the tidyverse mental model",
+    "section": "8 Pipes and readability",
+    "text": "8 Pipes and readability\nPipelines are about clarity, not cleverness.\nPrefer this:\ndf |&gt;\n  filter(value &gt; 0) |&gt;\n  group_by(id) |&gt;\n  summarise(mean_value = mean(value))\nOver this:\ndf |&gt; filter(value &gt; 0) |&gt; group_by(id) |&gt; summarise(mean_value = mean(value))\n\n\n\n\n\n\nTip\n\n\n\nOne verb per line is a good default.\n\n\n\n\n\n\n\n\nFor more examples of filter(), mutate(), group_by(), and summarise(), see\nR for Data Science (2e) — Data transformation."
   },
   {
-    "objectID": "docs/more/stats/preprocessing.html#polynomial-terms",
-    "href": "docs/more/stats/preprocessing.html#polynomial-terms",
-    "title": "Preprocessing Regressors for Forecasting",
-    "section": "4.2 Polynomial terms",
-    "text": "4.2 Polynomial terms\nFor a smooth nonlinear relationship, polynomial regression adds powers of a regressor:\n\ny_t = \\beta_0 + \\beta_1 x_t + \\beta_2 x_t^2 + \\varepsilon_t\n\n\n\nCode\n1model(TSLM(y ~ x + I(x^2) + I(x^3)))\n\n\n\n1\n\nAlways wrap polynomial terms in I() inside a formula. Without it, ^ has a different meaning in R’s formula syntax.\n\n\n\n\n\n\n\n\n\n\nNotePolynomial vs. splines\n\n\n\nHigh-degree polynomials oscillate wildly near the boundaries of the data. Splines (piecewise polynomials with smooth joins) are generally preferred for capturing smooth nonlinearities — see splines::bs() or splines::ns() for use inside lm() and TSLM()."
+    "objectID": "docs/more/r-tools/pipes_tidyverse.html#when-not-to-use-pipes",
+    "href": "docs/more/r-tools/pipes_tidyverse.html#when-not-to-use-pipes",
+    "title": "Pipes and the tidyverse mental model",
+    "section": "9 When not to use pipes",
+    "text": "9 When not to use pipes\nPipes work best for linear transformations.\nThey are less useful for:\n\ncomplex branching logic\n\ndeeply nested conditionals\n\nnon–data-centric code\n\nEven so, in this course we will often prefer pipelines for consistency.\ndf |&gt;\n  summarise(mean_value = mean(value, na.rm = TRUE))"
   },
   {
-    "objectID": "docs/more/stats/correlation.html",
-    "href": "docs/more/stats/correlation.html",
-    "title": "Correlation, dependence, and time series pitfalls",
+    "objectID": "docs/more/r-tools/pipes_tidyverse.html#pipes-in-this-course",
+    "href": "docs/more/r-tools/pipes_tidyverse.html#pipes-in-this-course",
+    "title": "Pipes and the tidyverse mental model",
+    "section": "10 Pipes in this course",
+    "text": "10 Pipes in this course\nThroughout the course:\n\nall data manipulation examples will use pipes\n\ntidyverse verbs will be preferred\n\nclarity will be valued over clever tricks\n\nIf something feels confusing, read the pipeline top to bottom, step by step —\nusing “then” as you go."
+  },
+  {
+    "objectID": "docs/more/r-tools/pipes_tidyverse.html#final-takeaway",
+    "href": "docs/more/r-tools/pipes_tidyverse.html#final-takeaway",
+    "title": "Pipes and the tidyverse mental model",
+    "section": "11 Final takeaway",
+    "text": "11 Final takeaway\n\n\n\n\n\n\nTip\n\n\n\nIf you understand pipes, you understand most of tidyverse-based R.\n\n\nEverything else in the course builds on this idea."
+  },
+  {
+    "objectID": "docs/more/r-tools/r_4_python_users.html",
+    "href": "docs/more/r-tools/r_4_python_users.html",
+    "title": "R for Python Users",
     "section": "",
-    "text": "This document is optional, but strongly recommended.\nCorrelation is one of the most commonly used statistical tools — and one of the most frequently misunderstood.\nIn time series, this misunderstanding can lead to serious modeling errors."
+    "text": "This document is optional, but highly recommended if you come from a Python background.\nThe goal is not to teach R from scratch.\nThe goal is to help you translate mental models from Python to R, so that the rest of the course feels natural instead of frustrating."
   },
   {
-    "objectID": "docs/more/stats/correlation.html#from-covariance-to-correlation",
-    "href": "docs/more/stats/correlation.html#from-covariance-to-correlation",
-    "title": "Correlation, dependence, and time series pitfalls",
-    "section": "1 From covariance to correlation",
-    "text": "1 From covariance to correlation\nRecall that the covariance between two random variables X and Y is defined as\n\n\\operatorname{Cov}(X, Y) = \\mathbb{E}[(X - \\mu_X)(Y - \\mu_Y)].\n\nCovariance measures whether large values of X tend to occur with large (or small) values of Y.\nHowever, covariance depends on the scale of the variables.\nTo address this, we define the correlation coefficient:\n\n\\rho(X,Y) =\n\\frac{\\operatorname{Cov}(X,Y)}\n{\\sqrt{\\operatorname{Var}(X)\\operatorname{Var}(Y)}}.\n\nBy construction,\n\n-1 \\le \\rho(X,Y) \\le 1."
+    "objectID": "docs/more/r-tools/r_4_python_users.html#the-main-mindset-shift",
+    "href": "docs/more/r-tools/r_4_python_users.html#the-main-mindset-shift",
+    "title": "R for Python Users",
+    "section": "1 The main mindset shift",
+    "text": "1 The main mindset shift\nIf you come from Python, you are used to thinking in terms of:\n\nstep-by-step instructions\n\nobjects that are modified in place\n\nexplicit loops\n\n“do this, then do that”\n\nR (especially the tidyverse) encourages a different way of thinking:\n\ntransformations instead of instructions\n\nimmutable data objects\n\npipelines instead of loops\n\n“what happens to the data as it flows”\n\n\n\n\n\n\n\nTip\n\n\n\nIn tidyverse code, try to read pipelines out loud.\nIf it sounds like a sentence describing the data, you are probably doing it right."
   },
   {
-    "objectID": "docs/more/stats/correlation.html#what-correlation-actually-measures",
-    "href": "docs/more/stats/correlation.html#what-correlation-actually-measures",
-    "title": "Correlation, dependence, and time series pitfalls",
-    "section": "2 What correlation actually measures",
-    "text": "2 What correlation actually measures\nCorrelation measures linear association between two random variables.\nIf \\rho(X,Y) \\neq 0, there is evidence of a linear relationship.\nIf \\rho(X,Y) = 0, there is no linear relationship.\n\n\n\n\n\n\nNote\n\n\n\nZero correlation does not imply independence.\nIt only implies absence of linear dependence.\n\n\nThere exist dependent random variables with zero correlation."
+    "objectID": "docs/more/r-tools/r_4_python_users.html#imperative-vs-functional-style",
+    "href": "docs/more/r-tools/r_4_python_users.html#imperative-vs-functional-style",
+    "title": "R for Python Users",
+    "section": "2 Imperative vs functional style",
+    "text": "2 Imperative vs functional style\n\nPythonR\n\n\ndf = df[df[\"value\"] &gt; 0]\ndf[\"log_value\"] = np.log(df[\"value\"])\ndf = df.groupby(\"id\").mean()\n\nEach line modifies or reassigns df\nState changes over time\nOrder matters a lot\n\n\n\ndf |&gt;\n  filter(value &gt; 0) |&gt;\n  mutate(log_value = log(value)) |&gt;\n  group_by(id) |&gt;\n  summarise(across(everything(), mean))\n\nEach step returns a new object\nNo mutation in place\nThe pipeline reads top to bottom\n\n\n\n\n\n\n\n\n\n\nNote\n\n\n\nThink of |&gt; as saying:\n“take the result so far, and then apply the next transformation”."
   },
   {
-    "objectID": "docs/more/stats/correlation.html#dependence-is-broader-than-correlation",
-    "href": "docs/more/stats/correlation.html#dependence-is-broader-than-correlation",
-    "title": "Correlation, dependence, and time series pitfalls",
-    "section": "3 Dependence is broader than correlation",
-    "text": "3 Dependence is broader than correlation\nTwo random variables X and Y are independent if their joint distribution factorizes:\n\nf_{X,Y}(x,y) = f_X(x) f_Y(y).\n\nIndependence is a strong condition.\nCorrelation, by contrast, captures only one specific aspect of dependence.\n\n\n\n\n\n\nImportant\n\n\n\nIndependence \\Rightarrow zero correlation\nZero correlation \\nRightarrow independence\n\n\nThis distinction is often ignored — with consequences."
+    "objectID": "docs/more/r-tools/r_4_python_users.html#core-object-mapping-python-r",
+    "href": "docs/more/r-tools/r_4_python_users.html#core-object-mapping-python-r",
+    "title": "R for Python Users",
+    "section": "3 Core object mapping (Python → R)",
+    "text": "3 Core object mapping (Python → R)\n\n\n\nPython\nR\n\n\n\n\npandas.DataFrame\ntibble\n\n\nSeries\nvector\n\n\nNaN\nNA\n\n\ndf.copy()\nusually unnecessary\n\n\nfor row in df\navoid\n\n\ndf.groupby()\ngroup_by()\n\n\nmethod chaining\npipe (|&gt;)\n\n\ndf.reset_index()\nrarely needed\n\n\n\n\n\n\n\n\n\nTip\n\n\n\nIn R, columns are vectors, not mini-dataframes.\nThis is one of the biggest conceptual differences — and one of R’s strengths."
   },
   {
-    "objectID": "docs/more/stats/correlation.html#why-time-series-make-this-worse",
-    "href": "docs/more/stats/correlation.html#why-time-series-make-this-worse",
-    "title": "Correlation, dependence, and time series pitfalls",
-    "section": "4 Why time series make this worse",
-    "text": "4 Why time series make this worse\nIn time series, observations are not independent across time.\nWe work with a sequence of random variables \\{Y_t\\}, where dependence across time is the norm, not the exception.\nCorrelation computed directly on time series data is therefore affected by:\n\ntrends,\nseasonality,\npersistence,\nshared temporal structure."
+    "objectID": "docs/more/r-tools/r_4_python_users.html#mutation-the-silent-trap-for-python-users",
+    "href": "docs/more/r-tools/r_4_python_users.html#mutation-the-silent-trap-for-python-users",
+    "title": "R for Python Users",
+    "section": "4 Mutation: the silent trap for Python users",
+    "text": "4 Mutation: the silent trap for Python users\n\nPythonR\n\n\ndf[\"x\"] = df[\"x\"] * 2\nThis modifies df in place.\n\n\ndf |&gt;\n  mutate(x = x * 2)\nThis does not modify df unless you reassign it.\nCorrect usage:\ndf &lt;- df |&gt;\n  mutate(x = x * 2)\n\n\n\n\n\n\n\n\n\nWarning\n\n\n\nIf you forget to reassign in R, nothing happens.\nThis is the most common source of “why didn’t my code work?” for Python users."
   },
   {
-    "objectID": "docs/more/stats/correlation.html#spurious-correlation",
-    "href": "docs/more/stats/correlation.html#spurious-correlation",
-    "title": "Correlation, dependence, and time series pitfalls",
-    "section": "5 Spurious correlation",
-    "text": "5 Spurious correlation\nConsider two unrelated time series, each with a strong trend.\nEven if the underlying processes are independent, their sample correlation can be large.\nThis phenomenon is known as spurious correlation.\n\n\n\n\n\n\nWarning\n\n\n\nHigh correlation does not imply meaningful dependence\nwhen time series share common structure.\n\n\nThis is one of the most common pitfalls in applied forecasting."
+    "objectID": "docs/more/r-tools/r_4_python_users.html#loops-just-because-you-can-doesnt-mean-you-should",
+    "href": "docs/more/r-tools/r_4_python_users.html#loops-just-because-you-can-doesnt-mean-you-should",
+    "title": "R for Python Users",
+    "section": "5 Loops: just because you can, doesn’t mean you should",
+    "text": "5 Loops: just because you can, doesn’t mean you should\n\nPythonR\n\n\n# Python-style thinking applied to R (not recommended)\nfor (i in 1:nrow(df)) {\n  df$x[i] &lt;- df$x[i] * 2\n}\n\n\ndf |&gt;\n  mutate(x = x * 2)\n\n\n\n\n\n\n\n\n\nTip\n\n\n\nIf you feel the urge to write a for loop in R, stop and ask:\n“Is this a vectorized operation?”\nIn most cases, the answer is yes."
   },
   {
-    "objectID": "docs/more/stats/correlation.html#correlation-across-time-autocorrelation",
-    "href": "docs/more/stats/correlation.html#correlation-across-time-autocorrelation",
-    "title": "Correlation, dependence, and time series pitfalls",
-    "section": "6 Correlation across time: autocorrelation",
-    "text": "6 Correlation across time: autocorrelation\nIn time series analysis, correlation most often appears as autocorrelation.\nThe lag-h autocorrelation is defined as\n\n\\rho(h) =\n\\frac{\\operatorname{Cov}(Y_t, Y_{t-h})}\n{\\operatorname{Var}(Y_t)}.\n\nAutocorrelation measures linear dependence across time, not across variables.\n\n\n\n\n\n\nTip\n\n\n\nAutocorrelation is not a nuisance.\nIt is the signal that time series models are built to capture."
+    "objectID": "docs/more/r-tools/r_4_python_users.html#indexing-brackets-vs-verbs",
+    "href": "docs/more/r-tools/r_4_python_users.html#indexing-brackets-vs-verbs",
+    "title": "R for Python Users",
+    "section": "6 Indexing: brackets vs verbs",
+    "text": "6 Indexing: brackets vs verbs\n\nPythonR\n\n\ndf.iloc[0]\ndf.loc[df[\"x\"] &gt; 0]\n\n\ndf[1, ]\ndf |&gt;\n  filter(x &gt; 0)\n\n\n\n\n\n\n\n\n\nNote\n\n\n\nBase R indexing exists, but in this course we will prefer tidyverse verbs\nbecause they are clearer and less error-prone."
   },
   {
-    "objectID": "docs/more/stats/correlation.html#why-correlation-is-not-enough",
-    "href": "docs/more/stats/correlation.html#why-correlation-is-not-enough",
-    "title": "Correlation, dependence, and time series pitfalls",
-    "section": "7 Why correlation is not enough",
-    "text": "7 Why correlation is not enough\nCorrelation answers a narrow question:\n\nIs there a linear relationship?\n\nForecasting requires a broader understanding of dependence:\n\nhow long dependence persists,\nhow it decays over time,\nwhether it is stable.\n\nThese questions cannot be answered by a single correlation coefficient."
+    "objectID": "docs/more/r-tools/r_4_python_users.html#equality-assignment-and-naming",
+    "href": "docs/more/r-tools/r_4_python_users.html#equality-assignment-and-naming",
+    "title": "R for Python Users",
+    "section": "7 Equality, assignment, and naming",
+    "text": "7 Equality, assignment, and naming\n\n&lt;- is the standard operator for assignment in this course\n\n= is used only for function arguments\n== is for comparison\nNames are case-sensitive\nAvoid spaces in column names (or use backticks)\n\n\n\n\n\n\n\nTip\n\n\n\nUsing &lt;- consistently makes it easier to visually distinguish\nassignment from function arguments, especially in longer pipelines."
   },
   {
-    "objectID": "docs/more/stats/correlation.html#where-this-shows-up-in-the-course",
-    "href": "docs/more/stats/correlation.html#where-this-shows-up-in-the-course",
-    "title": "Correlation, dependence, and time series pitfalls",
+    "objectID": "docs/more/r-tools/r_4_python_users.html#factors-the-weird-thing-you-didnt-ask-for",
+    "href": "docs/more/r-tools/r_4_python_users.html#factors-the-weird-thing-you-didnt-ask-for",
+    "title": "R for Python Users",
+    "section": "8 Factors: the weird thing you didn’t ask for",
+    "text": "8 Factors: the weird thing you didn’t ask for\nR has a special type called factor (categorical variable).\nSometimes you will see:\nstr(df)\nand a column is a factor when you expected a string.\n\n\n\n\n\n\nNote\n\n\n\nFor now:\n\ndon’t panic\nuse as.character() if needed\nwe will be explicit about factors when they matter"
+  },
+  {
+    "objectID": "docs/more/r-tools/r_4_python_users.html#what-you-actually-need-for-this-course",
+    "href": "docs/more/r-tools/r_4_python_users.html#what-you-actually-need-for-this-course",
+    "title": "R for Python Users",
+    "section": "9 What you actually need for this course",
+    "text": "9 What you actually need for this course\nYou do not need to become an R expert.\nYou need to be comfortable with:\n\ntibble\nfilter()\nmutate()\nsummarise()\ngroup_by()\npipes (|&gt;)\n\nEverything else is secondary."
+  },
+  {
+    "objectID": "docs/more/r-tools/r_4_python_users.html#final-reassurance",
+    "href": "docs/more/r-tools/r_4_python_users.html#final-reassurance",
+    "title": "R for Python Users",
+    "section": "10 Final reassurance",
+    "text": "10 Final reassurance\n\n\n\n\n\n\nTip\n\n\n\nIf you are fluent in Python, you already have the hard skills:\n\ndata thinking\ndebugging intuition\nabstraction\n\nR is just a different dialect.\n\n\nOnce the mental model clicks, the rest of the course will feel much lighter."
+  },
+  {
+    "objectID": "docs/more/index.html",
+    "href": "docs/more/index.html",
+    "title": "More",
+    "section": "",
+    "text": "These materials are optional and are not required to pass the course.\nThey are meant to help you:\n\nRefresh prerequisite concepts (statistics, probability, regression)\nWork more comfortably in R and the tidyverse ecosystem\nImprove your workflow and reproducibility (projects, Quarto, organization)\n\nYou are encouraged to use them as needed.\n\n\n\n\n\n\n   \n    \n    \n      Order By\n      Default\n      \n        Title\n      \n      \n        Date - Oldest\n      \n      \n        Date - Newest\n      \n      \n        Author\n      \n    \n  \n    \n      \n      \n    \n\n\n\n\n\n\n\n\n\n\nCorrelation, dependence, and time series pitfalls\n\n\n\nStat refreshers\n\n\n\nA refresher on correlation and statistical dependence, with an emphasis on why correlation can be misleading in time series data.\n\n\n\n\n\nPablo Benavides-Herrera\n\n3 min\n\n\n\n\n\n\n\n\n\n\n\nExpectation, variance, and covariance: measuring uncertainty\n\n\n\nStat refreshers\n\n\n\nA refresher on expectation, variance, and covariance, focused on how uncertainty and dependence are quantified in time series.\n\n\n\n\n\nPablo Benavides-Herrera\n\n3 min\n\n\n\n\n\n\n\n\n\n\n\nOLS and Beyond: Choosing the Right Regression Model\n\n\n\nstats\n\n\n\nA conceptual map of regression models for forecasting — from OLS to SVR, tree-based methods, and neural networks — with guidance on when each approach is warranted.\n\n\n\n\n\nMar 28, 2026\n\n9 min\n\n\n\n\n\n\n\n\n\n\n\nPipes and the tidyverse mental model\n\n\n\nR\n\n\n\nHow to think in tidyverse pipelines: understanding pipes, data flow, and readable transformations in R.\n\n\n\n\n\nPablo Benavides-Herrera\n\n4 min\n\n\n\n\n\n\n\n\n\n\n\nPreprocessing Regressors for Forecasting\n\n\n\nstats\n\n\n\nA practical guide to preparing explanatory variables before fitting a TSLM: scaling, transformations, categorical encoding, interactions, and a pre-flight checklist.\n\n\n\n\n\nMar 28, 2026\n\n10 min\n\n\n\n\n\n\n\n\n\n\n\nR for Python Users\n\n\n\nR\n\n\n\nA conceptual introduction to R for students coming from a Python background, focused on mental models, data workflows, and tidyverse-style thinking.\n\n\n\n\n\nPablo Benavides-Herrera\n\n4 min\n\n\n\n\n\n\n\n\n\n\n\nRandom variables: uncertainty as an object\n\n\n\nStat refreshers\n\n\n\nA mathematically grounded refresher on random variables and distributions, focused on how uncertainty is represented and used in time series forecasting.\n\n\n\n\n\nPablo Benavides-Herrera\n\n3 min\n\n\n\n\n\n\n\n\n\n\n\ntsibble: thinking in keys and time\n\n\n\nR\n\n\n\nAn introduction to tsibble and the core ideas of time, keys, and structure in tidyverts-based time series workflows.\n\n\n\n\n\nPablo Benavides-Herrera\n\n4 min\n\n\n\n\nNo matching items\n Back to top"
+  },
+  {
+    "objectID": "docs/more/stats/random_variables.html",
+    "href": "docs/more/stats/random_variables.html",
+    "title": "Random variables: uncertainty as an object",
+    "section": "",
+    "text": "This document is optional, but strongly recommended.\nIn forecasting, we do not only analyze observed data.\nWe analyze uncertainty about future values.\nRandom variables are the mathematical objects that allow us to make that uncertainty explicit, formal, and usable."
+  },
+  {
+    "objectID": "docs/more/stats/random_variables.html#from-data-to-uncertainty",
+    "href": "docs/more/stats/random_variables.html#from-data-to-uncertainty",
+    "title": "Random variables: uncertainty as an object",
+    "section": "1 From data to uncertainty",
+    "text": "1 From data to uncertainty\nSuppose you observe a time series:\n\ndaily sales\n\nhourly electricity demand\n\nmonthly inflation\n\nAt time t, the value is known.\nAt time t+1, it is not.\nThat future value is not just “unknown” — it is uncertain.\nA random variable is how we represent that uncertainty mathematically.\n\n\n\n\n\n\nTip\n\n\n\nIn forecasting, uncertainty is not a nuisance.\nIt is the object of interest."
+  },
+  {
+    "objectID": "docs/more/stats/random_variables.html#what-is-a-random-variable",
+    "href": "docs/more/stats/random_variables.html#what-is-a-random-variable",
+    "title": "Random variables: uncertainty as an object",
+    "section": "2 What is a random variable?",
+    "text": "2 What is a random variable?\nConceptually, a random variable represents a quantity whose value is not fixed in advance.\nIn forecasting, it typically represents:\n\na future observation,\na forecast error,\nor a simulated outcome.\n\nFormally, a random variable is a function\n\nX : \\Omega \\rightarrow \\mathbb{R},\n\nwhich assigns a real number to each possible outcome of an uncertain process.\n\n\n\n\n\n\nNote\n\n\n\nYou do not need to work explicitly with sample spaces or probability axioms in this course.\nThe important point is that a random variable is a mathematical representation of uncertainty."
+  },
+  {
+    "objectID": "docs/more/stats/random_variables.html#discrete-and-continuous-random-variables",
+    "href": "docs/more/stats/random_variables.html#discrete-and-continuous-random-variables",
+    "title": "Random variables: uncertainty as an object",
+    "section": "3 Discrete and continuous random variables",
+    "text": "3 Discrete and continuous random variables\nRandom variables are commonly classified into two types.\n\n3.1 Discrete random variables\nA discrete random variable takes values in a countable set.\nExamples:\n\nnumber of customers tomorrow,\nnumber of units sold in an hour,\nnumber of failures in a week.\n\nUncertainty is described by a probability mass function (PMF):\n\np(x) = \\mathbb{P}(X = x),\n\nwith the properties\n\np(x) \\ge 0, \\qquad \\sum_x p(x) = 1.\n\n\n\n\n3.2 Continuous random variables\nA continuous random variable takes values in a continuum.\nExamples:\n\nelectricity demand,\ntemperature,\nforecast errors.\n\nUncertainty is described by a probability density function (PDF) f(x), satisfying\n\n\\int_{-\\infty}^{\\infty} f(x)\\,dx = 1.\n\nProbabilities are assigned to intervals, not points:\n\n\\mathbb{P}(a \\le X \\le b) = \\int_a^b f(x)\\,dx.\n\n\n\n\n\n\n\nWarning\n\n\n\nFor continuous random variables,\n\n\\mathbb{P}(X = x) = 0\n\nfor any single value x.\nThis is not a technicality — it is a core conceptual distinction."
+  },
+  {
+    "objectID": "docs/more/stats/random_variables.html#distributions-as-models-not-data-summaries",
+    "href": "docs/more/stats/random_variables.html#distributions-as-models-not-data-summaries",
+    "title": "Random variables: uncertainty as an object",
+    "section": "4 Distributions as models, not data summaries",
+    "text": "4 Distributions as models, not data summaries\nA distribution describes how a random variable behaves.\nIt answers questions such as:\n\nWhich values are more likely?\nHow spread out are the possibilities?\nHow extreme outcomes behave?\n\nCrucially:\n\n\n\n\n\n\nImportant\n\n\n\nA distribution is not the same as a histogram.\n\nA histogram summarizes observed data.\nA distribution is a model for uncertainty.\n\n\n\nIn forecasting, distributions are assumptions — useful, but always assumptions."
+  },
+  {
+    "objectID": "docs/more/stats/random_variables.html#random-variables-in-time-series",
+    "href": "docs/more/stats/random_variables.html#random-variables-in-time-series",
+    "title": "Random variables: uncertainty as an object",
+    "section": "5 Random variables in time series",
+    "text": "5 Random variables in time series\nIn time series analysis, we typically work with a sequence of random variables\n\n\\{Y_t\\}_{t=1}^T.\n\nIt is essential to distinguish between:\n\nY_t: the random variable,\ny_t: its observed realization.\n\n\n\n\n\n\n\nTip\n\n\n\nUppercase letters denote random variables.\nLowercase letters denote observed values.\nThis distinction will appear repeatedly throughout the course.\n\n\nEach future time point corresponds to its own random variable.\nA forecast is therefore not a single number, but a distribution over possible values."
+  },
+  {
+    "objectID": "docs/more/stats/random_variables.html#why-this-matters-for-forecasting",
+    "href": "docs/more/stats/random_variables.html#why-this-matters-for-forecasting",
+    "title": "Random variables: uncertainty as an object",
+    "section": "6 Why this matters for forecasting",
+    "text": "6 Why this matters for forecasting\nRandom variables and distributions appear throughout the course, even when not explicitly mentioned:\n\nforecast distributions and intervals,\nresiduals and forecast errors,\nsimulation-based forecasting,\nmodel diagnostics.\n\nWhenever you reason about uncertainty, you are implicitly working with random variables.\n\n\n\n\n\n\nNote\n\n\n\nPoint forecasts are summaries.\nDistributions carry the full information."
+  },
+  {
+    "objectID": "docs/more/stats/random_variables.html#what-you-do-not-need-right-now",
+    "href": "docs/more/stats/random_variables.html#what-you-do-not-need-right-now",
+    "title": "Random variables: uncertainty as an object",
+    "section": "7 What you do not need right now",
+    "text": "7 What you do not need right now\nAt this stage, you do not need:\n\nprobability axioms,\nmanual probability calculations,\nanalytical derivations of densities.\n\nThose belong to a probability theory course.\nHere, random variables are tools for thinking, not objects of proof."
+  },
+  {
+    "objectID": "docs/more/stats/random_variables.html#where-this-shows-up-in-the-course",
+    "href": "docs/more/stats/random_variables.html#where-this-shows-up-in-the-course",
+    "title": "Random variables: uncertainty as an object",
     "section": "8 Where this shows up in the course",
-    "text": "8 Where this shows up in the course\nThis refresher is foundational for:\n\nautocorrelation and partial autocorrelation functions,\nstationarity assumptions,\nAR and MA models,\nresidual diagnostics.\n\nMisunderstanding correlation leads directly to misinterpreting these tools."
+    "text": "8 Where this shows up in the course\nThis refresher prepares you for:\n\nresidual analysis,\nforecast uncertainty and intervals,\ndiagnostic checks,\nsimulation-based methods.\n\nLater refreshers will build on this foundation to introduce:\n\nexpectation and variance,\ncovariance and correlation,\nstationarity and noise."
   },
   {
-    "objectID": "docs/more/stats/correlation.html#what-you-do-not-need-yet",
-    "href": "docs/more/stats/correlation.html#what-you-do-not-need-yet",
-    "title": "Correlation, dependence, and time series pitfalls",
-    "section": "9 What you do not need yet",
-    "text": "9 What you do not need yet\nAt this stage, you do not need:\n\nnonlinear dependence measures,\ncopulas,\nmutual information.\n\nThose tools exist, but linear dependence is צור enough for the models covered in this course."
+    "objectID": "docs/more/stats/random_variables.html#takeaway",
+    "href": "docs/more/stats/random_variables.html#takeaway",
+    "title": "Random variables: uncertainty as an object",
+    "section": "9 Takeaway",
+    "text": "9 Takeaway\nIf you remember only one idea, make it this:\n\n\n\n\n\n\nImportant\n\n\n\nIn forecasting, future values are random variables,\nand models describe their distributions — not certainties."
   },
   {
-    "objectID": "docs/more/stats/correlation.html#takeaway",
-    "href": "docs/more/stats/correlation.html#takeaway",
-    "title": "Correlation, dependence, and time series pitfalls",
-    "section": "10 Takeaway",
-    "text": "10 Takeaway\n\n\n\n\n\n\nImportant\n\n\n\nCorrelation measures linear association.\nDependence is broader.\nIn time series, confusing the two leads to spurious conclusions."
-  },
-  {
-    "objectID": "docs/more/stats/regression_landscape.html",
-    "href": "docs/more/stats/regression_landscape.html",
-    "title": "OLS and Beyond: Choosing the Right Regression Model",
+    "objectID": "docs/more/stats/expectation_variance_cov.html",
+    "href": "docs/more/stats/expectation_variance_cov.html",
+    "title": "Expectation, variance, and covariance: measuring uncertainty",
     "section": "",
-    "text": "A student who has just learned TSLM() and already knows about XGBoost or random forests will reasonably ask: why are we doing this? This document answers that question honestly — including the cases where OLS loses.\nThe goal is not to advocate for any single method, but to give you a mental map of the regression landscape so you can make deliberate choices rather than defaulting to whichever model you learned most recently."
+    "text": "This document is optional, but strongly recommended.\nOnce uncertainty is represented through random variables, the next step is to quantify it.\nExpectation, variance, and covariance are the core mathematical tools we use to describe:\nThey appear everywhere in forecasting, whether explicitly or implicitly."
   },
   {
-    "objectID": "docs/more/stats/regression_landscape.html#the-bias-variance-tradeoff",
-    "href": "docs/more/stats/regression_landscape.html#the-bias-variance-tradeoff",
-    "title": "OLS and Beyond: Choosing the Right Regression Model",
-    "section": "3.1 The bias-variance tradeoff",
-    "text": "3.1 The bias-variance tradeoff\nWhen the number of candidate regressors is large relative to T, OLS tends to overfit: it fits the training data well but generalizes poorly. Regularization addresses this by adding a penalty term to the loss function, deliberately introducing bias to reduce variance."
+    "objectID": "docs/more/stats/expectation_variance_cov.html#expectation-the-long-run-average",
+    "href": "docs/more/stats/expectation_variance_cov.html#expectation-the-long-run-average",
+    "title": "Expectation, variance, and covariance: measuring uncertainty",
+    "section": "1 Expectation: the long-run average",
+    "text": "1 Expectation: the long-run average\nThe expectation (or expected value) of a random variable describes its typical value in the long run.\nFor a discrete random variable X with probability mass function p(x),\n\n\\mathbb{E}[X] = \\sum_x x \\, p(x).\n\nFor a continuous random variable with density f(x),\n\n\\mathbb{E}[X] = \\int_{-\\infty}^{\\infty} x \\, f(x)\\, dx.\n\n\n\n\n\n\n\nTip\n\n\n\nExpectation is not what you expect to observe next.\nIt is what you would obtain on average, across many repetitions.\n\n\nIn forecasting, expectation often corresponds to:\n\nthe point forecast,\nthe mean of a forecast distribution,\nthe baseline around which uncertainty is measured."
   },
   {
-    "objectID": "docs/more/stats/regression_landscape.html#ridge-regression",
-    "href": "docs/more/stats/regression_landscape.html#ridge-regression",
-    "title": "OLS and Beyond: Choosing the Right Regression Model",
-    "section": "3.2 Ridge regression",
-    "text": "3.2 Ridge regression\nRidge adds an \\ell_2 penalty on the coefficients:\n\n\\hat{\\boldsymbol{\\beta}}_{\\text{ridge}} = \\arg\\min_{\\boldsymbol{\\beta}}\n\\left\\{\n\\sum_{t=1}^{T}(y_t - \\mathbf{x}_t^\\top\\boldsymbol{\\beta})^2 +\n\\lambda \\sum_{j=1}^{p} \\beta_j^2\n\\right\\}\n\nThe penalty shrinks all coefficients toward zero but never sets any exactly to zero. Ridge is particularly useful when many regressors are correlated and each contributes a small amount of signal."
+    "objectID": "docs/more/stats/expectation_variance_cov.html#linearity-of-expectation-this-matters-a-lot",
+    "href": "docs/more/stats/expectation_variance_cov.html#linearity-of-expectation-this-matters-a-lot",
+    "title": "Expectation, variance, and covariance: measuring uncertainty",
+    "section": "2 Linearity of expectation (this matters a lot)",
+    "text": "2 Linearity of expectation (this matters a lot)\nOne of the most important properties of expectation is linearity:\n\n\\mathbb{E}[aX + b] = a\\,\\mathbb{E}[X] + b,\n\nfor constants a and b.\nEven more importantly,\n\n\\mathbb{E}[X + Y] = \\mathbb{E}[X] + \\mathbb{E}[Y],\n\nregardless of whether X and Y are independent.\n\n\n\n\n\n\nImportant\n\n\n\nLinearity of expectation holds without independence.\nThis fact underlies many results in time series and forecasting."
   },
   {
-    "objectID": "docs/more/stats/regression_landscape.html#lasso",
-    "href": "docs/more/stats/regression_landscape.html#lasso",
-    "title": "OLS and Beyond: Choosing the Right Regression Model",
-    "section": "3.3 Lasso",
-    "text": "3.3 Lasso\nLasso uses an \\ell_1 penalty:\n\n\\hat{\\boldsymbol{\\beta}}_{\\text{lasso}} = \\arg\\min_{\\boldsymbol{\\beta}}\n\\left\\{\n\\sum_{t=1}^{T}(y_t - \\mathbf{x}_t^\\top\\boldsymbol{\\beta})^2 +\n\\lambda \\sum_{j=1}^{p} |\\beta_j|\n\\right\\}\n\nThe \\ell_1 penalty produces sparse solutions: many coefficients are set exactly to zero, performing automatic variable selection. This makes Lasso particularly attractive when you suspect only a small subset of your candidate regressors are truly relevant."
+    "objectID": "docs/more/stats/expectation_variance_cov.html#variance-how-uncertain-is-a-random-variable",
+    "href": "docs/more/stats/expectation_variance_cov.html#variance-how-uncertain-is-a-random-variable",
+    "title": "Expectation, variance, and covariance: measuring uncertainty",
+    "section": "3 Variance: how uncertain is a random variable?",
+    "text": "3 Variance: how uncertain is a random variable?\nExpectation alone is not enough.\nTwo random variables may have the same mean but very different levels of uncertainty.\nThe variance of X measures how much values fluctuate around their expectation:\n\n\\operatorname{Var}(X) = \\mathbb{E}\\big[(X - \\mu)^2\\big],\n\\qquad \\mu = \\mathbb{E}[X].\n\nAn equivalent and often more convenient expression is:\n\n\\operatorname{Var}(X) = \\mathbb{E}[X^2] - \\mu^2.\n\n\n\n\n\n\n\nNote\n\n\n\nVariance is measured in squared units.\nThe standard deviation \\sigma = \\sqrt{\\operatorname{Var}(X)} restores the original scale.\n\n\nIn forecasting, variance captures:\n\nforecast uncertainty,\nvolatility,\nthe typical size of forecast errors."
   },
   {
-    "objectID": "docs/more/stats/regression_landscape.html#elastic-net",
-    "href": "docs/more/stats/regression_landscape.html#elastic-net",
-    "title": "OLS and Beyond: Choosing the Right Regression Model",
-    "section": "3.4 Elastic Net",
-    "text": "3.4 Elastic Net\nElastic Net combines both penalties:\n\n\\hat{\\boldsymbol{\\beta}}_{\\text{EN}} = \\arg\\min_{\\boldsymbol{\\beta}}\n\\left\\{\n\\sum_{t=1}^{T}(y_t - \\mathbf{x}_t^\\top\\boldsymbol{\\beta})^2 +\n\\lambda_1 \\sum_{j=1}^p |\\beta_j| +\n\\lambda_2 \\sum_{j=1}^p \\beta_j^2\n\\right\\}\n\nIt inherits sparsity from Lasso and stability under correlated predictors from Ridge. In practice, it is the default choice when you are unsure which penalty to use.\n\n\n\n\n\n\nImportantScaling is required for regularization\n\n\n\nBecause the penalty treats all \\beta_j equally, variables on different scales will be penalized unequally. Always standardize regressors before fitting a regularized model. See the companion document Preprocessing Regressors for details.\n\n\nIn R, glmnet::glmnet() implements all three. Cross-validation for \\lambda selection is handled by glmnet::cv.glmnet(). These are not currently integrated into fable, so regularized regression requires stepping outside the tidyverts ecosystem."
+    "objectID": "docs/more/stats/expectation_variance_cov.html#how-variance-reacts-to-transformations",
+    "href": "docs/more/stats/expectation_variance_cov.html#how-variance-reacts-to-transformations",
+    "title": "Expectation, variance, and covariance: measuring uncertainty",
+    "section": "4 How variance reacts to transformations",
+    "text": "4 How variance reacts to transformations\nVariance behaves very differently from expectation under transformations.\nFor constants a and b,\n\n\\operatorname{Var}(aX + b) = a^2 \\operatorname{Var}(X).\n\nAdding a constant does nothing to variance.\nScaling a variable scales variance quadratically.\n\n\n\n\n\n\nWarning\n\n\n\nVariance is sensitive to scale.\nThis is why transformations (e.g., logarithms) can dramatically change model behavior."
   },
   {
-    "objectID": "docs/more/stats/regression_landscape.html#the-core-idea-mapping-to-a-higher-dimensional-space",
-    "href": "docs/more/stats/regression_landscape.html#the-core-idea-mapping-to-a-higher-dimensional-space",
-    "title": "OLS and Beyond: Choosing the Right Regression Model",
-    "section": "4.1 The core idea: mapping to a higher-dimensional space",
-    "text": "4.1 The core idea: mapping to a higher-dimensional space\nSupport Vector Regression (SVR) extends the Support Vector Machine framework to continuous outputs. The key insight is that a relationship that is nonlinear in the original feature space \\mathcal{X} may become linear in a higher-dimensional feature space \\mathcal{F}, obtained via a mapping \\phi: \\mathcal{X} \\to \\mathcal{F}.\nSVR finds the flattest function f(\\mathbf{x}) = \\mathbf{w}^\\top\n\\phi(\\mathbf{x}) + b that fits the training data within an \\varepsilon-tube:\n\n\\min_{\\mathbf{w}, b, \\boldsymbol{\\xi}, \\boldsymbol{\\xi}^*}\n\\frac{1}{2}\\|\\mathbf{w}\\|^2 +\nC \\sum_{t=1}^T (\\xi_t + \\xi_t^*)\n\nsubject to:\n\n\\begin{align*}\ny_t - \\mathbf{w}^\\top \\phi(\\mathbf{x}_t) - b &\\leq \\varepsilon + \\xi_t \\\\\n\\mathbf{w}^\\top \\phi(\\mathbf{x}_t) + b - y_t &\\leq \\varepsilon + \\xi_t^* \\\\\n\\xi_t, \\xi_t^* &\\geq 0\n\\end{align*}\n\nwhere C &gt; 0 controls the trade-off between flatness and tolerance for deviations beyond \\varepsilon, and \\xi_t, \\xi_t^* are slack variables that penalize points outside the tube."
+    "objectID": "docs/more/stats/expectation_variance_cov.html#covariance-measuring-dependence",
+    "href": "docs/more/stats/expectation_variance_cov.html#covariance-measuring-dependence",
+    "title": "Expectation, variance, and covariance: measuring uncertainty",
+    "section": "5 Covariance: measuring dependence",
+    "text": "5 Covariance: measuring dependence\nVariance describes uncertainty of a single random variable.\nCovariance describes how two random variables vary together.\nFor random variables X and Y,\n\n\\operatorname{Cov}(X, Y)\n= \\mathbb{E}\\big[(X - \\mu_X)(Y - \\mu_Y)\\big]\n= \\mathbb{E}[XY] - \\mu_X \\mu_Y.\n\n\nPositive covariance: large values of X tend to occur with large values of Y\nNegative covariance: large values of X tend to occur with small values of Y\n\n\n\n\n\n\n\nNote\n\n\n\nIf X and Y are independent, then\n\\operatorname{Cov}(X,Y) = 0.\nThe converse is not generally true."
   },
   {
-    "objectID": "docs/more/stats/regression_landscape.html#the-kernel-trick",
-    "href": "docs/more/stats/regression_landscape.html#the-kernel-trick",
-    "title": "OLS and Beyond: Choosing the Right Regression Model",
-    "section": "4.2 The kernel trick",
-    "text": "4.2 The kernel trick\nComputing \\phi(\\mathbf{x}) explicitly is often infeasible when \\mathcal{F} is very high-dimensional (or infinite-dimensional). The kernel trick exploits the fact that the dual formulation of the SVR problem only requires inner products \\langle\\phi(\\mathbf{x}_i),\n\\phi(\\mathbf{x}_j)\\rangle, which can be computed directly via a kernel function:\n\nk(\\mathbf{x}_i, \\mathbf{x}_j) =\n\\langle\\phi(\\mathbf{x}_i), \\phi(\\mathbf{x}_j)\\rangle\n\nCommon kernels:\n\n\n\n\n\n\n\n\nKernel\nFormula\nUse case\n\n\n\n\nLinear\n\\mathbf{x}_i^\\top \\mathbf{x}_j\nEquivalent to OLS/Ridge\n\n\nRBF (Gaussian)\n\\exp\\!\\left(-\\gamma\\|\\mathbf{x}_i - \\mathbf{x}_j\\|^2\\right)\nSmooth nonlinear relationships\n\n\nPolynomial\n(\\mathbf{x}_i^\\top \\mathbf{x}_j + c)^d\nInteractions up to degree d\n\n\n\n\n\n\n\n\n\nNoteSVR with a linear kernel ≈ Ridge regression\n\n\n\nWith a linear kernel, SVR and Ridge regression optimize similar objectives. The main difference is the \\varepsilon-insensitive loss in SVR vs. the squared loss in Ridge. SVR is less sensitive to outliers near the regression surface, while Ridge penalizes all deviations quadratically."
+    "objectID": "docs/more/stats/expectation_variance_cov.html#covariance-in-time-series",
+    "href": "docs/more/stats/expectation_variance_cov.html#covariance-in-time-series",
+    "title": "Expectation, variance, and covariance: measuring uncertainty",
+    "section": "6 Covariance in time series",
+    "text": "6 Covariance in time series\nIn time series analysis, covariance appears in a very specific form.\nGiven a sequence \\{Y_t\\}, we define the lag-h covariance as:\n\n\\operatorname{Cov}(Y_t, Y_{t-h}).\n\nThis quantity measures how observations relate to their own past.\n\n\n\n\n\n\nImportant\n\n\n\nAutocovariance is the foundation of:\n\nautocorrelation,\nstationarity,\nAR and MA models.\n\n\n\nIf you understand covariance, you are already halfway to understanding time series models."
   },
   {
-    "objectID": "docs/more/stats/regression_landscape.html#svr-for-time-series-forecasting",
-    "href": "docs/more/stats/regression_landscape.html#svr-for-time-series-forecasting",
-    "title": "OLS and Beyond: Choosing the Right Regression Model",
-    "section": "4.3 SVR for time series forecasting",
-    "text": "4.3 SVR for time series forecasting\nSVR does not natively handle temporal dependence — it treats observations as i.i.d. To use SVR for forecasting, you typically construct lagged features manually (embedding the time series into a feature matrix) and then apply SVR to the resulting regression problem. This is known as the NARX (Nonlinear AutoRegressive with eXogenous inputs) approach.\nPractical considerations for SVR in forecasting:\n\nRequires careful feature engineering (lag selection, exogenous variables).\nHyperparameter tuning (C, \\varepsilon, kernel parameters) is computationally expensive and sensitive to the choice of validation scheme. For time series, always use time-ordered cross-validation, never random k-fold.\nDoes not extrapolate well with RBF kernels: predictions degrade for inputs far from the training distribution.\nScaling is mandatory: SVR optimizes over \\|\\mathbf{w}\\|^2, which is scale-dependent. Unstandardized inputs will produce arbitrarily poor solutions.\n\nIn R, e1071::svm() and kernlab::ksvm() implement SVR."
+    "objectID": "docs/more/stats/expectation_variance_cov.html#correlation-preview-not-the-full-story",
+    "href": "docs/more/stats/expectation_variance_cov.html#correlation-preview-not-the-full-story",
+    "title": "Expectation, variance, and covariance: measuring uncertainty",
+    "section": "7 Correlation (preview, not the full story)",
+    "text": "7 Correlation (preview, not the full story)\nCovariance depends on scale, which makes comparisons difficult.\nThe correlation coefficient rescales covariance:\n\n\\rho(X,Y) =\n\\frac{\\operatorname{Cov}(X,Y)}\n{\\sqrt{\\operatorname{Var}(X)\\operatorname{Var}(Y)}}.\n\nCorrelation lies between -1 and 1, but:\n\n\n\n\n\n\nWarning\n\n\n\nCorrelation measures linear association, not general dependence.\nThis distinction becomes critical in time series.\n\n\nCorrelation deserves its own refresher — and it will get one."
   },
   {
-    "objectID": "docs/more/stats/regression_landscape.html#decision-trees-and-their-limitations",
-    "href": "docs/more/stats/regression_landscape.html#decision-trees-and-their-limitations",
-    "title": "OLS and Beyond: Choosing the Right Regression Model",
-    "section": "5.1 Decision trees and their limitations",
-    "text": "5.1 Decision trees and their limitations\nA regression tree recursively partitions the feature space into rectangular regions and predicts the mean of y within each region. Individual trees have high variance — small changes in the training data produce very different trees."
+    "objectID": "docs/more/stats/expectation_variance_cov.html#where-this-shows-up-in-the-course",
+    "href": "docs/more/stats/expectation_variance_cov.html#where-this-shows-up-in-the-course",
+    "title": "Expectation, variance, and covariance: measuring uncertainty",
+    "section": "8 Where this shows up in the course",
+    "text": "8 Where this shows up in the course\nExpectation, variance, and covariance appear throughout the course:\n\npoint forecasts and forecast distributions,\nforecast error evaluation,\nresidual diagnostics,\nautocorrelation functions,\nstationarity assumptions.\n\nThey are not optional background — they are the mathematical backbone of forecasting."
   },
   {
-    "objectID": "docs/more/stats/regression_landscape.html#random-forests",
-    "href": "docs/more/stats/regression_landscape.html#random-forests",
-    "title": "OLS and Beyond: Choosing the Right Regression Model",
-    "section": "5.2 Random Forests",
-    "text": "5.2 Random Forests\nRandom Forests reduce variance through two mechanisms: bagging (bootstrap aggregation of B trees) and feature subsampling (each split considers only a random subset of p features, decorrelating the trees).\nThe prediction is:\n\n\\hat{y} = \\frac{1}{B} \\sum_{b=1}^B T_b(\\mathbf{x})\n\nwhere T_b is the b-th tree fitted on a bootstrap sample."
+    "objectID": "docs/more/stats/expectation_variance_cov.html#what-you-do-not-need-yet",
+    "href": "docs/more/stats/expectation_variance_cov.html#what-you-do-not-need-yet",
+    "title": "Expectation, variance, and covariance: measuring uncertainty",
+    "section": "9 What you do not need yet",
+    "text": "9 What you do not need yet\nAt this stage, you do not need:\n\nhigher-order moments,\ndistribution-specific formulas,\nclosed-form derivations.\n\nThose concepts matter, but only once the core quantities are fully internalized."
   },
   {
-    "objectID": "docs/more/stats/regression_landscape.html#gradient-boosting-xgboost",
-    "href": "docs/more/stats/regression_landscape.html#gradient-boosting-xgboost",
-    "title": "OLS and Beyond: Choosing the Right Regression Model",
-    "section": "5.3 Gradient Boosting (XGBoost)",
-    "text": "5.3 Gradient Boosting (XGBoost)\nGradient boosting builds trees sequentially, with each tree fitted to the residuals of the ensemble so far. XGBoost adds \\ell_1 and \\ell_2 regularization on the tree structure itself, making it more robust to overfitting than vanilla gradient boosting."
+    "objectID": "docs/more/stats/expectation_variance_cov.html#takeaway",
+    "href": "docs/more/stats/expectation_variance_cov.html#takeaway",
+    "title": "Expectation, variance, and covariance: measuring uncertainty",
+    "section": "10 Takeaway",
+    "text": "10 Takeaway\n\n\n\n\n\n\nImportant\n\n\n\nExpectation describes the center.\nVariance describes uncertainty.\nCovariance describes dependence.\nTogether, they define how time series behave."
   },
   {
-    "objectID": "docs/more/stats/regression_landscape.html#critical-limitations-for-forecasting",
-    "href": "docs/more/stats/regression_landscape.html#critical-limitations-for-forecasting",
-    "title": "OLS and Beyond: Choosing the Right Regression Model",
-    "section": "5.4 Critical limitations for forecasting",
-    "text": "5.4 Critical limitations for forecasting\n\n\n\n\n\n\nWarningTree-based methods do not extrapolate\n\n\n\nThis is the most important limitation for time series applications. A tree prediction is always a weighted average of observed training values. If the forecast horizon extends beyond the range of the training data — common in trending series — tree-based methods will produce flat or erratic forecasts.\nOne workaround is to detrend the series before modeling and add the trend back after forecasting, but this reintroduces the need for a trend model (which OLS or ARIMA handle naturally).\n\n\nAdditional considerations:\n\nRequire substantially more data than OLS to avoid overfitting.\nHyperparameter tuning is non-trivial; improper tuning can produce worse results than a well-specified TSLM.\nInterpretability is limited, though tools like SHAP values partially address this.\nTemporal autocorrelation in residuals is not modeled; lagged features must be constructed manually."
-  },
-  {
-    "objectID": "docs/exercises/posts/26-02-11 - fcst.html",
-    "href": "docs/exercises/posts/26-02-11 - fcst.html",
-    "title": "Pronósticos con métodos benchmark",
+    "objectID": "docs/exercises/posts/26-02-04 - ts_dcmp.html",
+    "href": "docs/exercises/posts/26-02-04 - ts_dcmp.html",
+    "title": "Descomposición de series de tiempo",
     "section": "",
     "text": "Code\nlibrary(tidyverse)\nlibrary(fpp3)"
   },
   {
-    "objectID": "docs/exercises/posts/26-02-11 - fcst.html#traintest",
-    "href": "docs/exercises/posts/26-02-11 - fcst.html#traintest",
-    "title": "Pronósticos con métodos benchmark",
-    "section": "1 Train/test",
-    "text": "1 Train/test\nVamos a hacer pronósticos a 3 años, por lo que necesitamos dejar los últimos 3 años como el conjunto de test.\n\n\nCode\ngas_train &lt;- aus_production |&gt; \n  filter_index(. ~ \"2007 Q2\")\n\ngas_train"
+    "objectID": "docs/exercises/posts/26-02-04 - ts_dcmp.html#pkgs",
+    "href": "docs/exercises/posts/26-02-04 - ts_dcmp.html#pkgs",
+    "title": "Descomposición de series de tiempo",
+    "section": "",
+    "text": "Code\nlibrary(tidyverse)\nlibrary(fpp3)"
   },
   {
-    "objectID": "docs/exercises/posts/26-02-11 - fcst.html#visualize",
-    "href": "docs/exercises/posts/26-02-11 - fcst.html#visualize",
-    "title": "Pronósticos con métodos benchmark",
-    "section": "2 Visualize",
-    "text": "2 Visualize\n\n\nCode\ngas_train |&gt; \n  autoplot(Gas)\n\n\n\n\n\n\n\n\n\nIntentamos estabilizar la varianza con logaritmos.\n\n\nCode\ngas_train |&gt; \n  autoplot(log(Gas))\n\n\n\n\n\n\n\n\n\nParece que todavía no es completamente estable (ahora al inicio la varianza es mayor).\nProbemos con Box-Cox:\n\n\nCode\ngas_lambda &lt;- gas_train |&gt; \n  features(Gas, guerrero) |&gt; \n  pull()\n\ngas_lambda\n\n\n[1] 0.1037006\n\n\nCode\ngas_train |&gt; \n  autoplot(box_cox(Gas, gas_lambda))\n\n\n\n\n\n\n\n\n\nParece que mejora un poco.\n\n2.1 Descomposición STL\nVamos a separar la serie transformada usando STL.\n\n\nCode\ngas_train |&gt; \n  model(\n    stl = STL(box_cox(Gas, gas_lambda), robust = TRUE)\n  ) |&gt; \n    components() |&gt; \n  autoplot()"
+    "objectID": "docs/exercises/posts/26-02-04 - ts_dcmp.html#descarga-de-datos-del-fred-usando-tidyquant",
+    "href": "docs/exercises/posts/26-02-04 - ts_dcmp.html#descarga-de-datos-del-fred-usando-tidyquant",
+    "title": "Descomposición de series de tiempo",
+    "section": "2 Descarga de datos del FRED usando tidyquant",
+    "text": "2 Descarga de datos del FRED usando tidyquant\n\n\nCode\nur_cal &lt;- tidyquant::tq_get(\n  x    = \"CAURN\",\n  get  = \"economic.data\",\n  from = \"1976-01-01\",\n  to   = \"2025-09-01\"\n)\n\n\nRegistered S3 method overwritten by 'quantmod':\n  method            from\n  as.zoo.data.frame zoo \n\n\nCode\nur_cal\n\n\n\n  \n\n\n\n\n2.1 exportar a csv\n\n\nCode\nur_cal |&gt; # se pone el pipe con CTRL/CMD + SHIFT + M\n  write_csv(\"ur_cal.csv\")"
   },
   {
-    "objectID": "docs/exercises/posts/26-02-11 - fcst.html#especificación-de-modelos",
-    "href": "docs/exercises/posts/26-02-11 - fcst.html#especificación-de-modelos",
-    "title": "Pronósticos con métodos benchmark",
-    "section": "3 Especificación de modelos",
-    "text": "3 Especificación de modelos\nPrimero vamos a probar los 4 modelos benchmark por separado, y posteriormente vamos a crear un modelo a partir de la descomposición que hicimos arriba.\n\n\nCode\ngas_fit &lt;- gas_train |&gt; \n  model(\n    media = MEAN(box_cox(Gas, gas_lambda)),\n    naive = NAIVE(box_cox(Gas, gas_lambda)),\n    snaive = SNAIVE(box_cox(Gas, gas_lambda)),\n    drift = RW(box_cox(Gas, gas_lambda) ~ drift())\n  )\n\ngas_fit"
+    "objectID": "docs/exercises/posts/26-02-04 - ts_dcmp.html#descomposición-stl",
+    "href": "docs/exercises/posts/26-02-04 - ts_dcmp.html#descomposición-stl",
+    "title": "Descomposición de series de tiempo",
+    "section": "3 Descomposición STL",
+    "text": "3 Descomposición STL\n\n\nCode\nur_cal\n\n\n\n  \n\n\n\n\n3.1 Convertir la tabla a tsibble\nLa tabla es una tibble y necesitamos que sea una tsibble. Podemos convertirla utilizando la función as_tsibble(), y especificando el index (variable temporal). En caso de que la tabla contenga más de una serie de tiempo, es necesario especificar también el key (columna(s) que le indican a R cómo distinguir a cada serie).\n\n\nCode\nur_cal_tsb &lt;- ur_cal |&gt;\n  as_tsibble(index = date)\n\nur_cal_tsb\n\n\n\n  \n\n\n\nLa tsibble está mal porque R cree que la serie tiene una periodicidad diaria y no mensual. Esto se controla con el formato de la fecha. Vamos a convertir la fecha a formato año-mes (yearmonth).\n\n\nCode\nur_cal_tsb &lt;- ur_cal |&gt;\n1  mutate(date = yearmonth(date)) |&gt;\n2  as_tsibble(index = date)\n\nur_cal_tsb\n\n\n\n1\n\nConvertimos la columna date a formato yearmonth. también existen funciones como yearquarter() y yearweek().\n\n2\n\nConvertimos la tabla a tsibble, especificando la columna date como índice temporal.\n\n\n\n\n\n  \n\n\n\nAhora sí, podemos hacer la descomposición STL utilizando la función model() y la función STL().\n\n\n3.2 Descomposición STL\n\n\nCode\nur_cal_dcmp &lt;- ur_cal_tsb |&gt;\n  model(\n1    stl = STL(price, robust = TRUE)\n  )\n\nur_cal_dcmp |&gt; \n2  components() |&gt;\n3  autoplot()\n\n\n\n1\n\nEspecificamos que queremos hacer una descomposición STL de la variable price.\n\n2\n\nExtraemos los componentes de la descomposición utilizando la función components().\n\n3\n\nGraficamos los componentes utilizando la función autoplot()."
   },
   {
-    "objectID": "docs/exercises/posts/26-02-11 - fcst.html#evaluación",
-    "href": "docs/exercises/posts/26-02-11 - fcst.html#evaluación",
-    "title": "Pronósticos con métodos benchmark",
-    "section": "4 Evaluación",
-    "text": "4 Evaluación\n\n\nCode\ngas_aug &lt;- gas_fit |&gt; \n  augment()\n\ngas_fit |&gt; \n  select(media) |&gt;\n  gg_tsresiduals() +\n  labs(\n    title = \"Residuos del modelo media\"\n  )\n\n\n\n\n\n\n\n\n\nCode\ngas_aug |&gt; \n  ggplot(aes(x = Quarter, y = .innov)) + \n  geom_line() +\n  facet_wrap(vars(.model), scales = \"free_y\") + \n  labs(\n    title = \"Innovaciones de los modelos benchmark\"\n  )\n\n\n\n\n\n\n\n\n\n\n4.0.1 Tests de Portmanteau de autocorrelación\nLa prueba de Box-Pierce:\n\n\nCode\ngas_aug |&gt; \n  features(.innov, box_pierce, lag = 8, dof = 0)\n\n\n\n  \n\n\n\nLa prueba de Ljung-Box\n\n\nCode\ngas_aug |&gt; \n  features(.innov, ljung_box, lag = 8, dof = 0) |&gt; \n  mutate(decision = if_else(lb_pvalue &lt; 0.05, \"Rechazar H0: Residuos autocorrelacionados\", \"No rechazar H0: Residuos no autocorrelacionados\"))\n\n\n\n  \n\n\n\n\n\n4.1 Pronóstico a partir de descomposición\n\n\nCode\ngas_fit_stl &lt;- gas_train |&gt; \n  model(\n    stlf = decomposition_model(\n      STL(box_cox(Gas, gas_lambda), robust = TRUE),\n      SNAIVE(season_year),\n      RW(season_adjust ~ drift())\n    )\n  )\n\ngas_fit_stl\n\n\n\n  \n\n\n\n\n\nCode\ngas_fit_stl |&gt; \n  gg_tsresiduals()\n\n\n\n\n\n\n\n\n\nCode\ngas_fit_stl |&gt; \n  augment() |&gt; \n  features(.innov, ljung_box, lag = 8, dof = 0)\n\n\n\n  \n\n\n\n\n\nCode\ngas_fit_todos &lt;- gas_train |&gt; \n  model(\n    media = MEAN(box_cox(Gas, gas_lambda)),\n    naive = NAIVE(box_cox(Gas, gas_lambda)),\n    snaive = SNAIVE(box_cox(Gas, gas_lambda)),\n    drift = RW(box_cox(Gas, gas_lambda) ~ drift()),\n    stlf = decomposition_model(\n      STL(box_cox(Gas, gas_lambda), robust = TRUE),\n      SNAIVE(season_year),\n      RW(season_adjust ~ drift())\n    )\n  )"
+    "objectID": "docs/exercises/posts/review_module3.html",
+    "href": "docs/exercises/posts/review_module3.html",
+    "title": "Module 3 Review: Regression and Exogenous Variables",
+    "section": "",
+    "text": "Code\nlibrary(tidyverse)\nlibrary(fpp3)\nlibrary(fable.prophet)"
   },
   {
-    "objectID": "docs/exercises/posts/26-02-11 - fcst.html#pronóstico",
-    "href": "docs/exercises/posts/26-02-11 - fcst.html#pronóstico",
-    "title": "Pronósticos con métodos benchmark",
-    "section": "5 Pronóstico",
-    "text": "5 Pronóstico\n\n\nCode\ngas_fc_todos &lt;- gas_fit_todos |&gt; \n  forecast(h = \"3 years\")\n\ngas_fc_todos\n\n\n\n  \n\n\n\nCode\ngas_fc_todos |&gt; \n  autoplot(aus_production) +\n  facet_wrap(vars(.model), scales = \"free_y\")\n\n\n\n\n\n\n\n\n\nCode\ngas_fc_todos |&gt; \n  autoplot(aus_production, level = NULL, linewidth = 1)\n\n\n\n\n\n\n\n\n\n\n5.1 Métricas de error (Accuracy)\n\n\nCode\ngas_fc_todos |&gt; \n  accuracy(aus_production) |&gt; \n  arrange(RMSE)\n\n\n\n  \n\n\n\nEl mejor modelo parece ser el SNAIVE. Vamos a utilizar este para hacer el pronóstico final.\n\n\nCode\naus_production |&gt; \n  model(\n    snaive = SNAIVE(box_cox(Gas, gas_lambda))\n  ) |&gt; \n    forecast(h = \"3 years\") |&gt;\n    autoplot(aus_production)"
+    "objectID": "docs/exercises/posts/review_module3.html#introduction",
+    "href": "docs/exercises/posts/review_module3.html#introduction",
+    "title": "Module 3 Review: Regression and Exogenous Variables",
+    "section": "1 Introduction",
+    "text": "1 Introduction\nIn this review you will work with the aus_accommodation dataset, which contains quarterly data on Australian tourist accommodation — takings (in millions of AUD), room occupancy rates, and the Consumer Price Index (CPI) — for all Australian states and territories from 1998 Q1 to 2016 Q2.\nYour target series is quarterly takings in New South Wales (NSW), the largest and most volatile accommodation market in Australia. CPI will serve as your exogenous predictor throughout the module.\nThe review follows the progressive arc of the course:\n\n\n\nPart\nTopic\n\n\n\n\na\nExploratory analysis and data preparation\n\n\nb\nModule 1–2 baseline\n\n\nc\nTSLM with trend, seasonality, and CPI\n\n\nd\nDynamic regression: ARIMA with CPI\n\n\ne\nHarmonic regression: Fourier terms + CPI\n\n\nf\nProphet\n\n\ng\nFull model comparison and conclusions\n\n\n\n\n\n\n\n\n\nImportantBefore you start\n\n\n\nMake sure fable.prophet is installed:\ninstall.packages(\"fable.prophet\")\nThen load it alongside fpp3 at the top of your script."
+  },
+  {
+    "objectID": "docs/exercises/posts/review_module3.html#part-a-exploratory-analysis-and-data-preparation",
+    "href": "docs/exercises/posts/review_module3.html#part-a-exploratory-analysis-and-data-preparation",
+    "title": "Module 3 Review: Regression and Exogenous Variables",
+    "section": "2 Part a — Exploratory Analysis and Data Preparation",
+    "text": "2 Part a — Exploratory Analysis and Data Preparation\na.1 Filter aus_accommodation to New South Wales only and store the result as nsw. Then plot Takings over time. Describe the patterns you observe: is there a trend? Is seasonality present? Does it appear additive or multiplicative?\na.2 Inspect the series for potential outliers using the STL remainder approach covered in class. Flag any anomalous quarters and decide whether they require treatment or whether the robust STL setting is sufficient.\na.3 Apply a Guerrero transformation to determine the optimal Box-Cox parameter \\lambda. Based on the value you obtain and the plot from a.1, would you prefer a log transformation or the Guerrero \\lambda? Justify your choice. Use this decision consistently throughout all remaining parts.\na.4 Create a train/test split: use data up to and including 2014 Q4 as the training set and 2015 Q1 onward as the test set. How many quarters are in the test set?\na.5 Plot CPI against time on the same panel as Takings (you may need to rescale). Does CPI appear to move together with Takings? Is this relationship likely to be causal, associative, or spurious? Briefly justify.\n\n\n\n\n\n\nTipSolution — Part a\n\n\n\n\n\na.1 — Filter and plot\n\n\nCode\nnsw &lt;- aus_accommodation |&gt;\n1  filter(State == \"New South Wales\")\n\nnsw |&gt;\n  autoplot(Takings) +\n  labs(\n    title = \"Quarterly tourist accommodation takings — New South Wales\",\n    y     = \"Millions of AUD\",\n    x     = NULL\n  )\n\n\n\n1\n\nA single filter() on the State key isolates NSW. No index manipulation needed — the tsibble structure is preserved.\n\n\n\n\n\n\n\n\n\n\n\nThe series shows a clear upward trend and strong quarterly seasonality. The seasonal swings widen as the level rises, which is a hallmark of multiplicative (or log-additive) seasonality. A log or Box-Cox transformation is appropriate.\na.2 — Outlier detection\n\n\nCode\nnsw_dcmp &lt;- nsw |&gt;\n  model(STL(log(Takings) ~ trend(window = 11) + season(window = \"periodic\"),\n            robust = TRUE)) |&gt;\n  components()\n\nc_threshold &lt;- 1.5\n\nnsw_outliers &lt;- nsw_dcmp |&gt;\n1  filter(abs(remainder) &gt; c_threshold * IQR(remainder))\n\nnsw_outliers |&gt; select(Date, `log(Takings)`, remainder)\n\n\n\n1\n\nFlag quarters where the STL remainder exceeds 1.5 × IQR in absolute value — the standard Tukey fence used throughout the course.\n\n\n\n\n\n  \n\n\n\nIf the flagged quarters are few and the robust = TRUE setting in STL already downweights them, no explicit removal is necessary. We proceed with the robust STL. If treatment were needed, we would replace the flagged values with NA and impute using na.kalman() or an STL-fitted value.\na.3 — Transformation\n\n\nCode\nlambda &lt;- nsw |&gt;\n  features(Takings, features = guerrero) |&gt;\n  pull(lambda_guerrero)\n\nlambda\n\n\n[1] 0.09607256\n\n\nThe Guerrero \\lambda will be close to 0, consistent with the multiplicative pattern observed in a.1. A log transformation (\\lambda = 0) is the natural, interpretable choice: it stabilises the seasonal variance and yields percentage-change interpretable coefficients in regression. We use log(Takings) throughout.\na.4 — Train/test split\n\n\nCode\nnsw_train &lt;- nsw |&gt; filter_index(. ~ \"2014 Q4\")\nnsw_test  &lt;- nsw |&gt; filter_index(\"2015 Q1\" ~ .)\n\nnrow(nsw_test)   # Should be 6 quarters\n\n\n[1] 6\n\n\nThe test set covers 2015 Q1 – 2016 Q2: 6 quarters of out-of-sample evaluation.\na.5 — CPI vs. Takings\n\n\nCode\nnsw |&gt;\n  pivot_longer(c(Takings, CPI), names_to = \"variable\", values_to = \"value\") |&gt;\n  ggplot(aes(x = Date, y = value)) +\n  geom_line(colour = \"steelblue\") +\n  facet_wrap(~ variable, scales = \"free_y\", ncol = 1) +\n  labs(title = \"Takings and CPI — New South Wales\", x = NULL)\n\n\n\n\n\n\n\n\n\nBoth series trend upward over the sample period. The relationship is likely associative rather than causal in the strict sense: CPI is a general price index, and accommodation takings are a nominal revenue measure — both rise with inflation and economic growth. This creates a meaningful predictive relationship (higher prices → higher nominal revenue) but does not imply that CPI causes tourism demand. We should be careful not to over-interpret the regression coefficient as a causal effect."
+  },
+  {
+    "objectID": "docs/exercises/posts/review_module3.html#part-b-module-12-baseline",
+    "href": "docs/exercises/posts/review_module3.html#part-b-module-12-baseline",
+    "title": "Module 3 Review: Regression and Exogenous Variables",
+    "section": "3 Part b — Module 1–2 Baseline",
+    "text": "3 Part b — Module 1–2 Baseline\nBefore adding any exogenous information, establish the best model you built in Modules 1 and 2 as your reference point. This is the bar every subsequent model must clear.\nb.1 Fit the following models on nsw_train:\n\nbaseline: STL decomposition with Drift + SNAIVE (your Module 1 benchmark)\nstl_ets: STL + ETS on the seasonally adjusted component (Module 2)\nstl_arima: STL + ARIMA on the seasonally adjusted component (Module 2)\nsarima: fully automatic seasonal ARIMA without explicit decomposition (Module 2)\n\nb.2 Forecast 6 quarters ahead and evaluate accuracy on nsw_test using RMSE and MAPE. Which model performs best? Record this as your baseline for Parts c–f.\n\n\n\n\n\n\nTipSolution — Part b\n\n\n\n\n\n\n\nCode\n1baseline_spec &lt;- decomposition_model(\n  STL(log(Takings) ~\n        trend(window = NULL) +\n        season(window = \"periodic\"),\n      robust = TRUE),\n  RW(season_adjust ~ drift()),\n  SNAIVE(season_year)\n)\n\nstl_ets_spec &lt;- decomposition_model(\n  STL(log(Takings) ~\n        trend(window = NULL) +\n        season(window = \"periodic\"),\n      robust = TRUE),\n  ETS(season_adjust ~ season(\"N\"))\n)\n\nstl_arima_spec &lt;- decomposition_model(\n  STL(log(Takings) ~\n        trend(window = NULL) +\n        season(window = \"periodic\"),\n      robust = TRUE),\n  ARIMA(season_adjust ~ PDQ(0, 0, 0))\n)\n\nnsw_fit_b &lt;- nsw_train |&gt;\n  model(\n    baseline   = baseline_spec,\n    stl_ets    = stl_ets_spec,\n    stl_arima  = stl_arima_spec,\n    sarima     = ARIMA(log(Takings),\n                       stepwise      = FALSE,\n2                       approximation = FALSE)\n  )\n\nnsw_fc_b &lt;- nsw_fit_b |&gt; forecast(h = 6)\n\nnsw_accu_b &lt;- nsw_fc_b |&gt;\n  accuracy(nsw_test) |&gt;\n  select(.model, RMSE, MAE, MAPE) |&gt;\n  arrange(RMSE)\n\nnsw_accu_b\n\n\n\n1\n\nNamed specs keep the model() call readable and make it easy to reuse individual components in Parts c–g.\n\n2\n\nstepwise = FALSE, approximation = FALSE performs an exhaustive search — appropriate given the short quarterly series where computational cost is negligible.\n\n\n\n\n\n  \n\n\n\nThe best Module 1–2 model (typically stl_arima or sarima on this data) becomes the reference. Record its RMSE — any model in Parts c–g that does not beat this is not adding value."
+  },
+  {
+    "objectID": "docs/exercises/posts/review_module3.html#part-c-tslm-with-trend-seasonality-and-cpi",
+    "href": "docs/exercises/posts/review_module3.html#part-c-tslm-with-trend-seasonality-and-cpi",
+    "title": "Module 3 Review: Regression and Exogenous Variables",
+    "section": "4 Part c — TSLM with Trend, Seasonality, and CPI",
+    "text": "4 Part c — TSLM with Trend, Seasonality, and CPI\nc.1 Fit a TSLM model on nsw_train with log(Takings) as the response and trend(), season(), and CPI as predictors. Report the model summary with report().\nc.2 Interpret the CPI coefficient. What does a one-unit increase in CPI imply for Takings? Is the sign what you would expect?\nc.3 Run a full residual diagnostic with gg_tsresiduals() and a Ljung-Box test. Is the white noise assumption satisfied? What does any remaining autocorrelation tell you about the adequacy of the TSLM model?\nc.4 To forecast 6 quarters ahead, you need future values of CPI. Use the actual test-set CPI values (ex-post forecast) to isolate the regression model’s performance from predictor forecast error. Compare accuracy against your Part b baseline.\n\n\n\n\n\n\nTipSolution — Part c\n\n\n\n\n\nc.1 — Fit TSLM\n\n\nCode\nnsw_fit_tslm &lt;- nsw_train |&gt;\n  model(\n1    tslm = TSLM(log(Takings) ~ trend() + season() + CPI)\n  )\n\nreport(nsw_fit_tslm)\n\n\n\n1\n\ntrend() adds a deterministic linear trend; season() adds m - 1 = 3 quarterly dummies; CPI is the exogenous predictor. All are specified jointly in a single formula — TSLM() handles the dummy variable construction internally.\n\n\n\n\nSeries: Takings \nModel: TSLM \nTransformation: log(Takings) \n\nResiduals:\n      Min        1Q    Median        3Q       Max \n-0.090034 -0.035747 -0.009168  0.022670  0.337455 \n\nCoefficients:\n               Estimate Std. Error t value Pr(&gt;|t|)    \n(Intercept)    5.959385   0.868596   6.861 3.74e-09 ***\ntrend()        0.012810   0.008209   1.560    0.124    \nseason()year2 -0.134611   0.022873  -5.885 1.74e-07 ***\nseason()year3 -0.022533   0.022998  -0.980    0.331    \nseason()year4  0.027449   0.022933   1.197    0.236    \nCPI           -0.001043   0.013348  -0.078    0.938    \n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 0.06667 on 62 degrees of freedom\nMultiple R-squared: 0.9381, Adjusted R-squared: 0.9331\nF-statistic:   188 on 5 and 62 DF, p-value: &lt; 2.22e-16\n\n\nc.2 — Coefficient interpretation\nThe CPI coefficient is on the log scale. Because \\log(\\text{Takings}) is the response, a one-unit increase in CPI is associated with a multiplicative change of e^{\\hat{\\beta}_{\\text{CPI}}} in takings — approximately a 100 \\times \\hat{\\beta}_{\\text{CPI}} percent change for small values. The sign should be positive: higher prices (CPI) are associated with higher nominal revenue, consistent with inflation pushing up both costs and revenues simultaneously.\nc.3 — Residual diagnostics\n\n\nCode\nnsw_fit_tslm |&gt; gg_tsresiduals(lag_max = 16)\n\n\n\n\n\n\n\n\n\n\n\nCode\nnsw_fit_tslm |&gt;\n  augment() |&gt;\n1  features(.innov, ljung_box, lag = 8, dof = 5)\n\n\n\n1\n\ndof = 5: three seasonal dummies + trend + CPI = 5 estimated parameters (excluding intercept).\n\n\n\n\n\n  \n\n\n\nThe ACF will almost certainly show significant autocorrelation at lags 1–2. The Ljung-Box p-value will be well below 0.05. This is the central pedagogical point of Part c: TSLM assumes \\varepsilon_t \\sim \\text{WN}, but economic time series virtually never satisfy this. The correlated residuals invalidate standard errors, confidence intervals, and prediction intervals — motivating dynamic regression.\nc.4 — Ex-post forecast\n\n\nCode\nnsw_fc_tslm &lt;- nsw_fit_tslm |&gt;\n1  forecast(new_data = nsw_test)\n\nnsw_fc_tslm |&gt;\n  accuracy(nsw_test) |&gt;\n  select(.model, RMSE, MAE, MAPE)\n\n\n\n1\n\nPassing nsw_test directly as new_data uses the actual CPI values from the test period — an ex-post forecast. This removes predictor uncertainty from the evaluation and measures the regression model in isolation.\n\n\n\n\n\n  \n\n\n\nCompare against Part b. TSLM may produce competitive point forecasts despite invalid residuals, but the prediction intervals should not be trusted."
+  },
+  {
+    "objectID": "docs/exercises/posts/review_module3.html#part-d-dynamic-regression",
+    "href": "docs/exercises/posts/review_module3.html#part-d-dynamic-regression",
+    "title": "Module 3 Review: Regression and Exogenous Variables",
+    "section": "5 Part d — Dynamic Regression",
+    "text": "5 Part d — Dynamic Regression\nThe residual diagnostics in Part c revealed autocorrelation that TSLM cannot accommodate. Dynamic regression addresses this by allowing the error term to follow an ARIMA process.\nd.1 Fit a dynamic regression model: ARIMA(log(Takings) ~ CPI). Let fable select the ARIMA order automatically. Report the selected model with report().\nd.2 Run residual diagnostics. Have the residuals improved relative to Part c? Is the white noise assumption now satisfied?\nd.3 Produce an ex-post forecast for the 6-quarter test period (using actual CPI values). Compare RMSE and MAPE against Part c and the Part b baseline. Does adding ARIMA errors improve accuracy?\nd.4 What is the key structural difference between the TSLM in Part c and the dynamic regression model here? Write a brief explanation in your own words — no more than 4 sentences.\n\n\n\n\n\n\nTipSolution — Part d\n\n\n\n\n\nd.1 — Dynamic regression\n\n\nCode\nnsw_fit_dyn &lt;- nsw_train |&gt;\n  model(\n1    dynamic = ARIMA(log(Takings) ~ CPI)\n  )\n\nreport(nsw_fit_dyn)\n\n\n\n1\n\nSpecifying only CPI (no pdq() or PDQ() constraints) lets fable choose the ARIMA order for the errors automatically. The seasonal structure of the error is determined by the data, not hard-coded.\n\n\n\n\nSeries: Takings \nModel: LM w/ ARIMA(0,0,3)(1,1,2)[4] errors \nTransformation: log(Takings) \n\nCoefficients:\n         ma1     ma2     ma3     sar1    sma1     sma2     CPI\n      0.6292  0.4474  0.4015  -0.5327  0.2374  -0.6058  0.0213\ns.e.  0.1324  0.1507  0.1776   0.1956  0.2318   0.1503  0.0032\n\nsigma^2 estimated as 0.002891:  log likelihood=97.25\nAIC=-178.51   AICc=-175.89   BIC=-161.24\n\n\nd.2 — Residual diagnostics\n\n\nCode\nnsw_fit_dyn |&gt; gg_tsresiduals(lag_max = 16)\n\n\n\n\n\n\n\n\n\n\n\nCode\nnsw_fit_dyn |&gt;\n  augment() |&gt;\n  features(.innov, ljung_box,\n           lag = 8,\n           dof = nsw_fit_dyn |&gt;\n                   coefficients() |&gt;\n                   filter(str_detect(term, \"^ar|^ma|^sar|^sma|CPI\")) |&gt;\n1                   nrow())\n\n\n\n1\n\nThe degrees of freedom for the Ljung-Box test must account for all estimated parameters: AR, MA, seasonal AR, seasonal MA terms, plus the CPI coefficient. Computing this dynamically from coefficients() ensures correctness regardless of which ARIMA order was selected.\n\n\n\n\n\n  \n\n\n\nThe ACF of the innovations should now look like white noise. If any significant spike remains, it is likely at a seasonal lag and may be acceptable given the short series.\nd.3 — Ex-post forecast and accuracy\n\n\nCode\nnsw_fc_dyn &lt;- nsw_fit_dyn |&gt;\n  forecast(new_data = nsw_test)\n\nnsw_fc_dyn |&gt;\n  accuracy(nsw_test) |&gt;\n  select(.model, RMSE, MAE, MAPE)\n\n\n\n  \n\n\n\nd.4 — Structural difference\nIn TSLM, the error term \\varepsilon_t is assumed to be white noise — independent across time. In dynamic regression, \\varepsilon_t is allowed to follow an ARIMA(p, d, q)(P, D, Q) process, capturing the autocorrelation structure that remains after accounting for the deterministic components. The regression coefficients therefore measure the effect of CPI after controlling for the serial dependence in the series, and the prediction intervals properly reflect the uncertainty from both the regression and the ARIMA error. In short: TSLM models the mean function; dynamic regression models both the mean and the covariance structure."
+  },
+  {
+    "objectID": "docs/exercises/posts/review_module3.html#part-e-harmonic-regression",
+    "href": "docs/exercises/posts/review_module3.html#part-e-harmonic-regression",
+    "title": "Module 3 Review: Regression and Exogenous Variables",
+    "section": "6 Part e — Harmonic Regression",
+    "text": "6 Part e — Harmonic Regression\ne.1 Before fitting anything: with a quarterly series (m = 4), what is the maximum number of Fourier pairs K? Write out what the Fourier terms fourier(K = 1) and fourier(K = 2) produce for a quarterly series — how many columns does each generate?\ne.2 Fit the following two models on nsw_train:\n\nharmonic_k1: ARIMA(log(Takings) ~ fourier(K = 1) + CPI + PDQ(0, 0, 0))\nharmonic_k2: ARIMA(log(Takings) ~ fourier(K = 2) + CPI + PDQ(0, 0, 0))\n\ne.3 Now compare harmonic_k2 with the dynamic regression from Part d side by side: report the fitted equations (use report()), the number of estimated parameters, and the AICc values. What do you notice?\ne.4 Forecast 6 quarters ahead with both harmonic models (ex-post) and add them to your accuracy table. Do the results surprise you? Explain why or why not, connecting your answer to what you worked out in e.1.\n\n\n\n\n\n\nTipSolution — Part e\n\n\n\n\n\ne.1 — Fourier terms for a quarterly series\nFor a quarterly series (m = 4), the maximum number of Fourier pairs is K_{\\max} = \\lfloor m/2 \\rfloor = 2.\n\nfourier(K = 1) generates 2 columns: \\sin(2\\pi t / 4) and \\cos(2\\pi t / 4).\nfourier(K = 2) generates 4 columns: the pair above plus \\sin(4\\pi t / 4) and \\cos(4\\pi t / 4).\n\nHere is the key insight: 4 Fourier columns for m = 4 span exactly the same space as 3 seasonal dummy variables (which is what season() produces in TSLM — m - 1 = 3 dummies). Both representations can fit any seasonal pattern with period 4. They are mathematically equivalent. This means harmonic_k2 should produce results identical to a model with season().\ne.2 — Fit harmonic models\n\n\nCode\nnsw_fit_harm &lt;- nsw_train |&gt;\n  model(\n1    harmonic_k1 = ARIMA(log(Takings) ~ fourier(K = 1) + CPI + PDQ(0, 0, 0)),\n2    harmonic_k2 = ARIMA(log(Takings) ~ fourier(K = 2) + CPI + PDQ(0, 0, 0))\n  )\n\n\n\n1\n\nPDQ(0, 0, 0) suppresses the seasonal ARIMA component — seasonality is handled entirely by the Fourier terms. The non-seasonal AR/MA order is still selected automatically via pdq() (not constrained here).\n\n2\n\nWith K = 2 we include all possible Fourier pairs for m = 4. As derived in e.1, this fully represents any quarterly seasonal pattern.\n\n\n\n\ne.3 — Compare harmonic_k2 with dynamic regression\n\n\nCode\nreport(nsw_fit_harm |&gt; select(harmonic_k2))\n\n\nSeries: Takings \nModel: LM w/ ARIMA(1,0,0) errors \nTransformation: log(Takings) \n\nCoefficients:\n         ar1  fourier(K = 2)C1_4  fourier(K = 2)S1_4  fourier(K = 2)C2_4\n      0.5985              0.0143             -0.0804              0.0204\ns.e.  0.0981              0.0077              0.0077              0.0040\n         CPI  intercept\n      0.0202     4.5344\ns.e.  0.0012     0.1085\n\nsigma^2 estimated as 0.002984:  log likelihood=104.12\nAIC=-194.25   AICc=-192.38   BIC=-178.71\n\n\nCode\nreport(nsw_fit_dyn)\n\n\nSeries: Takings \nModel: LM w/ ARIMA(0,0,3)(1,1,2)[4] errors \nTransformation: log(Takings) \n\nCoefficients:\n         ma1     ma2     ma3     sar1    sma1     sma2     CPI\n      0.6292  0.4474  0.4015  -0.5327  0.2374  -0.6058  0.0213\ns.e.  0.1324  0.1507  0.1776   0.1956  0.2318   0.1503  0.0032\n\nsigma^2 estimated as 0.002891:  log likelihood=97.25\nAIC=-178.51   AICc=-175.89   BIC=-161.24\n\n\n\n\nCode\nbind_rows(\n  glance(nsw_fit_harm) |&gt; select(.model, AICc),\n  glance(nsw_fit_dyn)  |&gt; select(.model, AICc)\n) |&gt;\n  arrange(AICc)\n\n\n\n  \n\n\n\nThe AICc values and fitted ARIMA orders for harmonic_k2 and dynamic will be identical or near-identical, confirming the mathematical equivalence derived in e.1. The Fourier representation at K = K_{\\max} adds no new flexibility over season() for quarterly data — it simply uses a different basis for the same subspace.\ne.4 — Forecast accuracy\n\n\nCode\nnsw_fc_harm &lt;- nsw_fit_harm |&gt;\n  forecast(new_data = nsw_test)\n\nnsw_fc_harm |&gt;\n  accuracy(nsw_test) |&gt;\n  select(.model, RMSE, MAE, MAPE)\n\n\n\n  \n\n\n\nThe accuracy of harmonic_k2 is essentially the same as Part d’s dynamic regression — same model, different parameterisation. harmonic_k1 will be worse because K = 1 (2 Fourier terms) cannot represent all four quarterly patterns; it forces a sinusoidal shape on the seasonality, which is a restriction the data may not satisfy.\nThe pedagogical point: Fourier regression becomes genuinely valuable when m is large (daily or weekly data, where m = 365 or m = 52), because then we can use a small K to approximate a smooth seasonal pattern with far fewer parameters than m - 1 dummies. For quarterly data with m = 4, the method does not add anything at K = K_{\\max} — and actually removes flexibility at K &lt; K_{\\max}."
+  },
+  {
+    "objectID": "docs/exercises/posts/review_module3.html#part-f-prophet",
+    "href": "docs/exercises/posts/review_module3.html#part-f-prophet",
+    "title": "Module 3 Review: Regression and Exogenous Variables",
+    "section": "7 Part f — Prophet",
+    "text": "7 Part f — Prophet\nf.1 Fit two Prophet models on nsw_train:\n\nprophet_manual: specify a linear growth trend and multiplicative annual seasonality.\nprophet_auto: let Prophet decide all components automatically.\n\nf.2 Extract and plot the trend and seasonal components from prophet_manual using components(). Interpret the seasonal pattern: which quarter has the highest accommodation takings in NSW? Does this make sense given the context?\nf.3 Forecast 6 quarters ahead with both Prophet models. Does Prophet require future CPI values to forecast? Why or why not?\nf.4 Add both Prophet forecasts to your accuracy table. Compared to the regression-based models, what does Prophet gain and what does it sacrifice?\n\n\n\n\n\n\nTipSolution — Part f\n\n\n\n\n\nf.1 — Fit Prophet\n\n\nCode\nnsw_fit_prophet &lt;- nsw_train |&gt;\n  model(\n1    prophet_manual = prophet(Takings ~\n                       growth(\"linear\") +\n                       season(\"year\", type = \"multiplicative\")),\n2    prophet_auto   = prophet(Takings)\n  )\n\n\n\n1\n\nWe pass Takings directly (not log-transformed) — Prophet models the level internally and handles non-constant variance via multiplicative seasonality. Passing a log would add an unnecessary layer of transformation.\n\n2\n\nAutomatic Prophet lets the algorithm determine the growth type, seasonality type, and changepoint sensitivity from the data.\n\n\n\n\nf.2 — Components\n\n\nCode\nnsw_fit_prophet |&gt;\n  select(prophet_manual) |&gt;\n  components() |&gt;\n  autoplot() +\n  labs(title = \"Prophet components — NSW accommodation takings\")\n\n\n\n\n\n\n\n\n\nThe seasonal pattern should show that Q1 (January–March) and Q4 (October–December) carry higher accommodation revenue — aligning with Australian summer holidays (December–February is peak summer) and the spring school holiday period. Q2 and Q3 correspond to autumn and winter, which are quieter for domestic tourism in NSW. This is contextually coherent.\nf.3 — Forecast\n\n\nCode\nnsw_fc_prophet &lt;- nsw_fit_prophet |&gt;\n1  forecast(h = 6)\n\n\n\n1\n\nProphet forecasts with h = 6 — no future CPI values are needed. Prophet is a univariate model: it uses only the history of Takings to extrapolate trend and seasonality. This is both a strength (no predictor forecasting required) and a limitation (it cannot incorporate CPI information in the forecast).\n\n\n\n\nf.4 — Accuracy\n\n\nCode\nnsw_fc_prophet |&gt;\n  accuracy(nsw_test) |&gt;\n  select(.model, RMSE, MAE, MAPE)\n\n\n\n  \n\n\n\nProphet’s advantage is simplicity of deployment: no external predictors needed, interpretable components, automatic changepoint detection. Its limitation here is that it ignores the CPI information that the regression models incorporate — whether this matters depends on how informative CPI actually is for the 6-quarter horizon. On a short, well-behaved quarterly series, the regression models often win on accuracy; Prophet’s advantages emerge more clearly with longer, messier series at daily or sub-daily frequency."
+  },
+  {
+    "objectID": "docs/exercises/posts/review_module3.html#part-g-full-comparison-and-conclusions",
+    "href": "docs/exercises/posts/review_module3.html#part-g-full-comparison-and-conclusions",
+    "title": "Module 3 Review: Regression and Exogenous Variables",
+    "section": "8 Part g — Full Comparison and Conclusions",
+    "text": "8 Part g — Full Comparison and Conclusions\ng.1 Compile a single accuracy table with all models from Parts b through f. Rank by RMSE. Which model wins?\ng.2 Examine the prediction intervals of the top two models by plotting their forecasts against the test set. Are the intervals well-calibrated (i.e., do the actual values fall within them)?\ng.3 Answer the following questions:\n\nDid adding CPI improve accuracy over the univariate Module 2 baseline? By how much?\nDid allowing ARIMA errors (dynamic regression) improve over TSLM? What does this imply about the residual structure of TSLM?\nWas harmonic_k2 genuinely a different model from the dynamic regression in Part d? Explain in one sentence.\nIn what context would Fourier regression be clearly preferable to season() dummies? Give a concrete example.\nFor this dataset and horizon, which model would you deploy in production and why?\n\n\n\n\n\n\n\nTipSolution — Part g\n\n\n\n\n\ng.1 — Full accuracy table\n\n\nCode\nnsw_accu_full &lt;- bind_rows(\n  nsw_fc_b       |&gt; accuracy(nsw_test),\n  nsw_fc_tslm    |&gt; accuracy(nsw_test),\n  nsw_fc_dyn     |&gt; accuracy(nsw_test),\n  nsw_fc_harm    |&gt; accuracy(nsw_test),\n  nsw_fc_prophet |&gt; accuracy(nsw_test)\n) |&gt;\n  select(.model, RMSE, MAE, MAPE) |&gt;\n  arrange(RMSE)\n\nnsw_accu_full\n\n\n\n  \n\n\n\ng.2 — Forecast plot for top two models\n\n\nCode\n# Identify top two models from the accuracy table and plot\n1bind_rows(nsw_fc_dyn, nsw_fc_prophet) |&gt;\n  autoplot(nsw |&gt; filter_index(\"2012 Q1\" ~ .),\n           level = 80, alpha = 0.6) +\n  labs(\n    title = \"6-quarter forecasts — NSW accommodation takings\",\n    y     = \"Millions of AUD\", x = NULL\n  )\n\n\n\n1\n\nReplace with the actual top two models from your accuracy table — this example assumes dynamic regression and Prophet are the top performers.\n\n\n\n\n\n\n\n\n\n\n\ng.3 — Discussion\na. CPI vs. univariate baseline: If dynamic regression outperforms sarima or stl_arima, CPI is adding predictive value beyond what the autocorrelation structure alone captures. The improvement is typically modest on short quarterly series but more pronounced if CPI contains leading information about tourism demand.\nb. Dynamic regression vs. TSLM: Dynamic regression almost always improves prediction intervals (which are invalid under TSLM’s white noise assumption) and often improves point forecast accuracy as well, because the ARIMA error term absorbs residual autocorrelation that TSLM leaves unexplained. The improvement in Part c’s Ljung-Box test directly motivated this upgrade.\nc. harmonic_k2 vs. dynamic regression: They are the same model expressed in different bases — Fourier pairs at K = K_{\\max} = 2 for a quarterly series span exactly the same space as three seasonal dummies, so the fitted values, residuals, and forecasts are identical.\nd. When Fourier is preferable: When m is large — for example, daily data with m = 365 or weekly data with m = 52. In those cases, fitting m - 1 seasonal dummies is infeasible (364 or 51 parameters just for seasonality), while a small K (e.g., K = 5 for daily data) captures the dominant seasonal shape with a fraction of the parameters, avoiding overfitting.\ne. Production choice: On this dataset, the dynamic regression model (ARIMA(log(Takings) ~ CPI)) is the strongest candidate: it has valid residuals, uses the available exogenous information, and provides honest prediction intervals. The caveat is that it requires a CPI forecast for the horizon — if CPI forecasts are unreliable or unavailable, sarima or stl_arima from Part b may be more robust in practice. Prophet is a reasonable alternative if deployment simplicity is the priority and slight accuracy loss is acceptable."
   },
   {
     "objectID": "docs/exercises/index.html",
     "href": "docs/exercises/index.html",
     "title": "In-class exercises",
     "section": "",
-    "text": "Welcome to the In-class exercises section of the course. Here you will find exercises designed to reinforce the concepts covered in the modules.\n\n\n\n\n\n\n   \n    \n    \n      Order By\n      Default\n      \n        Title\n      \n      \n        Date - Oldest\n      \n      \n        Date - Newest\n      \n      \n        Author\n      \n    \n  \n    \n      \n      \n    \n\n\n\n\n\n\n\n\n\n\nPronósticos con métodos benchmark\n\n\n\n\n\n\n\n3 min\n\n\n\n\n\n\n\n\n\n\n\nClase 1 - R y series de tiempo\n\n\n\n\n\n\n\n1 min\n\n\n\n\n\n\n\n\n\n\n\nDescomposición de series de tiempo\n\n\nIntro a la descomposición STL usando fable\n\n\n\n\n\nFeb 4, 2026\n\n\nPablo Benavides Herrera\n\n2 min\n\n\n\n\nNo matching items\n Back to top"
+    "text": "Welcome to the In-class exercises section of the course. Here you will find exercises designed to reinforce the concepts covered in the modules.\n\n\n\n\n\n\n   \n    \n    \n      Order By\n      Default\n      \n        Title\n      \n      \n        Date - Oldest\n      \n      \n        Date - Newest\n      \n      \n        Author\n      \n    \n  \n    \n      \n      \n    \n\n\n\n\n\n\n\n\n\n\nPronósticos con métodos benchmark\n\n\n\n\n\n\n\n3 min\n\n\n\n\n\n\n\n\n\n\n\nClase 1 - R y series de tiempo\n\n\n\n\n\n\n\n1 min\n\n\n\n\n\n\n\n\n\n\n\nModule 3 Review: Regression and Exogenous Variables\n\n\n\nmodule-review\n\nmodule-3\n\n\n\nAn integrative review of practical issues, TSLM, dynamic regression, harmonic regression, and Prophet applied to Australian tourist accommodation data.\n\n\n\n\n\nApr 20, 2026\n\n20 min\n\n\n\n\n\n\n\n\n\n\n\nDescomposición de series de tiempo\n\n\nIntro a la descomposición STL usando fable\n\n\n\n\n\nFeb 4, 2026\n\n\nPablo Benavides Herrera\n\n2 min\n\n\n\n\nNo matching items\n Back to top"
   },
   {
     "objectID": "docs/modules/module_2/03_arima/arima_pres.html#from-arma-to-arima",
@@ -3022,7 +3085,7 @@
     "href": "docs/modules/module_2/03_arima/arima_pres.html#section",
     "title": "ARIMA Models",
     "section": "",
-    "text": "How much slower is exhaustive search?\n\n\nstepwise = FALSE, approximation = FALSE triggers a full search over all candidate models using exact likelihood. The difference in runtime can be dramatic:\n\ntictoc::tic(\"auto\")\nus_change |&gt;\n  model(ARIMA(Consumption ~ PDQ(0, 0, 0)))\n\n\n  \n\n\ntictoc::toc()\n\nauto: 0.143 sec elapsed\n\ntictoc::tic(\"exhaustive\")\nus_change |&gt;\n  model(ARIMA(Consumption ~ PDQ(0, 0, 0),\n              stepwise      = FALSE,\n              approximation = FALSE))\n\n\n  \n\n\ntictoc::toc()\n\nexhaustive: 0.681 sec elapsed\n\n\nTimes will vary by hardware, but the relative difference is what matters. On longer series like mexretail (480+ monthly observations with seasonal structure), the gap is even more pronounced — which is why freeze is recommended for documents containing exhaustive ARIMA searches."
+    "text": "How much slower is exhaustive search?\n\n\nstepwise = FALSE, approximation = FALSE triggers a full search over all candidate models using exact likelihood. The difference in runtime can be dramatic:\n\ntictoc::tic(\"auto\")\nus_change |&gt;\n  model(ARIMA(Consumption ~ PDQ(0, 0, 0)))\n\n\n  \n\n\ntictoc::toc()\n\nauto: 0.152 sec elapsed\n\ntictoc::tic(\"exhaustive\")\nus_change |&gt;\n  model(ARIMA(Consumption ~ PDQ(0, 0, 0),\n              stepwise      = FALSE,\n              approximation = FALSE))\n\n\n  \n\n\ntictoc::toc()\n\nexhaustive: 0.687 sec elapsed\n\n\nTimes will vary by hardware, but the relative difference is what matters. On longer series like mexretail (480+ monthly observations with seasonal structure), the gap is even more pronounced — which is why freeze is recommended for documents containing exhaustive ARIMA searches."
   },
   {
     "objectID": "docs/modules/module_2/03_arima/arima_pres.html#sec-model-selection",
@@ -3147,7 +3210,7 @@
     "href": "docs/modules/module_2/03_arima/arima.html#sec-manual",
     "title": "ARIMA Models",
     "section": "2.2 Manual and Automatic Specification",
-    "text": "2.2 Manual and Automatic Specification\nIn fable, ARIMA models are specified inside model() using the ARIMA() function. The order is controlled with pdq() for non-seasonal terms and PDQ() for seasonal terms. When pdq() is left unspecified, fable searches for the best order automatically.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nThe series appears stationary (d = 0). The PACF shows significant spikes at lags 1–3, suggesting AR(3). We can fit this manually, compare it against automatic selection strategies, and let AIC_c arbitrate — all within a single mable:\n\n\n\n\nCode\nus_change_fit &lt;- us_change |&gt;\n  model(\n1    manual     = ARIMA(Consumption ~ pdq(3, 0, 0) + PDQ(0, 0, 0)),\n2    auto       = ARIMA(Consumption ~ PDQ(0, 0, 0)),\n3    semi_auto  = ARIMA(Consumption ~ pdq(1:3, 0, 0:2) + PDQ(0, 0, 0)),\n    exhaustive = ARIMA(Consumption ~ PDQ(0, 0, 0),\n4                       stepwise      = FALSE,\n5                       approximation = FALSE)\n  )\n\nglance(us_change_fit) |&gt;\n  arrange(AICc) |&gt;\n  select(.model, AIC, AICc, BIC)\n\n\n\n1\n\nManual specification using pdq(). PDQ(0,0,0) explicitly forces a non-seasonal model.\n\n2\n\nLeaving pdq() unspecified triggers automatic stepwise order selection.\n\n3\n\nEvaluates all combinations of p \\in \\{1,2,3\\} and q \\in \\{0,1,2\\}, returns the lowest AIC_c.\n\n4\n\nstepwise = FALSE explores all combinations rather than navigating step by step.\n\n5\n\napproximation = FALSE uses exact likelihood. More accurate but slower on long series.\n\n\n\n\n\n  \n\n\n\n\n\n\n\n\n\n\n\nNoteHow does automatic selection work?\n\n\n\nfable implements a stepwise search algorithm (Hyndman & Khandakar, 2008) that:\n\nDetermines d using unit root tests.\nStarts from a simple model and navigates through the order space by comparing AIC_c values.\nStops when no neighboring model improves AIC_c.\n\n\nImportant: this is a heuristic search — it does not evaluate all possible combinations. It is fast and usually good, but not guaranteed to find the global optimum.\n\n\n\n\n\n\n\n\n\n\n\nFor exploratory work, automatic selection is fine. For a final model, use stepwise = FALSE, approximation = FALSE and compare the result with your manually identified candidate.\n\n\n\n\n\n\n\n\n\n\nTipHow much slower is exhaustive search?\n\n\n\n\n\nstepwise = FALSE, approximation = FALSE triggers a full search over all candidate models using exact likelihood. The difference in runtime can be dramatic:\n\n\nCode\ntictoc::tic(\"auto\")\nus_change |&gt;\n  model(ARIMA(Consumption ~ PDQ(0, 0, 0)))\n\n\n\n  \n\n\n\nCode\ntictoc::toc()\n\n\nauto: 0.143 sec elapsed\n\n\nCode\ntictoc::tic(\"exhaustive\")\nus_change |&gt;\n  model(ARIMA(Consumption ~ PDQ(0, 0, 0),\n              stepwise      = FALSE,\n              approximation = FALSE))\n\n\n\n  \n\n\n\nCode\ntictoc::toc()\n\n\nexhaustive: 0.681 sec elapsed\n\n\nTimes will vary by hardware, but the relative difference is what matters. On longer series like mexretail (480+ monthly observations with seasonal structure), the gap is even more pronounced — which is why freeze is recommended for documents containing exhaustive ARIMA searches.",
+    "text": "2.2 Manual and Automatic Specification\nIn fable, ARIMA models are specified inside model() using the ARIMA() function. The order is controlled with pdq() for non-seasonal terms and PDQ() for seasonal terms. When pdq() is left unspecified, fable searches for the best order automatically.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nThe series appears stationary (d = 0). The PACF shows significant spikes at lags 1–3, suggesting AR(3). We can fit this manually, compare it against automatic selection strategies, and let AIC_c arbitrate — all within a single mable:\n\n\n\n\nCode\nus_change_fit &lt;- us_change |&gt;\n  model(\n1    manual     = ARIMA(Consumption ~ pdq(3, 0, 0) + PDQ(0, 0, 0)),\n2    auto       = ARIMA(Consumption ~ PDQ(0, 0, 0)),\n3    semi_auto  = ARIMA(Consumption ~ pdq(1:3, 0, 0:2) + PDQ(0, 0, 0)),\n    exhaustive = ARIMA(Consumption ~ PDQ(0, 0, 0),\n4                       stepwise      = FALSE,\n5                       approximation = FALSE)\n  )\n\nglance(us_change_fit) |&gt;\n  arrange(AICc) |&gt;\n  select(.model, AIC, AICc, BIC)\n\n\n\n1\n\nManual specification using pdq(). PDQ(0,0,0) explicitly forces a non-seasonal model.\n\n2\n\nLeaving pdq() unspecified triggers automatic stepwise order selection.\n\n3\n\nEvaluates all combinations of p \\in \\{1,2,3\\} and q \\in \\{0,1,2\\}, returns the lowest AIC_c.\n\n4\n\nstepwise = FALSE explores all combinations rather than navigating step by step.\n\n5\n\napproximation = FALSE uses exact likelihood. More accurate but slower on long series.\n\n\n\n\n\n  \n\n\n\n\n\n\n\n\n\n\n\nNoteHow does automatic selection work?\n\n\n\nfable implements a stepwise search algorithm (Hyndman & Khandakar, 2008) that:\n\nDetermines d using unit root tests.\nStarts from a simple model and navigates through the order space by comparing AIC_c values.\nStops when no neighboring model improves AIC_c.\n\n\nImportant: this is a heuristic search — it does not evaluate all possible combinations. It is fast and usually good, but not guaranteed to find the global optimum.\n\n\n\n\n\n\n\n\n\n\n\nFor exploratory work, automatic selection is fine. For a final model, use stepwise = FALSE, approximation = FALSE and compare the result with your manually identified candidate.\n\n\n\n\n\n\n\n\n\n\nTipHow much slower is exhaustive search?\n\n\n\n\n\nstepwise = FALSE, approximation = FALSE triggers a full search over all candidate models using exact likelihood. The difference in runtime can be dramatic:\n\n\nCode\ntictoc::tic(\"auto\")\nus_change |&gt;\n  model(ARIMA(Consumption ~ PDQ(0, 0, 0)))\n\n\n\n  \n\n\n\nCode\ntictoc::toc()\n\n\nauto: 0.152 sec elapsed\n\n\nCode\ntictoc::tic(\"exhaustive\")\nus_change |&gt;\n  model(ARIMA(Consumption ~ PDQ(0, 0, 0),\n              stepwise      = FALSE,\n              approximation = FALSE))\n\n\n\n  \n\n\n\nCode\ntictoc::toc()\n\n\nexhaustive: 0.687 sec elapsed\n\n\nTimes will vary by hardware, but the relative difference is what matters. On longer series like mexretail (480+ monthly observations with seasonal structure), the gap is even more pronounced — which is why freeze is recommended for documents containing exhaustive ARIMA searches.",
     "crumbs": [
       "2. Adding ETS and ARIMA filters",
       "2.3 ARIMA models"
