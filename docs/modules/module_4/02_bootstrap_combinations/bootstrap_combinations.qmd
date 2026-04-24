@@ -1,0 +1,965 @@
+---
+title: "4.2 Bootstrapping, Bagging & Model Combinations"
+format:
+  html:
+    other-links:
+      - text: "FPP3 §12.5: Bootstrapping and bagging"
+        href: https://otexts.com/fpp3/bootstrap.html
+      - text: "FPP3 §12.6: Forecast combinations"
+        href: https://otexts.com/fpp3/combinations.html
+  revealjs:
+    output-file: bootstrap_combinations_pres.html
+freeze: auto
+---
+
+```{r}
+#| label: pkgs
+#| message: false
+#| include: false
+
+library(tidyverse)
+library(fpp3)
+```
+
+:::{.content-visible unless-format="revealjs"}
+
+```{r}
+#| label: pkgs_special
+#| message: false
+
+library(plotly)    #<1>
+library(tidyquant) #<2>
+```
+
+1. For interactive plots.
+2. For retrieving `mexretail` from FRED.
+
+:::
+
+# Where We Are
+
+:::{.content-visible when-format="revealjs"}
+## The journey so far
+:::
+
+Over the course of this semester, we have built a progressively richer model:
+
+:::{.content-visible unless-format="revealjs"}
+
+| Module | What we added | Model |
+|:--|:--|:--|
+| **1** | Decomposition + benchmark | STL + Drift + SNAIVE |
+| **2** | Smarter trend-cycle | STL + ETS / ARIMA |
+| **3** | External context + harmonic regression | TSLM, dynamic regression, Prophet |
+| **4.1** | Multiple seasonality | MSTL, STL + ARIMA + Fourier |
+| **4.2 (now)** | Ensemble strategies | **Combinations + Bagging** |
+
+:::
+
+:::{.content-hidden unless-format="revealjs"}
+
+```{r}
+#| echo: false
+
+tibble::tribble(
+  ~Module,  ~`What we added`,                          ~Model,
+  "1",      "Decomposition + benchmark",               "STL + Drift + SNAIVE",
+  "2",      "Smarter trend-cycle",                     "STL + ETS / ARIMA",
+  "3",      "External context + harmonic regression",  "TSLM, dynamic regression, Prophet",
+  "4.1",    "Multiple seasonality",                    "MSTL, STL + ARIMA + Fourier",
+  "4.2",    "Ensemble strategies",                     "Combinations + Bagging"
+) |> knitr::kable()
+```
+
+:::
+
+:::{.fragment}
+
+:::{.callout-important appearance="simple"}
+## The question that motivates this topic
+
+We have several good models. **Which one do we deploy?**
+
+What if the answer is: *all of them*?
+:::
+
+:::
+
+# Forecast Combinations
+
+## The core idea
+
+> *"The results have been virtually unanimous: combining multiple forecasts leads to increased forecast accuracy. In many cases one can make dramatic performance improvements by simply averaging the forecasts."*
+>
+> — Hyndman & Athanasopoulos, FPP3
+
+:::{.fragment}
+
+This result, first documented by Bates & Granger (1969), has been replicated across hundreds of forecasting competitions and domains. It is one of the most robust empirical findings in the field.
+
+:::
+
+## Why Does Combination Work?
+
+Intuitively: each model captures some patterns but misses others. When models make **different kinds of errors**, averaging them out reduces overall error.
+
+:::{.fragment}
+
+The key condition is **diversity** — combining models that fail in the same way provides little benefit. This is why combining ETS, ARIMA, and Prophet tends to work better than combining three variants of ARIMA.
+
+:::
+
+:::{.fragment}
+
+:::{.callout-note appearance="simple"}
+## The math behind it
+
+If two unbiased forecasts $f_1$ and $f_2$ have errors with equal variance $\sigma^2$ and correlation $\rho$, the equal-weight combination has error variance:
+
+$$\text{Var}\left(\frac{e_1 + e_2}{2}\right) = \frac{\sigma^2(1 + \rho)}{2}$$
+
+When $\rho < 1$, the combination **always beats the average individual model**. When $\rho = 0$, variance halves.
+:::
+
+:::
+
+## A First Example: Australian Cement Production {#sec-cement-intro}
+
+We introduce combinations with `aus_production` (Cement) — a quarterly manufacturing series with clear trend and seasonality.
+
+```{r}
+#| label: cement-data
+
+cement <- aus_production |>
+  select(Quarter, Cement) |>
+  filter(!is.na(Cement))
+
+cement_train <- cement |> filter(year(Quarter) <= 2005) #<1>
+cement_test  <- cement |> filter(year(Quarter) >  2005) #<2>
+```
+
+1. Training set: up to and including 2005.
+2. Test set: 2006 Q1 through 2010 Q2 — 18 quarters.
+
+:::{.content-visible unless-format="revealjs"}
+
+```{r}
+#| label: cement-plot-html
+#| echo: false
+
+p <- cement |>
+  autoplot(Cement, color = "steelblue") +
+  geom_vline(
+    xintercept = as.numeric(yearquarter("2005 Q4")),
+    linetype = "dashed", color = "firebrick", linewidth = 0.5
+  ) +
+  labs(
+    title   = "Australian cement production",
+    y       = "Thousands of tonnes",
+    caption = "Source: Australian Bureau of Statistics. Dashed line: train/test split."
+  )
+
+ggplotly(p, dynamicTicks = TRUE)
+```
+
+:::
+
+:::{.content-hidden unless-format="revealjs"}
+
+```{r}
+#| label: cement-plot-revealjs
+#| echo: false
+
+cement |>
+  autoplot(Cement, color = "steelblue") +
+  geom_vline(
+    xintercept = as.numeric(yearquarter("2005 Q4")),
+    linetype = "dashed", color = "firebrick", linewidth = 0.5
+  ) +
+  labs(
+    title   = "Australian cement production",
+    y       = "Thousands of tonnes",
+    caption = "Dashed line: train/test split"
+  )
+```
+
+:::
+
+## Fitting Individual Models
+
+```{r}
+#| label: cement-fit
+#| message: false
+
+cement_fit <- cement_train |>
+  model(
+    ets   = ETS(Cement),                         #<1>
+    arima = ARIMA(Cement),                       #<2>
+    stlf  = decomposition_model(                 #<3>
+              STL(Cement ~ trend(window = NULL) +
+                    season(window = "periodic"),
+                  robust = TRUE),
+              ETS(season_adjust ~ season("N"))
+            )
+  )
+```
+
+1. Automatic ETS selection.
+2. Automatic ARIMA selection.
+3. STL + ETS on the seasonally adjusted component — our Module 2 approach.
+
+## Combining: The Manual Approach
+
+:::{.content-visible unless-format="revealjs"}
+
+The simplest combination is an equal-weight average computed **after** forecasting, using `mutate()` on the fable object. This is the approach shown in FPP3.
+
+:::
+
+```{r}
+#| label: cement-fc-manual
+#| message: false
+
+cement_fc_manual <- cement_fit |>
+  forecast(h = nrow(cement_test)) |>
+  mutate(                                                  #<1>
+    combination = (ETS(Cement) + ARIMA(Cement) +           #<2>
+                     decomposition_model(STL(Cement ~
+                       trend(window = NULL) +
+                       season(window = "periodic"),
+                       robust = TRUE),
+                       ETS(season_adjust ~ season("N")))
+                  ) / 3
+  )
+```
+
+1. `mutate()` on a `fable` object adds a new model column.
+2. Arithmetic on distribution objects — `fable` handles the combination automatically.
+
+:::{.callout-tip appearance="simple"}
+The `.mean` of the combined distribution is the average of the individual `.mean` values.
+:::
+
+## Combining: Inside `model()` with `combination_ensemble()`
+
+:::{.content-visible unless-format="revealjs"}
+
+`fable` also provides `combination_ensemble()` to define combinations **inside** `model()`, keeping the entire workflow within a single `mable`. This is cleaner and more consistent with the `fable` framework.
+
+:::
+
+```{r}
+#| label: cement-fit-combined
+#| message: false
+#| code-line-numbers: "11-20|21-30"
+
+cement_fit2 <- cement_train |>
+  model(
+    ets   = ETS(Cement),
+    arima = ARIMA(Cement),
+    stlf  = decomposition_model(
+              STL(Cement ~ trend(window = NULL) +
+                    season(window = "periodic"),
+                  robust = TRUE),
+              ETS(season_adjust ~ season("N"))
+            ),
+    comb_equal = combination_ensemble(             #<1>
+                   ETS(Cement),
+                   ARIMA(Cement),
+                   decomposition_model(
+                     STL(Cement ~ trend(window = NULL) +
+                           season(window = "periodic"),
+                         robust = TRUE),
+                     ETS(season_adjust ~ season("N"))
+                   ),
+                   weights = "equal"               #<2>
+                 ),
+    comb_inv_var = combination_ensemble(           #<3>
+                     ETS(Cement),
+                     ARIMA(Cement),
+                     decomposition_model(
+                       STL(Cement ~ trend(window = NULL) +
+                             season(window = "periodic"),
+                           robust = TRUE),
+                       ETS(season_adjust ~ season("N"))
+                     ),
+                     weights = "inv_var"           #<4>
+                   )
+  )
+```
+
+1. `combination_ensemble()` defines the combination inside `model()`. Every sub-model is re-fitted automatically.
+2. `weights = "equal"` gives each model weight $1/K$. Equivalent to the `mutate()` average.
+3. A second combination with data-driven weights.
+4. `weights = "inv_var"` assigns weights inversely proportional to each model's in-sample error variance.
+
+:::{.content-visible unless-format="revealjs"}
+
+:::{.callout-note appearance="simple"}
+## `combination_ensemble()` vs. `combination_model()` vs. `combination_weighted()`
+
+| Function | Weights | Best for |
+|:--|:--|:--|
+| `combination_ensemble()` | `"equal"` or `"inv_var"` | Standard use — let the data or equal weighting decide |
+| `combination_weighted()` | Explicit numeric vector | When you have domain knowledge about which model to trust more |
+| `combination_model()` | Explicit numeric vector | Same as above, slightly different syntax |
+
+For most applications, `combination_ensemble()` with `"equal"` or `"inv_var"` is the right choice.
+:::
+
+:::
+
+## Forecasts and Accuracy
+
+```{r}
+#| label: cement-fc2
+#| message: false
+
+cement_fc2 <- cement_fit2 |>
+  forecast(h = nrow(cement_test))
+
+cement_accu <- cement_fc2 |>
+  accuracy(cement_test) |>
+  select(.model, RMSE, MAE, MAPE, MASE) |>
+  arrange(RMSE)
+
+cement_accu
+```
+
+:::{.content-visible unless-format="revealjs"}
+
+```{r}
+#| label: cement-fc-plot-html
+#| echo: false
+#| message: false
+
+p <- cement_fc2 |>
+  filter(.model %in% c("ets", "arima", "stlf", "comb_equal", "comb_inv_var")) |>
+  autoplot(cement, level = NULL) +
+  labs(
+    title = "Australian cement production — forecasts",
+    y     = "Thousands of tonnes"
+  ) +
+  theme(legend.position = "bottom")
+
+ggplotly(p, dynamicTicks = TRUE)
+```
+
+:::
+
+:::{.content-hidden unless-format="revealjs"}
+
+```{r}
+#| label: cement-fc-plot-revealjs
+#| echo: false
+#| message: false
+
+cement_fc2 |>
+  filter(.model %in% c("ets", "arima", "stlf", "comb_equal", "comb_inv_var")) |>
+  autoplot(cement, level = NULL) +
+  labs(
+    title = "Australian cement production — forecasts",
+    y     = "Thousands of tonnes"
+  ) +
+  theme(legend.position = "bottom")
+```
+
+:::
+
+# Bootstrapping and Bagging
+
+## The idea: simulating alternative histories
+
+Combinations average across **different models** fitted to the same data. Bagging takes a complementary approach: average across **the same model** fitted to many **simulated versions** of the data.
+
+:::{.fragment}
+
+A single model fit is one realization of what could have happened given a different path of random shocks. If we observe many plausible alternative histories of the series, we can average forecasts from all of them — reducing variance without changing the model family.
+
+:::
+
+## How Block Bootstrap Works
+
+Standard bootstrap (resample observations independently) breaks temporal dependence. For time series, we use **block bootstrap**:
+
+:::{.incremental}
+
+1. Decompose the series with STL → isolate the **remainder** component
+2. Resample the remainder in **blocks** to preserve local autocorrelation
+3. Reconstruct synthetic series: trend + seasonal + bootstrapped remainder
+4. Repeat $B$ times → $B$ plausible alternative histories
+
+:::
+
+:::{.fragment}
+
+**Bagging** (Bootstrap AGGregating) = fit a model to each bootstrapped series, then average the $B$ forecasts.
+
+:::
+
+## Generating Bootstrap Series
+
+We continue with Cement to maintain continuity:
+
+```{r}
+#| label: cement-stl-model
+
+cement_stl <- cement_train |>
+  model(stl = STL(Cement ~ trend(window = NULL) +    #<1>
+                    season(window = "periodic"),
+                  robust = TRUE))
+```
+
+1. We need the fitted STL object to generate bootstrap series from it.
+
+```{r}
+#| label: cement-bootstrap-sim
+#| message: false
+
+set.seed(2025)
+
+cement_sim <- cement_stl |>
+  generate(
+    new_data             = cement_train, #<1>
+    times                = 100,          #<2>
+    bootstrap_block_size = 8             #<3>
+  ) |>
+  select(-.model, -Cement)               #<4>
+```
+
+1. Regenerate over the training period.
+2. 100 bootstrapped alternative histories.
+3. Block size of 8 quarters (~2 years) — preserves seasonal autocorrelation in the remainder.
+4. Drop the original series column; `.sim` contains the bootstrapped values.
+
+:::{.callout-tip appearance="simple"}
+## Choosing the block size
+
+A rule of thumb: one or two seasonal periods. For quarterly data ($m = 4$), `bootstrap_block_size = 4` or `8` is typically appropriate.
+:::
+
+## Visualizing the Bootstrap Series
+
+:::{.content-visible unless-format="revealjs"}
+
+```{r}
+#| label: cement-bootstrap-plot-html
+#| echo: false
+#| message: false
+
+p <- cement_sim |>
+  ggplot(aes(x = Quarter, y = .sim, group = .rep)) +
+  geom_line(alpha = 0.08, color = "steelblue") +
+  geom_line(
+    data = cement_train,
+    aes(x = Quarter, y = Cement),
+    color = "firebrick", linewidth = 0.8, inherit.aes = FALSE
+  ) +
+  labs(
+    title   = "100 bootstrapped series (blue) vs. original (red)",
+    y       = "Thousands of tonnes",
+    caption = "Each blue line is one plausible alternative history of cement production."
+  )
+
+ggplotly(p, dynamicTicks = TRUE)
+```
+
+:::
+
+:::{.content-hidden unless-format="revealjs"}
+
+```{r}
+#| label: cement-bootstrap-plot-revealjs
+#| echo: false
+#| message: false
+
+cement_sim |>
+  ggplot(aes(x = Quarter, y = .sim, group = .rep)) +
+  geom_line(alpha = 0.08, color = "steelblue") +
+  geom_line(
+    data = cement_train,
+    aes(x = Quarter, y = Cement),
+    color = "firebrick", linewidth = 0.8, inherit.aes = FALSE
+  ) +
+  labs(
+    title = "100 bootstrapped series (blue) vs. original (red)",
+    y     = "Thousands of tonnes"
+  )
+```
+
+:::
+
+## Fitting, Forecasting, and Averaging
+
+```{r}
+#| label: cement-bagging-fit
+#| message: false
+#| cache: true
+
+cement_bag_fit <- cement_sim |>
+  model(ets = ETS(.sim))  #<1>
+```
+
+1. `fable` fits one ETS model per bootstrapped series (100 models). The key variable `.rep` distinguishes each replicate.
+
+```{r}
+#| label: cement-bagging-mean
+#| message: false
+
+cement_bag_mean <- cement_bag_fit |>
+  forecast(h = nrow(cement_test)) |>
+  summarise(                          #<1>
+    bagged_mean = mean(.mean),        #<2>
+    .by = Quarter
+  )
+```
+
+1. Collapse the 100 forecast trajectories into a single point forecast.
+2. The bagged forecast is the simple average across replicates.
+
+## Comparing Bagging with Individual Models
+
+```{r}
+#| label: cement-bagging-accuracy
+#| message: false
+
+cement_bag_accu <- cement_test |>
+  left_join(cement_bag_mean, by = "Quarter") |>
+  summarise(
+    .model = "bagging_ets",
+    RMSE   = sqrt(mean((Cement - bagged_mean)^2)),
+    MAE    = mean(abs(Cement - bagged_mean)),
+    MAPE   = mean(abs((Cement - bagged_mean) / Cement)) * 100
+  )
+
+bind_rows(cement_accu, cement_bag_accu) |> arrange(RMSE)
+```
+
+:::{.callout-warning appearance="simple"}
+## Bagging and `fable` combinations
+
+Bagged forecasts come from 100 separately keyed series (`.rep`) and cannot be piped into `combination_ensemble()` alongside standard models. Compare them with other models manually via `accuracy()`.
+:::
+
+:::{.callout-tip appearance="simple"}
+Bagging helps most when the series is short or volatile. On longer, stable series the improvement over a single well-fitted model is often modest.
+:::
+
+# The Full Picture: Three Datasets
+
+## Series overview
+
+We now apply both strategies to three series from across the course, putting every model we have built this semester head-to-head:
+
+:::{.content-visible unless-format="revealjs"}
+
+| Dataset | Models available | Notes |
+|:--|:--|:--|
+| `aus_production` (Beer) | ETS, ARIMA, STLF, TSLM, Prophet | No external regressors — TSLM uses trend + season only |
+| `mexretail` | ETS, ARIMA, STLF, TSLM, Prophet | Same — TSLM with trend + season |
+| `aus_accommodation` (NSW) | All above + dynamic regression (CPI) | Full Module 3 arsenal available |
+
+:::
+
+:::{.content-hidden unless-format="revealjs"}
+
+```{r}
+#| echo: false
+
+tibble::tribble(
+  ~Dataset,                  ~`Models available`,
+  "aus_production (Beer)",   "ETS, ARIMA, STLF, TSLM, Prophet",
+  "mexretail",               "ETS, ARIMA, STLF, TSLM, Prophet",
+  "aus_accommodation (NSW)", "All above + dynamic regression (CPI)"
+) |> knitr::kable()
+```
+
+:::
+
+:::{.callout-note appearance="simple"}
+## Bagging with other models
+
+The bagging pipeline works with any model that `fable` can fit — ARIMA, Prophet, etc. We use ETS here because it is the approach validated by Bergmeir, Hyndman & Benitez (2016), and because fitting 100 ARIMAs with automatic order selection is substantially slower. ETS is fast, robust, and well-supported by the literature for this use case.
+:::
+
+## Data Setup
+
+```{r}
+#| label: full-data-setup
+#| message: false
+
+# --- Beer ---
+beer <- aus_production |>
+  select(Quarter, Beer) |>
+  filter(!is.na(Beer))
+
+beer_train <- beer |> filter(year(Quarter) <= 2006)
+beer_test  <- beer |> filter(year(Quarter) >  2006)
+
+# --- mexretail ---
+mexretail <- tq_get(
+  "MEXSLRTTO01IXOBM",
+  get  = "economic.data",
+  from = "1985-01-01"
+) |>
+  mutate(date = yearmonth(date)) |>
+  rename(y = price) |>
+  as_tsibble(index = date)
+
+mexretail_train <- mexretail |> filter(year(date) <= 2019)
+mexretail_test  <- mexretail |> filter(year(date) >  2019)
+
+# --- NSW accommodation ---
+nsw <- aus_accommodation |>
+  filter(State == "New South Wales") |>
+  select(Quarter, Takings, CPI)
+
+nsw_train <- nsw |> filter(year(Quarter) <= 2012)
+nsw_test  <- nsw |> filter(year(Quarter) >  2012)
+```
+
+## Beer: Full Model Comparison
+
+::::{.panel-tabset}
+
+### Models & Combinations
+
+```{r}
+#| label: beer-fit
+#| message: false
+#| cache: true
+
+beer_fit <- beer_train |>
+  model(
+    tslm         = TSLM(Beer ~ trend() + season()),        #<1>
+    ets          = ETS(Beer),
+    arima        = ARIMA(Beer),
+    stlf         = decomposition_model(
+                     STL(Beer ~ trend(window = NULL) +
+                           season(window = "periodic"),
+                         robust = TRUE),
+                     ETS(season_adjust ~ season("N"))
+                   ),
+    prophet      = prophet(Beer),                          #<2>
+    comb_equal   = combination_ensemble(
+                     TSLM(Beer ~ trend() + season()),
+                     ETS(Beer),
+                     ARIMA(Beer),
+                     decomposition_model(
+                       STL(Beer ~ trend(window = NULL) +
+                             season(window = "periodic"),
+                           robust = TRUE),
+                       ETS(season_adjust ~ season("N"))
+                     ),
+                     prophet(Beer),
+                     weights = "equal"
+                   ),
+    comb_inv_var = combination_ensemble(
+                     TSLM(Beer ~ trend() + season()),
+                     ETS(Beer),
+                     ARIMA(Beer),
+                     decomposition_model(
+                       STL(Beer ~ trend(window = NULL) +
+                             season(window = "periodic"),
+                           robust = TRUE),
+                       ETS(season_adjust ~ season("N"))
+                     ),
+                     prophet(Beer),
+                     weights = "inv_var"
+                   )
+  )
+```
+
+1. TSLM with deterministic trend and seasonal dummies — no external regressors available for Beer.
+2. Requires `fable.prophet`. Uses default automatic specification.
+
+### Bagging
+
+```{r}
+#| label: beer-bagging
+#| message: false
+#| cache: true
+
+set.seed(2025)
+
+beer_bag_mean <- beer_train |>
+  model(stl = STL(Beer ~ trend(window = NULL) +
+                    season(window = "periodic"),
+                  robust = TRUE)) |>
+  generate(
+    new_data             = beer_train,
+    times                = 100,
+    bootstrap_block_size = 4
+  ) |>
+  select(-.model, -Beer) |>
+  model(ets = ETS(.sim)) |>
+  forecast(h = nrow(beer_test)) |>
+  summarise(bagged_mean = mean(.mean), .by = Quarter)
+```
+
+### Accuracy
+
+```{r}
+#| label: beer-accuracy
+#| message: false
+
+beer_accu_std <- beer_fit |>
+  forecast(h = nrow(beer_test)) |>
+  accuracy(beer_test) |>
+  select(.model, RMSE, MAE, MAPE)
+
+beer_accu_bag <- beer_test |>
+  left_join(beer_bag_mean, by = "Quarter") |>
+  summarise(
+    .model = "bagging_ets",
+    RMSE   = sqrt(mean((Beer - bagged_mean)^2)),
+    MAE    = mean(abs(Beer - bagged_mean)),
+    MAPE   = mean(abs((Beer - bagged_mean) / Beer)) * 100
+  )
+
+bind_rows(beer_accu_std, beer_accu_bag) |> arrange(RMSE)
+```
+
+::::
+
+## mexretail: Full Model Comparison
+
+::::{.panel-tabset}
+
+### Models & Combinations
+
+```{r}
+#| label: mexretail-fit
+#| message: false
+#| cache: true
+
+mexretail_fit <- mexretail_train |>
+  model(
+    tslm         = TSLM(log(y) ~ trend() + season()),
+    ets          = ETS(y),
+    arima        = ARIMA(log(y)),
+    stlf         = decomposition_model(
+                     STL(log(y) ~ trend(window = NULL) +
+                           season(window = "periodic"),
+                         robust = TRUE),
+                     ETS(season_adjust ~ season("N"))
+                   ),
+    prophet      = prophet(y),
+    comb_equal   = combination_ensemble(
+                     TSLM(log(y) ~ trend() + season()),
+                     ETS(y),
+                     ARIMA(log(y)),
+                     decomposition_model(
+                       STL(log(y) ~ trend(window = NULL) +
+                             season(window = "periodic"),
+                           robust = TRUE),
+                       ETS(season_adjust ~ season("N"))
+                     ),
+                     prophet(y),
+                     weights = "equal"
+                   ),
+    comb_inv_var = combination_ensemble(
+                     TSLM(log(y) ~ trend() + season()),
+                     ETS(y),
+                     ARIMA(log(y)),
+                     decomposition_model(
+                       STL(log(y) ~ trend(window = NULL) +
+                             season(window = "periodic"),
+                           robust = TRUE),
+                       ETS(season_adjust ~ season("N"))
+                     ),
+                     prophet(y),
+                     weights = "inv_var"
+                   )
+  )
+```
+
+### Bagging
+
+```{r}
+#| label: mexretail-bagging
+#| message: false
+#| cache: true
+
+set.seed(2025)
+
+mexretail_bag_mean <- mexretail_train |>
+  model(stl = STL(log(y) ~ trend(window = NULL) +
+                    season(window = "periodic"),
+                  robust = TRUE)) |>
+  generate(
+    new_data             = mexretail_train,
+    times                = 100,
+    bootstrap_block_size = 12
+  ) |>
+  select(-.model, -y) |>
+  model(ets = ETS(.sim)) |>
+  forecast(h = nrow(mexretail_test)) |>
+  summarise(bagged_mean = mean(.mean), .by = date)
+```
+
+### Accuracy
+
+```{r}
+#| label: mexretail-accuracy
+#| message: false
+
+mexretail_accu_std <- mexretail_fit |>
+  forecast(h = nrow(mexretail_test)) |>
+  accuracy(mexretail_test) |>
+  select(.model, RMSE, MAE, MAPE)
+
+mexretail_accu_bag <- mexretail_test |>
+  left_join(mexretail_bag_mean, by = "date") |>
+  summarise(
+    .model = "bagging_ets",
+    RMSE   = sqrt(mean((y - bagged_mean)^2, na.rm = TRUE)),
+    MAE    = mean(abs(y - bagged_mean), na.rm = TRUE),
+    MAPE   = mean(abs((y - bagged_mean) / y), na.rm = TRUE) * 100
+  )
+
+bind_rows(mexretail_accu_std, mexretail_accu_bag) |> arrange(RMSE)
+```
+
+::::
+
+## NSW Accommodation: Full Model Comparison
+
+:::{.content-visible unless-format="revealjs"}
+
+NSW is the richest comparison: it includes CPI as a covariate, so dynamic regression enters the mix. Note that `dynreg` is excluded from `combination_ensemble()` — mixing models with and without external regressors creates structural incompatibilities inside `fable`. In practice you would build a separate combination for models that share the same predictor set.
+
+:::
+
+::::{.panel-tabset}
+
+### Models & Combinations
+
+```{r}
+#| label: nsw-fit
+#| message: false
+#| cache: true
+
+nsw_fit <- nsw_train |>
+  model(
+    tslm         = TSLM(log(Takings) ~ trend() + season() + CPI), #<1>
+    ets          = ETS(log(Takings)),
+    arima        = ARIMA(log(Takings)),
+    dynreg       = ARIMA(log(Takings) ~ CPI),                     #<2>
+    stlf         = decomposition_model(
+                     STL(log(Takings) ~ trend(window = NULL) +
+                           season(window = "periodic"),
+                         robust = TRUE),
+                     ETS(season_adjust ~ season("N"))
+                   ),
+    prophet      = prophet(log(Takings)),
+    comb_equal   = combination_ensemble(                           #<3>
+                     TSLM(log(Takings) ~ trend() + season() + CPI),
+                     ETS(log(Takings)),
+                     ARIMA(log(Takings)),
+                     decomposition_model(
+                       STL(log(Takings) ~ trend(window = NULL) +
+                             season(window = "periodic"),
+                           robust = TRUE),
+                       ETS(season_adjust ~ season("N"))
+                     ),
+                     prophet(log(Takings)),
+                     weights = "equal"
+                   ),
+    comb_inv_var = combination_ensemble(
+                     TSLM(log(Takings) ~ trend() + season() + CPI),
+                     ETS(log(Takings)),
+                     ARIMA(log(Takings)),
+                     decomposition_model(
+                       STL(log(Takings) ~ trend(window = NULL) +
+                             season(window = "periodic"),
+                           robust = TRUE),
+                       ETS(season_adjust ~ season("N"))
+                     ),
+                     prophet(log(Takings)),
+                     weights = "inv_var"
+                   )
+  )
+```
+
+1. NSW has CPI available, so TSLM can use it as a predictor — unlike Beer and mexretail.
+2. Dynamic regression: ARIMA errors + CPI regressor. Kept outside the combination (see note above).
+3. The combination includes TSLM with CPI but not `dynreg` — both use CPI but their structures are incompatible inside `combination_ensemble()`.
+
+### Bagging
+
+```{r}
+#| label: nsw-bagging
+#| message: false
+#| cache: true
+
+set.seed(2025)
+
+nsw_bag_mean <- nsw_train |>
+  model(stl = STL(log(Takings) ~ trend(window = NULL) +
+                    season(window = "periodic"),
+                  robust = TRUE)) |>
+  generate(
+    new_data             = nsw_train,
+    times                = 100,
+    bootstrap_block_size = 4
+  ) |>
+  select(-.model, -Takings) |>
+  model(ets = ETS(.sim)) |>
+  forecast(h = nrow(nsw_test)) |>
+  summarise(bagged_mean = mean(.mean), .by = Quarter)
+```
+
+### Accuracy
+
+```{r}
+#| label: nsw-accuracy
+#| message: false
+
+nsw_accu_std <- nsw_fit |>
+  forecast(h = nrow(nsw_test), new_data = nsw_test) |>
+  accuracy(nsw_test) |>
+  select(.model, RMSE, MAE, MAPE)
+
+nsw_accu_bag <- nsw_test |>
+  left_join(nsw_bag_mean, by = "Quarter") |>
+  summarise(
+    .model = "bagging_ets",
+    RMSE   = sqrt(mean((Takings - bagged_mean)^2, na.rm = TRUE)),
+    MAE    = mean(abs(Takings - bagged_mean), na.rm = TRUE),
+    MAPE   = mean(abs((Takings - bagged_mean) / Takings), na.rm = TRUE) * 100
+  )
+
+bind_rows(nsw_accu_std, nsw_accu_bag) |> arrange(RMSE)
+```
+
+::::
+
+# Key Takeaways
+
+## What to remember
+
+:::{.callout-important}
+## Key points
+
+- **Forecast combinations** work because diverse models make different errors — one of the most robust findings in forecasting.
+- **Equal-weight averaging** is surprisingly hard to beat. Complex weighted schemes need careful validation to justify the added complexity.
+- **Bagging** averages across simulated alternative histories, not different models. Most useful for short or volatile series.
+- **More complex ≠ always better.** Always compare on a held-out test set — sometimes a single model wins.
+- **Bagged forecasts cannot be combined** with standard `fable` models inside `combination_ensemble()` — compare them via `accuracy()` separately.
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+### When to use each strategy
+
+| Strategy | Use when... | Avoid when... |
+|:--|:--|:--|
+| **Equal-weight combination** | Models have comparable accuracy, diverse error structures | All models fail the same way |
+| **`inv_var` combination** | One model is clearly better in-sample | Sample too small to reliably estimate variances |
+| **Bagging** | Series is short or volatile | Series is long and stable — marginal gain rarely justifies computation |
+| **No combination** | One model dominates clearly on the test set | — |
+
+:::
+
+**FPP3 references:** [§12.5 Bootstrapping and bagging](https://otexts.com/fpp3/bootstrap.html) · [§12.6 Forecast combinations](https://otexts.com/fpp3/combinations.html)
