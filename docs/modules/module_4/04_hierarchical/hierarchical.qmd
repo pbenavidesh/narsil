@@ -1,0 +1,1194 @@
+---
+title: "Hierarchical & Grouped Forecasting"
+format:
+  html:
+    other-links:
+      - text: FPP3 Chapter 11
+        href: https://otexts.com/fpp3/hierarchical.html
+  revealjs:
+    output-file: hierarchical_pres.html
+---
+
+```{r}
+#| label: pkgs
+#| message: false
+#| include: false
+
+library(tidyverse)
+library(fpp3)
+```
+
+:::{.content-visible unless-format="revealjs"}
+
+```{r}
+#| label: pkgs_special
+#| message: false
+
+library(plotly) #<1>
+```
+
+1. For interactive plots in the HTML version.
+
+:::
+
+```{r}
+#| label: data-setup
+#| include: false
+#| message: false
+
+# Hierarchical structure: State contains Regions
+tourism_hts <- tourism |>
+  aggregate_key(State / Region, Trips = sum(Trips))
+
+# Mixed structure: hierarchy + grouping attribute
+tourism_full <- tourism |>
+  aggregate_key(State / Region * Purpose, Trips = sum(Trips))
+
+# Train / test split — last 8 quarters as test set
+tourism_train <- tourism_hts |>
+  filter_index(. ~ "2015 Q4")
+```
+
+# Forecast Structures
+
+:::{.content-hidden unless-format="revealjs"}
+
+##
+
+:::
+
+Real-world data rarely comes as a single series. Sales, tourism demand, energy consumption, and public health metrics are all naturally organized into hierarchies or groups. Forecasting these structures naively — one series at a time — leads to numbers that don't add up.
+
+:::{.fragment}
+
+There are three types of structures to understand before we can forecast them properly.
+
+:::
+
+---
+
+:::{.content-hidden unless-format="revealjs"}
+
+## Hierarchical: Ventas de Mezcal {auto-animate="true"}
+
+<div style="display:flex; flex-direction:column; align-items:center; gap:20px; padding:40px; font-family:sans-serif; font-size:0.85em;">
+  <div data-id="node-mx" style="background:#1e3a5f; color:white; padding:12px 36px; border-radius:10px; font-size:1.1em; font-weight:bold; box-shadow:2px 2px 6px rgba(0,0,0,0.3);">
+    🇲🇽 México (Total)
+  </div>
+</div>
+
+## Hierarchical: Ventas de Mezcal {auto-animate="true"}
+
+<div style="display:flex; flex-direction:column; align-items:center; gap:20px; padding:20px; font-family:sans-serif; font-size:0.85em;">
+  <div data-id="node-mx" style="background:#1e3a5f; color:white; padding:12px 36px; border-radius:10px; font-size:1.1em; font-weight:bold; box-shadow:2px 2px 6px rgba(0,0,0,0.3);">
+    🇲🇽 México (Total)
+  </div>
+  <div style="display:flex; gap:24px; margin-top:4px;">
+    <div data-id="node-oax" style="background:#2e6da4; color:white; padding:10px 22px; border-radius:8px; box-shadow:2px 2px 4px rgba(0,0,0,0.2);">Oaxaca</div>
+    <div data-id="node-jal" style="background:#2e6da4; color:white; padding:10px 22px; border-radius:8px; box-shadow:2px 2px 4px rgba(0,0,0,0.2);">Jalisco</div>
+    <div style="background:#4a7fb5; color:white; padding:10px 22px; border-radius:8px; opacity:0.55;">···</div>
+  </div>
+</div>
+
+## Hierarchical: Ventas de Mezcal {auto-animate="true"}
+
+<div style="display:flex; flex-direction:column; align-items:center; gap:14px; padding:16px; font-family:sans-serif; font-size:0.82em;">
+  <div data-id="node-mx" style="background:#1e3a5f; color:white; padding:10px 30px; border-radius:10px; font-weight:bold; box-shadow:2px 2px 6px rgba(0,0,0,0.3);">
+    🇲🇽 México (Total)
+  </div>
+  <div style="display:flex; gap:48px;">
+    <div style="display:flex; flex-direction:column; align-items:center; gap:12px;">
+      <div data-id="node-oax" style="background:#2e6da4; color:white; padding:8px 20px; border-radius:8px; box-shadow:2px 2px 4px rgba(0,0,0,0.2);">Oaxaca</div>
+      <div style="display:flex; gap:8px;">
+        <div style="background:#5b9bd5; color:white; padding:6px 12px; border-radius:6px; font-size:0.9em;">Oaxaca de Juárez</div>
+        <div style="background:#5b9bd5; color:white; padding:6px 12px; border-radius:6px; font-size:0.9em;">Miahuatlán</div>
+      </div>
+    </div>
+    <div style="display:flex; flex-direction:column; align-items:center; gap:12px;">
+      <div data-id="node-jal" style="background:#2e6da4; color:white; padding:8px 20px; border-radius:8px; box-shadow:2px 2px 4px rgba(0,0,0,0.2);">Jalisco</div>
+      <div style="display:flex; gap:8px;">
+        <div style="background:#5b9bd5; color:white; padding:6px 12px; border-radius:6px; font-size:0.9em;">Guadalajara</div>
+        <div style="background:#5b9bd5; color:white; padding:6px 12px; border-radius:6px; font-size:0.9em;">Tequila</div>
+      </div>
+    </div>
+    <div style="display:flex; flex-direction:column; align-items:center; gap:12px;">
+      <div style="background:#4a7fb5; color:white; padding:8px 20px; border-radius:8px; opacity:0.55;">···</div>
+    </div>
+  </div>
+</div>
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+### Hierarchical: Ventas de Mezcal
+
+In a **hierarchical** structure, every series at a lower level belongs to exactly one series at the level above.
+
+<div style="display:flex; flex-direction:column; align-items:center; gap:14px; padding:20px; font-family:sans-serif; font-size:0.87em;">
+  <div style="background:#1e3a5f; color:white; padding:10px 30px; border-radius:10px; font-weight:bold;">🇲🇽 México (Total)</div>
+  <div style="display:flex; gap:48px;">
+    <div style="display:flex; flex-direction:column; align-items:center; gap:12px;">
+      <div style="background:#2e6da4; color:white; padding:8px 20px; border-radius:8px;">Oaxaca</div>
+      <div style="display:flex; gap:8px;">
+        <div style="background:#5b9bd5; color:white; padding:6px 12px; border-radius:6px;">Oaxaca de Juárez</div>
+        <div style="background:#5b9bd5; color:white; padding:6px 12px; border-radius:6px;">Miahuatlán</div>
+      </div>
+    </div>
+    <div style="display:flex; flex-direction:column; align-items:center; gap:12px;">
+      <div style="background:#2e6da4; color:white; padding:8px 20px; border-radius:8px;">Jalisco</div>
+      <div style="display:flex; gap:8px;">
+        <div style="background:#5b9bd5; color:white; padding:6px 12px; border-radius:6px;">Guadalajara</div>
+        <div style="background:#5b9bd5; color:white; padding:6px 12px; border-radius:6px;">Tequila</div>
+      </div>
+    </div>
+    <div style="display:flex; flex-direction:column; align-items:center; gap:12px;">
+      <div style="background:#4a7fb5; color:white; padding:8px 20px; border-radius:8px; opacity:0.6;">···</div>
+    </div>
+  </div>
+</div>
+
+Each city belongs to one and only one state. Each state belongs to the national total. The structure is a tree.
+
+:::
+
+---
+
+:::{.content-hidden unless-format="revealjs"}
+
+## Grouped: Bebidas Espirituosas
+
+<p style="font-size:0.85em; text-align:center; color:#555;">Grouped by <strong>Tipo de bebida</strong></p>
+
+<div style="display:flex; justify-content:center; gap:16px; margin-top:16px; font-family:sans-serif; font-size:0.85em;">
+  <div style="background:#1e3a5f; color:white; padding:10px 20px; border-radius:8px;">Mezcal</div>
+  <div style="background:#1e3a5f; color:white; padding:10px 20px; border-radius:8px;">Tequila</div>
+  <div style="background:#1e3a5f; color:white; padding:10px 20px; border-radius:8px;">Brandy</div>
+  <div style="background:#1e3a5f; color:white; padding:10px 20px; border-radius:8px; opacity:0.6;">···</div>
+</div>
+
+<p style="font-size:0.8em; text-align:center; margin-top:32px; color:#555;">Grouped by <strong>Canal de distribución</strong></p>
+
+<div style="display:flex; justify-content:center; gap:16px; margin-top:16px; font-family:sans-serif; font-size:0.85em;">
+  <div style="background:#5a4a8a; color:white; padding:10px 20px; border-radius:8px;">Retail</div>
+  <div style="background:#5a4a8a; color:white; padding:10px 20px; border-radius:8px;">Bares / Restaurantes</div>
+  <div style="background:#5a4a8a; color:white; padding:10px 20px; border-radius:8px;">Exportación</div>
+</div>
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+### Grouped: Bebidas Espirituosas
+
+In a **grouped** structure, the series can be disaggregated by more than one attribute, none of which nests inside the other. The same set of sales can be sliced in two independent ways:
+
+<div style="display:flex; gap:40px; justify-content:center; margin:20px 0; font-family:sans-serif; font-size:0.87em; flex-wrap:wrap;">
+  <div style="display:flex; flex-direction:column; align-items:center; gap:10px;">
+    <div style="font-weight:bold; color:#555; margin-bottom:4px;">By Tipo de bebida</div>
+    <div style="display:flex; gap:10px;">
+      <div style="background:#1e3a5f; color:white; padding:8px 16px; border-radius:8px;">Mezcal</div>
+      <div style="background:#1e3a5f; color:white; padding:8px 16px; border-radius:8px;">Tequila</div>
+      <div style="background:#1e3a5f; color:white; padding:8px 16px; border-radius:8px;">Brandy</div>
+      <div style="background:#1e3a5f; color:white; padding:8px 16px; border-radius:8px; opacity:0.6;">···</div>
+    </div>
+  </div>
+  <div style="display:flex; flex-direction:column; align-items:center; gap:10px;">
+    <div style="font-weight:bold; color:#555; margin-bottom:4px;">By Canal de distribución</div>
+    <div style="display:flex; gap:10px;">
+      <div style="background:#5a4a8a; color:white; padding:8px 16px; border-radius:8px;">Retail</div>
+      <div style="background:#5a4a8a; color:white; padding:8px 16px; border-radius:8px;">Bares / Rest.</div>
+      <div style="background:#5a4a8a; color:white; padding:8px 16px; border-radius:8px;">Exportación</div>
+    </div>
+  </div>
+</div>
+
+Both diagrams represent the **same total sales**. Neither grouping variable nests inside the other: a bottle of mezcal sold in retail is simultaneously in the "Mezcal" group and the "Retail" group. There is no single unique tree.
+
+:::
+
+---
+
+:::{.content-hidden unless-format="revealjs"}
+
+## Mixed: Ventas de Alcohol
+
+<div style="display:flex; flex-direction:column; align-items:center; gap:12px; padding:10px 20px; font-family:sans-serif; font-size:0.78em;">
+  <div style="background:#1e3a5f; color:white; padding:10px 28px; border-radius:10px; font-weight:bold;">
+    🇲🇽 Total Nacional
+  </div>
+  <div style="display:flex; gap:32px;">
+    <div style="display:flex; flex-direction:column; align-items:center; gap:10px;">
+      <div style="background:#2e6da4; color:white; padding:8px 18px; border-radius:8px;">Oaxaca</div>
+      <div style="display:flex; gap:8px;">
+        <div style="background:#5b9bd5; color:white; padding:5px 10px; border-radius:6px;">Oax. de Juárez</div>
+        <div style="background:#5b9bd5; color:white; padding:5px 10px; border-radius:6px;">Miahuatlán</div>
+      </div>
+    </div>
+    <div style="display:flex; flex-direction:column; align-items:center; gap:10px;">
+      <div style="background:#2e6da4; color:white; padding:8px 18px; border-radius:8px;">Jalisco</div>
+      <div style="display:flex; gap:8px;">
+        <div style="background:#5b9bd5; color:white; padding:5px 10px; border-radius:6px;">Guadalajara</div>
+        <div style="background:#5b9bd5; color:white; padding:5px 10px; border-radius:6px;">Tequila</div>
+      </div>
+    </div>
+    <div style="opacity:0.5; display:flex; flex-direction:column; align-items:center; gap:10px; padding-top:4px;">
+      <div style="background:#4a7fb5; color:white; padding:8px 18px; border-radius:8px;">···</div>
+    </div>
+  </div>
+  <div style="margin-top:4px; border-top:2px dashed #aaa; padding-top:10px; width:100%; text-align:center; color:#555; font-size:0.9em;">
+    ✕ Grouped by: <strong style="color:#8b1a1a;">Mezcal</strong> &nbsp;|&nbsp; <strong style="color:#8b1a1a;">Tequila</strong> &nbsp;|&nbsp; <strong style="color:#8b1a1a;">Brandy</strong>
+  </div>
+</div>
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+### Mixed: Ventas de Alcohol
+
+A **mixed** structure combines both: a geographic hierarchy (Nacional → Estado → Ciudad) crossed with a grouping attribute (Tipo de bebida). The most granular series are at the intersection, e.g., "Mezcal sold in Oaxaca de Juárez."
+
+<div style="display:flex; flex-direction:column; align-items:center; gap:14px; padding:20px; font-family:sans-serif; font-size:0.85em; border:1px solid #ddd; border-radius:10px; margin:16px 0;">
+  <div style="background:#1e3a5f; color:white; padding:10px 28px; border-radius:10px; font-weight:bold;">🇲🇽 Total Nacional</div>
+  <div style="display:flex; gap:32px;">
+    <div style="display:flex; flex-direction:column; align-items:center; gap:10px;">
+      <div style="background:#2e6da4; color:white; padding:8px 18px; border-radius:8px;">Oaxaca</div>
+      <div style="display:flex; gap:8px;">
+        <div style="background:#5b9bd5; color:white; padding:5px 10px; border-radius:6px;">Oax. de Juárez</div>
+        <div style="background:#5b9bd5; color:white; padding:5px 10px; border-radius:6px;">Miahuatlán</div>
+      </div>
+    </div>
+    <div style="display:flex; flex-direction:column; align-items:center; gap:10px;">
+      <div style="background:#2e6da4; color:white; padding:8px 18px; border-radius:8px;">Jalisco</div>
+      <div style="display:flex; gap:8px;">
+        <div style="background:#5b9bd5; color:white; padding:5px 10px; border-radius:6px;">Guadalajara</div>
+        <div style="background:#5b9bd5; color:white; padding:5px 10px; border-radius:6px;">Tequila</div>
+      </div>
+    </div>
+    <div style="opacity:0.5; display:flex; flex-direction:column; align-items:center; gap:10px; padding-top:4px;">
+      <div style="background:#4a7fb5; color:white; padding:8px 18px; border-radius:8px;">···</div>
+    </div>
+  </div>
+  <div style="border-top:2px dashed #aaa; padding-top:10px; width:100%; text-align:center; color:#555;">
+    <strong>✕ Grouped by Tipo:</strong> &nbsp;
+    <span style="background:#8b1a1a; color:white; padding:4px 10px; border-radius:5px;">Mezcal</span> &nbsp;
+    <span style="background:#8b1a1a; color:white; padding:4px 10px; border-radius:5px;">Tequila</span> &nbsp;
+    <span style="background:#8b1a1a; color:white; padding:4px 10px; border-radius:5px;">Brandy</span>
+  </div>
+</div>
+
+:::
+
+# Working with Hierarchical Data in R
+
+:::{.content-hidden unless-format="revealjs"}
+
+##
+
+:::
+
+The `fpp3` ecosystem (specifically `fabletools`) provides `aggregate_key()` to define hierarchical and grouped structures directly on a `tsibble`.
+
+:::{.fragment}
+
+The `tourism` dataset — quarterly domestic travel in Australia disaggregated by State, Region, and Purpose — is the canonical example in FPP3 Chapter 11.
+
+```{r}
+#| label: tourism-glimpse
+
+tourism
+```
+
+:::
+
+---
+
+:::{.content-hidden unless-format="revealjs"}
+
+## `aggregate_key()`: Defining the Structure
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+## `aggregate_key()`: Defining the Structure
+
+:::
+
+A pure hierarchy uses `/` to denote nesting. A grouped (or mixed) structure uses `*` to cross attributes.
+
+```{r}
+#| label: aggregate-key-hts
+#| message: false
+
+tourism_hts <- tourism |>
+  aggregate_key(State / Region, Trips = sum(Trips)) #<1>
+
+tourism_hts
+```
+
+1. `State / Region` means *Region is nested within State*. All aggregations — State totals and the national total — are computed and appended automatically.
+
+:::{.fragment}
+
+```{r}
+#| label: aggregate-key-full
+
+tourism_full <- tourism |>
+  aggregate_key(State / Region * Purpose, Trips = sum(Trips)) #<1>
+```
+
+1. Adding `* Purpose` crosses the hierarchy with the Purpose grouping. The result includes every combination of (State, Region, Purpose) plus all marginal and total aggregations.
+
+:::
+
+---
+
+:::{.content-hidden unless-format="revealjs"}
+
+## Visualizing Aggregated Series
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+## Visualizing Aggregated Series
+
+:::
+
+`autoplot()` on an aggregated `tsibble` works as usual. Use `filter()` with `is_aggregated()` to select a specific level.
+
+```{r}
+#| label: hts-state-plot
+#| message: false
+#| fig-cap: "Quarterly domestic trips by Australian state."
+
+p <- tourism_hts |>
+  filter(!is_aggregated(State), is_aggregated(Region)) |> #<1>
+  autoplot(Trips) +
+  facet_wrap(~ as.character(State), scales = "free_y", ncol = 4) +
+  labs(title = "Domestic tourism trips by state", y = "Trips ('000)", x = NULL) +
+  theme(legend.position = "none")
+
+p
+```
+
+1. `!is_aggregated(State)` keeps only rows with a specific state value. `is_aggregated(Region)` keeps only the state-level totals (dropping Region-level detail).
+
+---
+
+:::{.content-hidden unless-format="revealjs"}
+
+## Filtering with `is_aggregated()`
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+## Filtering with `is_aggregated()`
+
+:::
+
+`is_aggregated()` returns `TRUE` for the synthetic aggregation rows created by `aggregate_key()`. Use it inside `filter()` to navigate any level of the hierarchy.
+
+```{r}
+#| label: is-aggregated-examples
+
+# National total only
+tourism_hts |>
+  filter(is_aggregated(State), is_aggregated(Region)) #<1>
+
+# State-level aggregates (one row per State per Quarter)
+tourism_hts |>
+  filter(!is_aggregated(State), is_aggregated(Region)) #<2>
+
+# Most disaggregated: Region level
+tourism_hts |>
+  filter(!is_aggregated(State), !is_aggregated(Region)) #<3>
+```
+
+1. Both key columns are aggregated → national total.
+2. State is specific but Region is still aggregated → state-level totals.
+3. Neither column is aggregated → most granular available level.
+
+---
+
+:::{.content-hidden unless-format="revealjs"}
+
+## Mixed Structure: Hierarchy + Grouping
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+## Mixed Structure: Hierarchy + Grouping
+
+:::
+
+With `tourism_full`, the Purpose grouping is crossed with the State/Region hierarchy:
+
+```{r}
+#| label: full-hts-plot
+#| message: false
+#| fig-cap: "State-level trips split by purpose of travel."
+
+p <- tourism_full |>
+  filter(!is_aggregated(State), is_aggregated(Region), !is_aggregated(Purpose)) |>
+  autoplot(Trips) +
+  facet_wrap(~ as.character(Purpose), scales = "free_y") +
+  labs(title = "Domestic tourism by state and purpose",
+       y = "Trips ('000)", x = NULL) +
+  theme(legend.position = "none")
+
+p
+```
+
+# Coherent Forecasts
+
+:::{.content-hidden unless-format="revealjs"}
+
+##
+
+:::
+
+:::{.callout-important appearance="simple"}
+## Definition
+
+A set of forecasts is **coherent** if every aggregate-level forecast equals the sum of its component forecasts.
+
+If $\hat{y}_{NSW}$ and $\hat{y}_{VIC}$ are state-level forecasts, then the national forecast must satisfy $\hat{y}_{Total} = \hat{y}_{NSW} + \hat{y}_{VIC} + \cdots$
+
+:::
+
+:::{.fragment}
+
+**Why does this matter?** If you give a retailer a national forecast of 1,000 units and regional forecasts that sum to 850, you have an internal inconsistency. Purchasing, logistics, and budgeting decisions made at different levels of the organization will not align.
+
+:::
+
+---
+
+:::{.content-hidden unless-format="revealjs"}
+
+## Independent Forecasts Break Coherence
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+## Independent Forecasts Break Coherence
+
+:::
+
+Fitting a model independently to every series — including the aggregated ones — almost never produces coherent forecasts.
+
+:::{.fragment}
+
+```{r}
+#| label: incoherence-demo
+#| message: false
+
+# Fit ETS independently at all levels
+incoherent_fit <- tourism_hts |>
+  filter_index(. ~ "2015 Q4") |>
+  model(ets = ETS(Trips))
+
+incoherent_fit |>
+  forecast(h = 4) |>
+  filter(Quarter == yearquarter("2016 Q1")) |>
+  filter(
+    is_aggregated(State) |
+    (!is_aggregated(State) & is_aggregated(Region))
+  ) |>
+  as_tibble() |>
+  select(State, Region, .mean) |>
+  mutate(State = as.character(State), Region = as.character(Region))
+```
+
+:::
+
+:::{.fragment}
+
+The national ETS forecast will not equal the sum of the state ETS forecasts. This is the incoherence problem that reconciliation methods solve.
+
+:::
+
+# Single-Level Approaches
+
+:::{.content-hidden unless-format="revealjs"}
+
+##
+
+:::
+
+Single-level approaches fix the coherence problem by choosing **one level as the source of truth** and deriving all other levels from it.
+
+:::{.fragment}
+
+All three methods share the same interface: `reconcile()` takes the fitted mable and wraps the base model with a reconciliation strategy.
+
+:::
+
+---
+
+:::{.content-hidden unless-format="revealjs"}
+
+## Bottom-Up
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+## Bottom-Up
+
+:::
+
+Forecast the most disaggregated series, then aggregate up.
+
+:::{.fragment}
+
+```{r}
+#| label: fit-base
+#| message: false
+
+tourism_fit <- tourism_train |>
+  model(ets = ETS(Trips))
+
+tourism_fit
+```
+
+:::
+
+:::{.fragment}
+
+```{r}
+#| label: reconcile-bu
+#| message: false
+
+tourism_bu <- tourism_fit |>
+  reconcile(bu = bottom_up(ets)) #<1>
+
+tourism_bu |>
+  forecast(h = "2 years") |>
+  filter(is_aggregated(State)) |>    # national total only
+  autoplot(tourism_hts |> filter_index("2012 Q1" ~ .)) +
+  labs(title = "Bottom-up coherent forecast: national total",
+       y = "Trips ('000)", x = NULL)
+```
+
+1. `bottom_up(ets)` tells `reconcile()` to take the Region-level ETS forecasts as given and sum up. The national ETS forecast is replaced by the sum of all Region forecasts.
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+The national and state ETS forecasts are **discarded**. Only the Region-level forecasts feed through. At the Region level, the BU coherent forecasts are identical to the original ETS forecasts — nothing changes there.
+
+:::
+
+---
+
+:::{.content-hidden unless-format="revealjs"}
+
+## Bottom-Up: Pros and Cons
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+### Pros and Cons: Bottom-Up
+
+:::
+
+| | |
+|:--|:--|
+| ✅ | Captures disaggregate dynamics well. Best when bottom-level series have strong patterns. |
+| ✅ | No need to forecast aggregate totals. |
+| ❌ | Aggregate-level models are never used — wasteful if the total is well-behaved. |
+| ❌ | Bottom-level series can be noisy. Aggregating noisy forecasts can amplify errors. |
+
+---
+
+:::{.content-hidden unless-format="revealjs"}
+
+## Top-Down: Three Methods
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+## Top-Down: Three Methods
+
+:::
+
+Forecast the top level (total), then **disaggregate** using historical proportions.
+
+Three variants differ in how the proportions $p_j$ are estimated:
+
+:::{.incremental}
+
+1. **Average historical proportions**: $p_j = \frac{1}{T}\sum_{t=1}^{T} \frac{y_{j,t}}{y_{\text{Total},t}}$ — average of the per-period ratios.
+
+2. **Proportions of historical averages**: $p_j = \frac{\bar{y}_j}{\bar{y}_{\text{Total}}}$ — ratio of long-run averages.
+
+3. **Forecast proportions**: $p_j$ computed from the base forecasts at each level, not from history.
+
+:::
+
+---
+
+:::{.content-hidden unless-format="revealjs"}
+
+## Top-Down: Why Methods 1 and 2 Differ
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+### Why Methods 1 and 2 Differ
+
+:::
+
+The distinction is subtle but important when proportions are **not stable over time**.
+
+:::{.fragment}
+
+```{r}
+#| label: td-numerical-example
+
+# Simple illustrative data: 3 regions, 3 periods
+sales <- tibble(
+  t     = 1:3,
+  A     = c(100, 150, 200),
+  B     = c(200, 150, 100),
+  C     = c(300, 200, 100)
+) |> mutate(Total = A + B + C)
+
+sales
+
+# Method 1: average of proportions
+method1 <- sales |>
+  mutate(p_A = A / Total, p_B = B / Total, p_C = C / Total) |>
+  summarise(p_A = mean(p_A), p_B = mean(p_B), p_C = mean(p_C))
+
+# Method 2: proportion of averages
+avgs   <- sales |> summarise(across(c(A, B, C, Total), mean))
+method2 <- avgs |>
+  mutate(p_A = A / Total, p_B = B / Total, p_C = C / Total) |>
+  select(p_A, p_B, p_C)
+
+bind_rows(method1, method2) |> mutate(method = c("Avg proportions", "Prop of avgs")) |>
+  select(method, everything())
+```
+
+:::
+
+:::{.fragment}
+
+Region A's share is growing over time: Method 1 averages the proportions (giving equal weight to all periods), while Method 2 is dominated by the long-run average and up-weights periods with larger totals. Neither is uniformly better — Method 1 is sensitive to periods with small totals, Method 2 is insensitive to structural changes in shares.
+
+:::
+
+---
+
+:::{.content-hidden unless-format="revealjs"}
+
+## Top-Down in `reconcile()`
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+### Top-Down in `reconcile()`
+
+:::
+
+```{r}
+#| label: reconcile-td
+#| message: false
+
+tourism_td <- tourism_fit |>
+  reconcile(
+    td_ap = top_down(ets, method = "average_proportions"),    #<1>
+    td_pa = top_down(ets, method = "proportion_averages"),    #<2>
+    td_fp = top_down(ets, method = "forecast_proportions")    #<3>
+  )
+```
+
+1. Method 1: proportions estimated as time-average of $y_{j,t}/y_{Total,t}$.
+2. Method 2: proportions estimated as $\bar{y}_j / \bar{y}_{Total}$.
+3. Method 3: proportions estimated from base forecasts at each level — forward-looking, adapts to structural changes.
+
+---
+
+:::{.content-hidden unless-format="revealjs"}
+
+## Top-Down: Pros and Cons
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+### Pros and Cons: Top-Down
+
+:::
+
+| | |
+|:--|:--|
+| ✅ | Aggregate model benefits from richer data (sum of all series). |
+| ✅ | Simple to implement and explain to stakeholders. |
+| ❌ | Historical proportions may not reflect future changes in mix. |
+| ❌ | Bottom-level disaggregations lose any local dynamic not visible in the total. |
+| ❌ | Method 3 requires forecasting all levels — the stated efficiency gain disappears. |
+
+---
+
+:::{.content-hidden unless-format="revealjs"}
+
+## Middle-Out
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+## Middle-Out
+
+:::
+
+Choose a **middle level** as the anchor: forecast that level, aggregate upward (bottom-up logic), disaggregate downward (top-down logic with forecast proportions).
+
+:::{.fragment}
+
+```{r}
+#| label: reconcile-mo
+#| message: false
+
+tourism_mo <- tourism_fit |>
+  reconcile(
+    mo = middle_out(ets, split = 1) #<1>
+  )
+```
+1. `split = 1` uses the level immediately below the total (State) as the anchor. State forecasts are taken as given; the national total aggregates up from them, and Region forecasts disaggregate down proportionally.
+
+:::
+
+---
+
+:::{.content-hidden unless-format="revealjs"}
+
+## Middle-Out: Pros and Cons
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+### Pros and Cons: Middle-Out
+
+:::
+
+| | |
+|:--|:--|
+| ✅ | Middle level often has the richest signal: not as noisy as the bottom, not as aggregated as the top. |
+| ✅ | Good compromise when the top-level series is hard to forecast. |
+| ❌ | Choice of middle level is subjective and problem-dependent. |
+| ❌ | Disaggregation below the middle level inherits the limitations of top-down proportions. |
+
+---
+
+:::{.content-hidden unless-format="revealjs"}
+
+## Comparing Single-Level Approaches
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+### Comparing Single-Level Approaches
+
+:::
+
+| Method | Truth source | What changes? | Best when... |
+|:--|:--|:--|:--|
+| Bottom-Up | Bottom level | Top levels re-aggregated | Bottom series are informative and relatively clean |
+| Top-Down | Top level | Bottom levels re-proportioned | Top-level dynamics dominate, bottom is too noisy |
+| Middle-Out | Middle level | Top aggregated, bottom disaggregated | Middle level has the strongest signal |
+
+:::{.callout-important appearance="simple"}
+## The shared limitation
+
+All three methods treat one level as infallible and discard information from all others. No forecast level is truly noise-free — and that is exactly the gap that reconciliation methods fill.
+
+:::
+
+# The Forecasting Pipeline
+
+:::{.content-hidden unless-format="revealjs"}
+
+## The Full Pipeline {auto-animate="true"}
+
+```{r}
+#| eval: false
+
+tourism
+```
+
+## The Full Pipeline {auto-animate="true"}
+
+```{r}
+#| eval: false
+
+tourism |>
+  aggregate_key(State / Region, Trips = sum(Trips))
+```
+
+## The Full Pipeline {auto-animate="true"}
+
+```{r}
+#| eval: false
+
+tourism |>
+  aggregate_key(State / Region, Trips = sum(Trips)) |>
+  model(ets = ETS(Trips))
+```
+
+## The Full Pipeline {auto-animate="true"}
+
+```{r}
+#| eval: false
+
+tourism |>
+  aggregate_key(State / Region, Trips = sum(Trips)) |>
+  model(ets = ETS(Trips)) |>
+  reconcile(
+    bu   = bottom_up(ets),
+    mint = min_trace(ets, method = "mint_shrink")
+  )
+```
+
+## The Full Pipeline {auto-animate="true"}
+
+```{r}
+#| eval: false
+
+tourism |>                                                        #<1>
+  aggregate_key(State / Region, Trips = sum(Trips)) |>          #<2>
+  model(ets = ETS(Trips)) |>                                    #<3>
+  reconcile(                                                     #<4>
+    bu   = bottom_up(ets),
+    mint = min_trace(ets, method = "mint_shrink")
+  ) |>
+  forecast(h = "2 years")                                       #<5>
+```
+
+1. A standard `tsibble` — no special structure required as input.
+2. Define the hierarchy and compute all aggregate series automatically.
+3. Fit base forecast models at **every level** of the hierarchy.
+4. Wrap the base models with reconciliation strategies.
+5. Generate forecasts. The result is a `fable` with coherent forecasts for all levels and all methods.
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+### The Complete Workflow
+
+Every hierarchical/grouped forecast follows the same five-step pattern:
+
+```{r}
+#| eval: false
+#| label: pipeline-annotated
+
+tourism |>                                                        #<1>
+  aggregate_key(State / Region, Trips = sum(Trips)) |>          #<2>
+  model(ets = ETS(Trips)) |>                                    #<3>
+  reconcile(                                                     #<4>
+    bu   = bottom_up(ets),
+    mint = min_trace(ets, method = "mint_shrink")
+  ) |>
+  forecast(h = "2 years")                                       #<5>
+```
+
+1. A standard `tsibble` — no special structure required as input.
+2. Define the hierarchy and compute all aggregate series automatically.
+3. Fit base forecast models at **every level** of the hierarchy.
+4. Wrap the base models with reconciliation strategies.
+5. Generate forecasts. The result is a `fable` with coherent forecasts for all levels and all methods.
+
+:::
+
+# Forecast Reconciliation
+
+:::{.content-hidden unless-format="revealjs"}
+
+##
+
+:::
+
+Single-level approaches all share the same philosophical flaw: they assume one level's forecasts are perfect and correct all others accordingly. In practice, every level has forecast errors.
+
+:::{.fragment}
+
+**MinT** (Minimum Trace reconciliation) takes a different approach: it adjusts **all levels simultaneously**, using the statistical structure of forecast errors to find the best coherent set.
+
+:::
+
+:::{.fragment}
+
+:::{.callout-important appearance="simple"}
+## The key difference
+
+| Method | Who changes? |
+|:--|:--|
+| Bottom-Up | Top levels only |
+| Top-Down / Middle-Out | Bottom levels only |
+| **MinT** | **Every level — including the bottom** |
+
+MinT borrows information across levels: a reliable national forecast "pulls" state forecasts toward proportional shares of the total. A well-forecasted state "informs" both the national aggregate and its sub-regions.
+
+:::
+
+:::
+
+---
+
+:::{.content-hidden unless-format="revealjs"}
+
+## The MinT Estimator
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+## The MinT Estimator
+
+:::
+
+All reconciliation methods can be written as a linear transformation of the base forecasts:
+
+$$\tilde{\mathbf{y}}_h = \mathbf{S}(\mathbf{S}'\mathbf{W}_h^{-1}\mathbf{S})^{-1}\mathbf{S}'\mathbf{W}_h^{-1}\hat{\mathbf{y}}_h$$
+
+:::{.fragment}
+
+where:
+
+- $\hat{\mathbf{y}}_h$ — vector of base forecasts at horizon $h$, stacked for all levels
+- $\mathbf{S}$ — **summing matrix**: encodes the entire hierarchy structure. Each row is a series (all levels); each column is a bottom-level series. Entry $(i,j) = 1$ if bottom series $j$ is part of aggregate series $i$.
+- $\mathbf{W}_h$ — **covariance matrix** of $h$-step-ahead forecast errors across all levels
+- $\tilde{\mathbf{y}}_h$ — the reconciled, coherent forecasts
+
+:::
+
+:::{.fragment}
+
+The different `min_trace()` methods correspond to different estimators of $\mathbf{W}_h$.
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+:::{.callout-note collapse="true"}
+## The $\mathbf{S}$ matrix in detail
+
+For a simple three-series hierarchy (Total → A, B), $\mathbf{S}$ is:
+
+$$\mathbf{S} = \begin{pmatrix} 1 & 1 \\ 1 & 0 \\ 0 & 1 \end{pmatrix}$$
+
+Row 1 (Total) = sum of both bottom series. Row 2 (A) = only series A. Row 3 (B) = only series B.
+
+The solution $\mathbf{P} = (\mathbf{S}'\mathbf{W}_h^{-1}\mathbf{S})^{-1}\mathbf{S}'\mathbf{W}_h^{-1}$ is the generalized least squares estimator of the bottom-level series, projected back up through $\mathbf{S}$ to produce coherent forecasts at all levels. Single-level approaches (BU, TD) are special cases where $\mathbf{W}_h$ is constructed to give infinite weight to one level and zero to others.
+
+:::
+
+:::
+
+---
+
+:::{.content-hidden unless-format="revealjs"}
+
+## OLS and WLS: A Note
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+### A Note on OLS vs WLS
+
+:::
+
+:::{.callout-note collapse="true"}
+## What is WLS and how does it differ from OLS?
+
+**OLS** (Ordinary Least Squares) minimizes squared errors treating all series equally — every level gets the same weight in the reconciliation. It ignores the fact that some series are more reliably forecast than others.
+
+**WLS** (Weighted Least Squares) assigns each series a weight inversely proportional to its forecast uncertainty. Series with smaller forecast errors contribute more to the final reconciled estimate. In the MinT framework, the weights come from the diagonal of $\mathbf{W}_h$: higher variance → lower weight.
+
+Intuitively: if the national total is much easier to forecast than any individual region, WLS will pull the regional forecasts toward proportions of the reliable national forecast. OLS would ignore this.
+
+:::
+
+---
+
+:::{.content-hidden unless-format="revealjs"}
+
+## Methods in `min_trace()`
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+## Methods in `min_trace()`
+
+:::
+
+| Method | `method = ` | $\mathbf{W}_h$ estimator | Notes |
+|:--|:--|:--|:--|
+| OLS | `"ols"` | $\mathbf{I}$ (identity) | Ignores variance structure. Baseline. |
+| WLS structural | `"wls_struct"` | $\text{diag}($ series count $)$ | Weights from tree structure only — no data needed. |
+| WLS variance | `"wls_var"` | $\text{diag}(\hat{\sigma}^2_j)$ | Weights from in-sample residual variances. |
+| MinT sample | `"mint_sample"` | Full sample covariance | Captures correlations. Unstable with many series. |
+| **MinT shrink** | **`"mint_shrink"`** | **Regularized covariance** | **Recommended. Robust to limited data.** |
+
+:::{.fragment}
+
+`"mint_shrink"` applies a Ledoit-Wolf shrinkage estimator to the sample covariance matrix — regularizing toward a diagonal to avoid overfitting when the number of series is large relative to the number of observations.
+
+:::
+
+---
+
+:::{.content-hidden unless-format="revealjs"}
+
+## Full Example: All Methods
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+## Full Example: All Methods
+
+:::
+
+```{r}
+#| label: reconcile-all
+#| message: false
+#| cache: true
+
+tourism_rec <- tourism_fit |>
+  reconcile(
+    bu = bottom_up(ets),
+    td_ap = top_down(ets, method = "average_proportions"),
+    td_pa = top_down(ets, method = "proportion_averages"),
+    td_fp = top_down(ets, method = "forecast_proportions"),
+    mo = middle_out(ets, split = 1),
+    wls = min_trace(ets, method = "wls_struct"),
+    mint = min_trace(ets, method = "mint_shrink")
+  )
+
+tourism_fc <- tourism_rec |>
+  forecast(h = "2 years")
+```
+
+---
+
+:::{.content-hidden unless-format="revealjs"}
+
+## Accuracy Comparison
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+### Accuracy Comparison
+
+:::
+
+```{r}
+#| label: accuracy-all
+#| message: false
+#| fig-cap: "Mean RMSSE by reconciliation method and aggregation level."
+
+tourism_fc |>
+  accuracy(
+    data     = tourism_hts,
+    measures = list(RMSSE = RMSSE)
+  ) |>
+  mutate(
+    Level = case_when(
+      is_aggregated(State)                        ~ "Total",
+      !is_aggregated(State) & is_aggregated(Region) ~ "State",
+      TRUE                                        ~ "Region"
+    )
+  ) |>
+  group_by(.model, Level) |>
+  summarise(RMSSE = mean(RMSSE, na.rm = TRUE), .groups = "drop") |>
+  mutate(
+    Level  = factor(Level, levels = c("Total", "State", "Region")),
+    .model = fct_reorder(.model, RMSSE)
+  ) |>
+  ggplot(aes(x = .model, y = RMSSE, fill = .model)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~ Level, scales = "free_y") +
+  coord_flip() +
+  labs(title = "Reconciliation method accuracy by aggregation level",
+       x = NULL, y = "Mean RMSSE") +
+  theme_minimal()
+```
+
+:::{.fragment}
+
+:::{.callout-tip appearance="simple"}
+## What to look for
+
+No single method dominates at every level. MinT shrink typically performs well across all levels because it does not privilege any single level. Single-level methods tend to perform best at their "home" level and worse elsewhere.
+
+:::
+
+:::
+
+# Distributional Reconciliation
+
+:::{.content-hidden unless-format="revealjs"}
+
+##
+
+:::
+
+:::{.callout-note appearance="simple"}
+## Coherent distributional forecasts
+
+Everything covered so far reconciles **point forecasts**. Reconciling full predictive distributions — so that joint probability intervals are also coherent — requires additional care. `fable` supports this via `reconcile()` on distributional forecasts: the same reconciliation matrices are applied to the forecast distributions, and the result is a set of coherent distributional forecasts that can be summarised with `hilo()` or `autoplot()` in the usual way. Details in [FPP3 §11.5](https://otexts.com/fpp3/reconciliation.html#sec-reconciliation-distributional).
+
+:::
+
+# Summary
+
+:::{.content-hidden unless-format="revealjs"}
+
+##
+
+:::
+
+| Topic | Key takeaway |
+|:--|:--|
+| **Structures** | Hierarchical nests; grouped crosses; mixed combines both. |
+| **`aggregate_key()`** | Defines the structure and computes all aggregations automatically. |
+| **Coherence** | Forecasts that don't add up create operational inconsistencies. |
+| **Bottom-Up** | Safe default when bottom-level series are informative. |
+| **Top-Down** | Three variants; Method 3 (forecast proportions) usually preferable. |
+| **Middle-Out** | Useful when the middle level has the strongest signal. |
+| **MinT** | Adjusts all levels jointly. `mint_shrink` is the recommended default. |
+
+:::{.fragment}
+
+:::{.callout-tip appearance="simple"}
+## Where to start in practice
+
+1. Use `bottom_up()` as your baseline — it's simple and hard to get wrong.
+2. Fit `min_trace(method = "mint_shrink")` alongside it.
+3. Compare with `accuracy()` faceted by aggregation level.
+4. MinT shrink almost always wins or ties at every level.
+
+:::
+
+:::
