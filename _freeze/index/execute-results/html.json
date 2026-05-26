@@ -1,0 +1,19 @@
+{
+  "hash": "4f3710dd8e112506ba488151149a9efb",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\nformat: \n  html:\n    page-layout: full\n    css: index_styles.css\n    toc: false\nauthor: \"\"\ndate-modified: \"\"\n---\n\n![](images/narsil_cover.webp){width=100%}\n\nWelcome to the Time Series Forecasting course at ITESO. Here you will find all the materials and resources needed for the course.\n\n\n# Time Series Forecasting with R\n\nModern forecasting workflows using [**tidy data principles**](https://r4ds.hadley.nz/data-tidy.html#sec-tidy-data) with the **tidyverts** ecosystem.\n\n::: {.columns}\n::: {.column width=\"60%\"}\n\n## What you’ll learn\n\n- Build tidy time series with [**tsibble**](https://tsibble.tidyverts.org) and modern data pipelines\n- Create forecasts with **ETS**, **ARIMA**, and regression-based models via [**fable**](https://fable.tidyverts.org/)\n- Engineer time features and diagnose models with [**feasts**](https://feasts.tidyverts.org/))\n- Evaluate with time-aware resampling and communicate uncertainty\n- Scale to multiple series and hierarchies when needed\n\n::: {.callout-tip}\n## How to succeed here\nForecasting improves with *iteration*: start simple, validate honestly, and refine. Keep a tight loop of **fit → diagnose → evaluate → communicate**.\n:::\n\n:::\n::: {.column width=\"40%\"}\n\n## Start here\n\n::: {.callout-note}\n**New to the site?** Use the links below to jump in.\n:::\n\n- [Modules](docs/modules/index.qmd)\n- [In-class exercises](docs/exercises/index.qmd)\n\n:::\n:::\n\n---\n\n## Course map\n\n::: {.columns}\n::: {.column}\n\n### 1. Foundations\n- tidy data + time indexes\n- `tsibble` keys, gaps, and intervals\n\n### 2. Patterns & features\n- seasonality, trend, decomposition\n- diagnostics and features (`feasts`)\n\n:::\n::: {.column}\n\n### 3. Core forecasting models\n- ETS + ARIMA\n- model comparison and selection\n\n### 4. Regression workflows\n- time features, events, and covariates\n- forecast reconciliation ideas\n\n:::\n::: {.column}\n\n### 5. Evaluation & communication\n- time series CV and backtesting\n- uncertainty, intervals, and narratives\n\n### 6. Multiple series\n- grouped models\n- hierarchies and reconciliation\n\n:::\n:::\n\n---\n\n## Quick setup check\n\nRun this once after installing packages to confirm your environment.\n\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(tidyverse)\nlibrary(tsibble)\nlibrary(fable)\nlibrary(feasts)\n\nsessionInfo()\n```\n:::\n\n\n::: {.callout-warning}\n## Common pitfalls\n- **Data leakage**: don’t let future information sneak into features.\n- **Random CV**: use **time-aware** resampling/backtesting.\n- **Overfitting**: a more complex model isn’t automatically better.\n:::\n\n---\n\n## Primary toolchain\n\nWe’ll use a tidy workflow centered on:\n\n- **tidyverse** for data wrangling\n- **tsibble** for time-aware tibbles\n- **fable** for modeling and forecasting\n- **feasts** for decomposition, features, and diagnostics\n\nRecommended reading: [*Forecasting: Principles and Practice*](https://otexts.com/fpp3/) (free online).\n\n---\n\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {
+      "include-in-header": [
+        "<link href=\"site_libs/pagedtable-1.1/css/pagedtable.css\" rel=\"stylesheet\" />\n<script src=\"site_libs/pagedtable-1.1/js/pagedtable.js\"></script>\n"
+      ]
+    },
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

@@ -511,6 +511,7 @@ cement_bag_mean <- cement_bag_fit |>
 ```{r}
 #| label: cement-bagging-accuracy
 #| message: false
+#| eval: false
 
 cement_bag_accu <- cement_test |>
   left_join(cement_bag_mean, by = "Quarter") |>
@@ -576,6 +577,7 @@ The bagging pipeline works with any model that `fable` can fit — ARIMA, Prophe
 ```{r}
 #| label: full-data-setup
 #| message: false
+#| eval: false
 
 # --- Beer ---
 beer <- aus_production |>
@@ -617,6 +619,7 @@ nsw_test  <- nsw |> filter(year(Quarter) >  2012)
 #| label: beer-fit
 #| message: false
 #| cache: true
+#| eval: false
 
 beer_fit <- beer_train |>
   model(
@@ -668,6 +671,7 @@ beer_fit <- beer_train |>
 #| label: beer-bagging
 #| message: false
 #| cache: true
+#| eval: false
 
 set.seed(2025)
 
@@ -691,6 +695,7 @@ beer_bag_mean <- beer_train |>
 ```{r}
 #| label: beer-accuracy
 #| message: false
+#| eval: false
 
 beer_accu_std <- beer_fit |>
   forecast(h = nrow(beer_test)) |>
@@ -721,6 +726,7 @@ bind_rows(beer_accu_std, beer_accu_bag) |> arrange(RMSE)
 #| label: mexretail-fit
 #| message: false
 #| cache: true
+#| eval: false
 
 mexretail_fit <- mexretail_train |>
   model(
@@ -769,6 +775,7 @@ mexretail_fit <- mexretail_train |>
 #| label: mexretail-bagging
 #| message: false
 #| cache: true
+#| eval: false
 
 set.seed(2025)
 
@@ -792,6 +799,7 @@ mexretail_bag_mean <- mexretail_train |>
 ```{r}
 #| label: mexretail-accuracy
 #| message: false
+#| eval: false
 
 mexretail_accu_std <- mexretail_fit |>
   forecast(h = nrow(mexretail_test)) |>
@@ -828,6 +836,7 @@ NSW is the richest comparison: it includes CPI as a covariate, so dynamic regres
 #| label: nsw-fit
 #| message: false
 #| cache: true
+#| eval: false
 
 nsw_fit <- nsw_train |>
   model(
@@ -881,6 +890,7 @@ nsw_fit <- nsw_train |>
 #| label: nsw-bagging
 #| message: false
 #| cache: true
+#| eval: false
 
 set.seed(2025)
 
@@ -904,6 +914,7 @@ nsw_bag_mean <- nsw_train |>
 ```{r}
 #| label: nsw-accuracy
 #| message: false
+#| eval: false
 
 nsw_accu_std <- nsw_fit |>
   forecast(h = nrow(nsw_test), new_data = nsw_test) |>
