@@ -9,11 +9,11 @@
 <script src="../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../../../../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-4e5466e430b1db38349d513585fd1d59.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-6d40f8af7092f34acea1908532066003.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.9.37">
+  <meta name="generator" content="quarto-1.9.38">
 
   <meta name="author" content="">
   <title>Time Series Forecasting – Dynamic &amp; Harmonic Regression</title>
@@ -467,7 +467,17 @@
 <section id="fitting-the-dynamic-regression" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Fitting the Dynamic Regression</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="annotated-cell-2-1" class="hljs-ln-code"><a href="#annotated-cell-2-1"></a>us_change_fit_dyn <span class="ot">&lt;-</span> us_change <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2" data-llms-code-original="us_change_fit_dyn <- us_change |>
+  model(
+    tslm    = TSLM(Consumption ~ Income + Production +      #<1>
+                     Savings + Unemployment),
+    dynamic = ARIMA(Consumption ~ Income + Production +     #<2>
+                      Savings + Unemployment)
+  )
+
+us_change_fit_dyn |>
+  select(dynamic) |>
+  report()"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="annotated-cell-2-1" class="hljs-ln-code"><a href="#annotated-cell-2-1"></a>us_change_fit_dyn <span class="ot">&lt;-</span> us_change <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-2-2" class="hljs-ln-code"><a href="#annotated-cell-2-2"></a>  <span class="fu">model</span>(</span>
 <button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-2" data-target-annotation="1">1</button><span id="annotated-cell-2-3" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-2-3"></a>    <span class="at">tslm    =</span> <span class="fu">TSLM</span>(Consumption <span class="sc">~</span> Income <span class="sc">+</span> Production <span class="sc">+</span></span>
 <span id="annotated-cell-2-4" class="hljs-ln-code"><a href="#annotated-cell-2-4"></a>                     Savings <span class="sc">+</span> Unemployment),</span>
@@ -508,7 +518,19 @@ AIC=108.27   AICc=108.86   BIC=131.25</code></pre>
 <h2>Two Types of Residuals</h2>
 <p>We can extract both error types from the fitted model:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1"></a><span class="fu">bind_rows</span>(</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3" data-llms-code-original="bind_rows(
+  `Regression errors` = as_tibble(                               #<1>
+    residuals(us_change_fit_dyn |> select(dynamic),              #<1>
+              type = &quot;regression&quot;)),                             #<1>
+  `ARIMA innovations` = as_tibble(                               #<2>
+    residuals(us_change_fit_dyn |> select(dynamic),              #<2>
+              type = &quot;innovation&quot;)),                             #<2>
+  .id = &quot;type&quot;
+) |>
+  ggplot(aes(x = Quarter, y = .resid)) +
+  geom_line() +
+  facet_wrap(~ type, nrow = 2, scales = &quot;free_y&quot;) +
+  labs(y = NULL, x = NULL)"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1"></a><span class="fu">bind_rows</span>(</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1">1</button><span id="annotated-cell-3-2" class="code-annotation-target"><a href="#annotated-cell-3-2"></a>  <span class="st">`</span><span class="at">Regression errors</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">as_tibble</span>(</span>
 <span id="annotated-cell-3-3"><a href="#annotated-cell-3-3"></a>    <span class="fu">residuals</span>(us_change_fit_dyn <span class="sc">|&gt;</span> <span class="fu">select</span>(dynamic),</span>
 <span id="annotated-cell-3-4"><a href="#annotated-cell-3-4"></a>              <span class="at">type =</span> <span class="st">"regression"</span>)),</span>
@@ -557,7 +579,16 @@ AIC=108.27   AICc=108.86   BIC=131.25</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-5"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-5-1"><a href="#annotated-cell-5-1"></a>us_change_fit_dyn <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-5" data-llms-code-original="us_change_fit_dyn |>
+  select(dynamic) |>
+  augment() |>
+  features(.innov, ljung_box,
+           lag = 10,
+           dof = us_change_fit_dyn |>                   #<1>
+                   select(dynamic) |>
+                   coefficients() |>
+                   filter(str_detect(term, &quot;^ar|^ma&quot;)) |>
+                   nrow())"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-5-1"><a href="#annotated-cell-5-1"></a>us_change_fit_dyn <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-5-2"><a href="#annotated-cell-5-2"></a>  <span class="fu">select</span>(dynamic) <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-5-3"><a href="#annotated-cell-5-3"></a>  <span class="fu">augment</span>() <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-5-4"><a href="#annotated-cell-5-4"></a>  <span class="fu">features</span>(.innov, ljung_box,</span>
@@ -668,7 +699,25 @@ AIC=108.27   AICc=108.86   BIC=131.25</code></pre>
 <section id="scenario-forecast-2" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Scenario Forecast</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-7"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-7-1"><a href="#annotated-cell-7-1"></a>us_change_future <span class="ot">&lt;-</span> us_change <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-7" data-llms-code-original="us_change_future <- us_change |>
+  pivot_longer(-c(Quarter, Consumption),      #<1>
+               names_to = &quot;variable&quot;) |>
+  model(MEAN(value)) |>                       #<2>
+  forecast(h = 8) |>                          #<3>
+  as_tsibble() |>
+  select(-c(.model, value)) |>
+  pivot_wider(names_from  = variable,         #<4>
+              values_from = .mean)
+
+us_change_fit_dyn |>
+  select(dynamic) |>
+  forecast(new_data = us_change_future) |>
+  autoplot(tail(us_change, 60)) +
+  labs(
+    title    = &quot;US Consumption: dynamic regression forecast&quot;,
+    subtitle = &quot;Baseline scenario: predictors forecast with MEAN&quot;,
+    y = &quot;% change&quot;, x = NULL
+  )"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-7-1"><a href="#annotated-cell-7-1"></a>us_change_future <span class="ot">&lt;-</span> us_change <span class="sc">|&gt;</span></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="1">1</button><span id="annotated-cell-7-2" class="code-annotation-target"><a href="#annotated-cell-7-2"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span><span class="fu">c</span>(Quarter, Consumption),</span>
 <span id="annotated-cell-7-3"><a href="#annotated-cell-7-3"></a>               <span class="at">names_to =</span> <span class="st">"variable"</span>) <span class="sc">|&gt;</span></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="2">2</button><span id="annotated-cell-7-4" class="code-annotation-target"><a href="#annotated-cell-7-4"></a>  <span class="fu">model</span>(<span class="fu">MEAN</span>(value)) <span class="sc">|&gt;</span></span>
@@ -739,7 +788,14 @@ AIC=108.27   AICc=108.86   BIC=131.25</code></pre>
 <section id="tslm-vs.-dynamic-prediction-intervals" class="slide level2">
 <h2>TSLM vs.&nbsp;Dynamic: Prediction Intervals</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-8"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-8-1"><a href="#annotated-cell-8-1"></a>us_change_fit_dyn <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-8" data-llms-code-original="us_change_fit_dyn |>
+  forecast(new_data = us_change_future) |>
+  autoplot(tail(us_change, 60), level = 80, alpha = 0.6) +   #<1>
+  labs(
+    title = &quot;Modeling ARIMA errors narrows prediction intervals&quot;,
+    subtitle = &quot;80% prediction intervals shown&quot;,
+    y = &quot;% change&quot;, x = NULL
+  )"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-8-1"><a href="#annotated-cell-8-1"></a>us_change_fit_dyn <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-8-2"><a href="#annotated-cell-8-2"></a>  <span class="fu">forecast</span>(<span class="at">new_data =</span> us_change_future) <span class="sc">|&gt;</span></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-8" data-target-annotation="1">1</button><span id="annotated-cell-8-3" class="code-annotation-target"><a href="#annotated-cell-8-3"></a>  <span class="fu">autoplot</span>(<span class="fu">tail</span>(us_change, <span class="dv">60</span>), <span class="at">level =</span> <span class="dv">80</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
 <span id="annotated-cell-8-4"><a href="#annotated-cell-8-4"></a>  <span class="fu">labs</span>(</span>
@@ -838,7 +894,13 @@ AIC=108.27   AICc=108.86   BIC=131.25</code></pre>
 <section id="fitting-the-model-3" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Fitting the Model</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-9"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="annotated-cell-9-1" class="hljs-ln-code"><a href="#annotated-cell-9-1"></a>vic_elec_fit <span class="ot">&lt;-</span> vic_elec_daily <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-9" data-llms-code-original="vic_elec_fit <- vic_elec_daily |>
+  model(
+    dynamic = ARIMA(Demand ~ Temperature + I(Temperature^2) +  #<1>
+            (Day_Type == &quot;Weekday&quot;))                            #<2>
+  )
+
+report(vic_elec_fit)"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="annotated-cell-9-1" class="hljs-ln-code"><a href="#annotated-cell-9-1"></a>vic_elec_fit <span class="ot">&lt;-</span> vic_elec_daily <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-9-2" class="hljs-ln-code"><a href="#annotated-cell-9-2"></a>  <span class="fu">model</span>(</span>
 <button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-9" data-target-annotation="1">1</button><span id="annotated-cell-9-3" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-9-3"></a>    <span class="at">dynamic =</span> <span class="fu">ARIMA</span>(Demand <span class="sc">~</span> Temperature <span class="sc">+</span> <span class="fu">I</span>(Temperature<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span></span>
 <button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-9" data-target-annotation="2">2</button><span id="annotated-cell-9-4" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-9-4"></a>            (Day_Type <span class="sc">==</span> <span class="st">"Weekday"</span>))</span>
@@ -959,7 +1021,16 @@ AIC=2432.21   AICc=2432.84   BIC=2471.18</code></pre>
 </div>
 <div id="tabset-1-2">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-29"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-29-1"><a href="#annotated-cell-29-1"></a>vic_elec_future_hw <span class="ot">&lt;-</span> <span class="fu">new_data</span>(vic_elec_daily, <span class="dv">14</span>) <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-29" data-llms-code-original="vic_elec_future_hw <- new_data(vic_elec_daily, 14) |>
+  mutate(
+    Temperature = c(seq(31, 34), 33, rep(34, 3), rep(33, 6)), #<1>
+    Holiday     = c(TRUE, rep(FALSE, 13)),
+    Day_Type    = case_when(
+      Holiday              ~ &quot;Holiday&quot;,
+      wday(Date) %in% 2:6  ~ &quot;Weekday&quot;,
+      TRUE                 ~ &quot;Weekend&quot;
+    )
+  )"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-29-1"><a href="#annotated-cell-29-1"></a>vic_elec_future_hw <span class="ot">&lt;-</span> <span class="fu">new_data</span>(vic_elec_daily, <span class="dv">14</span>) <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-29-2"><a href="#annotated-cell-29-2"></a>  <span class="fu">mutate</span>(</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-29" data-target-annotation="1">1</button><span id="annotated-cell-29-3" class="code-annotation-target"><a href="#annotated-cell-29-3"></a>    <span class="at">Temperature =</span> <span class="fu">c</span>(<span class="fu">seq</span>(<span class="dv">31</span>, <span class="dv">34</span>), <span class="dv">33</span>, <span class="fu">rep</span>(<span class="dv">34</span>, <span class="dv">3</span>), <span class="fu">rep</span>(<span class="dv">33</span>, <span class="dv">6</span>)),</span>
 <span id="annotated-cell-29-4"><a href="#annotated-cell-29-4"></a>    <span class="at">Holiday     =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="fu">rep</span>(<span class="cn">FALSE</span>, <span class="dv">13</span>)),</span>
@@ -1020,7 +1091,23 @@ AIC=2432.21   AICc=2432.84   BIC=2471.18</code></pre>
 <h2 data-id="quarto-animate-title">Fitting Distributed Lag Models</h2>
 <p>We fit four models with increasing lag depth to find how long the advertising effect persists:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-12"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="annotated-cell-12-1" class="hljs-ln-code"><a href="#annotated-cell-12-1"></a>insurance_fit <span class="ot">&lt;-</span> insurance <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-12" data-llms-code-original="insurance_fit <- insurance |>
+  model(
+    lag0 = ARIMA(Quotes ~ pdq(d = 0) +                        #<1>
+                   TVadverts),
+    lag1 = ARIMA(Quotes ~ pdq(d = 0) +
+                   TVadverts + lag(TVadverts)),                 #<2>
+    lag2 = ARIMA(Quotes ~ pdq(d = 0) +
+                   TVadverts + lag(TVadverts) +
+                   lag(TVadverts, 2)),                         #<3>
+    lag3 = ARIMA(Quotes ~ pdq(d = 0) +
+                   TVadverts + lag(TVadverts) +
+                   lag(TVadverts, 2) + lag(TVadverts, 3))
+  )
+
+glance(insurance_fit) |>
+  select(.model, AICc) |>
+  arrange(AICc)"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="annotated-cell-12-1" class="hljs-ln-code"><a href="#annotated-cell-12-1"></a>insurance_fit <span class="ot">&lt;-</span> insurance <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-12-2" class="hljs-ln-code"><a href="#annotated-cell-12-2"></a>  <span class="fu">model</span>(</span>
 <button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-12" data-target-annotation="1">1</button><span id="annotated-cell-12-3" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-12-3"></a>    <span class="at">lag0 =</span> <span class="fu">ARIMA</span>(Quotes <span class="sc">~</span> <span class="fu">pdq</span>(<span class="at">d =</span> <span class="dv">0</span>) <span class="sc">+</span></span>
 <span id="annotated-cell-12-4" class="hljs-ln-code"><a href="#annotated-cell-12-4"></a>                   TVadverts),</span>
@@ -1101,7 +1188,16 @@ AIC=61.88   AICc=65.38   BIC=73.7</code></pre>
 <h2>Forecasting with Lagged Predictors</h2>
 <p>When forecasting, you need future values of <span class="math inline">x_t</span> <em>and</em> the most recent observed values of <span class="math inline">x</span> to fill in the lags:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-14"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-14-1"><a href="#annotated-cell-14-1"></a>insurance_future <span class="ot">&lt;-</span> <span class="fu">new_data</span>(insurance, <span class="dv">20</span>) <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-14" data-llms-code-original="insurance_future <- new_data(insurance, 20) |>
+  mutate(TVadverts = 8)                                        #<1>
+
+insurance_fit |>
+  select(lag1) |>
+  forecast(new_data = insurance_future) |>
+  autoplot(insurance) +
+  labs(title = &quot;Insurance quotes forecast: lag-1 distributed lag model&quot;,
+       subtitle = &quot;Scenario: advertising held constant at 8&quot;,
+       y = &quot;Quotes (thousands)&quot;, x = NULL)"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-14-1"><a href="#annotated-cell-14-1"></a>insurance_future <span class="ot">&lt;-</span> <span class="fu">new_data</span>(insurance, <span class="dv">20</span>) <span class="sc">|&gt;</span></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-14" data-target-annotation="1">1</button><span id="annotated-cell-14-2" class="code-annotation-target"><a href="#annotated-cell-14-2"></a>  <span class="fu">mutate</span>(<span class="at">TVadverts =</span> <span class="dv">8</span>)</span>
 <span id="annotated-cell-14-3"><a href="#annotated-cell-14-3"></a></span>
 <span id="annotated-cell-14-4"><a href="#annotated-cell-14-4"></a>insurance_fit <span class="sc">|&gt;</span></span>
@@ -1313,7 +1409,19 @@ AIC=61.88   AICc=65.38   BIC=73.7</code></pre>
 <section id="fitting-multiple-values-of-k-2" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Fitting Multiple Values of K</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-16"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="annotated-cell-16-1" class="hljs-ln-code"><a href="#annotated-cell-16-1"></a>cafe_fit <span class="ot">&lt;-</span> aus_cafe <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-16" data-llms-code-original="cafe_fit <- aus_cafe |>
+  model(
+    `K = 1` = ARIMA(log(Turnover) ~ fourier(K = 1) + PDQ(0, 0, 0)), #<1>
+    `K = 2` = ARIMA(log(Turnover) ~ fourier(K = 2) + PDQ(0, 0, 0)),
+    `K = 3` = ARIMA(log(Turnover) ~ fourier(K = 3) + PDQ(0, 0, 0)),
+    `K = 4` = ARIMA(log(Turnover) ~ fourier(K = 4) + PDQ(0, 0, 0)),
+    `K = 5` = ARIMA(log(Turnover) ~ fourier(K = 5) + PDQ(0, 0, 0)),
+    `K = 6` = ARIMA(log(Turnover) ~ fourier(K = 6) + PDQ(0, 0, 0))  #<2>
+  )
+
+glance(cafe_fit) |>
+  select(.model, AICc, BIC) |>
+  arrange(AICc)"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="annotated-cell-16-1" class="hljs-ln-code"><a href="#annotated-cell-16-1"></a>cafe_fit <span class="ot">&lt;-</span> aus_cafe <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-16-2" class="hljs-ln-code"><a href="#annotated-cell-16-2"></a>  <span class="fu">model</span>(</span>
 <button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-16" data-target-annotation="1">1</button><span id="annotated-cell-16-3" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-16-3"></a>    <span class="st">`</span><span class="at">K = 1</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">ARIMA</span>(<span class="fu">log</span>(Turnover) <span class="sc">~</span> <span class="fu">fourier</span>(<span class="at">K =</span> <span class="dv">1</span>) <span class="sc">+</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)),</span>
 <span id="annotated-cell-16-4" class="hljs-ln-code"><a href="#annotated-cell-16-4"></a>    <span class="st">`</span><span class="at">K = 2</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">ARIMA</span>(<span class="fu">log</span>(Turnover) <span class="sc">~</span> <span class="fu">fourier</span>(<span class="at">K =</span> <span class="dv">2</span>) <span class="sc">+</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)),</span>

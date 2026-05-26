@@ -9,11 +9,11 @@
 <script src="../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../../../../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-4e5466e430b1db38349d513585fd1d59.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-6d40f8af7092f34acea1908532066003.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.9.37">
+  <meta name="generator" content="quarto-1.9.38">
 
   <meta name="author" content="">
   <title>Time Series Forecasting – Linear Regression Models for Time Series</title>
@@ -552,7 +552,12 @@ y_{t, \text{Consumption}} = \beta_0 + \beta_1 x_{t, \text{Income}} + \varepsilon
 </span></p>
 <p>In <code>fable</code>, time series linear models use <code>TSLM()</code>:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1">1</button><span id="annotated-cell-2-1" class="code-annotation-target"><a href="#annotated-cell-2-1"></a>us_change_fit_simple <span class="ot">&lt;-</span> us_change <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2" data-llms-code-original="us_change_fit_simple <- us_change |>                   #<1>
+  model(
+    simple = TSLM(Consumption ~ Income)                #<2>
+  )
+
+report(us_change_fit_simple)                           #<3>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1">1</button><span id="annotated-cell-2-1" class="code-annotation-target"><a href="#annotated-cell-2-1"></a>us_change_fit_simple <span class="ot">&lt;-</span> us_change <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-2-2"><a href="#annotated-cell-2-2"></a>  <span class="fu">model</span>(</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="2">2</button><span id="annotated-cell-2-3" class="code-annotation-target"><a href="#annotated-cell-2-3"></a>    <span class="at">simple =</span> <span class="fu">TSLM</span>(Consumption <span class="sc">~</span> Income)</span>
 <span id="annotated-cell-2-4"><a href="#annotated-cell-2-4"></a>  )</span>
@@ -651,7 +656,14 @@ F-statistic: 33.84 on 1 and 196 DF, p-value: 2.4022e-08</code></pre>
 </div>
 <div id="tabset-2-4">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-16"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-16" data-target-annotation="1">1</button><span id="annotated-cell-16-1" class="code-annotation-target"><a href="#annotated-cell-16-1"></a>us_change_dof_simple <span class="ot">&lt;-</span> us_change_fit_simple <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-16" data-llms-code-original="us_change_dof_simple <- us_change_fit_simple |>    #<1>
+  tidy() |>
+  nrow()
+
+augment(us_change_fit_simple) |>
+  features(.resid, ljung_box,
+           lag = 10,
+           dof = us_change_dof_simple)             #<2>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-16" data-target-annotation="1">1</button><span id="annotated-cell-16-1" class="code-annotation-target"><a href="#annotated-cell-16-1"></a>us_change_dof_simple <span class="ot">&lt;-</span> us_change_fit_simple <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-16-2"><a href="#annotated-cell-16-2"></a>  <span class="fu">tidy</span>() <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-16-3"><a href="#annotated-cell-16-3"></a>  <span class="fu">nrow</span>()</span>
 <span id="annotated-cell-16-4"><a href="#annotated-cell-16-4"></a></span>
@@ -703,7 +715,12 @@ y_t = \beta_0 + \beta_1 x_{1t} + \beta_2 x_{2t} + \cdots + \beta_k x_{kt} + \var
 y_{t, \text{Cons.}} = \beta_0 + \beta_1 x_{t, \text{Inc.}} + \beta_2 x_{t, \text{Prod.}} + \beta_3 x_{t, \text{Sav.}} + \beta_4 x_{t, \text{Unemp.}} + \varepsilon_t
 </span></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1"></a>us_change_fit_mult <span class="ot">&lt;-</span> us_change <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3" data-llms-code-original="us_change_fit_mult <- us_change |>
+  model(
+    multiple = TSLM(Consumption ~ Income + Production + Savings + Unemployment) #<1>
+  )
+
+report(us_change_fit_mult)"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1"></a>us_change_fit_mult <span class="ot">&lt;-</span> us_change <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-3-2"><a href="#annotated-cell-3-2"></a>  <span class="fu">model</span>(</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1">1</button><span id="annotated-cell-3-3" class="code-annotation-target"><a href="#annotated-cell-3-3"></a>    <span class="at">multiple =</span> <span class="fu">TSLM</span>(Consumption <span class="sc">~</span> Income <span class="sc">+</span> Production <span class="sc">+</span> Savings <span class="sc">+</span> Unemployment)</span>
 <span id="annotated-cell-3-4"><a href="#annotated-cell-3-4"></a>  )</span>
@@ -1088,7 +1105,19 @@ F-statistic:   160 on 4 and 193 DF, p-value: &lt; 2.22e-16</code></pre>
 <p><strong>Ex-ante forecasts</strong> use only information available at the time the forecast is made. The predictors must themselves be forecasted.</p>
 <p>This is the “true” forecast — it is what you would actually produce in a real deployment.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-24"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-24-1"><a href="#annotated-cell-24-1"></a>us_change_future <span class="ot">&lt;-</span> us_change <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-24" data-llms-code-original="us_change_future <- us_change |>
+  pivot_longer(-c(Quarter, Consumption), names_to = &quot;variable&quot;) |> #<1>
+  model(arima = ARIMA(value)) |> #<2>
+  forecast(h = 8) |> #<3>
+  as_tsibble() |> #<4>
+  select(-c(.model, value)) |>
+  pivot_wider(names_from = variable, values_from = .mean) #<5>
+
+us_change_fit_mult |>
+  forecast(new_data = us_change_future) |>
+  autoplot(us_change |> filter_index(&quot;2010 Q1&quot; ~ .)) +
+  labs(title = &quot;Ex-ante forecast: US Consumption&quot;,
+       y = &quot;% change&quot;, x = NULL)"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-24-1"><a href="#annotated-cell-24-1"></a>us_change_future <span class="ot">&lt;-</span> us_change <span class="sc">|&gt;</span></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-24" data-target-annotation="1">1</button><span id="annotated-cell-24-2" class="code-annotation-target"><a href="#annotated-cell-24-2"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span><span class="fu">c</span>(Quarter, Consumption), <span class="at">names_to =</span> <span class="st">"variable"</span>) <span class="sc">|&gt;</span></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-24" data-target-annotation="2">2</button><span id="annotated-cell-24-3" class="code-annotation-target"><a href="#annotated-cell-24-3"></a>  <span class="fu">model</span>(<span class="at">arima =</span> <span class="fu">ARIMA</span>(value)) <span class="sc">|&gt;</span></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-24" data-target-annotation="3">3</button><span id="annotated-cell-24-4" class="code-annotation-target"><a href="#annotated-cell-24-4"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">8</span>) <span class="sc">|&gt;</span></span>
@@ -1169,7 +1198,26 @@ F-statistic:   160 on 4 and 193 DF, p-value: &lt; 2.22e-16</code></pre>
 <p><strong>Scenario-based forecasts</strong> construct hypothetical future values for the predictors and ask: <em>what would consumption look like under each scenario?</em></p>
 <p>These are especially useful for stress-testing and strategic planning.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-26"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-26-1"><a href="#annotated-cell-26-1"></a>us_change_fit_scen <span class="ot">&lt;-</span> us_change <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-26" data-llms-code-original="us_change_fit_scen <- us_change |>
+  model(TSLM(Consumption ~ Income + Savings + Unemployment)) #<1>
+
+us_change_scenarios <- scenarios(
+  optimistic = new_data(us_change, 4) |>
+    mutate(Income = c(0.5, 0.8, 0.6, 1.0),          #<2>
+           Savings = c(0.1, -0.2, 0.1, -0.1),        #<2>
+           Unemployment = -0.1),                      #<2>
+  pessimistic = new_data(us_change, 4) |>
+    mutate(Income = -0.5,                             #<3>
+           Savings = -0.4,                            #<3>
+           Unemployment = 0.2),                       #<3>
+  names_to = &quot;Scenario&quot;                               #<4>
+)
+
+us_change |>
+  autoplot(Consumption) +
+  autolayer(forecast(us_change_fit_scen, new_data = us_change_scenarios)) + #<5>
+  labs(title = &quot;Scenario-based forecast: US Consumption&quot;,
+       y = &quot;% change&quot;, x = NULL)"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-26-1"><a href="#annotated-cell-26-1"></a>us_change_fit_scen <span class="ot">&lt;-</span> us_change <span class="sc">|&gt;</span></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-26" data-target-annotation="1">1</button><span id="annotated-cell-26-2" class="code-annotation-target"><a href="#annotated-cell-26-2"></a>  <span class="fu">model</span>(<span class="fu">TSLM</span>(Consumption <span class="sc">~</span> Income <span class="sc">+</span> Savings <span class="sc">+</span> Unemployment))</span>
 <span id="annotated-cell-26-3"><a href="#annotated-cell-26-3"></a></span>
 <span id="annotated-cell-26-4"><a href="#annotated-cell-26-4"></a>us_change_scenarios <span class="ot">&lt;-</span> <span class="fu">scenarios</span>(</span>
@@ -1306,7 +1354,12 @@ F-statistic:   160 on 4 and 193 DF, p-value: &lt; 2.22e-16</code></pre>
 </ul>
 <div class="fragment">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-27" data-code-line-numbers="|3"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-27-1"><a href="#annotated-cell-27-1"></a>beer_fit <span class="ot">&lt;-</span> beer <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-27" data-llms-code-original="beer_fit <- beer |>
+  model(
+    TSLM(Beer ~ trend() + season()) #<1>
+  )
+ 
+report(beer_fit)" data-code-line-numbers="|3"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-27-1"><a href="#annotated-cell-27-1"></a>beer_fit <span class="ot">&lt;-</span> beer <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-27-2"><a href="#annotated-cell-27-2"></a>  <span class="fu">model</span>(</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-27" data-target-annotation="1">1</button><span id="annotated-cell-27-3" class="code-annotation-target"><a href="#annotated-cell-27-3"></a>    <span class="fu">TSLM</span>(Beer <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>())</span>
 <span id="annotated-cell-27-4"><a href="#annotated-cell-27-4"></a>  )</span>
@@ -1394,7 +1447,29 @@ F-statistic: 210.7 on 4 and 69 DF, p-value: &lt; 2.22e-16</code></pre>
 <p>The fix: <strong>decompose first, then apply IQR to the remainder</strong>. For <code>beer</code>, which has strong known seasonality, we use a full STL decomposition — including the seasonal component — so only genuine anomalies end up in the remainder<a href="#/footnotes" class="footnote-ref" id="fnref1" role="doc-noteref" data-footnote-href="#/fn1" onclick=""><sup>1</sup></a>.</p>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-6"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-6-1"><a href="#annotated-cell-6-1"></a>beer_dcmp <span class="ot">&lt;-</span> beer <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-6" data-llms-code-original="beer_dcmp <- beer |>
+  model(
+    stl = STL(Beer ~ trend() + season(), robust = TRUE) #<1>
+  ) |>
+  components()
+ 
+beer_outliers <- beer_dcmp |>
+  select(Quarter, remainder) |>
+  mutate(
+    Q1  = quantile(remainder, 0.25),
+    Q3  = quantile(remainder, 0.75),
+    IQR = Q3 - Q1,
+    lower_15 = Q1 - 1.5 * IQR,  #<2>
+    upper_15 = Q3 + 1.5 * IQR,
+    lower_3  = Q1 - 3   * IQR,  #<3>
+    upper_3  = Q3 + 3   * IQR,
+    outlier_15 = remainder < lower_15 | remainder > upper_15,
+    outlier_3  = remainder < lower_3  | remainder > upper_3
+  )
+ 
+beer_outliers |>
+  filter(outlier_15) |>
+  select(Quarter, remainder, outlier_15, outlier_3)"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-6-1"><a href="#annotated-cell-6-1"></a>beer_dcmp <span class="ot">&lt;-</span> beer <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-6-2"><a href="#annotated-cell-6-2"></a>  <span class="fu">model</span>(</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="1">1</button><span id="annotated-cell-6-3" class="code-annotation-target"><a href="#annotated-cell-6-3"></a>    <span class="at">stl =</span> <span class="fu">STL</span>(Beer <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>(), <span class="at">robust =</span> <span class="cn">TRUE</span>)</span>
 <span id="annotated-cell-6-4"><a href="#annotated-cell-6-4"></a>  ) <span class="sc">|&gt;</span></span>
@@ -1458,7 +1533,18 @@ F-statistic: 210.7 on 4 and 69 DF, p-value: &lt; 2.22e-16</code></pre>
 <li class="fragment"><strong>Ramp variable</strong>: 0 before an event, then increasing linearly. Captures a gradual structural shift.</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-7" data-code-line-numbers="|3,4"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-7-1"><a href="#annotated-cell-7-1"></a>beer_interv <span class="ot">&lt;-</span> beer <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-7" data-llms-code-original="beer_interv <- beer |>
+  mutate(
+    spike_Q2_1994 = if_else(Quarter == yearquarter(&quot;1994 Q2&quot;), 1L, 0L), #<1>
+    level_2000    = if_else(year(Quarter) >= 2000, 1L, 0L)              #<2>
+  )
+ 
+beer_fit_interv <- beer_interv |>
+  model(
+    TSLM(Beer ~ trend() + season() + spike_Q2_1994 + level_2000)
+  )
+ 
+report(beer_fit_interv)" data-code-line-numbers="|3,4"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-7-1"><a href="#annotated-cell-7-1"></a>beer_interv <span class="ot">&lt;-</span> beer <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-7-2"><a href="#annotated-cell-7-2"></a>  <span class="fu">mutate</span>(</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="1">1</button><span id="annotated-cell-7-3" class="code-annotation-target"><a href="#annotated-cell-7-3"></a>    <span class="at">spike_Q2_1994 =</span> <span class="fu">if_else</span>(Quarter <span class="sc">==</span> <span class="fu">yearquarter</span>(<span class="st">"1994 Q2"</span>), <span class="dv">1</span>L, <span class="dv">0</span>L),</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="2">2</button><span id="annotated-cell-7-4" class="code-annotation-target"><a href="#annotated-cell-7-4"></a>    <span class="at">level_2000    =</span> <span class="fu">if_else</span>(<span class="fu">year</span>(Quarter) <span class="sc">&gt;=</span> <span class="dv">2000</span>, <span class="dv">1</span>L, <span class="dv">0</span>L)</span>
@@ -1640,7 +1726,24 @@ F-statistic: 144.9 on 6 and 67 DF, p-value: &lt; 2.22e-16</code></pre>
 <section id="three-functional-forms" class="slide level2">
 <h2>Three functional forms</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-10" data-code-line-numbers="|4,5"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-10-1"><a href="#annotated-cell-10-1"></a>boston_fit <span class="ot">&lt;-</span> boston_men <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-10" data-llms-code-original="boston_fit <- boston_men |>
+  model(
+    linear      = TSLM(Minutes ~ trend()),
+    exponential = TSLM(log(Minutes) ~ trend()),                #<1>
+    piecewise   = TSLM(Minutes ~ trend(knots = c(1940, 1980))) #<2>
+  )
+ 
+boston_men |>
+  autoplot(Minutes, color = &quot;grey60&quot;) +
+  geom_line(
+    data = fitted(boston_fit),
+    aes(y = .fitted, color = .model)
+  ) +
+  autolayer(forecast(boston_fit, h = 10),
+            alpha = 0.4, level = 95) +
+  labs(title = &quot;Boston Marathon: three functional forms&quot;,
+       y = &quot;Minutes&quot;, x = NULL, color = &quot;Model&quot;) +
+  theme(legend.position = &quot;top&quot;)" data-code-line-numbers="|4,5"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-10-1"><a href="#annotated-cell-10-1"></a>boston_fit <span class="ot">&lt;-</span> boston_men <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-10-2"><a href="#annotated-cell-10-2"></a>  <span class="fu">model</span>(</span>
 <span id="annotated-cell-10-3"><a href="#annotated-cell-10-3"></a>    <span class="at">linear      =</span> <span class="fu">TSLM</span>(Minutes <span class="sc">~</span> <span class="fu">trend</span>()),</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-10" data-target-annotation="1">1</button><span id="annotated-cell-10-4" class="code-annotation-target"><a href="#annotated-cell-10-4"></a>    <span class="at">exponential =</span> <span class="fu">TSLM</span>(<span class="fu">log</span>(Minutes) <span class="sc">~</span> <span class="fu">trend</span>()),</span>

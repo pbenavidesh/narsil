@@ -1,0 +1,236 @@
+# OLS and Beyond: Choosing the Right Regression Model
+
+stats
+
+A conceptual map of regression models for forecasting — from OLS to SVR, tree-based methods, and neural networks — with guidance on when each approach is warranted.
+
+Published
+
+March 28, 2026
+
+Modified
+
+May 26, 2026
+
+A student who has just learned `TSLM()` and already knows about XGBoost or random forests will reasonably ask: *why are we doing this?* This document answers that question honestly — including the cases where OLS loses.
+
+The goal is not to advocate for any single method, but to give you a mental map of the regression landscape so you can make deliberate choices rather than defaulting to whichever model you learned most recently.
+
+# 1 What OLS Actually Optimizes
+
+OLS finds the coefficient vector \boldsymbol{\beta} that minimizes the residual sum of squares:
+
+\hat{\boldsymbol{\beta}} = \arg\min\_{\boldsymbol{\beta}} \sum\_{t=1}^{T} \left(y_t - \mathbf{x}\_t^\top \boldsymbol{\beta}\right)^2
+
+Under the Gauss-Markov assumptions, this estimator is **BLUE**: Best Linear Unbiased Estimator. “Best” here means minimum variance among all linear unbiased estimators — not minimum forecast error in general.
+
+> **NOTE:**
+>
+> Gauss-Markov guarantees efficiency *within the class of linear unbiased estimators*. A biased estimator (like Ridge regression) or a nonlinear estimator (like a tree) can have lower mean squared error in prediction if the bias-variance tradeoff favors them. This is the central tension in the rest of this document.
+
+The closed-form solution is:
+
+\hat{\boldsymbol{\beta}} = \left(\mathbf{X}^\top \mathbf{X}\right)^{-1} \mathbf{X}^\top \mathbf{y}
+
+This requires \mathbf{X}^\top \mathbf{X} to be invertible — which fails when regressors are perfectly collinear or when p \> T (more predictors than observations). Both situations motivate regularization.
+
+# 2 When OLS Is the Right Tool
+
+OLS tends to win — or at least perform competitively — in the following situations:
+
+**The relationship is genuinely (or approximately) linear.** Many economic and business relationships are well-described by linear models, especially over the range of variation typically observed in historical data.
+
+**The sample is small.** Flexible models like gradient boosting and neural networks have high variance when T is small. OLS with a parsimonious specification often generalizes better out-of-sample.
+
+**Extrapolation is required.** This is critical for forecasting. Tree-based methods cannot extrapolate beyond the range of the training data — they return the mean of the nearest leaf, which produces flat forecasts at the boundaries. OLS extrapolates linearly, which may or may not be correct, but at least produces sensible-looking forecasts for short horizons.
+
+**Interpretability is non-negotiable.** In many business and policy contexts, a model that cannot be explained to a non-technical stakeholder will not be used, regardless of its accuracy. A TSLM with five regressors and interpretable coefficients survives in production for years.
+
+**Residual diagnostics matter.** OLS provides a well-developed framework for diagnosing model misspecification through residual analysis — something significantly harder with black-box models.
+
+> **TIP:**
+>
+> *Is my forecast error large because the relationship is nonlinear, or because I am missing important regressors?* Adding the right variable to a TSLM often outperforms adding model complexity.
+
+# 3 Regularization: Penalized OLS
+
+## 3.1 The bias-variance tradeoff
+
+When the number of candidate regressors is large relative to T, OLS tends to overfit: it fits the training data well but generalizes poorly. Regularization addresses this by adding a penalty term to the loss function, deliberately introducing bias to reduce variance.
+
+## 3.2 Ridge regression
+
+Ridge adds an \ell_2 penalty on the coefficients:
+
+\hat{\boldsymbol{\beta}}\_{\text{ridge}} = \arg\min\_{\boldsymbol{\beta}} \left\\ \sum\_{t=1}^{T}(y_t - \mathbf{x}\_t^\top\boldsymbol{\beta})^2 + \lambda \sum\_{j=1}^{p} \beta_j^2 \right\\
+
+The penalty shrinks all coefficients toward zero but never sets any exactly to zero. Ridge is particularly useful when many regressors are correlated and each contributes a small amount of signal.
+
+## 3.3 Lasso
+
+Lasso uses an \ell_1 penalty:
+
+\hat{\boldsymbol{\beta}}\_{\text{lasso}} = \arg\min\_{\boldsymbol{\beta}} \left\\ \sum\_{t=1}^{T}(y_t - \mathbf{x}\_t^\top\boldsymbol{\beta})^2 + \lambda \sum\_{j=1}^{p} \|\beta_j\| \right\\
+
+The \ell_1 penalty produces **sparse solutions**: many coefficients are set exactly to zero, performing automatic variable selection. This makes Lasso particularly attractive when you suspect only a small subset of your candidate regressors are truly relevant.
+
+## 3.4 Elastic Net
+
+Elastic Net combines both penalties:
+
+\hat{\boldsymbol{\beta}}\_{\text{EN}} = \arg\min\_{\boldsymbol{\beta}} \left\\ \sum\_{t=1}^{T}(y_t - \mathbf{x}\_t^\top\boldsymbol{\beta})^2 + \lambda_1 \sum\_{j=1}^p \|\beta_j\| + \lambda_2 \sum\_{j=1}^p \beta_j^2 \right\\
+
+It inherits sparsity from Lasso and stability under correlated predictors from Ridge. In practice, it is the default choice when you are unsure which penalty to use.
+
+> **IMPORTANT:**
+>
+> Because the penalty treats all \beta_j equally, variables on different scales will be penalized unequally. Always standardize regressors before fitting a regularized model. See the companion document [Preprocessing Regressors](../../../docs/more/stats/preprocessing.llms.md) for details.
+
+In R, `glmnet::glmnet()` implements all three. Cross-validation for \lambda selection is handled by `glmnet::cv.glmnet()`. These are not currently integrated into `fable`, so regularized regression requires stepping outside the `tidyverts` ecosystem.
+
+# 4 Kernel Methods and SVR
+
+## 4.1 The core idea: mapping to a higher-dimensional space
+
+Support Vector Regression (SVR) extends the Support Vector Machine framework to continuous outputs. The key insight is that a relationship that is nonlinear in the original feature space \mathcal{X} may become linear in a higher-dimensional feature space \mathcal{F}, obtained via a mapping \phi: \mathcal{X} \to \mathcal{F}.
+
+SVR finds the flattest function f(\mathbf{x}) = \mathbf{w}^\top \phi(\mathbf{x}) + b that fits the training data within an \varepsilon-tube:
+
+\min\_{\mathbf{w}, b, \boldsymbol{\xi}, \boldsymbol{\xi}^\*} \frac{1}{2}\\\mathbf{w}\\^2 + C \sum\_{t=1}^T (\xi_t + \xi_t^\*)
+
+subject to:
+
+\begin{align\*} y_t - \mathbf{w}^\top \phi(\mathbf{x}\_t) - b &\leq \varepsilon + \xi_t \\ \mathbf{w}^\top \phi(\mathbf{x}\_t) + b - y_t &\leq \varepsilon + \xi_t^\* \\ \xi_t, \xi_t^\* &\geq 0 \end{align\*}
+
+where C \> 0 controls the trade-off between flatness and tolerance for deviations beyond \varepsilon, and \xi_t, \xi_t^\* are slack variables that penalize points outside the tube.
+
+## 4.2 The kernel trick
+
+Computing \phi(\mathbf{x}) explicitly is often infeasible when \mathcal{F} is very high-dimensional (or infinite-dimensional). The **kernel trick** exploits the fact that the dual formulation of the SVR problem only requires inner products \langle\phi(\mathbf{x}\_i), \phi(\mathbf{x}\_j)\rangle, which can be computed directly via a kernel function:
+
+k(\mathbf{x}\_i, \mathbf{x}\_j) = \langle\phi(\mathbf{x}\_i), \phi(\mathbf{x}\_j)\rangle
+
+Common kernels:
+
+| Kernel | Formula | Use case |
+|----|----|----|
+| Linear | \mathbf{x}\_i^\top \mathbf{x}\_j | Equivalent to OLS/Ridge |
+| RBF (Gaussian) | \exp\\\left(-\gamma\\\mathbf{x}\_i - \mathbf{x}\_j\\^2\right) | Smooth nonlinear relationships |
+| Polynomial | (\mathbf{x}\_i^\top \mathbf{x}\_j + c)^d | Interactions up to degree d |
+
+> **NOTE:**
+>
+> With a linear kernel, SVR and Ridge regression optimize similar objectives. The main difference is the \varepsilon-insensitive loss in SVR vs. the squared loss in Ridge. SVR is less sensitive to outliers near the regression surface, while Ridge penalizes all deviations quadratically.
+
+## 4.3 SVR for time series forecasting
+
+SVR does not natively handle temporal dependence — it treats observations as i.i.d. To use SVR for forecasting, you typically construct lagged features manually (embedding the time series into a feature matrix) and then apply SVR to the resulting regression problem. This is known as the **NARX** (Nonlinear AutoRegressive with eXogenous inputs) approach.
+
+Practical considerations for SVR in forecasting:
+
+- Requires careful feature engineering (lag selection, exogenous variables).
+- Hyperparameter tuning (C, \varepsilon, kernel parameters) is computationally expensive and sensitive to the choice of validation scheme. For time series, always use time-ordered cross-validation, never random k-fold.
+- Does not extrapolate well with RBF kernels: predictions degrade for inputs far from the training distribution.
+- Scaling is **mandatory**: SVR optimizes over \\\mathbf{w}\\^2, which is scale-dependent. Unstandardized inputs will produce arbitrarily poor solutions.
+
+In R, `e1071::svm()` and `kernlab::ksvm()` implement SVR.
+
+# 5 Tree-Based Methods
+
+## 5.1 Decision trees and their limitations
+
+A regression tree recursively partitions the feature space into rectangular regions and predicts the mean of y within each region. Individual trees have high variance — small changes in the training data produce very different trees.
+
+## 5.2 Random Forests
+
+Random Forests reduce variance through two mechanisms: **bagging** (bootstrap aggregation of B trees) and **feature subsampling** (each split considers only a random subset of p features, decorrelating the trees).
+
+The prediction is:
+
+\hat{y} = \frac{1}{B} \sum\_{b=1}^B T_b(\mathbf{x})
+
+where T_b is the b-th tree fitted on a bootstrap sample.
+
+## 5.3 Gradient Boosting (XGBoost)
+
+Gradient boosting builds trees sequentially, with each tree fitted to the residuals of the ensemble so far. XGBoost adds \ell_1 and \ell_2 regularization on the tree structure itself, making it more robust to overfitting than vanilla gradient boosting.
+
+## 5.4 Critical limitations for forecasting
+
+> **WARNING:**
+>
+> This is the most important limitation for time series applications. A tree prediction is always a weighted average of observed training values. If the forecast horizon extends beyond the range of the training data — common in trending series — tree-based methods will produce flat or erratic forecasts.
+>
+> One workaround is to detrend the series before modeling and add the trend back after forecasting, but this reintroduces the need for a trend model (which OLS or ARIMA handle naturally).
+
+Additional considerations:
+
+- Require substantially more data than OLS to avoid overfitting.
+- Hyperparameter tuning is non-trivial; improper tuning can produce worse results than a well-specified TSLM.
+- Interpretability is limited, though tools like SHAP values partially address this.
+- Temporal autocorrelation in residuals is not modeled; lagged features must be constructed manually.
+
+# 6 Neural Networks
+
+A brief orientation for completeness. Feed-forward neural networks approximate arbitrary functions through compositions of linear transformations and nonlinear activations. Recurrent architectures (LSTM, GRU) are designed specifically for sequential data.
+
+Practical context for time series forecasting:
+
+- Neural networks require large amounts of data to outperform simpler methods. For single series with a few hundred observations, they rarely beat a well-specified ARIMA or ETS.
+- They are the dominant approach for **global forecasting models** — single models trained across thousands of series simultaneously (e.g., N-BEATS, N-HiTS, Temporal Fusion Transformer).
+- Training instability, vanishing gradients, and hyperparameter sensitivity make them operationally expensive compared to statistical models.
+- In `fable`, `NNETAR()` implements a simple feed-forward network with lagged inputs — a practical entry point within the `tidyverts` ecosystem.
+
+# 7 A Decision Framework
+
+Work through these questions when choosing a regression approach:
+
+Code
+
+``` default
+flowchart TD
+    A{Is the relationship <br/> approximately linear?} -->|Yes| B[Start with TSLM <br/> Check residuals]
+    B --> C{Residuals <br/> autocorrelated?}
+    C -->|Yes| D[Dynamic regression <br/> ARIMA errors]
+    C -->|No| E[TSLM is sufficient]
+
+    A -->|No| F{How much data?}
+    F -->|Small T < 200| G[SVR with RBF kernel <br/> or polynomial TSLM <br/> Time-ordered CV]
+    F -->|Large T ≥ 200| H{Series trends beyond <br/> training range?}
+    H -->|Yes| I[Detrend first <br/> then tree/NN on residuals]
+    H -->|No| J[Random Forest or XGBoost <br/> with lagged features]
+```
+
+``` mermaid
+flowchart TD
+    A{Is the relationship <br/> approximately linear?} -->|Yes| B[Start with TSLM <br/> Check residuals]
+    B --> C{Residuals <br/> autocorrelated?}
+    C -->|Yes| D[Dynamic regression <br/> ARIMA errors]
+    C -->|No| E[TSLM is sufficient]
+
+    A -->|No| F{How much data?}
+    F -->|Small T < 200| G[SVR with RBF kernel <br/> or polynomial TSLM <br/> Time-ordered CV]
+    F -->|Large T ≥ 200| H{Series trends beyond <br/> training range?}
+    H -->|Yes| I[Detrend first <br/> then tree/NN on residuals]
+    H -->|No| J[Random Forest or XGBoost <br/> with lagged features]
+```
+
+| Method | Extrapolates? | Interpretable? | Needs large T? | Handles autocorrelation natively? |
+|----|:--:|:--:|:--:|:--:|
+| OLS / TSLM | ✓ | ✓ | ✗ | ✗ |
+| Ridge / Lasso | ✓ | Partial | ✗ | ✗ |
+| SVR (RBF) | ✗ | ✗ | Partial | ✗ |
+| Random Forest | ✗ | ✗ | ✓ | ✗ |
+| XGBoost | ✗ | ✗ | ✓ | ✗ |
+| NNETAR | Partial | ✗ | ✓ | Partial |
+| ARIMA / ETS | ✓ | Partial | ✗ | ✓ |
+
+> **IMPORTANT:**
+>
+> Reaching for XGBoost because it performs well in Kaggle competitions, without considering that most Kaggle problems are cross-sectional (no extrapolation required, large datasets, no temporal structure). Time series forecasting has a fundamentally different problem geometry.
+
+> **NOTE:**
+>
+> In forecasting benchmarks (M4, M5 competitions), simple statistical methods consistently outperform complex ML models on short and medium horizons for individual series. The advantage of ML methods appears primarily at scale — when training globally across many series — and at long horizons with rich feature sets.
+
+Back to top

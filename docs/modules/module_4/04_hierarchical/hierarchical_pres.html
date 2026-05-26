@@ -9,11 +9,11 @@
 <script src="../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../../../../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-4e5466e430b1db38349d513585fd1d59.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-6d40f8af7092f34acea1908532066003.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.9.37">
+  <meta name="generator" content="quarto-1.9.38">
 
   <meta name="author" content="">
   <title>Time Series Forecasting – Hierarchical &amp; Grouped Forecasting</title>
@@ -477,7 +477,10 @@
 <h2><code>aggregate_key()</code>: Defining the Structure</h2>
 <p>A pure hierarchy uses <code>/</code> to denote nesting. A grouped or mixed structure uses <code>*</code> to cross attributes.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1"></a>tourism_hts <span class="ot">&lt;-</span> tourism <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-1" data-llms-code-original="tourism_hts <- tourism |>
+  aggregate_key(State / Region, Trips = sum(Trips)) #<1>
+
+tourism_hts"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1"></a>tourism_hts <span class="ot">&lt;-</span> tourism <span class="sc">|&gt;</span></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1">1</button><span id="annotated-cell-1-2" class="code-annotation-target"><a href="#annotated-cell-1-2"></a>  <span class="fu">aggregate_key</span>(State <span class="sc">/</span> Region, <span class="at">Trips =</span> <span class="fu">sum</span>(Trips))</span>
 <span id="annotated-cell-1-3"><a href="#annotated-cell-1-3"></a></span>
 <span id="annotated-cell-1-4"><a href="#annotated-cell-1-4"></a>tourism_hts</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -499,7 +502,8 @@
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-14"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-14-1"><a href="#annotated-cell-14-1"></a>tourism_full <span class="ot">&lt;-</span> tourism <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-14" data-llms-code-original="tourism_full <- tourism |>
+  aggregate_key(State / Region * Purpose, Trips = sum(Trips)) #<1>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-14-1"><a href="#annotated-cell-14-1"></a>tourism_full <span class="ot">&lt;-</span> tourism <span class="sc">|&gt;</span></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-14" data-target-annotation="1">1</button><span id="annotated-cell-14-2" class="code-annotation-target"><a href="#annotated-cell-14-2"></a>  <span class="fu">aggregate_key</span>(State <span class="sc">/</span> Region <span class="sc">*</span> Purpose, <span class="at">Trips =</span> <span class="fu">sum</span>(Trips))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
@@ -682,7 +686,15 @@
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-20"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-20-1"><a href="#annotated-cell-20-1"></a>tourism_bu <span class="ot">&lt;-</span> tourism_fit <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-20" data-llms-code-original="tourism_bu <- tourism_fit |>
+  reconcile(bu = bottom_up(ets)) #<1>
+
+tourism_bu |>
+  forecast(h = &quot;2 years&quot;) |>
+  filter(is_aggregated(State)) |>
+  autoplot(tourism_hts |> filter_index(&quot;2012 Q1&quot; ~ .)) +
+  labs(title = &quot;Bottom-up coherent forecast: national total&quot;,
+       y = &quot;Trips ('000)&quot;, x = NULL)"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-20-1"><a href="#annotated-cell-20-1"></a>tourism_bu <span class="ot">&lt;-</span> tourism_fit <span class="sc">|&gt;</span></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-20" data-target-annotation="1">1</button><span id="annotated-cell-20-2" class="code-annotation-target"><a href="#annotated-cell-20-2"></a>  <span class="fu">reconcile</span>(<span class="at">bu =</span> <span class="fu">bottom_up</span>(ets))</span>
 <span id="annotated-cell-20-3"><a href="#annotated-cell-20-3"></a></span>
 <span id="annotated-cell-20-4"><a href="#annotated-cell-20-4"></a>tourism_bu <span class="sc">|&gt;</span></span>
@@ -749,7 +761,12 @@
 <section id="top-down-in-reconcile" class="slide level2">
 <h2>Top-Down in <code>reconcile()</code></h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-4"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-4-1"><a href="#annotated-cell-4-1"></a>tourism_td <span class="ot">&lt;-</span> tourism_fit <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-4" data-llms-code-original="tourism_td <- tourism_fit |>
+  reconcile(
+    td_ap = top_down(ets, method = &quot;average_proportions&quot;),    #<1>
+    td_pa = top_down(ets, method = &quot;proportion_averages&quot;),    #<2>
+    td_fp = top_down(ets, method = &quot;forecast_proportions&quot;)    #<3>
+  )"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-4-1"><a href="#annotated-cell-4-1"></a>tourism_td <span class="ot">&lt;-</span> tourism_fit <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-4-2"><a href="#annotated-cell-4-2"></a>  <span class="fu">reconcile</span>(</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="1">1</button><span id="annotated-cell-4-3" class="code-annotation-target"><a href="#annotated-cell-4-3"></a>    <span class="at">td_ap =</span> <span class="fu">top_down</span>(ets, <span class="at">method =</span> <span class="st">"average_proportions"</span>),</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="2">2</button><span id="annotated-cell-4-4" class="code-annotation-target"><a href="#annotated-cell-4-4"></a>    <span class="at">td_pa =</span> <span class="fu">top_down</span>(ets, <span class="at">method =</span> <span class="st">"proportion_averages"</span>),</span>
@@ -805,7 +822,10 @@
 <p>Choose a <strong>middle level</strong> as the anchor: aggregate upward (bottom-up logic), disaggregate downward (top-down logic).</p>
 <div class="fragment">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-21"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-21-1"><a href="#annotated-cell-21-1"></a>tourism_mo <span class="ot">&lt;-</span> tourism_fit <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-21" data-llms-code-original="tourism_mo <- tourism_fit |>
+  reconcile(
+    mo = middle_out(ets, split = 1) #<1>
+  )"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-21-1"><a href="#annotated-cell-21-1"></a>tourism_mo <span class="ot">&lt;-</span> tourism_fit <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-21-2"><a href="#annotated-cell-21-2"></a>  <span class="fu">reconcile</span>(</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-21" data-target-annotation="1">1</button><span id="annotated-cell-21-3" class="code-annotation-target"><a href="#annotated-cell-21-3"></a>    <span class="at">mo =</span> <span class="fu">middle_out</span>(ets, <span class="at">split =</span> <span class="dv">1</span>)</span>
 <span id="annotated-cell-21-4"><a href="#annotated-cell-21-4"></a>  )</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -937,7 +957,11 @@
 <section id="the-full-pipeline-4" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">The Full Pipeline</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-26"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-26" data-target-annotation="1">1</button><span id="annotated-cell-26-1" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-26-1"></a>data <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-26" data-llms-code-original="data |>                  #<1>
+  aggregate_key(...) |> #<2>
+  model(...) |>         #<3>
+  reconcile(...) |>     #<4>
+  forecast(h = ...)     #<5>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-26" data-target-annotation="1">1</button><span id="annotated-cell-26-1" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-26-1"></a>data <span class="sc">|&gt;</span></span>
 <button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-26" data-target-annotation="2">2</button><span id="annotated-cell-26-2" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-26-2"></a>  <span class="fu">aggregate_key</span>(...) <span class="sc">|&gt;</span></span>
 <button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-26" data-target-annotation="3">3</button><span id="annotated-cell-26-3" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-26-3"></a>  <span class="fu">model</span>(...) <span class="sc">|&gt;</span></span>
 <button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-26" data-target-annotation="4">4</button><span id="annotated-cell-26-4" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-26-4"></a>  <span class="fu">reconcile</span>(...) <span class="sc">|&gt;</span></span>
@@ -1181,7 +1205,12 @@
 <p>The <code>PBS</code> dataset records monthly Medicare Australia pharmaceutical prescriptions. It has a natural mixed structure: drug categories nest hierarchically (ATC1 → ATC2), and the Concession type (Concessional / General) is an independent grouping attribute.</p>
 <div class="fragment">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-27"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-27-1"><a href="#annotated-cell-27-1"></a>pbs_hts <span class="ot">&lt;-</span> PBS <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-27" data-llms-code-original="pbs_hts <- PBS |>
+  filter(ATC1 %in% c(&quot;A&quot;, &quot;C&quot;, &quot;G&quot;, &quot;N&quot;)) |>       #<1>
+  aggregate_key(ATC1 / ATC2 * Concession,           #<2>
+                Cost = sum(Cost) / 1e6)
+
+pbs_hts"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-27-1"><a href="#annotated-cell-27-1"></a>pbs_hts <span class="ot">&lt;-</span> PBS <span class="sc">|&gt;</span></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-27" data-target-annotation="1">1</button><span id="annotated-cell-27-2" class="code-annotation-target"><a href="#annotated-cell-27-2"></a>  <span class="fu">filter</span>(ATC1 <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"C"</span>, <span class="st">"G"</span>, <span class="st">"N"</span>)) <span class="sc">|&gt;</span></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-27" data-target-annotation="2">2</button><span id="annotated-cell-27-3" class="code-annotation-target"><a href="#annotated-cell-27-3"></a>  <span class="fu">aggregate_key</span>(ATC1 <span class="sc">/</span> ATC2 <span class="sc">*</span> Concession,</span>
 <span id="annotated-cell-27-4"><a href="#annotated-cell-27-4"></a>                <span class="at">Cost =</span> <span class="fu">sum</span>(Cost) <span class="sc">/</span> <span class="fl">1e6</span>)</span>

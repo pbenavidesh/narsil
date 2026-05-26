@@ -1,0 +1,1854 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<link href="../../../../images/narsil_logo.png" rel="icon" type="image/png">
+<script src="../../../../site_libs/cookie-consent/cookie-consent.js"></script>
+<link href="../../../../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
+<script src="../../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../../site_libs/quarto-html/tabby.min.js"></script>
+<script src="../../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../../site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-6d40f8af7092f34acea1908532066003.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.9.38">
+
+  <meta name="author" content="">
+  <title>Time Series Forecasting – 4.2 Bootstrapping, Bagging &amp; Model Combinations</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../../../../site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="../../../../site_libs/revealjs/dist/reveal.css">
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+      }
+    pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+    div.sourceCode
+      { color: #383a42;  }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #383a42; } /* Normal */
+    code span.al { color: #95da4c; background-color: #4d1f24; font-weight: bold; } /* Alert */
+    code span.an { color: #50a14f; } /* Annotation */
+    code span.at { color: #a626a4; } /* Attribute */
+    code span.bn { color: #986801; } /* BaseN */
+    code span.bu { color: #a626a4; } /* BuiltIn */
+    code span.cf { color: #a626a4; } /* ControlFlow */
+    code span.ch { color: #50a14f; } /* Char */
+    code span.cn { color: #986801; } /* Constant */
+    code span.co { color: #a0a1a7; font-style: italic; } /* Comment */
+    code span.cv { color: #e45649; font-style: italic; } /* CommentVar */
+    code span.do { color: #e45649; } /* Documentation */
+    code span.dt { color: #a626a4; } /* DataType */
+    code span.dv { color: #986801; } /* DecVal */
+    code span.er { color: #f44747; text-decoration: underline; } /* Error */
+    code span.ex { color: #4078f2; font-weight: bold; } /* Extension */
+    code span.fl { color: #986801; } /* Float */
+    code span.fu { color: #4078f2; } /* Function */
+    code span.im { color: #50a14f; } /* Import */
+    code span.in { color: #c45b00; } /* Information */
+    code span.kw { color: #a626a4; } /* Keyword */
+    code span.op { color: #a626a4; } /* Operator */
+    code span.ot { color: #27ae60; } /* Other */
+    code span.pp { color: #a626a4; } /* Preprocessor */
+    code span.re { color: #2980b9; background-color: #153042; } /* RegionMarker */
+    code span.sc { color: #0184bc; } /* SpecialChar */
+    code span.ss { color: #da4453; } /* SpecialString */
+    code span.st { color: #50a14f; } /* String */
+    code span.va { color: #e45649; } /* Variable */
+    code span.vs { color: #da4453; } /* VerbatimString */
+    code span.wa { color: #da4453; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../../../site_libs/revealjs/dist/theme/quarto-4d89f974941c4a3a96b7bf96b873e9d5.css">
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-BRNYXN29K7"></script>
+
+  <script type="text/plain" cookie-consent="tracking">
+
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-BRNYXN29K7', { 'anonymize_ip': true});
+  </script>
+  
+  <script type="text/javascript" charset="UTF-8">
+  document.addEventListener('DOMContentLoaded', function () {
+  cookieconsent.run({
+    "notice_banner_type":"simple",
+    "consent_type":"express",
+    "palette":"light",
+    "language":"en",
+    "page_load_consent_levels":["strictly-necessary"],
+    "notice_banner_reject_button_hide":false,
+    "preferences_center_close_button_hide":false,
+    "website_name":""
+    ,
+  "language":"en"
+    });
+  });
+  </script> 
+    
+  <link href="../../../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="../../../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="../../../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="../../../../site_libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="../../../../site_libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
+  <link href="../../../../site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <script type="application/json" class="js-hypothesis-config">
+  {
+    "theme": "classic"
+  }
+  </script>
+  <script async="" src="https://hypothes.is/embed.js"></script>
+  <script>
+    window.document.addEventListener("DOMContentLoaded", function (_event) {
+      document.body.classList.add('hypothesis-enabled');
+    });
+  </script>
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+  <link href="../../../../site_libs/htmltools-fill-0.5.9/fill.css" rel="stylesheet">
+  <script src="../../../../site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+  <script src="../../../../site_libs/plotly-binding-4.12.0/plotly.js"></script>
+  <script src="../../../../site_libs/typedarray-0.1/typedarray.min.js"></script>
+  <script src="../../../../site_libs/jquery-3.5.1/jquery.min.js"></script>
+  <link href="../../../../site_libs/crosstalk-1.2.2/css/crosstalk.min.css" rel="stylesheet">
+  <script src="../../../../site_libs/crosstalk-1.2.2/js/crosstalk.min.js"></script>
+  <link href="../../../../site_libs/plotly-htmlwidgets-css-2.25.2/plotly-htmlwidgets.css" rel="stylesheet">
+  <script src="../../../../site_libs/plotly-main-2.25.2/plotly-latest.min.js"></script>
+  <link href="../../../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+  <script src="../../../../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+<meta property="og:title" content="4.2 Bootstrapping, Bagging &amp; Model Combinations – Time Series Forecasting">
+<meta property="og:site_name" content="Time Series Forecasting">
+<meta name="twitter:title" content="4.2 Bootstrapping, Bagging &amp; Model Combinations – Time Series Forecasting">
+<meta name="twitter:creator" content="@PabsBenavides">
+<meta name="twitter:card" content="summary">
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">4.2 Bootstrapping, Bagging &amp; Model Combinations</h1>
+
+<div class="quarto-title-authors">
+</div>
+
+</section>
+<section>
+<section id="where-we-are" class="title-slide slide level1 center">
+<h1>Where We Are</h1>
+
+</section>
+<section id="the-journey-so-far" class="slide level2">
+<h2>The journey so far</h2>
+<p>Over the course of this semester, we have built a progressively richer model:</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top">
+<colgroup>
+<col style="width: 8%">
+<col style="width: 48%">
+<col style="width: 42%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Module</th>
+<th style="text-align: left;">What we added</th>
+<th style="text-align: left;">Model</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">Decomposition + benchmark</td>
+<td style="text-align: left;">STL + Drift + SNAIVE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">Smarter trend-cycle</td>
+<td style="text-align: left;">STL + ETS / ARIMA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">External context + harmonic regression</td>
+<td style="text-align: left;">TSLM, dynamic regression, Prophet</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">4.1</td>
+<td style="text-align: left;">Multiple seasonality</td>
+<td style="text-align: left;">MSTL, STL + ARIMA + Fourier</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">4.2</td>
+<td style="text-align: left;">Ensemble strategies</td>
+<td style="text-align: left;">Combinations + Bagging</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="fragment">
+<div class="callout callout-important callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>The question that motivates this topic</strong></p>
+</div>
+<div class="callout-content">
+<p>We have several good models. <strong>Which one do we deploy?</strong></p>
+<p>What if the answer is: <em>all of them</em>?</p>
+</div>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="forecast-combinations" class="title-slide slide level1 center">
+<h1>Forecast Combinations</h1>
+
+</section>
+<section id="the-core-idea" class="slide level2">
+<h2>The core idea</h2>
+<blockquote>
+<p><em>“The results have been virtually unanimous: combining multiple forecasts leads to increased forecast accuracy. In many cases one can make dramatic performance improvements by simply averaging the forecasts.”</em></p>
+<p>— Hyndman &amp; Athanasopoulos, FPP3</p>
+</blockquote>
+<div class="fragment">
+<p>This result, first documented by Bates &amp; Granger (1969), has been replicated across hundreds of forecasting competitions and domains. It is one of the most robust empirical findings in the field.</p>
+</div>
+</section>
+<section id="why-does-combination-work" class="slide level2">
+<h2>Why Does Combination Work?</h2>
+<p>Intuitively: each model captures some patterns but misses others. When models make <strong>different kinds of errors</strong>, averaging them out reduces overall error.</p>
+<div class="fragment">
+<p>The key condition is <strong>diversity</strong> — combining models that fail in the same way provides little benefit. This is why combining ETS, ARIMA, and Prophet tends to work better than combining three variants of ARIMA.</p>
+</div>
+<div class="fragment">
+<div class="callout callout-note callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>The math behind it</strong></p>
+</div>
+<div class="callout-content">
+<p>If two unbiased forecasts <span class="math inline">f_1</span> and <span class="math inline">f_2</span> have errors with equal variance <span class="math inline">\sigma^2</span> and correlation <span class="math inline">\rho</span>, the equal-weight combination has error variance:</p>
+<p><span class="math display">\text{Var}\left(\frac{e_1 + e_2}{2}\right) = \frac{\sigma^2(1 + \rho)}{2}</span></p>
+<p>When <span class="math inline">\rho &lt; 1</span>, the combination <strong>always beats the average individual model</strong>. When <span class="math inline">\rho = 0</span>, variance halves.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="sec-cement-intro" class="slide level2">
+<h2>A First Example: Australian Cement Production</h2>
+<p>We introduce combinations with <code>aus_production</code> (Cement) — a quarterly manufacturing series with clear trend and seasonality.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-1" data-llms-code-original="cement <- aus_production |>
+  select(Quarter, Cement) |>
+  filter(!is.na(Cement))
+
+cement_train <- cement |> filter(year(Quarter) <= 2005) #<1>
+cement_test  <- cement |> filter(year(Quarter) >  2005) #<2>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1"></a>cement <span class="ot">&lt;-</span> aus_production <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-1-2"><a href="#annotated-cell-1-2"></a>  <span class="fu">select</span>(Quarter, Cement) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-1-3"><a href="#annotated-cell-1-3"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Cement))</span>
+<span id="annotated-cell-1-4"><a href="#annotated-cell-1-4"></a></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1">1</button><span id="annotated-cell-1-5" class="code-annotation-target"><a href="#annotated-cell-1-5"></a>cement_train <span class="ot">&lt;-</span> cement <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">year</span>(Quarter) <span class="sc">&lt;=</span> <span class="dv">2005</span>)</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="2">2</button><span id="annotated-cell-1-6" class="code-annotation-target"><a href="#annotated-cell-1-6"></a>cement_test  <span class="ot">&lt;-</span> cement <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">year</span>(Quarter) <span class="sc">&gt;</span>  <span class="dv">2005</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-1" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-1" data-code-lines="5" data-code-annotation="1">Training set: up to and including 2005.</span>
+</dd>
+<dt data-target-cell="annotated-cell-1" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-1" data-code-lines="6" data-code-annotation="2">Test set: 2006 Q1 through 2010 Q2 — 18 quarters.</span>
+</dd>
+</dl>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="bootstrap_combinations_draft_files/figure-html/cement-plot-revealjs-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img data-src="bootstrap_combinations_draft_files/figure-html/cement-plot-revealjs-1.png" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="fitting-individual-models" class="slide level2">
+<h2>Fitting Individual Models</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2" data-llms-code-original="cement_fit <- cement_train |>
+  model(
+    ets   = ETS(Cement),                         #<1>
+    arima = ARIMA(Cement),                       #<2>
+    stlf  = decomposition_model(                 #<3>
+              STL(Cement ~ trend(window = NULL) +
+                    season(window = &quot;periodic&quot;),
+                  robust = TRUE),
+              ETS(season_adjust ~ season(&quot;N&quot;))
+            )
+  )"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1"></a>cement_fit <span class="ot">&lt;-</span> cement_train <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-2-2"><a href="#annotated-cell-2-2"></a>  <span class="fu">model</span>(</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1">1</button><span id="annotated-cell-2-3" class="code-annotation-target"><a href="#annotated-cell-2-3"></a>    <span class="at">ets   =</span> <span class="fu">ETS</span>(Cement),</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="2">2</button><span id="annotated-cell-2-4" class="code-annotation-target"><a href="#annotated-cell-2-4"></a>    <span class="at">arima =</span> <span class="fu">ARIMA</span>(Cement),</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="3">3</button><span id="annotated-cell-2-5" class="code-annotation-target"><a href="#annotated-cell-2-5"></a>    <span class="at">stlf  =</span> <span class="fu">decomposition_model</span>(</span>
+<span id="annotated-cell-2-6"><a href="#annotated-cell-2-6"></a>              <span class="fu">STL</span>(Cement <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="annotated-cell-2-7"><a href="#annotated-cell-2-7"></a>                    <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>),</span>
+<span id="annotated-cell-2-8"><a href="#annotated-cell-2-8"></a>                  <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<span id="annotated-cell-2-9"><a href="#annotated-cell-2-9"></a>              <span class="fu">ETS</span>(season_adjust <span class="sc">~</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
+<span id="annotated-cell-2-10"><a href="#annotated-cell-2-10"></a>            )</span>
+<span id="annotated-cell-2-11"><a href="#annotated-cell-2-11"></a>  )</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-2" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="3" data-code-annotation="1">Automatic ETS selection.</span>
+</dd>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="4" data-code-annotation="2">Automatic ARIMA selection.</span>
+</dd>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="5" data-code-annotation="3">STL + ETS on the seasonally adjusted component — our Module 2 approach.</span>
+</dd>
+</dl>
+</div>
+</div>
+</section>
+<section id="combining-the-manual-approach" class="slide level2">
+<h2>Combining: The Manual Approach</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3" data-llms-code-original="cement_fc_manual <- cement_fit |>
+  mutate(                                                  #<1>
+    combination = (ets + arima) / 2
+  ) |> 
+  forecast(h = nrow(cement_test))"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1"></a>cement_fc_manual <span class="ot">&lt;-</span> cement_fit <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1">1</button><span id="annotated-cell-3-2" class="code-annotation-target"><a href="#annotated-cell-3-2"></a>  <span class="fu">mutate</span>(</span>
+<span id="annotated-cell-3-3"><a href="#annotated-cell-3-3"></a>    <span class="at">combination =</span> (ets <span class="sc">+</span> arima) <span class="sc">/</span> <span class="dv">2</span></span>
+<span id="annotated-cell-3-4"><a href="#annotated-cell-3-4"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="annotated-cell-3-5"><a href="#annotated-cell-3-5"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="fu">nrow</span>(cement_test))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-3" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-3" data-code-lines="2" data-code-annotation="1"><code>mutate()</code> on a <code>mable</code> object adds a new model column.</span>
+</dd>
+</dl>
+</div>
+</div>
+<div class="callout callout-tip callout-style-simple">
+<div class="callout-body">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-content">
+<p>The <code>.mean</code> of the combined distribution is the average of the individual <code>.mean</code> values.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="combining-inside-model-with-combination_ensemble" class="slide level2">
+<h2>Combining: Inside <code>model()</code> with <code>combination_ensemble()</code></h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-4" data-llms-code-original="cement_fit2 <- cement_train |>
+  model(
+    ets   = ETS(Cement),
+    arima = ARIMA(Cement),
+    stlf  = decomposition_model(
+              STL(Cement ~ trend(window = NULL) +
+                    season(window = &quot;periodic&quot;),
+                  robust = TRUE),
+              ETS(season_adjust ~ season(&quot;N&quot;))
+            ),
+    comb_equal = combination_ensemble(             #<1>
+                   ETS(Cement),
+                   ARIMA(Cement),
+                   decomposition_model(
+                     STL(Cement ~ trend(window = NULL) +
+                           season(window = &quot;periodic&quot;),
+                         robust = TRUE),
+                     ETS(season_adjust ~ season(&quot;N&quot;))
+                   ),
+                   weights = &quot;equal&quot;               #<2>
+                 ),
+    comb_inv_var = combination_ensemble(           #<3>
+                     ETS(Cement),
+                     ARIMA(Cement),
+                     decomposition_model(
+                       STL(Cement ~ trend(window = NULL) +
+                             season(window = &quot;periodic&quot;),
+                           robust = TRUE),
+                       ETS(season_adjust ~ season(&quot;N&quot;))
+                     ),
+                     weights = &quot;inv_var&quot;           #<4>
+                   )
+  )" data-code-line-numbers="11-20|21-30"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-4-1"><a href="#annotated-cell-4-1"></a>cement_fit2 <span class="ot">&lt;-</span> cement_train <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-4-2"><a href="#annotated-cell-4-2"></a>  <span class="fu">model</span>(</span>
+<span id="annotated-cell-4-3"><a href="#annotated-cell-4-3"></a>    <span class="at">ets   =</span> <span class="fu">ETS</span>(Cement),</span>
+<span id="annotated-cell-4-4"><a href="#annotated-cell-4-4"></a>    <span class="at">arima =</span> <span class="fu">ARIMA</span>(Cement),</span>
+<span id="annotated-cell-4-5"><a href="#annotated-cell-4-5"></a>    <span class="at">stlf  =</span> <span class="fu">decomposition_model</span>(</span>
+<span id="annotated-cell-4-6"><a href="#annotated-cell-4-6"></a>              <span class="fu">STL</span>(Cement <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="annotated-cell-4-7"><a href="#annotated-cell-4-7"></a>                    <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>),</span>
+<span id="annotated-cell-4-8"><a href="#annotated-cell-4-8"></a>                  <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<span id="annotated-cell-4-9"><a href="#annotated-cell-4-9"></a>              <span class="fu">ETS</span>(season_adjust <span class="sc">~</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
+<span id="annotated-cell-4-10"><a href="#annotated-cell-4-10"></a>            ),</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="1">1</button><span id="annotated-cell-4-11" class="code-annotation-target"><a href="#annotated-cell-4-11"></a>    <span class="at">comb_equal =</span> <span class="fu">combination_ensemble</span>(</span>
+<span id="annotated-cell-4-12"><a href="#annotated-cell-4-12"></a>                   <span class="fu">ETS</span>(Cement),</span>
+<span id="annotated-cell-4-13"><a href="#annotated-cell-4-13"></a>                   <span class="fu">ARIMA</span>(Cement),</span>
+<span id="annotated-cell-4-14"><a href="#annotated-cell-4-14"></a>                   <span class="fu">decomposition_model</span>(</span>
+<span id="annotated-cell-4-15"><a href="#annotated-cell-4-15"></a>                     <span class="fu">STL</span>(Cement <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="annotated-cell-4-16"><a href="#annotated-cell-4-16"></a>                           <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>),</span>
+<span id="annotated-cell-4-17"><a href="#annotated-cell-4-17"></a>                         <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<span id="annotated-cell-4-18"><a href="#annotated-cell-4-18"></a>                     <span class="fu">ETS</span>(season_adjust <span class="sc">~</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
+<span id="annotated-cell-4-19"><a href="#annotated-cell-4-19"></a>                   ),</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="2">2</button><span id="annotated-cell-4-20" class="code-annotation-target"><a href="#annotated-cell-4-20"></a>                   <span class="at">weights =</span> <span class="st">"equal"</span></span>
+<span id="annotated-cell-4-21"><a href="#annotated-cell-4-21"></a>                 ),</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="3">3</button><span id="annotated-cell-4-22" class="code-annotation-target"><a href="#annotated-cell-4-22"></a>    <span class="at">comb_inv_var =</span> <span class="fu">combination_ensemble</span>(</span>
+<span id="annotated-cell-4-23"><a href="#annotated-cell-4-23"></a>                     <span class="fu">ETS</span>(Cement),</span>
+<span id="annotated-cell-4-24"><a href="#annotated-cell-4-24"></a>                     <span class="fu">ARIMA</span>(Cement),</span>
+<span id="annotated-cell-4-25"><a href="#annotated-cell-4-25"></a>                     <span class="fu">decomposition_model</span>(</span>
+<span id="annotated-cell-4-26"><a href="#annotated-cell-4-26"></a>                       <span class="fu">STL</span>(Cement <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="annotated-cell-4-27"><a href="#annotated-cell-4-27"></a>                             <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>),</span>
+<span id="annotated-cell-4-28"><a href="#annotated-cell-4-28"></a>                           <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<span id="annotated-cell-4-29"><a href="#annotated-cell-4-29"></a>                       <span class="fu">ETS</span>(season_adjust <span class="sc">~</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
+<span id="annotated-cell-4-30"><a href="#annotated-cell-4-30"></a>                     ),</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="4">4</button><span id="annotated-cell-4-31" class="code-annotation-target"><a href="#annotated-cell-4-31"></a>                     <span class="at">weights =</span> <span class="st">"inv_var"</span></span>
+<span id="annotated-cell-4-32"><a href="#annotated-cell-4-32"></a>                   )</span>
+<span id="annotated-cell-4-33"><a href="#annotated-cell-4-33"></a>  )</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-4" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-4" data-code-lines="11" data-code-annotation="1"><code>combination_ensemble()</code> defines the combination inside <code>model()</code>. Every sub-model is re-fitted automatically.</span>
+</dd>
+<dt data-target-cell="annotated-cell-4" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-4" data-code-lines="20" data-code-annotation="2"><code>weights = "equal"</code> gives each model weight <span class="math inline">1/K</span>. Equivalent to the <code>mutate()</code> average.</span>
+</dd>
+<dt data-target-cell="annotated-cell-4" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-4" data-code-lines="22" data-code-annotation="3">A second combination with data-driven weights.</span>
+</dd>
+<dt data-target-cell="annotated-cell-4" data-target-annotation="4">4</dt>
+<dd>
+<span data-code-cell="annotated-cell-4" data-code-lines="31" data-code-annotation="4"><code>weights = "inv_var"</code> assigns weights inversely proportional to each model’s in-sample error variance.</span>
+</dd>
+</dl>
+</div>
+</div>
+</section>
+<section id="forecasts-and-accuracy" class="slide level2">
+<h2>Forecasts and Accuracy</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>cement_fc2 <span class="ot">&lt;-</span> cement_fit2 <span class="sc">|&gt;</span></span>
+<span id="cb1-2"><a></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="fu">nrow</span>(cement_test))</span>
+<span id="cb1-3"><a></a></span>
+<span id="cb1-4"><a></a>cement_accu <span class="ot">&lt;-</span> cement_fc2 <span class="sc">|&gt;</span></span>
+<span id="cb1-5"><a></a>  <span class="fu">accuracy</span>(cement_test) <span class="sc">|&gt;</span></span>
+<span id="cb1-6"><a></a>  <span class="fu">select</span>(.model, RMSE, MAE, MAPE, MASE) <span class="sc">|&gt;</span></span>
+<span id="cb1-7"><a></a>  <span class="fu">arrange</span>(RMSE)</span>
+<span id="cb1-8"><a></a></span>
+<span id="cb1-9"><a></a>cement_accu</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[".model"],"name":[1],"type":["chr"],"align":["left"]},{"label":["RMSE"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["MAE"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["MAPE"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["MASE"],"name":[5],"type":["dbl"],"align":["right"]}],"data":[{"1":"ets","2":"143.7987","3":"121.1582","4":"5.321116","5":"NaN"},{"1":"comb_inv_var","2":"143.7987","3":"121.1582","4":"5.321117","5":"NaN"},{"1":"comb_equal","2":"161.7011","3":"135.8690","4":"5.909946","5":"NaN"},{"1":"stlf","2":"176.6838","3":"143.8636","4":"6.488557","5":"NaN"},{"1":"arima","2":"222.2080","3":"180.9280","4":"7.589880","5":"NaN"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="bootstrap_combinations_draft_files/figure-html/cement-fc-plot-revealjs-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img data-src="bootstrap_combinations_draft_files/figure-html/cement-fc-plot-revealjs-1.png" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="bootstrapping-and-bagging" class="title-slide slide level1 center">
+<h1>Bootstrapping and Bagging</h1>
+
+</section>
+<section id="the-idea-simulating-alternative-histories" class="slide level2">
+<h2>The idea: simulating alternative histories</h2>
+<p>Combinations average across <strong>different models</strong> fitted to the same data. Bagging takes a complementary approach: average across <strong>the same model</strong> fitted to many <strong>simulated versions</strong> of the data.</p>
+<div class="fragment">
+<p>A single model fit is one realization of what could have happened given a different path of random shocks. If we observe many plausible alternative histories of the series, we can average forecasts from all of them — reducing variance without changing the model family.</p>
+</div>
+</section>
+<section id="how-block-bootstrap-works" class="slide level2 scrollable">
+<h2>How Block Bootstrap Works</h2>
+<p>Standard bootstrap (resample observations independently) breaks temporal dependence. For time series, we use <strong>block bootstrap</strong>:</p>
+<ol type="1">
+<li class="fragment">Decompose the series with STL → isolate the <strong>remainder</strong> component</li>
+<li class="fragment">Resample the remainder in <strong>blocks</strong> to preserve local autocorrelation</li>
+<li class="fragment">Reconstruct synthetic series: trend + seasonal + bootstrapped remainder</li>
+<li class="fragment">Repeat <span class="math inline">B</span> times → <span class="math inline">B</span> plausible alternative histories</li>
+</ol>
+<div class="fragment">
+<p><strong>Bagging</strong> (Bootstrap AGGregating) = fit a model to each bootstrapped series, then average the <span class="math inline">B</span> forecasts.</p>
+</div>
+</section>
+<section id="generating-bootstrap-series" class="slide level2">
+<h2>Generating Bootstrap Series</h2>
+<p>We continue with Cement to maintain continuity:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-6" data-llms-code-original="cement_stl <- cement_train |>
+  model(stl = STL(Cement ~ trend(window = NULL) +    #<1>
+                    season(window = &quot;periodic&quot;),
+                  robust = TRUE))"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-6-1"><a href="#annotated-cell-6-1"></a>cement_stl <span class="ot">&lt;-</span> cement_train <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="1">1</button><span id="annotated-cell-6-2" class="code-annotation-target"><a href="#annotated-cell-6-2"></a>  <span class="fu">model</span>(<span class="at">stl =</span> <span class="fu">STL</span>(Cement <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="annotated-cell-6-3"><a href="#annotated-cell-6-3"></a>                    <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>),</span>
+<span id="annotated-cell-6-4"><a href="#annotated-cell-6-4"></a>                  <span class="at">robust =</span> <span class="cn">TRUE</span>))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-6" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-6" data-code-lines="2" data-code-annotation="1">We need the fitted STL object to generate bootstrap series from it.</span>
+</dd>
+</dl>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-7" data-llms-code-original="set.seed(2025)
+
+cement_sim <- cement_stl |>
+  generate(
+    new_data             = cement_train, #<1>
+    times                = 100,          #<2>
+    bootstrap_block_size = 8             #<3>
+  ) |>
+  select(-.model, -Cement)               #<4>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-7-1"><a href="#annotated-cell-7-1"></a><span class="fu">set.seed</span>(<span class="dv">2025</span>)</span>
+<span id="annotated-cell-7-2"><a href="#annotated-cell-7-2"></a></span>
+<span id="annotated-cell-7-3"><a href="#annotated-cell-7-3"></a>cement_sim <span class="ot">&lt;-</span> cement_stl <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-7-4"><a href="#annotated-cell-7-4"></a>  <span class="fu">generate</span>(</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="1">1</button><span id="annotated-cell-7-5" class="code-annotation-target"><a href="#annotated-cell-7-5"></a>    <span class="at">new_data             =</span> cement_train,</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="2">2</button><span id="annotated-cell-7-6" class="code-annotation-target"><a href="#annotated-cell-7-6"></a>    <span class="at">times                =</span> <span class="dv">100</span>,</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="3">3</button><span id="annotated-cell-7-7" class="code-annotation-target"><a href="#annotated-cell-7-7"></a>    <span class="at">bootstrap_block_size =</span> <span class="dv">8</span></span>
+<span id="annotated-cell-7-8"><a href="#annotated-cell-7-8"></a>  ) <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="4">4</button><span id="annotated-cell-7-9" class="code-annotation-target"><a href="#annotated-cell-7-9"></a>  <span class="fu">select</span>(<span class="sc">-</span>.model, <span class="sc">-</span>Cement)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-7" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-7" data-code-lines="5" data-code-annotation="1">Regenerate over the training period.</span>
+</dd>
+<dt data-target-cell="annotated-cell-7" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-7" data-code-lines="6" data-code-annotation="2">100 bootstrapped alternative histories.</span>
+</dd>
+<dt data-target-cell="annotated-cell-7" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-7" data-code-lines="7" data-code-annotation="3">Block size of 8 quarters (~2 years) — preserves seasonal autocorrelation in the remainder.</span>
+</dd>
+<dt data-target-cell="annotated-cell-7" data-target-annotation="4">4</dt>
+<dd>
+<span data-code-cell="annotated-cell-7" data-code-lines="9" data-code-annotation="4">Drop the original series column; <code>.sim</code> contains the bootstrapped values.</span>
+</dd>
+</dl>
+</div>
+</div>
+<div class="callout callout-tip callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Choosing the block size</strong></p>
+</div>
+<div class="callout-content">
+<p>A rule of thumb: one or two seasonal periods. For quarterly data (<span class="math inline">m = 4</span>), <code>bootstrap_block_size = 4</code> or <code>8</code> is typically appropriate.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="visualizing-the-bootstrap-series" class="slide level2">
+<h2>Visualizing the Bootstrap Series</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="bootstrap_combinations_draft_files/figure-html/cement-bootstrap-plot-revealjs-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img data-src="bootstrap_combinations_draft_files/figure-html/cement-bootstrap-plot-revealjs-1.png" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="fitting-forecasting-and-averaging" class="slide level2">
+<h2>Fitting, Forecasting, and Averaging</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-8" data-llms-code-original="cement_bag_fit <- cement_sim |>
+  model(ets = ETS(.sim))  #<1>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-8-1"><a href="#annotated-cell-8-1"></a>cement_bag_fit <span class="ot">&lt;-</span> cement_sim <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-8" data-target-annotation="1">1</button><span id="annotated-cell-8-2" class="code-annotation-target"><a href="#annotated-cell-8-2"></a>  <span class="fu">model</span>(<span class="at">ets =</span> <span class="fu">ETS</span>(.sim))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-8" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-8" data-code-lines="2" data-code-annotation="1"><code>fable</code> fits one ETS model per bootstrapped series (100 models). The key variable <code>.rep</code> distinguishes each replicate.</span>
+</dd>
+</dl>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-9" data-llms-code-original="cement_bag_mean <- cement_bag_fit |>
+  forecast(h = nrow(cement_test)) |>
+  summarise(                          #<1>
+    bagged_mean = mean(.mean)         #<2>
+  )"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-9-1"><a href="#annotated-cell-9-1"></a>cement_bag_mean <span class="ot">&lt;-</span> cement_bag_fit <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-9-2"><a href="#annotated-cell-9-2"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="fu">nrow</span>(cement_test)) <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-9" data-target-annotation="1">1</button><span id="annotated-cell-9-3" class="code-annotation-target"><a href="#annotated-cell-9-3"></a>  <span class="fu">summarise</span>(</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-9" data-target-annotation="2">2</button><span id="annotated-cell-9-4" class="code-annotation-target"><a href="#annotated-cell-9-4"></a>    <span class="at">bagged_mean =</span> <span class="fu">mean</span>(.mean)</span>
+<span id="annotated-cell-9-5"><a href="#annotated-cell-9-5"></a>  )</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-9" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-9" data-code-lines="3" data-code-annotation="1">Collapse the 100 forecast trajectories into a single point forecast.</span>
+</dd>
+<dt data-target-cell="annotated-cell-9" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-9" data-code-lines="4" data-code-annotation="2">The bagged forecast is the simple average across replicates.</span>
+</dd>
+</dl>
+</div>
+</div>
+</section>
+<section id="comparing-bagging-with-individual-models" class="slide level2">
+<h2>Comparing Bagging with Individual Models</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a>cement_bag_accu <span class="ot">&lt;-</span> cement_test <span class="sc">|&gt;</span></span>
+<span id="cb2-2"><a></a>  <span class="fu">left_join</span>(cement_bag_mean, <span class="at">by =</span> <span class="st">"Quarter"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-3"><a></a>  <span class="fu">summarise</span>(</span>
+<span id="cb2-4"><a></a>    <span class="at">.model =</span> <span class="st">"bagging_ets"</span>,</span>
+<span id="cb2-5"><a></a>    <span class="at">RMSE   =</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>((Cement <span class="sc">-</span> bagged_mean)<span class="sc">^</span><span class="dv">2</span>)),</span>
+<span id="cb2-6"><a></a>    <span class="at">MAE    =</span> <span class="fu">mean</span>(<span class="fu">abs</span>(Cement <span class="sc">-</span> bagged_mean)),</span>
+<span id="cb2-7"><a></a>    <span class="at">MAPE   =</span> <span class="fu">mean</span>(<span class="fu">abs</span>((Cement <span class="sc">-</span> bagged_mean) <span class="sc">/</span> Cement)) <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb2-8"><a></a>  )</span>
+<span id="cb2-9"><a></a></span>
+<span id="cb2-10"><a></a><span class="fu">bind_rows</span>(cement_accu, cement_bag_accu) <span class="sc">|&gt;</span> <span class="fu">arrange</span>(RMSE)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="callout callout-warning callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Bagging and <code>fable</code> combinations</strong></p>
+</div>
+<div class="callout-content">
+<p>Bagged forecasts come from 100 separately keyed series (<code>.rep</code>) and cannot be piped into <code>combination_ensemble()</code> alongside standard models. Compare them with other models manually via <code>accuracy()</code>.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-tip callout-style-simple">
+<div class="callout-body">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-content">
+<p>Bagging helps most when the series is short or volatile. On longer, stable series the improvement over a single well-fitted model is often modest.</p>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="the-full-picture-three-datasets" class="title-slide slide level1 center">
+<h1>The Full Picture: Three Datasets</h1>
+
+</section>
+<section id="series-overview" class="slide level2">
+<h2>Series overview</h2>
+<p>We now apply both strategies to three series from across the course, putting every model we have built this semester head-to-head:</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Dataset</th>
+<th style="text-align: left;">Models available</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">aus_production (Beer)</td>
+<td style="text-align: left;">ETS, ARIMA, STLF, TSLM, Prophet</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">mexretail</td>
+<td style="text-align: left;">ETS, ARIMA, STLF, TSLM, Prophet</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">aus_accommodation (NSW)</td>
+<td style="text-align: left;">All above + dynamic regression (CPI)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="callout callout-note callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Bagging with other models</strong></p>
+</div>
+<div class="callout-content">
+<p>The bagging pipeline works with any model that <code>fable</code> can fit — ARIMA, Prophet, etc. We use ETS here because it is the approach validated by Bergmeir, Hyndman &amp; Benitez (2016), and because fitting 100 ARIMAs with automatic order selection is substantially slower. ETS is fast, robust, and well-supported by the literature for this use case.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="data-setup" class="slide level2">
+<h2>Data Setup</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="co"># --- Beer ---</span></span>
+<span id="cb3-2"><a></a>beer <span class="ot">&lt;-</span> aus_production <span class="sc">|&gt;</span></span>
+<span id="cb3-3"><a></a>  <span class="fu">select</span>(Quarter, Beer) <span class="sc">|&gt;</span></span>
+<span id="cb3-4"><a></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Beer))</span>
+<span id="cb3-5"><a></a></span>
+<span id="cb3-6"><a></a>beer_train <span class="ot">&lt;-</span> beer <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">year</span>(Quarter) <span class="sc">&lt;=</span> <span class="dv">2006</span>)</span>
+<span id="cb3-7"><a></a>beer_test  <span class="ot">&lt;-</span> beer <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">year</span>(Quarter) <span class="sc">&gt;</span>  <span class="dv">2006</span>)</span>
+<span id="cb3-8"><a></a></span>
+<span id="cb3-9"><a></a><span class="co"># --- mexretail ---</span></span>
+<span id="cb3-10"><a></a>mexretail <span class="ot">&lt;-</span> <span class="fu">tq_get</span>(</span>
+<span id="cb3-11"><a></a>  <span class="st">"MEXSLRTTO01IXOBM"</span>,</span>
+<span id="cb3-12"><a></a>  <span class="at">get  =</span> <span class="st">"economic.data"</span>,</span>
+<span id="cb3-13"><a></a>  <span class="at">from =</span> <span class="st">"1985-01-01"</span></span>
+<span id="cb3-14"><a></a>) <span class="sc">|&gt;</span></span>
+<span id="cb3-15"><a></a>  <span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">yearmonth</span>(date)) <span class="sc">|&gt;</span></span>
+<span id="cb3-16"><a></a>  <span class="fu">rename</span>(<span class="at">y =</span> price) <span class="sc">|&gt;</span></span>
+<span id="cb3-17"><a></a>  <span class="fu">as_tsibble</span>(<span class="at">index =</span> date)</span>
+<span id="cb3-18"><a></a></span>
+<span id="cb3-19"><a></a>mexretail_train <span class="ot">&lt;-</span> mexretail <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">year</span>(date) <span class="sc">&lt;=</span> <span class="dv">2019</span>)</span>
+<span id="cb3-20"><a></a>mexretail_test  <span class="ot">&lt;-</span> mexretail <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">year</span>(date) <span class="sc">&gt;</span>  <span class="dv">2019</span>)</span>
+<span id="cb3-21"><a></a></span>
+<span id="cb3-22"><a></a><span class="co"># --- NSW accommodation ---</span></span>
+<span id="cb3-23"><a></a>nsw <span class="ot">&lt;-</span> aus_accommodation <span class="sc">|&gt;</span></span>
+<span id="cb3-24"><a></a>  <span class="fu">filter</span>(State <span class="sc">==</span> <span class="st">"New South Wales"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb3-25"><a></a>  <span class="fu">select</span>(Quarter, Takings, CPI)</span>
+<span id="cb3-26"><a></a></span>
+<span id="cb3-27"><a></a>nsw_train <span class="ot">&lt;-</span> nsw <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">year</span>(Quarter) <span class="sc">&lt;=</span> <span class="dv">2012</span>)</span>
+<span id="cb3-28"><a></a>nsw_test  <span class="ot">&lt;-</span> nsw <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">year</span>(Quarter) <span class="sc">&gt;</span>  <span class="dv">2012</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="beer-full-model-comparison" class="slide level2">
+<h2>Beer: Full Model Comparison</h2>
+<div class="panel-tabset">
+<ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">Models &amp; Combinations</a></li><li><a href="#tabset-1-2">Bagging</a></li><li><a href="#tabset-1-3">Accuracy</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-12" data-llms-code-original="beer_fit <- beer_train |>
+  model(
+    tslm         = TSLM(Beer ~ trend() + season()),        #<1>
+    ets          = ETS(Beer),
+    arima        = ARIMA(Beer),
+    stlf         = decomposition_model(
+                     STL(Beer ~ trend(window = NULL) +
+                           season(window = &quot;periodic&quot;),
+                         robust = TRUE),
+                     ETS(season_adjust ~ season(&quot;N&quot;))
+                   ),
+    prophet      = prophet(Beer),                          #<2>
+    comb_equal   = combination_ensemble(
+                     TSLM(Beer ~ trend() + season()),
+                     ETS(Beer),
+                     ARIMA(Beer),
+                     decomposition_model(
+                       STL(Beer ~ trend(window = NULL) +
+                             season(window = &quot;periodic&quot;),
+                           robust = TRUE),
+                       ETS(season_adjust ~ season(&quot;N&quot;))
+                     ),
+                     prophet(Beer),
+                     weights = &quot;equal&quot;
+                   ),
+    comb_inv_var = combination_ensemble(
+                     TSLM(Beer ~ trend() + season()),
+                     ETS(Beer),
+                     ARIMA(Beer),
+                     decomposition_model(
+                       STL(Beer ~ trend(window = NULL) +
+                             season(window = &quot;periodic&quot;),
+                           robust = TRUE),
+                       ETS(season_adjust ~ season(&quot;N&quot;))
+                     ),
+                     prophet(Beer),
+                     weights = &quot;inv_var&quot;
+                   )
+  )"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-12-1"><a href="#annotated-cell-12-1"></a>beer_fit <span class="ot">&lt;-</span> beer_train <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-12-2"><a href="#annotated-cell-12-2"></a>  <span class="fu">model</span>(</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-12" data-target-annotation="1">1</button><span id="annotated-cell-12-3" class="code-annotation-target"><a href="#annotated-cell-12-3"></a>    <span class="at">tslm         =</span> <span class="fu">TSLM</span>(Beer <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>()),</span>
+<span id="annotated-cell-12-4"><a href="#annotated-cell-12-4"></a>    <span class="at">ets          =</span> <span class="fu">ETS</span>(Beer),</span>
+<span id="annotated-cell-12-5"><a href="#annotated-cell-12-5"></a>    <span class="at">arima        =</span> <span class="fu">ARIMA</span>(Beer),</span>
+<span id="annotated-cell-12-6"><a href="#annotated-cell-12-6"></a>    <span class="at">stlf         =</span> <span class="fu">decomposition_model</span>(</span>
+<span id="annotated-cell-12-7"><a href="#annotated-cell-12-7"></a>                     <span class="fu">STL</span>(Beer <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="annotated-cell-12-8"><a href="#annotated-cell-12-8"></a>                           <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>),</span>
+<span id="annotated-cell-12-9"><a href="#annotated-cell-12-9"></a>                         <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<span id="annotated-cell-12-10"><a href="#annotated-cell-12-10"></a>                     <span class="fu">ETS</span>(season_adjust <span class="sc">~</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
+<span id="annotated-cell-12-11"><a href="#annotated-cell-12-11"></a>                   ),</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-12" data-target-annotation="2">2</button><span id="annotated-cell-12-12" class="code-annotation-target"><a href="#annotated-cell-12-12"></a>    <span class="at">prophet      =</span> <span class="fu">prophet</span>(Beer),</span>
+<span id="annotated-cell-12-13"><a href="#annotated-cell-12-13"></a>    <span class="at">comb_equal   =</span> <span class="fu">combination_ensemble</span>(</span>
+<span id="annotated-cell-12-14"><a href="#annotated-cell-12-14"></a>                     <span class="fu">TSLM</span>(Beer <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>()),</span>
+<span id="annotated-cell-12-15"><a href="#annotated-cell-12-15"></a>                     <span class="fu">ETS</span>(Beer),</span>
+<span id="annotated-cell-12-16"><a href="#annotated-cell-12-16"></a>                     <span class="fu">ARIMA</span>(Beer),</span>
+<span id="annotated-cell-12-17"><a href="#annotated-cell-12-17"></a>                     <span class="fu">decomposition_model</span>(</span>
+<span id="annotated-cell-12-18"><a href="#annotated-cell-12-18"></a>                       <span class="fu">STL</span>(Beer <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="annotated-cell-12-19"><a href="#annotated-cell-12-19"></a>                             <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>),</span>
+<span id="annotated-cell-12-20"><a href="#annotated-cell-12-20"></a>                           <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<span id="annotated-cell-12-21"><a href="#annotated-cell-12-21"></a>                       <span class="fu">ETS</span>(season_adjust <span class="sc">~</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
+<span id="annotated-cell-12-22"><a href="#annotated-cell-12-22"></a>                     ),</span>
+<span id="annotated-cell-12-23"><a href="#annotated-cell-12-23"></a>                     <span class="fu">prophet</span>(Beer),</span>
+<span id="annotated-cell-12-24"><a href="#annotated-cell-12-24"></a>                     <span class="at">weights =</span> <span class="st">"equal"</span></span>
+<span id="annotated-cell-12-25"><a href="#annotated-cell-12-25"></a>                   ),</span>
+<span id="annotated-cell-12-26"><a href="#annotated-cell-12-26"></a>    <span class="at">comb_inv_var =</span> <span class="fu">combination_ensemble</span>(</span>
+<span id="annotated-cell-12-27"><a href="#annotated-cell-12-27"></a>                     <span class="fu">TSLM</span>(Beer <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>()),</span>
+<span id="annotated-cell-12-28"><a href="#annotated-cell-12-28"></a>                     <span class="fu">ETS</span>(Beer),</span>
+<span id="annotated-cell-12-29"><a href="#annotated-cell-12-29"></a>                     <span class="fu">ARIMA</span>(Beer),</span>
+<span id="annotated-cell-12-30"><a href="#annotated-cell-12-30"></a>                     <span class="fu">decomposition_model</span>(</span>
+<span id="annotated-cell-12-31"><a href="#annotated-cell-12-31"></a>                       <span class="fu">STL</span>(Beer <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="annotated-cell-12-32"><a href="#annotated-cell-12-32"></a>                             <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>),</span>
+<span id="annotated-cell-12-33"><a href="#annotated-cell-12-33"></a>                           <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<span id="annotated-cell-12-34"><a href="#annotated-cell-12-34"></a>                       <span class="fu">ETS</span>(season_adjust <span class="sc">~</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
+<span id="annotated-cell-12-35"><a href="#annotated-cell-12-35"></a>                     ),</span>
+<span id="annotated-cell-12-36"><a href="#annotated-cell-12-36"></a>                     <span class="fu">prophet</span>(Beer),</span>
+<span id="annotated-cell-12-37"><a href="#annotated-cell-12-37"></a>                     <span class="at">weights =</span> <span class="st">"inv_var"</span></span>
+<span id="annotated-cell-12-38"><a href="#annotated-cell-12-38"></a>                   )</span>
+<span id="annotated-cell-12-39"><a href="#annotated-cell-12-39"></a>  )</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-12" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-12" data-code-lines="3" data-code-annotation="1">TSLM with deterministic trend and seasonal dummies — no external regressors available for Beer.</span>
+</dd>
+<dt data-target-cell="annotated-cell-12" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-12" data-code-lines="12" data-code-annotation="2">Requires <code>fable.prophet</code>. Uses default automatic specification.</span>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div id="tabset-1-2">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a><span class="fu">set.seed</span>(<span class="dv">2025</span>)</span>
+<span id="cb4-2"><a></a></span>
+<span id="cb4-3"><a></a>beer_bag_mean <span class="ot">&lt;-</span> beer_train <span class="sc">|&gt;</span></span>
+<span id="cb4-4"><a></a>  <span class="fu">model</span>(<span class="at">stl =</span> <span class="fu">STL</span>(Beer <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb4-5"><a></a>                    <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>),</span>
+<span id="cb4-6"><a></a>                  <span class="at">robust =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb4-7"><a></a>  <span class="fu">generate</span>(</span>
+<span id="cb4-8"><a></a>    <span class="at">new_data             =</span> beer_train,</span>
+<span id="cb4-9"><a></a>    <span class="at">times                =</span> <span class="dv">100</span>,</span>
+<span id="cb4-10"><a></a>    <span class="at">bootstrap_block_size =</span> <span class="dv">4</span></span>
+<span id="cb4-11"><a></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb4-12"><a></a>  <span class="fu">select</span>(<span class="sc">-</span>.model, <span class="sc">-</span>Beer) <span class="sc">|&gt;</span></span>
+<span id="cb4-13"><a></a>  <span class="fu">model</span>(<span class="at">ets =</span> <span class="fu">ETS</span>(.sim)) <span class="sc">|&gt;</span></span>
+<span id="cb4-14"><a></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="fu">nrow</span>(beer_test)) <span class="sc">|&gt;</span></span>
+<span id="cb4-15"><a></a>  <span class="fu">summarise</span>(<span class="at">bagged_mean =</span> <span class="fu">mean</span>(.mean), <span class="at">.by =</span> Quarter)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+<div id="tabset-1-3">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>beer_accu_std <span class="ot">&lt;-</span> beer_fit <span class="sc">|&gt;</span></span>
+<span id="cb5-2"><a></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="fu">nrow</span>(beer_test)) <span class="sc">|&gt;</span></span>
+<span id="cb5-3"><a></a>  <span class="fu">accuracy</span>(beer_test) <span class="sc">|&gt;</span></span>
+<span id="cb5-4"><a></a>  <span class="fu">select</span>(.model, RMSE, MAE, MAPE)</span>
+<span id="cb5-5"><a></a></span>
+<span id="cb5-6"><a></a>beer_accu_bag <span class="ot">&lt;-</span> beer_test <span class="sc">|&gt;</span></span>
+<span id="cb5-7"><a></a>  <span class="fu">left_join</span>(beer_bag_mean, <span class="at">by =</span> <span class="st">"Quarter"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb5-8"><a></a>  <span class="fu">summarise</span>(</span>
+<span id="cb5-9"><a></a>    <span class="at">.model =</span> <span class="st">"bagging_ets"</span>,</span>
+<span id="cb5-10"><a></a>    <span class="at">RMSE   =</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>((Beer <span class="sc">-</span> bagged_mean)<span class="sc">^</span><span class="dv">2</span>)),</span>
+<span id="cb5-11"><a></a>    <span class="at">MAE    =</span> <span class="fu">mean</span>(<span class="fu">abs</span>(Beer <span class="sc">-</span> bagged_mean)),</span>
+<span id="cb5-12"><a></a>    <span class="at">MAPE   =</span> <span class="fu">mean</span>(<span class="fu">abs</span>((Beer <span class="sc">-</span> bagged_mean) <span class="sc">/</span> Beer)) <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb5-13"><a></a>  )</span>
+<span id="cb5-14"><a></a></span>
+<span id="cb5-15"><a></a><span class="fu">bind_rows</span>(beer_accu_std, beer_accu_bag) <span class="sc">|&gt;</span> <span class="fu">arrange</span>(RMSE)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="mexretail-full-model-comparison" class="slide level2">
+<h2>mexretail: Full Model Comparison</h2>
+<div class="panel-tabset">
+<ul id="tabset-2" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-2-1">Models &amp; Combinations</a></li><li><a href="#tabset-2-2">Bagging</a></li><li><a href="#tabset-2-3">Accuracy</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>mexretail_fit <span class="ot">&lt;-</span> mexretail_train <span class="sc">|&gt;</span></span>
+<span id="cb6-2"><a></a>  <span class="fu">model</span>(</span>
+<span id="cb6-3"><a></a>    <span class="at">tslm         =</span> <span class="fu">TSLM</span>(<span class="fu">log</span>(y) <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>()),</span>
+<span id="cb6-4"><a></a>    <span class="at">ets          =</span> <span class="fu">ETS</span>(y),</span>
+<span id="cb6-5"><a></a>    <span class="at">arima        =</span> <span class="fu">ARIMA</span>(<span class="fu">log</span>(y)),</span>
+<span id="cb6-6"><a></a>    <span class="at">stlf         =</span> <span class="fu">decomposition_model</span>(</span>
+<span id="cb6-7"><a></a>                     <span class="fu">STL</span>(<span class="fu">log</span>(y) <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb6-8"><a></a>                           <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>),</span>
+<span id="cb6-9"><a></a>                         <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb6-10"><a></a>                     <span class="fu">ETS</span>(season_adjust <span class="sc">~</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
+<span id="cb6-11"><a></a>                   ),</span>
+<span id="cb6-12"><a></a>    <span class="at">prophet      =</span> <span class="fu">prophet</span>(y),</span>
+<span id="cb6-13"><a></a>    <span class="at">comb_equal   =</span> <span class="fu">combination_ensemble</span>(</span>
+<span id="cb6-14"><a></a>                     <span class="fu">TSLM</span>(<span class="fu">log</span>(y) <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>()),</span>
+<span id="cb6-15"><a></a>                     <span class="fu">ETS</span>(y),</span>
+<span id="cb6-16"><a></a>                     <span class="fu">ARIMA</span>(<span class="fu">log</span>(y)),</span>
+<span id="cb6-17"><a></a>                     <span class="fu">decomposition_model</span>(</span>
+<span id="cb6-18"><a></a>                       <span class="fu">STL</span>(<span class="fu">log</span>(y) <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb6-19"><a></a>                             <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>),</span>
+<span id="cb6-20"><a></a>                           <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb6-21"><a></a>                       <span class="fu">ETS</span>(season_adjust <span class="sc">~</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
+<span id="cb6-22"><a></a>                     ),</span>
+<span id="cb6-23"><a></a>                     <span class="fu">prophet</span>(y),</span>
+<span id="cb6-24"><a></a>                     <span class="at">weights =</span> <span class="st">"equal"</span></span>
+<span id="cb6-25"><a></a>                   ),</span>
+<span id="cb6-26"><a></a>    <span class="at">comb_inv_var =</span> <span class="fu">combination_ensemble</span>(</span>
+<span id="cb6-27"><a></a>                     <span class="fu">TSLM</span>(<span class="fu">log</span>(y) <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>()),</span>
+<span id="cb6-28"><a></a>                     <span class="fu">ETS</span>(y),</span>
+<span id="cb6-29"><a></a>                     <span class="fu">ARIMA</span>(<span class="fu">log</span>(y)),</span>
+<span id="cb6-30"><a></a>                     <span class="fu">decomposition_model</span>(</span>
+<span id="cb6-31"><a></a>                       <span class="fu">STL</span>(<span class="fu">log</span>(y) <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb6-32"><a></a>                             <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>),</span>
+<span id="cb6-33"><a></a>                           <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb6-34"><a></a>                       <span class="fu">ETS</span>(season_adjust <span class="sc">~</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
+<span id="cb6-35"><a></a>                     ),</span>
+<span id="cb6-36"><a></a>                     <span class="fu">prophet</span>(y),</span>
+<span id="cb6-37"><a></a>                     <span class="at">weights =</span> <span class="st">"inv_var"</span></span>
+<span id="cb6-38"><a></a>                   )</span>
+<span id="cb6-39"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+<div id="tabset-2-2">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a><span class="fu">set.seed</span>(<span class="dv">2025</span>)</span>
+<span id="cb7-2"><a></a></span>
+<span id="cb7-3"><a></a>mexretail_bag_mean <span class="ot">&lt;-</span> mexretail_train <span class="sc">|&gt;</span></span>
+<span id="cb7-4"><a></a>  <span class="fu">model</span>(<span class="at">stl =</span> <span class="fu">STL</span>(<span class="fu">log</span>(y) <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb7-5"><a></a>                    <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>),</span>
+<span id="cb7-6"><a></a>                  <span class="at">robust =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb7-7"><a></a>  <span class="fu">generate</span>(</span>
+<span id="cb7-8"><a></a>    <span class="at">new_data             =</span> mexretail_train,</span>
+<span id="cb7-9"><a></a>    <span class="at">times                =</span> <span class="dv">100</span>,</span>
+<span id="cb7-10"><a></a>    <span class="at">bootstrap_block_size =</span> <span class="dv">12</span></span>
+<span id="cb7-11"><a></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb7-12"><a></a>  <span class="fu">select</span>(<span class="sc">-</span>.model, <span class="sc">-</span>y) <span class="sc">|&gt;</span></span>
+<span id="cb7-13"><a></a>  <span class="fu">model</span>(<span class="at">ets =</span> <span class="fu">ETS</span>(.sim)) <span class="sc">|&gt;</span></span>
+<span id="cb7-14"><a></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="fu">nrow</span>(mexretail_test)) <span class="sc">|&gt;</span></span>
+<span id="cb7-15"><a></a>  <span class="fu">summarise</span>(<span class="at">bagged_mean =</span> <span class="fu">mean</span>(.mean), <span class="at">.by =</span> date)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+<div id="tabset-2-3">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>mexretail_accu_std <span class="ot">&lt;-</span> mexretail_fit <span class="sc">|&gt;</span></span>
+<span id="cb8-2"><a></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="fu">nrow</span>(mexretail_test)) <span class="sc">|&gt;</span></span>
+<span id="cb8-3"><a></a>  <span class="fu">accuracy</span>(mexretail_test) <span class="sc">|&gt;</span></span>
+<span id="cb8-4"><a></a>  <span class="fu">select</span>(.model, RMSE, MAE, MAPE)</span>
+<span id="cb8-5"><a></a></span>
+<span id="cb8-6"><a></a>mexretail_accu_bag <span class="ot">&lt;-</span> mexretail_test <span class="sc">|&gt;</span></span>
+<span id="cb8-7"><a></a>  <span class="fu">left_join</span>(mexretail_bag_mean, <span class="at">by =</span> <span class="st">"date"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb8-8"><a></a>  <span class="fu">summarise</span>(</span>
+<span id="cb8-9"><a></a>    <span class="at">.model =</span> <span class="st">"bagging_ets"</span>,</span>
+<span id="cb8-10"><a></a>    <span class="at">RMSE   =</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>((y <span class="sc">-</span> bagged_mean)<span class="sc">^</span><span class="dv">2</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)),</span>
+<span id="cb8-11"><a></a>    <span class="at">MAE    =</span> <span class="fu">mean</span>(<span class="fu">abs</span>(y <span class="sc">-</span> bagged_mean), <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb8-12"><a></a>    <span class="at">MAPE   =</span> <span class="fu">mean</span>(<span class="fu">abs</span>((y <span class="sc">-</span> bagged_mean) <span class="sc">/</span> y), <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb8-13"><a></a>  )</span>
+<span id="cb8-14"><a></a></span>
+<span id="cb8-15"><a></a><span class="fu">bind_rows</span>(mexretail_accu_std, mexretail_accu_bag) <span class="sc">|&gt;</span> <span class="fu">arrange</span>(RMSE)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="nsw-accommodation-full-model-comparison" class="slide level2">
+<h2>NSW Accommodation: Full Model Comparison</h2>
+<div class="panel-tabset">
+<ul id="tabset-3" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-3-1">Models &amp; Combinations</a></li><li><a href="#tabset-3-2">Bagging</a></li><li><a href="#tabset-3-3">Accuracy</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-18" data-llms-code-original="nsw_fit <- nsw_train |>
+  model(
+    tslm         = TSLM(log(Takings) ~ trend() + season() + CPI), #<1>
+    ets          = ETS(log(Takings)),
+    arima        = ARIMA(log(Takings)),
+    dynreg       = ARIMA(log(Takings) ~ CPI),                     #<2>
+    stlf         = decomposition_model(
+                     STL(log(Takings) ~ trend(window = NULL) +
+                           season(window = &quot;periodic&quot;),
+                         robust = TRUE),
+                     ETS(season_adjust ~ season(&quot;N&quot;))
+                   ),
+    prophet      = prophet(log(Takings)),
+    comb_equal   = combination_ensemble(                           #<3>
+                     TSLM(log(Takings) ~ trend() + season() + CPI),
+                     ETS(log(Takings)),
+                     ARIMA(log(Takings)),
+                     decomposition_model(
+                       STL(log(Takings) ~ trend(window = NULL) +
+                             season(window = &quot;periodic&quot;),
+                           robust = TRUE),
+                       ETS(season_adjust ~ season(&quot;N&quot;))
+                     ),
+                     prophet(log(Takings)),
+                     weights = &quot;equal&quot;
+                   ),
+    comb_inv_var = combination_ensemble(
+                     TSLM(log(Takings) ~ trend() + season() + CPI),
+                     ETS(log(Takings)),
+                     ARIMA(log(Takings)),
+                     decomposition_model(
+                       STL(log(Takings) ~ trend(window = NULL) +
+                             season(window = &quot;periodic&quot;),
+                           robust = TRUE),
+                       ETS(season_adjust ~ season(&quot;N&quot;))
+                     ),
+                     prophet(log(Takings)),
+                     weights = &quot;inv_var&quot;
+                   )
+  )"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-18-1"><a href="#annotated-cell-18-1"></a>nsw_fit <span class="ot">&lt;-</span> nsw_train <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-18-2"><a href="#annotated-cell-18-2"></a>  <span class="fu">model</span>(</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-18" data-target-annotation="1">1</button><span id="annotated-cell-18-3" class="code-annotation-target"><a href="#annotated-cell-18-3"></a>    <span class="at">tslm         =</span> <span class="fu">TSLM</span>(<span class="fu">log</span>(Takings) <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>() <span class="sc">+</span> CPI),</span>
+<span id="annotated-cell-18-4"><a href="#annotated-cell-18-4"></a>    <span class="at">ets          =</span> <span class="fu">ETS</span>(<span class="fu">log</span>(Takings)),</span>
+<span id="annotated-cell-18-5"><a href="#annotated-cell-18-5"></a>    <span class="at">arima        =</span> <span class="fu">ARIMA</span>(<span class="fu">log</span>(Takings)),</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-18" data-target-annotation="2">2</button><span id="annotated-cell-18-6" class="code-annotation-target"><a href="#annotated-cell-18-6"></a>    <span class="at">dynreg       =</span> <span class="fu">ARIMA</span>(<span class="fu">log</span>(Takings) <span class="sc">~</span> CPI),</span>
+<span id="annotated-cell-18-7"><a href="#annotated-cell-18-7"></a>    <span class="at">stlf         =</span> <span class="fu">decomposition_model</span>(</span>
+<span id="annotated-cell-18-8"><a href="#annotated-cell-18-8"></a>                     <span class="fu">STL</span>(<span class="fu">log</span>(Takings) <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="annotated-cell-18-9"><a href="#annotated-cell-18-9"></a>                           <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>),</span>
+<span id="annotated-cell-18-10"><a href="#annotated-cell-18-10"></a>                         <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<span id="annotated-cell-18-11"><a href="#annotated-cell-18-11"></a>                     <span class="fu">ETS</span>(season_adjust <span class="sc">~</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
+<span id="annotated-cell-18-12"><a href="#annotated-cell-18-12"></a>                   ),</span>
+<span id="annotated-cell-18-13"><a href="#annotated-cell-18-13"></a>    <span class="at">prophet      =</span> <span class="fu">prophet</span>(<span class="fu">log</span>(Takings)),</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-18" data-target-annotation="3">3</button><span id="annotated-cell-18-14" class="code-annotation-target"><a href="#annotated-cell-18-14"></a>    <span class="at">comb_equal   =</span> <span class="fu">combination_ensemble</span>(</span>
+<span id="annotated-cell-18-15"><a href="#annotated-cell-18-15"></a>                     <span class="fu">TSLM</span>(<span class="fu">log</span>(Takings) <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>() <span class="sc">+</span> CPI),</span>
+<span id="annotated-cell-18-16"><a href="#annotated-cell-18-16"></a>                     <span class="fu">ETS</span>(<span class="fu">log</span>(Takings)),</span>
+<span id="annotated-cell-18-17"><a href="#annotated-cell-18-17"></a>                     <span class="fu">ARIMA</span>(<span class="fu">log</span>(Takings)),</span>
+<span id="annotated-cell-18-18"><a href="#annotated-cell-18-18"></a>                     <span class="fu">decomposition_model</span>(</span>
+<span id="annotated-cell-18-19"><a href="#annotated-cell-18-19"></a>                       <span class="fu">STL</span>(<span class="fu">log</span>(Takings) <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="annotated-cell-18-20"><a href="#annotated-cell-18-20"></a>                             <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>),</span>
+<span id="annotated-cell-18-21"><a href="#annotated-cell-18-21"></a>                           <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<span id="annotated-cell-18-22"><a href="#annotated-cell-18-22"></a>                       <span class="fu">ETS</span>(season_adjust <span class="sc">~</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
+<span id="annotated-cell-18-23"><a href="#annotated-cell-18-23"></a>                     ),</span>
+<span id="annotated-cell-18-24"><a href="#annotated-cell-18-24"></a>                     <span class="fu">prophet</span>(<span class="fu">log</span>(Takings)),</span>
+<span id="annotated-cell-18-25"><a href="#annotated-cell-18-25"></a>                     <span class="at">weights =</span> <span class="st">"equal"</span></span>
+<span id="annotated-cell-18-26"><a href="#annotated-cell-18-26"></a>                   ),</span>
+<span id="annotated-cell-18-27"><a href="#annotated-cell-18-27"></a>    <span class="at">comb_inv_var =</span> <span class="fu">combination_ensemble</span>(</span>
+<span id="annotated-cell-18-28"><a href="#annotated-cell-18-28"></a>                     <span class="fu">TSLM</span>(<span class="fu">log</span>(Takings) <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>() <span class="sc">+</span> CPI),</span>
+<span id="annotated-cell-18-29"><a href="#annotated-cell-18-29"></a>                     <span class="fu">ETS</span>(<span class="fu">log</span>(Takings)),</span>
+<span id="annotated-cell-18-30"><a href="#annotated-cell-18-30"></a>                     <span class="fu">ARIMA</span>(<span class="fu">log</span>(Takings)),</span>
+<span id="annotated-cell-18-31"><a href="#annotated-cell-18-31"></a>                     <span class="fu">decomposition_model</span>(</span>
+<span id="annotated-cell-18-32"><a href="#annotated-cell-18-32"></a>                       <span class="fu">STL</span>(<span class="fu">log</span>(Takings) <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="annotated-cell-18-33"><a href="#annotated-cell-18-33"></a>                             <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>),</span>
+<span id="annotated-cell-18-34"><a href="#annotated-cell-18-34"></a>                           <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<span id="annotated-cell-18-35"><a href="#annotated-cell-18-35"></a>                       <span class="fu">ETS</span>(season_adjust <span class="sc">~</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
+<span id="annotated-cell-18-36"><a href="#annotated-cell-18-36"></a>                     ),</span>
+<span id="annotated-cell-18-37"><a href="#annotated-cell-18-37"></a>                     <span class="fu">prophet</span>(<span class="fu">log</span>(Takings)),</span>
+<span id="annotated-cell-18-38"><a href="#annotated-cell-18-38"></a>                     <span class="at">weights =</span> <span class="st">"inv_var"</span></span>
+<span id="annotated-cell-18-39"><a href="#annotated-cell-18-39"></a>                   )</span>
+<span id="annotated-cell-18-40"><a href="#annotated-cell-18-40"></a>  )</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-18" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-18" data-code-lines="3" data-code-annotation="1">NSW has CPI available, so TSLM can use it as a predictor — unlike Beer and mexretail.</span>
+</dd>
+<dt data-target-cell="annotated-cell-18" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-18" data-code-lines="6" data-code-annotation="2">Dynamic regression: ARIMA errors + CPI regressor. Kept outside the combination (see note above).</span>
+</dd>
+<dt data-target-cell="annotated-cell-18" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-18" data-code-lines="14" data-code-annotation="3">The combination includes TSLM with CPI but not <code>dynreg</code> — both use CPI but their structures are incompatible inside <code>combination_ensemble()</code>.</span>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div id="tabset-3-2">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a><span class="fu">set.seed</span>(<span class="dv">2025</span>)</span>
+<span id="cb9-2"><a></a></span>
+<span id="cb9-3"><a></a>nsw_bag_mean <span class="ot">&lt;-</span> nsw_train <span class="sc">|&gt;</span></span>
+<span id="cb9-4"><a></a>  <span class="fu">model</span>(<span class="at">stl =</span> <span class="fu">STL</span>(<span class="fu">log</span>(Takings) <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb9-5"><a></a>                    <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>),</span>
+<span id="cb9-6"><a></a>                  <span class="at">robust =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb9-7"><a></a>  <span class="fu">generate</span>(</span>
+<span id="cb9-8"><a></a>    <span class="at">new_data             =</span> nsw_train,</span>
+<span id="cb9-9"><a></a>    <span class="at">times                =</span> <span class="dv">100</span>,</span>
+<span id="cb9-10"><a></a>    <span class="at">bootstrap_block_size =</span> <span class="dv">4</span></span>
+<span id="cb9-11"><a></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb9-12"><a></a>  <span class="fu">select</span>(<span class="sc">-</span>.model, <span class="sc">-</span>Takings) <span class="sc">|&gt;</span></span>
+<span id="cb9-13"><a></a>  <span class="fu">model</span>(<span class="at">ets =</span> <span class="fu">ETS</span>(.sim)) <span class="sc">|&gt;</span></span>
+<span id="cb9-14"><a></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="fu">nrow</span>(nsw_test)) <span class="sc">|&gt;</span></span>
+<span id="cb9-15"><a></a>  <span class="fu">summarise</span>(<span class="at">bagged_mean =</span> <span class="fu">mean</span>(.mean), <span class="at">.by =</span> Quarter)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+<div id="tabset-3-3">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a>nsw_accu_std <span class="ot">&lt;-</span> nsw_fit <span class="sc">|&gt;</span></span>
+<span id="cb10-2"><a></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="fu">nrow</span>(nsw_test), <span class="at">new_data =</span> nsw_test) <span class="sc">|&gt;</span></span>
+<span id="cb10-3"><a></a>  <span class="fu">accuracy</span>(nsw_test) <span class="sc">|&gt;</span></span>
+<span id="cb10-4"><a></a>  <span class="fu">select</span>(.model, RMSE, MAE, MAPE)</span>
+<span id="cb10-5"><a></a></span>
+<span id="cb10-6"><a></a>nsw_accu_bag <span class="ot">&lt;-</span> nsw_test <span class="sc">|&gt;</span></span>
+<span id="cb10-7"><a></a>  <span class="fu">left_join</span>(nsw_bag_mean, <span class="at">by =</span> <span class="st">"Quarter"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb10-8"><a></a>  <span class="fu">summarise</span>(</span>
+<span id="cb10-9"><a></a>    <span class="at">.model =</span> <span class="st">"bagging_ets"</span>,</span>
+<span id="cb10-10"><a></a>    <span class="at">RMSE   =</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>((Takings <span class="sc">-</span> bagged_mean)<span class="sc">^</span><span class="dv">2</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)),</span>
+<span id="cb10-11"><a></a>    <span class="at">MAE    =</span> <span class="fu">mean</span>(<span class="fu">abs</span>(Takings <span class="sc">-</span> bagged_mean), <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb10-12"><a></a>    <span class="at">MAPE   =</span> <span class="fu">mean</span>(<span class="fu">abs</span>((Takings <span class="sc">-</span> bagged_mean) <span class="sc">/</span> Takings), <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb10-13"><a></a>  )</span>
+<span id="cb10-14"><a></a></span>
+<span id="cb10-15"><a></a><span class="fu">bind_rows</span>(nsw_accu_std, nsw_accu_bag) <span class="sc">|&gt;</span> <span class="fu">arrange</span>(RMSE)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="key-takeaways" class="title-slide slide level1 center">
+<h1>Key Takeaways</h1>
+
+</section>
+<section id="what-to-remember" class="slide level2">
+<h2>What to remember</h2>
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Key points</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li class="fragment"><strong>Forecast combinations</strong> work because diverse models make different errors — one of the most robust findings in forecasting.</li>
+<li class="fragment"><strong>Equal-weight averaging</strong> is surprisingly hard to beat. Complex weighted schemes need careful validation to justify the added complexity.</li>
+<li class="fragment"><strong>Bagging</strong> averages across simulated alternative histories, not different models. Most useful for short or volatile series.</li>
+<li class="fragment"><strong>More complex ≠ always better.</strong> Always compare on a held-out test set — sometimes a single model wins.</li>
+<li class="fragment"><strong>Bagged forecasts cannot be combined</strong> with standard <code>fable</code> models inside <code>combination_ensemble()</code> — compare them via <code>accuracy()</code> separately.</li>
+</ul>
+</div>
+</div>
+</div>
+<p><strong>FPP3 references:</strong> <a href="https://otexts.com/fpp3/bootstrap.html">§12.5 Bootstrapping and bagging</a> · <a href="https://otexts.com/fpp3/combinations.html">§12.6 Forecast combinations</a></p>
+
+
+</section></section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<p><img src="../../../../images/iteso_logo.png" class="slide-logo"></p>
+<div class="footer footer-default">
+<p>Time Series Forecasting</p>
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="../../../../site_libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="../../../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="../../../../site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="../../../../site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="../../../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="../../../../site_libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
+  <script src="../../../../site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="../../../../site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="../../../../site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="../../../../site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': false,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"8\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'chalkboard': {"buttons":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: true,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: true,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'slide',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1600,
+
+        height: 900,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 3.0e-2,
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, RevealChalkboard, QuartoSupport,
+
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp("https:\/\/pbenavidesh\.github\.io\/narsil\/");
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+                // target, if specified
+                link.setAttribute("target", "_blank");
+                if (link.getAttribute("rel") === null) {
+                  link.setAttribute("rel", "noopener");
+                }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+            let selectedAnnoteEl;
+            const selectorForAnnotation = ( cell, annotation) => {
+              let cellAttr = 'data-code-cell="' + cell + '"';
+              let lineAttr = 'data-code-annotation="' +  annotation + '"';
+              const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+              return selector;
+            }
+            const selectCodeLines = (annoteEl) => {
+              const doc = window.document;
+              const targetCell = annoteEl.getAttribute("data-target-cell");
+              const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+              const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+              const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+              const lineIds = lines.map((line) => {
+                return targetCell + "-" + line;
+              })
+              let top = null;
+              let height = null;
+              let parent = null;
+              if (lineIds.length > 0) {
+                  //compute the position of the single el (top and bottom and make a div)
+                  const el = window.document.getElementById(lineIds[0]);
+                  top = el.offsetTop;
+                  height = el.offsetHeight;
+                  parent = el.parentElement.parentElement;
+                if (lineIds.length > 1) {
+                  const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+                  const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+                  height = bottom - top;
+                }
+                if (top !== null && height !== null && parent !== null) {
+                  // cook up a div (if necessary) and position it 
+                  let div = window.document.getElementById("code-annotation-line-highlight");
+                  if (div === null) {
+                    div = window.document.createElement("div");
+                    div.setAttribute("id", "code-annotation-line-highlight");
+                    div.style.position = 'absolute';
+                    parent.appendChild(div);
+                  }
+                  div.style.top = top - 2 + "px";
+                  div.style.height = height + 4 + "px";
+                  div.style.left = 0;
+                  let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+                  if (gutterDiv === null) {
+                    gutterDiv = window.document.createElement("div");
+                    gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                    gutterDiv.style.position = 'absolute';
+                    const codeCell = window.document.getElementById(targetCell);
+                    const gutter = codeCell.querySelector('.code-annotation-gutter');
+                    gutter.appendChild(gutterDiv);
+                  }
+                  gutterDiv.style.top = top - 2 + "px";
+                  gutterDiv.style.height = height + 4 + "px";
+                }
+                selectedAnnoteEl = annoteEl;
+              }
+            };
+            const unselectCodeLines = () => {
+              const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+              elementsIds.forEach((elId) => {
+                const div = window.document.getElementById(elId);
+                if (div) {
+                  div.remove();
+                }
+              });
+              selectedAnnoteEl = undefined;
+            };
+              // Handle positioning of the toggle
+          window.addEventListener(
+            "resize",
+            throttle(() => {
+              elRect = undefined;
+              if (selectedAnnoteEl) {
+                selectCodeLines(selectedAnnoteEl);
+              }
+            }, 10)
+          );
+          function throttle(fn, ms) {
+          let throttle = false;
+          let timer;
+            return (...args) => {
+              if(!throttle) { // first call gets through
+                  fn.apply(this, args);
+                  throttle = true;
+              } else { // all the others get throttled
+                  if(timer) clearTimeout(timer); // cancel #2
+                  timer = setTimeout(() => {
+                    fn.apply(this, args);
+                    timer = throttle = false;
+                  }, ms);
+              }
+            };
+          }
+            const annoteTargets = window.document.querySelectorAll('.code-annotation-anchor');
+            for (let i=0; i<annoteTargets.length; i++) {
+              const annoteTarget = annoteTargets[i];
+              const targetCell = annoteTarget.getAttribute("data-target-cell");
+              const targetAnnotation = annoteTarget.getAttribute("data-target-annotation");
+              const contentFn = () => {
+                const content = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+                if (content) {
+                  const tipContent = content.cloneNode(true);
+                  tipContent.classList.add("code-annotation-tip-content");
+                  return tipContent.outerHTML;
+                }
+              }
+              const config = {
+                allowHTML: true,
+                content: contentFn,
+                onShow: (instance) => {
+                  selectCodeLines(instance.reference);
+                  instance.reference.classList.add('code-annotation-active');
+                  window.tippy.hideAll();
+                },
+                onHide: (instance) => {
+                  unselectCodeLines();
+                  instance.reference.classList.remove('code-annotation-active');
+                },
+                maxWidth: 300,
+                delay: [50, 0],
+                duration: [200, 0],
+                offset: [5, 10],
+                arrow: true,
+                appendTo: function(el) {
+                  return el.parentElement.parentElement.parentElement;
+                },
+                interactive: true,
+                interactiveBorder: 10,
+                theme: 'light-border',
+                placement: 'right',
+                popperOptions: {
+                  modifiers: [
+                  {
+                    name: 'flip',
+                    options: {
+                      flipVariations: false, // true by default
+                      allowedAutoPlacements: ['right'],
+                      fallbackPlacements: ['right', 'top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'left'],
+                    },
+                  },
+                  {
+                    name: 'preventOverflow',
+                    options: {
+                      mainAxis: false,
+                      altAxis: false
+                    }
+                  }
+                  ]        
+                }      
+              };
+              window.tippy(annoteTarget, config); 
+            }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    <script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+    (function() {
+      let previousOnload = window.onload;
+      window.onload = () => {
+        if (previousOnload) {
+          previousOnload();
+        }
+        lightboxQuarto.on('slide_before_load', (data) => {
+          const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+          const href = trigger.getAttribute('href');
+          if (href !== null) {
+            const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+            if (imgEl !== null) {
+              const srcAttr = imgEl.getAttribute("src");
+              if (srcAttr && srcAttr.startsWith("data:")) {
+                slideConfig.href = srcAttr;
+              }
+            }
+          } 
+        });
+      
+        lightboxQuarto.on('slide_after_load', (data) => {
+          const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(slideNode);
+          }
+        });
+      
+      };
+      
+    })();
+              </script>
+    
+
+</body></html>

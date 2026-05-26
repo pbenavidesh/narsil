@@ -9,11 +9,11 @@
 <script src="../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../../../../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-4e5466e430b1db38349d513585fd1d59.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-6d40f8af7092f34acea1908532066003.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.9.37">
+  <meta name="generator" content="quarto-1.9.38">
 
   <meta name="author" content="">
   <title>Time Series Forecasting – RStudio, R, and Time Series</title>
@@ -609,7 +609,12 @@
 <h2 data-id="quarto-animate-title"></h2>
 <p>Using the native pipe operator; <code>|&gt;</code>, we can improve the same code:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-9"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-9" data-target-annotation="1">1</button><span id="annotated-cell-9-1" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-9-1"></a>tourism <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-9" data-llms-code-original="tourism |>                            # <1>
+  filter(State == &quot;Tasmania&quot;,         # <2>
+         Region == &quot;East Coast&quot;) |>   # <2>
+  as_tibble() |>                      # <3>
+  group_by(Purpose) |>                # <4>
+  summarise(mean_trips = mean(Trips)) # <5>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-9" data-target-annotation="1">1</button><span id="annotated-cell-9-1" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-9-1"></a>tourism <span class="sc">|&gt;</span></span>
 <button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-9" data-target-annotation="2">2</button><span id="annotated-cell-9-2" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-9-2"></a>  <span class="fu">filter</span>(State <span class="sc">==</span> <span class="st">"Tasmania"</span>,</span>
 <span id="annotated-cell-9-3" class="hljs-ln-code"><a href="#annotated-cell-9-3"></a>         Region <span class="sc">==</span> <span class="st">"East Coast"</span>) <span class="sc">|&gt;</span></span>
 <button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-9" data-target-annotation="3">3</button><span id="annotated-cell-9-4" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-9-4"></a>  <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span></span>
@@ -743,7 +748,12 @@
 <section id="plotting-tourism-across-time-4" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Plotting tourism across time</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-10"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="annotated-cell-10-1" class="hljs-ln-code"><a href="#annotated-cell-10-1"></a>tourism <span class="sc">|&gt;</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-10" data-llms-code-original="tourism |> 
+  filter(State == &quot;Tasmania&quot;,
+         Region == &quot;East Coast&quot;) |> 
+  autoplot(Trips) +                             # <1>
+  facet_wrap(vars(Purpose), scale = &quot;free_y&quot;) + # <2>
+  theme(legend.position = &quot;none&quot;)               # <3>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="annotated-cell-10-1" class="hljs-ln-code"><a href="#annotated-cell-10-1"></a>tourism <span class="sc">|&gt;</span> </span>
 <span id="annotated-cell-10-2" class="hljs-ln-code"><a href="#annotated-cell-10-2"></a>  <span class="fu">filter</span>(State <span class="sc">==</span> <span class="st">"Tasmania"</span>,</span>
 <span id="annotated-cell-10-3" class="hljs-ln-code"><a href="#annotated-cell-10-3"></a>         Region <span class="sc">==</span> <span class="st">"East Coast"</span>) <span class="sc">|&gt;</span> </span>
 <button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-10" data-target-annotation="1">1</button><span id="annotated-cell-10-4" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-10-4"></a>  <span class="fu">autoplot</span>(Trips) <span class="sc">+</span></span>

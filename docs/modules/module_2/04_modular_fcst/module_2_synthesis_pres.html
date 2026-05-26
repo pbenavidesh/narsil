@@ -9,11 +9,11 @@
 <script src="../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../../../../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-4e5466e430b1db38349d513585fd1d59.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-6d40f8af7092f34acea1908532066003.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.9.37">
+  <meta name="generator" content="quarto-1.9.38">
 
   <meta name="author" content="">
   <title>Time Series Forecasting – Modular Forecasting: Mixing ETS and ARIMA</title>
@@ -435,7 +435,14 @@
 <h2 data-id="quarto-animate-title">Defining the model specs</h2>
 <p>Rather than embedding the full <code>decomposition_model()</code> calls inside the <code>mable</code>, we define them as named objects first. This keeps the model comparison code clean and makes each specification easy to inspect and reuse.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1">1</button><span id="annotated-cell-2-1" class="code-annotation-target"><a href="#annotated-cell-2-1"></a>baseline_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2" data-llms-code-original="baseline_spec <- decomposition_model(        #<1>
+  STL(log(y) ~
+        trend(window = NULL) +
+        season(window = &quot;periodic&quot;),
+      robust = TRUE),
+  RW(season_adjust ~ drift()),
+  SNAIVE(season_year)
+)"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1">1</button><span id="annotated-cell-2-1" class="code-annotation-target"><a href="#annotated-cell-2-1"></a>baseline_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
 <span id="annotated-cell-2-2"><a href="#annotated-cell-2-2"></a>  <span class="fu">STL</span>(<span class="fu">log</span>(y) <span class="sc">~</span></span>
 <span id="annotated-cell-2-3"><a href="#annotated-cell-2-3"></a>        <span class="fu">trend</span>(<span class="at">window =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
 <span id="annotated-cell-2-4"><a href="#annotated-cell-2-4"></a>        <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>),</span>
@@ -453,7 +460,13 @@
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1">1</button><span id="annotated-cell-3-1" class="code-annotation-target"><a href="#annotated-cell-3-1"></a>stl_ets_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3" data-llms-code-original="stl_ets_spec <- decomposition_model(         #<1>
+  STL(log(y) ~
+        trend(window = NULL) +
+        season(window = &quot;periodic&quot;),
+      robust = TRUE),
+  ETS(season_adjust ~ season(&quot;N&quot;))           #<2>
+)"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1">1</button><span id="annotated-cell-3-1" class="code-annotation-target"><a href="#annotated-cell-3-1"></a>stl_ets_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
 <span id="annotated-cell-3-2"><a href="#annotated-cell-3-2"></a>  <span class="fu">STL</span>(<span class="fu">log</span>(y) <span class="sc">~</span></span>
 <span id="annotated-cell-3-3"><a href="#annotated-cell-3-3"></a>        <span class="fu">trend</span>(<span class="at">window =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
 <span id="annotated-cell-3-4"><a href="#annotated-cell-3-4"></a>        <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>),</span>
@@ -474,7 +487,13 @@
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-4"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="1">1</button><span id="annotated-cell-4-1" class="code-annotation-target"><a href="#annotated-cell-4-1"></a>stl_arima_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-4" data-llms-code-original="stl_arima_spec <- decomposition_model(       #<1>
+  STL(log(y) ~
+        trend(window = NULL) +
+        season(window = &quot;periodic&quot;),
+      robust = TRUE),
+  ARIMA(season_adjust ~ PDQ(0, 0, 0))        #<2>
+)"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="1">1</button><span id="annotated-cell-4-1" class="code-annotation-target"><a href="#annotated-cell-4-1"></a>stl_arima_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
 <span id="annotated-cell-4-2"><a href="#annotated-cell-4-2"></a>  <span class="fu">STL</span>(<span class="fu">log</span>(y) <span class="sc">~</span></span>
 <span id="annotated-cell-4-3"><a href="#annotated-cell-4-3"></a>        <span class="fu">trend</span>(<span class="at">window =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
 <span id="annotated-cell-4-4"><a href="#annotated-cell-4-4"></a>        <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>),</span>
@@ -499,7 +518,14 @@
 <h2 data-id="quarto-animate-title">STL + ETS + ARIMA</h2>
 <p>ETS models the trend-cycle; ARIMA models the seasonal pattern:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-5"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="annotated-cell-5-1" class="hljs-ln-code"><a href="#annotated-cell-5-1"></a>stl_ets_arima_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-5" data-llms-code-original="stl_ets_arima_spec <- decomposition_model(
+  STL(log(y) ~
+        trend(window = NULL) +
+        season(window = &quot;periodic&quot;),
+      robust = TRUE),
+  ETS(season_adjust ~ season(&quot;N&quot;)),          #<1>
+  ARIMA(season_year)
+)"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="annotated-cell-5-1" class="hljs-ln-code"><a href="#annotated-cell-5-1"></a>stl_ets_arima_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
 <span id="annotated-cell-5-2" class="hljs-ln-code"><a href="#annotated-cell-5-2"></a>  <span class="fu">STL</span>(<span class="fu">log</span>(y) <span class="sc">~</span></span>
 <span id="annotated-cell-5-3" class="hljs-ln-code"><a href="#annotated-cell-5-3"></a>        <span class="fu">trend</span>(<span class="at">window =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
 <span id="annotated-cell-5-4" class="hljs-ln-code"><a href="#annotated-cell-5-4"></a>        <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>),</span>
@@ -521,7 +547,14 @@
 <h2 data-id="quarto-animate-title">STL + ARIMA + ETS</h2>
 <p>ARIMA models the trend-cycle; ETS models the seasonal pattern:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-6"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="annotated-cell-6-1" class="hljs-ln-code"><a href="#annotated-cell-6-1"></a>stl_arima_ets_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-6" data-llms-code-original="stl_arima_ets_spec <- decomposition_model(
+  STL(log(y) ~
+        trend(window = NULL) +
+        season(window = &quot;periodic&quot;),
+      robust = TRUE),
+  ARIMA(season_adjust ~ PDQ(0, 0, 0)),       #<1>
+  ETS(season_year ~ trend(&quot;N&quot;))              #<2>
+)"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="annotated-cell-6-1" class="hljs-ln-code"><a href="#annotated-cell-6-1"></a>stl_arima_ets_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
 <span id="annotated-cell-6-2" class="hljs-ln-code"><a href="#annotated-cell-6-2"></a>  <span class="fu">STL</span>(<span class="fu">log</span>(y) <span class="sc">~</span></span>
 <span id="annotated-cell-6-3" class="hljs-ln-code"><a href="#annotated-cell-6-3"></a>        <span class="fu">trend</span>(<span class="at">window =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
 <span id="annotated-cell-6-4" class="hljs-ln-code"><a href="#annotated-cell-6-4"></a>        <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>),</span>
@@ -552,7 +585,20 @@
 <h2>Fitting all approaches</h2>
 <p>With the specs defined, the <code>mable</code> is straightforward to read — each row is a named approach:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-7"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-7-1"><a href="#annotated-cell-7-1"></a>mexretail_fit <span class="ot">&lt;-</span> mexretail_train <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-7" data-llms-code-original="mexretail_fit <- mexretail_train |>
+  model(
+    baseline      = baseline_spec,
+    stl_ets       = stl_ets_spec,
+    stl_arima     = stl_arima_spec,
+    stl_ets_arima = stl_ets_arima_spec,
+    stl_arima_ets = stl_arima_ets_spec,
+    ets           = ETS(log(y)),                             #<1>
+    sarima        = ARIMA(log(y),                            #<2>
+                          stepwise      = FALSE,
+                          approximation = FALSE)
+  )
+
+mexretail_fit"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-7-1"><a href="#annotated-cell-7-1"></a>mexretail_fit <span class="ot">&lt;-</span> mexretail_train <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-7-2"><a href="#annotated-cell-7-2"></a>  <span class="fu">model</span>(</span>
 <span id="annotated-cell-7-3"><a href="#annotated-cell-7-3"></a>    <span class="at">baseline      =</span> baseline_spec,</span>
 <span id="annotated-cell-7-4"><a href="#annotated-cell-7-4"></a>    <span class="at">stl_ets       =</span> stl_ets_spec,</span>
@@ -645,7 +691,17 @@
 <h2>Setup</h2>
 <p>To check whether the rankings hold on a different series, we apply the same workflow to quarterly Australian beer production from <code>fpp3</code>:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-10"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-10-1"><a href="#annotated-cell-10-1"></a>beer_train <span class="ot">&lt;-</span> aus_production <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-10" data-llms-code-original="beer_train <- aus_production |>
+  rename(y = Beer) |>                  #<1>
+  select(Quarter, y) |>
+  filter(!is.na(y), year(Quarter) <= 2006)
+
+beer_test <- aus_production |>
+  rename(y = Beer) |>
+  select(Quarter, y) |>
+  filter(!is.na(y), year(Quarter) > 2006)
+
+beer_full <- bind_rows(beer_train, beer_test)"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-10-1"><a href="#annotated-cell-10-1"></a>beer_train <span class="ot">&lt;-</span> aus_production <span class="sc">|&gt;</span></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-10" data-target-annotation="1">1</button><span id="annotated-cell-10-2" class="code-annotation-target"><a href="#annotated-cell-10-2"></a>  <span class="fu">rename</span>(<span class="at">y =</span> Beer) <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-10-3"><a href="#annotated-cell-10-3"></a>  <span class="fu">select</span>(Quarter, y) <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-10-4"><a href="#annotated-cell-10-4"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(y), <span class="fu">year</span>(Quarter) <span class="sc">&lt;=</span> <span class="dv">2006</span>)</span>
