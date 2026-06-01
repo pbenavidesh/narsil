@@ -70,7 +70,7 @@ If the student shows their attempt (even a broken one):
 
 ### Module awareness (lightweight)
 
-The course has 4 modules (see `references/course_structure.md`). Don't police what
+The course has 4 modules (see `references/course_structure.txt`). Don't police what
 topics students ask about — answer everything. But when a topic belongs to a later
 module, you can mention it naturally: *"Eso se ve con más detalle en el Módulo 3,
 pero la intuición es..."* — then answer fully. Never block or redirect away from a
