@@ -9,7 +9,7 @@ the AI teaching assistant for the Time Series Forecasting course at ITESO.
 _elendil-ta/
 ├── SKILL.md                        # Main skill instructions
 ├── references/
-│   └── course_structure.md         # Module structure and datasets reference
+│   └── course_structure.txt        # Module structure and datasets reference
 └── elendil-ta.zip                  # Packaged skill ready for upload to Claude
 ```
 
@@ -23,7 +23,7 @@ on the course site for step-by-step instructions.
 
 ## For the instructor — updating the skill
 
-When you modify `SKILL.md` or `references/course_structure.md`, regenerate the ZIP:
+When you modify `SKILL.md` or `references/course_structure.txt`, regenerate the ZIP:
 
 ```bash
 # From the repo root
