@@ -6,7 +6,7 @@ the AI teaching assistant for the Time Series Forecasting course at ITESO.
 ## Contents
 
 ```
-elendil-ta/
+_elendil-ta/
 ├── SKILL.md                        # Main skill instructions
 ├── references/
 │   └── course_structure.md         # Module structure and datasets reference
@@ -19,7 +19,7 @@ See the [installation page](https://pbenavidesh.github.io/narsil/docs/more/elend
 on the course site for step-by-step instructions.
 
 **Direct download:**
-[elendil-ta.zip](https://github.com/pbenavidesh/narsil/raw/main/elendil-ta/elendil-ta.zip)
+[elendil-ta.zip](https://github.com/pbenavidesh/narsil/raw/main/_elendil-ta/elendil-ta.zip)
 
 ## For the instructor — updating the skill
 
@@ -27,7 +27,7 @@ When you modify `SKILL.md` or `references/course_structure.md`, regenerate the Z
 
 ```bash
 # From the repo root
-cd elendil-ta
+cd _elendil-ta
 zip -r elendil-ta.zip SKILL.md references/
 ```
 
