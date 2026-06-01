@@ -10,7 +10,7 @@ Pablo Benavides-Herrera
 
 Modified
 
-May 26, 2026
+June 1, 2026
 
 This document is **optional**, but highly recommended if you come from a Python background.
 

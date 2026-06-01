@@ -1,0 +1,117 @@
+# Elendil TA
+
+Your AI teaching assistant for Time Series Forecasting
+
+tools
+
+ai
+
+Custom Claude skill for the Time Series Forecasting course at ITESO. Install it to get course-aware AI help.
+
+Modified
+
+June 1, 2026
+
+# What is Elendil TA?
+
+**Elendil TA** is a custom AI skill for [Claude](https://claude.ai) designed specifically for this course. Once installed, it knows:
+
+- The full course structure (Modules 1–4) and the progressive modeling narrative
+- The `fpp3` / `tidyverts` ecosystem: `fable`, `tsibble`, `feasts`
+- Course conventions: naming, pipes, diagnostics workflow
+- Where to find things in this site — it can reference specific pages directly
+- Common errors and how to fix them
+
+It won’t do your homework for you — but it will help you understand *why* your code isn’t working, what the right diagnostic steps are, and where to look next.
+
+> **NOTE:**
+>
+> A generic AI assistant doesn’t know the course conventions, the `fable` ecosystem, or the specific pedagogical approach we follow. Elendil TA is calibrated to give answers that are consistent with what we do in class — using the right packages, the right pipe, and the right workflow order.
+
+------------------------------------------------------------------------
+
+# Requirements
+
+- A [Claude.ai](https://claude.ai) account (free plan works)
+- Code execution enabled in your Claude settings (one toggle, takes 10 seconds)
+
+------------------------------------------------------------------------
+
+# Installation
+
+## 0.1 Step 1 — Enable Code Execution
+
+This is required for Skills to work in Claude.
+
+1.  Go to [claude.ai](https://claude.ai) and sign in
+2.  Click your profile icon → **Settings**
+3.  Navigate to **Capabilities** (or **Features**)
+4.  Toggle **Code execution and file creation** → ON
+
+## 0.2 Step 2 — Download the Skill
+
+Click the button below to download the Elendil TA skill file:
+
+[⬇ Download Elendil TA](https://github.com/pbenavidesh/narsil/raw/main/_elendil-ta/elendil-ta.zip)
+
+> **TIP:**
+>
+> If the button opens a GitHub page instead of downloading directly:
+>
+> 1.  Go to the [narsil repository](https://github.com/pbenavidesh/narsil)
+> 2.  Navigate to the `_elendil-ta/` folder
+> 3.  Click on `elendil-ta.zip`
+> 4.  Click the **Download raw file** button (the download icon ⬇)
+
+## 0.3 Step 3 — Upload to Claude
+
+1.  Go to [claude.ai](https://claude.ai)
+2.  Click your profile icon → **Settings**
+3.  Navigate to **Features → Skills** (or **Customize → Skills**)
+4.  Click the **“+”** button → **“+ Create skill”** or **“Upload skill”**
+5.  Select the `elendil-ta.zip` file you just downloaded
+6.  Wait a few seconds for it to upload — you’ll see it appear in your Skills list
+7.  Make sure the toggle is **ON**
+
+That’s it. Elendil TA is now active in all your Claude conversations.
+
+------------------------------------------------------------------------
+
+# How to use it
+
+You don’t need to invoke it explicitly — Claude will activate it automatically when your question is related to the course. Just start asking:
+
+> *“Why is my ARIMA model not converging?”*
+>
+> *“¿Cómo interpreto el ACF plot de mis residuales?”*
+>
+> *“My `accuracy()` is returning NaN for RMSSE — what’s wrong?”*
+>
+> *“What’s the difference between TSLM with `season()` and harmonic regression?”*
+
+> **IMPORTANT:**
+>
+> - **Show your code and your error** — “it doesn’t work” gets you a generic answer; pasting your code and the error message gets you a precise fix
+> - **Ask about intuition, not just syntax** — it’s better at explaining *why* than just giving you code to copy
+> - **It knows this site** — if you ask about a topic covered in the course materials, it will reference the specific page
+
+------------------------------------------------------------------------
+
+# FAQ
+
+**Does it work in Spanish?**  
+Yes — it responds in whatever language you write in. Default is Spanish.
+
+**Does it work on the free plan?**  
+Yes. Skills work on all Claude plans including free.
+
+**Will it solve my assignments for me?**  
+It’s designed to guide you through problems, not hand you solutions. If you show up with “solve this”, it’ll ask you what you’ve tried. If you show up with broken code and a specific question, it’ll help you fix it.
+
+**What if there’s an update to the skill?**  
+When the skill is updated during the semester, you’ll see a note here. You’ll need to re-download and re-upload the new version — the process takes about two minutes.
+
+**I found a bug / something isn’t working right**  
+Let your professor know. Skills improve with feedback.
+
+Back to top

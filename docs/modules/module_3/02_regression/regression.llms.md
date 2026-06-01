@@ -2,7 +2,7 @@
 
 Modified
 
-May 26, 2026
+June 1, 2026
 
 Code
 
@@ -144,20 +144,122 @@ where each of these is an academic paper
 
 ------------------------------------------------------------------------
 
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The number of movies Margot Robbie appeared in and the second variable is The number of firefighters in South Dakota. The chart goes from 2010 to 2022, and the two variables track closely in value over that time.](spurious/correlation/image/5846_the-number-of-movies-margot-robbie-appeared-in_correlates-with_the-number-of-firefighters-in-south-dakota.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The number of movies Margot Robbie appeared in and the second variable is The number of firefighters in South Dakota.  The chart goes from 2010 to 2022, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/5846_the-number-of-movies-margot-robbie-appeared-in_correlates-with_the-number-of-firefighters-in-south-dakota_mobile.svg)  
-**View details about correlation \#5,846**](spurious/correlation/5846_the-number-of-movies-margot-robbie-appeared-in_correlates-with_the-number-of-firefighters-in-south-dakota)  
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the 'not sure if' meme and the second variable is The number of air traffic controllers in Montana. The chart goes from 2006 to 2022, and the two variables track closely in value over that time.](spurious/correlation/image/5957_popularity-of-the-not-sure-if-meme_correlates-with_the-number-of-air-traffic-controllers-in-montana.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the 'not sure if' meme and the second variable is The number of air traffic controllers in Montana.  The chart goes from 2006 to 2022, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/5957_popularity-of-the-not-sure-if-meme_correlates-with_the-number-of-air-traffic-controllers-in-montana_mobile.svg)  
+**View details about correlation \#5,957**](spurious/correlation/5957_popularity-of-the-not-sure-if-meme_correlates-with_the-number-of-air-traffic-controllers-in-montana)  
   
 
 ^(Show scatterplot)
 
-![](spurious/correlation/scatterplot/5846_the-number-of-movies-margot-robbie-appeared-in_correlates-with_the-number-of-firefighters-in-south-dakota_scatterplot.png)
+![](spurious/correlation/scatterplot/5957_popularity-of-the-not-sure-if-meme_correlates-with_the-number-of-air-traffic-controllers-in-montana_scatterplot.png)
 
   
   
 
 *What else correlates?*  
-[The number of movies Margot Robbie appeared in](spurious/variable?id=26637) · [all films & actors](spurious/view-all-variables/films)  
-[The number of firefighters in South Dakota](spurious/variable?id=18612) · [all cccupations](spurious/view-all-variables/occupations)  
+[Popularity of the 'not sure if' meme](spurious/variable?id=25141) · [all memes](spurious/view-all-variables/memes)  
+[The number of air traffic controllers in Montana](spurious/variable?id=10826) · [all cccupations](spurious/view-all-variables/occupations)  
+
+------------------------------------------------------------------------
+
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The number of phlebotomists in Minnesota and the second variable is Arson in United States. The chart goes from 2012 to 2022, and the two variables track closely in value over that time.](spurious/correlation/image/4252_the-number-of-phlebotomists-in-minnesota_correlates-with_arson-in-united-states.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The number of phlebotomists in Minnesota and the second variable is Arson in United States.  The chart goes from 2012 to 2022, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/4252_the-number-of-phlebotomists-in-minnesota_correlates-with_arson-in-united-states_mobile.svg)  
+**View details about correlation \#4,252**](spurious/correlation/4252_the-number-of-phlebotomists-in-minnesota_correlates-with_arson-in-united-states)  
+  
+
+^(Show scatterplot)
+
+![](spurious/correlation/scatterplot/4252_the-number-of-phlebotomists-in-minnesota_correlates-with_arson-in-united-states_scatterplot.png)
+
+  
+  
+
+*What else correlates?*  
+[The number of phlebotomists in Minnesota](spurious/variable?id=19215) · [all cccupations](spurious/view-all-variables/occupations)  
+[Arson in United States](spurious/variable?id=20038) · [all random state specific](spurious/view-all-variables/statespecific)  
+
+------------------------------------------------------------------------
+
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is How 'hip and with it' Numberphile YouTube video titles are and the second variable is Wind power generated in Latvia. The chart goes from 2011 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/4554_how-hip-and-with-it-numberphile-youtube-video-titles-are_correlates-with_wind-power-generated-in-latvia.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is How 'hip and with it' Numberphile YouTube video titles are and the second variable is Wind power generated in Latvia.  The chart goes from 2011 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/4554_how-hip-and-with-it-numberphile-youtube-video-titles-are_correlates-with_wind-power-generated-in-latvia_mobile.svg)  
+**View details about correlation \#4,554**](spurious/correlation/4554_how-hip-and-with-it-numberphile-youtube-video-titles-are_correlates-with_wind-power-generated-in-latvia)  
+  
+
+^(Show scatterplot)
+
+![](spurious/correlation/scatterplot/4554_how-hip-and-with-it-numberphile-youtube-video-titles-are_correlates-with_wind-power-generated-in-latvia_scatterplot.png)
+
+  
+  
+
+*What else correlates?*  
+[How 'hip and with it' Numberphile YouTube video titles are](spurious/variable?id=25476) · [all YouTube](spurious/view-all-variables/youtube)  
+[Wind power generated in Latvia](spurious/variable?id=23783) · [all energy](spurious/view-all-variables/energy)  
+
+------------------------------------------------------------------------
+
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is American cheese consumption and the second variable is Popularity of the 'this is fine' meme. The chart goes from 2006 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/5468_american-cheese-consumption_correlates-with_popularity-of-the-this-is-fine-meme.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is American cheese consumption and the second variable is Popularity of the 'this is fine' meme.  The chart goes from 2006 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/5468_american-cheese-consumption_correlates-with_popularity-of-the-this-is-fine-meme_mobile.svg)  
+**View details about correlation \#5,468**](spurious/correlation/5468_american-cheese-consumption_correlates-with_popularity-of-the-this-is-fine-meme)  
+  
+
+^(Show scatterplot)
+
+![](spurious/correlation/scatterplot/5468_american-cheese-consumption_correlates-with_popularity-of-the-this-is-fine-meme_scatterplot.png)
+
+  
+  
+
+*What else correlates?*  
+[American cheese consumption](spurious/variable?id=553) · [all food](spurious/view-all-variables/farmingfood)  
+[Popularity of the 'this is fine' meme](spurious/variable?id=25124) · [all memes](spurious/view-all-variables/memes)  
+
+------------------------------------------------------------------------
+
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The distance between Jupiter and Mercury and the second variable is Anheuser-Busch InBev's stock price (BUD). The chart goes from 2010 to 2023, and the two variables track closely in value over that time.](spurious/correlation/image/2734_the-distance-between-jupiter-and-mercury_correlates-with_anheuser-busch-inbevs-stock-price.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The distance between Jupiter and Mercury and the second variable is Anheuser-Busch InBev's stock price (BUD).  The chart goes from 2010 to 2023, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/2734_the-distance-between-jupiter-and-mercury_correlates-with_anheuser-busch-inbevs-stock-price_mobile.svg)  
+**View details about correlation \#2,734**](spurious/correlation/2734_the-distance-between-jupiter-and-mercury_correlates-with_anheuser-busch-inbevs-stock-price)  
+  
+
+^(Show scatterplot)
+
+![](spurious/correlation/scatterplot/2734_the-distance-between-jupiter-and-mercury_correlates-with_anheuser-busch-inbevs-stock-price_scatterplot.png)
+
+  
+  
+
+*What else correlates?*  
+[The distance between Jupiter and Mercury](spurious/variable?id=1952) · [all planets](spurious/view-all-variables/planets)  
+[Anheuser-Busch InBev's stock price (BUD)](spurious/variable?id=1623) · [all stocks](spurious/view-all-variables/stocks)  
+
+------------------------------------------------------------------------
+
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Bachelor's degrees awarded in Library science and the second variable is Google searches for 'how to hide a body'. The chart goes from 2012 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/1840_bachelors-degrees-awarded-in-library-science_correlates-with_google-searches-for-how-to-hide-a-body.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Bachelor's degrees awarded in Library science and the second variable is Google searches for 'how to hide a body'.  The chart goes from 2012 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1840_bachelors-degrees-awarded-in-library-science_correlates-with_google-searches-for-how-to-hide-a-body_mobile.svg)  
+**View details about correlation \#1,840**](spurious/correlation/1840_bachelors-degrees-awarded-in-library-science_correlates-with_google-searches-for-how-to-hide-a-body)  
+  
+
+^(Show scatterplot)
+
+![](spurious/correlation/scatterplot/1840_bachelors-degrees-awarded-in-library-science_correlates-with_google-searches-for-how-to-hide-a-body_scatterplot.png)
+
+  
+  
+
+*What else correlates?*  
+[Bachelor's degrees awarded in Library science](spurious/variable?id=1282) · [all education](spurious/view-all-variables/education)  
+[Google searches for 'how to hide a body'](spurious/variable?id=1513) · [all google searches](spurious/view-all-variables/google)  
+
+------------------------------------------------------------------------
+
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is UFO sightings in South Carolina and the second variable is Total Number of Successful Mount Everest Climbs. The chart goes from 1975 to 2011, and the two variables track closely in value over that time.](spurious/correlation/image/2423_ufo-sightings-in-south-carolina_correlates-with_total-number-of-successful-mount-everest-climbs.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is UFO sightings in South Carolina and the second variable is Total Number of Successful Mount Everest Climbs.  The chart goes from 1975 to 2011, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/2423_ufo-sightings-in-south-carolina_correlates-with_total-number-of-successful-mount-everest-climbs_mobile.svg)  
+**View details about correlation \#2,423**](spurious/correlation/2423_ufo-sightings-in-south-carolina_correlates-with_total-number-of-successful-mount-everest-climbs)  
+  
+
+^(Show scatterplot)
+
+![](spurious/correlation/scatterplot/2423_ufo-sightings-in-south-carolina_correlates-with_total-number-of-successful-mount-everest-climbs_scatterplot.png)
+
+  
+  
+
+*What else correlates?*  
+[UFO sightings in South Carolina](spurious/variable?id=1168) · [all random state specific](spurious/view-all-variables/statespecific)  
+[Total Number of Successful Mount Everest Climbs](spurious/variable?id=498) · [all weird & wacky](spurious/view-all-variables/weirdwacky)  
 
 ------------------------------------------------------------------------
 
@@ -362,108 +464,6 @@ where each of these is an academic paper
 *What else correlates?*  
 [Popularity of the first name Rylee](spurious/variable?id=2982) · [all first names](spurious/view-all-variables/babynames)  
 [GMO use in soybeans in Indiana](spurious/variable?id=815) · [all food](spurious/view-all-variables/farmingfood)  
-
-------------------------------------------------------------------------
-
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the 'call me maybe' meme and the second variable is Kerosene used in Panama. The chart goes from 2012 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/4876_popularity-of-the-call-me-maybe-meme_correlates-with_kerosene-used-in-panama.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the 'call me maybe' meme and the second variable is Kerosene used in Panama.  The chart goes from 2012 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/4876_popularity-of-the-call-me-maybe-meme_correlates-with_kerosene-used-in-panama_mobile.svg)  
-**View details about correlation \#4,876**](spurious/correlation/4876_popularity-of-the-call-me-maybe-meme_correlates-with_kerosene-used-in-panama)  
-  
-
-^(Show scatterplot)
-
-![](spurious/correlation/scatterplot/4876_popularity-of-the-call-me-maybe-meme_correlates-with_kerosene-used-in-panama_scatterplot.png)
-
-  
-  
-
-*What else correlates?*  
-[Popularity of the 'call me maybe' meme](spurious/variable?id=25106) · [all memes](spurious/view-all-variables/memes)  
-[Kerosene used in Panama](spurious/variable?id=24798) · [all energy](spurious/view-all-variables/energy)  
-
-------------------------------------------------------------------------
-
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Google searches for 'that is sus' and the second variable is MSCI Inc.'s stock price (MSCI). The chart goes from 2008 to 2023, and the two variables track closely in value over that time.](spurious/correlation/image/1639_google-searches-for-that-is-sus_correlates-with_msci-incs-stock-price.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Google searches for 'that is sus' and the second variable is MSCI Inc.'s stock price (MSCI).  The chart goes from 2008 to 2023, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1639_google-searches-for-that-is-sus_correlates-with_msci-incs-stock-price_mobile.svg)  
-**View details about correlation \#1,639**](spurious/correlation/1639_google-searches-for-that-is-sus_correlates-with_msci-incs-stock-price)  
-  
-
-^(Show scatterplot)
-
-![](spurious/correlation/scatterplot/1639_google-searches-for-that-is-sus_correlates-with_msci-incs-stock-price_scatterplot.png)
-
-  
-  
-
-*What else correlates?*  
-[Google searches for 'that is sus'](spurious/variable?id=1367) · [all google searches](spurious/view-all-variables/google)  
-[MSCI Inc.'s stock price (MSCI)](spurious/variable?id=1767) · [all stocks](spurious/view-all-variables/stocks)  
-
-------------------------------------------------------------------------
-
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The distance between Jupiter and Earth and the second variable is Bachelor's degrees awarded in consumer sciences. The chart goes from 2012 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/2364_the-distance-between-jupiter-and-earth_correlates-with_bachelors-degrees-awarded-in-family-and-consumer-scienceshuman-sciences.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The distance between Jupiter and Earth and the second variable is Bachelor's degrees awarded in consumer sciences.  The chart goes from 2012 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/2364_the-distance-between-jupiter-and-earth_correlates-with_bachelors-degrees-awarded-in-family-and-consumer-scienceshuman-sciences_mobile.svg)  
-**View details about correlation \#2,364**](spurious/correlation/2364_the-distance-between-jupiter-and-earth_correlates-with_bachelors-degrees-awarded-in-family-and-consumer-scienceshuman-sciences)  
-  
-
-^(Show scatterplot)
-
-![](spurious/correlation/scatterplot/2364_the-distance-between-jupiter-and-earth_correlates-with_bachelors-degrees-awarded-in-family-and-consumer-scienceshuman-sciences_scatterplot.png)
-
-  
-  
-
-*What else correlates?*  
-[The distance between Jupiter and Earth](spurious/variable?id=1937) · [all planets](spurious/view-all-variables/planets)  
-[Bachelor's degrees awarded in consumer sciences](spurious/variable?id=1276) · [all education](spurious/view-all-variables/education)  
-
-------------------------------------------------------------------------
-
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The number of dietetic technicians in North Carolina and the second variable is Viewership count for Days of Our Lives. The chart goes from 2003 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/2550_the-number-of-dietetic-technicians-in-north-carolina_correlates-with_viewership-count-for-days-of-our-lives.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The number of dietetic technicians in North Carolina and the second variable is Viewership count for Days of Our Lives.  The chart goes from 2003 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/2550_the-number-of-dietetic-technicians-in-north-carolina_correlates-with_viewership-count-for-days-of-our-lives_mobile.svg)  
-**View details about correlation \#2,550**](spurious/correlation/2550_the-number-of-dietetic-technicians-in-north-carolina_correlates-with_viewership-count-for-days-of-our-lives)  
-  
-
-^(Show scatterplot)
-
-![](spurious/correlation/scatterplot/2550_the-number-of-dietetic-technicians-in-north-carolina_correlates-with_viewership-count-for-days-of-our-lives_scatterplot.png)
-
-  
-  
-
-*What else correlates?*  
-[The number of dietetic technicians in North Carolina](spurious/variable?id=12390) · [all cccupations](spurious/view-all-variables/occupations)  
-[Viewership count for Days of Our Lives](spurious/variable?id=87) · [all weird & wacky](spurious/view-all-variables/weirdwacky)  
-
-------------------------------------------------------------------------
-
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the first name Eleanor and the second variable is Wind power generated in Poland. The chart goes from 1995 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/2239_popularity-of-the-first-name-eleanor_correlates-with_wind-power-generated-in-poland.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the first name Eleanor and the second variable is Wind power generated in Poland.  The chart goes from 1995 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/2239_popularity-of-the-first-name-eleanor_correlates-with_wind-power-generated-in-poland_mobile.svg)  
-**View details about correlation \#2,239**](spurious/correlation/2239_popularity-of-the-first-name-eleanor_correlates-with_wind-power-generated-in-poland)  
-  
-
-^(Show scatterplot)
-
-![](spurious/correlation/scatterplot/2239_popularity-of-the-first-name-eleanor_correlates-with_wind-power-generated-in-poland_scatterplot.png)
-
-  
-  
-
-*What else correlates?*  
-[Popularity of the first name Eleanor](spurious/variable?id=2905) · [all first names](spurious/view-all-variables/babynames)  
-[Wind power generated in Poland](spurious/variable?id=23904) · [all energy](spurious/view-all-variables/energy)  
-
-------------------------------------------------------------------------
-
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is How nerdy Tom Scott's YouTube video titles are and the second variable is The number of movies Mila Kunis appeared in. The chart goes from 2009 to 2022, and the two variables track closely in value over that time.](spurious/correlation/image/5852_how-nerdy-tom-scott-youtube-video-titles-are_correlates-with_the-number-of-movies-mila-kunis-appeared-in.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is How nerdy Tom Scott's YouTube video titles are and the second variable is The number of movies Mila Kunis appeared in.  The chart goes from 2009 to 2022, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/5852_how-nerdy-tom-scott-youtube-video-titles-are_correlates-with_the-number-of-movies-mila-kunis-appeared-in_mobile.svg)  
-**View details about correlation \#5,852**](spurious/correlation/5852_how-nerdy-tom-scott-youtube-video-titles-are_correlates-with_the-number-of-movies-mila-kunis-appeared-in)  
-  
-
-^(Show scatterplot)
-
-![](spurious/correlation/scatterplot/5852_how-nerdy-tom-scott-youtube-video-titles-are_correlates-with_the-number-of-movies-mila-kunis-appeared-in_scatterplot.png)
-
-  
-  
-
-*What else correlates?*  
-[How nerdy Tom Scott's YouTube video titles are](spurious/variable?id=25458) · [all YouTube](spurious/view-all-variables/youtube)  
-[The number of movies Mila Kunis appeared in](spurious/variable?id=26519) · [all films & actors](spurious/view-all-variables/films)  
 
 ------------------------------------------------------------------------
 

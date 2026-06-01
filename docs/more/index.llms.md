@@ -20,6 +20,12 @@ Pablo Benavides-Herrera
 
 3 min
 
+### [Elendil TA](../../docs/more/elendil-ta/index.llms.md)
+
+Custom Claude skill for the Time Series Forecasting course at ITESO. Install it to get course-aware AI help.
+
+4 min
+
 ### [Expectation, variance, and covariance: measuring uncertainty](../../docs/more/stats/expectation_variance_cov.llms.md)
 
 A refresher on expectation, variance, and covariance, focused on how uncertainty and dependence are quantified in time series.
