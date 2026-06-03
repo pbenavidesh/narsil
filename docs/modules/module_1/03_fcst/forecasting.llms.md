@@ -236,20 +236,10 @@ hare_fit <- hare_train |>
     snaive = SNAIVE(Hare),
     drift  = RW(Hare ~ drift())
   )
-```
 
-    Warning: 1 error encountered for snaive
-    [1] Non-seasonal model specification provided, use RW() or provide a different lag specification.
-
-Code
-
-``` r
 hare_fc <- hare_fit |>
   forecast(h = h_hare)
 ```
-
-    Warning: Removed 15 rows containing missing values or values outside the scale range
-    (`geom_line()`).
 
 [![](forecasting_files/figure-html/hare-fcst-plot-1.png)](forecasting_files/figure-html/hare-fcst-plot-1.png)
 
@@ -314,20 +304,10 @@ mexico_fit <- mexico_train |>
     snaive = SNAIVE(GDP),
     drift  = RW(GDP ~ drift())
   )
-```
 
-    Warning: 1 error encountered for snaive
-    [1] Non-seasonal model specification provided, use RW() or provide a different lag specification.
-
-Code
-
-``` r
 mexico_fc <- mexico_fit |>
   forecast(h = h_mexico)
 ```
-
-    Warning: Removed 7 rows containing missing values or values outside the scale range
-    (`geom_line()`).
 
 [![](forecasting_files/figure-html/gdp-fcst-plot-1.png)](forecasting_files/figure-html/gdp-fcst-plot-1.png)
 
@@ -442,18 +422,6 @@ hare_fit |>
   labs(title = "Hare — NAIVE residuals")
 ```
 
-    Warning: Removed 1 row containing missing values or values outside the scale range
-    (`geom_line()`).
-
-    Warning: Removed 1 row containing missing values or values outside the scale range
-    (`geom_point()`).
-
-    Warning: Removed 1 row containing non-finite outside the scale range
-    (`stat_bin()`).
-
-    Warning: Removed 1 row containing missing values or values outside the scale range
-    (`geom_rug()`).
-
 [![](forecasting_files/figure-html/hare-resid-1.png)](forecasting_files/figure-html/hare-resid-1.png)
 
 ## Beer
@@ -466,18 +434,6 @@ beer_fit |>
   gg_tsresiduals() +
   labs(title = "Beer — SNAIVE residuals")
 ```
-
-    Warning: Removed 4 rows containing missing values or values outside the scale range
-    (`geom_line()`).
-
-    Warning: Removed 4 rows containing missing values or values outside the scale range
-    (`geom_point()`).
-
-    Warning: Removed 4 rows containing non-finite outside the scale range
-    (`stat_bin()`).
-
-    Warning: Removed 4 rows containing missing values or values outside the scale range
-    (`geom_rug()`).
 
 [![](forecasting_files/figure-html/beer-resid-1.png)](forecasting_files/figure-html/beer-resid-1.png)
 
@@ -492,18 +448,6 @@ mexico_fit |>
   labs(title = "Mexico GDP — Drift residuals")
 ```
 
-    Warning: Removed 1 row containing missing values or values outside the scale range
-    (`geom_line()`).
-
-    Warning: Removed 1 row containing missing values or values outside the scale range
-    (`geom_point()`).
-
-    Warning: Removed 1 row containing non-finite outside the scale range
-    (`stat_bin()`).
-
-    Warning: Removed 1 row containing missing values or values outside the scale range
-    (`geom_rug()`).
-
 [![](forecasting_files/figure-html/gdp-resid-1.png)](forecasting_files/figure-html/gdp-resid-1.png)
 
 ## Gas
@@ -516,18 +460,6 @@ gas_fit |>
   gg_tsresiduals() +
   labs(title = "Gas — SNAIVE residuals")
 ```
-
-    Warning: Removed 4 rows containing missing values or values outside the scale range
-    (`geom_line()`).
-
-    Warning: Removed 4 rows containing missing values or values outside the scale range
-    (`geom_point()`).
-
-    Warning: Removed 4 rows containing non-finite outside the scale range
-    (`stat_bin()`).
-
-    Warning: Removed 4 rows containing missing values or values outside the scale range
-    (`geom_rug()`).
 
 [![](forecasting_files/figure-html/gas-resid-1.png)](forecasting_files/figure-html/gas-resid-1.png)
 

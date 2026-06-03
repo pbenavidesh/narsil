@@ -341,8 +341,6 @@ gdp_fit <- gdp_fit |>
   left_join(gdp_fit_dcmp)
 ```
 
-    Joining with `by = join_by(symbol)`
-
 ### 1.6.1 Residuals diagnostics
 
 Code
