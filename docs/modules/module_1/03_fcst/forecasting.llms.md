@@ -2,154 +2,770 @@
 
 Modified
 
-June 1, 2026
+June 3, 2026
 
 # 1 A tidy forecasting workflow
 
 [![](fcst_wf.png)](fcst_wf.png)
 
-### 1.0.1 Foundations
+Everything we have done so far — visualizing patterns, decomposing components — serves one purpose: producing better forecasts.
 
-Forecasting requires methodological discipline:
+1.  **Visualize** — identify patterns in the training data
+2.  **Specify & estimate** — choose and fit a model on the training set
+3.  **Evaluate** — inspect residuals; check for white noise
+4.  **Refine** — adjust the model if residuals show remaining structure
+5.  **Forecast** — generate forecasts over the test horizon
+6.  **Measure accuracy** — compare forecasts against the test set
+7.  **Refit & deploy** — refit the chosen model on all available data
 
-- Split the data (train/test)
-- Establish **benchmark models**
-- Forecast
-- Measure accuracy
-- Select a baseline
-- Refit and produce the final forecast
+### 1.0.1 Train / test split
 
-### 1.0.2 Example dataset
+Before fitting any model, split the series into a **training set** and a **test set**[^1].
 
-We use a built-in dataset from `fpp3`: `aus_production`.
+- The test set length should match the intended **forecast horizon**.
+- A common rule: hold out the last 20–30% of observations, or the last h periods where h is the forecast horizon.
 
-- It is already a `tsibble`
-- It contains multiple economic production series
-- We focus on `Gas`
-
-### 1.0.3 Visualize
-
-[![](forecasting_files/figure-html/viz-1.png)](forecasting_files/figure-html/viz-1.png)
-
-### 1.0.4 Train/test split
-
-- Split the series into **training** and **test** sets.
-- The test set length should match the **forecast horizon**.
-
-For this example, we use the last **8 quarters** as test data.
-
-    n_train  n_test 
-        212       6 
-
-> **NOTE:**
->
-> In time series, the training set must contain earlier observations and the test set later observations.  
-> We mimic the real-world scenario: use past data to forecast the future.
-
-### 1.0.5 Benchmark models
-
-Before fitting complex models, we establish benchmarks.
-
-Common benchmark methods in tidyverts:
-
-- Mean method: `MEAN()`
-- Naïve method: `NAIVE()`
-- Seasonal naïve method: `SNAIVE()`
-- Drift method: `RW(... drift())`
+**Option 1 — programmatic split:**
 
 Code
 
 ``` r
-bench_fit <- gas_train |> 
+h <- <horizon>                           #<1>
+
+data_train <- data |>
+  slice_head(n = nrow(data) - h)         #<2>
+
+data_test <- data |>
+  slice_tail(n = h)                      #<3>
+```
+
+1.  Define the forecast horizon once; reuse it throughout.
+2.  Training set: all observations except the last `h`.
+3.  Test set: the last `h` observations.
+
+**Option 2 — `filter_index()`:**
+
+Code
+
+``` r
+data_train <- data |>
+  filter_index(. ~ "end_date")           #<1>
+
+data_test <- data |>
+  filter_index("start_date" ~ .)         #<2>
+```
+
+1.  Training set: from the beginning up to `end_date`.
+2.  Test set: from `start_date` to the end of the series.
+
+> **NOTE:**
+>
+> In time series the training set must always contain the **earlier** observations and the test set the **later** ones. We simulate the real-world scenario: use the past to forecast the future. Shuffling observations — as in cross-sectional machine learning — destroys the temporal structure.
+
+### 1.0.2 Specify & estimate
+
+Fit one or more models on the **training set** using `model()`. Each model specification goes inside the call as a named argument[^2]:
+
+Code
+
+``` r
+data_fit <- data_train |>
+  model(
+    model_1 = <model_spec>(<y>),                      #<1>
+    model_2 = <model_spec>(<transformation>(<y>))     #<2>
+  )
+```
+
+1.  Model specification — the function depends on the model family.
+2.  If a transformation is needed, wrap the response variable inside the spec.
+
+### 1.0.3 Evaluate, refine, forecast
+
+After fitting:
+
+- Extract **fitted values** and **residuals** with `augment()`
+- Inspect residuals with `gg_tsresiduals()` — they should resemble white noise
+- If residuals show remaining structure, **refine**: change the model or add a transformation
+- Generate forecasts over the test horizon with `forecast(h = ...)`[^3]
+
+Code
+
+``` r
+data_fc <- data_fit |>
+  forecast(h = nrow(data_test))   #<1>
+```
+
+1.  `h` equals the number of rows in the test set so the forecast horizon lines up exactly with the observations to compare against.
+
+### 1.0.4 Accuracy & refit
+
+Compute accuracy metrics by comparing forecasts against the held-out data:
+
+Code
+
+``` r
+data_fc |>
+  accuracy(data)    #<1>
+```
+
+1.  Pass the **full** tsibble (train + test). `fable` uses the training portion to compute scaled error denominators (MASE, RMSSE) and the test portion to compute forecast errors.
+
+Once a model is selected, **refit on all available data** and forecast the desired future horizon:
+
+Code
+
+``` r
+final_fit <- data |>
+  model(<chosen_model>(<y>))
+
+final_fc <- final_fit |>
+  forecast(h = <horizon>)
+```
+
+------------------------------------------------------------------------
+
+# 2 Benchmark forecasting methods
+
+Before fitting complex models, establish **benchmark forecasts**.
+
+Benchmarks serve two purposes:
+
+1.  They set a **floor** — any serious model should clear it.
+2.  They reveal when complexity adds nothing.
+
+They are simple, transparent, and surprisingly hard to beat.
+
+### 2.0.1 The four benchmark methods
+
+## Mean
+
+\hat{y}\_{T+h\|T} = \bar{y}
+
+- Forecasts the **historical average** for all future periods.
+- Assumes no trend, no seasonality — the series fluctuates around a fixed level.
+- Useful baseline for stationary series.
+
+Code
+
+``` r
+MEAN(y)
+```
+
+## Naïve
+
+\hat{y}\_{T+h\|T} = y_T
+
+- Forecasts the **last observed value** for all future periods.
+- Assumes the most recent past is the best predictor.
+- Equivalent to a random walk. Surprisingly hard to beat for many economic and financial series.
+
+Code
+
+``` r
+NAIVE(y)
+```
+
+## Seasonal Naïve
+
+\hat{y}\_{T+h\|T} = y\_{T+h-m}
+
+where m is the seasonal period.
+
+- Forecasts using the **last observed value from the same season**.
+- Captures seasonality with no trend modeling.
+- Often the strongest benchmark for seasonal data.
+
+Code
+
+``` r
+SNAIVE(y)
+```
+
+## Drift
+
+\hat{y}\_{T+h\|T} = y_T + h \cdot \frac{y_T - y_1}{T - 1}
+
+- Extrapolates a **linear trend** from the first to the last observation.
+- Equivalent to a random walk with drift.
+- Simple but competitive for trending series.
+
+Code
+
+``` r
+RW(y ~ drift())
+```
+
+### 2.0.2 Fitting all four at once
+
+In `fable`, all four benchmarks can be fitted simultaneously inside a single `model()` call:
+
+Code
+
+``` r
+data_fit <- data_train |>
+  model(
+    mean   = MEAN(y),
+    naive  = NAIVE(y),
+    snaive = SNAIVE(y),
+    drift  = RW(y ~ drift())
+  )
+```
+
+The result is a **model table** (mable) — one row per series, one column per model.
+
+### 2.0.3 Which method wins?
+
+The right benchmark depends on the structure of the series.
+
+## Hare
+
+[![](forecasting_files/figure-html/hare-plot-1.png)](forecasting_files/figure-html/hare-plot-1.png)
+
+Code
+
+``` r
+h_hare <- 15
+
+hare_train <- pelt |>
+  slice_head(n = nrow(pelt) - h_hare)
+
+hare_fit <- hare_train |>
+  model(
+    mean   = MEAN(Hare),
+    naive  = NAIVE(Hare),
+    snaive = SNAIVE(Hare),
+    drift  = RW(Hare ~ drift())
+  )
+```
+
+    Warning: 1 error encountered for snaive
+    [1] Non-seasonal model specification provided, use RW() or provide a different lag specification.
+
+Code
+
+``` r
+hare_fc <- hare_fit |>
+  forecast(h = h_hare)
+```
+
+    Warning: Removed 15 rows containing missing values or values outside the scale range
+    (`geom_line()`).
+
+[![](forecasting_files/figure-html/hare-fcst-plot-1.png)](forecasting_files/figure-html/hare-fcst-plot-1.png)
+
+> **NOTE:**
+>
+> The Hare series has no persistent trend and no seasonal pattern — it fluctuates irregularly around a roughly stable level. **MEAN** and **NAIVE** are the most sensible benchmarks: MEAN captures the long-run average, NAIVE assumes the most recent value is the best guess. Drift extrapolates whatever slope happens to exist at the end of training, which is misleading here. SNAIVE is not meaningful for annual data with no seasonal structure.
+
+## Beer
+
+[![](forecasting_files/figure-html/beer-plot-1.png)](forecasting_files/figure-html/beer-plot-1.png)
+
+Code
+
+``` r
+beer <- aus_production |>
+  filter(year(Quarter) >= 1992) |>
+  select(Quarter, Beer)
+
+h_beer <- 4 * 4  # 4 years of quarterly data
+
+beer_train <- beer |>
+  slice_head(n = nrow(beer) - h_beer)
+
+beer_fit <- beer_train |>
+  model(
+    mean   = MEAN(Beer),
+    naive  = NAIVE(Beer),
+    snaive = SNAIVE(Beer),
+    drift  = RW(Beer ~ drift())
+  )
+
+beer_fc <- beer_fit |>
+  forecast(h = h_beer)
+```
+
+[![](forecasting_files/figure-html/beer-fcst-plot-1.png)](forecasting_files/figure-html/beer-fcst-plot-1.png)
+
+> **NOTE:**
+>
+> From 1992 onward the series shows clear quarterly seasonality with no visible long-run trend — production oscillates in a stable band. **SNAIVE** is the natural winner: it repeats the last observed value from the same quarter, tracking the seasonal pattern without inventing a trend that isn’t there.
+
+## Mexico GDP
+
+[![](forecasting_files/figure-html/gdp-plot-1.png)](forecasting_files/figure-html/gdp-plot-1.png)
+
+Code
+
+``` r
+mexico <- global_economy |>
+  filter(Country == "Mexico") |>
+  select(Year, GDP)
+
+h_mexico <- 7
+
+mexico_train <- mexico |>
+  slice_head(n = nrow(mexico) - h_mexico)
+
+mexico_fit <- mexico_train |>
+  model(
+    mean   = MEAN(GDP),
+    naive  = NAIVE(GDP),
+    snaive = SNAIVE(GDP),
+    drift  = RW(GDP ~ drift())
+  )
+```
+
+    Warning: 1 error encountered for snaive
+    [1] Non-seasonal model specification provided, use RW() or provide a different lag specification.
+
+Code
+
+``` r
+mexico_fc <- mexico_fit |>
+  forecast(h = h_mexico)
+```
+
+    Warning: Removed 7 rows containing missing values or values outside the scale range
+    (`geom_line()`).
+
+[![](forecasting_files/figure-html/gdp-fcst-plot-1.png)](forecasting_files/figure-html/gdp-fcst-plot-1.png)
+
+> **NOTE:**
+>
+> GDP grows persistently over time with no seasonal pattern. **Drift** is the right benchmark: it extrapolates the average historical growth rate into the future. NAIVE predicts no growth at all. MEAN forecasts the historical average — far below recent observations. SNAIVE makes no sense for annual data.
+
+## Gas
+
+[![](forecasting_files/figure-html/gas-plot-1.png)](forecasting_files/figure-html/gas-plot-1.png)
+
+Code
+
+``` r
+h_gas <- 4 * 5  # 5 years of quarterly data
+
+gas_train <- aus_production |>
+  slice_head(n = nrow(aus_production) - h_gas)
+
+gas_test <- aus_production |>
+  slice_tail(n = h_gas)
+
+gas_fit <- gas_train |>
   model(
     mean   = MEAN(Gas),
     naive  = NAIVE(Gas),
     snaive = SNAIVE(Gas),
     drift  = RW(Gas ~ drift())
   )
+
+gas_fc <- gas_fit |>
+  forecast(h = h_gas)
 ```
 
-### 1.0.6 Forecast
+[![](forecasting_files/figure-html/gas-fcst-plot-1.png)](forecasting_files/figure-html/gas-fcst-plot-1.png)
 
-Generate forecasts with a horizon equal to the test set length.
+The series has **both** a strong upward trend and growing seasonal swings. None of the four benchmarks handles both at the same time.
+
+What would a better approach look like?
+
+------------------------------------------------------------------------
+
+# 3 Evaluating forecasts
+
+Fitting a model and generating forecasts is only half the job. We also need to know **how good** those forecasts are.
+
+Evaluation has two layers:
+
+- **Residual diagnostics** — does the model capture all systematic patterns?
+- **Forecast accuracy** — how close are the forecasts to the actual values?
+
+### 3.0.1 Fitted values and residuals
+
+The **fitted values** \hat{y}\_t are the one-step-ahead predictions the model makes for the training observations.
+
+The **residuals** e_t are what the model leaves unexplained:
+
+e_t = y_t - \hat{y}\_t
+
+> **NOTE:**
+>
+> When a **transformation** is applied (e.g. `log(Gas)`), there are two types of residuals:
+>
+> - **Residuals** e_t: computed on the **original** scale after back-transforming the fitted values.
+> - **Innovation residuals** \tilde{e}\_t: computed on the **transformed** scale.
+>
+> Residual diagnostics (white noise checks, Ljung-Box) should always be run on the **innovation residuals** — this is what `augment()` returns in `.innov`.
+
+Extract both with `augment()`:
 
 Code
 
 ``` r
-bench_fcst <- bench_fit |> 
-  forecast(h = nrow(gas_test))
+data_fit |>
+  augment()    #<1>
 ```
 
-(Optional) Plot forecasts:
+1.  Returns a tsibble with columns `.fitted`, `.resid` (original scale), and `.innov` (transformed scale — same as `.resid` when no transformation is used).
+
+### 3.0.2 Residual diagnostics
+
+A well-specified model should leave residuals that behave like **white noise**.
+
+*Essential properties:*
+
+1.  **Uncorrelated** — no remaining autocorrelation at any lag.
+2.  **Zero mean** — the model is not systematically over- or under-forecasting.
+
+*Desirable properties:*
+
+3.  **Constant variance** — variability is stable over time.
+4.  **Normally distributed** — required for valid parametric prediction intervals.
+
+### 3.0.3 White noise
+
+# An error occurred.
+
+Unable to execute JavaScript.
+
+### 3.0.4 `gg_tsresiduals()`
+
+`gg_tsresiduals()` produces a three-panel diagnostic plot: the residual time series, the ACF of residuals, and a histogram.
+
+## Hare
 
 Code
 
 ``` r
-bench_fcst |> 
-  autoplot(gas_train, level = 95) |> 
-  autolayer(gas_test, Gas, alpha = 0.7)
+hare_fit |>
+  select(naive) |>
+  gg_tsresiduals() +
+  labs(title = "Hare — NAIVE residuals")
 ```
 
-### 1.0.7 Forecast accuracy
+    Warning: Removed 1 row containing missing values or values outside the scale range
+    (`geom_line()`).
 
-We measure forecast accuracy using forecast errors:
+    Warning: Removed 1 row containing missing values or values outside the scale range
+    (`geom_point()`).
+
+    Warning: Removed 1 row containing non-finite outside the scale range
+    (`stat_bin()`).
+
+    Warning: Removed 1 row containing missing values or values outside the scale range
+    (`geom_rug()`).
+
+[![](forecasting_files/figure-html/hare-resid-1.png)](forecasting_files/figure-html/hare-resid-1.png)
+
+## Beer
+
+Code
+
+``` r
+beer_fit |>
+  select(snaive) |>
+  gg_tsresiduals() +
+  labs(title = "Beer — SNAIVE residuals")
+```
+
+    Warning: Removed 4 rows containing missing values or values outside the scale range
+    (`geom_line()`).
+
+    Warning: Removed 4 rows containing missing values or values outside the scale range
+    (`geom_point()`).
+
+    Warning: Removed 4 rows containing non-finite outside the scale range
+    (`stat_bin()`).
+
+    Warning: Removed 4 rows containing missing values or values outside the scale range
+    (`geom_rug()`).
+
+[![](forecasting_files/figure-html/beer-resid-1.png)](forecasting_files/figure-html/beer-resid-1.png)
+
+## Mexico GDP
+
+Code
+
+``` r
+mexico_fit |>
+  select(drift) |>
+  gg_tsresiduals() +
+  labs(title = "Mexico GDP — Drift residuals")
+```
+
+    Warning: Removed 1 row containing missing values or values outside the scale range
+    (`geom_line()`).
+
+    Warning: Removed 1 row containing missing values or values outside the scale range
+    (`geom_point()`).
+
+    Warning: Removed 1 row containing non-finite outside the scale range
+    (`stat_bin()`).
+
+    Warning: Removed 1 row containing missing values or values outside the scale range
+    (`geom_rug()`).
+
+[![](forecasting_files/figure-html/gdp-resid-1.png)](forecasting_files/figure-html/gdp-resid-1.png)
+
+## Gas
+
+Code
+
+``` r
+gas_fit |>
+  select(snaive) |>
+  gg_tsresiduals() +
+  labs(title = "Gas — SNAIVE residuals")
+```
+
+    Warning: Removed 4 rows containing missing values or values outside the scale range
+    (`geom_line()`).
+
+    Warning: Removed 4 rows containing missing values or values outside the scale range
+    (`geom_point()`).
+
+    Warning: Removed 4 rows containing non-finite outside the scale range
+    (`stat_bin()`).
+
+    Warning: Removed 4 rows containing missing values or values outside the scale range
+    (`geom_rug()`).
+
+[![](forecasting_files/figure-html/gas-resid-1.png)](forecasting_files/figure-html/gas-resid-1.png)
+
+### 3.0.5 Portmanteau tests
+
+The ACF plot gives a visual impression, but we also want a formal test. The **Ljung-Box test** checks whether any group of autocorrelations is significantly different from zero.
+
+H_0: \text{residuals are white noise} \qquad H_1: \text{residuals are not white noise}
+
+A small p-value (typically \< 0.05) is evidence against white noise.
+
+Code
+
+``` r
+data_fit |>
+  augment() |>
+  features(.innov, ljung_box, lag = h, dof = K)   #<1>
+```
+
+1.  `lag` is typically set to 10 for non-seasonal data and 2m for seasonal data (m = seasonal period). `dof` is the number of estimated parameters (0 for all benchmark methods).
+
+## Hare
+
+Code
+
+``` r
+hare_fit |>
+  augment() |>
+  filter(.model == "naive") |>
+  features(.innov, ljung_box, lag = 10, dof = 0)
+```
+
+## Beer
+
+Code
+
+``` r
+beer_fit |>
+  augment() |>
+  filter(.model == "snaive") |>
+  features(.innov, ljung_box, lag = 8, dof = 0)
+```
+
+## Mexico GDP
+
+Code
+
+``` r
+mexico_fit |>
+  augment() |>
+  filter(.model == "drift") |>
+  features(.innov, ljung_box, lag = 10, dof = 0)
+```
+
+## Gas
+
+Code
+
+``` r
+gas_fit |>
+  augment() |>
+  filter(.model == "snaive") |>
+  features(.innov, ljung_box, lag = 8, dof = 0)
+```
+
+### 3.0.6 Forecast accuracy
+
+Residual diagnostics tell us about the **training fit**. Forecast accuracy tells us how well the model does on **unseen data**.
+
+Forecast errors on the test set:
 
 e\_{T+h} = y\_{T+h} - \hat{y}\_{T+h\|T}
 
-Compute accuracy metrics:
+From these errors we compute **percentage errors**:
+
+p_t = \frac{e\_{T+h}}{y\_{T+h}} \times 100
+
+and **scaled errors** — for seasonal series[^4]:
+
+q_j = \frac{e_j}{\dfrac{1}{T-m}\displaystyle\sum\_{t=m+1}^{T}\|y_t - y\_{t-m}\|}
+
+### 3.0.7 Error metrics
+
+| **Scale** | **Metric** | **Description** | **Formula** |
+|----|----|----|----|
+| Scale-dependent | RMSE | Root Mean Squared Error | \sqrt{\text{mean}(e_t^2)} |
+|  | MAE | Mean Absolute Error | \text{mean}(\|e_t\|) |
+| Scale-independent | MAPE | Mean Absolute Percentage Error | \text{mean}(\|p_t\|) |
+|  | MASE | Mean Absolute Scaled Error | \text{mean}(\|q_t\|) |
+|  | RMSSE | Root Mean Squared Scaled Error | \sqrt{\text{mean}(q_t^2)} |
+
+Common error metrics {.caption-top .table tbl-colwidths="[22,12,38,28]"}
+
+> **TIP:**
+>
+> - **RMSE / MAE**: useful when all series share the same units and scale. RMSE penalizes large errors more heavily.
+> - **MAPE**: intuitive (percentage) but breaks down when actual values are near zero. Avoid for intermittent demand or series with zeros.
+> - **MASE / RMSSE**: preferred for comparing across series with different scales or units. A MASE \> 1 means the model is worse than the seasonal naïve benchmark.
+
+### 3.0.8 Computing accuracy
 
 Code
 
 ``` r
-bench_acc <- bench_fcst |> 
-  accuracy(gas_test) |> 
-  arrange(MASE)
-
-bench_acc
+data_fc |>
+  accuracy(data)    #<1>
 ```
 
-Selection rule:
+1.  Pass the **full** tsibble (train + test). `fable` identifies the training portion to compute MASE/RMSSE denominators and the test portion to compute forecast errors. Passing only the test set returns `NaN` for scaled metrics.
 
-- Prefer models that perform well on **MASE** (scale-independent).
-- For seasonal data, `snaive` is often a strong benchmark.
-
-### 1.0.8 Error metrics
-
-Using forecast errors, we can compute summary metrics:
-
-[TABLE]
-
-Common error metrics {.caption-top .table}
-
-### 1.0.9 Refit and forecast
-
-Once a benchmark is selected based on the test set, refit it using **all available data**, then forecast the desired future horizon.
-
-Example: refit `snaive` and forecast the next 8 quarters.
+## Hare
 
 Code
 
 ``` r
-final_fit <- aus_production |> 
-  model(
-    final_model = SNAIVE(Gas)
-  )
-
-final_fcst <- final_fit |> 
-  forecast(h = "8 quarters")
+hare_fc |>
+  accuracy(pelt) |>
+  select(.model, RMSE, MAE, MAPE, MASE, RMSSE) |>
+  arrange(RMSSE)
 ```
 
-### 1.0.10 Communicate
+## Beer
 
-Forecasting is not finished when numbers are produced.  
-Results must be communicated clearly and honestly.
+Code
 
-Minimum communication checklist:
+``` r
+beer_fc |>
+  accuracy(beer) |>
+  select(.model, RMSE, MAE, MAPE, MASE, RMSSE) |>
+  arrange(RMSSE)
+```
 
-- Plot: history + forecast + prediction intervals
-- Horizon: what the forecast period represents
-- Baseline: state the benchmark model used
-- Uncertainty: prediction intervals are essential
-- Limitations: structural breaks, short samples, changing conditions
+## Mexico GDP
+
+Code
+
+``` r
+mexico_fc |>
+  accuracy(mexico) |>
+  select(.model, RMSE, MAE, MAPE, MASE, RMSSE) |>
+  arrange(RMSSE)
+```
+
+## Gas
+
+Code
+
+``` r
+gas_fc |>
+  accuracy(aus_production) |>
+  select(.model, RMSE, MAE, MAPE, MASE, RMSSE) |>
+  arrange(RMSSE)
+```
+
+### 3.0.9 Refit and forecast
+
+Once a model is selected based on the test set, **refit it on all available data** — the test set is no longer “future” at this point.
+
+Using all observations generally improves parameter estimates and reflects how models are actually deployed.
+
+## Hare
+
+Code
+
+``` r
+hare_final_fit <- pelt |>
+  model(naive = NAIVE(Hare))
+
+hare_final_fc <- hare_final_fit |>
+  forecast(h = 15)
+
+hare_final_fc |>
+  autoplot(pelt) +
+  labs(title = "Hare pelts — NAIVE forecast (refit on full data)",
+       y = "Number of pelts (thousands)", x = NULL)
+```
+
+[![](forecasting_files/figure-html/hare-refit-1.png)](forecasting_files/figure-html/hare-refit-1.png)
+
+## Beer
+
+Code
+
+``` r
+beer_final_fit <- beer |>
+  model(snaive = SNAIVE(Beer))
+
+beer_final_fc <- beer_final_fit |>
+  forecast(h = "2 years")
+
+beer_final_fc |>
+  autoplot(beer) +
+  labs(title = "Beer production — SNAIVE forecast (refit on full data)",
+       y = "Megalitres", x = NULL)
+```
+
+[![](forecasting_files/figure-html/beer-refit-1.png)](forecasting_files/figure-html/beer-refit-1.png)
+
+## Mexico GDP
+
+Code
+
+``` r
+mexico_final_fit <- mexico |>
+  model(drift = RW(GDP ~ drift()))
+
+mexico_final_fc <- mexico_final_fit |>
+  forecast(h = "5 years")
+
+mexico_final_fc |>
+  autoplot(mexico) +
+  labs(title = "Mexico GDP — Drift forecast (refit on full data)",
+       y = "GDP (USD)", x = NULL)
+```
+
+[![](forecasting_files/figure-html/gdp-refit-1.png)](forecasting_files/figure-html/gdp-refit-1.png)
+
+### 3.0.10 Communicate
+
+Forecasting is not finished when numbers are produced. Results must be communicated clearly and honestly.
+
+Effective communication includes:
+
+- **Visualization** — historical data + forecasts + prediction intervals, with clear labeling of units and horizons
+- **Assumptions** — model choice and any transformations applied
+- **Uncertainty** — point forecasts alone are rarely sufficient; prediction intervals convey risk and variability
+- **Limitations** — structural breaks, data quality issues, short samples
+
+A good forecast is one that decision-makers can **understand, trust, and act upon** — even when it turns out to be wrong.
 
 Back to top
+
+## Footnotes
+
+[^1]: Splitting into train/test is the minimum. For more robust evaluation, consider time series cross-validation — see [FPP3 §5.10](https://otexts.com/fpp3/tscv.html).
+
+[^2]: Store the resulting model table in a `*_fit` object.
+
+[^3]: Store forecasts in a `*_fc` object.
+
+[^4]: For non-seasonal series replace m with 1 and sum from t = 2. Scaled errors use the in-sample naïve or seasonal naïve error as the denominator, making MASE and RMSSE scale-free and comparable across series.

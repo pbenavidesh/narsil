@@ -275,203 +275,990 @@
 <section>
 <section id="a-tidy-forecasting-workflow" class="title-slide slide level1 center">
 <h1>A tidy forecasting workflow</h1>
+
+</section>
+<section id="a-tidy-forecasting-workflow-1" class="slide level2">
+<h2>A tidy forecasting workflow</h2>
 <p><a href="fcst_wf.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img data-src="fcst_wf.png"></a></p>
 </section>
-<section id="foundations" class="slide level2">
-<h2>Foundations</h2>
-<p>Forecasting requires methodological discipline:</p>
-<ul>
-<li class="fragment">Split the data (train/test)</li>
-<li class="fragment">Establish <strong>benchmark models</strong></li>
-<li class="fragment">Forecast</li>
-<li class="fragment">Measure accuracy</li>
-<li class="fragment">Select a baseline</li>
-<li class="fragment">Refit and produce the final forecast</li>
-</ul>
+<section id="section" class="slide level2 scrollable">
+<h2></h2>
+<p>Everything we have done so far — visualizing patterns, decomposing components — serves one purpose: producing better forecasts.</p>
+<ol type="1">
+<li class="fragment"><strong>Visualize</strong> — identify patterns in the training data</li>
+<li class="fragment"><strong>Specify &amp; estimate</strong> — choose and fit a model on the training set</li>
+<li class="fragment"><strong>Evaluate</strong> — inspect residuals; check for white noise</li>
+<li class="fragment"><strong>Refine</strong> — adjust the model if residuals show remaining structure</li>
+<li class="fragment"><strong>Forecast</strong> — generate forecasts over the test horizon</li>
+<li class="fragment"><strong>Measure accuracy</strong> — compare forecasts against the test set</li>
+<li class="fragment"><strong>Refit &amp; deploy</strong> — refit the chosen model on all available data</li>
+</ol>
 </section>
-<section id="example-dataset" class="slide level2">
-<h2>Example dataset</h2>
-<p>We use a built-in dataset from <code>fpp3</code>: <code>aus_production</code>.</p>
+<section id="train-test-split" class="slide level2">
+<h2>Train / test split</h2>
+<p>Before fitting any model, split the series into a <strong>training set</strong> and a <strong>test set</strong><a href="#/footnotes" class="footnote-ref" id="fnref1" role="doc-noteref" data-footnote-href="#/fn1" onclick=""><sup>1</sup></a>.</p>
 <ul>
-<li class="fragment">It is already a <code>tsibble</code></li>
-<li class="fragment">It contains multiple economic production series</li>
-<li class="fragment">We focus on <code>Gas</code></li>
+<li class="fragment">The test set length should match the intended <strong>forecast horizon</strong>.</li>
+<li class="fragment">A common rule: hold out the last 20–30% of observations, or the last <span class="math inline">h</span> periods where <span class="math inline">h</span> is the forecast horizon.</li>
 </ul>
+<div class="fragment">
+<p><strong>Option 1 — programmatic split:</strong></p>
 <div class="cell">
-<div class="cell-output-display">
-<div data-pagedtable="false">
-  <script data-pagedtable-source="" type="application/json">
-{"columns":[{"label":["Quarter"],"name":[1],"type":["qtr"],"align":["right"]},{"label":["Gas"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"1956 Q1","2":"5"},{"1":"1956 Q2","2":"6"},{"1":"1956 Q3","2":"7"},{"1":"1956 Q4","2":"6"},{"1":"1957 Q1","2":"5"},{"1":"1957 Q2","2":"7"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2" data-llms-code-original="h <- <horizon>                           #<1>
+
+data_train <- data |>
+  slice_head(n = nrow(data) - h)         #<2>
+
+data_test <- data |>
+  slice_tail(n = h)                      #<3>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1">1</button><span id="annotated-cell-2-1" class="code-annotation-target"><a href="#annotated-cell-2-1"></a>h <span class="ot">&lt;-</span> <span class="er">&lt;</span>horizon<span class="sc">&gt;</span></span>
+<span id="annotated-cell-2-2"><a href="#annotated-cell-2-2"></a></span>
+<span id="annotated-cell-2-3"><a href="#annotated-cell-2-3"></a>data_train <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="2">2</button><span id="annotated-cell-2-4" class="code-annotation-target"><a href="#annotated-cell-2-4"></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="fu">nrow</span>(data) <span class="sc">-</span> h)</span>
+<span id="annotated-cell-2-5"><a href="#annotated-cell-2-5"></a></span>
+<span id="annotated-cell-2-6"><a href="#annotated-cell-2-6"></a>data_test <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="3">3</button><span id="annotated-cell-2-7" class="code-annotation-target"><a href="#annotated-cell-2-7"></a>  <span class="fu">slice_tail</span>(<span class="at">n =</span> h)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-2" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="1" data-code-annotation="1">Define the forecast horizon once; reuse it throughout.</span>
+</dd>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="4" data-code-annotation="2">Training set: all observations except the last <code>h</code>.</span>
+</dd>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="7" data-code-annotation="3">Test set: the last <code>h</code> observations.</span>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p><strong>Option 2 — <code>filter_index()</code>:</strong></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3" data-llms-code-original="data_train <- data |>
+  filter_index(. ~ &quot;end_date&quot;)           #<1>
+
+data_test <- data |>
+  filter_index(&quot;start_date&quot; ~ .)         #<2>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1"></a>data_train <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1">1</button><span id="annotated-cell-3-2" class="code-annotation-target"><a href="#annotated-cell-3-2"></a>  <span class="fu">filter_index</span>(. <span class="sc">~</span> <span class="st">"end_date"</span>)</span>
+<span id="annotated-cell-3-3"><a href="#annotated-cell-3-3"></a></span>
+<span id="annotated-cell-3-4"><a href="#annotated-cell-3-4"></a>data_test <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="2">2</button><span id="annotated-cell-3-5" class="code-annotation-target"><a href="#annotated-cell-3-5"></a>  <span class="fu">filter_index</span>(<span class="st">"start_date"</span> <span class="sc">~</span> .)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-3" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-3" data-code-lines="2" data-code-annotation="1">Training set: from the beginning up to <code>end_date</code>.</span>
+</dd>
+<dt data-target-cell="annotated-cell-3" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-3" data-code-lines="5" data-code-annotation="2">Test set: from <code>start_date</code> to the end of the series.</span>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<aside></aside></section>
+<section id="specify-estimate" class="slide level2">
+<h2>Specify &amp; estimate</h2>
+<p>Fit one or more models on the <strong>training set</strong> using <code>model()</code>. Each model specification goes inside the call as a named argument<a href="#/footnotes" class="footnote-ref" id="fnref2" role="doc-noteref" data-footnote-href="#/fn2" onclick=""><sup>2</sup></a>:</p>
+<div class="fragment">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-4" data-llms-code-original="data_fit <- data_train |>
+  model(
+    model_1 = <model_spec>(<y>),                      #<1>
+    model_2 = <model_spec>(<transformation>(<y>))     #<2>
+  )"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-4-1"><a href="#annotated-cell-4-1"></a>data_fit <span class="ot">&lt;-</span> data_train <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-4-2"><a href="#annotated-cell-4-2"></a>  <span class="fu">model</span>(</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="1">1</button><span id="annotated-cell-4-3" class="code-annotation-target"><a href="#annotated-cell-4-3"></a>    <span class="at">model_1 =</span> <span class="sc">&lt;</span>model_spec<span class="sc">&gt;</span>(<span class="sc">&lt;</span>y<span class="sc">&gt;</span>),</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="2">2</button><span id="annotated-cell-4-4" class="code-annotation-target"><a href="#annotated-cell-4-4"></a>    <span class="at">model_2 =</span> <span class="sc">&lt;</span>model_spec<span class="sc">&gt;</span>(<span class="sc">&lt;</span>transformation<span class="sc">&gt;</span>(<span class="sc">&lt;</span>y<span class="sc">&gt;</span>))</span>
+<span id="annotated-cell-4-5"><a href="#annotated-cell-4-5"></a>  )</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-4" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-4" data-code-lines="3" data-code-annotation="1">Model specification — the function depends on the model family.</span>
+</dd>
+<dt data-target-cell="annotated-cell-4" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-4" data-code-lines="4" data-code-annotation="2">If a transformation is needed, wrap the response variable inside the spec.</span>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<aside></aside></section>
+<section id="evaluate-refine-forecast" class="slide level2">
+<h2>Evaluate, refine, forecast</h2>
+<p>After fitting:</p>
+<ul>
+<li class="fragment">Extract <strong>fitted values</strong> and <strong>residuals</strong> with <code>augment()</code></li>
+<li class="fragment">Inspect residuals with <code>gg_tsresiduals()</code> — they should resemble white noise</li>
+<li class="fragment">If residuals show remaining structure, <strong>refine</strong>: change the model or add a transformation</li>
+<li class="fragment">Generate forecasts over the test horizon with <code>forecast(h = ...)</code><a href="#/footnotes" class="footnote-ref" id="fnref3" role="doc-noteref" data-footnote-href="#/fn3" onclick=""><sup>3</sup></a></li>
+</ul>
+<div class="fragment">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-5" data-llms-code-original="data_fc <- data_fit |>
+  forecast(h = nrow(data_test))   #<1>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-5-1"><a href="#annotated-cell-5-1"></a>data_fc <span class="ot">&lt;-</span> data_fit <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-5" data-target-annotation="1">1</button><span id="annotated-cell-5-2" class="code-annotation-target"><a href="#annotated-cell-5-2"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="fu">nrow</span>(data_test))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-5" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-5" data-code-lines="2" data-code-annotation="1"><code>h</code> equals the number of rows in the test set so the forecast horizon lines up exactly with the observations to compare against.</span>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<aside></aside></section>
+<section id="accuracy-refit" class="slide level2">
+<h2>Accuracy &amp; refit</h2>
+<p>Compute accuracy metrics by comparing forecasts against the held-out data:</p>
+<div class="fragment">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-6" data-llms-code-original="data_fc |>
+  accuracy(data)    #<1>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-6-1"><a href="#annotated-cell-6-1"></a>data_fc <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="1">1</button><span id="annotated-cell-6-2" class="code-annotation-target"><a href="#annotated-cell-6-2"></a>  <span class="fu">accuracy</span>(data)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-6" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-6" data-code-lines="2" data-code-annotation="1">Pass the <strong>full</strong> tsibble (train + test). <code>fable</code> uses the training portion to compute scaled error denominators (MASE, RMSSE) and the test portion to compute forecast errors.</span>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p>Once a model is selected, <strong>refit on all available data</strong> and forecast the desired future horizon:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>final_fit <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
+<span id="cb1-2"><a></a>  <span class="fu">model</span>(<span class="sc">&lt;</span>chosen_model<span class="sc">&gt;</span>(<span class="sc">&lt;</span>y<span class="sc">&gt;</span>))</span>
+<span id="cb1-3"><a></a></span>
+<span id="cb1-4"><a></a>final_fc <span class="ot">&lt;-</span> final_fit <span class="sc">|&gt;</span></span>
+<span id="cb1-5"><a></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="sc">&lt;</span>horizon<span class="sc">&gt;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</section>
+<section class="slide level2">
+
+</section></section>
+<section>
+<section id="benchmark-forecasting-methods" class="title-slide slide level1 center">
+<h1>Benchmark forecasting methods</h1>
+
+</section>
+<section id="section-1" class="slide level2 scrollable">
+<h2></h2>
+<p>Before fitting complex models, establish <strong>benchmark forecasts</strong>.</p>
+<p>Benchmarks serve two purposes:</p>
+<ol type="1">
+<li class="fragment">They set a <strong>floor</strong> — any serious model should clear it.</li>
+<li class="fragment">They reveal when complexity adds nothing.</li>
+</ol>
+<div class="fragment">
+<p>They are simple, transparent, and surprisingly hard to beat.</p>
+</div>
+</section>
+<section id="the-four-benchmark-methods" class="slide level2">
+<h2>The four benchmark methods</h2>
+<div class="panel-tabset">
+<ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">Mean</a></li><li><a href="#tabset-1-2">Naïve</a></li><li><a href="#tabset-1-3">Seasonal Naïve</a></li><li><a href="#tabset-1-4">Drift</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1">
+<p><span class="math display">\hat{y}_{T+h|T} = \bar{y}</span></p>
+<ul>
+<li class="fragment">Forecasts the <strong>historical average</strong> for all future periods.</li>
+<li class="fragment">Assumes no trend, no seasonality — the series fluctuates around a fixed level.</li>
+<li class="fragment">Useful baseline for stationary series.</li>
+</ul>
+<div class="fragment">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a><span class="fu">MEAN</span>(y)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<div id="tabset-1-2">
+<p><span class="math display">\hat{y}_{T+h|T} = y_T</span></p>
+<ul>
+<li class="fragment">Forecasts the <strong>last observed value</strong> for all future periods.</li>
+<li class="fragment">Assumes the most recent past is the best predictor.</li>
+<li class="fragment">Equivalent to a random walk. Surprisingly hard to beat for many economic and financial series.</li>
+</ul>
+<div class="fragment">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="fu">NAIVE</span>(y)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<div id="tabset-1-3">
+<p><span class="math display">\hat{y}_{T+h|T} = y_{T+h-m}</span></p>
+<p>where <span class="math inline">m</span> is the seasonal period.</p>
+<ul>
+<li class="fragment">Forecasts using the <strong>last observed value from the same season</strong>.</li>
+<li class="fragment">Captures seasonality with no trend modeling.</li>
+<li class="fragment">Often the strongest benchmark for seasonal data.</li>
+</ul>
+<div class="fragment">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a><span class="fu">SNAIVE</span>(y)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<div id="tabset-1-4">
+<p><span class="math display">\hat{y}_{T+h|T} = y_T + h \cdot \frac{y_T - y_1}{T - 1}</span></p>
+<ul>
+<li class="fragment">Extrapolates a <strong>linear trend</strong> from the first to the last observation.</li>
+<li class="fragment">Equivalent to a random walk with drift.</li>
+<li class="fragment">Simple but competitive for trending series.</li>
+</ul>
+<div class="fragment">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a><span class="fu">RW</span>(y <span class="sc">~</span> <span class="fu">drift</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
 </div>
 </div>
 </div>
 </section>
-<section id="visualize" class="slide level2">
-<h2>Visualize</h2>
+<section id="fitting-all-four-at-once" class="slide level2">
+<h2>Fitting all four at once</h2>
+<p>In <code>fable</code>, all four benchmarks can be fitted simultaneously inside a single <code>model()</code> call:</p>
+<div class="fragment">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>data_fit <span class="ot">&lt;-</span> data_train <span class="sc">|&gt;</span></span>
+<span id="cb6-2"><a></a>  <span class="fu">model</span>(</span>
+<span id="cb6-3"><a></a>    <span class="at">mean   =</span> <span class="fu">MEAN</span>(y),</span>
+<span id="cb6-4"><a></a>    <span class="at">naive  =</span> <span class="fu">NAIVE</span>(y),</span>
+<span id="cb6-5"><a></a>    <span class="at">snaive =</span> <span class="fu">SNAIVE</span>(y),</span>
+<span id="cb6-6"><a></a>    <span class="at">drift  =</span> <span class="fu">RW</span>(y <span class="sc">~</span> <span class="fu">drift</span>())</span>
+<span id="cb6-7"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The result is a <strong>model table</strong> (mable) — one row per series, one column per model.</p>
+</div>
+</section>
+<section id="applying-benchmark-methods" class="slide level2">
+<h2>Applying benchmark methods</h2>
+<p>The right benchmark depends on the structure of the series.</p>
+<div class="panel-tabset" data-group="series">
+<ul id="tabset-2" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-2-1">Hare</a></li><li><a href="#tabset-2-2">Beer</a></li><li><a href="#tabset-2-3">Mexico GDP</a></li><li><a href="#tabset-2-4">Gas</a></li></ul>
+<div class="tab-content" data-group="series">
+<div id="tabset-2-1">
 <div class="cell">
 <div class="cell-output-display">
 <div>
 <figure>
-<p><a href="forecasting_files/figure-html/viz-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img data-src="forecasting_files/figure-html/viz-1.png" width="672"></a></p>
+<p><a href="forecasting_files/figure-html/hare-plot-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img data-src="forecasting_files/figure-html/hare-plot-1.png" width="672"></a></p>
 </figure>
 </div>
 </div>
 </div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a>h_hare <span class="ot">&lt;-</span> <span class="dv">15</span></span>
+<span id="cb7-2"><a></a></span>
+<span id="cb7-3"><a></a>hare_train <span class="ot">&lt;-</span> pelt <span class="sc">|&gt;</span></span>
+<span id="cb7-4"><a></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="fu">nrow</span>(pelt) <span class="sc">-</span> h_hare)</span>
+<span id="cb7-5"><a></a></span>
+<span id="cb7-6"><a></a>hare_fit <span class="ot">&lt;-</span> hare_train <span class="sc">|&gt;</span></span>
+<span id="cb7-7"><a></a>  <span class="fu">model</span>(</span>
+<span id="cb7-8"><a></a>    <span class="at">mean   =</span> <span class="fu">MEAN</span>(Hare),</span>
+<span id="cb7-9"><a></a>    <span class="at">naive  =</span> <span class="fu">NAIVE</span>(Hare),</span>
+<span id="cb7-10"><a></a>    <span class="at">snaive =</span> <span class="fu">SNAIVE</span>(Hare),</span>
+<span id="cb7-11"><a></a>    <span class="at">drift  =</span> <span class="fu">RW</span>(Hare <span class="sc">~</span> <span class="fu">drift</span>())</span>
+<span id="cb7-12"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: 1 error encountered for snaive
+[1] Non-seasonal model specification provided, use RW() or provide a different lag specification.</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a>hare_fc <span class="ot">&lt;-</span> hare_fit <span class="sc">|&gt;</span></span>
+<span id="cb9-2"><a></a>  <span class="fu">forecast</span>(<span class="at">h =</span> h_hare)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 15 rows containing missing values or values outside the scale range
+(`geom_line()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="forecasting_files/figure-html/hare-fcst-plot-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img data-src="forecasting_files/figure-html/hare-fcst-plot-1.png" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p><strong>MEAN and NAIVE</strong> — no trend, no seasonal pattern.</p>
+</div>
+</div>
+<div id="tabset-2-2">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="forecasting_files/figure-html/beer-plot-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img data-src="forecasting_files/figure-html/beer-plot-1.png" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>beer <span class="ot">&lt;-</span> aus_production <span class="sc">|&gt;</span></span>
+<span id="cb11-2"><a></a>  <span class="fu">filter</span>(<span class="fu">year</span>(Quarter) <span class="sc">&gt;=</span> <span class="dv">1992</span>) <span class="sc">|&gt;</span></span>
+<span id="cb11-3"><a></a>  <span class="fu">select</span>(Quarter, Beer)</span>
+<span id="cb11-4"><a></a></span>
+<span id="cb11-5"><a></a>h_beer <span class="ot">&lt;-</span> <span class="dv">4</span> <span class="sc">*</span> <span class="dv">4</span>  <span class="co"># 4 years of quarterly data</span></span>
+<span id="cb11-6"><a></a></span>
+<span id="cb11-7"><a></a>beer_train <span class="ot">&lt;-</span> beer <span class="sc">|&gt;</span></span>
+<span id="cb11-8"><a></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="fu">nrow</span>(beer) <span class="sc">-</span> h_beer)</span>
+<span id="cb11-9"><a></a></span>
+<span id="cb11-10"><a></a>beer_fit <span class="ot">&lt;-</span> beer_train <span class="sc">|&gt;</span></span>
+<span id="cb11-11"><a></a>  <span class="fu">model</span>(</span>
+<span id="cb11-12"><a></a>    <span class="at">mean   =</span> <span class="fu">MEAN</span>(Beer),</span>
+<span id="cb11-13"><a></a>    <span class="at">naive  =</span> <span class="fu">NAIVE</span>(Beer),</span>
+<span id="cb11-14"><a></a>    <span class="at">snaive =</span> <span class="fu">SNAIVE</span>(Beer),</span>
+<span id="cb11-15"><a></a>    <span class="at">drift  =</span> <span class="fu">RW</span>(Beer <span class="sc">~</span> <span class="fu">drift</span>())</span>
+<span id="cb11-16"><a></a>  )</span>
+<span id="cb11-17"><a></a></span>
+<span id="cb11-18"><a></a>beer_fc <span class="ot">&lt;-</span> beer_fit <span class="sc">|&gt;</span></span>
+<span id="cb11-19"><a></a>  <span class="fu">forecast</span>(<span class="at">h =</span> h_beer)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="forecasting_files/figure-html/beer-fcst-plot-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img data-src="forecasting_files/figure-html/beer-fcst-plot-1.png" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p><strong>SNAIVE</strong> — strong, stable seasonality and no meaningful trend.</p>
+</div>
+</div>
+<div id="tabset-2-3">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="forecasting_files/figure-html/gdp-plot-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img data-src="forecasting_files/figure-html/gdp-plot-1.png" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a>mexico <span class="ot">&lt;-</span> global_economy <span class="sc">|&gt;</span></span>
+<span id="cb12-2"><a></a>  <span class="fu">filter</span>(Country <span class="sc">==</span> <span class="st">"Mexico"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb12-3"><a></a>  <span class="fu">select</span>(Year, GDP)</span>
+<span id="cb12-4"><a></a></span>
+<span id="cb12-5"><a></a>h_mexico <span class="ot">&lt;-</span> <span class="dv">7</span></span>
+<span id="cb12-6"><a></a></span>
+<span id="cb12-7"><a></a>mexico_train <span class="ot">&lt;-</span> mexico <span class="sc">|&gt;</span></span>
+<span id="cb12-8"><a></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="fu">nrow</span>(mexico) <span class="sc">-</span> h_mexico)</span>
+<span id="cb12-9"><a></a></span>
+<span id="cb12-10"><a></a>mexico_fit <span class="ot">&lt;-</span> mexico_train <span class="sc">|&gt;</span></span>
+<span id="cb12-11"><a></a>  <span class="fu">model</span>(</span>
+<span id="cb12-12"><a></a>    <span class="at">mean   =</span> <span class="fu">MEAN</span>(GDP),</span>
+<span id="cb12-13"><a></a>    <span class="at">naive  =</span> <span class="fu">NAIVE</span>(GDP),</span>
+<span id="cb12-14"><a></a>    <span class="at">snaive =</span> <span class="fu">SNAIVE</span>(GDP),</span>
+<span id="cb12-15"><a></a>    <span class="at">drift  =</span> <span class="fu">RW</span>(GDP <span class="sc">~</span> <span class="fu">drift</span>())</span>
+<span id="cb12-16"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: 1 error encountered for snaive
+[1] Non-seasonal model specification provided, use RW() or provide a different lag specification.</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a>mexico_fc <span class="ot">&lt;-</span> mexico_fit <span class="sc">|&gt;</span></span>
+<span id="cb14-2"><a></a>  <span class="fu">forecast</span>(<span class="at">h =</span> h_mexico)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 7 rows containing missing values or values outside the scale range
+(`geom_line()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="forecasting_files/figure-html/gdp-fcst-plot-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7"><img data-src="forecasting_files/figure-html/gdp-fcst-plot-1.png" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p><strong>Drift</strong> — consistent long-run growth, no seasonality.</p>
+</div>
+</div>
+<div id="tabset-2-4">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="forecasting_files/figure-html/gas-plot-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8"><img data-src="forecasting_files/figure-html/gas-plot-1.png" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a>h_gas <span class="ot">&lt;-</span> <span class="dv">4</span> <span class="sc">*</span> <span class="dv">5</span>  <span class="co"># 5 years of quarterly data</span></span>
+<span id="cb16-2"><a></a></span>
+<span id="cb16-3"><a></a>gas_train <span class="ot">&lt;-</span> aus_production <span class="sc">|&gt;</span></span>
+<span id="cb16-4"><a></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="fu">nrow</span>(aus_production) <span class="sc">-</span> h_gas)</span>
+<span id="cb16-5"><a></a></span>
+<span id="cb16-6"><a></a>gas_test <span class="ot">&lt;-</span> aus_production <span class="sc">|&gt;</span></span>
+<span id="cb16-7"><a></a>  <span class="fu">slice_tail</span>(<span class="at">n =</span> h_gas)</span>
+<span id="cb16-8"><a></a></span>
+<span id="cb16-9"><a></a>gas_fit <span class="ot">&lt;-</span> gas_train <span class="sc">|&gt;</span></span>
+<span id="cb16-10"><a></a>  <span class="fu">model</span>(</span>
+<span id="cb16-11"><a></a>    <span class="at">mean   =</span> <span class="fu">MEAN</span>(Gas),</span>
+<span id="cb16-12"><a></a>    <span class="at">naive  =</span> <span class="fu">NAIVE</span>(Gas),</span>
+<span id="cb16-13"><a></a>    <span class="at">snaive =</span> <span class="fu">SNAIVE</span>(Gas),</span>
+<span id="cb16-14"><a></a>    <span class="at">drift  =</span> <span class="fu">RW</span>(Gas <span class="sc">~</span> <span class="fu">drift</span>())</span>
+<span id="cb16-15"><a></a>  )</span>
+<span id="cb16-16"><a></a></span>
+<span id="cb16-17"><a></a>gas_fc <span class="ot">&lt;-</span> gas_fit <span class="sc">|&gt;</span></span>
+<span id="cb16-18"><a></a>  <span class="fu">forecast</span>(<span class="at">h =</span> h_gas)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="forecasting_files/figure-html/gas-fcst-plot-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9"><img data-src="forecasting_files/figure-html/gas-fcst-plot-1.png" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p>The series has <strong>both</strong> a strong upward trend and growing seasonal swings. None of the four benchmarks handles both at the same time.</p>
+<p>What would a better approach look like?</p>
+</div>
+</div>
+</div>
+</div>
 </section>
-<section id="traintest-split" class="slide level2">
-<h2>Train/test split</h2>
+<section class="slide level2">
+
+</section></section>
+<section>
+<section id="evaluating-forecasts" class="title-slide slide level1 center">
+<h1>Evaluating forecasts</h1>
+
+</section>
+<section id="section-2" class="slide level2">
+<h2></h2>
+<p>Fitting a model and generating forecasts is only half the job. We also need to know <strong>how good</strong> those forecasts are.</p>
+<p>Evaluation has two layers:</p>
 <ul>
-<li class="fragment">Split the series into <strong>training</strong> and <strong>test</strong> sets.</li>
-<li class="fragment">The test set length should match the <strong>forecast horizon</strong>.</li>
+<li class="fragment"><strong>Residual diagnostics</strong> — does the model capture all systematic patterns?</li>
+<li class="fragment"><strong>Forecast accuracy</strong> — how close are the forecasts to the actual values?</li>
 </ul>
-<p>For this example, we use the last <strong>8 quarters</strong> as test data.</p>
+</section>
+<section id="fitted-values-and-residuals" class="slide level2">
+<h2>Fitted values and residuals</h2>
+<p>The <strong>fitted values</strong> <span class="math inline">\hat{y}_t</span> are the one-step-ahead predictions the model makes for the training observations.</p>
+<p>The <strong>residuals</strong> <span class="math inline">e_t</span> are what the model leaves unexplained:</p>
+<p><span class="math display">e_t = y_t - \hat{y}_t</span></p>
+<div class="fragment">
+<p>Extract both with <code>augment()</code>:</p>
 <div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>n_train  n_test 
-    212       6 </code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-23" data-llms-code-original="data_fit |>
+  augment()    #<1>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-23-1"><a href="#annotated-cell-23-1"></a>data_fit <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-23" data-target-annotation="1">1</button><span id="annotated-cell-23-2" class="code-annotation-target"><a href="#annotated-cell-23-2"></a>  <span class="fu">augment</span>()</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-23" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-23" data-code-lines="2" data-code-annotation="1">Returns a tsibble with columns <code>.fitted</code>, <code>.resid</code> (original scale), and <code>.innov</code> (transformed scale — same as <code>.resid</code> when no transformation is used).</span>
+</dd>
+</dl>
+</div>
 </div>
 </div>
 </section>
-<section id="benchmark-models" class="slide level2">
-<h2>Benchmark models</h2>
-<p>Before fitting complex models, we establish benchmarks.</p>
-<p>Common benchmark methods in tidyverts:</p>
-<ul>
-<li class="fragment">Mean method: <code>MEAN()</code></li>
-<li class="fragment">Naïve method: <code>NAIVE()</code></li>
-<li class="fragment">Seasonal naïve method: <code>SNAIVE()</code></li>
-<li class="fragment">Drift method: <code>RW(... drift())</code></li>
-</ul>
+<section id="residual-diagnostics" class="slide level2 scrollable">
+<h2>Residual diagnostics</h2>
+<p>A well-specified model should leave residuals that behave like <strong>white noise</strong>.</p>
+<p><em>Essential properties:</em></p>
+<ol type="1">
+<li class="fragment"><strong>Uncorrelated</strong> — no remaining autocorrelation at any lag.</li>
+<li class="fragment"><strong>Zero mean</strong> — the model is not systematically over- or under-forecasting.</li>
+</ol>
+<p><em>Desirable properties:</em></p>
+<ol start="3" type="1">
+<li class="fragment"><strong>Constant variance</strong> — variability is stable over time.</li>
+<li class="fragment"><strong>Normally distributed</strong> — required for valid parametric prediction intervals.</li>
+</ol>
+</section>
+<section id="what-is-white-noise" class="slide level2">
+<h2>What is white noise?</h2>
+<iframe data-external="1" src="https://www.youtube.com/embed/ubFq-wV3Eic?si=7So2aw3T-IkulZj6" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+</section>
+<section id="gg_tsresiduals" class="slide level2">
+<h2><code>gg_tsresiduals()</code></h2>
+<p><code>gg_tsresiduals()</code> produces a three-panel diagnostic plot: the residual time series, the ACF of residuals, and a histogram.</p>
+<div class="panel-tabset" data-group="series">
+<ul id="tabset-3" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-3-1">Hare</a></li><li><a href="#tabset-3-2">Beer</a></li><li><a href="#tabset-3-3">Mexico GDP</a></li><li><a href="#tabset-3-4">Gas</a></li></ul>
+<div class="tab-content" data-group="series">
+<div id="tabset-3-1">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a>bench_fit <span class="ot">&lt;-</span> gas_train <span class="sc">|&gt;</span> </span>
-<span id="cb2-2"><a></a>  <span class="fu">model</span>(</span>
-<span id="cb2-3"><a></a>    <span class="at">mean   =</span> <span class="fu">MEAN</span>(Gas),</span>
-<span id="cb2-4"><a></a>    <span class="at">naive  =</span> <span class="fu">NAIVE</span>(Gas),</span>
-<span id="cb2-5"><a></a>    <span class="at">snaive =</span> <span class="fu">SNAIVE</span>(Gas),</span>
-<span id="cb2-6"><a></a>    <span class="at">drift  =</span> <span class="fu">RW</span>(Gas <span class="sc">~</span> <span class="fu">drift</span>())</span>
-<span id="cb2-7"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a>hare_fit <span class="sc">|&gt;</span></span>
+<span id="cb17-2"><a></a>  <span class="fu">select</span>(naive) <span class="sc">|&gt;</span></span>
+<span id="cb17-3"><a></a>  <span class="fu">gg_tsresiduals</span>() <span class="sc">+</span></span>
+<span id="cb17-4"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Hare — NAIVE residuals"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 1 row containing missing values or values outside the scale range
+(`geom_line()`).</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 1 row containing missing values or values outside the scale range
+(`geom_point()`).</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 1 row containing non-finite outside the scale range
+(`stat_bin()`).</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 1 row containing missing values or values outside the scale range
+(`geom_rug()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="forecasting_files/figure-html/hare-resid-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10"><img data-src="forecasting_files/figure-html/hare-resid-1.png" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-3-2">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a></a>beer_fit <span class="sc">|&gt;</span></span>
+<span id="cb22-2"><a></a>  <span class="fu">select</span>(snaive) <span class="sc">|&gt;</span></span>
+<span id="cb22-3"><a></a>  <span class="fu">gg_tsresiduals</span>() <span class="sc">+</span></span>
+<span id="cb22-4"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Beer — SNAIVE residuals"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 4 rows containing missing values or values outside the scale range
+(`geom_line()`).</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 4 rows containing missing values or values outside the scale range
+(`geom_point()`).</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 4 rows containing non-finite outside the scale range
+(`stat_bin()`).</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 4 rows containing missing values or values outside the scale range
+(`geom_rug()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="forecasting_files/figure-html/beer-resid-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-11"><img data-src="forecasting_files/figure-html/beer-resid-1.png" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-3-3">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a></a>mexico_fit <span class="sc">|&gt;</span></span>
+<span id="cb27-2"><a></a>  <span class="fu">select</span>(drift) <span class="sc">|&gt;</span></span>
+<span id="cb27-3"><a></a>  <span class="fu">gg_tsresiduals</span>() <span class="sc">+</span></span>
+<span id="cb27-4"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Mexico GDP — Drift residuals"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 1 row containing missing values or values outside the scale range
+(`geom_line()`).</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 1 row containing missing values or values outside the scale range
+(`geom_point()`).</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 1 row containing non-finite outside the scale range
+(`stat_bin()`).</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 1 row containing missing values or values outside the scale range
+(`geom_rug()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="forecasting_files/figure-html/gdp-resid-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-12"><img data-src="forecasting_files/figure-html/gdp-resid-1.png" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-3-4">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a></a>gas_fit <span class="sc">|&gt;</span></span>
+<span id="cb32-2"><a></a>  <span class="fu">select</span>(snaive) <span class="sc">|&gt;</span></span>
+<span id="cb32-3"><a></a>  <span class="fu">gg_tsresiduals</span>() <span class="sc">+</span></span>
+<span id="cb32-4"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Gas — SNAIVE residuals"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 4 rows containing missing values or values outside the scale range
+(`geom_line()`).</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 4 rows containing missing values or values outside the scale range
+(`geom_point()`).</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 4 rows containing non-finite outside the scale range
+(`stat_bin()`).</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 4 rows containing missing values or values outside the scale range
+(`geom_rug()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="forecasting_files/figure-html/gas-resid-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-13"><img data-src="forecasting_files/figure-html/gas-resid-1.png" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 </section>
-<section id="forecast" class="slide level2">
-<h2>Forecast</h2>
-<p>Generate forecasts with a horizon equal to the test set length.</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>bench_fcst <span class="ot">&lt;-</span> bench_fit <span class="sc">|&gt;</span> </span>
-<span id="cb3-2"><a></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="fu">nrow</span>(gas_test))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="portmanteau-tests" class="slide level2">
+<h2>Portmanteau tests</h2>
+<p>The ACF plot gives a visual impression, but we also want a formal test. The <strong>Ljung-Box test</strong> checks whether any group of autocorrelations is significantly different from zero.</p>
+<div class="fragment">
+<p><span class="math display">H_0: \text{residuals are white noise} \qquad H_1: \text{residuals are not white noise}</span></p>
 </div>
-<p>(Optional) Plot forecasts:</p>
+<div class="fragment">
+<p>A small <span class="math inline">p</span>-value (typically <span class="math inline">&lt; 0.05</span>) is evidence against white noise.</p>
+</div>
+<div class="fragment">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>bench_fcst <span class="sc">|&gt;</span> </span>
-<span id="cb4-2"><a></a>  <span class="fu">autoplot</span>(gas_train, <span class="at">level =</span> <span class="dv">95</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb4-3"><a></a>  <span class="fu">autolayer</span>(gas_test, Gas, <span class="at">alpha =</span> <span class="fl">0.7</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-44" data-llms-code-original="data_fit |>
+  augment() |>
+  features(.innov, ljung_box, lag = h, dof = K)   #<1>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-44-1"><a href="#annotated-cell-44-1"></a>data_fit <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-44-2"><a href="#annotated-cell-44-2"></a>  <span class="fu">augment</span>() <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-44" data-target-annotation="1">1</button><span id="annotated-cell-44-3" class="code-annotation-target"><a href="#annotated-cell-44-3"></a>  <span class="fu">features</span>(.innov, ljung_box, <span class="at">lag =</span> h, <span class="at">dof =</span> K)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-44" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-44" data-code-lines="3" data-code-annotation="1"><code>lag</code> is typically set to 10 for non-seasonal data and <span class="math inline">2m</span> for seasonal data (<span class="math inline">m</span> = seasonal period). <code>dof</code> is the number of estimated parameters (0 for all benchmark methods).</span>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="panel-tabset" data-group="series">
+<ul id="tabset-4" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-4-1">Hare</a></li><li><a href="#tabset-4-2">Beer</a></li><li><a href="#tabset-4-3">Mexico GDP</a></li><li><a href="#tabset-4-4">Gas</a></li></ul>
+<div class="tab-content" data-group="series">
+<div id="tabset-4-1">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a></a>hare_fit <span class="sc">|&gt;</span></span>
+<span id="cb37-2"><a></a>  <span class="fu">augment</span>() <span class="sc">|&gt;</span></span>
+<span id="cb37-3"><a></a>  <span class="fu">filter</span>(.model <span class="sc">==</span> <span class="st">"naive"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb37-4"><a></a>  <span class="fu">features</span>(.innov, ljung_box, <span class="at">lag =</span> <span class="dv">10</span>, <span class="at">dof =</span> <span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[".model"],"name":[1],"type":["chr"],"align":["left"]},{"label":["lb_stat"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["lb_pvalue"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"naive","2":"25.75978","3":"0.004077063"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-4-2">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a></a>beer_fit <span class="sc">|&gt;</span></span>
+<span id="cb38-2"><a></a>  <span class="fu">augment</span>() <span class="sc">|&gt;</span></span>
+<span id="cb38-3"><a></a>  <span class="fu">filter</span>(.model <span class="sc">==</span> <span class="st">"snaive"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb38-4"><a></a>  <span class="fu">features</span>(.innov, ljung_box, <span class="at">lag =</span> <span class="dv">8</span>, <span class="at">dof =</span> <span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[".model"],"name":[1],"type":["chr"],"align":["left"]},{"label":["lb_stat"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["lb_pvalue"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"snaive","2":"31.60809","3":"0.000109459"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-4-3">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a></a>mexico_fit <span class="sc">|&gt;</span></span>
+<span id="cb39-2"><a></a>  <span class="fu">augment</span>() <span class="sc">|&gt;</span></span>
+<span id="cb39-3"><a></a>  <span class="fu">filter</span>(.model <span class="sc">==</span> <span class="st">"drift"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb39-4"><a></a>  <span class="fu">features</span>(.innov, ljung_box, <span class="at">lag =</span> <span class="dv">10</span>, <span class="at">dof =</span> <span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[".model"],"name":[1],"type":["chr"],"align":["left"]},{"label":["lb_stat"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["lb_pvalue"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"drift","2":"4.685149","3":"0.9111943"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-4-4">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a></a>gas_fit <span class="sc">|&gt;</span></span>
+<span id="cb40-2"><a></a>  <span class="fu">augment</span>() <span class="sc">|&gt;</span></span>
+<span id="cb40-3"><a></a>  <span class="fu">filter</span>(.model <span class="sc">==</span> <span class="st">"snaive"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb40-4"><a></a>  <span class="fu">features</span>(.innov, ljung_box, <span class="at">lag =</span> <span class="dv">8</span>, <span class="at">dof =</span> <span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[".model"],"name":[1],"type":["chr"],"align":["left"]},{"label":["lb_stat"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["lb_pvalue"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"snaive","2":"140.2257","3":"0"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 </section>
 <section id="forecast-accuracy" class="slide level2">
 <h2>Forecast accuracy</h2>
-<p>We measure forecast accuracy using forecast errors:</p>
-<p><span class="math display">
-e_{T+h} = y_{T+h} - \hat{y}_{T+h|T}
-</span></p>
-<p>Compute accuracy metrics:</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>bench_acc <span class="ot">&lt;-</span> bench_fcst <span class="sc">|&gt;</span> </span>
-<span id="cb5-2"><a></a>  <span class="fu">accuracy</span>(gas_test) <span class="sc">|&gt;</span> </span>
-<span id="cb5-3"><a></a>  <span class="fu">arrange</span>(MASE)</span>
-<span id="cb5-4"><a></a></span>
-<span id="cb5-5"><a></a>bench_acc</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Residual diagnostics tell us about the <strong>training fit</strong>. Forecast accuracy tells us how well the model does on <strong>unseen data</strong>.</p>
+<div class="fragment">
+<p>Forecast errors on the test set:</p>
+<p><span class="math display">e_{T+h} = y_{T+h} - \hat{y}_{T+h|T}</span></p>
 </div>
-<p>Selection rule:</p>
-<ul>
-<li class="fragment">Prefer models that perform well on <strong>MASE</strong> (scale-independent).</li>
-<li class="fragment">For seasonal data, <code>snaive</code> is often a strong benchmark.</li>
-</ul>
-</section>
+<div class="fragment">
+<p>From these errors we compute <strong>percentage errors</strong>:</p>
+<p><span class="math display">p_t = \frac{e_{T+h}}{y_{T+h}} \times 100</span></p>
+</div>
+<div class="fragment">
+<p>and <strong>scaled errors</strong> — for seasonal series<a href="#/footnotes" class="footnote-ref" id="fnref4" role="doc-noteref" data-footnote-href="#/fn4" onclick=""><sup>4</sup></a>:</p>
+<p><span class="math display">q_j = \frac{e_j}{\dfrac{1}{T-m}\displaystyle\sum_{t=m+1}^{T}|y_t - y_{t-m}|}</span></p>
+</div>
+<aside></aside></section>
 <section id="error-metrics" class="slide level2">
 <h2>Error metrics</h2>
-<p>Using forecast errors, we can compute summary metrics:</p>
-<table class="caption-top" style="width:98%;">
+<table class="caption-top" data-tbl-colwidths="[22,12,38,28]">
 <caption>Common error metrics</caption>
-<colgroup>
-<col style="width: 18%">
-<col style="width: 9%">
-<col style="width: 34%">
-<col style="width: 35%">
-</colgroup>
 <thead>
 <tr class="header">
-<th>Scale</th>
-<th>Metric</th>
-<th>Description</th>
-<th>Formula</th>
+<th><strong>Scale</strong></th>
+<th><strong>Metric</strong></th>
+<th><strong>Description</strong></th>
+<th><strong>Formula</strong></th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Scale-dependent</td>
-<td><ul>
-<li>RMSE</li>
-<li>MAE</li>
-</ul></td>
-<td><ul>
-<li>Root Mean Squared Error</li>
-<li>Mean Absolute Error</li>
-</ul></td>
-<td><ul>
-<li><span class="math inline">\sqrt{\text{mean}(e_{t}^{2})}</span></li>
-<li><span class="math inline">\text{mean}(|e_{t}|)</span></li>
-</ul></td>
+<td rowspan="2"> Scale-dependent</td>
+<td>RMSE</td>
+<td>Root Mean Squared Error</td>
+<td><span class="math inline">\sqrt{\text{mean}(e_t^2)}</span></td>
 </tr>
 <tr class="even">
-<td>Scale-independent</td>
-<td><ul>
-<li>MAPE</li>
-<li>MASE</li>
-<li>RMMSE</li>
-</ul></td>
-<td><ul>
-<li>Mean Absolute Percentage Error</li>
-<li>Mean Absolute Scaled Error</li>
-<li>Root Mean Squared Scaled Error</li>
-</ul></td>
-<td><ul>
-<li><span class="math inline">\text{mean}(|p_{t}|)</span></li>
-<li><span class="math inline">\text{mean}(|q_{t}|)</span></li>
-<li><span class="math inline">\sqrt{\text{mean}(q_{t}^{2})}</span></li>
-</ul></td>
+<td>MAE</td>
+<td>Mean Absolute Error</td>
+<td><span class="math inline">\text{mean}(|e_t|)</span></td>
+</tr>
+<tr class="odd">
+<td rowspan="3"> Scale-independent</td>
+<td>MAPE</td>
+<td>Mean Absolute Percentage Error</td>
+<td><span class="math inline">\text{mean}(|p_t|)</span></td>
+</tr>
+<tr class="even">
+<td>MASE</td>
+<td>Mean Absolute Scaled Error</td>
+<td><span class="math inline">\text{mean}(|q_t|)</span></td>
+</tr>
+<tr class="odd">
+<td>RMSSE</td>
+<td>Root Mean Squared Scaled Error</td>
+<td><span class="math inline">\sqrt{\text{mean}(q_t^2)}</span></td>
 </tr>
 </tbody>
 </table>
 </section>
+<section id="computing-accuracy" class="slide level2">
+<h2>Computing accuracy</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-1" data-llms-code-original="data_fc |>
+  accuracy(data)    #<1>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1"></a>data_fc <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1">1</button><span id="annotated-cell-1-2" class="code-annotation-target"><a href="#annotated-cell-1-2"></a>  <span class="fu">accuracy</span>(data)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-1" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-1" data-code-lines="2" data-code-annotation="1">Pass the <strong>full</strong> tsibble (train + test). <code>fable</code> identifies the training portion to compute MASE/RMSSE denominators and the test portion to compute forecast errors. Passing only the test set returns <code>NaN</code> for scaled metrics.</span>
+</dd>
+</dl>
+</div>
+</div>
+<div class="panel-tabset" data-group="series">
+<ul id="tabset-5" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-5-1">Hare</a></li><li><a href="#tabset-5-2">Beer</a></li><li><a href="#tabset-5-3">Mexico GDP</a></li><li><a href="#tabset-5-4">Gas</a></li></ul>
+<div class="tab-content" data-group="series">
+<div id="tabset-5-1">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a></a>hare_fc <span class="sc">|&gt;</span></span>
+<span id="cb41-2"><a></a>  <span class="fu">accuracy</span>(pelt) <span class="sc">|&gt;</span></span>
+<span id="cb41-3"><a></a>  <span class="fu">select</span>(.model, RMSE, MAE, MAPE, MASE, RMSSE) <span class="sc">|&gt;</span></span>
+<span id="cb41-4"><a></a>  <span class="fu">arrange</span>(RMSSE)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[".model"],"name":[1],"type":["chr"],"align":["left"]},{"label":["RMSE"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["MAE"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["MAPE"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["MASE"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["RMSSE"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"mean","2":"35484.91","3":"34194.18","4":"566.4819","5":"1.705117","6":"1.173479"},{"1":"naive","2":"37934.76","3":"34906.67","4":"699.8952","5":"1.740645","6":"1.254495"},{"1":"drift","2":"39865.81","3":"35630.61","4":"751.4917","5":"1.776745","6":"1.318354"},{"1":"snaive","2":"NaN","3":"NaN","4":"NaN","5":"NaN","6":"NaN"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-5-2">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a></a>beer_fc <span class="sc">|&gt;</span></span>
+<span id="cb42-2"><a></a>  <span class="fu">accuracy</span>(beer) <span class="sc">|&gt;</span></span>
+<span id="cb42-3"><a></a>  <span class="fu">select</span>(.model, RMSE, MAE, MAPE, MASE, RMSSE) <span class="sc">|&gt;</span></span>
+<span id="cb42-4"><a></a>  <span class="fu">arrange</span>(RMSSE)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[".model"],"name":[1],"type":["chr"],"align":["left"]},{"label":["RMSE"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["MAE"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["MAPE"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["MASE"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["RMSSE"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"snaive","2":"12.31615","3":"10.43750","4":"2.489723","5":"0.7018991","6":"0.710350"},{"1":"mean","2":"39.51771","3":"36.21336","4":"8.575589","5":"2.4352697","6":"2.279236"},{"1":"naive","2":"53.77441","3":"40.18750","4":"8.844608","5":"2.7025218","6":"3.101510"},{"1":"drift","2":"60.03905","3":"46.81250","4":"10.373090","5":"3.1480386","6":"3.462831"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-5-3">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a></a>mexico_fc <span class="sc">|&gt;</span></span>
+<span id="cb43-2"><a></a>  <span class="fu">accuracy</span>(mexico) <span class="sc">|&gt;</span></span>
+<span id="cb43-3"><a></a>  <span class="fu">select</span>(.model, RMSE, MAE, MAPE, MASE, RMSSE) <span class="sc">|&gt;</span></span>
+<span id="cb43-4"><a></a>  <span class="fu">arrange</span>(RMSSE)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[".model"],"name":[1],"type":["chr"],"align":["left"]},{"label":["RMSE"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["MAE"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["MAPE"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["MASE"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["RMSSE"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"drift","2":"112353159998","3":"99612788346","4":"8.205041","5":"2.226451","6":"1.724198"},{"1":"naive","2":"155941658007","3":"137887085142","4":"11.204159","5":"3.081922","6":"2.393117"},{"1":"mean","2":"867036460877","3":"863971800488","4":"72.154456","5":"19.310682","6":"13.305745"},{"1":"snaive","2":"NaN","3":"NaN","4":"NaN","5":"NaN","6":"NaN"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-5-4">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a></a>gas_fc <span class="sc">|&gt;</span></span>
+<span id="cb44-2"><a></a>  <span class="fu">accuracy</span>(aus_production) <span class="sc">|&gt;</span></span>
+<span id="cb44-3"><a></a>  <span class="fu">select</span>(.model, RMSE, MAE, MAPE, MASE, RMSSE) <span class="sc">|&gt;</span></span>
+<span id="cb44-4"><a></a>  <span class="fu">arrange</span>(RMSSE)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[".model"],"name":[1],"type":["chr"],"align":["left"]},{"label":["RMSE"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["MAE"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["MAPE"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["MASE"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["RMSSE"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"snaive","2":"20.89378","3":"18.5500","4":"8.491138","5":"3.483737","6":"2.831282"},{"1":"drift","2":"22.20264","3":"20.9000","4":"9.959443","5":"3.925073","6":"3.008643"},{"1":"naive","2":"25.22895","3":"21.3000","4":"9.701467","5":"4.000194","6":"3.418734"},{"1":"mean","2":"129.85272","3":"127.7101","4":"58.841917","5":"23.984278","6":"17.596131"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
 <section id="refit-and-forecast" class="slide level2">
 <h2>Refit and forecast</h2>
-<p>Once a benchmark is selected based on the test set, refit it using <strong>all available data</strong>, then forecast the desired future horizon.</p>
-<p>Example: refit <code>snaive</code> and forecast the next 8 quarters.</p>
+<p>Once a model is selected based on the test set, <strong>refit it on all available data</strong> — the test set is no longer “future” at this point.</p>
+<p>Using all observations generally improves parameter estimates and reflects how models are actually deployed.</p>
+<div class="panel-tabset" data-group="series">
+<ul id="tabset-6" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-6-1">Hare</a></li><li><a href="#tabset-6-2">Beer</a></li><li><a href="#tabset-6-3">Mexico GDP</a></li></ul>
+<div class="tab-content" data-group="series">
+<div id="tabset-6-1">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>final_fit <span class="ot">&lt;-</span> aus_production <span class="sc">|&gt;</span> </span>
-<span id="cb6-2"><a></a>  <span class="fu">model</span>(</span>
-<span id="cb6-3"><a></a>    <span class="at">final_model =</span> <span class="fu">SNAIVE</span>(Gas)</span>
-<span id="cb6-4"><a></a>  )</span>
-<span id="cb6-5"><a></a></span>
-<span id="cb6-6"><a></a>final_fcst <span class="ot">&lt;-</span> final_fit <span class="sc">|&gt;</span> </span>
-<span id="cb6-7"><a></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"8 quarters"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a></a>hare_final_fit <span class="ot">&lt;-</span> pelt <span class="sc">|&gt;</span></span>
+<span id="cb45-2"><a></a>  <span class="fu">model</span>(<span class="at">naive =</span> <span class="fu">NAIVE</span>(Hare))</span>
+<span id="cb45-3"><a></a></span>
+<span id="cb45-4"><a></a>hare_final_fc <span class="ot">&lt;-</span> hare_final_fit <span class="sc">|&gt;</span></span>
+<span id="cb45-5"><a></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">15</span>)</span>
+<span id="cb45-6"><a></a></span>
+<span id="cb45-7"><a></a>hare_final_fc <span class="sc">|&gt;</span></span>
+<span id="cb45-8"><a></a>  <span class="fu">autoplot</span>(pelt) <span class="sc">+</span></span>
+<span id="cb45-9"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Hare pelts — NAIVE forecast (refit on full data)"</span>,</span>
+<span id="cb45-10"><a></a>       <span class="at">y =</span> <span class="st">"Number of pelts (thousands)"</span>, <span class="at">x =</span> <span class="cn">NULL</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="forecasting_files/figure-html/hare-refit-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-14"><img data-src="forecasting_files/figure-html/hare-refit-1.png" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-6-2">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a></a>beer_final_fit <span class="ot">&lt;-</span> beer <span class="sc">|&gt;</span></span>
+<span id="cb46-2"><a></a>  <span class="fu">model</span>(<span class="at">snaive =</span> <span class="fu">SNAIVE</span>(Beer))</span>
+<span id="cb46-3"><a></a></span>
+<span id="cb46-4"><a></a>beer_final_fc <span class="ot">&lt;-</span> beer_final_fit <span class="sc">|&gt;</span></span>
+<span id="cb46-5"><a></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"2 years"</span>)</span>
+<span id="cb46-6"><a></a></span>
+<span id="cb46-7"><a></a>beer_final_fc <span class="sc">|&gt;</span></span>
+<span id="cb46-8"><a></a>  <span class="fu">autoplot</span>(beer) <span class="sc">+</span></span>
+<span id="cb46-9"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Beer production — SNAIVE forecast (refit on full data)"</span>,</span>
+<span id="cb46-10"><a></a>       <span class="at">y =</span> <span class="st">"Megalitres"</span>, <span class="at">x =</span> <span class="cn">NULL</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="forecasting_files/figure-html/beer-refit-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-15"><img data-src="forecasting_files/figure-html/beer-refit-1.png" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-6-3">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a></a>mexico_final_fit <span class="ot">&lt;-</span> mexico <span class="sc">|&gt;</span></span>
+<span id="cb47-2"><a></a>  <span class="fu">model</span>(<span class="at">drift =</span> <span class="fu">RW</span>(GDP <span class="sc">~</span> <span class="fu">drift</span>()))</span>
+<span id="cb47-3"><a></a></span>
+<span id="cb47-4"><a></a>mexico_final_fc <span class="ot">&lt;-</span> mexico_final_fit <span class="sc">|&gt;</span></span>
+<span id="cb47-5"><a></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"5 years"</span>)</span>
+<span id="cb47-6"><a></a></span>
+<span id="cb47-7"><a></a>mexico_final_fc <span class="sc">|&gt;</span></span>
+<span id="cb47-8"><a></a>  <span class="fu">autoplot</span>(mexico) <span class="sc">+</span></span>
+<span id="cb47-9"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Mexico GDP — Drift forecast (refit on full data)"</span>,</span>
+<span id="cb47-10"><a></a>       <span class="at">y =</span> <span class="st">"GDP (USD)"</span>, <span class="at">x =</span> <span class="cn">NULL</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="forecasting_files/figure-html/gdp-refit-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-16"><img data-src="forecasting_files/figure-html/gdp-refit-1.png" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 </section>
 <section id="communicate" class="slide level2">
 <h2>Communicate</h2>
-<p>Forecasting is not finished when numbers are produced.<br>
-Results must be communicated clearly and honestly.</p>
-<p>Minimum communication checklist:</p>
+<p>Forecasting is not finished when numbers are produced. Results must be communicated clearly and honestly.</p>
+<p>Effective communication includes:</p>
 <ul>
-<li class="fragment">Plot: history + forecast + prediction intervals</li>
-<li class="fragment">Horizon: what the forecast period represents</li>
-<li class="fragment">Baseline: state the benchmark model used</li>
-<li class="fragment">Uncertainty: prediction intervals are essential</li>
-<li class="fragment">Limitations: structural breaks, short samples, changing conditions</li>
+<li class="fragment"><strong>Visualization</strong> — historical data + forecasts + prediction intervals, with clear labeling of units and horizons</li>
+<li class="fragment"><strong>Assumptions</strong> — model choice and any transformations applied</li>
+<li class="fragment"><strong>Uncertainty</strong> — point forecasts alone are rarely sufficient; prediction intervals convey risk and variability</li>
+<li class="fragment"><strong>Limitations</strong> — structural breaks, data quality issues, short samples</li>
 </ul>
+<div class="fragment">
+<p>A good forecast is one that decision-makers can <strong>understand, trust, and act upon</strong> — even when it turns out to be wrong.</p>
+</div>
 
 
 </section></section>
+<section id="footnotes" class="footnotes footnotes-end-of-document smaller scrollable" role="doc-endnotes"><h2>Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>Splitting into train/test is the minimum. For more robust evaluation, consider time series cross-validation — see <a href="https://otexts.com/fpp3/tscv.html">FPP3 §5.10</a>.</p></li>
+<li id="fn2"><p>Store the resulting model table in a <code>*_fit</code> object.</p></li>
+<li id="fn3"><p>Store forecasts in a <code>*_fc</code> object.</p></li>
+<li id="fn4"><p>For non-seasonal series replace <span class="math inline">m</span> with 1 and sum from <span class="math inline">t = 2</span>. Scaled errors use the in-sample naïve or seasonal naïve error as the denominator, making MASE and RMSSE scale-free and comparable across series.</p></li>
+</ol>
+</section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <p><img src="../../../../images/iteso_logo.png" class="slide-logo"></p>

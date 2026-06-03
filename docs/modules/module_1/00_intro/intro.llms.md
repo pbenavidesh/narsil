@@ -2,7 +2,7 @@
 
 Modified
 
-June 1, 2026
+June 3, 2026
 
 # What is a time series?
 

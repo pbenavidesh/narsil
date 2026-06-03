@@ -2,7 +2,7 @@
 
 Modified
 
-June 1, 2026
+June 3, 2026
 
 Code
 
@@ -144,20 +144,54 @@ where each of these is an academic paper
 
 ------------------------------------------------------------------------
 
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the 'not sure if' meme and the second variable is The number of air traffic controllers in Montana. The chart goes from 2006 to 2022, and the two variables track closely in value over that time.](spurious/correlation/image/5957_popularity-of-the-not-sure-if-meme_correlates-with_the-number-of-air-traffic-controllers-in-montana.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the 'not sure if' meme and the second variable is The number of air traffic controllers in Montana.  The chart goes from 2006 to 2022, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/5957_popularity-of-the-not-sure-if-meme_correlates-with_the-number-of-air-traffic-controllers-in-montana_mobile.svg)  
-**View details about correlation \#5,957**](spurious/correlation/5957_popularity-of-the-not-sure-if-meme_correlates-with_the-number-of-air-traffic-controllers-in-montana)  
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Google searches for 'cat memes' and the second variable is Automotive recalls for issues with the Air Bags. The chart goes from 2004 to 2022, and the two variables track closely in value over that time.](spurious/correlation/image/2600_google-searches-for-cat-memes_correlates-with_automotive-recalls-for-issues-with-the-air-bags.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Google searches for 'cat memes' and the second variable is Automotive recalls for issues with the Air Bags.  The chart goes from 2004 to 2022, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/2600_google-searches-for-cat-memes_correlates-with_automotive-recalls-for-issues-with-the-air-bags_mobile.svg)  
+**View details about correlation \#2,600**](spurious/correlation/2600_google-searches-for-cat-memes_correlates-with_automotive-recalls-for-issues-with-the-air-bags)  
   
 
 ^(Show scatterplot)
 
-![](spurious/correlation/scatterplot/5957_popularity-of-the-not-sure-if-meme_correlates-with_the-number-of-air-traffic-controllers-in-montana_scatterplot.png)
+![](spurious/correlation/scatterplot/2600_google-searches-for-cat-memes_correlates-with_automotive-recalls-for-issues-with-the-air-bags_scatterplot.png)
 
   
   
 
 *What else correlates?*  
-[Popularity of the 'not sure if' meme](spurious/variable?id=25141) · [all memes](spurious/view-all-variables/memes)  
-[The number of air traffic controllers in Montana](spurious/variable?id=10826) · [all cccupations](spurious/view-all-variables/occupations)  
+[Google searches for 'cat memes'](spurious/variable?id=1355) · [all google searches](spurious/view-all-variables/google)  
+[Automotive recalls for issues with the Air Bags](spurious/variable?id=1105) · [all weird & wacky](spurious/view-all-variables/weirdwacky)  
+
+------------------------------------------------------------------------
+
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Master's degrees awarded in Education and the second variable is GMO use in corn grown in Ohio. The chart goes from 2012 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/1254_masters-degrees-awarded-in-education_correlates-with_gmo-use-in-corn-grown-in-ohio.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Master's degrees awarded in Education and the second variable is GMO use in corn grown in Ohio.  The chart goes from 2012 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1254_masters-degrees-awarded-in-education_correlates-with_gmo-use-in-corn-grown-in-ohio_mobile.svg)  
+**View details about correlation \#1,254**](spurious/correlation/1254_masters-degrees-awarded-in-education_correlates-with_gmo-use-in-corn-grown-in-ohio)  
+  
+
+^(Show scatterplot)
+
+![](spurious/correlation/scatterplot/1254_masters-degrees-awarded-in-education_correlates-with_gmo-use-in-corn-grown-in-ohio_scatterplot.png)
+
+  
+  
+
+*What else correlates?*  
+[Master's degrees awarded in Education](spurious/variable?id=1319) · [all education](spurious/view-all-variables/education)  
+[GMO use in corn grown in Ohio](spurious/variable?id=719) · [all food](spurious/view-all-variables/farmingfood)  
+
+------------------------------------------------------------------------
+
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The distance between Saturn and Earth and the second variable is Fomento Econ's stock price (FMX). The chart goes from 2002 to 2023, and the two variables track closely in value over that time.](spurious/correlation/image/1526_the-distance-between-saturn-and-earth_correlates-with_fomento-econmico-mexicanos-stock-price.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The distance between Saturn and Earth and the second variable is Fomento Econ's stock price (FMX).  The chart goes from 2002 to 2023, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1526_the-distance-between-saturn-and-earth_correlates-with_fomento-econmico-mexicanos-stock-price_mobile.svg)  
+**View details about correlation \#1,526**](spurious/correlation/1526_the-distance-between-saturn-and-earth_correlates-with_fomento-econmico-mexicanos-stock-price)  
+  
+
+^(Show scatterplot)
+
+![](spurious/correlation/scatterplot/1526_the-distance-between-saturn-and-earth_correlates-with_fomento-econmico-mexicanos-stock-price_scatterplot.png)
+
+  
+  
+
+*What else correlates?*  
+[The distance between Saturn and Earth](spurious/variable?id=1942) · [all planets](spurious/view-all-variables/planets)  
+[Fomento Econ's stock price (FMX)](spurious/variable?id=1579) · [all stocks](spurious/view-all-variables/stocks)  
 
 ------------------------------------------------------------------------
 
@@ -430,40 +464,6 @@ where each of these is an academic paper
 *What else correlates?*  
 [Google searches for 'Baroque Obama'](spurious/variable?id=1485) · [all google searches](spurious/view-all-variables/google)  
 [The number of furniture finishers in Missouri](spurious/variable?id=10615) · [all cccupations](spurious/view-all-variables/occupations)  
-
-------------------------------------------------------------------------
-
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The distance between Saturn and the Sun and the second variable is Customer satisfaction with HP. The chart goes from 1994 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/1133_the-distance-between-saturn-and-the-sun_correlates-with_customer-satisfaction-with-hp.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The distance between Saturn and the Sun and the second variable is Customer satisfaction with HP.  The chart goes from 1994 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1133_the-distance-between-saturn-and-the-sun_correlates-with_customer-satisfaction-with-hp_mobile.svg)  
-**View details about correlation \#1,133**](spurious/correlation/1133_the-distance-between-saturn-and-the-sun_correlates-with_customer-satisfaction-with-hp)  
-  
-
-^(Show scatterplot)
-
-![](spurious/correlation/scatterplot/1133_the-distance-between-saturn-and-the-sun_correlates-with_customer-satisfaction-with-hp_scatterplot.png)
-
-  
-  
-
-*What else correlates?*  
-[The distance between Saturn and the Sun](spurious/variable?id=1933) · [all planets](spurious/view-all-variables/planets)  
-[Customer satisfaction with HP](spurious/variable?id=19870) · [all weird & wacky](spurious/view-all-variables/weirdwacky)  
-
-------------------------------------------------------------------------
-
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the first name Rylee and the second variable is GMO use in soybeans in Indiana. The chart goes from 2000 to 2022, and the two variables track closely in value over that time.](spurious/correlation/image/1887_popularity-of-the-first-name-rylee_correlates-with_gmo-use-in-soybeans-in-indiana.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the first name Rylee and the second variable is GMO use in soybeans in Indiana.  The chart goes from 2000 to 2022, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1887_popularity-of-the-first-name-rylee_correlates-with_gmo-use-in-soybeans-in-indiana_mobile.svg)  
-**View details about correlation \#1,887**](spurious/correlation/1887_popularity-of-the-first-name-rylee_correlates-with_gmo-use-in-soybeans-in-indiana)  
-  
-
-^(Show scatterplot)
-
-![](spurious/correlation/scatterplot/1887_popularity-of-the-first-name-rylee_correlates-with_gmo-use-in-soybeans-in-indiana_scatterplot.png)
-
-  
-  
-
-*What else correlates?*  
-[Popularity of the first name Rylee](spurious/variable?id=2982) · [all first names](spurious/view-all-variables/babynames)  
-[GMO use in soybeans in Indiana](spurious/variable?id=815) · [all food](spurious/view-all-variables/farmingfood)  
 
 ------------------------------------------------------------------------
 
