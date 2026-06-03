@@ -1,0 +1,854 @@
+---
+title: "Model Diagnostics and Advanced Forecasting"
+format:
+  html:
+    other-links:
+      - text: FPP3 Chapter 5
+        href: https://otexts.com/fpp3/toolbox.html
+  revealjs:
+    output-file: model_diagnostics_pres.html
+freeze: auto
+---
+
+```{r}
+#| label: setup
+#| message: false
+#| include: false
+
+library(tidyverse)
+library(fpp3)
+
+gas_train <- aus_production |>
+  filter_index(. ~ "2005 Q4")
+
+gas_test <- aus_production |>
+  filter_index("2006 Q1" ~ .)
+
+gas_fit <- gas_train |>
+  model(
+    mean   = MEAN(Gas),
+    naive  = NAIVE(Gas),
+    snaive = SNAIVE(Gas),
+    drift  = RW(Gas ~ drift())
+  )
+
+gas_fc <- gas_fit |>
+  forecast(h = nrow(gas_test))
+```
+
+# Prediction intervals
+
+::: {.content-hidden unless-format="revealjs"}
+## Prediction intervals
+:::
+
+A point forecast tells you *where* the series is expected to go.
+A **prediction interval** tells you *how confident* you should be.
+
+::: {.fragment}
+
+$$\hat{y}_{T+h|T} \pm c \cdot \hat{\sigma}_h$$
+
+where $c$ depends on the coverage level (1.96 for 95%) and $\hat{\sigma}_h$ is the estimated forecast standard deviation at horizon $h$.
+
+:::
+
+::: {.fragment}
+
+::: {.callout-important appearance="simple"}
+## The interval is not optional
+
+A point forecast without an interval is like a weather forecast without a probability of rain — it gives the illusion of certainty.
+Uncertainty is part of the forecast.
+:::
+
+:::
+
+::: {.content-hidden unless-format="revealjs"}
+## One-step vs. multi-step
+:::
+
+::: {.content-visible unless-format="revealjs"}
+### One-step vs. multi-step
+:::
+
+$\hat{\sigma}_h$ grows with the horizon $h$ — errors accumulate as we forecast further ahead.
+
+For the benchmark methods:
+
+| Method | $\hat{\sigma}_h$ |
+|--------|-----------------|
+| NAIVE  | $\hat{\sigma}\sqrt{h}$ |
+| Drift  | $\hat{\sigma}\sqrt{h\left(1 + \frac{h}{T}\right)}$ |
+| SNAIVE | $\hat{\sigma}\sqrt{\lfloor(h-1)/m\rfloor + 1}$ |
+| MEAN   | $\hat{\sigma}\sqrt{1 + 1/T}$ |
+
+The Mean interval barely widens; NAIVE and Drift intervals widen continuously.
+
+::: {.content-hidden unless-format="revealjs"}
+## Reading intervals with `hilo()`
+:::
+
+::: {.content-visible unless-format="revealjs"}
+### Reading intervals with `hilo()`
+:::
+
+`autoplot()` shows intervals visually. `hilo()` extracts the numeric bounds:
+
+::: {.fragment}
+
+```{r}
+#| label: hilo-example
+#| df-print: tibble
+
+gas_fc |>
+  filter(.model == "snaive") |>
+  hilo(level = 95) |>
+  select(Quarter, .mean, `95%`) |>
+  slice_head(n = 6)
+```
+
+:::
+
+::: {.content-hidden unless-format="revealjs"}
+## The problem with Gas
+:::
+
+::: {.content-visible unless-format="revealjs"}
+### The problem with Gas
+:::
+
+Look at what SNAIVE and Drift produce for Gas:
+
+::: {.fragment}
+
+```{r}
+#| label: gas-pi-raw
+#| code-fold: true
+
+gas_fc |>
+  filter(.model %in% c("snaive", "drift")) |>
+  autoplot(
+    aus_production |> filter_index("2000 Q1" ~ .),
+    level = 95
+  ) +
+  facet_wrap(~ .model, nrow = 2) +
+  labs(
+    title = "Gas — benchmark forecasts with 95% prediction intervals",
+    y = "Petajoules", x = NULL
+  )
+```
+
+:::
+
+::: {.fragment}
+
+Both models produce intervals of **constant width** — they assume forecast variance stays the same across all periods. But the series shows growing variance: the swings in the 2000s are far larger than those in the 1970s. The intervals are miscalibrated.
+
+:::
+
+# Forecasting with transformations
+
+::: {.content-hidden unless-format="revealjs"}
+## The residuals tell the story
+:::
+
+::: {.content-visible unless-format="revealjs"}
+### The residuals tell the story
+:::
+
+From the residual diagnostics we ran in [1.3](../03_fcst/forecasting.qmd), SNAIVE on Gas showed non-constant variance — larger residuals in recent decades, smaller in earlier ones. That is the signature of **multiplicative** behavior: the seasonal swings are proportional to the level of the series.
+
+::: {.fragment}
+
+```{r}
+#| label: gas-resid-reminder
+#| code-fold: true
+
+gas_fit |>
+  select(snaive) |>
+  gg_tsresiduals() +
+  labs(title = "Gas — SNAIVE residuals")
+```
+
+:::
+
+::: {.fragment}
+
+As we saw in [1.2](../02_ts_dcmp/ts_dcmp.qmd), a Box-Cox transformation stabilizes the variance. Applied here, the model fits in the transformed scale and `fable` back-transforms the forecasts automatically.
+
+:::
+
+::: {.content-hidden unless-format="revealjs"}
+## Choosing $\lambda$
+:::
+
+::: {.content-visible unless-format="revealjs"}
+### Choosing $\lambda$
+:::
+
+```{r}
+#| label: guerrero
+
+lambda <- aus_production |>
+  features(Gas, features = guerrero) |>  #<1>
+  pull(lambda_guerrero)                  #<2>
+
+lambda
+```
+
+1. `guerrero` is a named feature function in `feasts` — pass it directly to `features()`.
+2. Extract the scalar value so it can be reused in model specs.
+
+::: {.content-hidden unless-format="revealjs"}
+## Fitting models with Box-Cox
+:::
+
+::: {.content-visible unless-format="revealjs"}
+### Fitting with Box-Cox
+:::
+
+Wrap the response variable in `box_cox()` inside the model spec:
+
+::: {.fragment}
+
+```{r}
+#| label: gas-fit-bc
+
+gas_fit_bc <- gas_train |>
+  model(
+    snaive_bc = SNAIVE(box_cox(Gas, lambda)),       #<1>
+    drift_bc  = RW(box_cox(Gas, lambda) ~ drift())  #<2>
+  )
+```
+
+1. Box-Cox applied inside the spec — the model sees stabilized variance.
+2. Same transformation for Drift. Both use the same `lambda` estimated above.
+
+:::
+
+::: {.fragment}
+
+```{r}
+#| label: gas-fc-bc
+
+gas_fc_bc <- gas_fit_bc |>
+  forecast(h = nrow(gas_test))
+```
+
+:::
+
+::: {.content-hidden unless-format="revealjs"}
+## Intervals before and after transformation
+:::
+
+::: {.content-visible unless-format="revealjs"}
+### Intervals before and after
+:::
+
+The intervals are computed in the transformed scale and then back-transformed. Because $e^x$ is a convex function, the back-transformation stretches the upper tail more than the lower one — the resulting intervals in the original scale are **asymmetric**.
+
+::: {.panel-tabset}
+
+## Without transformation
+
+```{r}
+#| label: gas-pi-no-bc
+#| echo: false
+
+gas_fc |>
+  filter(.model %in% c("snaive", "drift")) |>
+  autoplot(
+    aus_production |> filter_index("2000 Q1" ~ .),
+    level = 95
+  ) +
+  facet_wrap(~ .model, nrow = 2) +
+  labs(
+    title = "Gas — no transformation",
+    y = "Petajoules", x = NULL
+  )
+```
+
+## With Box-Cox
+
+```{r}
+#| label: gas-pi-bc
+#| echo: false
+
+gas_fc_bc |>
+  autoplot(
+    aus_production |> filter_index("2000 Q1" ~ .),
+    level = 95
+  ) +
+  facet_wrap(~ .model, nrow = 2) +
+  labs(
+    title = paste0("Gas — Box-Cox (λ = ", round(lambda, 3), ")"),
+    y = "Petajoules", x = NULL
+  )
+```
+
+:::
+
+::: {.content-hidden unless-format="revealjs"}
+## Accuracy after transformation
+:::
+
+::: {.content-visible unless-format="revealjs"}
+### Accuracy after transformation
+:::
+
+Does the transformation improve forecast accuracy?
+
+```{r}
+#| label: gas-accuracy-bc
+
+bind_rows(
+  gas_fc |>
+    filter(.model %in% c("snaive", "drift")) |>
+    accuracy(aus_production),
+  gas_fc_bc |>
+    accuracy(aus_production)
+) |>
+  select(.model, RMSE, MAE, MASE, RMSSE) |>
+  arrange(RMSSE)
+```
+
+::: {.fragment}
+
+::: {.callout-note appearance="simple"}
+MASE and RMSSE are computed in the **original scale** regardless of the transformation — `fable` back-transforms before measuring error. This makes accuracy metrics directly comparable across transformed and untransformed models.
+:::
+
+:::
+
+
+# Bias adjustment
+
+::: {.content-hidden unless-format="revealjs"}
+## Mean ≠ median after back-transformation
+:::
+
+::: {.content-visible unless-format="revealjs"}
+### Mean ≠ median after back-transformation
+:::
+
+Back-transforming a forecast recovers the **median** of the forecast distribution in the original scale — not the mean.
+
+::: {.fragment}
+
+For a log transformation, if $w_{T+h} \sim \mathcal{N}(\mu, \sigma_h^2)$, then in the original scale:
+
+$$\text{median}(\hat{y}_{T+h}) = e^{\mu} \qquad \text{mean}(\hat{y}_{T+h}) = e^{\mu + \sigma_h^2/2}$$
+
+:::
+
+::: {.fragment}
+
+The median is invariant under monotone transformations — the 50th percentile in log scale maps exactly to the 50th percentile in the original scale. The mean is not: because $e^x$ is convex, Jensen's inequality gives $E[e^W] > e^{E[W]}$, and the gap grows with $\sigma_h^2$.
+
+:::
+
+::: {.content-hidden unless-format="revealjs"}
+## The general Box-Cox case
+:::
+
+::: {.content-visible unless-format="revealjs"}
+### The general Box-Cox case
+:::
+
+For a general Box-Cox transformation, the bias-adjusted back-transformation is:
+
+$$y_t = \begin{cases} \exp(w_t)\left[1 + \dfrac{\sigma_h^2}{2}\right] & \text{if } \lambda = 0 \\[10pt] (\lambda w_t + 1)^{1/\lambda}\left[1 + \dfrac{\sigma_h^2(1-\lambda)}{2(\lambda w_t+1)^{2}}\right] & \text{otherwise} \end{cases}$$
+
+`fable` applies this adjustment **automatically by default**.
+
+::: {.content-hidden unless-format="revealjs"}
+## Seeing the difference
+:::
+
+::: {.content-visible unless-format="revealjs"}
+### Seeing the difference
+:::
+
+The `eggs` series from `prices` makes the difference visible — it is short and noisy, so $\sigma_h^2$ grows quickly and the gap between mean and median becomes noticeable:
+
+::: {.fragment}
+
+```{r}
+#| label: eggs-setup
+#| code-fold: true
+
+eggs_tsb <- prices |>
+  filter(!is.na(eggs))                              #<1>
+
+eggs_fit <- eggs_tsb |>
+  model(rw = RW(log(eggs) ~ drift()))
+
+eggs_fc <- eggs_fit |>
+  forecast(h = 50) |>
+  mutate(.median = median(eggs))                    #<2>
+```
+
+1. `prices` is a native `fpp3` dataset. Removing `NA`s before fitting avoids gaps in the series.
+2. `median()` extracts the distributional median from each forecast distribution — different from `.mean`, which already contains the bias-adjusted mean.
+
+:::
+
+::: {.fragment}
+
+```{r}
+#| label: eggs-plot
+#| code-fold: true
+
+eggs_fc |>
+  autoplot(eggs_tsb, level = 80) +
+  geom_line(
+    data = eggs_fc,
+    aes(y = .median),
+    linetype = "dashed",
+    color = "steelblue"
+  ) +
+  labs(
+    title = "Egg prices — Drift with log transformation",
+    subtitle = "Solid line: mean (bias-adjusted)  ·  Dashed: median",
+    y = "USD per dozen",
+    x = NULL
+  )
+```
+
+:::
+
+::: {.content-visible unless-format="revealjs"}
+
+::: {.callout-note appearance="simple"}
+## When does bias adjustment matter most?
+
+For a single series the difference is usually small. It becomes important when **aggregating forecasts** — summing store-level forecasts into a regional total, for example. In that case, using medians instead of means introduces a systematic downward bias in the aggregate. We will revisit this in Module 4 when we cover hierarchical forecasting.
+:::
+
+:::
+
+
+# Bootstrap prediction intervals
+
+::: {.content-hidden unless-format="revealjs"}
+## When normality fails
+:::
+
+::: {.content-visible unless-format="revealjs"}
+### When normality fails
+:::
+
+All the prediction intervals above assume that forecast errors are **normally distributed**. When residuals are skewed or heavy-tailed, this assumption breaks down and the intervals are poorly calibrated.
+
+::: {.fragment}
+
+The key observation is that we can always write:
+
+$$y_t = \hat{y}_{t|t-1} + e_t$$
+
+so a future observation can be simulated as:
+
+$$y_{T+1} = \hat{y}_{T+1|T} + e_{T+1}$$
+
+Since the errors are uncorrelated, we can substitute $e_{T+1}$ with a **randomly resampled** historical residual. Repeating this for $y_{T+2}, y_{T+3}, \ldots$ gives one possible future path. Do it thousands of times and you have a full distribution of futures — no normality required.
+
+:::
+
+::: {.content-hidden unless-format="revealjs"}
+## Many possible futures
+:::
+
+::: {.content-visible unless-format="revealjs"}
+### Many possible futures
+:::
+
+::: {.content-hidden unless-format="revealjs"}
+![Dr. Strange simulating 14,000,605 possible futures via bootstrap](../../00_intro/dr_strange_math.jpg){width=55%}
+:::
+
+::: {.content-hidden unless-format="revealjs"}
+## `generate()` — simulating paths
+:::
+
+::: {.content-visible unless-format="revealjs"}
+### `generate()` — simulating paths
+:::
+
+`generate()` makes the simulated paths explicit. Here are five possible futures for Google's closing price, each built by resampling historical residuals step by step:
+
+```{r}
+#| label: google-generate
+#| include: false
+
+google_2015 <- gafa_stock |> 
+  filter(Symbol == "GOOG") |> 
+  mutate(day = row_number()) |> 
+  update_tsibble(index = day, regular = TRUE) |> 
+  filter(year(Date) == 2015)
+
+google_fit <- google_2015 |>
+  model(NAIVE(Close))
+
+google_sim <- google_fit |>
+  generate(h = 30, times = 5, bootstrap = TRUE, seed = 123)
+```
+
+```{r}
+#| label: google-sim-plot
+#| echo: false
+
+google_2015 |>
+  ggplot(aes(x = day)) +
+  geom_line(aes(y = Close)) +
+  geom_line(
+    data  = google_sim,
+    aes(y = .sim, color = as.factor(.rep))
+  ) +
+  labs(
+    title = "Google closing stock price — 5 simulated futures",
+    y = "USD", x = NULL, color = "Path"
+  ) +
+  theme(legend.position = "bottom")
+```
+
+::: {.content-hidden unless-format="revealjs"}
+## From paths to intervals
+:::
+
+::: {.content-visible unless-format="revealjs"}
+### From paths to intervals
+:::
+
+Running this thousands of times and taking percentiles of the simulated paths gives the **bootstrap prediction interval**. `forecast()` does this in one step:
+
+::: {.fragment}
+
+```{r}
+#| label: google-bootstrap
+
+google_fc_boot <- google_fit |>
+  forecast(
+    h         = 30,
+    bootstrap = TRUE,   #<1>
+    times     = 1000    #<2>
+  )
+```
+
+1. `bootstrap = TRUE` switches from the analytical normal interval to the resampling-based one.
+2. Number of simulated paths — more gives smoother intervals at higher computational cost.
+
+:::
+
+::: {.fragment}
+
+```{r}
+#| label: google-bootstrap-plot
+#| code-fold: true
+
+google_fc_boot |>
+  autoplot(google_2015, level = 95) +
+  labs(
+    title = "Google closing stock price — bootstrap 95% interval",
+    y = "USD", x = NULL
+  )
+```
+
+:::
+
+::: {.fragment}
+
+::: {.callout-tip appearance="simple"}
+## When is bootstrap worth it?
+
+Use bootstrap intervals when `gg_tsresiduals()` shows clearly non-normal residuals — heavy tails or marked skew. For series where residuals are roughly symmetric, the additional computational cost rarely changes the conclusion.
+:::
+
+:::
+
+# `decomposition_model()` — the Module 1 deliverable
+
+::: {.content-hidden unless-format="revealjs"}
+## The idea
+:::
+
+::: {.content-visible unless-format="revealjs"}
+### The idea
+:::
+
+STL (covered in [1.2](../02_ts_dcmp/ts_dcmp.qmd)) decomposes a series into trend-cycle, seasonal, and remainder components. The benchmarks (covered in [1.3](../03_fcst/forecasting.qmd)) each handle one aspect of the series well.
+
+::: {.fragment}
+
+`decomposition_model()` combines them into a pipeline:
+
+1. Apply STL to separate the components
+2. Forecast the **seasonally adjusted series** with one model
+3. Re-seasonalize: add the seasonal component forecast back
+
+:::
+
+::: {.fragment}
+
+::: {.callout-note appearance="simple"}
+The reconstruction is additive in the decomposition scale. If the STL was applied to a transformed series, the reconstruction happens before back-transformation.
+:::
+
+:::
+
+::: {.content-hidden unless-format="revealjs"}
+
+## Syntax {auto-animate="true"}
+
+```{r}
+#| label: dcmp-animate-1
+#| eval: false
+
+stl_spec <- decomposition_model(
+
+)
+```
+
+## Syntax {auto-animate="true"}
+
+```{r}
+#| label: dcmp-animate-2
+#| eval: false
+
+stl_spec <- decomposition_model(
+  STL(Gas ~ trend() + season()),
+
+)
+```
+
+## Syntax {auto-animate="true"}
+
+```{r}
+#| label: dcmp-animate-3
+#| eval: false
+
+stl_spec <- decomposition_model(
+  STL(Gas ~ trend() + season()),
+  SNAIVE(season_adjust),
+
+)
+```
+
+## Syntax {auto-animate="true"}
+
+```{r}
+#| label: dcmp-animate-4
+#| eval: false
+
+stl_spec <- decomposition_model(
+  STL(Gas ~ trend() + season()),
+  SNAIVE(season_adjust),
+  RW(season_adjust ~ drift())
+)
+```
+
+## Syntax {auto-animate="true"}
+
+```{r}
+#| label: dcmp-animate-5
+#| eval: false
+
+stl_spec <- decomposition_model(
+  STL(Gas ~ trend() + season()),
+  SNAIVE(season_adjust),
+  RW(season_adjust ~ drift())
+)
+
+gas_train |> model(stl_snaive_drift = stl_spec)
+```
+
+:::
+
+::: {.content-visible unless-format="revealjs"}
+### Syntax
+:::
+
+The spec is defined once as a standalone object and passed into `model()`:
+
+```{r}
+#| label: dcmp-fit
+
+stl_spec <- decomposition_model(   #<1>
+  STL(Gas ~ trend() + season()),   #<2>
+  SNAIVE(season_adjust),           #<3>
+  RW(season_adjust ~ drift())      #<4>
+)
+
+gas_fit_dcmp <- gas_train |>
+  model(stl_snaive_drift = stl_spec)
+```
+
+1. `decomposition_model()` wraps a decomposition method and one or more component models into a single reusable spec.
+2. STL decomposition — same syntax as in 1.2.
+3. SNAIVE on `season_adjust` handles the seasonal component extracted by STL.
+4. Drift on `season_adjust` handles the trend-cycle. `fable` reconstructs the final forecast by adding the two component forecasts.
+
+::: {.content-hidden unless-format="revealjs"}
+
+## With a transformation {auto-animate="true"}
+
+```{r}
+#| label: dcmp-animate-bc-1
+#| eval: false
+
+stl_spec <- decomposition_model(
+  STL(Gas ~ trend() + season()),
+  SNAIVE(season_adjust),
+  RW(season_adjust ~ drift())
+)
+
+gas_train |> model(stl_snaive_drift = stl_spec)
+```
+
+## With a transformation {auto-animate="true"}
+
+```{r}
+#| label: dcmp-animate-bc-2
+#| eval: false
+
+stl_spec_bc <- decomposition_model(
+  STL(box_cox(Gas, lambda) ~ trend() + season()),
+  SNAIVE(season_adjust),
+  RW(season_adjust ~ drift())
+)
+
+gas_train |> model(stl_bc = stl_spec_bc)
+```
+
+:::
+
+::: {.content-visible unless-format="revealjs"}
+### With a transformation
+:::
+
+Box-Cox goes inside the STL spec — declared once, inherited everywhere:
+
+```{r}
+#| label: dcmp-fit-bc
+
+stl_spec_bc <- decomposition_model(              #<1>
+  STL(box_cox(Gas, lambda) ~ trend() + season()),
+  SNAIVE(season_adjust),
+  RW(season_adjust ~ drift())
+)
+
+gas_fit_dcmp_bc <- gas_train |>
+  model(stl_bc = stl_spec_bc)
+```
+
+1. The only difference from `stl_spec` is `box_cox()` in the STL call. All component models and the final back-transformation inherit it automatically.
+
+```{r}
+#| label: dcmp-fc-both
+
+gas_fc_dcmp <- bind_rows(
+  gas_fit_dcmp    |> forecast(h = nrow(gas_test)),
+  gas_fit_dcmp_bc |> forecast(h = nrow(gas_test))
+)
+```
+
+::: {.content-hidden unless-format="revealjs"}
+## Final comparison
+:::
+
+::: {.content-visible unless-format="revealjs"}
+### Final comparison
+:::
+
+All models side by side:
+
+```{r}
+#| label: gas-final-comparison
+#| echo: false
+
+bind_rows(
+  gas_fc      |> filter(.model %in% c("snaive", "drift")),
+  gas_fc_bc,
+  gas_fc_dcmp
+) |>
+  autoplot(
+    aus_production |> filter_index("2000 Q1" ~ .),
+    level = NULL
+  ) +
+  labs(
+    title = "Gas — all Module 1 models",
+    y = "Petajoules", x = NULL
+  )
+```
+
+::: {.content-hidden unless-format="revealjs"}
+## Accuracy table
+:::
+
+::: {.content-visible unless-format="revealjs"}
+### Accuracy table
+:::
+
+```{r}
+#| label: gas-final-accuracy
+
+gas_accu <- bind_rows(
+  gas_fc      |> filter(.model %in% c("snaive", "drift")) |> accuracy(aus_production),
+  gas_fc_bc   |> accuracy(aus_production),
+  gas_fc_dcmp |> accuracy(aus_production)
+) |>
+  select(.model, RMSE, MAE, MASE, RMSSE) |>
+  arrange(RMSSE)
+
+gas_accu
+```
+
+::: {.fragment}
+
+::: {.callout-important appearance="simple"}
+## This is your Module 1 baseline
+
+The best-performing model from this table is your benchmark for the rest of the course. Every model we build in Modules 2, 3, and 4 must beat this number to justify its additional complexity.
+:::
+
+:::
+
+::: {.content-hidden unless-format="revealjs"}
+## Refit on all data
+:::
+
+::: {.content-visible unless-format="revealjs"}
+### Refit on all data
+:::
+
+Because the spec is a standalone object, refitting on the full dataset reuses it directly — no duplication:
+
+```{r}
+#| label: gas-final-refit
+
+gas_final_fit <- aus_production |>
+  model(stl_bc = stl_spec_bc)   #<1>
+
+gas_final_fc <- gas_final_fit |>
+  forecast(h = "2 years")
+
+gas_final_fc |>
+  autoplot(aus_production |> filter_index("2000 Q1" ~ .)) +
+  labs(
+    title = "Australian gas production — STL + Box-Cox forecast",
+    subtitle = "Refit on full data · 2-year horizon",
+    y = "Petajoules", x = NULL
+  )
+```
+
+1. Same spec, full data — no need to rewrite the model definition.
+
+::: {.fragment}
+
+::: {.callout-note appearance="simple"}
+## Module 1 complete
+
+You now have a principled, validated baseline model. It handles trend, seasonality, and non-constant variance. Modules 2 onward will replace or enhance individual components — but the workflow stays the same: split, fit, diagnose, compare, refit.
+:::
+
+:::
