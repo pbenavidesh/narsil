@@ -144,20 +144,37 @@ where each of these is an academic paper
 
 ------------------------------------------------------------------------
 
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Google searches for 'cat memes' and the second variable is Automotive recalls for issues with the Air Bags. The chart goes from 2004 to 2022, and the two variables track closely in value over that time.](spurious/correlation/image/2600_google-searches-for-cat-memes_correlates-with_automotive-recalls-for-issues-with-the-air-bags.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Google searches for 'cat memes' and the second variable is Automotive recalls for issues with the Air Bags.  The chart goes from 2004 to 2022, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/2600_google-searches-for-cat-memes_correlates-with_automotive-recalls-for-issues-with-the-air-bags_mobile.svg)  
-**View details about correlation \#2,600**](spurious/correlation/2600_google-searches-for-cat-memes_correlates-with_automotive-recalls-for-issues-with-the-air-bags)  
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The number of movies Elijah Wood appeared in and the second variable is The number of orderlies in Oklahoma. The chart goes from 2012 to 2022, and the two variables track closely in value over that time.](spurious/correlation/image/5875_the-number-of-movies-elijah-wood-appeared-in_correlates-with_the-number-of-orderlies-in-oklahoma.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The number of movies Elijah Wood appeared in and the second variable is The number of orderlies in Oklahoma.  The chart goes from 2012 to 2022, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/5875_the-number-of-movies-elijah-wood-appeared-in_correlates-with_the-number-of-orderlies-in-oklahoma_mobile.svg)  
+**View details about correlation \#5,875**](spurious/correlation/5875_the-number-of-movies-elijah-wood-appeared-in_correlates-with_the-number-of-orderlies-in-oklahoma)  
   
 
 ^(Show scatterplot)
 
-![](spurious/correlation/scatterplot/2600_google-searches-for-cat-memes_correlates-with_automotive-recalls-for-issues-with-the-air-bags_scatterplot.png)
+![](spurious/correlation/scatterplot/5875_the-number-of-movies-elijah-wood-appeared-in_correlates-with_the-number-of-orderlies-in-oklahoma_scatterplot.png)
 
   
   
 
 *What else correlates?*  
-[Google searches for 'cat memes'](spurious/variable?id=1355) · [all google searches](spurious/view-all-variables/google)  
-[Automotive recalls for issues with the Air Bags](spurious/variable?id=1105) · [all weird & wacky](spurious/view-all-variables/weirdwacky)  
+[The number of movies Elijah Wood appeared in](spurious/variable?id=26538) · [all films & actors](spurious/view-all-variables/films)  
+[The number of orderlies in Oklahoma](spurious/variable?id=19417) · [all cccupations](spurious/view-all-variables/occupations)  
+
+------------------------------------------------------------------------
+
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the first name Tiarra and the second variable is Google searches for 'why isnt 11 pronounced onety one'. The chart goes from 2004 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/1041_popularity-of-the-first-name-tiarra_correlates-with_google-searches-for-why-isnt-11-pronounced-onety-one.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the first name Tiarra and the second variable is Google searches for 'why isnt 11 pronounced onety one'.  The chart goes from 2004 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1041_popularity-of-the-first-name-tiarra_correlates-with_google-searches-for-why-isnt-11-pronounced-onety-one_mobile.svg)  
+**View details about correlation \#1,041**](spurious/correlation/1041_popularity-of-the-first-name-tiarra_correlates-with_google-searches-for-why-isnt-11-pronounced-onety-one)  
+  
+
+^(Show scatterplot)
+
+![](spurious/correlation/scatterplot/1041_popularity-of-the-first-name-tiarra_correlates-with_google-searches-for-why-isnt-11-pronounced-onety-one_scatterplot.png)
+
+  
+  
+
+*What else correlates?*  
+[Popularity of the first name Tiarra](spurious/variable?id=3786) · [all first names](spurious/view-all-variables/babynames)  
+[Google searches for 'why isnt 11 pronounced onety one'](spurious/variable?id=1469) · [all google searches](spurious/view-all-variables/google)  
 
 ------------------------------------------------------------------------
 

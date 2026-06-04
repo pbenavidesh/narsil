@@ -37,7 +37,7 @@ The Mean interval barely widens; NAIVE and Drift intervals widen continuously.
 
 Code
 
-``` r
+``` numberSource
 gas_fc |>
   filter(.model == "snaive") |>
   hilo(level = 95) |>
@@ -111,7 +111,7 @@ Wrap the response variable in `box_cox()` inside the model spec:
 
 Code
 
-``` r
+``` numberSource
 gas_fit_bc <- gas_train |>
   model(
     snaive_bc = SNAIVE(box_cox(Gas, lambda)),       #<1>
@@ -155,7 +155,7 @@ bind_rows(
   gas_fc_bc |>
     accuracy(aus_production)
 ) |>
-  select(.model, RMSE, MAE, MASE, RMSSE) |>
+  select(.model, RMSE, MAE, MAPE, MASE, RMSSE) |>
   arrange(RMSSE)
 ```
 
@@ -257,7 +257,7 @@ Running this thousands of times and taking percentiles of the simulated paths gi
 
 Code
 
-``` r
+``` numberSource
 google_fc_boot <- google_fit |>
   forecast(
     h         = 30,
@@ -286,7 +286,7 @@ google_fc_boot |>
 >
 > Use bootstrap intervals when `gg_tsresiduals()` shows clearly non-normal residuals — heavy tails or marked skew. For series where residuals are roughly symmetric, the additional computational cost rarely changes the conclusion.
 
-# 5 Using STL Decomposition for forecasting using `decomposition_model()`
+# 5 Using STL Decomposition for forecasting with `decomposition_model()`
 
 ### 5.0.1 The idea
 
@@ -309,20 +309,21 @@ The spec is defined once as a standalone object and passed into `model()`:
 Code
 
 ``` r
-stl_spec <- decomposition_model(   #<1>
-  STL(Gas ~ trend() + season()),   #<2>
-  SNAIVE(season_adjust),           #<3>
-  RW(season_adjust ~ drift())      #<4>
+stl_spec <- decomposition_model(                  #<1>
+  STL(Gas ~ trend() + season(), robust = TRUE),   #<2>
+  SNAIVE(season_year),                            #<3>
+  RW(season_adjust ~ drift())                     #<4>
 )
 
 gas_fit_dcmp <- gas_train |>
-  model(stl_snaive_drift = stl_spec)
+  model(stl_snaive_drift = stl_spec)              #<5>
 ```
 
 1.  `decomposition_model()` wraps a decomposition method and one or more component models into a single reusable spec.
 2.  STL decomposition — same syntax as in 1.2.
-3.  SNAIVE on `season_adjust` handles the seasonal component extracted by STL.
-4.  Drift on `season_adjust` handles the trend-cycle. `fable` reconstructs the final forecast by adding the two component forecasts.
+3.  SNAIVE on `season_year` handles the seasonal component extracted by STL.
+4.  Drift on `season_adjust` handles the seasonally adjusted series. `fable` reconstructs the final forecast by adding the two component forecasts.
+5.  We still need to put the decomposition model inside a `mable` with the `model()` function.
 
 ### 5.0.3 With a transformation
 
@@ -330,10 +331,10 @@ Box-Cox goes inside the STL spec — declared once, inherited everywhere:
 
 Code
 
-``` r
-stl_spec_bc <- decomposition_model(              #<1>
-  STL(box_cox(Gas, lambda) ~ trend() + season()),
-  SNAIVE(season_adjust),
+``` numberSource
+stl_spec_bc <- decomposition_model(
+  STL(box_cox(Gas, lambda) ~ trend() + season(), robust = TRUE), #<1>
+  SNAIVE(season_year),
   RW(season_adjust ~ drift())
 )
 
@@ -356,8 +357,6 @@ gas_fc_dcmp <- bind_rows(
 
 All models side by side:
 
-[![](model_diagnostics_files/figure-html/gas-final-comparison-1.png)](model_diagnostics_files/figure-html/gas-final-comparison-1.png)
-
 ### 5.0.5 Accuracy table
 
 Code
@@ -368,7 +367,7 @@ gas_accu <- bind_rows(
   gas_fc_bc   |> accuracy(aus_production),
   gas_fc_dcmp |> accuracy(aus_production)
 ) |>
-  select(.model, RMSE, MAE, MASE, RMSSE) |>
+  select(.model, RMSE, MAE, MAPE, MASE, RMSSE) |>
   arrange(RMSSE)
 
 gas_accu
@@ -384,7 +383,7 @@ Because the spec is a standalone object, refitting on the full dataset reuses it
 
 Code
 
-``` r
+``` numberSource
 gas_final_fit <- aus_production |>
   model(stl_bc = stl_spec_bc)   #<1>
 
