@@ -10,7 +10,7 @@ March 28, 2026
 
 Modified
 
-June 3, 2026
+June 4, 2026
 
 A student who has just learned `TSLM()` and already knows about XGBoost or random forests will reasonably ask: *why are we doing this?* This document answers that question honestly — including the cases where OLS loses.
 

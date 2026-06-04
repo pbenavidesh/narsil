@@ -207,16 +207,16 @@ window.Quarto = {
 <link rel="stylesheet" href="../../../../styles.css">
 <meta property="og:title" content="Model Diagnostics and Advanced Forecasting – Time Series Forecasting">
 <meta property="og:description" content="Course materials for Time Series Forecasting at ITESO — covering decomposition, ETS, ARIMA, regression, dynamic regression, Prophet, and hierarchical forecasting using R and the tidyverts ecosystem.">
-<meta property="og:image" content="https://pbenavidesh.github.io/narsil/docs/modules/module_1/04_model_diagnostics/model_diagnostics_files/figure-revealjs/gas-pi-raw-1.png">
+<meta property="og:image" content="https://pbenavidesh.github.io/narsil/docs/modules/module_1/04_model_diagnostics/model_diagnostics_files/figure-html/gas-pi-raw-1.png">
 <meta property="og:site_name" content="Time Series Forecasting">
 <meta property="og:image:height" content="960">
-<meta property="og:image:width" content="1920">
+<meta property="og:image:width" content="1344">
 <meta name="twitter:title" content="Model Diagnostics and Advanced Forecasting – Time Series Forecasting">
 <meta name="twitter:description" content="Course materials for Time Series Forecasting at ITESO — covering decomposition, ETS, ARIMA, regression, dynamic regression, Prophet, and hierarchical forecasting using R and the tidyverts ecosystem.">
-<meta name="twitter:image" content="https://pbenavidesh.github.io/narsil/docs/modules/module_1/04_model_diagnostics/model_diagnostics_files/figure-revealjs/gas-pi-raw-1.png">
+<meta name="twitter:image" content="https://pbenavidesh.github.io/narsil/docs/modules/module_1/04_model_diagnostics/model_diagnostics_files/figure-html/gas-pi-raw-1.png">
 <meta name="twitter:creator" content="@PabsBenavides">
 <meta name="twitter:image-height" content="960">
-<meta name="twitter:image-width" content="1920">
+<meta name="twitter:image-width" content="1344">
 <meta name="twitter:card" content="summary_large_image">
 </head>
 
@@ -634,11 +634,10 @@ window.Quarto = {
   <li><a href="#bootstrap-prediction-intervals" id="toc-bootstrap-prediction-intervals" class="nav-link" data-scroll-target="#bootstrap-prediction-intervals"><span class="header-section-number">4</span> Bootstrap prediction intervals</a>
   <ul class="collapse">
   <li><a href="#when-normality-fails-1" id="toc-when-normality-fails-1" class="nav-link" data-scroll-target="#when-normality-fails-1"><span class="header-section-number">4.0.1</span> When normality fails</a></li>
-  <li><a href="#many-possible-futures-1" id="toc-many-possible-futures-1" class="nav-link" data-scroll-target="#many-possible-futures-1"><span class="header-section-number">4.0.2</span> Many possible futures</a></li>
-  <li><a href="#generate-simulating-paths-1" id="toc-generate-simulating-paths-1" class="nav-link" data-scroll-target="#generate-simulating-paths-1"><span class="header-section-number">4.0.3</span> <code>generate()</code> — simulating paths</a></li>
-  <li><a href="#from-paths-to-intervals-1" id="toc-from-paths-to-intervals-1" class="nav-link" data-scroll-target="#from-paths-to-intervals-1"><span class="header-section-number">4.0.4</span> From paths to intervals</a></li>
+  <li><a href="#many-possible-futures-2" id="toc-many-possible-futures-2" class="nav-link" data-scroll-target="#many-possible-futures-2"><span class="header-section-number">4.0.2</span> Many possible futures</a></li>
+  <li><a href="#from-paths-to-intervals-1" id="toc-from-paths-to-intervals-1" class="nav-link" data-scroll-target="#from-paths-to-intervals-1"><span class="header-section-number">4.0.3</span> From paths to intervals</a></li>
   </ul></li>
-  <li><a href="#decomposition_model-the-module-1-deliverable" id="toc-decomposition_model-the-module-1-deliverable" class="nav-link" data-scroll-target="#decomposition_model-the-module-1-deliverable"><span class="header-section-number">5</span> <code>decomposition_model()</code> — the Module 1 deliverable</a>
+  <li><a href="#using-stl-decomposition-for-forecasting-using-decomposition_model" id="toc-using-stl-decomposition-for-forecasting-using-decomposition_model" class="nav-link" data-scroll-target="#using-stl-decomposition-for-forecasting-using-decomposition_model"><span class="header-section-number">5</span> Using STL Decomposition for forecasting using <code>decomposition_model()</code></a>
   <ul class="collapse">
   <li><a href="#the-idea-1" id="toc-the-idea-1" class="nav-link" data-scroll-target="#the-idea-1"><span class="header-section-number">5.0.1</span> The idea</a></li>
   <li><a href="#syntax-5" id="toc-syntax-5" class="nav-link" data-scroll-target="#syntax-5"><span class="header-section-number">5.0.2</span> Syntax</a></li>
@@ -668,7 +667,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">June 3, 2026</p>
+      <p class="date-modified">June 4, 2026</p>
     </div>
   </div>
     
@@ -778,7 +777,7 @@ window.Quarto = {
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><a href="model_diagnostics_files/figure-revealjs/gas-pi-raw-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="model_diagnostics_files/figure-revealjs/gas-pi-raw-1.png" class="img-fluid figure-img" width="960"></a></p>
+<p><a href="model_diagnostics_files/figure-html/gas-pi-raw-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="model_diagnostics_files/figure-html/gas-pi-raw-1.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
 </div>
@@ -806,7 +805,7 @@ window.Quarto = {
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><a href="model_diagnostics_files/figure-revealjs/gas-resid-reminder-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="model_diagnostics_files/figure-revealjs/gas-resid-reminder-1.png" class="img-fluid figure-img" width="960"></a></p>
+<p><a href="model_diagnostics_files/figure-html/gas-resid-reminder-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="model_diagnostics_files/figure-html/gas-resid-reminder-1.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
 </div>
@@ -900,7 +899,7 @@ lambda"><pre class="sourceCode r code-annotation-code code-with-copy code-annota
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><a href="model_diagnostics_files/figure-revealjs/gas-pi-no-bc-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="model_diagnostics_files/figure-revealjs/gas-pi-no-bc-1.png" class="img-fluid figure-img" width="960"></a></p>
+<p><a href="model_diagnostics_files/figure-html/gas-pi-no-bc-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="model_diagnostics_files/figure-html/gas-pi-no-bc-1.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
 </div>
@@ -911,7 +910,7 @@ lambda"><pre class="sourceCode r code-annotation-code code-with-copy code-annota
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><a href="model_diagnostics_files/figure-revealjs/gas-pi-bc-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img src="model_diagnostics_files/figure-revealjs/gas-pi-bc-1.png" class="img-fluid figure-img" width="960"></a></p>
+<p><a href="model_diagnostics_files/figure-html/gas-pi-bc-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img src="model_diagnostics_files/figure-html/gas-pi-bc-1.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
 </div>
@@ -1038,7 +1037,7 @@ eggs_fc <- eggs_fit |>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><a href="model_diagnostics_files/figure-revealjs/eggs-plot-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img src="model_diagnostics_files/figure-revealjs/eggs-plot-1.png" class="img-fluid figure-img" width="960"></a></p>
+<p><a href="model_diagnostics_files/figure-html/eggs-plot-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img src="model_diagnostics_files/figure-html/eggs-plot-1.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
 </div>
@@ -1072,24 +1071,21 @@ eggs_fc <- eggs_fit |>
 <p>Since the errors are uncorrelated, we can substitute <span class="math inline">e_{T+1}</span> with a <strong>randomly resampled</strong> historical residual. Repeating this for <span class="math inline">y_{T+2}, y_{T+3}, \ldots</span> gives one possible future path. Do it thousands of times and you have a full distribution of futures — no normality required.</p>
 </div>
 </section>
-<section id="many-possible-futures-1" class="level3" data-number="4.0.2">
-<h3 data-number="4.0.2" class="anchored" data-anchor-id="many-possible-futures-1"><span class="header-section-number">4.0.2</span> Many possible futures</h3>
-</section>
-<section id="generate-simulating-paths-1" class="level3" data-number="4.0.3">
-<h3 data-number="4.0.3" class="anchored" data-anchor-id="generate-simulating-paths-1"><span class="header-section-number">4.0.3</span> <code>generate()</code> — simulating paths</h3>
-<p><code>generate()</code> makes the simulated paths explicit. Here are five possible futures for Google’s closing price, each built by resampling historical residuals step by step:</p>
+<section id="many-possible-futures-2" class="level3" data-number="4.0.2">
+<h3 data-number="4.0.2" class="anchored" data-anchor-id="many-possible-futures-2"><span class="header-section-number">4.0.2</span> Many possible futures</h3>
+<p>Here are five possible futures for Google’s closing price, each built by resampling historical residuals step by step:</p>
 <div class="cell">
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><a href="model_diagnostics_files/figure-revealjs/google-sim-plot-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img src="model_diagnostics_files/figure-revealjs/google-sim-plot-1.png" class="img-fluid figure-img" width="960"></a></p>
+<p><a href="model_diagnostics_files/figure-html/google-sim-plot-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img src="model_diagnostics_files/figure-html/google-sim-plot-1.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
 </div>
 </div>
 </section>
-<section id="from-paths-to-intervals-1" class="level3" data-number="4.0.4">
-<h3 data-number="4.0.4" class="anchored" data-anchor-id="from-paths-to-intervals-1"><span class="header-section-number">4.0.4</span> From paths to intervals</h3>
+<section id="from-paths-to-intervals-1" class="level3" data-number="4.0.3">
+<h3 data-number="4.0.3" class="anchored" data-anchor-id="from-paths-to-intervals-1"><span class="header-section-number">4.0.3</span> From paths to intervals</h3>
 <p>Running this thousands of times and taking percentiles of the simulated paths gives the <strong>bootstrap prediction interval</strong>. <code>forecast()</code> does this in one step:</p>
 <div class="fragment">
 <div class="cell">
@@ -1135,7 +1131,7 @@ eggs_fc <- eggs_fit |>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><a href="model_diagnostics_files/figure-revealjs/google-bootstrap-plot-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7"><img src="model_diagnostics_files/figure-revealjs/google-bootstrap-plot-1.png" class="img-fluid figure-img" width="960"></a></p>
+<p><a href="model_diagnostics_files/figure-html/google-bootstrap-plot-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7"><img src="model_diagnostics_files/figure-html/google-bootstrap-plot-1.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
 </div>
@@ -1158,8 +1154,8 @@ eggs_fc <- eggs_fit |>
 </div>
 </section>
 </section>
-<section id="decomposition_model-the-module-1-deliverable" class="level1" data-number="5">
-<h1 data-number="5"><span class="header-section-number">5</span> <code>decomposition_model()</code> — the Module 1 deliverable</h1>
+<section id="using-stl-decomposition-for-forecasting-using-decomposition_model" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Using STL Decomposition for forecasting using <code>decomposition_model()</code></h1>
 <section id="the-idea-1" class="level3" data-number="5.0.1">
 <h3 data-number="5.0.1" class="anchored" data-anchor-id="the-idea-1"><span class="header-section-number">5.0.1</span> The idea</h3>
 <p>STL (covered in <a href="../../../../docs/modules/module_1/02_ts_dcmp/ts_dcmp.html">1.2</a>) decomposes a series into trend-cycle, seasonal, and remainder components. The benchmarks (covered in <a href="../../../../docs/modules/module_1/03_fcst/forecasting.html">1.3</a>) each handle one aspect of the series well.</p>
@@ -1276,7 +1272,7 @@ gas_fit_dcmp_bc <- gas_train |>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><a href="model_diagnostics_files/figure-revealjs/gas-final-comparison-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8"><img src="model_diagnostics_files/figure-revealjs/gas-final-comparison-1.png" class="img-fluid figure-img" width="960"></a></p>
+<p><a href="model_diagnostics_files/figure-html/gas-final-comparison-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8"><img src="model_diagnostics_files/figure-html/gas-final-comparison-1.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
 </div>
@@ -1364,7 +1360,7 @@ gas_final_fc |>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><a href="model_diagnostics_files/figure-revealjs/gas-final-refit-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9"><img src="model_diagnostics_files/figure-revealjs/gas-final-refit-1.png" class="img-fluid figure-img" width="960"></a></p>
+<p><a href="model_diagnostics_files/figure-html/gas-final-refit-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9"><img src="model_diagnostics_files/figure-html/gas-final-refit-1.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
 </div>
@@ -1390,44 +1386,6 @@ gas_final_fc |>
 </section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
-
-<script>
-  // htmlwidgets need to know to resize themselves when slides are shown/hidden.
-  // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
-  // slide changes (different for each slide format).
-  (function () {
-    // dispatch for htmlwidgets
-    function fireSlideEnter() {
-      const event = window.document.createEvent("Event");
-      event.initEvent("slideenter", true, true);
-      window.document.dispatchEvent(event);
-    }
-
-    function fireSlideChanged(previousSlide, currentSlide) {
-      fireSlideEnter();
-
-      // dispatch for shiny
-      if (window.jQuery) {
-        if (previousSlide) {
-          window.jQuery(previousSlide).trigger("hidden");
-        }
-        if (currentSlide) {
-          window.jQuery(currentSlide).trigger("shown");
-        }
-      }
-    }
-
-    // hookup for slidy
-    if (window.w3c_slidy) {
-      window.w3c_slidy.add_observer(function (slide_num) {
-        // slide_num starts at position 1
-        fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
-      });
-    }
-
-  })();
-</script>
-
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right
