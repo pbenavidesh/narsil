@@ -2,7 +2,7 @@
 
 Modified
 
-June 4, 2026
+June 8, 2026
 
 Code
 
@@ -144,20 +144,88 @@ where each of these is an academic paper
 
 ------------------------------------------------------------------------
 
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The number of movies Elijah Wood appeared in and the second variable is The number of orderlies in Oklahoma. The chart goes from 2012 to 2022, and the two variables track closely in value over that time.](spurious/correlation/image/5875_the-number-of-movies-elijah-wood-appeared-in_correlates-with_the-number-of-orderlies-in-oklahoma.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The number of movies Elijah Wood appeared in and the second variable is The number of orderlies in Oklahoma.  The chart goes from 2012 to 2022, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/5875_the-number-of-movies-elijah-wood-appeared-in_correlates-with_the-number-of-orderlies-in-oklahoma_mobile.svg)  
-**View details about correlation \#5,875**](spurious/correlation/5875_the-number-of-movies-elijah-wood-appeared-in_correlates-with_the-number-of-orderlies-in-oklahoma)  
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The distance between Jupiter and the Sun and the second variable is The number of secretaries in Alaska. The chart goes from 2010 to 2022, and the two variables track closely in value over that time.](spurious/correlation/image/2733_the-distance-between-jupiter-and-the-sun_correlates-with_the-number-of-secretaries-in-alaska.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The distance between Jupiter and the Sun and the second variable is The number of secretaries in Alaska.  The chart goes from 2010 to 2022, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/2733_the-distance-between-jupiter-and-the-sun_correlates-with_the-number-of-secretaries-in-alaska_mobile.svg)  
+**View details about correlation \#2,733**](spurious/correlation/2733_the-distance-between-jupiter-and-the-sun_correlates-with_the-number-of-secretaries-in-alaska)  
   
 
 ^(Show scatterplot)
 
-![](spurious/correlation/scatterplot/5875_the-number-of-movies-elijah-wood-appeared-in_correlates-with_the-number-of-orderlies-in-oklahoma_scatterplot.png)
+![](spurious/correlation/scatterplot/2733_the-distance-between-jupiter-and-the-sun_correlates-with_the-number-of-secretaries-in-alaska_scatterplot.png)
 
   
   
 
 *What else correlates?*  
-[The number of movies Elijah Wood appeared in](spurious/variable?id=26538) · [all films & actors](spurious/view-all-variables/films)  
-[The number of orderlies in Oklahoma](spurious/variable?id=19417) · [all cccupations](spurious/view-all-variables/occupations)  
+[The distance between Jupiter and the Sun](spurious/variable?id=1928) · [all planets](spurious/view-all-variables/planets)  
+[The number of secretaries in Alaska](spurious/variable?id=17805) · [all cccupations](spurious/view-all-variables/occupations)  
+
+------------------------------------------------------------------------
+
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Rainfall in San Francisco and the second variable is The number of printing press operators in Rhode Island. The chart goes from 2010 to 2022, and the two variables track closely in value over that time.](spurious/correlation/image/2948_rainfall-in-san-francisco_correlates-with_the-number-of-printing-press-operators-in-rhode-island.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Rainfall in San Francisco and the second variable is The number of printing press operators in Rhode Island.  The chart goes from 2010 to 2022, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/2948_rainfall-in-san-francisco_correlates-with_the-number-of-printing-press-operators-in-rhode-island_mobile.svg)  
+**View details about correlation \#2,948**](spurious/correlation/2948_rainfall-in-san-francisco_correlates-with_the-number-of-printing-press-operators-in-rhode-island)  
+  
+
+^(Show scatterplot)
+
+![](spurious/correlation/scatterplot/2948_rainfall-in-san-francisco_correlates-with_the-number-of-printing-press-operators-in-rhode-island_scatterplot.png)
+
+  
+  
+
+*What else correlates?*  
+[Rainfall in San Francisco](spurious/variable?id=374) · [all weather](spurious/view-all-variables/weather)  
+[The number of printing press operators in Rhode Island](spurious/variable?id=18578) · [all cccupations](spurious/view-all-variables/occupations)  
+
+------------------------------------------------------------------------
+
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the 'success kid' meme and the second variable is Average number of comments on Numberphile YouTube videos. The chart goes from 2011 to 2023, and the two variables track closely in value over that time.](spurious/correlation/image/5959_popularity-of-the-success-kid-meme_correlates-with_average-number-of-comments-on-numberphile-youtube-videos.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the 'success kid' meme and the second variable is Average number of comments on Numberphile YouTube videos.  The chart goes from 2011 to 2023, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/5959_popularity-of-the-success-kid-meme_correlates-with_average-number-of-comments-on-numberphile-youtube-videos_mobile.svg)  
+**View details about correlation \#5,959**](spurious/correlation/5959_popularity-of-the-success-kid-meme_correlates-with_average-number-of-comments-on-numberphile-youtube-videos)  
+  
+
+^(Show scatterplot)
+
+![](spurious/correlation/scatterplot/5959_popularity-of-the-success-kid-meme_correlates-with_average-number-of-comments-on-numberphile-youtube-videos_scatterplot.png)
+
+  
+  
+
+*What else correlates?*  
+[Popularity of the 'success kid' meme](spurious/variable?id=25157) · [all memes](spurious/view-all-variables/memes)  
+[Average number of comments on Numberphile YouTube videos](spurious/variable?id=25473) · [all YouTube](spurious/view-all-variables/youtube)  
+
+------------------------------------------------------------------------
+
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The distance between Uranus and Saturn and the second variable is Nuclear power generation in Brazil. The chart goes from 1982 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/2310_the-distance-between-uranus-and-saturn_correlates-with_nuclear-power-generation-in-brazil.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The distance between Uranus and Saturn and the second variable is Nuclear power generation in Brazil.  The chart goes from 1982 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/2310_the-distance-between-uranus-and-saturn_correlates-with_nuclear-power-generation-in-brazil_mobile.svg)  
+**View details about correlation \#2,310**](spurious/correlation/2310_the-distance-between-uranus-and-saturn_correlates-with_nuclear-power-generation-in-brazil)  
+  
+
+^(Show scatterplot)
+
+![](spurious/correlation/scatterplot/2310_the-distance-between-uranus-and-saturn_correlates-with_nuclear-power-generation-in-brazil_scatterplot.png)
+
+  
+  
+
+*What else correlates?*  
+[The distance between Uranus and Saturn](spurious/variable?id=1966) · [all planets](spurious/view-all-variables/planets)  
+[Nuclear power generation in Brazil](spurious/variable?id=23536) · [all energy](spurious/view-all-variables/energy)  
+
+------------------------------------------------------------------------
+
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Burglaries in Oregon and the second variable is Viewership count for Days of Our Lives. The chart goes from 1985 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/1218_burglaries-in-oregon_correlates-with_viewership-count-for-days-of-our-lives.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Burglaries in Oregon and the second variable is Viewership count for Days of Our Lives.  The chart goes from 1985 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1218_burglaries-in-oregon_correlates-with_viewership-count-for-days-of-our-lives_mobile.svg)  
+**View details about correlation \#1,218**](spurious/correlation/1218_burglaries-in-oregon_correlates-with_viewership-count-for-days-of-our-lives)  
+  
+
+^(Show scatterplot)
+
+![](spurious/correlation/scatterplot/1218_burglaries-in-oregon_correlates-with_viewership-count-for-days-of-our-lives_scatterplot.png)
+
+  
+  
+
+*What else correlates?*  
+[Burglaries in Oregon](spurious/variable?id=20115) · [all random state specific](spurious/view-all-variables/statespecific)  
+[Viewership count for Days of Our Lives](spurious/variable?id=87) · [all weird & wacky](spurious/view-all-variables/weirdwacky)  
 
 ------------------------------------------------------------------------
 
@@ -430,57 +498,6 @@ where each of these is an academic paper
 *What else correlates?*  
 [Solar power generated in Argentina](spurious/variable?id=23462) · [all energy](spurious/view-all-variables/energy)  
 [Google searches for 'do vaccines work'](spurious/variable?id=1433) · [all google searches](spurious/view-all-variables/google)  
-
-------------------------------------------------------------------------
-
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the 'cicada 3301' meme and the second variable is Total likes of LEMMiNO YouTube videos. The chart goes from 2012 to 2023, and the two variables track closely in value over that time.](spurious/correlation/image/5126_popularity-of-the-cicada-3301-meme_correlates-with_total-likes-of-lemmino-youtube-videos.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the 'cicada 3301' meme and the second variable is Total likes of LEMMiNO YouTube videos.  The chart goes from 2012 to 2023, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/5126_popularity-of-the-cicada-3301-meme_correlates-with_total-likes-of-lemmino-youtube-videos_mobile.svg)  
-**View details about correlation \#5,126**](spurious/correlation/5126_popularity-of-the-cicada-3301-meme_correlates-with_total-likes-of-lemmino-youtube-videos)  
-  
-
-^(Show scatterplot)
-
-![](spurious/correlation/scatterplot/5126_popularity-of-the-cicada-3301-meme_correlates-with_total-likes-of-lemmino-youtube-videos_scatterplot.png)
-
-  
-  
-
-*What else correlates?*  
-[Popularity of the 'cicada 3301' meme](spurious/variable?id=25109) · [all memes](spurious/view-all-variables/memes)  
-[Total likes of LEMMiNO YouTube videos](spurious/variable?id=25601) · [all YouTube](spurious/view-all-variables/youtube)  
-
-------------------------------------------------------------------------
-
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the first name Cruz and the second variable is Associates degrees awarded in Nursing. The chart goes from 2011 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/1830_popularity-of-the-first-name-cruz_correlates-with_associates-degrees-awarded-in-nursing-registered-nurse-and-other.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the first name Cruz and the second variable is Associates degrees awarded in Nursing.  The chart goes from 2011 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1830_popularity-of-the-first-name-cruz_correlates-with_associates-degrees-awarded-in-nursing-registered-nurse-and-other_mobile.svg)  
-**View details about correlation \#1,830**](spurious/correlation/1830_popularity-of-the-first-name-cruz_correlates-with_associates-degrees-awarded-in-nursing-registered-nurse-and-other)  
-  
-
-^(Show scatterplot)
-
-![](spurious/correlation/scatterplot/1830_popularity-of-the-first-name-cruz_correlates-with_associates-degrees-awarded-in-nursing-registered-nurse-and-other_scatterplot.png)
-
-  
-  
-
-*What else correlates?*  
-[Popularity of the first name Cruz](spurious/variable?id=3452) · [all first names](spurious/view-all-variables/babynames)  
-[Associates degrees awarded in Nursing](spurious/variable?id=1235) · [all education](spurious/view-all-variables/education)  
-
-------------------------------------------------------------------------
-
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Google searches for 'Baroque Obama' and the second variable is The number of furniture finishers in Missouri. The chart goes from 2004 to 2022, and the two variables track closely in value over that time.](spurious/correlation/image/4260_google-searches-for-baroque-obama_correlates-with_the-number-of-furniture-finishers-in-missouri.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Google searches for 'Baroque Obama' and the second variable is The number of furniture finishers in Missouri.  The chart goes from 2004 to 2022, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/4260_google-searches-for-baroque-obama_correlates-with_the-number-of-furniture-finishers-in-missouri_mobile.svg)  
-**View details about correlation \#4,260**](spurious/correlation/4260_google-searches-for-baroque-obama_correlates-with_the-number-of-furniture-finishers-in-missouri)  
-  
-
-^(Show scatterplot)
-
-![](spurious/correlation/scatterplot/4260_google-searches-for-baroque-obama_correlates-with_the-number-of-furniture-finishers-in-missouri_scatterplot.png)
-
-  
-  
-
-*What else correlates?*  
-[Google searches for 'Baroque Obama'](spurious/variable?id=1485) · [all google searches](spurious/view-all-variables/google)  
-[The number of furniture finishers in Missouri](spurious/variable?id=10615) · [all cccupations](spurious/view-all-variables/occupations)  
 
 ------------------------------------------------------------------------
 

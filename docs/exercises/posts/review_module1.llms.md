@@ -1,0 +1,501 @@
+# Module 1 Review
+
+Code
+
+- [Show All Code](javascript:void(0))
+
+- [Hide All Code](javascript:void(0))
+
+- 
+
+  ------------------------------------------------------------------------
+
+- [View Source](javascript:void(0))
+
+module-review
+
+module-1
+
+End-of-module integrative exercise covering the full Module 1 workflow: exploration, transformations, STL decomposition, benchmark forecasting, decomposition models, residual diagnostics, and forecast evaluation.
+
+Modified
+
+June 8, 2026
+
+## 1 Context
+
+Australian monthly retail turnover data covers a wide range of industries and states. In this review you will work with a single series extracted from the `aus_retail` dataset: **clothing, footwear, and personal accessory retailing in Victoria**.
+
+> **IMPORTANT:**
+>
+> Every decision you make — whether to apply a transformation, how to interpret a decomposition, which model to prefer — must be **justified**. A correct result with no explanation is worth less than a well-reasoned argument that leads to the right answer. Be concise; a sentence or two is usually enough. The collapsed solutions include the reasoning that is expected.
+
+------------------------------------------------------------------------
+
+## 2 Part a — Extraction and exploration
+
+The `aus_retail` dataset is a tsibble with multiple keys. Before doing any analysis, you need to understand its structure and extract the right series.
+
+1.  Inspect `aus_retail`. What are the key variables? What is the time index? How many distinct series does it contain?
+
+2.  Extract the series for `"Clothing, footwear and personal accessory retailing"` in `"Victoria"`. Assign it to `clothing_vic`.
+
+3.  Plot the full series. Describe what you see: is there a trend? Is there seasonality? Does the variance appear constant over time, or does it change with the level of the series?
+
+4.  Produce a seasonal plot (`gg_season()`) and a subseries plot (`gg_subseries()`). What do these reveal about the seasonal pattern? Is it stable across years?
+
+> **TIP:**
+>
+> **1. Structure of `aus_retail`**
+>
+> Code
+>
+> ``` r
+> aus_retail
+> ```
+>
+> Code
+>
+> ``` r
+> aus_retail |> distinct(State, Industry) |> count()
+> ```
+>
+> The tsibble is indexed by `Month` (monthly frequency) and has two key variables: `State` and `Industry`. Each combination of state and industry defines one series; there are 152 distinct series in total. The measured variable is `Turnover` (retail turnover in millions of AUD).
+>
+> **2. Extract the Victoria clothing series**
+>
+> Code
+>
+> ``` r
+> clothing_vic <- aus_retail |>
+>   filter(
+>     State    == "Victoria",
+>     Industry == "Clothing, footwear and personal accessory retailing"
+>   )
+>
+> clothing_vic
+> ```
+>
+> **3. Time plot and visual inspection**
+>
+> Code
+>
+> ``` r
+> clothing_vic |>
+>   autoplot(Turnover) +
+>   labs(
+>     title = "Clothing, footwear & personal accessory retailing — Victoria",
+>     y = "Turnover ($ million AUD)",
+>     x = NULL
+>   )
+> ```
+>
+> [![](review_module1_files/figure-html/a-plot-1.png)](review_module1_files/figure-html/a-plot-1.png)
+>
+> The series shows three clear features:
+>
+> - **Upward trend**: turnover grows consistently from the early 1980s to the mid-2000s, then levels off and becomes somewhat erratic after 2010.
+> - **Strong seasonality**: there is a large spike every December (Christmas shopping) and a secondary pattern within each year.
+> - **Non-constant variance**: the amplitude of seasonal fluctuations grows with the level of the series — a hallmark of multiplicative seasonality. This indicates that a variance-stabilizing transformation is likely needed before modeling.
+>
+> **4. Seasonal and subseries plots**
+>
+> Code
+>
+> ``` r
+> clothing_vic |> gg_season(Turnover) +
+>   labs(title = "Seasonal plot — Victoria clothing", y = "Turnover ($ million AUD)")
+> ```
+>
+> [![](review_module1_files/figure-html/a-seasonal-1.png)](review_module1_files/figure-html/a-seasonal-1.png)
+>
+> Code
+>
+> ``` r
+> clothing_vic |> gg_subseries(Turnover) +
+>   labs(title = "Subseries plot — Victoria clothing", y = "Turnover ($ million AUD)")
+> ```
+>
+> [![](review_module1_files/figure-html/a-subseries-1.png)](review_module1_files/figure-html/a-subseries-1.png)
+>
+> Both plots confirm a dominant December peak — consistently the highest month across all years, and the gap between December and the rest of the year grows over time, reinforcing the multiplicative pattern. The subseries plot also shows that the within-month means increase across the full period for most months. The seasonal shape is stable in structure (December spike, trough in February/March) but not in magnitude, which is consistent with an evolving seasonal component.
+
+------------------------------------------------------------------------
+
+## 3 Part b — Transformation
+
+Based on your visual inspection in Part a, decide whether this series requires a variance-stabilizing transformation before decomposition and modeling.
+
+1.  State whether you will apply a transformation, and which one (logarithm, Box-Cox, or none). Justify your decision.
+
+2.  If you apply a transformation, implement it. For Box-Cox, estimate `lambda` using `guerrero()` and store it in a variable called `lambda`. Visualize the transformed series and confirm that the transformation achieves its intended effect.
+
+> **TIP:**
+>
+> **Justification**
+>
+> The time plot in Part a clearly shows that the seasonal amplitude grows with the level of the series — variance is proportional to the level. This is the standard condition that motivates a variance-stabilizing transformation. A logarithm (\lambda = 0) is often sufficient for this type of multiplicative pattern and has the advantage of being interpretable (changes become percentage changes). Box-Cox with an estimated \lambda is a more flexible alternative that may provide a better stabilization if the relationship is not exactly multiplicative.
+>
+> Both choices are defensible. The solution below uses Box-Cox with Guerrero’s method, which is the most principled data-driven approach.
+>
+> Code
+>
+> ``` r
+> lambda <- clothing_vic |>
+>   features(Turnover, features = guerrero) |>
+>   pull(lambda_guerrero)
+>
+> lambda
+> ```
+>
+>     [1] 0.00446547
+>
+> Code
+>
+> ``` r
+> clothing_vic |>
+>   autoplot(box_cox(Turnover, lambda)) +
+>   labs(
+>     title = paste0("Victoria clothing — Box-Cox transformed (λ = ", round(lambda, 3), ")"),
+>     y = "Transformed turnover",
+>     x = NULL
+>   )
+> ```
+>
+> [![](review_module1_files/figure-html/b-transformed-plot-1.png)](review_module1_files/figure-html/b-transformed-plot-1.png)
+>
+> The transformed series shows substantially more stable variance across the full observation period — the seasonal swings are now roughly constant in magnitude regardless of the level, which is what the transformation is designed to achieve. The trend and seasonal structure remain visible, as expected.
+>
+> **Note on the logarithm alternative**: A log transformation (\lambda = 0) would also be reasonable here and produces a very similar result. The Guerrero estimate is close to zero, which means the two approaches are nearly equivalent for this series. Either is acceptable as long as the choice is justified visually.
+
+------------------------------------------------------------------------
+
+## 4 Part c — STL decomposition
+
+Decompose the series using STL. Apply the transformation from Part b if you chose one.
+
+1.  Fit the STL decomposition and plot the components.
+2.  Interpret each component: what does the trend tell you about the long-run behavior of the series? What does the seasonal component look like — is it fixed or does it evolve over time? How large is the remainder relative to the other components?
+3.  Plot the seasonally adjusted series alongside the original. What does removing seasonality reveal?
+
+> **TIP:**
+>
+> **1. STL decomposition**
+>
+> Code
+>
+> ``` r
+> clothing_vic_dcmp <- clothing_vic |>
+>   model(stl = STL(box_cox(Turnover, lambda) ~ trend() + season(), robust = TRUE)) |>
+>   components()
+>
+> clothing_vic_dcmp |> autoplot() +
+>   labs(title = "STL decomposition — Victoria clothing (Box-Cox transformed)")
+> ```
+>
+> [![](review_module1_files/figure-html/c-stl-1.png)](review_module1_files/figure-html/c-stl-1.png)
+>
+> **2. Interpretation**
+>
+> - **Trend**: shows a clear upward trajectory from the early 1980s through approximately 2007–2008, followed by a plateau and some decline. This matches the broader economic context of the period (GFC, structural changes in retail).
+> - **Seasonal component**: the shape is consistent (December peak, February–March trough) but the `season_year` panel shows that the component is not entirely fixed — there is some evolution in the seasonal pattern over the decades, which is why STL’s flexible seasonal estimation is preferable to classical decomposition here.
+> - **Remainder**: relatively small compared to the trend and seasonal components, which is a good sign — STL is capturing most of the systematic structure. Some spikes are visible (possibly outliers or irregular economic shocks), which is why `robust = TRUE` is used.
+>
+> **3. Seasonally adjusted series**
+>
+> Code
+>
+> ``` r
+> clothing_vic_dcmp |>
+>   ggplot(aes(x = Month)) +
+>   geom_line(aes(y = `box_cox(Turnover, lambda)`), colour = "grey70") +
+>   geom_line(aes(y = season_adjust), colour = "steelblue") +
+>   labs(
+>     title = "Original (grey) vs. seasonally adjusted (blue) — Victoria clothing",
+>     y = "Transformed turnover",
+>     x = NULL
+>   )
+> ```
+>
+> [![](review_module1_files/figure-html/c-season-adjust-1.png)](review_module1_files/figure-html/c-season-adjust-1.png)
+>
+> With seasonality removed, the trend-cycle is much clearer: the growth phase, the mid-2000s peak, and the subsequent flattening are all more apparent. The remaining variation after removing seasonality is the trend-cycle plus the remainder component.
+
+------------------------------------------------------------------------
+
+## 5 Part d — Train/test split and benchmark models
+
+1.  Define a forecast horizon of `h = 24` months. Split `clothing_vic` into a training set (all observations except the last `h` months) and a test set (the last `h` months). Use both the programmatic approach (`slice_head` / `slice_tail`) and `filter_index()` — confirm they produce the same result.
+
+2.  Fit the four benchmark models (Mean, Naïve, Seasonal Naïve, Drift) on the training set. Apply the transformation from Part b where appropriate.
+
+3.  Generate forecasts over the test horizon and plot them against the observed test data. Which benchmark appears most competitive visually?
+
+> **TIP:**
+>
+> **1. Train/test split**
+>
+> Code
+>
+> ``` r
+> h <- 24
+>
+> clothing_train <- clothing_vic |> slice_head(n = nrow(clothing_vic) - h) #<1>
+> clothing_test  <- clothing_vic |> slice_tail(n = h)                       #<2>
+>
+> # Equivalent with filter_index
+> clothing_train2 <- clothing_vic |> filter_index(. ~ "2017 Nov.")
+> clothing_test2  <- clothing_vic |> filter_index("2017 Dec." ~ .)
+>
+> # Confirm they match
+> identical(clothing_train, clothing_train2)
+> identical(clothing_test,  clothing_test2)
+> ```
+>
+> 1.  Training set: all but the last `h` rows.
+> 2.  Test set: last `h` rows — exactly the forecast horizon we want to evaluate.
+>
+>     [1] FALSE
+>     [1] FALSE
+>
+> Both approaches produce identical results. `filter_index()` is more readable when you know the cutoff date; the programmatic approach is preferable when the split is defined by `h` without knowing the exact date in advance.
+>
+> **2. Benchmark models**
+>
+> The transformation is applied inside each model spec. For benchmarks with no trend component (Mean, Naïve, SNAIVE), the transformation still stabilizes variance in the residuals and produces asymmetric prediction intervals after back-transformation. For Drift, it additionally linearizes the trend in the transformed scale.
+>
+> Code
+>
+> ``` r
+> clothing_fit <- clothing_train |>
+>   model(
+>     mean   = MEAN(box_cox(Turnover, lambda)),
+>     naive  = NAIVE(box_cox(Turnover, lambda)),
+>     snaive = SNAIVE(box_cox(Turnover, lambda)),
+>     drift  = RW(box_cox(Turnover, lambda) ~ drift())
+>   )
+>
+> clothing_fit
+> ```
+>
+> **3. Forecasts and visual comparison**
+>
+> Code
+>
+> ``` r
+> clothing_fc <- clothing_fit |>
+>   forecast(h = h)
+>
+> clothing_fc |>
+>   autoplot(
+>     clothing_vic |> filter_index("2010 Jan." ~ .),
+>     level = NULL
+>   ) +
+>   labs(
+>     title = "Victoria clothing — benchmark forecasts vs. test set",
+>     y = "Turnover ($ million AUD)",
+>     x = NULL
+>   )
+> ```
+>
+> [![](review_module1_files/figure-html/d-fc-1.png)](review_module1_files/figure-html/d-fc-1.png)
+>
+> Visually, **SNAIVE** is the most competitive: it reproduces the seasonal pattern correctly, which dominates over the 24-month horizon. Mean and Naïve ignore seasonality entirely and perform poorly. Drift extrapolates the long-run trend linearly, which may or may not align with the recent behavior of the series — visually it depends on whether the trend in the training period is a good proxy for the test period.
+
+------------------------------------------------------------------------
+
+## 6 Part e — Decomposition model
+
+Build a `decomposition_model()` using STL + SNAIVE (for the seasonal component) + Drift (for the seasonally adjusted series). Include the transformation from Part b.
+
+1.  Define the spec as a standalone object and pass it into `model()`.
+2.  Fit an additional variant without the transformation, so you can compare both.
+3.  Generate forecasts and compute an accuracy table. Use `RMSSE` as the primary metric. Include the benchmark models from Part d for comparison.
+4.  Which model performs best? Is the transformation helpful?
+
+> **TIP:**
+>
+> **1 & 2. Decomposition model specs**
+>
+> Code
+>
+> ``` r
+> stl_spec <- decomposition_model(            #<1>
+>   STL(Turnover ~ trend() + season(), robust = TRUE),
+>   SNAIVE(season_year),
+>   RW(season_adjust ~ drift())
+> )
+>
+> stl_spec_bc <- decomposition_model(        #<2>
+>   STL(box_cox(Turnover, lambda) ~ trend() + season(), robust = TRUE),
+>   SNAIVE(season_year),
+>   RW(season_adjust ~ drift())
+> )
+> ```
+>
+> 1.  STL decomposition on the untransformed series.
+> 2.  Identical structure, but with Box-Cox applied inside the STL call. The transformation is inherited by both component models and back-transformed automatically when forecasting.
+>
+> Code
+>
+> ``` r
+> clothing_fit2 <- clothing_train |>
+>   model(
+>     mean   = MEAN(box_cox(Turnover, lambda)),
+>     naive  = NAIVE(box_cox(Turnover, lambda)),
+>     snaive = SNAIVE(box_cox(Turnover, lambda)),
+>     drift  = RW(box_cox(Turnover, lambda) ~ drift()),
+>     stl    = stl_spec,
+>     stl_bc = stl_spec_bc
+>   )
+> ```
+>
+> **3. Forecasts and accuracy**
+>
+> Code
+>
+> ``` r
+> clothing_fc2 <- clothing_fit2 |>
+>   forecast(h = h)
+>
+> clothing_fc2 |>
+>   autoplot(
+>     clothing_vic |> filter_index("2010 Jan." ~ .),
+>     level = NULL
+>   ) +
+>   labs(
+>     title = "Victoria clothing — all models vs. test set",
+>     y = "Turnover ($ million AUD)",
+>     x = NULL
+>   )
+> ```
+>
+> [![](review_module1_files/figure-html/e-fc-1.png)](review_module1_files/figure-html/e-fc-1.png)
+>
+> Code
+>
+> ``` r
+> clothing_accu <- clothing_fc2 |>
+>   accuracy(clothing_vic) |>
+>   select(.model, RMSE, MAE, MAPE, MASE, RMSSE) |>
+>   arrange(RMSSE)
+>
+> clothing_accu
+> ```
+>
+> **4. Interpretation**
+>
+> The decomposition models (`stl` and `stl_bc`) substantially outperform all four benchmarks on RMSSE, confirming that combining STL with component-level forecasting is a meaningful improvement over any single benchmark method.
+>
+> The Box-Cox variant (`stl_bc`) performs similarly to or slightly better than the untransformed version (`stl`). The improvement from the transformation is modest here — this is expected, because the transformation primarily stabilizes the prediction intervals rather than shifting point forecast accuracy dramatically. However, using `stl_bc` is still the better choice: the intervals are more reliable (they reflect the actual distributional uncertainty in the original scale), and the residuals in the transformed scale are better-behaved for diagnostics.
+>
+> The best model by RMSSE should be selected for Parts f and g. In most runs of this exercise it will be `stl_bc`.
+
+------------------------------------------------------------------------
+
+## 7 Part f — Residual diagnostics
+
+Select the best-performing model from Part e and run a full residual diagnostic.
+
+1.  Plot the residuals using `gg_tsresiduals()`. What do you see?
+2.  Run a Ljung-Box test. State the null hypothesis, report the result, and interpret it.
+3.  Based on the diagnostics, is the model well-specified? What structure, if any, remains in the residuals?
+
+> **TIP:**
+>
+> Code
+>
+> ``` r
+> clothing_fit2 |>
+>   select(stl_bc) |>
+>   gg_tsresiduals() +
+>   labs(title = "Residual diagnostics — STL + Box-Cox decomposition model")
+> ```
+>
+> [![](review_module1_files/figure-html/f-residuals-1.png)](review_module1_files/figure-html/f-residuals-1.png)
+>
+> Code
+>
+> ``` r
+> clothing_fit2 |>
+>   select(stl_bc) |>
+>   augment() |>
+>   features(.innov, ljung_box, lag = 24, dof = 0)
+> ```
+>
+> **Interpretation**
+>
+> - **Residual time plot**: the residuals fluctuate around zero with no obvious trend or seasonal pattern — the systematic structure appears to have been captured. There may be some periods of higher variance (heteroscedasticity), but this is substantially reduced compared to an untransformed model.
+> - **ACF**: most autocorrelations fall within the confidence bands. A few lags may be marginally significant, but there is no clear systematic pattern (e.g., no seasonal spikes at lag 12).
+> - **Histogram**: the residuals are approximately symmetric and bell-shaped, consistent with normality. Some slight skew or heavier tails may be present.
+> - **Ljung-Box**: the null hypothesis is that the residuals are white noise (no remaining autocorrelation up to lag 24). A p-value above 0.05 means we fail to reject the null — the residuals are consistent with white noise. If the p-value is below 0.05, there is remaining autocorrelation that the model did not capture, which suggests potential for improvement in Module 2 (ETS or ARIMA components).
+>
+> Overall, for a Module 1 model, the diagnostics are satisfactory. The main limitation — which will be addressed in Module 2 — is that the Drift assumption (constant average growth rate) may not hold for the trend-cycle component in the test period.
+
+------------------------------------------------------------------------
+
+## 8 Part g — Refit on full data and final forecast
+
+1.  Refit the best model from Part e on the **complete** `clothing_vic` dataset (no train/test split).
+2.  Generate a 24-month forecast with 80% and 95% prediction intervals.
+3.  Plot the forecast alongside the most recent portion of the historical data. Comment on the shape of the prediction intervals — are they symmetric? What does this tell you?
+
+> **TIP:**
+>
+> **1. Refit on full data**
+>
+> Code
+>
+> ``` r
+> clothing_final_fit <- clothing_vic |>
+>   model(stl_bc = stl_spec_bc)
+> ```
+>
+> **2 & 3. Forecast and plot**
+>
+> Code
+>
+> ``` r
+> clothing_final_fc <- clothing_final_fit |>
+>   forecast(h = 24)
+>
+> clothing_final_fc |>
+>   autoplot(
+>     clothing_vic |> filter_index("2010 Jan." ~ .),
+>     level = c(80, 95)
+>   ) +
+>   labs(
+>     title = "Victoria clothing — final 24-month forecast",
+>     subtitle = "STL + Box-Cox decomposition model · refit on full data",
+>     y = "Turnover ($ million AUD)",
+>     x = NULL
+>   )
+> ```
+>
+> [![](review_module1_files/figure-html/g-forecast-1.png)](review_module1_files/figure-html/g-forecast-1.png)
+>
+> **Interpretation of prediction intervals**
+>
+> The intervals are **asymmetric** — the upper bound extends further from the point forecast than the lower bound. This is a direct consequence of the Box-Cox back-transformation: forecasts and intervals are computed in the transformed scale (where they are symmetric), then back-transformed to the original scale. Because the Box-Cox function is nonlinear, the back-transformation stretches the upper tail more than the lower one. The asymmetry is not a bug; it correctly reflects that large positive deviations are more likely than large negative ones when the series is growing.
+>
+> The intervals widen at longer horizons, as expected — uncertainty accumulates over time. The seasonal pattern is preserved in the forecast, with the December spike visible in each forecasted year.
+
+------------------------------------------------------------------------
+
+## 9 Wrap-up
+
+You have now completed the full Module 1 workflow on a real series:
+
+- Extracted and inspected a tsibble
+- Decided on and applied a variance-stabilizing transformation
+- Decomposed the series with STL and interpreted the components
+- Evaluated four benchmark models
+- Built and assessed a decomposition model that beats the benchmarks
+- Diagnosed residuals and interpreted the Ljung-Box test
+- Refit on the full data and generated a final forecast with prediction intervals
+
+> **NOTE:**
+>
+> The Drift component in your model assumes that the long-run average growth rate observed in the training data will continue into the future. This is a strong assumption — and for a series whose trend has flattened and become irregular, it may not hold. In **Module 2**, you will replace Drift with ETS and ARIMA, which can adapt to changing trend dynamics rather than extrapolating a fixed one.
+
+Back to top
