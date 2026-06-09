@@ -1,7 +1,10 @@
 ---
 title: "Exponential smoothing"
 format:
-  html: default
+  html:
+    other-links:
+      - text: FPP3 Chapter 8
+        href: https://otexts.com/fpp3/expsmooth.html
   revealjs:
     output-file: ets_pres.html
 ---
@@ -25,8 +28,10 @@ In Module 1, you built your **first complete forecasting model**. That model use
 - **Drift** to forecast the trend-cycle component (assuming the last observed trend continues linearly).
 - **SNAIVE** to forecast the seasonal component (assuming last year's season repeats).
 
+:::{.fragment}
+
 :::{.callout-note appearance="simple"}
-## Your Module 1 baseline model
+## The Module 1 baseline model
 
 ```{r}
 #| eval: false
@@ -41,11 +46,14 @@ tsibble |>
   )
 ```
 
-
 This is your **benchmark**. Every model we build from now on must beat it.
 :::
 
+:::
+
+::: {.notes}
 That's a solid start — but the Drift method is very simple: it just extrapolates the last observed average growth rate forever. **What if the trend is slowing down? Accelerating? Or changing direction?**
+:::
 
 :::{.content-hidden unless-format="revealjs"}
 
@@ -185,17 +193,16 @@ SES has a flat forecast function, so it is appropriate for data with **no trend*
 :::
 
 ::: {.content-hidden unless-format="revealjs"}
-
 ## Example: Forecasting Algeria's exports {auto-animate="true"}
-
 :::
 
 ::: {.content-visible unless-format="revealjs"}
-#### Example: Forecasting Algeria's exports {auto-animate="true"}
+#### Example: Forecasting Algeria's exports {.unnumbered}
 :::
 
 ```{r}
 #| label: alg-plot
+#| code-fold: true
 
 algeria_economy <- global_economy |>
   filter(Country == "Algeria")
@@ -204,11 +211,10 @@ algeria_economy |>
   autoplot(Exports)
 ```
 
+:::{.fragment}
 
 ```{r}
 #| label: ses
-
-
 
 alg_fit <- algeria_economy |>
   model(
@@ -222,6 +228,8 @@ alg_fc <- alg_fit |>
 
 1. We specify `trend("N")` and `season("N")` to indicate that we want a simple exponential smoothing (SES) model, which assumes no trend and no seasonality. The model will estimate the smoothing parameter $\alpha$ automatically.
 
+:::
+
 ::: {.content-visible unless-format="revealjs"}
 
 :::{.callout-tip appearance="simple"}
@@ -232,6 +240,8 @@ The **mean** and **naïve** methods are typically the best fit as benchmark meth
 :::
 
 :::
+
+::: {.fragment}
 
 ::: {.callout-note collapse="true"}
 ## Obtaining the `report()` of a model 
@@ -247,10 +257,10 @@ alg_fit |>
 
 :::
 
+:::
+
 ::: {.content-hidden unless-format="revealjs"}
-
-##
-
+## The fitted values & forecast
 :::
 
 ```{r}
@@ -266,14 +276,11 @@ alg_fc |>
     x = "",
     y = "% of GDP", 
     title = "Forecasting Algeria's exports using SES"
-  ) #+
-  # guides(color = "none")
+  )
 ```
 
 ::: {.content-hidden unless-format="revealjs"}
-
 ##
-
 :::
 
 Comparing the SES and Naive forecasts:
@@ -294,30 +301,22 @@ alg_fc |>
 
 
 ::: {.content-hidden unless-format="revealjs"}
-
 # Methods with trend
-
 :::
 
 ::: {.content-visible unless-format="revealjs"}
-
 ## Methods with trend
-
 :::
 
 ::: {.content-hidden unless-format="revealjs"}
-
 ## Holt's linear trend
-
 :::
 
 ::: {.content-visible unless-format="revealjs"}
-
 ### Holt's linear trend
-
 :::
 
-::: {.notes}
+:::{.notes}
 We can extend SES models to allow our forecasts to include trend in the data. We need to add a new smoothing parameter $\beta^*$, and its corresponding smoothing equation:
 :::
 
@@ -331,21 +330,22 @@ $$
 
 where $b_t$ is the growth (or slope) at time $t$.
 
+:::{.fragment}
+
 :::{.callout-tip collapse="true"}
 ## When to use Holt's linear trend method
 - Holt's linear trend method is appropriate for data with a **linear trend** but **no seasonal** pattern.
 - The proper benchmark method to compare against is the **drift** method. 
 :::
 
-::: {.notes}
+:::
 
+:::{.notes}
 Let's see an example using Holt's linear trend method to forecast Brazil's population.
-
 :::
 
 ::: {.content-visible unless-format="revealjs"}
-
-#### Example: Forecasting Brazil's population
+#### Example: Forecasting Brazil's population {.unnumbered}
 
 ```{r}
 #| label: bra-pop
@@ -361,12 +361,15 @@ bra_economy |>
 :::
 
 ::: {.content-hidden unless-format="revealjs"}
-
 ## Example: Forecasting Brazil's population {auto-animate="true"}
 
 ```{r}
 #| label: bra-pop-plot
 #| echo: false
+
+bra_economy <- global_economy |> 
+  filter(Code == "BRA") |> 
+  mutate(Pop = Population / 1e6)
 
 bra_economy |> 
   autoplot(Pop)
@@ -424,9 +427,7 @@ bra_fit |>
 :::
 
 ::: {.content-hidden unless-format="revealjs"}
-
 ## Example: Forecasting Brazil's population {auto-animate="true"}
-
 :::
 
 
@@ -445,29 +446,28 @@ bra_fit |>
 
 bra_fc <- bra_fit |>  
   forecast(h = 15)
-
-bra_fc |> 
-  autoplot(bra_economy, level = NULL) +
-  labs(title = "Brazilian population",
-       y = "Millions") +
-  guides(colour = guide_legend(title = "Forecast"))
 ```
 
 1. We specify `trend("A")` to indicate that we want a linear trend. The model will estimate the smoothing parameters $\alpha$ and $\beta^*$ automatically.
 
+```{r}
+#| label: holt_full_plt
+#| code-fold: true
+bra_fc |>
+  autoplot(bra_economy, level = NULL) +
+  labs(title = "Brazilian population", y = "Millions") +
+  guides(colour = guide_legend(title = "Forecast"))
+```
+
 ::: {.content-hidden unless-format="revealjs"}
-
 ## Damped trend
-
 :::
 
 ::: {.content-visible unless-format="revealjs"}
-
 ### Damped trend
-
 :::
 
-::: {.notes}
+:::{.notes}
 - Holt's linear trend method assume that the trend will continue indefinitely at the same rate. However, in many real-world scenarios, this assumption may not hold true. This methods tend to overestimate (*or underestimate*) long-term forecasts when the trend is strong.
 
 - We can include a damping parameter $\phi$, which reduces the trend over time.
@@ -483,12 +483,15 @@ $$
 
 where $0 < \phi < 1$^[In practice, we restrict $0.8 \leq \phi \leq 0.98$ because the damping effect would be too great for smaller values than 0.8 and almost non distinguishable from a linear trend for greater values than 0.98.] is the damping parameter.
 
+:::{.fragment}
+
 ::: {.callout-caution collapse="true"}
 ## What would happen if $\phi = 1$? What about if $\phi = 0$?
 - If $\phi = 1$, the model reduces to Holt's linear trend method, meaning the trend continues indefinitely at the same rate.
 - If $\phi = 0$, the trend component is completely eliminated, and the model behaves like simple exponential smoothing (SES), where forecasts are based solely on the level component without any trend influence.
 :::
 
+:::
 
 ::: {.content-hidden unless-format="revealjs"}
 
@@ -518,15 +521,11 @@ bra_economy |>
 :::
 
 ::: {.content-hidden unless-format="revealjs"}
-
 ## Example: Forecasting Brazil's population (continued) {auto-animate="true"}
-
 :::
 
 ::: {.content-visible unless-format="revealjs"}
-
-#### Example: Forecasting Brazil's population (continued)
-
+#### Example: Forecasting Brazil's population (continued) {.unnumbered}
 :::
 
 ```{r}
@@ -546,42 +545,166 @@ bra_economy |>
 
 1. We specify `trend("Ad")` to indicate that we want a damped trend, and `phi = 0.9` sets the damping parameter to 0.9. We could also let the model estimate $\phi$ automatically by omitting the `phi` argument.
 
-::: {.content-hidden unless-format="revealjs"}
+:::{.content-hidden unless-format="revealjs"}
 
-# Methods with seasonality
-
+# Handling seasonality: two strategies
 :::
 
-::: {.content-visible unless-format="revealjs"}
-
-## Methods with seasonality
-
+:::{.content-visible unless-format="revealjs"}
+## Handling seasonality: two strategies
 :::
 
-::: {.content-hidden unless-format="revealjs"}
-
-## Holt-Winters method
-
-:::
-
-::: {.content-visible unless-format="revealjs"}
-
-### Holt-Winters method
-
+:::{.notes}
+So far, we've improved the trend-cycle component of our baseline model. But we haven't touched the seasonal component yet — SNAIVE is still handling it. There are two ways to bring ETS into seasonal data, and they lead to different model families.
 :::
 
 ::: {.content-hidden unless-format="revealjs"}
+##
+:::
 
-### HW - Additive
 
+
+:::{.callout-tip appearance="simple"}
+## Two ways to handle seasonality with ETS
+
+| Strategy | How it works | When to prefer it |
+|:---------|:-------------|:------------------|
+| **Decompose first** | Use STL to extract seasonality, then fit ETS on the seasonally adjusted series | Seasonal pattern is complex, changes over time, or you want explicit control |
+| **Model directly** | Use a full ETS model with a seasonal component (Holt-Winters) | Seasonal pattern is stable; simpler, self-contained model |
+
+:::
+
+:::{.content-hidden unless-format="revealjs"}
+## Strategy 1: STL + ETS via `decomposition_model()`
 :::
 
 ::: {.content-visible unless-format="revealjs"}
+### Strategy 1: STL + ETS via `decomposition_model()`
+:::
 
-#### HW - Additive
+:::{.notes}
+
+In Module 1 you used `decomposition_model()` to pair STL with Drift + SNAIVE. The same wrapper accepts **any** model for the seasonally adjusted series — including ETS.
 
 :::
 
+```{r}
+#| label: aus-holidays-data
+#| code-fold: true
+
+aus_holidays <- tourism |> 
+  filter(Purpose == "Holiday") |>
+  summarise(Trips = sum(Trips))
+
+aus_holidays |> autoplot(Trips) +
+  labs(title = "Australian holiday trips",
+       y = "Overnight trips (millions)")
+```
+
+::: {.content-hidden unless-format="revealjs"}
+
+## Strategy 1: STL + ETS {auto-animate="true"}
+
+```{r}
+#| label: stl_ets_1
+#| code-annotation: below
+
+stl_ets_add_spec <- decomposition_model(
+  STL(Trips ~ trend(window = 7) + season(window = "periodic"), robust = TRUE),
+  SNAIVE(season_year), # <1>
+  ETS(season_adjust ~ error("A") + trend("A") + season("N"))
+)
+```
+
+1. If you want to model the series' seasonality using `SNAIVE`, you can simply **not specify it** and R will take it as default.
+
+## Strategy 1: STL + ETS {auto-animate="true"}
+
+```{r}
+#| label: stl_ets_2
+
+stl_ets_add_spec <- decomposition_model(          
+  STL(Trips ~ trend(window = 7) + season(window = "periodic"), robust = TRUE),
+  ETS(season_adjust ~ error("A") + trend("A") + season("N")) 
+)
+```
+
+
+## Strategy 1: STL + ETS {auto-animate="true"}
+
+```{r}
+#| label: stl_ets_3
+
+stl_ets_add_spec <- decomposition_model(           
+  STL(Trips ~ trend(window = 7) + season(window = "periodic"), robust = TRUE),
+  ETS(season_adjust ~ error("A") + trend("A") + season("N"))
+)
+
+stl_ets_mul_spec <- decomposition_model(     
+  STL(Trips ~ trend(window = 7) + season(window = "periodic"), robust = TRUE),
+  ETS(season_adjust ~ error("M") + trend("A") + season("N"))
+)
+```
+
+:::
+
+::: {.content-hidden unless-format="revealjs"}
+## Strategy 1: STL + ETS {auto-animate="true"}
+:::
+
+```{r}
+#| label: stl_ets_full
+
+stl_ets_add_spec <- decomposition_model(                                        #<1>
+  STL(Trips ~ trend(window = 7) + season(window = "periodic"), robust = TRUE),
+  ETS(season_adjust ~ error("A") + trend("A") + season("N"))                    #<2>
+)
+
+stl_ets_mul_spec <- decomposition_model(                                        #<3>
+  STL(Trips ~ trend(window = 7) + season(window = "periodic"), robust = TRUE),
+  ETS(season_adjust ~ error("M") + trend("A") + season("N"))                    #<4>
+)
+
+aus_holidays |> 
+  model(
+    stl_ets_add = stl_ets_add_spec,
+    stl_ets_mul = stl_ets_mul_spec
+  ) |> 
+  forecast(h = "2 years") |> 
+  autoplot(aus_holidays, level = NULL) +
+  labs(title = "STL + ETS forecasts",
+       y = "Overnight trips (millions)") +
+  scale_color_brewer(type = "qual", palette = "Dark2")
+```
+
+1. Save the decomposition spec as a standalone object — this keeps `model()` clean and allows reuse.
+2. The ETS model is fitted on `season_adjust` (the STL-extracted seasonally adjusted series). We set `season("N")` because STL has already removed the seasonal component; SNAIVE handles it implicitly via `decomposition_model()`.
+3. A multiplicative error version of the same spec.
+4. Multiplicative errors (`error("M")`) are often better when the variance of the series grows with its level.
+
+:::{.callout-note appearance="simple"}
+## What `decomposition_model()` does with the seasonal component
+
+When you pass only one sub-model (the ETS on `season_adjust`), `decomposition_model()` automatically uses **SNAIVE** for the seasonal component. You can override this by passing a second model explicitly, as in the Module 1 baseline.
+:::
+
+:::{.content-hidden unless-format="revealjs"}
+## Strategy 2: Holt-Winters
+:::
+
+::: {.content-visible unless-format="revealjs"}
+### Strategy 2: Holt-Winters
+:::
+
+Instead of decomposing first, Holt-Winters extends ETS to model level, trend, and seasonality **simultaneously**.
+
+::: {.content-hidden unless-format="revealjs"}
+## HW — Additive
+:::
+
+::: {.content-visible unless-format="revealjs"}
+#### HW — Additive
+:::
 
 $$
 \begin{aligned}
@@ -595,15 +718,11 @@ $$
 where $s_t$ is the seasonal component at time $t$, $m$ is the period of the seasonality^[e.g., $m=4$ for quarterly data, $m=12$ for monthly data, ...], and $k = \lfloor (h-1)/m \rfloor$.
 
 ::: {.content-hidden unless-format="revealjs"}
-
-### HW - Multiplicative
-
+## HW — Multiplicative
 :::
 
 ::: {.content-visible unless-format="revealjs"}
-
-#### HW - Multiplicative
-
+#### HW — Multiplicative
 :::
 
 $$
@@ -615,152 +734,73 @@ $$
 \end{aligned}
 $$
 
-::: {.callout-tip collapse="true"}
-## When to use Holt-Winters methods
-- Holt-Winters methods are appropriate for data with a **trend** and **seasonal** pattern.
-- Use an **additive model** when the seasonal fluctuations are roughly constant over time.
-- Use a **multiplicative model** when the seasonal variation increase or decrease over time.
-- The proper benchmark method to compare against is the **seasonal naïve** method. for seasonal data.
-  - If the data contains both **trend** and **seasonality**, then A **decomposition model** using **STL**^[as the decomposition method] + **Drift**^[for the seasonally adjusted series] + **SNAIVE**^[for the seasonal component] is often a strong competitor.
-
+:::{.callout-tip collapse="true"}
+## Additive vs. multiplicative: how to choose
+- Use **additive** when seasonal fluctuations are roughly constant in size over time.
+- Use **multiplicative** when seasonal variation grows or shrinks with the level of the series.
+- When in doubt, look at the time plot: if the seasonal swings widen as the series rises, go multiplicative.
 :::
 
 ::: {.content-hidden unless-format="revealjs"}
 
-## Example: Forecasting Australian holiday trips {auto-animate="true"}
+## Example: Australian holiday trips {auto-animate="true"}
 
 ```{r}
 #| label: hw_1
 
-aus_holidays <- tourism |> 
-  filter(Purpose == "Holiday") |>
-  summarise(Trips = sum(Trips))
-
-aus_holidays
+aus_fit_hw <- aus_holidays |> 
+  model(
+    hw_add = ETS(Trips ~ error("A") + trend("A") + season("A"))
+  )
 ```
 
-## Example: Forecasting Australian holiday trips {auto-animate="true"}
+## Example: Australian holiday trips {auto-animate="true"}
 
 ```{r}
 #| label: hw_2
 
-aus_holidays <- tourism |> 
-  filter(Purpose == "Holiday") |>
-  summarise(Trips = sum(Trips))
-
-aus_holidays |>
-  autoplot(Trips)
-```
-
-
-
-::: {.content-hidden unless-format="revealjs"}
-
-## Example: Forecasting Australian holiday trips {auto-animate="true"}
-
-```{r}
-#| label: hw_3
-#| eval: false
-
-aus_fit <- aus_holidays |> 
+aus_fit_hw <- aus_holidays |> 
   model(
-    Additive       = ETS(Trips ~ error("A") + trend("A") + season("A"))
+    hw_add = ETS(Trips ~ error("A") + trend("A") + season("A")),
+    hw_mul = ETS(Trips ~ error("M") + trend("A") + season("M"))
   )
 ```
 
-## Example: Forecasting Australian holiday trips {auto-animate="true"}
-
-```{r}
-#| label: hw_4
-
-aus_fit <- aus_holidays |> 
-  model(
-    Additive       = ETS(Trips ~ error("A") + trend("A") + season("A")),
-    Multiplicative = ETS(Trips ~ error("M") + trend("A") + season("M"))
-  )
-```
-
-## Example: Forecasting Australian holiday trips {auto-animate="true"}
-
-::: {.callout-note collapse="true"}
-## The `tidy()` function for models
-
-```{r}
-#| label: hw_5
-
-aus_fit |> 
-  tidy()  #<1>
-```
-
-1. The `tidy()` function allows us to see the estimated parameters of each model in a [tidy](https://r4ds.hadley.nz/data-tidy.html) table.
-
-:::
-
-## Example: Forecasting Australian holiday trips {auto-animate="true"}
-
-```{r}
-#| label: hw_6
-
-aus_fc <- aus_fit |> 
-  forecast(h = "3 years")
-```
-
-```{r}
-#| label: hw_7
-
-aus_fc |> 
-  autoplot(aus_holidays, level = NULL) + xlab("Year") +
-  labs(
-    title   = "Forecasting Australian holiday trips using Holt-Winters",
-    y       = "Overnight trips (millions)",
-    caption = "Can you spot any differences between both forecasts?"
-  ) +
-  scale_color_brewer(type = "qual", palette = "Dark2") +
-  guides(colour = guide_legend(title = "Forecast"))
-```
-
-:::
+## Example: Australian holiday trips {auto-animate="true"}
 
 :::
 
 ::: {.content-visible unless-format="revealjs"}
-
-#### Example: Forecasting Australian holiday trips
-
-We will forecast the number of holiday trips in Australia using additive and multiplicative Holt-Winters methods.
+#### Example: Forecasting Australian holiday trips {.unnumbered}
+:::
 
 ```{r}
 #| label: hw_full
 
-aus_holidays <- tourism |> 
-  filter(Purpose == "Holiday") |>
-  summarise(Trips = sum(Trips))
-
-aus_holidays |>
-  autoplot(Trips)
-
-aus_fit <- aus_holidays |> 
+aus_fit_hw <- aus_holidays |> 
   model(
-    Additive       = ETS(Trips ~ error("A") + trend("A") + season("A")), #<1>
-    Multiplicative = ETS(Trips ~ error("M") + trend("A") + season("M"))  #<2>
+    hw_add = ETS(Trips ~ error("A") + trend("A") + season("A")), #<1>
+    hw_mul = ETS(Trips ~ error("M") + trend("A") + season("M"))  #<2>
   )
-  
-aus_fc <- aus_fit |> 
-  forecast(h = "3 years")
+```
 
-aus_fc |> 
-  autoplot(aus_holidays, level = NULL) + xlab("Year") +
+1. `error("A")` and `season("A")`: additive errors and additive seasonality. Seasonal fluctuations are treated as constant in size.
+2. `error("M")` and `season("M")`: multiplicative errors and multiplicative seasonality. Seasonal fluctuations scale with the level of the series.
+
+```{r}
+#| label: hw_full_plt
+#| code-fold: true
+aus_fit_hw |>
+  forecast(h = "3 years") |>
+  autoplot(aus_holidays, level = NULL) +
   labs(
-    title   = "Forecasting Australian holiday trips using Holt-Winters",
-    y       = "Overnight trips (millions)",
+    title = "Holt-Winters forecasts: additive vs. multiplicative",
+    y = "Overnight trips (millions)",
     caption = "Can you spot any differences between both forecasts?"
   ) +
   scale_color_brewer(type = "qual", palette = "Dark2") +
   guides(colour = guide_legend(title = "Forecast"))
 ```
-
-1. We specify `error("A")` and `season("A")` to indicate that we want an additive Holt-Winters model. We will usually set the `error()` according to the `season()` type.
-2. We specify `error("M")` and `season("M")` to indicate that we want a multiplicative Holt-Winters model. Both models will estimate the smoothing parameters $\alpha$, $\beta^*$, and $\gamma$ automatically.
 
 ::: {.callout-note collapse="true"}
 ## The `tidy()` function for models
@@ -768,28 +808,22 @@ aus_fc |>
 ```{r}
 #| label: tidy
 
-aus_fit |> 
+aus_fit_hw |> 
   tidy()  #<1>
 ```
 
 1. The `tidy()` function allows us to see the estimated parameters of each model in a [tidy](https://r4ds.hadley.nz/data-tidy.html) table.
 :::
 
-:::
-
 ::: {.content-hidden unless-format="revealjs"}
-
 ## Holt-Winters' damped method
-
 :::
 
 ::: {.content-visible unless-format="revealjs"}
-
-### Holt-Winters' damped method
-
+#### Holt-Winters' damped method
 :::
 
-::: {.notes}
+:::{.notes}
 
 - Similar to Holt's linear trend method, we can also include a damping parameter $\phi$ in the Holt-Winters method to reduce the trend over time.
   - This can be done on both additive or multiplicative seasonal models.
@@ -814,19 +848,23 @@ $$
 
 ::: {.content-visible unless-format="revealjs"}
 
-#### Example: Forecasting daily pedestrian traffic {auto-animate="true"}
+#### Example: Forecasting daily pedestrian traffic {.unnumbered}
 
 :::
 
 ```{r}
-#| label: hw_damped
-#| code-line-numbers: "|10"
+#| label: hw_damped_setup
+#| code-fold: true
 
 sth_cross_ped <- pedestrian |>
-  filter(Date >= "2016-07-01",
-         Sensor == "Southern Cross Station") |>
+  filter(Date >= "2016-07-01", Sensor == "Southern Cross Station") |>
   index_by(Date) |>
-  summarise(Count = sum(Count)/1000)
+  summarise(Count = sum(Count) / 1000)
+```
+
+```{r}
+#| label: hw_damped
+#| code-line-numbers: "|4"
 
 sth_cross_ped |>
   filter(Date <= "2016-07-31") |>
@@ -839,7 +877,7 @@ sth_cross_ped |>
        y="Pedestrians ('000)")
 ```
 
-::: {.callout-tip appearance="simple"}
+:::{.callout-tip appearance="simple"}
 
 The setup `ETS(y ~ error("M") + trend("Ad") + season("M"))` is often a robust choice for seasonal data with trend.
 
@@ -857,7 +895,7 @@ The setup `ETS(y ~ error("M") + trend("Ad") + season("M"))` is often a robust ch
 
 :::
 
-::: {.notes}
+:::{.notes}
 
 - Using `fable`, we can automatically select the best ETS model for our data using the `ETS()` function. We achieve this by **not specifying** the error, trend, or seasonal components.
 - You can also get a *semi-automatic* selection by specifying some components and leaving others to be selected automatically, or by providing a set of possible values for a component.
@@ -871,22 +909,22 @@ The setup `ETS(y ~ error("M") + trend("Ad") + season("M"))` is often a robust ch
 ```{r}
 #| label: auto_ets_js
 #| code-line-numbers: "10-11"
-#| df-print: tibble
+#| paged.print: false
 
-ped_fit <- pedestrian |> 
+ped_fit <- pedestrian |>
   filter(
     Date >= "2016-07-01",
     Sensor != "Birrarung Marr"
-  ) |> 
+  ) |>
   index_by(Date) |>
-  group_by_key() |> 
-  summarise(Count = sum(Count)/1000) |> 
+  group_by_key() |>
+  summarise(Count = sum(Count) / 1000) |>
   model(
-    ETS_auto       = ETS(Count),                       
-    ets_with_trend = ETS(Count ~ trend(c("A", "Ad"))), 
+    ETS_auto = ETS(Count),
+    ets_with_trend = ETS(Count ~ trend(c("A", "Ad"))),
   )
 
-ped_fit                            
+ped_fit
 ```
 
 
@@ -894,11 +932,11 @@ ped_fit
 
 ::: {.content-visible unless-format="revealjs"}
 
-#### Example: Forecasting daily pedestrian traffic (continued) {auto-animate="true"}
+#### Example: Forecasting daily pedestrian traffic (continued) {.unnumbered}
 
 ```{r}
 #| label: auto_ets
-#| df-print: kable
+#| paged.print: false
 
 ped_fit <- pedestrian |> 
   filter(
@@ -922,23 +960,267 @@ ped_fit                                                #<3>
 :::
 
 
+# Model comparison
+
+:::{.notes}
+Now we put all five models side by side on a proper train/test split. The goal is not just to see which number wins, but to understand *why* some approaches work better for this particular series.
+:::
+
 ::: {.content-hidden unless-format="revealjs"}
 
-# The lineup of exponential smoothing methods
+## Train/test split
 
 :::
 
 ::: {.content-visible unless-format="revealjs"}
 
-## The lineup of exponential smoothing methods
+### Train/test split
 
 :::
+
+We now evaluate all five models on the same holdout period: the **last 8 quarters** of `aus_holidays` (2 years).
+
+```{r}
+#| label: train-test-split
+
+h <- 8
+
+holidays_train <- aus_holidays |> 
+  slice_head(n = nrow(aus_holidays) - h)   #<1>
+
+holidays_test <- aus_holidays |> 
+  slice_tail(n = h)                         #<2>
+```
+
+1. All observations except the last 8 quarters go into training.
+2. The last 8 quarters are held out for evaluation.
+
+```{r}
+#| label: train-test-split-plt
+#| code-fold: true
+holidays_train |>
+  autoplot(Trips) +
+  autolayer(holidays_test, Trips, colour = "#C0392B", linetype = "dashed") +
+  labs(
+    title = "Australian holiday trips: train/test split",
+    subtitle = glue::glue(
+      "Training: {min(holidays_train$Quarter)} – {max(holidays_train$Quarter)}  |  Test: {min(holidays_test$Quarter)} – {max(holidays_test$Quarter)}"
+    ),
+    y = "Overnight trips (millions)"
+  )
+```
 
 ::: {.content-hidden unless-format="revealjs"}
 
-##
+## Fitting all five models {auto-animate="true"}
+
+```{r}
+#| label: all-models-fit-1
+#| eval: false
+
+# Module 1 baseline spec (reused from Module 1)
+baseline_spec <- decomposition_model(
+  STL(Trips ~ trend(window = 7) + season(window = "periodic"), robust = TRUE),
+  RW(season_adjust ~ drift())
+)
+```
+
+## Fitting all five models {auto-animate="true"}
+
+```{r}
+#| label: all-models-fit-2
+#| eval: false
+#| code-line-numbers: "7-11"
+
+# Module 1 baseline spec (reused from Module 1)
+baseline_spec <- decomposition_model(
+  STL(Trips ~ trend(window = 7) + season(window = "periodic"), robust = TRUE),
+  RW(season_adjust ~ drift())
+)
+
+# STL + ETS specs (defined earlier in this document)
+stl_ets_add_spec <- decomposition_model(
+  STL(Trips ~ trend(window = 7) + season(window = "periodic"), robust = TRUE),
+  ETS(season_adjust ~ error("A") + trend("A") + season("N"))
+)
+```
+
+## Fitting all five models {auto-animate="true"}
+
+```{r}
+#| label: all-models-fit-3
+#| eval: false
+#| code-line-numbers: "13-16"
+
+# Module 1 baseline spec (reused from Module 1)
+baseline_spec <- decomposition_model(
+  STL(Trips ~ trend(window = 7) + season(window = "periodic"), robust = TRUE),
+  RW(season_adjust ~ drift())
+)
+
+# STL + ETS specs (defined earlier in this document)
+stl_ets_add_spec <- decomposition_model(
+  STL(Trips ~ trend(window = 7) + season(window = "periodic"), robust = TRUE),
+  ETS(season_adjust ~ error("A") + trend("A") + season("N"))
+)
+
+stl_ets_mul_spec <- decomposition_model(
+  STL(Trips ~ trend(window = 7) + season(window = "periodic"), robust = TRUE),
+  ETS(season_adjust ~ error("M") + trend("A") + season("N"))
+)
+```
+
+## Fitting all five models {auto-animate="true"}
 
 :::
+
+::: {.content-visible unless-format="revealjs"}
+
+### Fitting all five models
+
+:::
+
+```{r}
+#| label: all-models-fit
+#| paged.print: false
+
+# Module 1 baseline spec (reused from Module 1)
+baseline_spec <- decomposition_model(
+  STL(Trips ~ trend(window = 7) + season(window = "periodic"), robust = TRUE),
+  RW(season_adjust ~ drift())
+)
+
+# STL + ETS specs (defined earlier in this document)
+stl_ets_add_spec <- decomposition_model(
+  STL(Trips ~ trend(window = 7) + season(window = "periodic"), robust = TRUE),
+  ETS(season_adjust ~ error("A") + trend("A") + season("N"))
+)
+
+stl_ets_mul_spec <- decomposition_model(
+  STL(Trips ~ trend(window = 7) + season(window = "periodic"), robust = TRUE),
+  ETS(season_adjust ~ error("M") + trend("A") + season("N"))
+)
+
+holidays_fit <- holidays_train |> 
+  model(
+    baseline    = baseline_spec,                                             #<1>
+    stl_ets_mul = stl_ets_mul_spec,                                          #<3>
+    stl_ets_add = stl_ets_add_spec,                                          #<2>
+    hw_add      = ETS(Trips ~ error("A") + trend("A") + season("A")),        #<4>
+    hw_mul      = ETS(Trips ~ error("M") + trend("A") + season("M"))         #<5>
+  )
+
+holidays_fit
+```
+
+1. Module 1 baseline: STL + Drift + SNAIVE. The model every new approach must beat.
+2. STL decomposition, then additive ETS on the seasonally adjusted series.
+3. STL decomposition, then multiplicative ETS on the seasonally adjusted series.
+4. Holt-Winters additive: models level, trend, and seasonality jointly with additive components.
+5. Holt-Winters multiplicative: seasonal fluctuations scale with the level of the series.
+
+::: {.content-hidden unless-format="revealjs"}
+
+## Forecast plot
+
+:::
+
+::: {.content-visible unless-format="revealjs"}
+
+### Forecast plot
+
+:::
+
+```{r}
+#| label: all-models-fc
+#| code-fold: true
+
+holidays_fc <- holidays_fit |> 
+  forecast(h = h)
+
+holidays_fc |> 
+  autoplot(
+    aus_holidays |> filter_index("2012 Q1" ~ .),
+    level = NULL
+  ) +
+  labs(
+    title = "ETS model comparison: 5 models, 8-quarter horizon",
+    y = "Overnight trips (millions)"
+  ) +
+  scale_color_brewer(type = "qual", palette = "Dark2") +
+  guides(colour = guide_legend(title = "Model"))
+```
+
+::: {.content-hidden unless-format="revealjs"}
+
+## Accuracy
+
+:::
+
+::: {.content-visible unless-format="revealjs"}
+
+### Accuracy
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+:::{.callout-warning appearance="simple"}
+## Pass the full dataset to `accuracy()`
+
+`accuracy()` must receive the **full original tsibble** (not just the test set) as its second argument. MASE and RMSSE denominators are computed from naive errors on the **training data** — passing only the test set makes those metrics undefined.
+:::
+
+:::
+
+
+```{r}
+#| label: accuracy
+#| df-print: tibble
+
+holidays_accu <- holidays_fc |> 
+  accuracy(aus_holidays)           #<1>
+
+holidays_accu |> 
+  select(.model, RMSE, MAE, MAPE, RMSSE, MASE) |> 
+  arrange(RMSSE)
+```
+
+1. Always pass the **full** tsibble here, not `holidays_test`. `fable` handles the train/test split internally using the model's training window.
+
+::: {.content-hidden unless-format="revealjs"}
+
+## What does the comparison show?
+
+:::
+
+::: {.content-visible unless-format="revealjs"}
+
+### What does the comparison show?
+
+:::
+
+A few questions worth discussing after looking at the accuracy table:
+
+- Do the ETS models beat the Module 1 baseline? If not, what does that tell us?
+- Does the choice between additive and multiplicative matter more for STL + ETS or for Holt-Winters?
+- Look at the time plot again: does the seasonal variation grow with the level? Does that match what the accuracy numbers suggest?
+
+:::{.fragment}
+
+:::{.callout-tip collapse="true"}
+## Interpreting the results
+
+If `hw_mul` or `stl_ets_mul` win, it is consistent with the visual evidence: the seasonal swings in `aus_holidays` do appear to widen slightly over time, which multiplicative models handle better.
+
+If the baseline is competitive, it is a reminder that more parameters do not automatically mean better forecasts — and that SNAIVE for the seasonal component is often harder to beat than it looks.
+:::
+
+:::
+
+# In summary
+
+## The lineup of exponential smoothing methods
 
 Table: ETS component combinations (trend × seasonal) {#tbl-ets-grid .primary .striped .hover .responsive}
 
@@ -950,6 +1232,7 @@ Table: ETS component combinations (trend × seasonal) {#tbl-ets-grid .primary .s
 
 
 
+:::{.fragment}
 
 Table: Names of some popular ETS models {#tbl-ets-names .secondary .striped .hover .responsive}
 
@@ -962,23 +1245,15 @@ Table: Names of some popular ETS models {#tbl-ets-names .secondary .striped .hov
 |$(A,M)$   | Holt-Winters' Multiplicative       |
 |$(A_d,M)$ | Holt-Winters' damped               |
 
-
-
-::: {.content-hidden unless-format="revealjs"}
-
-# In summary
-
 :::
 
-::: {.content-visible unless-format="revealjs"}
-
-## In summary
-
+:::{.content-hidden unless-format="revealjs"}
+##
 :::
 
 - Exponential smoothing methods are a family of forecasting methods that use **weighted averages** of past observations to make forecasts.
 - The **weights decrease exponentially** for older observations, controlled by smoothing parameters.
 - Different configurations of ETS models can be used to handle various data patterns, including trend and seasonality.
-- The choice of model components (`error(c("A", "M"))`, `trend(c("N", "A", "Ad"))`, `seasonality(c("N", "A", "M"))`) should be based on the characteristics of the data.
-  - That is, we **choose the model by viewing the time plot**.
+- The choice of model components (`error(c("A", "M"))`, `trend(c("N", "A", "Ad"))`, `season(c("N", "A", "M"))`) should be based on the characteristics of the data — start by looking at the time plot.
+- When data has both trend and seasonality, two strategies are available: **decompose first** (STL + ETS) or **model jointly** (Holt-Winters). Neither dominates universally.
 - Automatic ETS selection can be a powerful tool for fitting models to multiple time series efficiently.
