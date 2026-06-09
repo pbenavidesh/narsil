@@ -16,6 +16,14 @@ End-of-module integrative exercise covering the full Module 1 workflow: explorat
 
 3 min
 
+### [ETS and Decomposition Forecasting](../../docs/exercises/posts/ex_module2_ets_decomposition.llms.md)
+
+Apply and compare exponential smoothing models on non-seasonal and seasonal series, including manual ETS specifications, Box-Cox transformation, and modular decomposition forecasting with decomposition_model().
+
+Jun 9, 2026
+
+10 min
+
 ### [Module 3 Review: Regression and Exogenous Variables](../../docs/exercises/posts/review_module3.llms.md)
 
 An integrative review of practical issues, TSLM, dynamic regression, harmonic regression, and Prophet applied to Australian tourist accommodation data.

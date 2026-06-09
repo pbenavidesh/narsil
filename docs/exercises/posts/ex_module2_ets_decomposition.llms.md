@@ -1,0 +1,430 @@
+# ETS and Decomposition Forecasting
+
+Code
+
+- [Show All Code](javascript:void(0))
+
+- [Hide All Code](javascript:void(0))
+
+- 
+
+  ------------------------------------------------------------------------
+
+- [View Source](javascript:void(0))
+
+topic-exercise
+
+module-2
+
+Apply and compare exponential smoothing models on non-seasonal and seasonal series, including manual ETS specifications, Box-Cox transformation, and modular decomposition forecasting with decomposition_model().
+
+Published
+
+June 9, 2026
+
+Modified
+
+June 9, 2026
+
+Code
+
+``` r
+library(tidyverse)
+library(fpp3)
+library(tidyquant)
+```
+
+This notebook covers exponential smoothing (ETS) models applied to two real datasets. The first example uses a **non-seasonal** daily series — GLD ETF closing prices — to explore ETS models without a seasonal component. The second uses a **seasonal monthly** series of U.S. vehicle miles traveled to introduce `decomposition_model()` and compare multiple ETS specifications with and without a Box-Cox transformation.
+
+# 1 Gold Price Forecasting
+
+The GLD ETF (SPDR Gold Shares) tracks the price of gold and trades on U.S. equity markets. Because it only trades on business days, the raw data has implicit gaps on weekends and public holidays that must be filled before building a `tsibble`.
+
+## 1.1 Data
+
+Code
+
+``` r
+gold_raw <- tq_get(
+  "GLD",
+  from = "2005-01-01"
+)
+```
+
+Code
+
+``` r
+gold_tsb <- gold_raw |>
+  as_tsibble(index = date) #<1>
+
+gold_tsb |> has_gaps()     #<2>
+```
+
+1.  Convert to `tsibble` using `date` as the time index.
+2.  Confirm the presence of implicit gaps — trading data always has them on non-trading days.
+
+Code
+
+``` r
+gold_tsb_filled <- gold_tsb |>
+  fill_gaps() #<1>
+```
+
+1.  Insert rows for every missing calendar day. The `close` price will be `NA` on non-trading days. `fable` skips `NA` observations when computing accuracy metrics.
+
+## 1.2 Train/Test Split
+
+Code
+
+``` r
+h <- 105  #<1>
+
+gold_train <- gold_tsb_filled |>
+  slice_head(n = nrow(gold_tsb_filled) - h) #<2>
+```
+
+1.  Forecast horizon: 105 calendar days (approximately 75 trading days, or ~15 weeks).
+2.  Retain every row except the last `h` as the training set.
+
+Code
+
+``` r
+gold_train |>
+  autoplot(close) +
+  labs(
+    title = "GLD ETF — Closing Price",
+    subtitle = "Training set",
+    y = "USD"
+  )
+```
+
+[![](ex_module2_ets_decomposition_files/figure-html/gold-plot-1.png)](ex_module2_ets_decomposition_files/figure-html/gold-plot-1.png)
+
+The series shows a persistent upward trend with no discernible seasonal pattern. A trend-only ETS specification — without a seasonal component — is appropriate here.
+
+## 1.3 Model Fitting
+
+> **NOTE:**
+>
+> When there is no seasonal pattern, the seasonal component is set to `"N"` (none). The specification `error("A") + trend("A") + season("N")` — also known as **ETS(A,A,N)** or **Holt’s Linear Method** — models both a local level and a local trend that update with each new observation via smoothing parameters \alpha and \beta^\*.
+
+Code
+
+``` r
+gold_fit <- gold_train |>
+  model(
+    naive = NAIVE(close),                                          #<1>
+    drift = RW(close ~ drift()),                                   #<2>
+    ets   = ETS(close ~ error("A") + trend("A") + season("N")),   #<3>
+  )
+```
+
+1.  Random walk without drift — the simplest benchmark.
+2.  Random walk with drift — the Module 1 trend benchmark.
+3.  Holt’s Linear Method: additive errors and additive trend, no seasonal component.
+
+## 1.4 Residual Diagnostics
+
+Code
+
+``` r
+gold_fit |>
+  select(ets) |>
+  gg_tsresiduals()
+```
+
+[![](ex_module2_ets_decomposition_files/figure-html/gold-residuals-1.png)](ex_module2_ets_decomposition_files/figure-html/gold-residuals-1.png)
+
+Residuals from a well-specified ETS model should be mean-zero with no significant autocorrelation in the ACF. For financial price series, some remaining structure (e.g., volatility clustering) is common — ETS does not model heteroskedasticity.
+
+## 1.5 Forecasts
+
+Code
+
+``` r
+gold_fc <- gold_fit |>   #<1>
+  forecast(h = h)
+
+gold_fc |>
+  autoplot(
+    gold_tsb_filled |> filter_index("2022-01-01" ~ .),
+    level = 99
+  ) +
+  labs(
+    title = "GLD ETF — Forecasts (99% PI)",
+    y = "USD"
+  )
+```
+
+1.  Save the forecast object — needed for test-set accuracy below.
+
+[![](ex_module2_ets_decomposition_files/figure-html/gold-fc-plot-1.png)](ex_module2_ets_decomposition_files/figure-html/gold-fc-plot-1.png)
+
+## 1.6 Accuracy
+
+Code
+
+``` r
+accuracy(gold_fit) |>  #<1>
+  arrange(RMSE)
+```
+
+1.  Training accuracy: call `accuracy()` directly on the mable to evaluate in-sample fit.
+
+Code
+
+``` r
+gold_fc |>
+  accuracy(gold_tsb_filled) |>  #<1>
+  arrange(RMSE)
+```
+
+1.  Test accuracy: pipe the forecast object into `accuracy()` with the full tsibble. `fable` aligns forecasts against the held-out observations automatically.
+
+# 2 U.S. Vehicle Miles Traveled
+
+The FRED series `TRFVOLUSM227NFWA` measures total vehicle miles traveled on all U.S. streets and roads, reported monthly and **not** seasonally adjusted. Despite the generic column name `price` returned by `tq_get()`, values represent billions of miles driven.
+
+> **NOTE:**
+>
+> Vehicle miles traveled exhibits a strong trend, pronounced monthly seasonality (peaks in summer, troughs in winter), and a sharp drop in early 2020 from COVID-19 lockdowns. This combination makes it an ideal candidate for `decomposition_model()`.
+
+## 2.1 Data
+
+Code
+
+``` r
+vm_raw <- tq_get(
+  "TRFVOLUSM227NFWA",
+  get  = "economic.data",
+  from = "1970-01-01"
+)
+```
+
+Code
+
+``` r
+vm_tsb <- vm_raw |>
+  mutate(date = yearmonth(date)) |>  #<1>
+  as_tsibble(index = date)           #<2>
+```
+
+1.  Convert the date column from daily to monthly resolution with `yearmonth()`.
+2.  The `tsibble` index granularity must match the data frequency.
+
+## 2.2 Train/Test Split
+
+Code
+
+``` r
+h <- 36  #<1>
+
+vm_train <- vm_tsb |>
+  slice_head(n = nrow(vm_tsb) - h)
+```
+
+1.  Hold out the last 3 years (36 months) for out-of-sample evaluation.
+
+Code
+
+``` r
+vm_train |>
+  autoplot(price) +
+  labs(
+    title = "U.S. Vehicle Miles Traveled — Training Set",
+    subtitle = "Billions of miles, not seasonally adjusted",
+    y = "Billions of miles"
+  )
+```
+
+[![](ex_module2_ets_decomposition_files/figure-html/vm-plot-1.png)](ex_module2_ets_decomposition_files/figure-html/vm-plot-1.png)
+
+## 2.3 Transformation
+
+Visual inspection of the raw series suggests that seasonal variation grows with the level of the series, motivating a variance-stabilizing transformation.
+
+Code
+
+``` r
+vm_train |>
+  autoplot(log(price)) +
+  labs(title = "Log-Transformed Vehicle Miles")
+```
+
+[![](ex_module2_ets_decomposition_files/figure-html/vm-log-1.png)](ex_module2_ets_decomposition_files/figure-html/vm-log-1.png)
+
+The log transformation partially stabilizes variance but does not fully equalize it. Box-Cox with an estimated \lambda offers more flexibility.
+
+Code
+
+``` r
+lambda <- vm_train |>
+  features(price, features = guerrero) |>  #<1>
+  pull(lambda_guerrero)                     #<2>
+
+lambda
+```
+
+1.  The `guerrero` feature selects \lambda by minimizing the coefficient of variation across rolling subseries of the training data.
+2.  Extract the scalar value for use in model formulas.
+
+    [1] 0.2178821
+
+Code
+
+``` r
+vm_train |>
+  autoplot(box_cox(price, lambda)) +
+  labs(
+    title = "Box-Cox Transformed Vehicle Miles",
+    subtitle = paste0("Guerrero \u03bb = ", round(lambda, 3))
+  )
+```
+
+[![](ex_module2_ets_decomposition_files/figure-html/vm-boxcox-plot-1.png)](ex_module2_ets_decomposition_files/figure-html/vm-boxcox-plot-1.png)
+
+## 2.4 STL Decomposition
+
+Before fitting any forecast models, inspect what STL extracts from the transformed series.
+
+Code
+
+``` r
+vm_train |>
+  model(STL(box_cox(price, lambda), robust = TRUE)) |>
+  components() |>
+  autoplot() +
+  labs(title = "STL Decomposition — Box-Cox Transformed Vehicle Miles")
+```
+
+[![](ex_module2_ets_decomposition_files/figure-html/vm-stl-1.png)](ex_module2_ets_decomposition_files/figure-html/vm-stl-1.png)
+
+The `robust = TRUE` option down-weights outliers (the 2020 shock) so they do not distort the estimated trend and seasonal components.
+
+## 2.5 Model Fitting
+
+> **IMPORTANT:**
+>
+> `decomposition_model()` first decomposes the series (via STL here), then fits a separate forecasting model to each component. The argument `season_adjust` refers to the seasonally adjusted series, and `season_year` refers to the extracted seasonal component. **Any `fable`-compatible model can fill either slot** — this modularity is exactly what you will explore in the exercise.
+
+Code
+
+``` r
+vm_fit <- vm_train |>
+  model(
+    baseline    = decomposition_model(                                    #<1>
+      STL(box_cox(price, lambda), robust = TRUE),
+      RW(season_adjust ~ drift())
+    ),
+    ets         = ETS(price ~ error("M") + trend("Ad") + season("M")),   #<2>
+    ets_bc      = ETS(box_cox(price, lambda) ~
+                        error("A") + trend("Ad") + season("A")),          #<3>
+    ets_auto    = ETS(price),                                              #<4>
+    ets_auto_bc = ETS(box_cox(price, lambda))                              #<5>
+  )
+```
+
+1.  Module 1 baseline: STL decomposition + drift on the seasonally adjusted component. The seasonal component is reconstructed from the STL seasonal estimate.
+2.  Multiplicative ETS with damped additive trend (`Ad`) — appropriate when seasonal variation scales with the level of the raw series.
+3.  Additive ETS with damped trend on the Box-Cox series — additive errors are valid after a variance-stabilizing transformation.
+4.  Fully automatic ETS selection on the raw series.
+5.  Fully automatic ETS selection on the Box-Cox series.
+
+## 2.6 Residual Diagnostics
+
+Code
+
+``` r
+vm_fit |>
+  select(baseline) |>
+  gg_tsresiduals()
+```
+
+[![](ex_module2_ets_decomposition_files/figure-html/vm-residuals-1.png)](ex_module2_ets_decomposition_files/figure-html/vm-residuals-1.png)
+
+Check whether the baseline residuals are free of autocorrelation. Significant spikes at seasonal lags (multiples of 12 for monthly data) would indicate that the STL seasonal component did not fully absorb the seasonal signal.
+
+## 2.7 Forecasts
+
+Code
+
+``` r
+vm_fc <- vm_fit |>
+  forecast(h = h)
+
+p <- vm_fc |>
+  autoplot(
+    vm_tsb |> filter_index("2022-01" ~ .),  #<1>
+    level = NULL                              #<2>
+  ) +
+  labs(
+    title = "U.S. Vehicle Miles Traveled — Forecasts",
+    y = "Billions of miles"
+  )
+
+plotly::ggplotly(p, dynamicTicks = TRUE)
+```
+
+1.  Show only data from 2022 onward to keep the plot readable around the test period.
+2.  Omit prediction intervals to make the point-forecast comparison clean across five models.
+
+## 2.8 Accuracy
+
+Code
+
+``` r
+accuracy(vm_fit) |>  #<1>
+  arrange(MAPE)
+```
+
+1.  Training accuracy: call `accuracy()` directly on the mable to evaluate in-sample fit.
+
+Code
+
+``` r
+vm_fc |>
+  accuracy(vm_tsb) |>  #<1>
+  arrange(MAPE)
+```
+
+1.  Test accuracy: pipe the forecast object into `accuracy()` with the full `vm_tsb`. MASE and RMSSE denominators are computed from the training data automatically.
+
+# 3 Exercise
+
+The examples above establish `decomposition_model()` as the Module 1 baseline and introduce several ETS alternatives. In this exercise you will extend both model sets, focusing on the **modular substitution principle** of `decomposition_model()`: any component slot can be filled with any compatible method.
+
+## 3.1 Exercise 1 — Additional Decomposition Models
+
+Starting from the vehicle miles training data, add **at least two new models** that use `decomposition_model()`. Extend the `model()` call in the scaffold below — at least one model must replace the `season_adjust` method, and at least one must explicitly model the `season_year` component.
+
+Code
+
+``` r
+vm_fit_ex <- vm_train |>
+  model(
+    baseline = decomposition_model(
+      STL(box_cox(price, lambda), robust = TRUE),
+      RW(season_adjust ~ drift())
+    ),
+    # Add your models here.
+    # Minimum: one model with a different season_adjust method,
+    #          one model with an explicit season_year method.
+  )
+
+vm_fit_ex |>
+  forecast(h = h) |>
+  accuracy(vm_tsb) |>
+  arrange(MAPE)
+```
+
+> **TIP:**
+>
+> `ETS(season_adjust)` is a valid replacement for `RW(season_adjust ~ drift())`. For the seasonal component, try `SNAIVE(season_year)` or `ETS(season_year)`. You can mix methods freely — for example, `ETS(season_adjust)` for the trend and `SNAIVE(season_year)` for the seasonality. Remember that all component models go inside the same `decomposition_model()` call, after the STL specification.
+
+## 3.2 Exercise 2 — Seasonal Component Under Different Transformations
+
+In the baseline, the STL decomposition is applied to the Box-Cox transformed series. Fit three versions of the baseline `decomposition_model()`: one on the raw series (no transformation), one on the log series (`log(price)`), and the original on `box_cox(price, lambda)`.
+
+Compare their out-of-sample MAPE and RMSSE. Does the choice of transformation affect how accurately the decomposition model forecasts the held-out period? Inspect the remainder component from the three STL decompositions — which looks most like white noise?
+
+Back to top

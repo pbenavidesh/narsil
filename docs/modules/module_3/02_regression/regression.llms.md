@@ -144,20 +144,37 @@ where each of these is an academic paper
 
 ------------------------------------------------------------------------
 
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The distance between Jupiter and the Sun and the second variable is The number of secretaries in Alaska. The chart goes from 2010 to 2022, and the two variables track closely in value over that time.](spurious/correlation/image/2733_the-distance-between-jupiter-and-the-sun_correlates-with_the-number-of-secretaries-in-alaska.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The distance between Jupiter and the Sun and the second variable is The number of secretaries in Alaska.  The chart goes from 2010 to 2022, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/2733_the-distance-between-jupiter-and-the-sun_correlates-with_the-number-of-secretaries-in-alaska_mobile.svg)  
-**View details about correlation \#2,733**](spurious/correlation/2733_the-distance-between-jupiter-and-the-sun_correlates-with_the-number-of-secretaries-in-alaska)  
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Yogurt consumption and the second variable is Google searches for 'i cant even'. The chart goes from 2004 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/2203_yogurt-consumption_correlates-with_google-searches-for-i-cant-even.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Yogurt consumption and the second variable is Google searches for 'i cant even'.  The chart goes from 2004 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/2203_yogurt-consumption_correlates-with_google-searches-for-i-cant-even_mobile.svg)  
+**View details about correlation \#2,203**](spurious/correlation/2203_yogurt-consumption_correlates-with_google-searches-for-i-cant-even)  
   
 
 ^(Show scatterplot)
 
-![](spurious/correlation/scatterplot/2733_the-distance-between-jupiter-and-the-sun_correlates-with_the-number-of-secretaries-in-alaska_scatterplot.png)
+![](spurious/correlation/scatterplot/2203_yogurt-consumption_correlates-with_google-searches-for-i-cant-even_scatterplot.png)
 
   
   
 
 *What else correlates?*  
-[The distance between Jupiter and the Sun](spurious/variable?id=1928) · [all planets](spurious/view-all-variables/planets)  
-[The number of secretaries in Alaska](spurious/variable?id=17805) · [all cccupations](spurious/view-all-variables/occupations)  
+[Yogurt consumption](spurious/variable?id=568) · [all food](spurious/view-all-variables/farmingfood)  
+[Google searches for 'i cant even'](spurious/variable?id=1525) · [all google searches](spurious/view-all-variables/google)  
+
+------------------------------------------------------------------------
+
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the first name Brooklyn and the second variable is UFO sightings in Kentucky. The chart goes from 1975 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/2674_popularity-of-the-first-name-brooklyn_correlates-with_ufo-sightings-in-kentucky.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the first name Brooklyn and the second variable is UFO sightings in Kentucky.  The chart goes from 1975 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/2674_popularity-of-the-first-name-brooklyn_correlates-with_ufo-sightings-in-kentucky_mobile.svg)  
+**View details about correlation \#2,674**](spurious/correlation/2674_popularity-of-the-first-name-brooklyn_correlates-with_ufo-sightings-in-kentucky)  
+  
+
+^(Show scatterplot)
+
+![](spurious/correlation/scatterplot/2674_popularity-of-the-first-name-brooklyn_correlates-with_ufo-sightings-in-kentucky_scatterplot.png)
+
+  
+  
+
+*What else correlates?*  
+[Popularity of the first name Brooklyn](spurious/variable?id=2526) · [all first names](spurious/view-all-variables/babynames)  
+[UFO sightings in Kentucky](spurious/variable?id=1174) · [all random state specific](spurious/view-all-variables/statespecific)  
 
 ------------------------------------------------------------------------
 
@@ -481,23 +498,6 @@ where each of these is an academic paper
 *What else correlates?*  
 [Air pollution in Dayton](spurious/variable?id=20525) · [all weather](spurious/view-all-variables/weather)  
 [The number of genetic counselors in Ohio](spurious/variable?id=19400) · [all cccupations](spurious/view-all-variables/occupations)  
-
-------------------------------------------------------------------------
-
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Solar power generated in Argentina and the second variable is Google searches for 'do vaccines work'. The chart goes from 2004 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/1598_solar-power-generated-in-argentina_correlates-with_google-searches-for-do-vaccines-work.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Solar power generated in Argentina and the second variable is Google searches for 'do vaccines work'.  The chart goes from 2004 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1598_solar-power-generated-in-argentina_correlates-with_google-searches-for-do-vaccines-work_mobile.svg)  
-**View details about correlation \#1,598**](spurious/correlation/1598_solar-power-generated-in-argentina_correlates-with_google-searches-for-do-vaccines-work)  
-  
-
-^(Show scatterplot)
-
-![](spurious/correlation/scatterplot/1598_solar-power-generated-in-argentina_correlates-with_google-searches-for-do-vaccines-work_scatterplot.png)
-
-  
-  
-
-*What else correlates?*  
-[Solar power generated in Argentina](spurious/variable?id=23462) · [all energy](spurious/view-all-variables/energy)  
-[Google searches for 'do vaccines work'](spurious/variable?id=1433) · [all google searches](spurious/view-all-variables/google)  
 
 ------------------------------------------------------------------------
 
