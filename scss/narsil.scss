@@ -1,0 +1,48 @@
+// narsil.scss
+// -----------------------------------------------------------------------------
+// Course-wide Sass theme for the narsil Time Series Forecasting website.
+//
+// NOTE: --narsil-c1 through --narsil-c6 must stay in sync with the `palette`
+// vectors of .narsil_pal in R/narsil_theme.R (light = :root, dark = .quarto-dark).
+// -----------------------------------------------------------------------------
+
+/*-- scss:defaults --*/
+// (empty for now — reserved for future Sass variable overrides)
+
+/*-- scss:rules --*/
+
+p {
+  text-align: justify;
+}
+
+// Light palette ("Gondor") — must match .narsil_pal$light$palette in R.
+:root {
+  --narsil-c1: #1A5276;
+  --narsil-c2: #7D6608;
+  --narsil-c3: #6C3483;
+  --narsil-c4: #009E73;
+  --narsil-c5: #D55E00;
+  --narsil-c6: #5B8DB8;
+  --narsil-code-fg: #c7254e;
+  --narsil-code-bg: #f9f2f4;
+}
+
+// Dark palette ("Mordor") — must match .narsil_pal$dark$palette in R.
+.quarto-dark {
+  --narsil-c1: #E8651A;
+  --narsil-c2: #E2C12B;
+  --narsil-c3: #A569BD;
+  --narsil-c4: #D4548C;
+  --narsil-c5: #5DADE2;
+  --narsil-c6: #AAB7B8;
+  --narsil-code-fg: #f0a0b8;
+  --narsil-code-bg: #3a2a2e;
+}
+
+// Inline code only — :not(pre) > code avoids restyling code chunks.
+:not(pre) > code {
+  color: var(--narsil-code-fg);
+  background-color: var(--narsil-code-bg);
+  border-radius: 3px;
+  padding: 0.1em 0.3em;
+}

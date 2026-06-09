@@ -18,6 +18,9 @@ format:
 
 library(tidyverse)
 library(fpp3)
+
+source(here::here("R/narsil_theme.R"))
+theme_set(theme_narsil())
 ```
 
 :::{.content-visible unless-format="revealjs"}
@@ -387,7 +390,7 @@ Harmonic regression (Fourier terms + ARIMA errors) can incorporate **external pr
 
 ## Fourier terms for multiple periods
 
-Recall from [Module 3.3](../03_dynamic/dynamic_regression.qmd#harmonic-regression) that Fourier terms approximate a seasonal pattern with $K$ pairs of sine and cosine waves. For **multiple seasonalities**, we add one set per period:
+Recall from [Module 3.3](../../module_3/03_dynamic/dynamic_regression.qmd#harmonic-regression) that Fourier terms approximate a seasonal pattern with $K$ pairs of sine and cosine waves. For **multiple seasonalities**, we add one set per period:
 
 $$y_t = \underbrace{S_{K_1}(t)}_{\text{daily, } m=24} + \underbrace{S_{K_2}(t)}_{\text{weekly, } m=168} + \beta^\top \mathbf{x}_t + \eta_t, \quad \eta_t \sim \text{ARIMA}$$
 

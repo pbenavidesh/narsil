@@ -21,10 +21,12 @@ format:
 library(tidyverse)
 library(fpp3)
 library(fable.prophet)
+
+source(here::here("R/narsil_theme.R"))
+theme_set(theme_narsil())
 ```
 
 :::{.content-visible unless-format="revealjs"}
-
 ```{r}
 #| label: pkgs_special
 #| message: false
@@ -35,21 +37,17 @@ library(fable.prophet) #<2>
 
 1. For interactive plots.
 2. The `fable`-compatible interface to Meta's Prophet algorithm.
-
 :::
 
 # Where We Are
 
 :::{.content-hidden unless-format="revealjs"}
-
 ##
-
 :::
 
 Look at how far our model has come since Module 1:
 
 :::{.content-visible unless-format="revealjs"}
-
 | Module | What we added | Model |
 |:--|:--|:--|
 | **1** | Decomposition + benchmark | STL + Drift + SNAIVE |
@@ -57,11 +55,9 @@ Look at how far our model has come since Module 1:
 | **3.1–3.2** | External context | TSLM, dynamic regression with xreg |
 | **3.3** | Harmonic regression | ARIMA + Fourier terms |
 | **3.4 (now)** | Automated, scalable, interpretable | **Prophet** |
-
 :::
 
 :::{.content-hidden unless-format="revealjs"}
-
 ```{r}
 #| echo: false
 
@@ -74,31 +70,24 @@ tibble::tribble(
   "3.4",   "Automated & interpretable", "Prophet"
 ) |> knitr::kable()
 ```
-
 :::
 
 :::{.fragment}
-
 Every previous model required us to make choices manually: how many AR terms? Which regressors? Where do the knots go?
-
 :::
 
 :::{.fragment}
-
 :::{.callout-note appearance="simple"}
 ## The knot problem we left open
 
 In [Linear Regression](../02_regression/regression.qmd), we saw that piecewise TSLM is sensitive to *where* we place the knots — different choices produce dramatically different forecasts, even with similar in-sample fit. Prophet solves this automatically.
 :::
-
 :::
 
 # What Is Prophet?
 
 :::{.content-hidden unless-format="revealjs"}
-
 ##
-
 :::
 
 **Prophet** is a forecasting procedure developed by Meta (Facebook) and released as open source in 2017. It was designed for business time series — daily, weekly, and yearly data with strong seasonal effects, holidays, and shifting trends.
@@ -112,29 +101,24 @@ In [Linear Regression](../02_regression/regression.qmd), we saw that piecewise T
 :::
 
 :::{.content-hidden unless-format="revealjs"}
-
 ##
-
 :::
 
 :::{.content-visible unless-format="revealjs"}
-
 ## The Prophet model
-
 :::
 
 At its core, Prophet fits a **decomposition model**:
 
 $$y(t) = g(t) + s(t) + h(t) + \varepsilon_t$$
 
-:::{.incremental}
 
 - $g(t)$ — **trend**: piecewise linear or logistic growth, with changepoints detected automatically.
 - $s(t)$ — **seasonality**: Fourier series approximating yearly, weekly, or daily patterns.
 - $h(t)$ — **holidays / special events**: user-supplied dummy variables with windowed effects.
 - $\varepsilon_t$ — **noise**: assumed i.i.d. normal.
 
-:::
+
 
 :::{.fragment}
 
@@ -147,9 +131,7 @@ This is exactly what we've been building all semester — trend + seasonality + 
 :::
 
 :::{.content-hidden unless-format="revealjs"}
-
 ##
-
 :::
 
 :::{.content-visible unless-format="revealjs"}
@@ -160,19 +142,15 @@ This is exactly what we've been building all semester — trend + seasonality + 
 
 The key innovation over piecewise TSLM is **automatic changepoint detection**. Prophet:
 
-:::{.incremental}
-
 1. Places a large number of *potential* changepoints uniformly in the first `changepoint_range` proportion of the data (default: 80%).
 2. Uses a sparse prior (Laplace) to shrink most changepoint magnitudes to zero — only genuine structural breaks survive.
 3. The user can tune `n_changepoints` (default 25) and `changepoint_prior_scale` (flexibility of trend changes).
 
-:::
 
 :::{.fragment}
-
 No more guessing where the knots go.
-
 :::
+
 
 ## When to use Prophet
 
@@ -187,7 +165,6 @@ No more guessing where the knots go.
 | Need formal inference on model parameters | ❌ |
 | Need prediction intervals from theory, not simulation | ⚠️ |
 
-:::
 
 :::{.callout-warning appearance="simple"}
 ## Prophet is not always better than ARIMA
@@ -198,22 +175,15 @@ Prophet was designed for *at-scale*, analyst-friendly forecasting. On many class
 # Setup: `fable.prophet`
 
 :::{.content-hidden unless-format="revealjs"}
-
 ##
-
 :::
 
 Prophet is available in R through two packages:
 
-:::{.incremental}
-
 - `prophet` — the original package. Works standalone, does not integrate with `fable`.
 - `fable.prophet` — a `fable`-compatible wrapper by Mitchell O'Hara-Wild. Lets us use Prophet inside `model()`, `forecast()`, `accuracy()`, and all the tools we already know.
 
-:::
-
 :::{.fragment}
-
 ```{r}
 #| eval: false
 
@@ -223,7 +193,6 @@ library(fable.prophet)            #<2>
 
 1. `fable.prophet` is now available on CRAN.
 2. Load it alongside `fpp3` — the `prophet()` function is then available inside `model()`.
-
 :::
 
 :::{.fragment}
@@ -237,15 +206,12 @@ library(fable.prophet)            #<2>
 # Model Specification
 
 :::{.content-hidden unless-format="revealjs"}
-
 ##
-
 :::
 
 Inside `model()`, Prophet is specified with the `prophet()` function. Like `ARIMA()` and `ETS()`, it can be fully automatic or manually specified.
 
 :::{.fragment}
-
 ```{r}
 #| eval: false
 
@@ -255,32 +221,23 @@ prophet(y)
 # Manual — explicit components
 prophet(y ~ growth("linear") + season("year", type = "multiplicative"))
 ```
-
 :::
 
 :::{.content-hidden unless-format="revealjs"}
-
 ##
-
 :::
 
 :::{.content-visible unless-format="revealjs"}
-
 ## Trend: `growth()`
-
 :::
 
 The `growth()` term specifies the trend model:
 
-:::{.incremental}
-
 - `growth("linear")` — piecewise linear trend. Best for series that grow or decline without a natural ceiling.
 - `growth("logistic")` — logistic growth (S-curve). Requires a `capacity` column in the data specifying the theoretical maximum.
 
-:::
 
 :::{.fragment}
-
 ```{r}
 #| eval: false
 
@@ -293,19 +250,14 @@ prophet(y ~ growth("linear",
 1. Number of potential changepoints to consider (default: 25).
 2. Proportion of history where changepoints can occur (default: 0.8).
 3. Flexibility of trend changes — larger = more flexible, smaller = more rigid (default: 0.05).
-
 :::
 
 :::{.content-hidden unless-format="revealjs"}
-
 ##
-
 :::
 
 :::{.content-visible unless-format="revealjs"}
-
 ## Seasonality: `season()`
-
 :::
 
 The `season()` term adds a Fourier-approximated seasonal pattern:
@@ -331,13 +283,10 @@ The `order` argument in `season()` is the same $K$ we used in harmonic regressio
 
 
 :::{.content-visible unless-format="revealjs"}
-
 ## Component summary
-
 :::
 
 :::{.content-visible unless-format="revealjs"}
-
 | Prophet component | Equivalent in previous models |
 |:--|:--|
 | `growth("linear")` | `trend(knots = ...)` in TSLM |
@@ -347,23 +296,18 @@ The `order` argument in `season()` is the same $K$ we used in harmonic regressio
 | `season("year", order = K)` | `fourier(K = ...)` in harmonic regression |
 | `holiday()` | Spike/shift dummies in TSLM |
 | Changepoints (automatic) | `trend(knots = c(...))` in TSLM — but manual |
-
 :::
 
 # Application: LAX Passengers
 
 :::{.content-hidden unless-format="revealjs"}
-
 ##
-
 :::
 
 We'll apply Prophet to monthly passenger counts at **Los Angeles International Airport (LAX)**, broken down by domestic and international flights — a dataset with a clear piecewise trend, multiplicative seasonality, and a major structural break (the 2001 and 2008 shocks).
 
 :::{.content-visible unless-format="revealjs"}
-
 ## Load and prepare
-
 :::
 
 ```{r}
@@ -391,15 +335,11 @@ lax_passengers
 3. Convert to `tsibble` — `type` (Domestic / International) is the key variable.
 
 :::{.content-hidden unless-format="revealjs"}
-
 ##
-
 :::
 
 :::{.content-visible unless-format="revealjs"}
-
 ## Exploratory analysis
-
 :::
 
 ```{r}
@@ -447,9 +387,7 @@ lax_test  <- lax_passengers |> filter_index("2018 Jan." ~ .)
 ```
 
 :::{.content-visible unless-format="revealjs"}
-
 The test set covers 2018–2019 (24 months of out-of-sample evaluation). We intentionally stop before 2020 to avoid COVID-19 contaminating the evaluation.
-
 :::
 
 
@@ -482,15 +420,11 @@ lax_fit
 5. Harmonic regression: ARIMA errors + Fourier seasonality (Module 3.3).
 
 :::{.content-hidden unless-format="revealjs"}
-
 ##
-
 :::
 
 :::{.content-visible unless-format="revealjs"}
-
 ## Components
-
 :::
 
 One of Prophet's biggest advantages in practice: **interpretable components** that you can show to a non-technical audience.
@@ -505,25 +439,19 @@ lax_fit |>
 ```
 
 :::{.content-visible unless-format="revealjs"}
-
 The decomposition shows:
 
 - **Trend** ($g(t)$): captures the piecewise nature of growth, including the post-2001 and post-2009 recoveries — with no manual knot placement.
 - **Annual** ($s(t)$): the seasonal pattern for each series. Notice it's being fitted as a proportion of the level (multiplicative).
 - **Residuals** ($\varepsilon_t$): should look like white noise if the model is well-specified.
-
 :::
 
 :::{.content-hidden unless-format="revealjs"}
-
 ##
-
 :::
 
 :::{.content-visible unless-format="revealjs"}
-
 ## Seasonal pattern by month
-
 :::
 
 We can also visualize the seasonal component overlaid by year — useful to check if the seasonal *shape* is stable over time:
@@ -560,15 +488,11 @@ If the seasonal lines are stacked consistently, the shape is stable across years
 :::
 
 :::{.content-hidden unless-format="revealjs"}
-
 ##
-
 :::
 
 :::{.content-visible unless-format="revealjs"}
-
 ## Forecast
-
 :::
 
 ```{r}
@@ -595,15 +519,11 @@ lax_fc |>
 ```
 
 :::{.content-hidden unless-format="revealjs"}
-
 ##
-
 :::
 
 :::{.content-visible unless-format="revealjs"}
-
 ## Accuracy
-
 :::
 
 ```{r}
@@ -624,15 +544,11 @@ When your `tsibble` has a key variable (like `type` here), `accuracy()` returns 
 :::
 
 :::{.content-hidden unless-format="revealjs"}
-
 ##
-
 :::
 
 :::{.content-visible unless-format="revealjs"}
-
 ## Residual diagnostics
-
 :::
 
 ```{r}
@@ -657,9 +573,7 @@ Check:
 # Changepoints: Diagnosing the Trend
 
 :::{.content-hidden unless-format="revealjs"}
-
 ##
-
 :::
 
 We can extract the changepoints Prophet detected and plot them against the original series — a powerful diagnostic for communicating with stakeholders.
@@ -693,15 +607,11 @@ In [Linear Regression](../02_regression/regression.qmd) we saw that different ma
 # Model Comparison
 
 :::{.content-hidden unless-format="revealjs"}
-
 ##
-
 :::
 
 :::{.content-visible unless-format="revealjs"}
-
 ## Which model wins?
-
 :::
 
 Let's put all models side by side — zooming in on the test period:
@@ -745,15 +655,11 @@ These visual checks complement the numeric accuracy table — a model can have g
 :::
 
 :::{.content-hidden unless-format="revealjs"}
-
 ##
-
 :::
 
 :::{.content-visible unless-format="revealjs"}
-
 ## When does Prophet shine?
-
 :::
 
 :::{.content-visible unless-format="revealjs"}
@@ -770,9 +676,7 @@ These visual checks complement the numeric accuracy table — a model can have g
 :::
 
 :::{.content-visible unless-format="revealjs"}
-
 ## Prophet vs. the rest
-
 :::
 
 :::{.content-visible unless-format="revealjs"}
@@ -797,9 +701,7 @@ tibble::tribble(
 # Summary
 
 :::{.content-hidden unless-format="revealjs"}
-
 ## What we covered
-
 :::
 
 :::{.content-visible unless-format="revealjs"}

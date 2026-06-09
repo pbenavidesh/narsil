@@ -34,6 +34,9 @@ gas_fit <- gas_train |>
 
 gas_fc <- gas_fit |>
   forecast(h = nrow(gas_test))
+
+source(here::here("R/narsil_theme.R"))
+theme_set(theme_narsil())
 ```
 
 # Prediction intervals
