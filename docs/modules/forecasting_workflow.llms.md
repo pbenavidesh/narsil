@@ -10,7 +10,7 @@ September 30, 2022
 
 Modified
 
-June 8, 2026
+June 9, 2026
 
 [![](https://tidyverts.org/images/fable.png)](https://tidyverts.org/images/fable.png)
 
@@ -52,7 +52,7 @@ gdp <- tidyquant::tq_get(
 gdp
 ```
 
-    # A tibble: 116 × 3
+    # A tibble: 117 × 3
        symbol         date          price
        <chr>          <date>        <dbl>
      1 NGDPRNSAXDCMXQ 1997-01-01 3702398.
@@ -65,7 +65,7 @@ gdp
      8 NGDPRNSAXDCMXQ 1998-10-01 4146841.
      9 NGDPRNSAXDCMXQ 1999-01-01 4176243.
     10 NGDPRNSAXDCMXQ 1999-04-01 4232280.
-    # ℹ 106 more rows
+    # ℹ 107 more rows
 
 ### 1.1.2 Wrangle data
 
