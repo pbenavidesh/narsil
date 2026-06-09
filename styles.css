@@ -4,16 +4,14 @@ p {
   text-align: justify;
 }
 
-/* ─── Inline code: fix visibility in dark mode ─────────────────────────── */
-/* Bootswatch darkly renders inline `code` with light text on light         */
-/* background. .quarto-dark is added to <body> when dark mode is active.   */
-
-code {
+:not(pre)>code {
   color: #c7254e;
   background-color: #f9f2f4;
+  border-radius: 3px;
+  padding: 0.1em 0.3em;
 }
 
-.quarto-dark code {
+.quarto-dark :not(pre)>code {
   color: #f0a0b8;
   background-color: #3a2a2e;
 }
