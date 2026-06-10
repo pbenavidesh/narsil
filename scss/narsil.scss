@@ -23,8 +23,8 @@ p {
   --narsil-c4: #009E73;
   --narsil-c5: #D55E00;
   --narsil-c6: #5B8DB8;
-  --narsil-code-fg: #c7254e;
-  --narsil-code-bg: #f9f2f4;
+  --narsil-code-fg: #6C3483;
+  --narsil-code-bg: #F0EBF8;
 }
 
 // Dark palette ("Mordor") — must match .narsil_pal$dark$palette in R.
@@ -35,8 +35,8 @@ p {
   --narsil-c4: #D4548C;
   --narsil-c5: #5DADE2;
   --narsil-c6: #AAB7B8;
-  --narsil-code-fg: #f0a0b8;
-  --narsil-code-bg: #3a2a2e;
+  --narsil-code-fg: #E8651A;
+  --narsil-code-bg: #3A2018;
 }
 
 // Inline code only — :not(pre) > code avoids restyling code chunks.
@@ -45,4 +45,47 @@ p {
   background-color: var(--narsil-code-bg);
   border-radius: 3px;
   padding: 0.1em 0.3em;
+}
+
+/* Navbar */
+.navbar {
+  background-color: #1A5276 !important;
+}
+.quarto-dark .navbar {
+  background-color: #2D1B3E !important;
+}
+
+/* Links */
+.quarto-dark a {
+  color: #5DADE2;
+}
+.quarto-dark a:hover {
+  color: #AED6F1;
+}
+
+/* Active sidebar link */
+.quarto-dark .sidebar-item-text.sidebar-link.active {
+  color: #E8651A !important;
+}
+
+/* Tab active indicator */
+.quarto-dark .nav-tabs .nav-link.active,
+.quarto-dark .nav-tabs .nav-link.active:hover {
+  border-bottom-color: #E8651A !important;
+  color: #E8651A !important;
+}
+
+/* Tab hover */
+.quarto-dark .nav-tabs .nav-link:hover {
+  color: #AAB7B8;
+}
+
+/* TOC active link — dark mode */
+.quarto-dark .nav-link.active {
+  color: #E8651A !important;
+}
+
+/* Sidebar active link — light mode */
+.sidebar-item-text.sidebar-link.active {
+  color: #1A5276 !important;
 }

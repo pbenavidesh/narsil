@@ -17,20 +17,36 @@
 # Course colour palettes ------------------------------------------------------
 .narsil_pal <- list(
   light = list(
-    bg       = "#F5F4EF",
-    bg_panel = "#ECEAE3",
-    fg       = "#2A2520",
-    grid     = "#D5D0C6",
-    palette  = c("#1A5276", "#7D6608", "#6C3483", "#009E73", "#D55E00", "#5B8DB8")
+    bg = "#EAF0F8",
+    bg_panel = "#DCE7F4",
+    fg = "#2A2520",
+    grid = "#D5D0C6",
+    palette = c(
+      "#1A5276",
+      "#7D6608",
+      "#6C3483",
+      "#009E73",
+      "#D55E00",
+      "#5B8DB8"
+    )
   ),
   dark = list(
-    bg       = "#222222",
-    bg_panel = "#2d2d2d",
-    fg       = "#E8DDD0",
-    grid     = "#444444",
-    palette  = c("#E8651A", "#E2C12B", "#A569BD", "#D4548C", "#5DADE2", "#AAB7B8")
+    bg = "#2A2A2A",
+    bg_panel = "#303030",
+    fg = "#E8DDD0",
+    grid = "#555566",
+    palette = c(
+      "#E8651A",
+      "#E2C12B",
+      "#A569BD",
+      "#D4548C",
+      "#5DADE2",
+      "#AAB7B8"
+    )
   )
 )
+
+narsil_pal <- function(mode = "light") .narsil_pal[[mode]]
 
 # Internal theme builder ------------------------------------------------------
 .build_theme <- function(mode, base_size) {
@@ -38,28 +54,42 @@
 
   ggplot2::theme_minimal(base_size = base_size) +
     ggplot2::theme(
-      plot.background  = ggplot2::element_rect(fill = p$bg, colour = NA),
+      plot.background = ggplot2::element_rect(fill = p$bg, colour = NA),
       panel.background = ggplot2::element_rect(fill = p$bg_panel, colour = NA),
-      panel.grid.major = ggplot2::element_line(colour = p$grid, linewidth = 0.4),
-      panel.grid.minor = ggplot2::element_line(colour = p$grid, linewidth = 0.2),
-      text          = ggplot2::element_text(colour = p$fg),
-      axis.text     = ggplot2::element_text(colour = p$fg),
-      axis.title    = ggplot2::element_text(colour = p$fg),
-      plot.title    = ggplot2::element_text(colour = p$fg, face = "bold"),
+      panel.grid.major = ggplot2::element_line(
+        colour = p$grid,
+        linewidth = 0.4
+      ),
+      panel.grid.minor = ggplot2::element_line(
+        colour = p$grid,
+        linewidth = 0.2
+      ),
+      text = ggplot2::element_text(colour = p$fg),
+      axis.text = ggplot2::element_text(colour = p$fg),
+      axis.title = ggplot2::element_text(colour = p$fg),
+      plot.title = ggplot2::element_text(colour = p$fg, face = "bold"),
       plot.subtitle = ggplot2::element_text(colour = p$fg),
-      plot.caption  = ggplot2::element_text(colour = p$fg),
-      legend.text   = ggplot2::element_text(colour = p$fg),
-      legend.title  = ggplot2::element_text(colour = p$fg, face = "bold"),
-      strip.text    = ggplot2::element_text(colour = p$fg, face = "bold")
+      plot.caption = ggplot2::element_text(colour = p$fg),
+      legend.text = ggplot2::element_text(colour = p$fg),
+      legend.title = ggplot2::element_text(colour = p$fg, face = "bold"),
+      strip.text = ggplot2::element_text(colour = p$fg, face = "bold")
     )
 }
 
 # Public theme functions ------------------------------------------------------
 theme_narsil <- function(base_size = 12) {
+  update_geom_defaults("line",  list(colour = .narsil_pal$light$fg))
+  update_geom_defaults("point", list(colour = .narsil_pal$light$fg))
+  update_geom_defaults("segment", list(colour = .narsil_pal$light$fg))
+  update_geom_defaults("hline",   list(colour = .narsil_pal$light$grid))
   .build_theme("light", base_size)
 }
 
 theme_narsil_dark <- function(base_size = 12) {
+  update_geom_defaults("line",  list(colour = .narsil_pal$dark$fg))
+  update_geom_defaults("point", list(colour = .narsil_pal$dark$fg))
+  update_geom_defaults("segment", list(colour = .narsil_pal$dark$fg))
+  update_geom_defaults("hline",   list(colour = .narsil_pal$dark$grid))
   .build_theme("dark", base_size)
 }
 
@@ -80,6 +110,18 @@ scale_fill_narsil <- function(dark = FALSE, ...) {
 
 scale_color_narsil <- scale_colour_narsil
 
+# ── Render helpers ────────────────────────────────────────────────────────────
+# Use these in renderings: [light, dark] chunks instead of calling
+# theme_narsil() + scale_colour_narsil() separately.
+
+scale_narsil <- function(...) {
+  list(theme_narsil(), scale_colour_narsil(...))
+}
+
+scale_narsil_dark <- function(...) {
+  list(theme_narsil_dark(), scale_colour_narsil(dark = TRUE, ...))
+}
+
 # plotly styling --------------------------------------------------------------
 gg_to_plotly_narsil <- function(p, dark = FALSE) {
   pal <- .narsil_pal[[if (dark) "dark" else "light"]]
@@ -87,19 +129,19 @@ gg_to_plotly_narsil <- function(p, dark = FALSE) {
   plotly::layout(
     p,
     paper_bgcolor = pal$bg,
-    plot_bgcolor  = pal$bg_panel,
-    font          = list(color = pal$fg),
+    plot_bgcolor = pal$bg_panel,
+    font = list(color = pal$fg),
     xaxis = list(
-      gridcolor     = pal$grid,
-      linecolor     = pal$grid,
+      gridcolor = pal$grid,
+      linecolor = pal$grid,
       zerolinecolor = pal$grid,
-      tickfont      = list(color = pal$fg)
+      tickfont = list(color = pal$fg)
     ),
     yaxis = list(
-      gridcolor     = pal$grid,
-      linecolor     = pal$grid,
+      gridcolor = pal$grid,
+      linecolor = pal$grid,
       zerolinecolor = pal$grid,
-      tickfont      = list(color = pal$fg)
+      tickfont = list(color = pal$fg)
     ),
     legend = list(font = list(color = pal$fg))
   )

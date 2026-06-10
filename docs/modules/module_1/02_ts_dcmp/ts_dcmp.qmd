@@ -173,16 +173,23 @@ Transformations are used to stabilize the variance of a time series, making it e
 #| label: jj_levels
 #| echo: false
 #| message: false
+#| output: false
 
-jj <- JohnsonJohnson |> 
+jj <- JohnsonJohnson |>
   as_tsibble()
 
-p <- jj |> 
+jj_levels_p <- jj |>
   autoplot() +
     ggtitle("J&J - Quarterly Sales")
+```
 
-ggplotly(p)
+```{r}
+#| label: jj_levels_render
+#| renderings: [light, dark]
+#| echo: false
 
+ggplotly(jj_levels_p + scale_narsil()) |> gg_to_plotly_narsil()
+ggplotly(jj_levels_p + scale_narsil_dark()) |> gg_to_plotly_narsil(dark = TRUE)
 ```
 
 :::{.notes}
@@ -202,12 +209,20 @@ Transformations and adjustments help us simplify the patterns in our data, and c
 #| label: jj_log
 #| echo: false
 #| message: false
+#| output: false
 
-p <- jj |> 
+jj_log_p <- jj |>
   autoplot(log(value)) +
   ggtitle("J&J - Quarterly Sales")
+```
 
-ggplotly(p)
+```{r}
+#| label: jj_log_render
+#| renderings: [light, dark]
+#| echo: false
+
+ggplotly(jj_log_p + scale_narsil()) |> gg_to_plotly_narsil()
+ggplotly(jj_log_p + scale_narsil_dark()) |> gg_to_plotly_narsil(dark = TRUE)
 ```
 
 :::{.notes}
@@ -272,23 +287,30 @@ aus_production |>
 ```{r}
 #| label: calendar_google
 #| echo: false
+#| output: false
 
 google <- tq_get(
-  "GOOG", 
-  from = "2018-01-01", 
+  "GOOG",
+  from = "2018-01-01",
   to   = today() - days(1)
-) |> 
-  as_tsibble(index = date) 
+) |>
+  as_tsibble(index = date)
 
-p <- google |>
-  select(date, close, volume) |> 
+calendar_p <- google |>
+  select(date, close, volume) |>
   pivot_longer(-date) |>
   autoplot(value) +
   facet_wrap(vars(name), scales = "free_y", ncol = 1) +
-  theme(legend.position = "none") +
   ggtitle("Google: Daily Closing Price and Volume")
+```
 
-ggplotly(p, dynamicTicks = TRUE)
+```{r}
+#| label: calendar_google_render
+#| renderings: [light, dark]
+#| echo: false
+
+ggplotly(calendar_p + scale_narsil() + theme(legend.position = "none"), dynamicTicks = TRUE) |> gg_to_plotly_narsil()
+ggplotly(calendar_p + scale_narsil_dark() + theme(legend.position = "none"), dynamicTicks = TRUE) |> gg_to_plotly_narsil(dark = TRUE)
 ```
 
 ### Monthly aggregation
@@ -312,16 +334,21 @@ google_month
 ```{r}
 #| label: google_monthly_vol
 #| echo: false
+#| output: false
 
-p <- google_month |> 
+google_vol_p <- google_month |>
   pivot_longer(-c(month:trading_days)) |>
-  autoplot(value)  +
-  facet_wrap(vars(name), scales = "free_y", ncol = 1) +
-  theme(legend.position = "none")
-  
-ggplotly(p, dynamicTicks = TRUE) |> 
-  rangeslider() |> 
-  layout(yaxis = list(fixedrange = FALSE))
+  autoplot(value) +
+  facet_wrap(vars(name), scales = "free_y", ncol = 1)
+```
+
+```{r}
+#| label: google_monthly_vol_render
+#| renderings: [light, dark]
+#| echo: false
+
+ggplotly(google_vol_p + scale_narsil() + theme(legend.position = "none"), dynamicTicks = TRUE) |> gg_to_plotly_narsil() |> rangeslider() |> layout(yaxis = list(fixedrange = FALSE))
+ggplotly(google_vol_p + scale_narsil_dark() + theme(legend.position = "none"), dynamicTicks = TRUE) |> gg_to_plotly_narsil(dark = TRUE) |> rangeslider() |> layout(yaxis = list(fixedrange = FALSE))
 ```
 
 :::
@@ -363,8 +390,20 @@ p
 ```{r}
 #| label: global_economy_plotly
 #| echo: false
+#| output: false
 
-ggplotly(p, dynamicTicks = TRUE)
+global_economy_p <- ge |>
+  autoplot(GDP, linewidth = 1) +
+  labs(title = "GDP: Mexico, Iceland, and Australia")
+```
+
+```{r}
+#| label: global_economy_render
+#| renderings: [light, dark]
+#| echo: false
+
+ggplotly(global_economy_p + scale_narsil(), dynamicTicks = TRUE) |> gg_to_plotly_narsil()
+ggplotly(global_economy_p + scale_narsil_dark(), dynamicTicks = TRUE) |> gg_to_plotly_narsil(dark = TRUE)
 ```
 
 :::
@@ -394,14 +433,22 @@ Is the Mexican economy really that similar Australia's economy? Is Iceland's eco
 ```{r}
 #| label: population
 #| echo: false
+#| output: false
 
-p <- ge |> 
+population_p <- ge |>
   autoplot(Population, linewidth = 1) +
   labs(
     title = "Population: Mexico, Iceland, and Australia"
     )
+```
 
-ggplotly(p, dynamicTicks = TRUE)
+```{r}
+#| label: population_render
+#| renderings: [light, dark]
+#| echo: false
+
+ggplotly(population_p + scale_narsil(), dynamicTicks = TRUE) |> gg_to_plotly_narsil()
+ggplotly(population_p + scale_narsil_dark(), dynamicTicks = TRUE) |> gg_to_plotly_narsil(dark = TRUE)
 ```
 
 The population sizes of these countries are very different.
@@ -412,15 +459,23 @@ The population sizes of these countries are very different.
 ```{r}
 #| label: gdp_per_capita
 #| echo: false
+#| output: false
 
-p <- ge |> 
-  mutate(GDP_per_capita = GDP / Population) |> 
+gdpcap_p <- ge |>
+  mutate(GDP_per_capita = GDP / Population) |>
   autoplot(GDP_per_capita, linewidth = 1) +
   labs(
     title = "GDP per capita: Mexico, Iceland, and Australia"
     )
+```
 
-ggplotly(p, dynamicTicks = TRUE)
+```{r}
+#| label: gdp_per_capita_render
+#| renderings: [light, dark]
+#| echo: false
+
+ggplotly(gdpcap_p + scale_narsil(), dynamicTicks = TRUE) |> gg_to_plotly_narsil()
+ggplotly(gdpcap_p + scale_narsil_dark(), dynamicTicks = TRUE) |> gg_to_plotly_narsil(dark = TRUE)
 ```
 
 
@@ -538,18 +593,28 @@ where:
 ```{r}
 #| label: inflation_adjustment
 #| echo: false
+#| output: false
 
-print_retail <- aus_retail  |> 
+print_retail <- aus_retail  |>
   filter(Industry == "Newspaper and book retailing") |>
   group_by(Industry) |>
   index_by(Year = year(Month)) |>
   summarise(Turnover = sum(Turnover))
 
-print_retail |> 
+print_retail_p <- print_retail |>
   autoplot(Turnover) +
   labs(
     title = "Turnover: Newspaper and book retailing"
   )
+```
+
+```{r}
+#| label: inflation_adjustment_render
+#| renderings: [light, dark]
+#| echo: false
+
+print_retail_p + scale_narsil()
+print_retail_p + scale_narsil_dark()
 ```
 ### Real values
 
@@ -571,20 +636,28 @@ print_retail <- print_retail |>
 #| label: inflation_adjustment_compare
 #| echo: false
 #| warning: false
+#| output: false
 
-p <- print_retail |> 
+inflation_compare_p <- print_retail |>
   pivot_longer(
     cols            = c(Turnover, Adjusted_turnover),
     names_to        = "Type",
     values_to       = "Turnover",
-    names_transform = list(Type = as_factor) 
+    names_transform = list(Type = as_factor)
   ) |>
   autoplot(Turnover) +
   facet_wrap(vars(Type), scales = "free_y", ncol = 1) +
   theme(legend.position = "none") +
   ggtitle("Turnover: Newspaper and book retailing (Nominal vs. Real)")
+```
 
-ggplotly(p, dynamicTicks = TRUE)
+```{r}
+#| label: inflation_compare_render
+#| renderings: [light, dark]
+#| echo: false
+
+ggplotly(inflation_compare_p + scale_narsil(), dynamicTicks = TRUE) |> gg_to_plotly_narsil()
+ggplotly(inflation_compare_p + scale_narsil_dark(), dynamicTicks = TRUE) |> gg_to_plotly_narsil(dark = TRUE)
 ```
 
 :::
@@ -662,22 +735,40 @@ Seasonally adjusted series can be useful for:
 ```{r}
 #| label: seasonally_adjusted
 #| echo: false
+#| output: false
 
 mexretail_stl <-  mexretail |>
-  model(stl = STL(y, robust = TRUE)) |> 
+  model(stl = STL(y, robust = TRUE)) |>
   components()
 
-p <- mexretail_stl |>
+sa_light_p <- mexretail_stl |>
   ggplot(aes(x = date, y = y)) +
-  geom_line(color = "grey") +
-  geom_line(aes(y = season_adjust), color = "firebrick") + 
+  geom_line(colour = "#B8C8D8") +
+  geom_line(aes(y = season_adjust), colour = "#1A5276") +
   labs(
     title = "Retail Trade, Except of Motor Vehicles and Motorcycles for Mexico",
     y = "Index 2015=100",
     x = ""
   )
 
-ggplotly(p, dynamicTicks = TRUE)
+sa_dark_p <- mexretail_stl |>
+  ggplot(aes(x = date, y = y)) +
+  geom_line(colour = "#4A5468") +
+  geom_line(aes(y = season_adjust), colour = "#E8651A") +
+  labs(
+    title = "Retail Trade, Except of Motor Vehicles and Motorcycles for Mexico",
+    y = "Index 2015=100",
+    x = ""
+  )
+```
+
+```{r}
+#| label: seasonally_adjusted_render
+#| renderings: [light, dark]
+#| echo: false
+
+ggplotly(sa_light_p + theme_narsil(), dynamicTicks = TRUE) |> gg_to_plotly_narsil()
+ggplotly(sa_dark_p + theme_narsil_dark(), dynamicTicks = TRUE) |> gg_to_plotly_narsil(dark = TRUE)
 ```
 
 - For an additive decomposition, the seasonally adjusted series is given by:
@@ -859,9 +950,19 @@ mexretail_dcmp                                                # <5>
 ```{r}
 #| label: classical_decomp_plot
 #| warning: false
+#| output: false
 
-mexretail_dcmp |> 
+mexretail_dcmp_p <- mexretail_dcmp |>
   autoplot()
+```
+
+```{r}
+#| label: classical_decomp_plot_render
+#| renderings: [light, dark]
+#| echo: false
+
+mexretail_dcmp_p + scale_narsil()
+mexretail_dcmp_p + scale_narsil_dark()
 ```
 
 :::{.content-hidden unless-format="revealjs"}
@@ -987,8 +1088,9 @@ The code is basically the same as for the classical decomposition. We just need 
 
 ```{r}
 #| label: stl_decomp_full
+#| output: false
 
-mexretail |>                                
+stl_dcmp_p <- mexretail |>                                
   model(                                                      
     stl = STL(y ~                            # <1>
                 trend(window = NULL) +       # <2>
@@ -1003,6 +1105,15 @@ mexretail |>
 2. The `trend()` function is used to specify the trend component of the decomposition. The `window` argument controls the smoothness of the trend component. A larger window results in a smoother trend.
 3. The `season()` function is used to specify the seasonal component of the decomposition. The `window` argument controls the smoothness of the seasonal component. Setting it to "periodic" means that the seasonal component will be fixed over time.
 4. The `robust` argument, when set to `TRUE`, makes the STL decomposition more robust to outliers in the data, so the effect of such values is sent to the residual component.
+
+```{r}
+#| label: stl_decomp_render
+#| renderings: [light, dark]
+#| echo: false
+
+stl_dcmp_p + scale_narsil()
+stl_dcmp_p + scale_narsil_dark()
+```
 
 
 ::: {.callout-tip collapse="true"}

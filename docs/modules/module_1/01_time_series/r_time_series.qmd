@@ -340,10 +340,11 @@ tourism |>
 
 ```{r}
 #| label: ts_viz_full
+#| output: false
 
-tourism |> 
+tourism_p <- tourism |>
   filter(State == "Tasmania",
-         Region == "East Coast") |> 
+         Region == "East Coast") |>
   autoplot(Trips) +                             # <1>
   facet_wrap(vars(Purpose), scale = "free_y") + # <2>
   theme(legend.position = "none")               # <3>
@@ -352,6 +353,15 @@ tourism |>
 1. `autoplot()` detects the data automatically and proposes a plot accordingly.
 2. `facet_wrap()` Divides a plot into subplots (facets).
 3. you can customize endless feautres using `theme()`. Here, we remove the legend, as it's redudant.
+
+```{r}
+#| label: ts_viz_full_render
+#| renderings: [light, dark]
+#| echo: false
+
+tourism_p + scale_narsil() + theme(legend.position = "none")
+tourism_p + scale_narsil_dark() + theme(legend.position = "none")
+```
 
 ## Time plots
 
@@ -362,9 +372,19 @@ tourism |>
 ```{r}
 #| label: time_plot_1
 #| code-line-numbers: "2"
+#| output: false
 
-aus_production |> 
+gas_p <- aus_production |>
   autoplot(Gas)
+```
+
+```{r}
+#| label: time_plot_1_render
+#| renderings: [light, dark]
+#| echo: false
+
+gas_p + scale_narsil()
+gas_p + scale_narsil_dark()
 ```
 
 :::
@@ -374,10 +394,20 @@ aus_production |>
 ```{r}
 #| label: time_plot_2
 #| code-line-numbers: "2-3"
+#| output: false
 
-aus_production |> 
+gas_points_p <- aus_production |>
   autoplot(Gas) +
   geom_point()
+```
+
+```{r}
+#| label: time_plot_2_render
+#| renderings: [light, dark]
+#| echo: false
+
+gas_points_p + scale_narsil()
+gas_points_p + scale_narsil_dark()
 ```
 
 :::
@@ -394,9 +424,19 @@ These are the most basic type of plots. We have the time variable in the $x$-axi
 ```{r}
 #| label: gg_season
 #| code-line-numbers: "2"
+#| output: false
 
-aus_production |> 
+gas_season_p <- aus_production |>
   gg_season(Gas)
+```
+
+```{r}
+#| label: gg_season_render
+#| renderings: [light, dark]
+#| echo: false
+
+gas_season_p + theme_narsil()
+gas_season_p + theme_narsil_dark()
 ```
 
 :::{.notes}
@@ -410,12 +450,22 @@ Removing the trend from the data:
 ```{r}
 #| label: gg_season2
 #| echo: false
+#| output: false
 
-aus_production |> 
-  model(STL(Gas, robust = TRUE)) |> 
+gas_sin_tend_p <- aus_production |>
+  model(STL(Gas, robust = TRUE)) |>
   components() |>
-  mutate(sin_tend = season_year + remainder) |> 
+  mutate(sin_tend = season_year + remainder) |>
   gg_season(sin_tend)
+```
+
+```{r}
+#| label: gg_season2_render
+#| renderings: [light, dark]
+#| echo: false
+
+gas_sin_tend_p + theme_narsil()
+gas_sin_tend_p + theme_narsil_dark()
 ```
 
 
@@ -424,9 +474,19 @@ aus_production |>
 ```{r}
 #| label: gg_subseries
 #| code-line-numbers: "2"
+#| output: false
 
-aus_production |> 
+gas_subseries_p <- aus_production |>
   gg_subseries(Gas)
+```
+
+```{r}
+#| label: gg_subseries_render
+#| renderings: [light, dark]
+#| echo: false
+
+gas_subseries_p + scale_narsil()
+gas_subseries_p + scale_narsil_dark()
 ```
 
 :::{.notes}
@@ -441,7 +501,7 @@ Here we split the plot into many subplots, one for each season. This helps us se
 #| label: gg_tsdisplay
 #| code-line-numbers: "2"
 
-aus_production |> 
+aus_production |>
   gg_tsdisplay(Gas, plot_type = "season")
 ```
 
