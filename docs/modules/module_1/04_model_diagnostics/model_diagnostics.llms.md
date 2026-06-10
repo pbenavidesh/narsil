@@ -75,7 +75,7 @@ gas_fc |>
   )
 ```
 
-[![](model_diagnostics_files/figure-revealjs/gas-pi-raw-1.png)](model_diagnostics_files/figure-revealjs/gas-pi-raw-1.png)
+[![](model_diagnostics_files/figure-html/gas-pi-raw-1.png)](model_diagnostics_files/figure-html/gas-pi-raw-1.png)
 
 Both models produce intervals of **constant width** — they assume forecast variance stays the same across all periods. But the series shows growing variance: the swings in the 2000s are far larger than those in the 1970s. The intervals are miscalibrated.
 
@@ -94,7 +94,7 @@ gas_fit |>
   labs(title = "Gas — SNAIVE residuals")
 ```
 
-[![](model_diagnostics_files/figure-revealjs/gas-resid-reminder-1.png)](model_diagnostics_files/figure-revealjs/gas-resid-reminder-1.png)
+[![](model_diagnostics_files/figure-html/gas-resid-reminder-1.png)](model_diagnostics_files/figure-html/gas-resid-reminder-1.png)
 
 As we saw in [1.2](../../../../docs/modules/module_1/02_ts_dcmp/ts_dcmp.llms.md), a Box-Cox transformation stabilizes the variance. Applied here, the model fits in the transformed scale and `fable` back-transforms the forecasts automatically.
 
@@ -145,11 +145,11 @@ The intervals are computed in the transformed scale and then back-transformed. B
 
 ## Without transformation
 
-[![](model_diagnostics_files/figure-revealjs/gas-pi-no-bc-1.png)](model_diagnostics_files/figure-revealjs/gas-pi-no-bc-1.png)
+[![](model_diagnostics_files/figure-html/gas-pi-no-bc-1.png)](model_diagnostics_files/figure-html/gas-pi-no-bc-1.png)
 
 ## With Box-Cox
 
-[![](model_diagnostics_files/figure-revealjs/gas-pi-bc-1.png)](model_diagnostics_files/figure-revealjs/gas-pi-bc-1.png)
+[![](model_diagnostics_files/figure-html/gas-pi-bc-1.png)](model_diagnostics_files/figure-html/gas-pi-bc-1.png)
 
 ### 2.0.5 Accuracy after transformation
 
@@ -233,7 +233,7 @@ eggs_fc |>
   )
 ```
 
-[![](model_diagnostics_files/figure-revealjs/eggs-plot-1.png)](model_diagnostics_files/figure-revealjs/eggs-plot-1.png)
+[![](model_diagnostics_files/figure-html/eggs-plot-1.png)](model_diagnostics_files/figure-html/eggs-plot-1.png)
 
 > **NOTE:**
 >
@@ -259,7 +259,7 @@ Since the errors are uncorrelated, we can substitute e\_{T+1} with a **randomly 
 
 Here are five possible futures for Google’s closing price, each built by resampling historical residuals step by step:
 
-[![](model_diagnostics_files/figure-revealjs/google-sim-plot-1.png)](model_diagnostics_files/figure-revealjs/google-sim-plot-1.png)
+[![](model_diagnostics_files/figure-html/google-sim-plot-1.png)](model_diagnostics_files/figure-html/google-sim-plot-1.png)
 
 ### 4.0.3 From paths to intervals
 
@@ -290,7 +290,7 @@ google_fc_boot |>
   )
 ```
 
-[![](model_diagnostics_files/figure-revealjs/google-bootstrap-plot-1.png)](model_diagnostics_files/figure-revealjs/google-bootstrap-plot-1.png)
+[![](model_diagnostics_files/figure-html/google-bootstrap-plot-1.png)](model_diagnostics_files/figure-html/google-bootstrap-plot-1.png)
 
 > **TIP:**
 >
@@ -411,7 +411,7 @@ gas_final_fc |>
 
 1.  Same spec, full data — no need to rewrite the model definition.
 
-[![](model_diagnostics_files/figure-revealjs/gas-final-refit-1.png)](model_diagnostics_files/figure-revealjs/gas-final-refit-1.png)
+[![](model_diagnostics_files/figure-html/gas-final-refit-1.png)](model_diagnostics_files/figure-html/gas-final-refit-1.png)
 
 > **NOTE:**
 >

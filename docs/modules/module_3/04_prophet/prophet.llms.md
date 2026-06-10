@@ -78,8 +78,6 @@ No more guessing where the knots go.
 | Need formal inference on model parameters                    |      ❌      |
 | Need prediction intervals from theory, not simulation        |      ⚠️      |
 
-:::
-
 > **WARNING:**
 >
 > Prophet was designed for *at-scale*, analyst-friendly forecasting. On many classical monthly or quarterly economic series, a well-specified ARIMA or ETS will outperform it. Always compare on a held-out test set.
@@ -341,14 +339,7 @@ lax_accu <- lax_fc |>
   accuracy(lax_test) |>
   select(.model, type, RMSE, MAE, MAPE) |>
   arrange(type, MAPE)
-```
 
-    Warning: The future dataset is incomplete, incomplete out-of-sample data will be treated as missing. 
-    9 observations are missing between 2019 abr. and 2019 dic.
-
-Code
-
-``` r
 lax_accu
 ```
 

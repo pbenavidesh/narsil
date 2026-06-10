@@ -520,7 +520,7 @@ tourism_hts"><pre class="sourceCode numberSource r code-annotation-code number-l
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><a href="hierarchical_files/figure-revealjs/hts-state-plot-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Quarterly domestic trips by Australian state."><img data-src="hierarchical_files/figure-revealjs/hts-state-plot-1.png" width="960" alt="Quarterly domestic trips by Australian state."></a></p>
+<p><a href="hierarchical_files/figure-html/hts-state-plot-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Quarterly domestic trips by Australian state."><img data-src="hierarchical_files/figure-html/hts-state-plot-1.png" width="672" alt="Quarterly domestic trips by Australian state."></a></p>
 <figcaption>Quarterly domestic trips by Australian state.</figcaption>
 </figure>
 </div>
@@ -579,7 +579,7 @@ tourism_hts"><pre class="sourceCode numberSource r code-annotation-code number-l
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><a href="hierarchical_files/figure-revealjs/full-hts-plot-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="State-level trips split by purpose of travel."><img data-src="hierarchical_files/figure-revealjs/full-hts-plot-1.png" width="960" alt="State-level trips split by purpose of travel."></a></p>
+<p><a href="hierarchical_files/figure-html/full-hts-plot-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="State-level trips split by purpose of travel."><img data-src="hierarchical_files/figure-html/full-hts-plot-1.png" width="672" alt="State-level trips split by purpose of travel."></a></p>
 <figcaption>State-level trips split by purpose of travel.</figcaption>
 </figure>
 </div>
@@ -703,7 +703,7 @@ tourism_bu |>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><a href="hierarchical_files/figure-revealjs/reconcile-bu-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img data-src="hierarchical_files/figure-revealjs/reconcile-bu-1.png" width="960"></a></p>
+<p><a href="hierarchical_files/figure-html/reconcile-bu-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img data-src="hierarchical_files/figure-html/reconcile-bu-1.png" width="672"></a></p>
 </figure>
 </div>
 </div>
@@ -1162,7 +1162,7 @@ tourism_bu |>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><a href="hierarchical_files/figure-revealjs/accuracy-all-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Mean RMSSE by reconciliation method and aggregation level."><img data-src="hierarchical_files/figure-revealjs/accuracy-all-1.png" width="960" alt="Mean RMSSE by reconciliation method and aggregation level."></a></p>
+<p><a href="hierarchical_files/figure-html/accuracy-all-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Mean RMSSE by reconciliation method and aggregation level."><img data-src="hierarchical_files/figure-html/accuracy-all-1.png" width="672" alt="Mean RMSSE by reconciliation method and aggregation level."></a></p>
 <figcaption>Mean RMSSE by reconciliation method and aggregation level.</figcaption>
 </figure>
 </div>
@@ -1272,7 +1272,7 @@ pbs_hts"><pre class="sourceCode numberSource r code-annotation-code number-lines
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><a href="hierarchical_files/figure-revealjs/pbs-accuracy-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Mean RMSSE for the PBS mixed hierarchy by method and aggregation level."><img data-src="hierarchical_files/figure-revealjs/pbs-accuracy-1.png" width="960" alt="Mean RMSSE for the PBS mixed hierarchy by method and aggregation level."></a></p>
+<p><a href="hierarchical_files/figure-html/pbs-accuracy-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Mean RMSSE for the PBS mixed hierarchy by method and aggregation level."><img data-src="hierarchical_files/figure-html/pbs-accuracy-1.png" width="672" alt="Mean RMSSE for the PBS mixed hierarchy by method and aggregation level."></a></p>
 <figcaption>Mean RMSSE for the PBS mixed hierarchy by method and aggregation level.</figcaption>
 </figure>
 </div>
@@ -1549,44 +1549,6 @@ pbs_hts"><pre class="sourceCode numberSource r code-annotation-code number-lines
         ]
       });
     </script>
-    
-    <script>
-      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
-      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
-      // slide changes (different for each slide format).
-      (function () {
-        // dispatch for htmlwidgets
-        function fireSlideEnter() {
-          const event = window.document.createEvent("Event");
-          event.initEvent("slideenter", true, true);
-          window.document.dispatchEvent(event);
-        }
-
-        function fireSlideChanged(previousSlide, currentSlide) {
-          fireSlideEnter();
-
-          // dispatch for shiny
-          if (window.jQuery) {
-            if (previousSlide) {
-              window.jQuery(previousSlide).trigger("hidden");
-            }
-            if (currentSlide) {
-              window.jQuery(currentSlide).trigger("shown");
-            }
-          }
-        }
-
-        // hookup for slidy
-        if (window.w3c_slidy) {
-          window.w3c_slidy.add_observer(function (slide_num) {
-            // slide_num starts at position 1
-            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
-          });
-        }
-
-      })();
-    </script>
-
     <script id="quarto-html-after-body" type="application/javascript">
       window.document.addEventListener("DOMContentLoaded", function (event) {
         const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")

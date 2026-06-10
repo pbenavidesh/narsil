@@ -25,6 +25,13 @@ library(tidyverse)
     ✖ dplyr::lag()    masks stats::lag()
     ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
 
+Code
+
+``` r
+source(here::here("R/narsil_theme.R"))
+theme_set(theme_narsil())
+```
+
 - `tidyverse` is a meta-package that loads the core packages of the [tidyverse](https://tidyverse.org/).
 
 We will always load all the required packages a the beginning of the document. When loading the `tidyverse`, it shows which packages are being attached, as well as any conflicts with previously loaded packages.

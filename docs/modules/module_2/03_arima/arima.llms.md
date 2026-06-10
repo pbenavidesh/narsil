@@ -112,7 +112,7 @@ Selecting the right ARIMA order involves three decisions:
 
 In `fable`, ARIMA models are specified inside `model()` using the `ARIMA()` function. The order is controlled with `pdq()` for non-seasonal terms and `PDQ()` for seasonal terms. When `pdq()` is left unspecified, `fable` searches for the best order automatically.
 
-[![](arima_files/figure-revealjs/us-change-tsdisplay-1.png)](arima_files/figure-revealjs/us-change-tsdisplay-1.png)
+[![](arima_files/figure-html/us-change-tsdisplay-1.png)](arima_files/figure-html/us-change-tsdisplay-1.png)
 
 The series appears stationary (d = 0). The PACF shows significant spikes at lags 1–3, suggesting AR(3). We can fit this manually, compare it against automatic selection strategies, and let AIC\_c arbitrate — all within a single `mable`:
 
@@ -172,7 +172,7 @@ glance(us_change_fit) |>
 > tictoc::toc()
 > ```
 >
->     auto: 0.12 sec elapsed
+>     auto: 0.13 sec elapsed
 >
 > Code
 >
@@ -190,7 +190,7 @@ glance(us_change_fit) |>
 > tictoc::toc()
 > ```
 >
->     exhaustive: 0.75 sec elapsed
+>     exhaustive: 0.72 sec elapsed
 >
 > Times will vary by hardware, but the **relative difference** is what matters. On longer series like `mexretail` (480+ monthly observations with seasonal structure), the gap is even more pronounced — which is why `freeze` is recommended for documents containing exhaustive ARIMA searches.
 
@@ -255,7 +255,7 @@ us_change_fit |>
   gg_tsresiduals()
 ```
 
-[![](arima_files/figure-revealjs/us-change-residuals-1.png)](arima_files/figure-revealjs/us-change-residuals-1.png)
+[![](arima_files/figure-html/us-change-residuals-1.png)](arima_files/figure-html/us-change-residuals-1.png)
 
 Code
 
@@ -291,7 +291,7 @@ us_change_fit |>
   )
 ```
 
-[![](arima_files/figure-revealjs/us-change-forecast-1.png)](arima_files/figure-revealjs/us-change-forecast-1.png)
+[![](arima_files/figure-html/us-change-forecast-1.png)](arima_files/figure-html/us-change-forecast-1.png)
 
 > **NOTE:**
 >
@@ -354,7 +354,7 @@ Code
 mexretail_fit_stl_arima |> gg_tsresiduals()
 ```
 
-[![](arima_files/figure-revealjs/stl-arima-residuals-1.png)](arima_files/figure-revealjs/stl-arima-residuals-1.png)
+[![](arima_files/figure-html/stl-arima-residuals-1.png)](arima_files/figure-html/stl-arima-residuals-1.png)
 
 Code
 
@@ -368,7 +368,7 @@ mexretail_fit_stl_arima |>
   )
 ```
 
-[![](arima_files/figure-revealjs/stl-arima-forecast-1.png)](arima_files/figure-revealjs/stl-arima-forecast-1.png)
+[![](arima_files/figure-html/stl-arima-forecast-1.png)](arima_files/figure-html/stl-arima-forecast-1.png)
 
 ## 3.2 SARIMA
 
@@ -411,7 +411,7 @@ mexretail |>
   )
 ```
 
-[![](arima_files/figure-revealjs/mexretail-tsdisplay-1.png)](arima_files/figure-revealjs/mexretail-tsdisplay-1.png)
+[![](arima_files/figure-html/mexretail-tsdisplay-1.png)](arima_files/figure-html/mexretail-tsdisplay-1.png)
 
 > **NOTE:**
 >
@@ -479,7 +479,7 @@ mexretail_fit_sarima |>
   gg_tsresiduals(lag_max = 48)
 ```
 
-[![](arima_files/figure-revealjs/sarima-residuals-1.png)](arima_files/figure-revealjs/sarima-residuals-1.png)
+[![](arima_files/figure-html/sarima-residuals-1.png)](arima_files/figure-html/sarima-residuals-1.png)
 
 Code
 
@@ -537,9 +537,9 @@ mexretail_fit |>
   arrange(RMSE)
 ```
 
-[![](arima_files/figure-revealjs/comparison-plot-facet-1.png)](arima_files/figure-revealjs/comparison-plot-facet-1.png)
+[![](arima_files/figure-html/comparison-plot-facet-1.png)](arima_files/figure-html/comparison-plot-facet-1.png)
 
-[![](arima_files/figure-revealjs/comparison-plot-overlay-1.png)](arima_files/figure-revealjs/comparison-plot-overlay-1.png)
+[![](arima_files/figure-html/comparison-plot-overlay-1.png)](arima_files/figure-html/comparison-plot-overlay-1.png)
 
 > **NOTE:**
 >

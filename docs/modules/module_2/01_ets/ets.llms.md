@@ -99,7 +99,7 @@ algeria_economy |>
   autoplot(Exports)
 ```
 
-[![](ets_files/figure-revealjs/alg-plot-1.png)](ets_files/figure-revealjs/alg-plot-1.png)
+[![](ets_files/figure-html/alg-plot-1.png)](ets_files/figure-html/alg-plot-1.png)
 
 Code
 
@@ -146,11 +146,11 @@ alg_fc <- alg_fit |>
 >          AIC     AICc      BIC 
 >     446.7154 447.1599 452.8968 
 
-[![](ets_files/figure-revealjs/ses-plot-1.png)](ets_files/figure-revealjs/ses-plot-1.png)
+[![](ets_files/figure-html/ses-plot-1.png)](ets_files/figure-html/ses-plot-1.png)
 
 Comparing the SES and Naive forecasts:
 
-[![](ets_files/figure-revealjs/ses-v-naive-plot-1.png)](ets_files/figure-revealjs/ses-v-naive-plot-1.png)
+[![](ets_files/figure-html/ses-v-naive-plot-1.png)](ets_files/figure-html/ses-v-naive-plot-1.png)
 
 ## 1.2 Methods with trend
 
@@ -182,7 +182,7 @@ bra_economy |>
   autoplot(Pop)
 ```
 
-[![](ets_files/figure-revealjs/bra-pop-1.png)](ets_files/figure-revealjs/bra-pop-1.png)
+[![](ets_files/figure-html/bra-pop-1.png)](ets_files/figure-html/bra-pop-1.png)
 
 Code
 
@@ -227,7 +227,7 @@ bra_fc |>
   guides(colour = guide_legend(title = "Forecast"))
 ```
 
-[![](ets_files/figure-revealjs/holt_full_plt-1.png)](ets_files/figure-revealjs/holt_full_plt-1.png)
+[![](ets_files/figure-html/holt_full_plt-1.png)](ets_files/figure-html/holt_full_plt-1.png)
 
 ### 1.2.2 Damped trend
 
@@ -263,7 +263,7 @@ bra_economy |>
 
 1.  We specify `trend("Ad")` to indicate that we want a damped trend, and `phi = 0.9` sets the damping parameter to 0.9. We could also let the model estimate \phi automatically by omitting the `phi` argument.
 
-[![](ets_files/figure-revealjs/damped_full-1.png)](ets_files/figure-revealjs/damped_full-1.png)
+[![](ets_files/figure-html/damped_full-1.png)](ets_files/figure-html/damped_full-1.png)
 
 ## 1.3 Handling seasonality: two strategies
 
@@ -292,7 +292,7 @@ aus_holidays |> autoplot(Trips) +
        y = "Overnight trips (millions)")
 ```
 
-[![](ets_files/figure-revealjs/aus-holidays-data-1.png)](ets_files/figure-revealjs/aus-holidays-data-1.png)
+[![](ets_files/figure-html/aus-holidays-data-1.png)](ets_files/figure-html/aus-holidays-data-1.png)
 
 Code
 
@@ -324,7 +324,7 @@ aus_holidays |>
 3.  A multiplicative error version of the same spec.
 4.  Multiplicative errors (`error("M")`) are often better when the variance of the series grows with its level.
 
-[![](ets_files/figure-revealjs/stl_ets_full-1.png)](ets_files/figure-revealjs/stl_ets_full-1.png)
+[![](ets_files/figure-html/stl_ets_full-1.png)](ets_files/figure-html/stl_ets_full-1.png)
 
 > **NOTE:**
 >
@@ -380,7 +380,7 @@ aus_fit_hw |>
   guides(colour = guide_legend(title = "Forecast"))
 ```
 
-[![](ets_files/figure-revealjs/hw_full_plt-1.png)](ets_files/figure-revealjs/hw_full_plt-1.png)
+[![](ets_files/figure-html/hw_full_plt-1.png)](ets_files/figure-html/hw_full_plt-1.png)
 
 > **NOTE:**
 >
@@ -426,7 +426,7 @@ sth_cross_ped |>
        y="Pedestrians ('000)")
 ```
 
-[![](ets_files/figure-revealjs/hw_damped-1.png)](ets_files/figure-revealjs/hw_damped-1.png)
+[![](ets_files/figure-html/hw_damped-1.png)](ets_files/figure-html/hw_damped-1.png)
 
 > **TIP:**
 >
@@ -509,7 +509,7 @@ holidays_train |>
   )
 ```
 
-[![](ets_files/figure-revealjs/train-test-split-plt-1.png)](ets_files/figure-revealjs/train-test-split-plt-1.png)
+[![](ets_files/figure-html/train-test-split-plt-1.png)](ets_files/figure-html/train-test-split-plt-1.png)
 
 ### 2.0.2 Fitting all five models
 
@@ -578,7 +578,7 @@ holidays_fc |>
   guides(colour = guide_legend(title = "Model"))
 ```
 
-[![](ets_files/figure-revealjs/all-models-fc-1.png)](ets_files/figure-revealjs/all-models-fc-1.png)
+[![](ets_files/figure-html/all-models-fc-1.png)](ets_files/figure-html/all-models-fc-1.png)
 
 ### 2.0.4 Accuracy
 

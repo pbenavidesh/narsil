@@ -26,6 +26,9 @@ Code
 library(tidyverse)
 library(fpp3)
 library(plotly)
+
+source(here::here("R/narsil_theme.R"))
+theme_set(theme_narsil())
 ```
 
 > **WARNING:**

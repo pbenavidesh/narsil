@@ -82,7 +82,7 @@ We can make both cycles visible using seasonal plots at each period:
 
 ## Daily pattern (24h)
 
-[![](complex_seasonality_files/figure-html/acf-plot-1.png)](complex_seasonality_files/figure-html/acf-plot-1.png)
+[![](complex_seasonality_files/figure-revealjs/acf-plot-1.png)](complex_seasonality_files/figure-revealjs/acf-plot-1.png)
 
 ## Weekly pattern (168h)
 
@@ -145,7 +145,7 @@ vic_elec_dcmp
 2.  Daily seasonal component: repeating every 24 hours.
 3.  Weekly seasonal component: repeating every 168 hours.
 
-[![](complex_seasonality_files/figure-html/stl-decomp-plot-1.png)](complex_seasonality_files/figure-html/stl-decomp-plot-1.png)
+[![](complex_seasonality_files/figure-revealjs/stl-decomp-plot-1.png)](complex_seasonality_files/figure-revealjs/stl-decomp-plot-1.png)
 
 > **NOTE:**
 >
@@ -189,15 +189,6 @@ Code
 stl_fc <- stl_fit |>
   forecast(h = nrow(vic_elec_test))
 ```
-
-    Warning in geom2trace.default(dots[[1L]][[2L]], dots[[2L]][[1L]], dots[[3L]][[1L]]): geom_GeomLineribbon() has yet to be implemented in plotly.
-      If you'd like to see this geom implemented,
-      Please open an issue with your example code at
-      https://github.com/ropensci/plotly/issues
-    Warning in geom2trace.default(dots[[1L]][[2L]], dots[[2L]][[1L]], dots[[3L]][[1L]]): geom_GeomLineribbon() has yet to be implemented in plotly.
-      If you'd like to see this geom implemented,
-      Please open an issue with your example code at
-      https://github.com/ropensci/plotly/issues
 
 # 4 Approach 2 — Harmonic Regression with Covariates
 
@@ -335,15 +326,6 @@ fourier_fc <- fourier_fit |>
   forecast(new_data = vic_elec_future)
 ```
 
-    Warning in geom2trace.default(dots[[1L]][[2L]], dots[[2L]][[1L]], dots[[3L]][[1L]]): geom_GeomLineribbon() has yet to be implemented in plotly.
-      If you'd like to see this geom implemented,
-      Please open an issue with your example code at
-      https://github.com/ropensci/plotly/issues
-    Warning in geom2trace.default(dots[[1L]][[2L]], dots[[2L]][[1L]], dots[[3L]][[1L]]): geom_GeomLineribbon() has yet to be implemented in plotly.
-      If you'd like to see this geom implemented,
-      Please open an issue with your example code at
-      https://github.com/ropensci/plotly/issues
-
 # 5 Model Comparison
 
 ## 5.1 Accuracy
@@ -369,19 +351,7 @@ stl_fit |>
   gg_tsresiduals(lag_max = 48)
 ```
 
-    Warning: Removed 168 rows containing missing values or values outside the scale range
-    (`geom_line()`).
-
-    Warning: Removed 168 rows containing missing values or values outside the scale range
-    (`geom_point()`).
-
-    Warning: Removed 168 rows containing non-finite outside the scale range
-    (`stat_bin()`).
-
-    Warning: Removed 168 rows containing missing values or values outside the scale range
-    (`geom_rug()`).
-
-[![](complex_seasonality_files/figure-html/resid-stl-ets-1.png)](complex_seasonality_files/figure-html/resid-stl-ets-1.png)
+[![](complex_seasonality_files/figure-revealjs/resid-stl-ets-1.png)](complex_seasonality_files/figure-revealjs/resid-stl-ets-1.png)
 
 ## STL + ARIMA
 
@@ -393,19 +363,7 @@ stl_fit |>
   gg_tsresiduals(lag_max = 48)
 ```
 
-    Warning: Removed 168 rows containing missing values or values outside the scale range
-    (`geom_line()`).
-
-    Warning: Removed 168 rows containing missing values or values outside the scale range
-    (`geom_point()`).
-
-    Warning: Removed 168 rows containing non-finite outside the scale range
-    (`stat_bin()`).
-
-    Warning: Removed 168 rows containing missing values or values outside the scale range
-    (`geom_rug()`).
-
-[![](complex_seasonality_files/figure-html/resid-stl-arima-1.png)](complex_seasonality_files/figure-html/resid-stl-arima-1.png)
+[![](complex_seasonality_files/figure-revealjs/resid-stl-arima-1.png)](complex_seasonality_files/figure-revealjs/resid-stl-arima-1.png)
 
 ## Fourier + Covariates
 
@@ -417,7 +375,7 @@ fourier_fit |>
   gg_tsresiduals(lag_max = 48)
 ```
 
-[![](complex_seasonality_files/figure-html/resid-fourier-cov-1.png)](complex_seasonality_files/figure-html/resid-fourier-cov-1.png)
+[![](complex_seasonality_files/figure-revealjs/resid-fourier-cov-1.png)](complex_seasonality_files/figure-revealjs/resid-fourier-cov-1.png)
 
 ## 5.3 When to use each approach
 

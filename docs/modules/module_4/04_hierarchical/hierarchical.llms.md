@@ -239,7 +239,7 @@ p <- tourism_hts |>
 p
 ```
 
-[![Quarterly domestic trips by Australian state.](hierarchical_files/figure-revealjs/hts-state-plot-1.png)](hierarchical_files/figure-revealjs/hts-state-plot-1.png "Quarterly domestic trips by Australian state.")
+[![Quarterly domestic trips by Australian state.](hierarchical_files/figure-html/hts-state-plot-1.png)](hierarchical_files/figure-html/hts-state-plot-1.png "Quarterly domestic trips by Australian state.")
 
 Quarterly domestic trips by Australian state.
 
@@ -302,7 +302,7 @@ p <- tourism_full |>
 p
 ```
 
-[![State-level trips split by purpose of travel.](hierarchical_files/figure-revealjs/full-hts-plot-1.png)](hierarchical_files/figure-revealjs/full-hts-plot-1.png "State-level trips split by purpose of travel.")
+[![State-level trips split by purpose of travel.](hierarchical_files/figure-html/full-hts-plot-1.png)](hierarchical_files/figure-html/full-hts-plot-1.png "State-level trips split by purpose of travel.")
 
 State-level trips split by purpose of travel.
 
@@ -380,7 +380,7 @@ tourism_bu |>
 
 1.  `bottom_up(ets)` takes the Region-level ETS forecasts as given and sums up. The national and state ETS forecasts are replaced by aggregations of the Region forecasts.
 
-[![](hierarchical_files/figure-revealjs/reconcile-bu-1.png)](hierarchical_files/figure-revealjs/reconcile-bu-1.png)
+[![](hierarchical_files/figure-html/reconcile-bu-1.png)](hierarchical_files/figure-html/reconcile-bu-1.png)
 
 At the Region level, BU coherent forecasts are identical to the original ETS forecasts — nothing changes there.
 
@@ -618,7 +618,7 @@ tourism_fc |>
   theme_minimal()
 ```
 
-[![Mean RMSSE by reconciliation method and aggregation level.](hierarchical_files/figure-revealjs/accuracy-all-1.png)](hierarchical_files/figure-revealjs/accuracy-all-1.png "Mean RMSSE by reconciliation method and aggregation level.")
+[![Mean RMSSE by reconciliation method and aggregation level.](hierarchical_files/figure-html/accuracy-all-1.png)](hierarchical_files/figure-html/accuracy-all-1.png "Mean RMSSE by reconciliation method and aggregation level.")
 
 Mean RMSSE by reconciliation method and aggregation level.
 
@@ -696,7 +696,7 @@ pbs_fc |>
   theme_minimal()
 ```
 
-[![Mean RMSSE for the PBS mixed hierarchy by method and aggregation level.](hierarchical_files/figure-revealjs/pbs-accuracy-1.png)](hierarchical_files/figure-revealjs/pbs-accuracy-1.png "Mean RMSSE for the PBS mixed hierarchy by method and aggregation level.")
+[![Mean RMSSE for the PBS mixed hierarchy by method and aggregation level.](hierarchical_files/figure-html/pbs-accuracy-1.png)](hierarchical_files/figure-html/pbs-accuracy-1.png "Mean RMSSE for the PBS mixed hierarchy by method and aggregation level.")
 
 Mean RMSSE for the PBS mixed hierarchy by method and aggregation level.
 

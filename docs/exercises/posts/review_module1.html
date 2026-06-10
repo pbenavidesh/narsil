@@ -84,9 +84,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-33269adcf1721b81efc5ea7fcfe7f0ee.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../../site_libs/bootstrap/bootstrap-2830504cdea3b4fde7d97361b9c3dbd0.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../../site_libs/bootstrap/bootstrap-dark-59db28b52adf7de792415ea34bf2102e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../../../site_libs/bootstrap/bootstrap-2830504cdea3b4fde7d97361b9c3dbd0.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../../../site_libs/bootstrap/bootstrap-22744609ec98dd0968a285ad741d3dc1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../../site_libs/bootstrap/bootstrap-dark-7c304134c18905102272d98ad097d37c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../../site_libs/bootstrap/bootstrap-22744609ec98dd0968a285ad741d3dc1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script src="../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
@@ -192,7 +192,6 @@ window.Quarto = {
 };
 </script>
 
-<link rel="stylesheet" href="../../../styles.css">
 <meta property="og:title" content="Module 1 Review – Time Series Forecasting">
 <meta property="og:description" content="End-of-module integrative exercise covering the full Module 1 workflow: exploration, transformations, STL decomposition, benchmark forecasting, decomposition models, residual diagnostics, and forecast evaluation.">
 <meta property="og:image" content="https://pbenavidesh.github.io/narsil/docs/exercises/posts/review_module1_files/figure-html/a-plot-1.png">
@@ -1684,6 +1683,9 @@ quarto-executable-code-5450563D
 
 library(tidyverse)
 library(fpp3)
+
+source(here::here(&quot;R/narsil_theme.R&quot;))
+theme_set(theme_narsil())
 ```
 
 ## Context
@@ -2191,453 +2193,456 @@ The Drift component in your model assumes that the long-run average growth rate 
 <span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fpp3)</span>
-<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a><span class="fu">## Context</span></span>
-<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a>Australian monthly retail turnover data covers a wide range of industries and states. In this review you will work with a single series extracted from the <span class="in">`aus_retail`</span> dataset: **clothing, footwear, and personal accessory retailing in Victoria**.</span>
-<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a>::: {.callout-important}</span>
-<span id="cb22-29"><a href="#cb22-29" aria-hidden="true" tabindex="-1"></a><span class="fu">## What is expected throughout this exercise</span></span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"R/narsil_theme.R"</span>))</span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_narsil</span>())</span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a><span class="fu">## Context</span></span>
+<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-29"><a href="#cb22-29" aria-hidden="true" tabindex="-1"></a>Australian monthly retail turnover data covers a wide range of industries and states. In this review you will work with a single series extracted from the <span class="in">`aus_retail`</span> dataset: **clothing, footwear, and personal accessory retailing in Victoria**.</span>
 <span id="cb22-30"><a href="#cb22-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-31"><a href="#cb22-31" aria-hidden="true" tabindex="-1"></a>Every decision you make — whether to apply a transformation, how to interpret a decomposition, which model to prefer — must be **justified**. A correct result with no explanation is worth less than a well-reasoned argument that leads to the right answer. Be concise; a sentence or two is usually enough. The collapsed solutions include the reasoning that is expected.</span>
-<span id="cb22-32"><a href="#cb22-32" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb22-31"><a href="#cb22-31" aria-hidden="true" tabindex="-1"></a>::: {.callout-important}</span>
+<span id="cb22-32"><a href="#cb22-32" aria-hidden="true" tabindex="-1"></a><span class="fu">## What is expected throughout this exercise</span></span>
 <span id="cb22-33"><a href="#cb22-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-34"><a href="#cb22-34" aria-hidden="true" tabindex="-1"></a>---</span>
-<span id="cb22-35"><a href="#cb22-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-36"><a href="#cb22-36" aria-hidden="true" tabindex="-1"></a><span class="fu">## Part a — Extraction and exploration</span></span>
-<span id="cb22-37"><a href="#cb22-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-38"><a href="#cb22-38" aria-hidden="true" tabindex="-1"></a>The <span class="in">`aus_retail`</span> dataset is a tsibble with multiple keys. Before doing any analysis, you need to understand its structure and extract the right series.</span>
-<span id="cb22-39"><a href="#cb22-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-40"><a href="#cb22-40" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Inspect <span class="in">`aus_retail`</span>. What are the key variables? What is the time index? How many distinct series does it contain?</span>
-<span id="cb22-41"><a href="#cb22-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-42"><a href="#cb22-42" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Extract the series for <span class="in">`"Clothing, footwear and personal accessory retailing"`</span> in <span class="in">`"Victoria"`</span>. Assign it to <span class="in">`clothing_vic`</span>.</span>
-<span id="cb22-43"><a href="#cb22-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-44"><a href="#cb22-44" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Plot the full series. Describe what you see: is there a trend? Is there seasonality? Does the variance appear constant over time, or does it change with the level of the series?</span>
-<span id="cb22-45"><a href="#cb22-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-46"><a href="#cb22-46" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Produce a seasonal plot (<span class="in">`gg_season()`</span>) and a subseries plot (<span class="in">`gg_subseries()`</span>). What do these reveal about the seasonal pattern? Is it stable across years?</span>
-<span id="cb22-47"><a href="#cb22-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-48"><a href="#cb22-48" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip collapse="true"}</span>
-<span id="cb22-49"><a href="#cb22-49" aria-hidden="true" tabindex="-1"></a><span class="fu">## Solution — Part a</span></span>
+<span id="cb22-34"><a href="#cb22-34" aria-hidden="true" tabindex="-1"></a>Every decision you make — whether to apply a transformation, how to interpret a decomposition, which model to prefer — must be **justified**. A correct result with no explanation is worth less than a well-reasoned argument that leads to the right answer. Be concise; a sentence or two is usually enough. The collapsed solutions include the reasoning that is expected.</span>
+<span id="cb22-35"><a href="#cb22-35" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb22-36"><a href="#cb22-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-37"><a href="#cb22-37" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb22-38"><a href="#cb22-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-39"><a href="#cb22-39" aria-hidden="true" tabindex="-1"></a><span class="fu">## Part a — Extraction and exploration</span></span>
+<span id="cb22-40"><a href="#cb22-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-41"><a href="#cb22-41" aria-hidden="true" tabindex="-1"></a>The <span class="in">`aus_retail`</span> dataset is a tsibble with multiple keys. Before doing any analysis, you need to understand its structure and extract the right series.</span>
+<span id="cb22-42"><a href="#cb22-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-43"><a href="#cb22-43" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Inspect <span class="in">`aus_retail`</span>. What are the key variables? What is the time index? How many distinct series does it contain?</span>
+<span id="cb22-44"><a href="#cb22-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-45"><a href="#cb22-45" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Extract the series for <span class="in">`"Clothing, footwear and personal accessory retailing"`</span> in <span class="in">`"Victoria"`</span>. Assign it to <span class="in">`clothing_vic`</span>.</span>
+<span id="cb22-46"><a href="#cb22-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-47"><a href="#cb22-47" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Plot the full series. Describe what you see: is there a trend? Is there seasonality? Does the variance appear constant over time, or does it change with the level of the series?</span>
+<span id="cb22-48"><a href="#cb22-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-49"><a href="#cb22-49" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Produce a seasonal plot (<span class="in">`gg_season()`</span>) and a subseries plot (<span class="in">`gg_subseries()`</span>). What do these reveal about the seasonal pattern? Is it stable across years?</span>
 <span id="cb22-50"><a href="#cb22-50" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-51"><a href="#cb22-51" aria-hidden="true" tabindex="-1"></a>**1. Structure of `aus_retail`**</span>
-<span id="cb22-52"><a href="#cb22-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-55"><a href="#cb22-55" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-56"><a href="#cb22-56" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: a-inspect</span></span>
-<span id="cb22-57"><a href="#cb22-57" aria-hidden="true" tabindex="-1"></a>aus_retail</span>
-<span id="cb22-58"><a href="#cb22-58" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-59"><a href="#cb22-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-62"><a href="#cb22-62" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-63"><a href="#cb22-63" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: a-keys</span></span>
-<span id="cb22-64"><a href="#cb22-64" aria-hidden="true" tabindex="-1"></a>aus_retail <span class="sc">|&gt;</span> <span class="fu">distinct</span>(State, Industry) <span class="sc">|&gt;</span> <span class="fu">count</span>()</span>
-<span id="cb22-65"><a href="#cb22-65" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-66"><a href="#cb22-66" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-67"><a href="#cb22-67" aria-hidden="true" tabindex="-1"></a>The tsibble is indexed by <span class="in">`Month`</span> (monthly frequency) and has two key variables: <span class="in">`State`</span> and <span class="in">`Industry`</span>. Each combination of state and industry defines one series; there are <span class="in">`r aus_retail |&gt; distinct(State, Industry) |&gt; nrow()`</span> distinct series in total. The measured variable is <span class="in">`Turnover`</span> (retail turnover in millions of AUD).</span>
-<span id="cb22-68"><a href="#cb22-68" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-69"><a href="#cb22-69" aria-hidden="true" tabindex="-1"></a>**2. Extract the Victoria clothing series**</span>
-<span id="cb22-70"><a href="#cb22-70" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-73"><a href="#cb22-73" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-74"><a href="#cb22-74" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: a-extract</span></span>
-<span id="cb22-75"><a href="#cb22-75" aria-hidden="true" tabindex="-1"></a>clothing_vic <span class="ot">&lt;-</span> aus_retail <span class="sc">|&gt;</span></span>
-<span id="cb22-76"><a href="#cb22-76" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
-<span id="cb22-77"><a href="#cb22-77" aria-hidden="true" tabindex="-1"></a>    State    <span class="sc">==</span> <span class="st">"Victoria"</span>,</span>
-<span id="cb22-78"><a href="#cb22-78" aria-hidden="true" tabindex="-1"></a>    Industry <span class="sc">==</span> <span class="st">"Clothing, footwear and personal accessory retailing"</span></span>
-<span id="cb22-79"><a href="#cb22-79" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb22-80"><a href="#cb22-80" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-81"><a href="#cb22-81" aria-hidden="true" tabindex="-1"></a>clothing_vic</span>
-<span id="cb22-82"><a href="#cb22-82" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb22-51"><a href="#cb22-51" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip collapse="true"}</span>
+<span id="cb22-52"><a href="#cb22-52" aria-hidden="true" tabindex="-1"></a><span class="fu">## Solution — Part a</span></span>
+<span id="cb22-53"><a href="#cb22-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-54"><a href="#cb22-54" aria-hidden="true" tabindex="-1"></a>**1. Structure of `aus_retail`**</span>
+<span id="cb22-55"><a href="#cb22-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-58"><a href="#cb22-58" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb22-59"><a href="#cb22-59" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: a-inspect</span></span>
+<span id="cb22-60"><a href="#cb22-60" aria-hidden="true" tabindex="-1"></a>aus_retail</span>
+<span id="cb22-61"><a href="#cb22-61" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb22-62"><a href="#cb22-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-65"><a href="#cb22-65" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb22-66"><a href="#cb22-66" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: a-keys</span></span>
+<span id="cb22-67"><a href="#cb22-67" aria-hidden="true" tabindex="-1"></a>aus_retail <span class="sc">|&gt;</span> <span class="fu">distinct</span>(State, Industry) <span class="sc">|&gt;</span> <span class="fu">count</span>()</span>
+<span id="cb22-68"><a href="#cb22-68" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb22-69"><a href="#cb22-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-70"><a href="#cb22-70" aria-hidden="true" tabindex="-1"></a>The tsibble is indexed by <span class="in">`Month`</span> (monthly frequency) and has two key variables: <span class="in">`State`</span> and <span class="in">`Industry`</span>. Each combination of state and industry defines one series; there are <span class="in">`r aus_retail |&gt; distinct(State, Industry) |&gt; nrow()`</span> distinct series in total. The measured variable is <span class="in">`Turnover`</span> (retail turnover in millions of AUD).</span>
+<span id="cb22-71"><a href="#cb22-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-72"><a href="#cb22-72" aria-hidden="true" tabindex="-1"></a>**2. Extract the Victoria clothing series**</span>
+<span id="cb22-73"><a href="#cb22-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-76"><a href="#cb22-76" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb22-77"><a href="#cb22-77" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: a-extract</span></span>
+<span id="cb22-78"><a href="#cb22-78" aria-hidden="true" tabindex="-1"></a>clothing_vic <span class="ot">&lt;-</span> aus_retail <span class="sc">|&gt;</span></span>
+<span id="cb22-79"><a href="#cb22-79" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
+<span id="cb22-80"><a href="#cb22-80" aria-hidden="true" tabindex="-1"></a>    State    <span class="sc">==</span> <span class="st">"Victoria"</span>,</span>
+<span id="cb22-81"><a href="#cb22-81" aria-hidden="true" tabindex="-1"></a>    Industry <span class="sc">==</span> <span class="st">"Clothing, footwear and personal accessory retailing"</span></span>
+<span id="cb22-82"><a href="#cb22-82" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb22-83"><a href="#cb22-83" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-84"><a href="#cb22-84" aria-hidden="true" tabindex="-1"></a>**3. Time plot and visual inspection**</span>
-<span id="cb22-85"><a href="#cb22-85" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-88"><a href="#cb22-88" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-89"><a href="#cb22-89" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: a-plot</span></span>
-<span id="cb22-90"><a href="#cb22-90" aria-hidden="true" tabindex="-1"></a>clothing_vic <span class="sc">|&gt;</span></span>
-<span id="cb22-91"><a href="#cb22-91" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(Turnover) <span class="sc">+</span></span>
-<span id="cb22-92"><a href="#cb22-92" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb22-93"><a href="#cb22-93" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Clothing, footwear &amp; personal accessory retailing — Victoria"</span>,</span>
-<span id="cb22-94"><a href="#cb22-94" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Turnover ($ million AUD)"</span>,</span>
-<span id="cb22-95"><a href="#cb22-95" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="cn">NULL</span></span>
-<span id="cb22-96"><a href="#cb22-96" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb22-97"><a href="#cb22-97" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-98"><a href="#cb22-98" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-99"><a href="#cb22-99" aria-hidden="true" tabindex="-1"></a>The series shows three clear features:</span>
-<span id="cb22-100"><a href="#cb22-100" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-101"><a href="#cb22-101" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Upward trend**: turnover grows consistently from the early 1980s to the mid-2000s, then levels off and becomes somewhat erratic after 2010.</span>
-<span id="cb22-102"><a href="#cb22-102" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Strong seasonality**: there is a large spike every December (Christmas shopping) and a secondary pattern within each year.</span>
-<span id="cb22-103"><a href="#cb22-103" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Non-constant variance**: the amplitude of seasonal fluctuations grows with the level of the series — a hallmark of multiplicative seasonality. This indicates that a variance-stabilizing transformation is likely needed before modeling.</span>
-<span id="cb22-104"><a href="#cb22-104" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-105"><a href="#cb22-105" aria-hidden="true" tabindex="-1"></a>**4. Seasonal and subseries plots**</span>
-<span id="cb22-106"><a href="#cb22-106" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-109"><a href="#cb22-109" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-110"><a href="#cb22-110" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: a-seasonal</span></span>
-<span id="cb22-111"><a href="#cb22-111" aria-hidden="true" tabindex="-1"></a>clothing_vic <span class="sc">|&gt;</span> <span class="fu">gg_season</span>(Turnover) <span class="sc">+</span></span>
-<span id="cb22-112"><a href="#cb22-112" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Seasonal plot — Victoria clothing"</span>, <span class="at">y =</span> <span class="st">"Turnover ($ million AUD)"</span>)</span>
-<span id="cb22-113"><a href="#cb22-113" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-114"><a href="#cb22-114" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-117"><a href="#cb22-117" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-118"><a href="#cb22-118" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: a-subseries</span></span>
-<span id="cb22-119"><a href="#cb22-119" aria-hidden="true" tabindex="-1"></a>clothing_vic <span class="sc">|&gt;</span> <span class="fu">gg_subseries</span>(Turnover) <span class="sc">+</span></span>
-<span id="cb22-120"><a href="#cb22-120" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Subseries plot — Victoria clothing"</span>, <span class="at">y =</span> <span class="st">"Turnover ($ million AUD)"</span>)</span>
-<span id="cb22-121"><a href="#cb22-121" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-122"><a href="#cb22-122" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-123"><a href="#cb22-123" aria-hidden="true" tabindex="-1"></a>Both plots confirm a dominant December peak — consistently the highest month across all years, and the gap between December and the rest of the year grows over time, reinforcing the multiplicative pattern. The subseries plot also shows that the within-month means increase across the full period for most months. The seasonal shape is stable in structure (December spike, trough in February/March) but not in magnitude, which is consistent with an evolving seasonal component.</span>
-<span id="cb22-124"><a href="#cb22-124" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb22-84"><a href="#cb22-84" aria-hidden="true" tabindex="-1"></a>clothing_vic</span>
+<span id="cb22-85"><a href="#cb22-85" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb22-86"><a href="#cb22-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-87"><a href="#cb22-87" aria-hidden="true" tabindex="-1"></a>**3. Time plot and visual inspection**</span>
+<span id="cb22-88"><a href="#cb22-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-91"><a href="#cb22-91" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb22-92"><a href="#cb22-92" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: a-plot</span></span>
+<span id="cb22-93"><a href="#cb22-93" aria-hidden="true" tabindex="-1"></a>clothing_vic <span class="sc">|&gt;</span></span>
+<span id="cb22-94"><a href="#cb22-94" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(Turnover) <span class="sc">+</span></span>
+<span id="cb22-95"><a href="#cb22-95" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb22-96"><a href="#cb22-96" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Clothing, footwear &amp; personal accessory retailing — Victoria"</span>,</span>
+<span id="cb22-97"><a href="#cb22-97" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Turnover ($ million AUD)"</span>,</span>
+<span id="cb22-98"><a href="#cb22-98" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="cn">NULL</span></span>
+<span id="cb22-99"><a href="#cb22-99" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb22-100"><a href="#cb22-100" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb22-101"><a href="#cb22-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-102"><a href="#cb22-102" aria-hidden="true" tabindex="-1"></a>The series shows three clear features:</span>
+<span id="cb22-103"><a href="#cb22-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-104"><a href="#cb22-104" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Upward trend**: turnover grows consistently from the early 1980s to the mid-2000s, then levels off and becomes somewhat erratic after 2010.</span>
+<span id="cb22-105"><a href="#cb22-105" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Strong seasonality**: there is a large spike every December (Christmas shopping) and a secondary pattern within each year.</span>
+<span id="cb22-106"><a href="#cb22-106" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Non-constant variance**: the amplitude of seasonal fluctuations grows with the level of the series — a hallmark of multiplicative seasonality. This indicates that a variance-stabilizing transformation is likely needed before modeling.</span>
+<span id="cb22-107"><a href="#cb22-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-108"><a href="#cb22-108" aria-hidden="true" tabindex="-1"></a>**4. Seasonal and subseries plots**</span>
+<span id="cb22-109"><a href="#cb22-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-112"><a href="#cb22-112" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb22-113"><a href="#cb22-113" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: a-seasonal</span></span>
+<span id="cb22-114"><a href="#cb22-114" aria-hidden="true" tabindex="-1"></a>clothing_vic <span class="sc">|&gt;</span> <span class="fu">gg_season</span>(Turnover) <span class="sc">+</span></span>
+<span id="cb22-115"><a href="#cb22-115" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Seasonal plot — Victoria clothing"</span>, <span class="at">y =</span> <span class="st">"Turnover ($ million AUD)"</span>)</span>
+<span id="cb22-116"><a href="#cb22-116" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb22-117"><a href="#cb22-117" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-120"><a href="#cb22-120" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb22-121"><a href="#cb22-121" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: a-subseries</span></span>
+<span id="cb22-122"><a href="#cb22-122" aria-hidden="true" tabindex="-1"></a>clothing_vic <span class="sc">|&gt;</span> <span class="fu">gg_subseries</span>(Turnover) <span class="sc">+</span></span>
+<span id="cb22-123"><a href="#cb22-123" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Subseries plot — Victoria clothing"</span>, <span class="at">y =</span> <span class="st">"Turnover ($ million AUD)"</span>)</span>
+<span id="cb22-124"><a href="#cb22-124" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb22-125"><a href="#cb22-125" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-126"><a href="#cb22-126" aria-hidden="true" tabindex="-1"></a>---</span>
-<span id="cb22-127"><a href="#cb22-127" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-128"><a href="#cb22-128" aria-hidden="true" tabindex="-1"></a><span class="fu">## Part b — Transformation</span></span>
-<span id="cb22-129"><a href="#cb22-129" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-130"><a href="#cb22-130" aria-hidden="true" tabindex="-1"></a>Based on your visual inspection in Part a, decide whether this series requires a variance-stabilizing transformation before decomposition and modeling.</span>
-<span id="cb22-131"><a href="#cb22-131" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-132"><a href="#cb22-132" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>State whether you will apply a transformation, and which one (logarithm, Box-Cox, or none). Justify your decision.</span>
-<span id="cb22-133"><a href="#cb22-133" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-134"><a href="#cb22-134" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>If you apply a transformation, implement it. For Box-Cox, estimate <span class="in">`lambda`</span> using <span class="in">`guerrero()`</span> and store it in a variable called <span class="in">`lambda`</span>. Visualize the transformed series and confirm that the transformation achieves its intended effect.</span>
-<span id="cb22-135"><a href="#cb22-135" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-136"><a href="#cb22-136" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip collapse="true"}</span>
-<span id="cb22-137"><a href="#cb22-137" aria-hidden="true" tabindex="-1"></a><span class="fu">## Solution — Part b</span></span>
+<span id="cb22-126"><a href="#cb22-126" aria-hidden="true" tabindex="-1"></a>Both plots confirm a dominant December peak — consistently the highest month across all years, and the gap between December and the rest of the year grows over time, reinforcing the multiplicative pattern. The subseries plot also shows that the within-month means increase across the full period for most months. The seasonal shape is stable in structure (December spike, trough in February/March) but not in magnitude, which is consistent with an evolving seasonal component.</span>
+<span id="cb22-127"><a href="#cb22-127" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb22-128"><a href="#cb22-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-129"><a href="#cb22-129" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb22-130"><a href="#cb22-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-131"><a href="#cb22-131" aria-hidden="true" tabindex="-1"></a><span class="fu">## Part b — Transformation</span></span>
+<span id="cb22-132"><a href="#cb22-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-133"><a href="#cb22-133" aria-hidden="true" tabindex="-1"></a>Based on your visual inspection in Part a, decide whether this series requires a variance-stabilizing transformation before decomposition and modeling.</span>
+<span id="cb22-134"><a href="#cb22-134" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-135"><a href="#cb22-135" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>State whether you will apply a transformation, and which one (logarithm, Box-Cox, or none). Justify your decision.</span>
+<span id="cb22-136"><a href="#cb22-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-137"><a href="#cb22-137" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>If you apply a transformation, implement it. For Box-Cox, estimate <span class="in">`lambda`</span> using <span class="in">`guerrero()`</span> and store it in a variable called <span class="in">`lambda`</span>. Visualize the transformed series and confirm that the transformation achieves its intended effect.</span>
 <span id="cb22-138"><a href="#cb22-138" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-139"><a href="#cb22-139" aria-hidden="true" tabindex="-1"></a>**Justification**</span>
-<span id="cb22-140"><a href="#cb22-140" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-141"><a href="#cb22-141" aria-hidden="true" tabindex="-1"></a>The time plot in Part a clearly shows that the seasonal amplitude grows with the level of the series — variance is proportional to the level. This is the standard condition that motivates a variance-stabilizing transformation. A logarithm ($\lambda = 0$) is often sufficient for this type of multiplicative pattern and has the advantage of being interpretable (changes become percentage changes). Box-Cox with an estimated $\lambda$ is a more flexible alternative that may provide a better stabilization if the relationship is not exactly multiplicative.</span>
-<span id="cb22-142"><a href="#cb22-142" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-143"><a href="#cb22-143" aria-hidden="true" tabindex="-1"></a>Both choices are defensible. The solution below uses Box-Cox with Guerrero's method, which is the most principled data-driven approach.</span>
-<span id="cb22-144"><a href="#cb22-144" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-147"><a href="#cb22-147" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-148"><a href="#cb22-148" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: b-lambda</span></span>
-<span id="cb22-149"><a href="#cb22-149" aria-hidden="true" tabindex="-1"></a>lambda <span class="ot">&lt;-</span> clothing_vic <span class="sc">|&gt;</span></span>
-<span id="cb22-150"><a href="#cb22-150" aria-hidden="true" tabindex="-1"></a>  <span class="fu">features</span>(Turnover, <span class="at">features =</span> guerrero) <span class="sc">|&gt;</span></span>
-<span id="cb22-151"><a href="#cb22-151" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(lambda_guerrero)</span>
-<span id="cb22-152"><a href="#cb22-152" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-153"><a href="#cb22-153" aria-hidden="true" tabindex="-1"></a>lambda</span>
-<span id="cb22-154"><a href="#cb22-154" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb22-139"><a href="#cb22-139" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip collapse="true"}</span>
+<span id="cb22-140"><a href="#cb22-140" aria-hidden="true" tabindex="-1"></a><span class="fu">## Solution — Part b</span></span>
+<span id="cb22-141"><a href="#cb22-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-142"><a href="#cb22-142" aria-hidden="true" tabindex="-1"></a>**Justification**</span>
+<span id="cb22-143"><a href="#cb22-143" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-144"><a href="#cb22-144" aria-hidden="true" tabindex="-1"></a>The time plot in Part a clearly shows that the seasonal amplitude grows with the level of the series — variance is proportional to the level. This is the standard condition that motivates a variance-stabilizing transformation. A logarithm ($\lambda = 0$) is often sufficient for this type of multiplicative pattern and has the advantage of being interpretable (changes become percentage changes). Box-Cox with an estimated $\lambda$ is a more flexible alternative that may provide a better stabilization if the relationship is not exactly multiplicative.</span>
+<span id="cb22-145"><a href="#cb22-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-146"><a href="#cb22-146" aria-hidden="true" tabindex="-1"></a>Both choices are defensible. The solution below uses Box-Cox with Guerrero's method, which is the most principled data-driven approach.</span>
+<span id="cb22-147"><a href="#cb22-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-150"><a href="#cb22-150" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb22-151"><a href="#cb22-151" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: b-lambda</span></span>
+<span id="cb22-152"><a href="#cb22-152" aria-hidden="true" tabindex="-1"></a>lambda <span class="ot">&lt;-</span> clothing_vic <span class="sc">|&gt;</span></span>
+<span id="cb22-153"><a href="#cb22-153" aria-hidden="true" tabindex="-1"></a>  <span class="fu">features</span>(Turnover, <span class="at">features =</span> guerrero) <span class="sc">|&gt;</span></span>
+<span id="cb22-154"><a href="#cb22-154" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(lambda_guerrero)</span>
 <span id="cb22-155"><a href="#cb22-155" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-158"><a href="#cb22-158" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-159"><a href="#cb22-159" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: b-transformed-plot</span></span>
-<span id="cb22-160"><a href="#cb22-160" aria-hidden="true" tabindex="-1"></a>clothing_vic <span class="sc">|&gt;</span></span>
-<span id="cb22-161"><a href="#cb22-161" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(<span class="fu">box_cox</span>(Turnover, lambda)) <span class="sc">+</span></span>
-<span id="cb22-162"><a href="#cb22-162" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb22-163"><a href="#cb22-163" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="fu">paste0</span>(<span class="st">"Victoria clothing — Box-Cox transformed (λ = "</span>, <span class="fu">round</span>(lambda, <span class="dv">3</span>), <span class="st">")"</span>),</span>
-<span id="cb22-164"><a href="#cb22-164" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Transformed turnover"</span>,</span>
-<span id="cb22-165"><a href="#cb22-165" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="cn">NULL</span></span>
-<span id="cb22-166"><a href="#cb22-166" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb22-167"><a href="#cb22-167" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-168"><a href="#cb22-168" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-169"><a href="#cb22-169" aria-hidden="true" tabindex="-1"></a>The transformed series shows substantially more stable variance across the full observation period — the seasonal swings are now roughly constant in magnitude regardless of the level, which is what the transformation is designed to achieve. The trend and seasonal structure remain visible, as expected.</span>
-<span id="cb22-170"><a href="#cb22-170" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-171"><a href="#cb22-171" aria-hidden="true" tabindex="-1"></a>**Note on the logarithm alternative**: A log transformation ($\lambda = 0$) would also be reasonable here and produces a very similar result. The Guerrero estimate is close to zero, which means the two approaches are nearly equivalent for this series. Either is acceptable as long as the choice is justified visually.</span>
-<span id="cb22-172"><a href="#cb22-172" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb22-156"><a href="#cb22-156" aria-hidden="true" tabindex="-1"></a>lambda</span>
+<span id="cb22-157"><a href="#cb22-157" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb22-158"><a href="#cb22-158" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-161"><a href="#cb22-161" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb22-162"><a href="#cb22-162" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: b-transformed-plot</span></span>
+<span id="cb22-163"><a href="#cb22-163" aria-hidden="true" tabindex="-1"></a>clothing_vic <span class="sc">|&gt;</span></span>
+<span id="cb22-164"><a href="#cb22-164" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(<span class="fu">box_cox</span>(Turnover, lambda)) <span class="sc">+</span></span>
+<span id="cb22-165"><a href="#cb22-165" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb22-166"><a href="#cb22-166" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="fu">paste0</span>(<span class="st">"Victoria clothing — Box-Cox transformed (λ = "</span>, <span class="fu">round</span>(lambda, <span class="dv">3</span>), <span class="st">")"</span>),</span>
+<span id="cb22-167"><a href="#cb22-167" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Transformed turnover"</span>,</span>
+<span id="cb22-168"><a href="#cb22-168" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="cn">NULL</span></span>
+<span id="cb22-169"><a href="#cb22-169" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb22-170"><a href="#cb22-170" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb22-171"><a href="#cb22-171" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-172"><a href="#cb22-172" aria-hidden="true" tabindex="-1"></a>The transformed series shows substantially more stable variance across the full observation period — the seasonal swings are now roughly constant in magnitude regardless of the level, which is what the transformation is designed to achieve. The trend and seasonal structure remain visible, as expected.</span>
 <span id="cb22-173"><a href="#cb22-173" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-174"><a href="#cb22-174" aria-hidden="true" tabindex="-1"></a>---</span>
-<span id="cb22-175"><a href="#cb22-175" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-176"><a href="#cb22-176" aria-hidden="true" tabindex="-1"></a><span class="fu">## Part c — STL decomposition</span></span>
-<span id="cb22-177"><a href="#cb22-177" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-178"><a href="#cb22-178" aria-hidden="true" tabindex="-1"></a>Decompose the series using STL. Apply the transformation from Part b if you chose one.</span>
-<span id="cb22-179"><a href="#cb22-179" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-180"><a href="#cb22-180" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Fit the STL decomposition and plot the components.</span>
-<span id="cb22-181"><a href="#cb22-181" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Interpret each component: what does the trend tell you about the long-run behavior of the series? What does the seasonal component look like — is it fixed or does it evolve over time? How large is the remainder relative to the other components?</span>
-<span id="cb22-182"><a href="#cb22-182" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Plot the seasonally adjusted series alongside the original. What does removing seasonality reveal?</span>
-<span id="cb22-183"><a href="#cb22-183" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-184"><a href="#cb22-184" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip collapse="true"}</span>
-<span id="cb22-185"><a href="#cb22-185" aria-hidden="true" tabindex="-1"></a><span class="fu">## Solution — Part c</span></span>
+<span id="cb22-174"><a href="#cb22-174" aria-hidden="true" tabindex="-1"></a>**Note on the logarithm alternative**: A log transformation ($\lambda = 0$) would also be reasonable here and produces a very similar result. The Guerrero estimate is close to zero, which means the two approaches are nearly equivalent for this series. Either is acceptable as long as the choice is justified visually.</span>
+<span id="cb22-175"><a href="#cb22-175" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb22-176"><a href="#cb22-176" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-177"><a href="#cb22-177" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb22-178"><a href="#cb22-178" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-179"><a href="#cb22-179" aria-hidden="true" tabindex="-1"></a><span class="fu">## Part c — STL decomposition</span></span>
+<span id="cb22-180"><a href="#cb22-180" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-181"><a href="#cb22-181" aria-hidden="true" tabindex="-1"></a>Decompose the series using STL. Apply the transformation from Part b if you chose one.</span>
+<span id="cb22-182"><a href="#cb22-182" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-183"><a href="#cb22-183" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Fit the STL decomposition and plot the components.</span>
+<span id="cb22-184"><a href="#cb22-184" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Interpret each component: what does the trend tell you about the long-run behavior of the series? What does the seasonal component look like — is it fixed or does it evolve over time? How large is the remainder relative to the other components?</span>
+<span id="cb22-185"><a href="#cb22-185" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Plot the seasonally adjusted series alongside the original. What does removing seasonality reveal?</span>
 <span id="cb22-186"><a href="#cb22-186" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-187"><a href="#cb22-187" aria-hidden="true" tabindex="-1"></a>**1. STL decomposition**</span>
-<span id="cb22-188"><a href="#cb22-188" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-191"><a href="#cb22-191" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-192"><a href="#cb22-192" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: c-stl</span></span>
-<span id="cb22-193"><a href="#cb22-193" aria-hidden="true" tabindex="-1"></a>clothing_vic_dcmp <span class="ot">&lt;-</span> clothing_vic <span class="sc">|&gt;</span></span>
-<span id="cb22-194"><a href="#cb22-194" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(<span class="at">stl =</span> <span class="fu">STL</span>(<span class="fu">box_cox</span>(Turnover, lambda) <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>(), <span class="at">robust =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb22-195"><a href="#cb22-195" aria-hidden="true" tabindex="-1"></a>  <span class="fu">components</span>()</span>
-<span id="cb22-196"><a href="#cb22-196" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-197"><a href="#cb22-197" aria-hidden="true" tabindex="-1"></a>clothing_vic_dcmp <span class="sc">|&gt;</span> <span class="fu">autoplot</span>() <span class="sc">+</span></span>
-<span id="cb22-198"><a href="#cb22-198" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"STL decomposition — Victoria clothing (Box-Cox transformed)"</span>)</span>
-<span id="cb22-199"><a href="#cb22-199" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-200"><a href="#cb22-200" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-201"><a href="#cb22-201" aria-hidden="true" tabindex="-1"></a>**2. Interpretation**</span>
-<span id="cb22-202"><a href="#cb22-202" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-203"><a href="#cb22-203" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Trend**: shows a clear upward trajectory from the early 1980s through approximately 2007–2008, followed by a plateau and some decline. This matches the broader economic context of the period (GFC, structural changes in retail).</span>
-<span id="cb22-204"><a href="#cb22-204" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Seasonal component**: the shape is consistent (December peak, February–March trough) but the <span class="in">`season_year`</span> panel shows that the component is not entirely fixed — there is some evolution in the seasonal pattern over the decades, which is why STL's flexible seasonal estimation is preferable to classical decomposition here.</span>
-<span id="cb22-205"><a href="#cb22-205" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Remainder**: relatively small compared to the trend and seasonal components, which is a good sign — STL is capturing most of the systematic structure. Some spikes are visible (possibly outliers or irregular economic shocks), which is why <span class="in">`robust = TRUE`</span> is used.</span>
-<span id="cb22-206"><a href="#cb22-206" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-207"><a href="#cb22-207" aria-hidden="true" tabindex="-1"></a>**3. Seasonally adjusted series**</span>
-<span id="cb22-208"><a href="#cb22-208" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-211"><a href="#cb22-211" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-212"><a href="#cb22-212" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: c-season-adjust</span></span>
-<span id="cb22-213"><a href="#cb22-213" aria-hidden="true" tabindex="-1"></a>clothing_vic_dcmp <span class="sc">|&gt;</span></span>
-<span id="cb22-214"><a href="#cb22-214" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Month)) <span class="sc">+</span></span>
-<span id="cb22-215"><a href="#cb22-215" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="st">`</span><span class="at">box_cox(Turnover, lambda)</span><span class="st">`</span>), <span class="at">colour =</span> <span class="st">"grey70"</span>) <span class="sc">+</span></span>
-<span id="cb22-216"><a href="#cb22-216" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> season_adjust), <span class="at">colour =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
-<span id="cb22-217"><a href="#cb22-217" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb22-218"><a href="#cb22-218" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Original (grey) vs. seasonally adjusted (blue) — Victoria clothing"</span>,</span>
-<span id="cb22-219"><a href="#cb22-219" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Transformed turnover"</span>,</span>
-<span id="cb22-220"><a href="#cb22-220" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="cn">NULL</span></span>
-<span id="cb22-221"><a href="#cb22-221" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb22-222"><a href="#cb22-222" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-223"><a href="#cb22-223" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-224"><a href="#cb22-224" aria-hidden="true" tabindex="-1"></a>With seasonality removed, the trend-cycle is much clearer: the growth phase, the mid-2000s peak, and the subsequent flattening are all more apparent. The remaining variation after removing seasonality is the trend-cycle plus the remainder component.</span>
-<span id="cb22-225"><a href="#cb22-225" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb22-187"><a href="#cb22-187" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip collapse="true"}</span>
+<span id="cb22-188"><a href="#cb22-188" aria-hidden="true" tabindex="-1"></a><span class="fu">## Solution — Part c</span></span>
+<span id="cb22-189"><a href="#cb22-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-190"><a href="#cb22-190" aria-hidden="true" tabindex="-1"></a>**1. STL decomposition**</span>
+<span id="cb22-191"><a href="#cb22-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-194"><a href="#cb22-194" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb22-195"><a href="#cb22-195" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: c-stl</span></span>
+<span id="cb22-196"><a href="#cb22-196" aria-hidden="true" tabindex="-1"></a>clothing_vic_dcmp <span class="ot">&lt;-</span> clothing_vic <span class="sc">|&gt;</span></span>
+<span id="cb22-197"><a href="#cb22-197" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(<span class="at">stl =</span> <span class="fu">STL</span>(<span class="fu">box_cox</span>(Turnover, lambda) <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>(), <span class="at">robust =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb22-198"><a href="#cb22-198" aria-hidden="true" tabindex="-1"></a>  <span class="fu">components</span>()</span>
+<span id="cb22-199"><a href="#cb22-199" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-200"><a href="#cb22-200" aria-hidden="true" tabindex="-1"></a>clothing_vic_dcmp <span class="sc">|&gt;</span> <span class="fu">autoplot</span>() <span class="sc">+</span></span>
+<span id="cb22-201"><a href="#cb22-201" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"STL decomposition — Victoria clothing (Box-Cox transformed)"</span>)</span>
+<span id="cb22-202"><a href="#cb22-202" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb22-203"><a href="#cb22-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-204"><a href="#cb22-204" aria-hidden="true" tabindex="-1"></a>**2. Interpretation**</span>
+<span id="cb22-205"><a href="#cb22-205" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-206"><a href="#cb22-206" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Trend**: shows a clear upward trajectory from the early 1980s through approximately 2007–2008, followed by a plateau and some decline. This matches the broader economic context of the period (GFC, structural changes in retail).</span>
+<span id="cb22-207"><a href="#cb22-207" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Seasonal component**: the shape is consistent (December peak, February–March trough) but the <span class="in">`season_year`</span> panel shows that the component is not entirely fixed — there is some evolution in the seasonal pattern over the decades, which is why STL's flexible seasonal estimation is preferable to classical decomposition here.</span>
+<span id="cb22-208"><a href="#cb22-208" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Remainder**: relatively small compared to the trend and seasonal components, which is a good sign — STL is capturing most of the systematic structure. Some spikes are visible (possibly outliers or irregular economic shocks), which is why <span class="in">`robust = TRUE`</span> is used.</span>
+<span id="cb22-209"><a href="#cb22-209" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-210"><a href="#cb22-210" aria-hidden="true" tabindex="-1"></a>**3. Seasonally adjusted series**</span>
+<span id="cb22-211"><a href="#cb22-211" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-214"><a href="#cb22-214" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb22-215"><a href="#cb22-215" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: c-season-adjust</span></span>
+<span id="cb22-216"><a href="#cb22-216" aria-hidden="true" tabindex="-1"></a>clothing_vic_dcmp <span class="sc">|&gt;</span></span>
+<span id="cb22-217"><a href="#cb22-217" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Month)) <span class="sc">+</span></span>
+<span id="cb22-218"><a href="#cb22-218" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="st">`</span><span class="at">box_cox(Turnover, lambda)</span><span class="st">`</span>), <span class="at">colour =</span> <span class="st">"grey70"</span>) <span class="sc">+</span></span>
+<span id="cb22-219"><a href="#cb22-219" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> season_adjust), <span class="at">colour =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
+<span id="cb22-220"><a href="#cb22-220" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb22-221"><a href="#cb22-221" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Original (grey) vs. seasonally adjusted (blue) — Victoria clothing"</span>,</span>
+<span id="cb22-222"><a href="#cb22-222" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Transformed turnover"</span>,</span>
+<span id="cb22-223"><a href="#cb22-223" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="cn">NULL</span></span>
+<span id="cb22-224"><a href="#cb22-224" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb22-225"><a href="#cb22-225" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb22-226"><a href="#cb22-226" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-227"><a href="#cb22-227" aria-hidden="true" tabindex="-1"></a>---</span>
-<span id="cb22-228"><a href="#cb22-228" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-229"><a href="#cb22-229" aria-hidden="true" tabindex="-1"></a><span class="fu">## Part d — Train/test split and benchmark models</span></span>
-<span id="cb22-230"><a href="#cb22-230" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-231"><a href="#cb22-231" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Define a forecast horizon of <span class="in">`h = 24`</span> months. Split <span class="in">`clothing_vic`</span> into a training set (all observations except the last <span class="in">`h`</span> months) and a test set (the last <span class="in">`h`</span> months). Use both the programmatic approach (<span class="in">`slice_head`</span> / <span class="in">`slice_tail`</span>) and <span class="in">`filter_index()`</span> — confirm they produce the same result.</span>
-<span id="cb22-232"><a href="#cb22-232" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-233"><a href="#cb22-233" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Fit the four benchmark models (Mean, Naïve, Seasonal Naïve, Drift) on the training set. Apply the transformation from Part b where appropriate.</span>
-<span id="cb22-234"><a href="#cb22-234" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-235"><a href="#cb22-235" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Generate forecasts over the test horizon and plot them against the observed test data. Which benchmark appears most competitive visually?</span>
-<span id="cb22-236"><a href="#cb22-236" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-237"><a href="#cb22-237" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip collapse="true"}</span>
-<span id="cb22-238"><a href="#cb22-238" aria-hidden="true" tabindex="-1"></a><span class="fu">## Solution — Part d</span></span>
+<span id="cb22-227"><a href="#cb22-227" aria-hidden="true" tabindex="-1"></a>With seasonality removed, the trend-cycle is much clearer: the growth phase, the mid-2000s peak, and the subsequent flattening are all more apparent. The remaining variation after removing seasonality is the trend-cycle plus the remainder component.</span>
+<span id="cb22-228"><a href="#cb22-228" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb22-229"><a href="#cb22-229" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-230"><a href="#cb22-230" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb22-231"><a href="#cb22-231" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-232"><a href="#cb22-232" aria-hidden="true" tabindex="-1"></a><span class="fu">## Part d — Train/test split and benchmark models</span></span>
+<span id="cb22-233"><a href="#cb22-233" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-234"><a href="#cb22-234" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Define a forecast horizon of <span class="in">`h = 24`</span> months. Split <span class="in">`clothing_vic`</span> into a training set (all observations except the last <span class="in">`h`</span> months) and a test set (the last <span class="in">`h`</span> months). Use both the programmatic approach (<span class="in">`slice_head`</span> / <span class="in">`slice_tail`</span>) and <span class="in">`filter_index()`</span> — confirm they produce the same result.</span>
+<span id="cb22-235"><a href="#cb22-235" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-236"><a href="#cb22-236" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Fit the four benchmark models (Mean, Naïve, Seasonal Naïve, Drift) on the training set. Apply the transformation from Part b where appropriate.</span>
+<span id="cb22-237"><a href="#cb22-237" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-238"><a href="#cb22-238" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Generate forecasts over the test horizon and plot them against the observed test data. Which benchmark appears most competitive visually?</span>
 <span id="cb22-239"><a href="#cb22-239" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-240"><a href="#cb22-240" aria-hidden="true" tabindex="-1"></a>**1. Train/test split**</span>
-<span id="cb22-241"><a href="#cb22-241" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-244"><a href="#cb22-244" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-245"><a href="#cb22-245" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: d-split</span></span>
-<span id="cb22-246"><a href="#cb22-246" aria-hidden="true" tabindex="-1"></a>h <span class="ot">&lt;-</span> <span class="dv">24</span></span>
-<span id="cb22-247"><a href="#cb22-247" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-248"><a href="#cb22-248" aria-hidden="true" tabindex="-1"></a>clothing_train <span class="ot">&lt;-</span> clothing_vic <span class="sc">|&gt;</span> <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="fu">nrow</span>(clothing_vic) <span class="sc">-</span> h) <span class="co">#&lt;1&gt;</span></span>
-<span id="cb22-249"><a href="#cb22-249" aria-hidden="true" tabindex="-1"></a>clothing_test  <span class="ot">&lt;-</span> clothing_vic <span class="sc">|&gt;</span> <span class="fu">slice_tail</span>(<span class="at">n =</span> h)                       <span class="co">#&lt;2&gt;</span></span>
+<span id="cb22-240"><a href="#cb22-240" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip collapse="true"}</span>
+<span id="cb22-241"><a href="#cb22-241" aria-hidden="true" tabindex="-1"></a><span class="fu">## Solution — Part d</span></span>
+<span id="cb22-242"><a href="#cb22-242" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-243"><a href="#cb22-243" aria-hidden="true" tabindex="-1"></a>**1. Train/test split**</span>
+<span id="cb22-244"><a href="#cb22-244" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-247"><a href="#cb22-247" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb22-248"><a href="#cb22-248" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: d-split</span></span>
+<span id="cb22-249"><a href="#cb22-249" aria-hidden="true" tabindex="-1"></a>h <span class="ot">&lt;-</span> <span class="dv">24</span></span>
 <span id="cb22-250"><a href="#cb22-250" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-251"><a href="#cb22-251" aria-hidden="true" tabindex="-1"></a><span class="co"># Equivalent with filter_index</span></span>
-<span id="cb22-252"><a href="#cb22-252" aria-hidden="true" tabindex="-1"></a>clothing_train2 <span class="ot">&lt;-</span> clothing_vic <span class="sc">|&gt;</span> <span class="fu">filter_index</span>(. <span class="sc">~</span> <span class="st">"2017 Nov."</span>)</span>
-<span id="cb22-253"><a href="#cb22-253" aria-hidden="true" tabindex="-1"></a>clothing_test2  <span class="ot">&lt;-</span> clothing_vic <span class="sc">|&gt;</span> <span class="fu">filter_index</span>(<span class="st">"2017 Dec."</span> <span class="sc">~</span> .)</span>
-<span id="cb22-254"><a href="#cb22-254" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-255"><a href="#cb22-255" aria-hidden="true" tabindex="-1"></a><span class="co"># Confirm they match</span></span>
-<span id="cb22-256"><a href="#cb22-256" aria-hidden="true" tabindex="-1"></a><span class="fu">identical</span>(clothing_train, clothing_train2)</span>
-<span id="cb22-257"><a href="#cb22-257" aria-hidden="true" tabindex="-1"></a><span class="fu">identical</span>(clothing_test,  clothing_test2)</span>
-<span id="cb22-258"><a href="#cb22-258" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-259"><a href="#cb22-259" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Training set: all but the last <span class="in">`h`</span> rows.</span>
-<span id="cb22-260"><a href="#cb22-260" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Test set: last <span class="in">`h`</span> rows — exactly the forecast horizon we want to evaluate.</span>
-<span id="cb22-261"><a href="#cb22-261" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-262"><a href="#cb22-262" aria-hidden="true" tabindex="-1"></a>Both approaches produce identical results. <span class="in">`filter_index()`</span> is more readable when you know the cutoff date; the programmatic approach is preferable when the split is defined by <span class="in">`h`</span> without knowing the exact date in advance.</span>
-<span id="cb22-263"><a href="#cb22-263" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-264"><a href="#cb22-264" aria-hidden="true" tabindex="-1"></a>**2. Benchmark models**</span>
-<span id="cb22-265"><a href="#cb22-265" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-266"><a href="#cb22-266" aria-hidden="true" tabindex="-1"></a>The transformation is applied inside each model spec. For benchmarks with no trend component (Mean, Naïve, SNAIVE), the transformation still stabilizes variance in the residuals and produces asymmetric prediction intervals after back-transformation. For Drift, it additionally linearizes the trend in the transformed scale.</span>
-<span id="cb22-267"><a href="#cb22-267" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-270"><a href="#cb22-270" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-271"><a href="#cb22-271" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: d-fit</span></span>
-<span id="cb22-272"><a href="#cb22-272" aria-hidden="true" tabindex="-1"></a>clothing_fit <span class="ot">&lt;-</span> clothing_train <span class="sc">|&gt;</span></span>
-<span id="cb22-273"><a href="#cb22-273" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(</span>
-<span id="cb22-274"><a href="#cb22-274" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean   =</span> <span class="fu">MEAN</span>(<span class="fu">box_cox</span>(Turnover, lambda)),</span>
-<span id="cb22-275"><a href="#cb22-275" aria-hidden="true" tabindex="-1"></a>    <span class="at">naive  =</span> <span class="fu">NAIVE</span>(<span class="fu">box_cox</span>(Turnover, lambda)),</span>
-<span id="cb22-276"><a href="#cb22-276" aria-hidden="true" tabindex="-1"></a>    <span class="at">snaive =</span> <span class="fu">SNAIVE</span>(<span class="fu">box_cox</span>(Turnover, lambda)),</span>
-<span id="cb22-277"><a href="#cb22-277" aria-hidden="true" tabindex="-1"></a>    <span class="at">drift  =</span> <span class="fu">RW</span>(<span class="fu">box_cox</span>(Turnover, lambda) <span class="sc">~</span> <span class="fu">drift</span>())</span>
-<span id="cb22-278"><a href="#cb22-278" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb22-279"><a href="#cb22-279" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-280"><a href="#cb22-280" aria-hidden="true" tabindex="-1"></a>clothing_fit</span>
-<span id="cb22-281"><a href="#cb22-281" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb22-251"><a href="#cb22-251" aria-hidden="true" tabindex="-1"></a>clothing_train <span class="ot">&lt;-</span> clothing_vic <span class="sc">|&gt;</span> <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="fu">nrow</span>(clothing_vic) <span class="sc">-</span> h) <span class="co">#&lt;1&gt;</span></span>
+<span id="cb22-252"><a href="#cb22-252" aria-hidden="true" tabindex="-1"></a>clothing_test  <span class="ot">&lt;-</span> clothing_vic <span class="sc">|&gt;</span> <span class="fu">slice_tail</span>(<span class="at">n =</span> h)                       <span class="co">#&lt;2&gt;</span></span>
+<span id="cb22-253"><a href="#cb22-253" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-254"><a href="#cb22-254" aria-hidden="true" tabindex="-1"></a><span class="co"># Equivalent with filter_index</span></span>
+<span id="cb22-255"><a href="#cb22-255" aria-hidden="true" tabindex="-1"></a>clothing_train2 <span class="ot">&lt;-</span> clothing_vic <span class="sc">|&gt;</span> <span class="fu">filter_index</span>(. <span class="sc">~</span> <span class="st">"2017 Nov."</span>)</span>
+<span id="cb22-256"><a href="#cb22-256" aria-hidden="true" tabindex="-1"></a>clothing_test2  <span class="ot">&lt;-</span> clothing_vic <span class="sc">|&gt;</span> <span class="fu">filter_index</span>(<span class="st">"2017 Dec."</span> <span class="sc">~</span> .)</span>
+<span id="cb22-257"><a href="#cb22-257" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-258"><a href="#cb22-258" aria-hidden="true" tabindex="-1"></a><span class="co"># Confirm they match</span></span>
+<span id="cb22-259"><a href="#cb22-259" aria-hidden="true" tabindex="-1"></a><span class="fu">identical</span>(clothing_train, clothing_train2)</span>
+<span id="cb22-260"><a href="#cb22-260" aria-hidden="true" tabindex="-1"></a><span class="fu">identical</span>(clothing_test,  clothing_test2)</span>
+<span id="cb22-261"><a href="#cb22-261" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb22-262"><a href="#cb22-262" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Training set: all but the last <span class="in">`h`</span> rows.</span>
+<span id="cb22-263"><a href="#cb22-263" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Test set: last <span class="in">`h`</span> rows — exactly the forecast horizon we want to evaluate.</span>
+<span id="cb22-264"><a href="#cb22-264" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-265"><a href="#cb22-265" aria-hidden="true" tabindex="-1"></a>Both approaches produce identical results. <span class="in">`filter_index()`</span> is more readable when you know the cutoff date; the programmatic approach is preferable when the split is defined by <span class="in">`h`</span> without knowing the exact date in advance.</span>
+<span id="cb22-266"><a href="#cb22-266" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-267"><a href="#cb22-267" aria-hidden="true" tabindex="-1"></a>**2. Benchmark models**</span>
+<span id="cb22-268"><a href="#cb22-268" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-269"><a href="#cb22-269" aria-hidden="true" tabindex="-1"></a>The transformation is applied inside each model spec. For benchmarks with no trend component (Mean, Naïve, SNAIVE), the transformation still stabilizes variance in the residuals and produces asymmetric prediction intervals after back-transformation. For Drift, it additionally linearizes the trend in the transformed scale.</span>
+<span id="cb22-270"><a href="#cb22-270" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-273"><a href="#cb22-273" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb22-274"><a href="#cb22-274" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: d-fit</span></span>
+<span id="cb22-275"><a href="#cb22-275" aria-hidden="true" tabindex="-1"></a>clothing_fit <span class="ot">&lt;-</span> clothing_train <span class="sc">|&gt;</span></span>
+<span id="cb22-276"><a href="#cb22-276" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(</span>
+<span id="cb22-277"><a href="#cb22-277" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean   =</span> <span class="fu">MEAN</span>(<span class="fu">box_cox</span>(Turnover, lambda)),</span>
+<span id="cb22-278"><a href="#cb22-278" aria-hidden="true" tabindex="-1"></a>    <span class="at">naive  =</span> <span class="fu">NAIVE</span>(<span class="fu">box_cox</span>(Turnover, lambda)),</span>
+<span id="cb22-279"><a href="#cb22-279" aria-hidden="true" tabindex="-1"></a>    <span class="at">snaive =</span> <span class="fu">SNAIVE</span>(<span class="fu">box_cox</span>(Turnover, lambda)),</span>
+<span id="cb22-280"><a href="#cb22-280" aria-hidden="true" tabindex="-1"></a>    <span class="at">drift  =</span> <span class="fu">RW</span>(<span class="fu">box_cox</span>(Turnover, lambda) <span class="sc">~</span> <span class="fu">drift</span>())</span>
+<span id="cb22-281"><a href="#cb22-281" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb22-282"><a href="#cb22-282" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-283"><a href="#cb22-283" aria-hidden="true" tabindex="-1"></a>**3. Forecasts and visual comparison**</span>
-<span id="cb22-284"><a href="#cb22-284" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-287"><a href="#cb22-287" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-288"><a href="#cb22-288" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: d-fc</span></span>
-<span id="cb22-289"><a href="#cb22-289" aria-hidden="true" tabindex="-1"></a>clothing_fc <span class="ot">&lt;-</span> clothing_fit <span class="sc">|&gt;</span></span>
-<span id="cb22-290"><a href="#cb22-290" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> h)</span>
-<span id="cb22-291"><a href="#cb22-291" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-292"><a href="#cb22-292" aria-hidden="true" tabindex="-1"></a>clothing_fc <span class="sc">|&gt;</span></span>
-<span id="cb22-293"><a href="#cb22-293" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(</span>
-<span id="cb22-294"><a href="#cb22-294" aria-hidden="true" tabindex="-1"></a>    clothing_vic <span class="sc">|&gt;</span> <span class="fu">filter_index</span>(<span class="st">"2010 Jan."</span> <span class="sc">~</span> .),</span>
-<span id="cb22-295"><a href="#cb22-295" aria-hidden="true" tabindex="-1"></a>    <span class="at">level =</span> <span class="cn">NULL</span></span>
-<span id="cb22-296"><a href="#cb22-296" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb22-297"><a href="#cb22-297" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb22-298"><a href="#cb22-298" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Victoria clothing — benchmark forecasts vs. test set"</span>,</span>
-<span id="cb22-299"><a href="#cb22-299" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Turnover ($ million AUD)"</span>,</span>
-<span id="cb22-300"><a href="#cb22-300" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="cn">NULL</span></span>
-<span id="cb22-301"><a href="#cb22-301" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb22-302"><a href="#cb22-302" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-303"><a href="#cb22-303" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-304"><a href="#cb22-304" aria-hidden="true" tabindex="-1"></a>Visually, **SNAIVE** is the most competitive: it reproduces the seasonal pattern correctly, which dominates over the 24-month horizon. Mean and Naïve ignore seasonality entirely and perform poorly. Drift extrapolates the long-run trend linearly, which may or may not align with the recent behavior of the series — visually it depends on whether the trend in the training period is a good proxy for the test period.</span>
-<span id="cb22-305"><a href="#cb22-305" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb22-283"><a href="#cb22-283" aria-hidden="true" tabindex="-1"></a>clothing_fit</span>
+<span id="cb22-284"><a href="#cb22-284" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb22-285"><a href="#cb22-285" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-286"><a href="#cb22-286" aria-hidden="true" tabindex="-1"></a>**3. Forecasts and visual comparison**</span>
+<span id="cb22-287"><a href="#cb22-287" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-290"><a href="#cb22-290" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb22-291"><a href="#cb22-291" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: d-fc</span></span>
+<span id="cb22-292"><a href="#cb22-292" aria-hidden="true" tabindex="-1"></a>clothing_fc <span class="ot">&lt;-</span> clothing_fit <span class="sc">|&gt;</span></span>
+<span id="cb22-293"><a href="#cb22-293" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> h)</span>
+<span id="cb22-294"><a href="#cb22-294" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-295"><a href="#cb22-295" aria-hidden="true" tabindex="-1"></a>clothing_fc <span class="sc">|&gt;</span></span>
+<span id="cb22-296"><a href="#cb22-296" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(</span>
+<span id="cb22-297"><a href="#cb22-297" aria-hidden="true" tabindex="-1"></a>    clothing_vic <span class="sc">|&gt;</span> <span class="fu">filter_index</span>(<span class="st">"2010 Jan."</span> <span class="sc">~</span> .),</span>
+<span id="cb22-298"><a href="#cb22-298" aria-hidden="true" tabindex="-1"></a>    <span class="at">level =</span> <span class="cn">NULL</span></span>
+<span id="cb22-299"><a href="#cb22-299" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb22-300"><a href="#cb22-300" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb22-301"><a href="#cb22-301" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Victoria clothing — benchmark forecasts vs. test set"</span>,</span>
+<span id="cb22-302"><a href="#cb22-302" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Turnover ($ million AUD)"</span>,</span>
+<span id="cb22-303"><a href="#cb22-303" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="cn">NULL</span></span>
+<span id="cb22-304"><a href="#cb22-304" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb22-305"><a href="#cb22-305" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb22-306"><a href="#cb22-306" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-307"><a href="#cb22-307" aria-hidden="true" tabindex="-1"></a>---</span>
-<span id="cb22-308"><a href="#cb22-308" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-309"><a href="#cb22-309" aria-hidden="true" tabindex="-1"></a><span class="fu">## Part e — Decomposition model</span></span>
-<span id="cb22-310"><a href="#cb22-310" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-311"><a href="#cb22-311" aria-hidden="true" tabindex="-1"></a>Build a <span class="in">`decomposition_model()`</span> using STL + SNAIVE (for the seasonal component) + Drift (for the seasonally adjusted series). Include the transformation from Part b.</span>
-<span id="cb22-312"><a href="#cb22-312" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-313"><a href="#cb22-313" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Define the spec as a standalone object and pass it into <span class="in">`model()`</span>.</span>
-<span id="cb22-314"><a href="#cb22-314" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Fit an additional variant without the transformation, so you can compare both.</span>
-<span id="cb22-315"><a href="#cb22-315" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Generate forecasts and compute an accuracy table. Use <span class="in">`RMSSE`</span> as the primary metric. Include the benchmark models from Part d for comparison.</span>
-<span id="cb22-316"><a href="#cb22-316" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Which model performs best? Is the transformation helpful?</span>
-<span id="cb22-317"><a href="#cb22-317" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-318"><a href="#cb22-318" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip collapse="true"}</span>
-<span id="cb22-319"><a href="#cb22-319" aria-hidden="true" tabindex="-1"></a><span class="fu">## Solution — Part e</span></span>
+<span id="cb22-307"><a href="#cb22-307" aria-hidden="true" tabindex="-1"></a>Visually, **SNAIVE** is the most competitive: it reproduces the seasonal pattern correctly, which dominates over the 24-month horizon. Mean and Naïve ignore seasonality entirely and perform poorly. Drift extrapolates the long-run trend linearly, which may or may not align with the recent behavior of the series — visually it depends on whether the trend in the training period is a good proxy for the test period.</span>
+<span id="cb22-308"><a href="#cb22-308" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb22-309"><a href="#cb22-309" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-310"><a href="#cb22-310" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb22-311"><a href="#cb22-311" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-312"><a href="#cb22-312" aria-hidden="true" tabindex="-1"></a><span class="fu">## Part e — Decomposition model</span></span>
+<span id="cb22-313"><a href="#cb22-313" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-314"><a href="#cb22-314" aria-hidden="true" tabindex="-1"></a>Build a <span class="in">`decomposition_model()`</span> using STL + SNAIVE (for the seasonal component) + Drift (for the seasonally adjusted series). Include the transformation from Part b.</span>
+<span id="cb22-315"><a href="#cb22-315" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-316"><a href="#cb22-316" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Define the spec as a standalone object and pass it into <span class="in">`model()`</span>.</span>
+<span id="cb22-317"><a href="#cb22-317" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Fit an additional variant without the transformation, so you can compare both.</span>
+<span id="cb22-318"><a href="#cb22-318" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Generate forecasts and compute an accuracy table. Use <span class="in">`RMSSE`</span> as the primary metric. Include the benchmark models from Part d for comparison.</span>
+<span id="cb22-319"><a href="#cb22-319" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Which model performs best? Is the transformation helpful?</span>
 <span id="cb22-320"><a href="#cb22-320" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-321"><a href="#cb22-321" aria-hidden="true" tabindex="-1"></a>**1 &amp; 2. Decomposition model specs**</span>
-<span id="cb22-322"><a href="#cb22-322" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-325"><a href="#cb22-325" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-326"><a href="#cb22-326" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: e-specs</span></span>
-<span id="cb22-327"><a href="#cb22-327" aria-hidden="true" tabindex="-1"></a>stl_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(            <span class="co">#&lt;1&gt;</span></span>
-<span id="cb22-328"><a href="#cb22-328" aria-hidden="true" tabindex="-1"></a>  <span class="fu">STL</span>(Turnover <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>(), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb22-329"><a href="#cb22-329" aria-hidden="true" tabindex="-1"></a>  <span class="fu">SNAIVE</span>(season_year),</span>
-<span id="cb22-330"><a href="#cb22-330" aria-hidden="true" tabindex="-1"></a>  <span class="fu">RW</span>(season_adjust <span class="sc">~</span> <span class="fu">drift</span>())</span>
-<span id="cb22-331"><a href="#cb22-331" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb22-332"><a href="#cb22-332" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-333"><a href="#cb22-333" aria-hidden="true" tabindex="-1"></a>stl_spec_bc <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(        <span class="co">#&lt;2&gt;</span></span>
-<span id="cb22-334"><a href="#cb22-334" aria-hidden="true" tabindex="-1"></a>  <span class="fu">STL</span>(<span class="fu">box_cox</span>(Turnover, lambda) <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>(), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb22-335"><a href="#cb22-335" aria-hidden="true" tabindex="-1"></a>  <span class="fu">SNAIVE</span>(season_year),</span>
-<span id="cb22-336"><a href="#cb22-336" aria-hidden="true" tabindex="-1"></a>  <span class="fu">RW</span>(season_adjust <span class="sc">~</span> <span class="fu">drift</span>())</span>
-<span id="cb22-337"><a href="#cb22-337" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb22-338"><a href="#cb22-338" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-339"><a href="#cb22-339" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>STL decomposition on the untransformed series.</span>
-<span id="cb22-340"><a href="#cb22-340" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Identical structure, but with Box-Cox applied inside the STL call. The transformation is inherited by both component models and back-transformed automatically when forecasting.</span>
-<span id="cb22-341"><a href="#cb22-341" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-344"><a href="#cb22-344" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-345"><a href="#cb22-345" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: e-fit</span></span>
-<span id="cb22-346"><a href="#cb22-346" aria-hidden="true" tabindex="-1"></a>clothing_fit2 <span class="ot">&lt;-</span> clothing_train <span class="sc">|&gt;</span></span>
-<span id="cb22-347"><a href="#cb22-347" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(</span>
-<span id="cb22-348"><a href="#cb22-348" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean   =</span> <span class="fu">MEAN</span>(<span class="fu">box_cox</span>(Turnover, lambda)),</span>
-<span id="cb22-349"><a href="#cb22-349" aria-hidden="true" tabindex="-1"></a>    <span class="at">naive  =</span> <span class="fu">NAIVE</span>(<span class="fu">box_cox</span>(Turnover, lambda)),</span>
-<span id="cb22-350"><a href="#cb22-350" aria-hidden="true" tabindex="-1"></a>    <span class="at">snaive =</span> <span class="fu">SNAIVE</span>(<span class="fu">box_cox</span>(Turnover, lambda)),</span>
-<span id="cb22-351"><a href="#cb22-351" aria-hidden="true" tabindex="-1"></a>    <span class="at">drift  =</span> <span class="fu">RW</span>(<span class="fu">box_cox</span>(Turnover, lambda) <span class="sc">~</span> <span class="fu">drift</span>()),</span>
-<span id="cb22-352"><a href="#cb22-352" aria-hidden="true" tabindex="-1"></a>    <span class="at">stl    =</span> stl_spec,</span>
-<span id="cb22-353"><a href="#cb22-353" aria-hidden="true" tabindex="-1"></a>    <span class="at">stl_bc =</span> stl_spec_bc</span>
-<span id="cb22-354"><a href="#cb22-354" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb22-355"><a href="#cb22-355" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-356"><a href="#cb22-356" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-357"><a href="#cb22-357" aria-hidden="true" tabindex="-1"></a>**3. Forecasts and accuracy**</span>
-<span id="cb22-358"><a href="#cb22-358" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-361"><a href="#cb22-361" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-362"><a href="#cb22-362" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: e-fc</span></span>
-<span id="cb22-363"><a href="#cb22-363" aria-hidden="true" tabindex="-1"></a>clothing_fc2 <span class="ot">&lt;-</span> clothing_fit2 <span class="sc">|&gt;</span></span>
-<span id="cb22-364"><a href="#cb22-364" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> h)</span>
-<span id="cb22-365"><a href="#cb22-365" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-366"><a href="#cb22-366" aria-hidden="true" tabindex="-1"></a>clothing_fc2 <span class="sc">|&gt;</span></span>
-<span id="cb22-367"><a href="#cb22-367" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(</span>
-<span id="cb22-368"><a href="#cb22-368" aria-hidden="true" tabindex="-1"></a>    clothing_vic <span class="sc">|&gt;</span> <span class="fu">filter_index</span>(<span class="st">"2010 Jan."</span> <span class="sc">~</span> .),</span>
-<span id="cb22-369"><a href="#cb22-369" aria-hidden="true" tabindex="-1"></a>    <span class="at">level =</span> <span class="cn">NULL</span></span>
-<span id="cb22-370"><a href="#cb22-370" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb22-371"><a href="#cb22-371" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb22-372"><a href="#cb22-372" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Victoria clothing — all models vs. test set"</span>,</span>
-<span id="cb22-373"><a href="#cb22-373" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Turnover ($ million AUD)"</span>,</span>
-<span id="cb22-374"><a href="#cb22-374" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="cn">NULL</span></span>
-<span id="cb22-375"><a href="#cb22-375" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb22-376"><a href="#cb22-376" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-377"><a href="#cb22-377" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-380"><a href="#cb22-380" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-381"><a href="#cb22-381" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: e-accuracy</span></span>
-<span id="cb22-382"><a href="#cb22-382" aria-hidden="true" tabindex="-1"></a>clothing_accu <span class="ot">&lt;-</span> clothing_fc2 <span class="sc">|&gt;</span></span>
-<span id="cb22-383"><a href="#cb22-383" aria-hidden="true" tabindex="-1"></a>  <span class="fu">accuracy</span>(clothing_vic) <span class="sc">|&gt;</span></span>
-<span id="cb22-384"><a href="#cb22-384" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(.model, RMSE, MAE, MAPE, MASE, RMSSE) <span class="sc">|&gt;</span></span>
-<span id="cb22-385"><a href="#cb22-385" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(RMSSE)</span>
-<span id="cb22-386"><a href="#cb22-386" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-387"><a href="#cb22-387" aria-hidden="true" tabindex="-1"></a>clothing_accu</span>
-<span id="cb22-388"><a href="#cb22-388" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb22-321"><a href="#cb22-321" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip collapse="true"}</span>
+<span id="cb22-322"><a href="#cb22-322" aria-hidden="true" tabindex="-1"></a><span class="fu">## Solution — Part e</span></span>
+<span id="cb22-323"><a href="#cb22-323" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-324"><a href="#cb22-324" aria-hidden="true" tabindex="-1"></a>**1 &amp; 2. Decomposition model specs**</span>
+<span id="cb22-325"><a href="#cb22-325" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-328"><a href="#cb22-328" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb22-329"><a href="#cb22-329" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: e-specs</span></span>
+<span id="cb22-330"><a href="#cb22-330" aria-hidden="true" tabindex="-1"></a>stl_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(            <span class="co">#&lt;1&gt;</span></span>
+<span id="cb22-331"><a href="#cb22-331" aria-hidden="true" tabindex="-1"></a>  <span class="fu">STL</span>(Turnover <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>(), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb22-332"><a href="#cb22-332" aria-hidden="true" tabindex="-1"></a>  <span class="fu">SNAIVE</span>(season_year),</span>
+<span id="cb22-333"><a href="#cb22-333" aria-hidden="true" tabindex="-1"></a>  <span class="fu">RW</span>(season_adjust <span class="sc">~</span> <span class="fu">drift</span>())</span>
+<span id="cb22-334"><a href="#cb22-334" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb22-335"><a href="#cb22-335" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-336"><a href="#cb22-336" aria-hidden="true" tabindex="-1"></a>stl_spec_bc <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(        <span class="co">#&lt;2&gt;</span></span>
+<span id="cb22-337"><a href="#cb22-337" aria-hidden="true" tabindex="-1"></a>  <span class="fu">STL</span>(<span class="fu">box_cox</span>(Turnover, lambda) <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>(), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb22-338"><a href="#cb22-338" aria-hidden="true" tabindex="-1"></a>  <span class="fu">SNAIVE</span>(season_year),</span>
+<span id="cb22-339"><a href="#cb22-339" aria-hidden="true" tabindex="-1"></a>  <span class="fu">RW</span>(season_adjust <span class="sc">~</span> <span class="fu">drift</span>())</span>
+<span id="cb22-340"><a href="#cb22-340" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb22-341"><a href="#cb22-341" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb22-342"><a href="#cb22-342" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>STL decomposition on the untransformed series.</span>
+<span id="cb22-343"><a href="#cb22-343" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Identical structure, but with Box-Cox applied inside the STL call. The transformation is inherited by both component models and back-transformed automatically when forecasting.</span>
+<span id="cb22-344"><a href="#cb22-344" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-347"><a href="#cb22-347" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb22-348"><a href="#cb22-348" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: e-fit</span></span>
+<span id="cb22-349"><a href="#cb22-349" aria-hidden="true" tabindex="-1"></a>clothing_fit2 <span class="ot">&lt;-</span> clothing_train <span class="sc">|&gt;</span></span>
+<span id="cb22-350"><a href="#cb22-350" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(</span>
+<span id="cb22-351"><a href="#cb22-351" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean   =</span> <span class="fu">MEAN</span>(<span class="fu">box_cox</span>(Turnover, lambda)),</span>
+<span id="cb22-352"><a href="#cb22-352" aria-hidden="true" tabindex="-1"></a>    <span class="at">naive  =</span> <span class="fu">NAIVE</span>(<span class="fu">box_cox</span>(Turnover, lambda)),</span>
+<span id="cb22-353"><a href="#cb22-353" aria-hidden="true" tabindex="-1"></a>    <span class="at">snaive =</span> <span class="fu">SNAIVE</span>(<span class="fu">box_cox</span>(Turnover, lambda)),</span>
+<span id="cb22-354"><a href="#cb22-354" aria-hidden="true" tabindex="-1"></a>    <span class="at">drift  =</span> <span class="fu">RW</span>(<span class="fu">box_cox</span>(Turnover, lambda) <span class="sc">~</span> <span class="fu">drift</span>()),</span>
+<span id="cb22-355"><a href="#cb22-355" aria-hidden="true" tabindex="-1"></a>    <span class="at">stl    =</span> stl_spec,</span>
+<span id="cb22-356"><a href="#cb22-356" aria-hidden="true" tabindex="-1"></a>    <span class="at">stl_bc =</span> stl_spec_bc</span>
+<span id="cb22-357"><a href="#cb22-357" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb22-358"><a href="#cb22-358" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb22-359"><a href="#cb22-359" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-360"><a href="#cb22-360" aria-hidden="true" tabindex="-1"></a>**3. Forecasts and accuracy**</span>
+<span id="cb22-361"><a href="#cb22-361" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-364"><a href="#cb22-364" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb22-365"><a href="#cb22-365" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: e-fc</span></span>
+<span id="cb22-366"><a href="#cb22-366" aria-hidden="true" tabindex="-1"></a>clothing_fc2 <span class="ot">&lt;-</span> clothing_fit2 <span class="sc">|&gt;</span></span>
+<span id="cb22-367"><a href="#cb22-367" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> h)</span>
+<span id="cb22-368"><a href="#cb22-368" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-369"><a href="#cb22-369" aria-hidden="true" tabindex="-1"></a>clothing_fc2 <span class="sc">|&gt;</span></span>
+<span id="cb22-370"><a href="#cb22-370" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(</span>
+<span id="cb22-371"><a href="#cb22-371" aria-hidden="true" tabindex="-1"></a>    clothing_vic <span class="sc">|&gt;</span> <span class="fu">filter_index</span>(<span class="st">"2010 Jan."</span> <span class="sc">~</span> .),</span>
+<span id="cb22-372"><a href="#cb22-372" aria-hidden="true" tabindex="-1"></a>    <span class="at">level =</span> <span class="cn">NULL</span></span>
+<span id="cb22-373"><a href="#cb22-373" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb22-374"><a href="#cb22-374" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb22-375"><a href="#cb22-375" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Victoria clothing — all models vs. test set"</span>,</span>
+<span id="cb22-376"><a href="#cb22-376" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Turnover ($ million AUD)"</span>,</span>
+<span id="cb22-377"><a href="#cb22-377" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="cn">NULL</span></span>
+<span id="cb22-378"><a href="#cb22-378" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb22-379"><a href="#cb22-379" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb22-380"><a href="#cb22-380" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-383"><a href="#cb22-383" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb22-384"><a href="#cb22-384" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: e-accuracy</span></span>
+<span id="cb22-385"><a href="#cb22-385" aria-hidden="true" tabindex="-1"></a>clothing_accu <span class="ot">&lt;-</span> clothing_fc2 <span class="sc">|&gt;</span></span>
+<span id="cb22-386"><a href="#cb22-386" aria-hidden="true" tabindex="-1"></a>  <span class="fu">accuracy</span>(clothing_vic) <span class="sc">|&gt;</span></span>
+<span id="cb22-387"><a href="#cb22-387" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(.model, RMSE, MAE, MAPE, MASE, RMSSE) <span class="sc">|&gt;</span></span>
+<span id="cb22-388"><a href="#cb22-388" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(RMSSE)</span>
 <span id="cb22-389"><a href="#cb22-389" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-390"><a href="#cb22-390" aria-hidden="true" tabindex="-1"></a>**4. Interpretation**</span>
-<span id="cb22-391"><a href="#cb22-391" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-392"><a href="#cb22-392" aria-hidden="true" tabindex="-1"></a>The decomposition models (<span class="in">`stl`</span> and <span class="in">`stl_bc`</span>) substantially outperform all four benchmarks on RMSSE, confirming that combining STL with component-level forecasting is a meaningful improvement over any single benchmark method.</span>
-<span id="cb22-393"><a href="#cb22-393" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-394"><a href="#cb22-394" aria-hidden="true" tabindex="-1"></a>The Box-Cox variant (<span class="in">`stl_bc`</span>) performs similarly to or slightly better than the untransformed version (<span class="in">`stl`</span>). The improvement from the transformation is modest here — this is expected, because the transformation primarily stabilizes the prediction intervals rather than shifting point forecast accuracy dramatically. However, using <span class="in">`stl_bc`</span> is still the better choice: the intervals are more reliable (they reflect the actual distributional uncertainty in the original scale), and the residuals in the transformed scale are better-behaved for diagnostics.</span>
-<span id="cb22-395"><a href="#cb22-395" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-396"><a href="#cb22-396" aria-hidden="true" tabindex="-1"></a>The best model by RMSSE should be selected for Parts f and g. In most runs of this exercise it will be <span class="in">`stl_bc`</span>.</span>
-<span id="cb22-397"><a href="#cb22-397" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb22-390"><a href="#cb22-390" aria-hidden="true" tabindex="-1"></a>clothing_accu</span>
+<span id="cb22-391"><a href="#cb22-391" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb22-392"><a href="#cb22-392" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-393"><a href="#cb22-393" aria-hidden="true" tabindex="-1"></a>**4. Interpretation**</span>
+<span id="cb22-394"><a href="#cb22-394" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-395"><a href="#cb22-395" aria-hidden="true" tabindex="-1"></a>The decomposition models (<span class="in">`stl`</span> and <span class="in">`stl_bc`</span>) substantially outperform all four benchmarks on RMSSE, confirming that combining STL with component-level forecasting is a meaningful improvement over any single benchmark method.</span>
+<span id="cb22-396"><a href="#cb22-396" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-397"><a href="#cb22-397" aria-hidden="true" tabindex="-1"></a>The Box-Cox variant (<span class="in">`stl_bc`</span>) performs similarly to or slightly better than the untransformed version (<span class="in">`stl`</span>). The improvement from the transformation is modest here — this is expected, because the transformation primarily stabilizes the prediction intervals rather than shifting point forecast accuracy dramatically. However, using <span class="in">`stl_bc`</span> is still the better choice: the intervals are more reliable (they reflect the actual distributional uncertainty in the original scale), and the residuals in the transformed scale are better-behaved for diagnostics.</span>
 <span id="cb22-398"><a href="#cb22-398" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-399"><a href="#cb22-399" aria-hidden="true" tabindex="-1"></a>---</span>
-<span id="cb22-400"><a href="#cb22-400" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-401"><a href="#cb22-401" aria-hidden="true" tabindex="-1"></a><span class="fu">## Part f — Residual diagnostics</span></span>
-<span id="cb22-402"><a href="#cb22-402" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-403"><a href="#cb22-403" aria-hidden="true" tabindex="-1"></a>Select the best-performing model from Part e and run a full residual diagnostic.</span>
-<span id="cb22-404"><a href="#cb22-404" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-405"><a href="#cb22-405" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Plot the residuals using <span class="in">`gg_tsresiduals()`</span>. What do you see?</span>
-<span id="cb22-406"><a href="#cb22-406" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Run a Ljung-Box test. State the null hypothesis, report the result, and interpret it.</span>
-<span id="cb22-407"><a href="#cb22-407" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Based on the diagnostics, is the model well-specified? What structure, if any, remains in the residuals?</span>
-<span id="cb22-408"><a href="#cb22-408" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-409"><a href="#cb22-409" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip collapse="true"}</span>
-<span id="cb22-410"><a href="#cb22-410" aria-hidden="true" tabindex="-1"></a><span class="fu">## Solution — Part f</span></span>
+<span id="cb22-399"><a href="#cb22-399" aria-hidden="true" tabindex="-1"></a>The best model by RMSSE should be selected for Parts f and g. In most runs of this exercise it will be <span class="in">`stl_bc`</span>.</span>
+<span id="cb22-400"><a href="#cb22-400" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb22-401"><a href="#cb22-401" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-402"><a href="#cb22-402" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb22-403"><a href="#cb22-403" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-404"><a href="#cb22-404" aria-hidden="true" tabindex="-1"></a><span class="fu">## Part f — Residual diagnostics</span></span>
+<span id="cb22-405"><a href="#cb22-405" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-406"><a href="#cb22-406" aria-hidden="true" tabindex="-1"></a>Select the best-performing model from Part e and run a full residual diagnostic.</span>
+<span id="cb22-407"><a href="#cb22-407" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-408"><a href="#cb22-408" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Plot the residuals using <span class="in">`gg_tsresiduals()`</span>. What do you see?</span>
+<span id="cb22-409"><a href="#cb22-409" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Run a Ljung-Box test. State the null hypothesis, report the result, and interpret it.</span>
+<span id="cb22-410"><a href="#cb22-410" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Based on the diagnostics, is the model well-specified? What structure, if any, remains in the residuals?</span>
 <span id="cb22-411"><a href="#cb22-411" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-414"><a href="#cb22-414" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-415"><a href="#cb22-415" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: f-residuals</span></span>
-<span id="cb22-416"><a href="#cb22-416" aria-hidden="true" tabindex="-1"></a>clothing_fit2 <span class="sc">|&gt;</span></span>
-<span id="cb22-417"><a href="#cb22-417" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(stl_bc) <span class="sc">|&gt;</span></span>
-<span id="cb22-418"><a href="#cb22-418" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gg_tsresiduals</span>() <span class="sc">+</span></span>
-<span id="cb22-419"><a href="#cb22-419" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Residual diagnostics — STL + Box-Cox decomposition model"</span>)</span>
-<span id="cb22-420"><a href="#cb22-420" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-421"><a href="#cb22-421" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-424"><a href="#cb22-424" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-425"><a href="#cb22-425" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: f-ljung</span></span>
-<span id="cb22-426"><a href="#cb22-426" aria-hidden="true" tabindex="-1"></a>clothing_fit2 <span class="sc">|&gt;</span></span>
-<span id="cb22-427"><a href="#cb22-427" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(stl_bc) <span class="sc">|&gt;</span></span>
-<span id="cb22-428"><a href="#cb22-428" aria-hidden="true" tabindex="-1"></a>  <span class="fu">augment</span>() <span class="sc">|&gt;</span></span>
-<span id="cb22-429"><a href="#cb22-429" aria-hidden="true" tabindex="-1"></a>  <span class="fu">features</span>(.innov, ljung_box, <span class="at">lag =</span> <span class="dv">24</span>, <span class="at">dof =</span> <span class="dv">0</span>)</span>
-<span id="cb22-430"><a href="#cb22-430" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-431"><a href="#cb22-431" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-432"><a href="#cb22-432" aria-hidden="true" tabindex="-1"></a>**Interpretation**</span>
-<span id="cb22-433"><a href="#cb22-433" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-434"><a href="#cb22-434" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Residual time plot**: the residuals fluctuate around zero with no obvious trend or seasonal pattern — the systematic structure appears to have been captured. There may be some periods of higher variance (heteroscedasticity), but this is substantially reduced compared to an untransformed model.</span>
-<span id="cb22-435"><a href="#cb22-435" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**ACF**: most autocorrelations fall within the confidence bands. A few lags may be marginally significant, but there is no clear systematic pattern (e.g., no seasonal spikes at lag 12).</span>
-<span id="cb22-436"><a href="#cb22-436" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Histogram**: the residuals are approximately symmetric and bell-shaped, consistent with normality. Some slight skew or heavier tails may be present.</span>
-<span id="cb22-437"><a href="#cb22-437" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Ljung-Box**: the null hypothesis is that the residuals are white noise (no remaining autocorrelation up to lag 24). A p-value above 0.05 means we fail to reject the null — the residuals are consistent with white noise. If the p-value is below 0.05, there is remaining autocorrelation that the model did not capture, which suggests potential for improvement in Module 2 (ETS or ARIMA components).</span>
-<span id="cb22-438"><a href="#cb22-438" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-439"><a href="#cb22-439" aria-hidden="true" tabindex="-1"></a>Overall, for a Module 1 model, the diagnostics are satisfactory. The main limitation — which will be addressed in Module 2 — is that the Drift assumption (constant average growth rate) may not hold for the trend-cycle component in the test period.</span>
-<span id="cb22-440"><a href="#cb22-440" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb22-412"><a href="#cb22-412" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip collapse="true"}</span>
+<span id="cb22-413"><a href="#cb22-413" aria-hidden="true" tabindex="-1"></a><span class="fu">## Solution — Part f</span></span>
+<span id="cb22-414"><a href="#cb22-414" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-417"><a href="#cb22-417" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb22-418"><a href="#cb22-418" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: f-residuals</span></span>
+<span id="cb22-419"><a href="#cb22-419" aria-hidden="true" tabindex="-1"></a>clothing_fit2 <span class="sc">|&gt;</span></span>
+<span id="cb22-420"><a href="#cb22-420" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(stl_bc) <span class="sc">|&gt;</span></span>
+<span id="cb22-421"><a href="#cb22-421" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gg_tsresiduals</span>() <span class="sc">+</span></span>
+<span id="cb22-422"><a href="#cb22-422" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Residual diagnostics — STL + Box-Cox decomposition model"</span>)</span>
+<span id="cb22-423"><a href="#cb22-423" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb22-424"><a href="#cb22-424" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-427"><a href="#cb22-427" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb22-428"><a href="#cb22-428" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: f-ljung</span></span>
+<span id="cb22-429"><a href="#cb22-429" aria-hidden="true" tabindex="-1"></a>clothing_fit2 <span class="sc">|&gt;</span></span>
+<span id="cb22-430"><a href="#cb22-430" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(stl_bc) <span class="sc">|&gt;</span></span>
+<span id="cb22-431"><a href="#cb22-431" aria-hidden="true" tabindex="-1"></a>  <span class="fu">augment</span>() <span class="sc">|&gt;</span></span>
+<span id="cb22-432"><a href="#cb22-432" aria-hidden="true" tabindex="-1"></a>  <span class="fu">features</span>(.innov, ljung_box, <span class="at">lag =</span> <span class="dv">24</span>, <span class="at">dof =</span> <span class="dv">0</span>)</span>
+<span id="cb22-433"><a href="#cb22-433" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb22-434"><a href="#cb22-434" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-435"><a href="#cb22-435" aria-hidden="true" tabindex="-1"></a>**Interpretation**</span>
+<span id="cb22-436"><a href="#cb22-436" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-437"><a href="#cb22-437" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Residual time plot**: the residuals fluctuate around zero with no obvious trend or seasonal pattern — the systematic structure appears to have been captured. There may be some periods of higher variance (heteroscedasticity), but this is substantially reduced compared to an untransformed model.</span>
+<span id="cb22-438"><a href="#cb22-438" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**ACF**: most autocorrelations fall within the confidence bands. A few lags may be marginally significant, but there is no clear systematic pattern (e.g., no seasonal spikes at lag 12).</span>
+<span id="cb22-439"><a href="#cb22-439" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Histogram**: the residuals are approximately symmetric and bell-shaped, consistent with normality. Some slight skew or heavier tails may be present.</span>
+<span id="cb22-440"><a href="#cb22-440" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Ljung-Box**: the null hypothesis is that the residuals are white noise (no remaining autocorrelation up to lag 24). A p-value above 0.05 means we fail to reject the null — the residuals are consistent with white noise. If the p-value is below 0.05, there is remaining autocorrelation that the model did not capture, which suggests potential for improvement in Module 2 (ETS or ARIMA components).</span>
 <span id="cb22-441"><a href="#cb22-441" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-442"><a href="#cb22-442" aria-hidden="true" tabindex="-1"></a>---</span>
-<span id="cb22-443"><a href="#cb22-443" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-444"><a href="#cb22-444" aria-hidden="true" tabindex="-1"></a><span class="fu">## Part g — Refit on full data and final forecast</span></span>
-<span id="cb22-445"><a href="#cb22-445" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-446"><a href="#cb22-446" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Refit the best model from Part e on the **complete** <span class="in">`clothing_vic`</span> dataset (no train/test split).</span>
-<span id="cb22-447"><a href="#cb22-447" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Generate a 24-month forecast with 80% and 95% prediction intervals.</span>
-<span id="cb22-448"><a href="#cb22-448" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Plot the forecast alongside the most recent portion of the historical data. Comment on the shape of the prediction intervals — are they symmetric? What does this tell you?</span>
-<span id="cb22-449"><a href="#cb22-449" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-450"><a href="#cb22-450" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip collapse="true"}</span>
-<span id="cb22-451"><a href="#cb22-451" aria-hidden="true" tabindex="-1"></a><span class="fu">## Solution — Part g</span></span>
+<span id="cb22-442"><a href="#cb22-442" aria-hidden="true" tabindex="-1"></a>Overall, for a Module 1 model, the diagnostics are satisfactory. The main limitation — which will be addressed in Module 2 — is that the Drift assumption (constant average growth rate) may not hold for the trend-cycle component in the test period.</span>
+<span id="cb22-443"><a href="#cb22-443" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb22-444"><a href="#cb22-444" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-445"><a href="#cb22-445" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb22-446"><a href="#cb22-446" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-447"><a href="#cb22-447" aria-hidden="true" tabindex="-1"></a><span class="fu">## Part g — Refit on full data and final forecast</span></span>
+<span id="cb22-448"><a href="#cb22-448" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-449"><a href="#cb22-449" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Refit the best model from Part e on the **complete** <span class="in">`clothing_vic`</span> dataset (no train/test split).</span>
+<span id="cb22-450"><a href="#cb22-450" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Generate a 24-month forecast with 80% and 95% prediction intervals.</span>
+<span id="cb22-451"><a href="#cb22-451" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Plot the forecast alongside the most recent portion of the historical data. Comment on the shape of the prediction intervals — are they symmetric? What does this tell you?</span>
 <span id="cb22-452"><a href="#cb22-452" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-453"><a href="#cb22-453" aria-hidden="true" tabindex="-1"></a>**1. Refit on full data**</span>
-<span id="cb22-454"><a href="#cb22-454" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-457"><a href="#cb22-457" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-458"><a href="#cb22-458" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: g-refit</span></span>
-<span id="cb22-459"><a href="#cb22-459" aria-hidden="true" tabindex="-1"></a>clothing_final_fit <span class="ot">&lt;-</span> clothing_vic <span class="sc">|&gt;</span></span>
-<span id="cb22-460"><a href="#cb22-460" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(<span class="at">stl_bc =</span> stl_spec_bc)</span>
-<span id="cb22-461"><a href="#cb22-461" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-462"><a href="#cb22-462" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-463"><a href="#cb22-463" aria-hidden="true" tabindex="-1"></a>**2 &amp; 3. Forecast and plot**</span>
-<span id="cb22-464"><a href="#cb22-464" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-467"><a href="#cb22-467" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-468"><a href="#cb22-468" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: g-forecast</span></span>
-<span id="cb22-469"><a href="#cb22-469" aria-hidden="true" tabindex="-1"></a>clothing_final_fc <span class="ot">&lt;-</span> clothing_final_fit <span class="sc">|&gt;</span></span>
-<span id="cb22-470"><a href="#cb22-470" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">24</span>)</span>
-<span id="cb22-471"><a href="#cb22-471" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-472"><a href="#cb22-472" aria-hidden="true" tabindex="-1"></a>clothing_final_fc <span class="sc">|&gt;</span></span>
-<span id="cb22-473"><a href="#cb22-473" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(</span>
-<span id="cb22-474"><a href="#cb22-474" aria-hidden="true" tabindex="-1"></a>    clothing_vic <span class="sc">|&gt;</span> <span class="fu">filter_index</span>(<span class="st">"2010 Jan."</span> <span class="sc">~</span> .),</span>
-<span id="cb22-475"><a href="#cb22-475" aria-hidden="true" tabindex="-1"></a>    <span class="at">level =</span> <span class="fu">c</span>(<span class="dv">80</span>, <span class="dv">95</span>)</span>
-<span id="cb22-476"><a href="#cb22-476" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb22-477"><a href="#cb22-477" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb22-478"><a href="#cb22-478" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Victoria clothing — final 24-month forecast"</span>,</span>
-<span id="cb22-479"><a href="#cb22-479" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"STL + Box-Cox decomposition model · refit on full data"</span>,</span>
-<span id="cb22-480"><a href="#cb22-480" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Turnover ($ million AUD)"</span>,</span>
-<span id="cb22-481"><a href="#cb22-481" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="cn">NULL</span></span>
-<span id="cb22-482"><a href="#cb22-482" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb22-483"><a href="#cb22-483" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-484"><a href="#cb22-484" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-485"><a href="#cb22-485" aria-hidden="true" tabindex="-1"></a>**Interpretation of prediction intervals**</span>
-<span id="cb22-486"><a href="#cb22-486" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-487"><a href="#cb22-487" aria-hidden="true" tabindex="-1"></a>The intervals are **asymmetric** — the upper bound extends further from the point forecast than the lower bound. This is a direct consequence of the Box-Cox back-transformation: forecasts and intervals are computed in the transformed scale (where they are symmetric), then back-transformed to the original scale. Because the Box-Cox function is nonlinear, the back-transformation stretches the upper tail more than the lower one. The asymmetry is not a bug; it correctly reflects that large positive deviations are more likely than large negative ones when the series is growing.</span>
-<span id="cb22-488"><a href="#cb22-488" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-489"><a href="#cb22-489" aria-hidden="true" tabindex="-1"></a>The intervals widen at longer horizons, as expected — uncertainty accumulates over time. The seasonal pattern is preserved in the forecast, with the December spike visible in each forecasted year.</span>
-<span id="cb22-490"><a href="#cb22-490" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb22-453"><a href="#cb22-453" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip collapse="true"}</span>
+<span id="cb22-454"><a href="#cb22-454" aria-hidden="true" tabindex="-1"></a><span class="fu">## Solution — Part g</span></span>
+<span id="cb22-455"><a href="#cb22-455" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-456"><a href="#cb22-456" aria-hidden="true" tabindex="-1"></a>**1. Refit on full data**</span>
+<span id="cb22-457"><a href="#cb22-457" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-460"><a href="#cb22-460" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb22-461"><a href="#cb22-461" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: g-refit</span></span>
+<span id="cb22-462"><a href="#cb22-462" aria-hidden="true" tabindex="-1"></a>clothing_final_fit <span class="ot">&lt;-</span> clothing_vic <span class="sc">|&gt;</span></span>
+<span id="cb22-463"><a href="#cb22-463" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(<span class="at">stl_bc =</span> stl_spec_bc)</span>
+<span id="cb22-464"><a href="#cb22-464" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb22-465"><a href="#cb22-465" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-466"><a href="#cb22-466" aria-hidden="true" tabindex="-1"></a>**2 &amp; 3. Forecast and plot**</span>
+<span id="cb22-467"><a href="#cb22-467" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-470"><a href="#cb22-470" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb22-471"><a href="#cb22-471" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: g-forecast</span></span>
+<span id="cb22-472"><a href="#cb22-472" aria-hidden="true" tabindex="-1"></a>clothing_final_fc <span class="ot">&lt;-</span> clothing_final_fit <span class="sc">|&gt;</span></span>
+<span id="cb22-473"><a href="#cb22-473" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">24</span>)</span>
+<span id="cb22-474"><a href="#cb22-474" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-475"><a href="#cb22-475" aria-hidden="true" tabindex="-1"></a>clothing_final_fc <span class="sc">|&gt;</span></span>
+<span id="cb22-476"><a href="#cb22-476" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(</span>
+<span id="cb22-477"><a href="#cb22-477" aria-hidden="true" tabindex="-1"></a>    clothing_vic <span class="sc">|&gt;</span> <span class="fu">filter_index</span>(<span class="st">"2010 Jan."</span> <span class="sc">~</span> .),</span>
+<span id="cb22-478"><a href="#cb22-478" aria-hidden="true" tabindex="-1"></a>    <span class="at">level =</span> <span class="fu">c</span>(<span class="dv">80</span>, <span class="dv">95</span>)</span>
+<span id="cb22-479"><a href="#cb22-479" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb22-480"><a href="#cb22-480" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb22-481"><a href="#cb22-481" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Victoria clothing — final 24-month forecast"</span>,</span>
+<span id="cb22-482"><a href="#cb22-482" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"STL + Box-Cox decomposition model · refit on full data"</span>,</span>
+<span id="cb22-483"><a href="#cb22-483" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Turnover ($ million AUD)"</span>,</span>
+<span id="cb22-484"><a href="#cb22-484" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="cn">NULL</span></span>
+<span id="cb22-485"><a href="#cb22-485" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb22-486"><a href="#cb22-486" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb22-487"><a href="#cb22-487" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-488"><a href="#cb22-488" aria-hidden="true" tabindex="-1"></a>**Interpretation of prediction intervals**</span>
+<span id="cb22-489"><a href="#cb22-489" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-490"><a href="#cb22-490" aria-hidden="true" tabindex="-1"></a>The intervals are **asymmetric** — the upper bound extends further from the point forecast than the lower bound. This is a direct consequence of the Box-Cox back-transformation: forecasts and intervals are computed in the transformed scale (where they are symmetric), then back-transformed to the original scale. Because the Box-Cox function is nonlinear, the back-transformation stretches the upper tail more than the lower one. The asymmetry is not a bug; it correctly reflects that large positive deviations are more likely than large negative ones when the series is growing.</span>
 <span id="cb22-491"><a href="#cb22-491" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-492"><a href="#cb22-492" aria-hidden="true" tabindex="-1"></a>---</span>
-<span id="cb22-493"><a href="#cb22-493" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-494"><a href="#cb22-494" aria-hidden="true" tabindex="-1"></a><span class="fu">## Wrap-up</span></span>
-<span id="cb22-495"><a href="#cb22-495" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-496"><a href="#cb22-496" aria-hidden="true" tabindex="-1"></a>You have now completed the full Module 1 workflow on a real series:</span>
-<span id="cb22-497"><a href="#cb22-497" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-498"><a href="#cb22-498" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Extracted and inspected a tsibble</span>
-<span id="cb22-499"><a href="#cb22-499" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Decided on and applied a variance-stabilizing transformation</span>
-<span id="cb22-500"><a href="#cb22-500" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Decomposed the series with STL and interpreted the components</span>
-<span id="cb22-501"><a href="#cb22-501" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Evaluated four benchmark models</span>
-<span id="cb22-502"><a href="#cb22-502" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Built and assessed a decomposition model that beats the benchmarks</span>
-<span id="cb22-503"><a href="#cb22-503" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Diagnosed residuals and interpreted the Ljung-Box test</span>
-<span id="cb22-504"><a href="#cb22-504" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Refit on the full data and generated a final forecast with prediction intervals</span>
-<span id="cb22-505"><a href="#cb22-505" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-506"><a href="#cb22-506" aria-hidden="true" tabindex="-1"></a>::: {.callout-note appearance="simple"}</span>
-<span id="cb22-507"><a href="#cb22-507" aria-hidden="true" tabindex="-1"></a><span class="fu">## What's still missing?</span></span>
+<span id="cb22-492"><a href="#cb22-492" aria-hidden="true" tabindex="-1"></a>The intervals widen at longer horizons, as expected — uncertainty accumulates over time. The seasonal pattern is preserved in the forecast, with the December spike visible in each forecasted year.</span>
+<span id="cb22-493"><a href="#cb22-493" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb22-494"><a href="#cb22-494" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-495"><a href="#cb22-495" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb22-496"><a href="#cb22-496" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-497"><a href="#cb22-497" aria-hidden="true" tabindex="-1"></a><span class="fu">## Wrap-up</span></span>
+<span id="cb22-498"><a href="#cb22-498" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-499"><a href="#cb22-499" aria-hidden="true" tabindex="-1"></a>You have now completed the full Module 1 workflow on a real series:</span>
+<span id="cb22-500"><a href="#cb22-500" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-501"><a href="#cb22-501" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Extracted and inspected a tsibble</span>
+<span id="cb22-502"><a href="#cb22-502" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Decided on and applied a variance-stabilizing transformation</span>
+<span id="cb22-503"><a href="#cb22-503" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Decomposed the series with STL and interpreted the components</span>
+<span id="cb22-504"><a href="#cb22-504" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Evaluated four benchmark models</span>
+<span id="cb22-505"><a href="#cb22-505" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Built and assessed a decomposition model that beats the benchmarks</span>
+<span id="cb22-506"><a href="#cb22-506" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Diagnosed residuals and interpreted the Ljung-Box test</span>
+<span id="cb22-507"><a href="#cb22-507" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Refit on the full data and generated a final forecast with prediction intervals</span>
 <span id="cb22-508"><a href="#cb22-508" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-509"><a href="#cb22-509" aria-hidden="true" tabindex="-1"></a>The Drift component in your model assumes that the long-run average growth rate observed in the training data will continue into the future. This is a strong assumption — and for a series whose trend has flattened and become irregular, it may not hold. In **Module 2**, you will replace Drift with ETS and ARIMA, which can adapt to changing trend dynamics rather than extrapolating a fixed one.</span>
-<span id="cb22-510"><a href="#cb22-510" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb22-509"><a href="#cb22-509" aria-hidden="true" tabindex="-1"></a>::: {.callout-note appearance="simple"}</span>
+<span id="cb22-510"><a href="#cb22-510" aria-hidden="true" tabindex="-1"></a><span class="fu">## What's still missing?</span></span>
+<span id="cb22-511"><a href="#cb22-511" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-512"><a href="#cb22-512" aria-hidden="true" tabindex="-1"></a>The Drift component in your model assumes that the long-run average growth rate observed in the training data will continue into the future. This is a strong assumption — and for a series whose trend has flattened and become irregular, it may not hold. In **Module 2**, you will replace Drift with ETS and ARIMA, which can adapt to changing trend dynamics rather than extrapolating a fixed one.</span>
+<span id="cb22-513"><a href="#cb22-513" aria-hidden="true" tabindex="-1"></a>:::</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
