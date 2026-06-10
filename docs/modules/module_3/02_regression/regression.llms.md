@@ -2,7 +2,7 @@
 
 Modified
 
-June 9, 2026
+June 10, 2026
 
 Code
 
@@ -144,20 +144,37 @@ where each of these is an academic paper
 
 ------------------------------------------------------------------------
 
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Yogurt consumption and the second variable is Google searches for 'i cant even'. The chart goes from 2004 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/2203_yogurt-consumption_correlates-with_google-searches-for-i-cant-even.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Yogurt consumption and the second variable is Google searches for 'i cant even'.  The chart goes from 2004 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/2203_yogurt-consumption_correlates-with_google-searches-for-i-cant-even_mobile.svg)  
-**View details about correlation \#2,203**](spurious/correlation/2203_yogurt-consumption_correlates-with_google-searches-for-i-cant-even)  
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Viewership of The Big Bang Theory and the second variable is Google searches for 'how to make baby'. The chart goes from 2008 to 2019, and the two variables track closely in value over that time.](spurious/correlation/image/1402_viewership-of-the-big-bang-theory_correlates-with_google-searches-for-how-to-make-baby.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Viewership of The Big Bang Theory and the second variable is Google searches for 'how to make baby'.  The chart goes from 2008 to 2019, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1402_viewership-of-the-big-bang-theory_correlates-with_google-searches-for-how-to-make-baby_mobile.svg)  
+**View details about correlation \#1,402**](spurious/correlation/1402_viewership-of-the-big-bang-theory_correlates-with_google-searches-for-how-to-make-baby)  
   
 
 ^(Show scatterplot)
 
-![](spurious/correlation/scatterplot/2203_yogurt-consumption_correlates-with_google-searches-for-i-cant-even_scatterplot.png)
+![](spurious/correlation/scatterplot/1402_viewership-of-the-big-bang-theory_correlates-with_google-searches-for-how-to-make-baby_scatterplot.png)
 
   
   
 
 *What else correlates?*  
-[Yogurt consumption](spurious/variable?id=568) · [all food](spurious/view-all-variables/farmingfood)  
-[Google searches for 'i cant even'](spurious/variable?id=1525) · [all google searches](spurious/view-all-variables/google)  
+[Viewership of "The Big Bang Theory"](spurious/variable?id=146) · [all films & actors](spurious/view-all-variables/films)  
+[Google searches for 'how to make baby'](spurious/variable?id=1497) · [all google searches](spurious/view-all-variables/google)  
+
+------------------------------------------------------------------------
+
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The distance between Saturn and the Sun and the second variable is Biomass power generated in India. The chart goes from 1999 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/5931_the-distance-between-saturn-and-the-sun_correlates-with_biomass-power-generated-in-india.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The distance between Saturn and the Sun and the second variable is Biomass power generated in India.  The chart goes from 1999 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/5931_the-distance-between-saturn-and-the-sun_correlates-with_biomass-power-generated-in-india_mobile.svg)  
+**View details about correlation \#5,931**](spurious/correlation/5931_the-distance-between-saturn-and-the-sun_correlates-with_biomass-power-generated-in-india)  
+  
+
+^(Show scatterplot)
+
+![](spurious/correlation/scatterplot/5931_the-distance-between-saturn-and-the-sun_correlates-with_biomass-power-generated-in-india_scatterplot.png)
+
+  
+  
+
+*What else correlates?*  
+[The distance between Saturn and the Sun](spurious/variable?id=1933) · [all planets](spurious/view-all-variables/planets)  
+[Biomass power generated in India](spurious/variable?id=23735) · [all energy](spurious/view-all-variables/energy)  
 
 ------------------------------------------------------------------------
 
@@ -481,23 +498,6 @@ where each of these is an academic paper
 *What else correlates?*  
 [Popularity of the first name Kori](spurious/variable?id=3237) · [all first names](spurious/view-all-variables/babynames)  
 [Popularity of the 'pepe' meme](spurious/variable?id=25152) · [all memes](spurious/view-all-variables/memes)  
-
-------------------------------------------------------------------------
-
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Air pollution in Dayton and the second variable is The number of genetic counselors in Ohio. The chart goes from 2012 to 2022, and the two variables track closely in value over that time.](spurious/correlation/image/2996_less-than-ideal-air-quality-in-dayton_correlates-with_the-number-of-genetic-counselors-in-ohio.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Air pollution in Dayton and the second variable is The number of genetic counselors in Ohio.  The chart goes from 2012 to 2022, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/2996_less-than-ideal-air-quality-in-dayton_correlates-with_the-number-of-genetic-counselors-in-ohio_mobile.svg)  
-**View details about correlation \#2,996**](spurious/correlation/2996_less-than-ideal-air-quality-in-dayton_correlates-with_the-number-of-genetic-counselors-in-ohio)  
-  
-
-^(Show scatterplot)
-
-![](spurious/correlation/scatterplot/2996_less-than-ideal-air-quality-in-dayton_correlates-with_the-number-of-genetic-counselors-in-ohio_scatterplot.png)
-
-  
-  
-
-*What else correlates?*  
-[Air pollution in Dayton](spurious/variable?id=20525) · [all weather](spurious/view-all-variables/weather)  
-[The number of genetic counselors in Ohio](spurious/variable?id=19400) · [all cccupations](spurious/view-all-variables/occupations)  
 
 ------------------------------------------------------------------------
 

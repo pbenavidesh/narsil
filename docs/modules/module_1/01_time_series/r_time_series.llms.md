@@ -2,7 +2,7 @@
 
 Modified
 
-June 9, 2026
+June 10, 2026
 
 # 1 Packages
 
@@ -202,9 +202,9 @@ tourism |>                            # <1>
 Code
 
 ``` r
-tourism |> 
+tourism_p <- tourism |>
   filter(State == "Tasmania",
-         Region == "East Coast") |> 
+         Region == "East Coast") |>
   autoplot(Trips) +                             # <1>
   facet_wrap(vars(Purpose), scale = "free_y") + # <2>
   theme(legend.position = "none")               # <3>
@@ -214,28 +214,34 @@ tourism |>
 2.  `facet_wrap()` Divides a plot into subplots (facets).
 3.  you can customize endless feautres using `theme()`. Here, we remove the legend, as it’s redudant.
 
-[![](r_time_series_files/figure-html/ts_viz_full-1.png)](r_time_series_files/figure-html/ts_viz_full-1.png)
+[![](r_time_series_files/figure-revealjs/ts_viz_full_render-1.png)](r_time_series_files/figure-revealjs/ts_viz_full_render-1.png)
+
+[![](r_time_series_files/figure-revealjs/ts_viz_full_render-2.png)](r_time_series_files/figure-revealjs/ts_viz_full_render-2.png)
 
 ## 3.2 Time plots
 
 Code
 
 ``` numberSource
-aus_production |> 
+gas_p <- aus_production |>
   autoplot(Gas)
 ```
 
-[![](r_time_series_files/figure-html/time_plot_1-1.png)](r_time_series_files/figure-html/time_plot_1-1.png)
+[![](r_time_series_files/figure-revealjs/time_plot_1_render-1.png)](r_time_series_files/figure-revealjs/time_plot_1_render-1.png)
+
+[![](r_time_series_files/figure-revealjs/time_plot_1_render-2.png)](r_time_series_files/figure-revealjs/time_plot_1_render-2.png)
 
 Code
 
 ``` numberSource
-aus_production |> 
+gas_points_p <- aus_production |>
   autoplot(Gas) +
   geom_point()
 ```
 
-[![](r_time_series_files/figure-html/time_plot_2-1.png)](r_time_series_files/figure-html/time_plot_2-1.png)
+[![](r_time_series_files/figure-revealjs/time_plot_2_render-1.png)](r_time_series_files/figure-revealjs/time_plot_2_render-1.png)
+
+[![](r_time_series_files/figure-revealjs/time_plot_2_render-2.png)](r_time_series_files/figure-revealjs/time_plot_2_render-2.png)
 
 These are the most basic type of plots. We have the time variable in the x-axis, and our forecast variable in the y-axis. Time plots should be line plots, and can include or not points.
 
@@ -244,28 +250,34 @@ These are the most basic type of plots. We have the time variable in the x-axis,
 Code
 
 ``` numberSource
-aus_production |> 
+gas_season_p <- aus_production |>
   gg_season(Gas)
 ```
 
-[![](r_time_series_files/figure-html/gg_season-1.png)](r_time_series_files/figure-html/gg_season-1.png)
+[![](r_time_series_files/figure-revealjs/gg_season_render-1.png)](r_time_series_files/figure-revealjs/gg_season_render-1.png)
+
+[![](r_time_series_files/figure-revealjs/gg_season_render-2.png)](r_time_series_files/figure-revealjs/gg_season_render-2.png)
 
 The data here are plotted against a single “season”. It’s useful in identifying years with changes in patterns.
 
 Removing the trend from the data:
 
-[![](r_time_series_files/figure-html/gg_season2-1.png)](r_time_series_files/figure-html/gg_season2-1.png)
+[![](r_time_series_files/figure-revealjs/gg_season2_render-1.png)](r_time_series_files/figure-revealjs/gg_season2_render-1.png)
+
+[![](r_time_series_files/figure-revealjs/gg_season2_render-2.png)](r_time_series_files/figure-revealjs/gg_season2_render-2.png)
 
 ## 3.4 Seasonal Subseries Plots
 
 Code
 
 ``` numberSource
-aus_production |> 
+gas_subseries_p <- aus_production |>
   gg_subseries(Gas)
 ```
 
-[![](r_time_series_files/figure-html/gg_subseries-1.png)](r_time_series_files/figure-html/gg_subseries-1.png)
+[![](r_time_series_files/figure-revealjs/gg_subseries_render-1.png)](r_time_series_files/figure-revealjs/gg_subseries_render-1.png)
+
+[![](r_time_series_files/figure-revealjs/gg_subseries_render-2.png)](r_time_series_files/figure-revealjs/gg_subseries_render-2.png)
 
 Here we split the plot into many subplots, one for each season. This helps us see clearly the underlying seasonal pattern. The mean for each season is represented as the blue horizontal line.
 
@@ -274,11 +286,11 @@ Here we split the plot into many subplots, one for each season. This helps us se
 Code
 
 ``` numberSource
-aus_production |> 
+aus_production |>
   gg_tsdisplay(Gas, plot_type = "season")
 ```
 
-[![](r_time_series_files/figure-html/gg_tsdisplay-1.png)](r_time_series_files/figure-html/gg_tsdisplay-1.png)
+[![](r_time_series_files/figure-revealjs/gg_tsdisplay-1.png)](r_time_series_files/figure-revealjs/gg_tsdisplay-1.png)
 
 This function provides a convenient way to have 3 plots: a time plot, an ACF plot, and a third option that can be customized with one of the following plot types:
 

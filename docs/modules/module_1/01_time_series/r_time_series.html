@@ -80,14 +80,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-33269adcf1721b81efc5ea7fcfe7f0ee.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-dark-5a2acb6f4ed5aeb23a104ba421924b87.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-33269adcf1721b81efc5ea7fcfe7f0ee.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-6d40f8af7092f34acea1908532066003.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-dark-cac0433bb97fa58dc0fc6599c25c149a.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-6d40f8af7092f34acea1908532066003.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../../../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../../../site_libs/bootstrap/bootstrap-22744609ec98dd0968a285ad741d3dc1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../../../site_libs/bootstrap/bootstrap-dark-7c304134c18905102272d98ad097d37c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../../../../site_libs/bootstrap/bootstrap-22744609ec98dd0968a285ad741d3dc1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../../../../site_libs/bootstrap/bootstrap-98236e9fc1ba6b77f129162d30afddfc.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../../../site_libs/bootstrap/bootstrap-dark-64716958dbf59fb6281636d81e36cb22.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../../../site_libs/bootstrap/bootstrap-98236e9fc1ba6b77f129162d30afddfc.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script src="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
@@ -194,15 +194,15 @@ window.Quarto = {
 </script>
 
 <meta property="og:title" content="RStudio, R, and Time Series – Time Series Forecasting">
-<meta property="og:image" content="https://pbenavidesh.github.io/narsil/docs/modules/module_1/01_time_series/r_time_series_files/figure-html/ts_viz_full-1.png">
+<meta property="og:image" content="https://pbenavidesh.github.io/narsil/docs/modules/module_1/01_time_series/r_time_series_files/figure-revealjs/ts_viz_full_render-1.png">
 <meta property="og:site_name" content="Time Series Forecasting">
 <meta property="og:image:height" content="960">
-<meta property="og:image:width" content="1344">
+<meta property="og:image:width" content="1920">
 <meta name="twitter:title" content="RStudio, R, and Time Series – Time Series Forecasting">
-<meta name="twitter:image" content="https://pbenavidesh.github.io/narsil/docs/modules/module_1/01_time_series/r_time_series_files/figure-html/ts_viz_full-1.png">
+<meta name="twitter:image" content="https://pbenavidesh.github.io/narsil/docs/modules/module_1/01_time_series/r_time_series_files/figure-revealjs/ts_viz_full_render-1.png">
 <meta name="twitter:creator" content="@PabsBenavides">
 <meta name="twitter:image-height" content="960">
-<meta name="twitter:image-width" content="1344">
+<meta name="twitter:image-width" content="1920">
 <meta name="twitter:card" content="summary_large_image">
 </head>
 
@@ -655,7 +655,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">June 9, 2026</p>
+      <p class="date-modified">June 10, 2026</p>
     </div>
   </div>
     
@@ -989,14 +989,14 @@ Note
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-11" data-llms-code-original="tourism |> 
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-11" data-llms-code-original="tourism_p <- tourism |>
   filter(State == &quot;Tasmania&quot;,
-         Region == &quot;East Coast&quot;) |> 
+         Region == &quot;East Coast&quot;) |>
   autoplot(Trips) +                             # <1>
   facet_wrap(vars(Purpose), scale = &quot;free_y&quot;) + # <2>
-  theme(legend.position = &quot;none&quot;)               # <3>"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-11-1"><a href="#annotated-cell-11-1" aria-hidden="true" tabindex="-1"></a>tourism <span class="sc">|&gt;</span> </span>
+  theme(legend.position = &quot;none&quot;)               # <3>"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-11-1"><a href="#annotated-cell-11-1" aria-hidden="true" tabindex="-1"></a>tourism_p <span class="ot">&lt;-</span> tourism <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-11-2"><a href="#annotated-cell-11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(State <span class="sc">==</span> <span class="st">"Tasmania"</span>,</span>
-<span id="annotated-cell-11-3"><a href="#annotated-cell-11-3" aria-hidden="true" tabindex="-1"></a>         Region <span class="sc">==</span> <span class="st">"East Coast"</span>) <span class="sc">|&gt;</span> </span>
+<span id="annotated-cell-11-3"><a href="#annotated-cell-11-3" aria-hidden="true" tabindex="-1"></a>         Region <span class="sc">==</span> <span class="st">"East Coast"</span>) <span class="sc">|&gt;</span></span>
 <a class="code-annotation-anchor" data-target-cell="annotated-cell-11" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-11-4" class="code-annotation-target"><a href="#annotated-cell-11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(Trips) <span class="sc">+</span></span>
 <a class="code-annotation-anchor" data-target-cell="annotated-cell-11" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-11-5" class="code-annotation-target"><a href="#annotated-cell-11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(Purpose), <span class="at">scale =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
 <a class="code-annotation-anchor" data-target-cell="annotated-cell-11" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-11-6" class="code-annotation-target"><a href="#annotated-cell-11-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1017,10 +1017,19 @@ Note
 </dd>
 </dl>
 </div>
-<div class="cell-output-display">
+</div>
+<div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
+<div class="cell-output-display light-content">
 <div>
 <figure class="figure">
-<p><a href="r_time_series_files/figure-html/ts_viz_full-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="r_time_series_files/figure-html/ts_viz_full-1.png" class="img-fluid figure-img" width="672"></a></p>
+<p><a href="r_time_series_files/figure-revealjs/ts_viz_full_render-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="r_time_series_files/figure-revealjs/ts_viz_full_render-1.png" class="img-fluid figure-img" width="960"></a></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display dark-content">
+<div>
+<figure class="figure">
+<p><a href="r_time_series_files/figure-revealjs/ts_viz_full_render-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="r_time_series_files/figure-revealjs/ts_viz_full_render-2.png" class="img-fluid figure-img" width="960"></a></p>
 </figure>
 </div>
 </div>
@@ -1033,13 +1042,22 @@ Note
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>aus_production <span class="sc">|&gt;</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>gas_p <span class="ot">&lt;-</span> aus_production <span class="sc">|&gt;</span></span>
 <span id="cb16-2"><a href="#cb16-2"></a>  <span class="fu">autoplot</span>(Gas)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output-display">
+</div>
+<div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
+<div class="cell-output-display light-content">
 <div>
 <figure class="figure">
-<p><a href="r_time_series_files/figure-html/time_plot_1-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="r_time_series_files/figure-html/time_plot_1-1.png" class="img-fluid figure-img" width="672"></a></p>
+<p><a href="r_time_series_files/figure-revealjs/time_plot_1_render-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="r_time_series_files/figure-revealjs/time_plot_1_render-1.png" class="img-fluid figure-img" width="960"></a></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display dark-content">
+<div>
+<figure class="figure">
+<p><a href="r_time_series_files/figure-revealjs/time_plot_1_render-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img src="r_time_series_files/figure-revealjs/time_plot_1_render-2.png" class="img-fluid figure-img" width="960"></a></p>
 </figure>
 </div>
 </div>
@@ -1048,14 +1066,23 @@ Note
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>aus_production <span class="sc">|&gt;</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>gas_points_p <span class="ot">&lt;-</span> aus_production <span class="sc">|&gt;</span></span>
 <span id="cb17-2"><a href="#cb17-2"></a>  <span class="fu">autoplot</span>(Gas) <span class="sc">+</span></span>
 <span id="cb17-3"><a href="#cb17-3"></a>  <span class="fu">geom_point</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output-display">
+</div>
+<div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
+<div class="cell-output-display light-content">
 <div>
 <figure class="figure">
-<p><a href="r_time_series_files/figure-html/time_plot_2-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="r_time_series_files/figure-html/time_plot_2-1.png" class="img-fluid figure-img" width="672"></a></p>
+<p><a href="r_time_series_files/figure-revealjs/time_plot_2_render-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img src="r_time_series_files/figure-revealjs/time_plot_2_render-1.png" class="img-fluid figure-img" width="960"></a></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display dark-content">
+<div>
+<figure class="figure">
+<p><a href="r_time_series_files/figure-revealjs/time_plot_2_render-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img src="r_time_series_files/figure-revealjs/time_plot_2_render-2.png" class="img-fluid figure-img" width="960"></a></p>
 </figure>
 </div>
 </div>
@@ -1071,13 +1098,22 @@ Note
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a>aus_production <span class="sc">|&gt;</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a>gas_season_p <span class="ot">&lt;-</span> aus_production <span class="sc">|&gt;</span></span>
 <span id="cb18-2"><a href="#cb18-2"></a>  <span class="fu">gg_season</span>(Gas)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output-display">
+</div>
+<div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
+<div class="cell-output-display light-content">
 <div>
 <figure class="figure">
-<p><a href="r_time_series_files/figure-html/gg_season-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img src="r_time_series_files/figure-html/gg_season-1.png" class="img-fluid figure-img" width="672"></a></p>
+<p><a href="r_time_series_files/figure-revealjs/gg_season_render-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7"><img src="r_time_series_files/figure-revealjs/gg_season_render-1.png" class="img-fluid figure-img" width="960"></a></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display dark-content">
+<div>
+<figure class="figure">
+<p><a href="r_time_series_files/figure-revealjs/gg_season_render-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8"><img src="r_time_series_files/figure-revealjs/gg_season_render-2.png" class="img-fluid figure-img" width="960"></a></p>
 </figure>
 </div>
 </div>
@@ -1086,11 +1122,18 @@ Note
 <p>The data here are plotted against a single “season”. It’s useful in identifying years with changes in patterns.</p>
 </div>
 <p>Removing the trend from the data:</p>
-<div class="cell">
-<div class="cell-output-display">
+<div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
+<div class="cell-output-display light-content">
 <div>
 <figure class="figure">
-<p><a href="r_time_series_files/figure-html/gg_season2-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img src="r_time_series_files/figure-html/gg_season2-1.png" class="img-fluid figure-img" width="672"></a></p>
+<p><a href="r_time_series_files/figure-revealjs/gg_season2_render-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9"><img src="r_time_series_files/figure-revealjs/gg_season2_render-1.png" class="img-fluid figure-img" width="960"></a></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display dark-content">
+<div>
+<figure class="figure">
+<p><a href="r_time_series_files/figure-revealjs/gg_season2_render-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10"><img src="r_time_series_files/figure-revealjs/gg_season2_render-2.png" class="img-fluid figure-img" width="960"></a></p>
 </figure>
 </div>
 </div>
@@ -1101,13 +1144,22 @@ Note
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a>aus_production <span class="sc">|&gt;</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a>gas_subseries_p <span class="ot">&lt;-</span> aus_production <span class="sc">|&gt;</span></span>
 <span id="cb19-2"><a href="#cb19-2"></a>  <span class="fu">gg_subseries</span>(Gas)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output-display">
+</div>
+<div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
+<div class="cell-output-display light-content">
 <div>
 <figure class="figure">
-<p><a href="r_time_series_files/figure-html/gg_subseries-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img src="r_time_series_files/figure-html/gg_subseries-1.png" class="img-fluid figure-img" width="672"></a></p>
+<p><a href="r_time_series_files/figure-revealjs/gg_subseries_render-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-11"><img src="r_time_series_files/figure-revealjs/gg_subseries_render-1.png" class="img-fluid figure-img" width="960"></a></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display dark-content">
+<div>
+<figure class="figure">
+<p><a href="r_time_series_files/figure-revealjs/gg_subseries_render-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-12"><img src="r_time_series_files/figure-revealjs/gg_subseries_render-2.png" class="img-fluid figure-img" width="960"></a></p>
 </figure>
 </div>
 </div>
@@ -1121,13 +1173,13 @@ Note
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a>aus_production <span class="sc">|&gt;</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a>aus_production <span class="sc">|&gt;</span></span>
 <span id="cb20-2"><a href="#cb20-2"></a>  <span class="fu">gg_tsdisplay</span>(Gas, <span class="at">plot_type =</span> <span class="st">"season"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><a href="r_time_series_files/figure-html/gg_tsdisplay-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7"><img src="r_time_series_files/figure-html/gg_tsdisplay-1.png" class="img-fluid figure-img" width="672"></a></p>
+<p><a href="r_time_series_files/figure-revealjs/gg_tsdisplay-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-13"><img src="r_time_series_files/figure-revealjs/gg_tsdisplay-1.png" class="img-fluid figure-img" width="960"></a></p>
 </figure>
 </div>
 </div>
@@ -1187,6 +1239,44 @@ Note
 <li id="fn2"><p>these are specified in the <code>key</code> argument. This tsibble contains <a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section></div></main> <!-- /main -->
+
+<script>
+  // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+  // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+  // slide changes (different for each slide format).
+  (function () {
+    // dispatch for htmlwidgets
+    function fireSlideEnter() {
+      const event = window.document.createEvent("Event");
+      event.initEvent("slideenter", true, true);
+      window.document.dispatchEvent(event);
+    }
+
+    function fireSlideChanged(previousSlide, currentSlide) {
+      fireSlideEnter();
+
+      // dispatch for shiny
+      if (window.jQuery) {
+        if (previousSlide) {
+          window.jQuery(previousSlide).trigger("hidden");
+        }
+        if (currentSlide) {
+          window.jQuery(currentSlide).trigger("shown");
+        }
+      }
+    }
+
+    // hookup for slidy
+    if (window.w3c_slidy) {
+      window.w3c_slidy.add_observer(function (slide_num) {
+        // slide_num starts at position 1
+        fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+      });
+    }
+
+  })();
+</script>
+
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right

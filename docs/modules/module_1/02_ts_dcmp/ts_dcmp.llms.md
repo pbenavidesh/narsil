@@ -2,7 +2,7 @@
 
 Modified
 
-June 9, 2026
+June 10, 2026
 
 Code
 
@@ -197,7 +197,9 @@ where:
 
 ## Nominal values
 
-[![](ts_dcmp_files/figure-html/inflation_adjustment-1.png)](ts_dcmp_files/figure-html/inflation_adjustment-1.png)
+[![](ts_dcmp_files/figure-html/inflation_adjustment_render-1.png)](ts_dcmp_files/figure-html/inflation_adjustment_render-1.png)
+
+[![](ts_dcmp_files/figure-html/inflation_adjustment_render-2.png)](ts_dcmp_files/figure-html/inflation_adjustment_render-2.png)
 
 ## Real values
 
@@ -300,11 +302,13 @@ mexretail_dcmp                                                # <5>
 Code
 
 ``` r
-mexretail_dcmp |> 
+mexretail_dcmp_p <- mexretail_dcmp |>
   autoplot()
 ```
 
-[![](ts_dcmp_files/figure-html/classical_decomp_plot-1.png)](ts_dcmp_files/figure-html/classical_decomp_plot-1.png)
+[![](ts_dcmp_files/figure-html/classical_decomp_plot_render-1.png)](ts_dcmp_files/figure-html/classical_decomp_plot_render-1.png)
+
+[![](ts_dcmp_files/figure-html/classical_decomp_plot_render-2.png)](ts_dcmp_files/figure-html/classical_decomp_plot_render-2.png)
 
 ### 4.3.2 Problems of using a Classical decomposition
 
@@ -340,7 +344,7 @@ The code is basically the same as for the classical decomposition. We just need 
 Code
 
 ``` r
-mexretail |>                                
+stl_dcmp_p <- mexretail |>                                
   model(                                                      
     stl = STL(y ~                            # <1>
                 trend(window = NULL) +       # <2>
@@ -356,7 +360,9 @@ mexretail |>
 3.  The `season()` function is used to specify the seasonal component of the decomposition. The `window` argument controls the smoothness of the seasonal component. Setting it to “periodic” means that the seasonal component will be fixed over time.
 4.  The `robust` argument, when set to `TRUE`, makes the STL decomposition more robust to outliers in the data, so the effect of such values is sent to the residual component.
 
-[![](ts_dcmp_files/figure-html/stl_decomp_full-1.png)](ts_dcmp_files/figure-html/stl_decomp_full-1.png)
+[![](ts_dcmp_files/figure-html/stl_decomp_render-1.png)](ts_dcmp_files/figure-html/stl_decomp_render-1.png)
+
+[![](ts_dcmp_files/figure-html/stl_decomp_render-2.png)](ts_dcmp_files/figure-html/stl_decomp_render-2.png)
 
 > **TIP:**
 >
