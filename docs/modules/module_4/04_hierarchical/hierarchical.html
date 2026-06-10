@@ -84,9 +84,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-6d40f8af7092f34acea1908532066003.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../../../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../../../site_libs/bootstrap/bootstrap-98236e9fc1ba6b77f129162d30afddfc.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../../../site_libs/bootstrap/bootstrap-dark-64716958dbf59fb6281636d81e36cb22.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../../../../site_libs/bootstrap/bootstrap-98236e9fc1ba6b77f129162d30afddfc.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../../../../site_libs/bootstrap/bootstrap-0a5cb87ae7604579b1002b0a08797104.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../../../site_libs/bootstrap/bootstrap-dark-78bce59163bf7139fbb22915b3b3de0a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../../../site_libs/bootstrap/bootstrap-0a5cb87ae7604579b1002b0a08797104.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script src="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
@@ -197,18 +197,16 @@ window.Quarto = {
 
 <meta property="og:title" content="Hierarchical &amp; Grouped Forecasting – Time Series Forecasting">
 <meta property="og:description" content="Course materials for Time Series Forecasting at ITESO — covering decomposition, ETS, ARIMA, regression, dynamic regression, Prophet, and hierarchical forecasting using R and the tidyverts ecosystem.">
-<meta property="og:image" content="https://pbenavidesh.github.io/narsil/docs/modules/module_4/04_hierarchical/hierarchical_files/figure-html/hts-state-plot-1.png">
+<meta property="og:image" content="https://pbenavidesh.github.io/narsil/docs/modules/module_4/04_hierarchical/hierarchical_files/figure-revealjs/hts-state-plot-render-1.png">
 <meta property="og:site_name" content="Time Series Forecasting">
-<meta property="og:image:alt" content="Quarterly domestic trips by Australian state.">
 <meta property="og:image:height" content="960">
-<meta property="og:image:width" content="1344">
+<meta property="og:image:width" content="1920">
 <meta name="twitter:title" content="Hierarchical &amp; Grouped Forecasting – Time Series Forecasting">
 <meta name="twitter:description" content="Course materials for Time Series Forecasting at ITESO — covering decomposition, ETS, ARIMA, regression, dynamic regression, Prophet, and hierarchical forecasting using R and the tidyverts ecosystem.">
-<meta name="twitter:image" content="https://pbenavidesh.github.io/narsil/docs/modules/module_4/04_hierarchical/hierarchical_files/figure-html/hts-state-plot-1.png">
+<meta name="twitter:image" content="https://pbenavidesh.github.io/narsil/docs/modules/module_4/04_hierarchical/hierarchical_files/figure-revealjs/hts-state-plot-render-1.png">
 <meta name="twitter:creator" content="@PabsBenavides">
-<meta name="twitter:image:alt" content="Quarterly domestic trips by Australian state.">
 <meta name="twitter:image-height" content="960">
-<meta name="twitter:image-width" content="1344">
+<meta name="twitter:image-width" content="1920">
 <meta name="twitter:card" content="summary_large_image">
 </head>
 
@@ -991,20 +989,25 @@ tourism_hts"><pre class="sourceCode r code-annotation-code code-with-copy code-a
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>p <span class="ot">&lt;-</span> tourism_hts <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>hts_state_plot_p <span class="ot">&lt;-</span> tourism_hts <span class="sc">|&gt;</span></span>
 <span id="cb6-2"><a href="#cb6-2"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is_aggregated</span>(State), <span class="fu">is_aggregated</span>(Region)) <span class="sc">|&gt;</span></span>
 <span id="cb6-3"><a href="#cb6-3"></a>  <span class="fu">autoplot</span>(Trips) <span class="sc">+</span></span>
 <span id="cb6-4"><a href="#cb6-4"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> <span class="fu">as.character</span>(State), <span class="at">scales =</span> <span class="st">"free_y"</span>, <span class="at">ncol =</span> <span class="dv">4</span>) <span class="sc">+</span></span>
-<span id="cb6-5"><a href="#cb6-5"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Domestic tourism trips by state"</span>, <span class="at">y =</span> <span class="st">"Trips ('000)"</span>, <span class="at">x =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
-<span id="cb6-6"><a href="#cb6-6"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span>
-<span id="cb6-7"><a href="#cb6-7"></a></span>
-<span id="cb6-8"><a href="#cb6-8"></a>p</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb6-5"><a href="#cb6-5"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Domestic tourism trips by state"</span>, <span class="at">y =</span> <span class="st">"Trips ('000)"</span>, <span class="at">x =</span> <span class="cn">NULL</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
+</div>
+<div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
+<div class="cell-output-display light-content">
+<div>
 <figure class="figure">
-<p><a href="hierarchical_files/figure-html/hts-state-plot-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Quarterly domestic trips by Australian state."><img src="hierarchical_files/figure-html/hts-state-plot-1.png" class="img-fluid figure-img" width="672" alt="Quarterly domestic trips by Australian state."></a></p>
-<figcaption>Quarterly domestic trips by Australian state.</figcaption>
+<p><a href="hierarchical_files/figure-revealjs/hts-state-plot-render-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="hierarchical_files/figure-revealjs/hts-state-plot-render-1.png" class="img-fluid figure-img" width="960"></a></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display dark-content">
+<div>
+<figure class="figure">
+<p><a href="hierarchical_files/figure-revealjs/hts-state-plot-render-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="hierarchical_files/figure-revealjs/hts-state-plot-render-2.png" class="img-fluid figure-img" width="960"></a></p>
 </figure>
 </div>
 </div>
@@ -1102,21 +1105,26 @@ tourism_hts"><pre class="sourceCode r code-annotation-code code-with-copy code-a
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>p <span class="ot">&lt;-</span> tourism_full <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>full_hts_plot_p <span class="ot">&lt;-</span> tourism_full <span class="sc">|&gt;</span></span>
 <span id="cb7-2"><a href="#cb7-2"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is_aggregated</span>(State), <span class="fu">is_aggregated</span>(Region), <span class="sc">!</span><span class="fu">is_aggregated</span>(Purpose)) <span class="sc">|&gt;</span></span>
 <span id="cb7-3"><a href="#cb7-3"></a>  <span class="fu">autoplot</span>(Trips) <span class="sc">+</span></span>
 <span id="cb7-4"><a href="#cb7-4"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> <span class="fu">as.character</span>(Purpose), <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
 <span id="cb7-5"><a href="#cb7-5"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Domestic tourism by state and purpose"</span>,</span>
-<span id="cb7-6"><a href="#cb7-6"></a>       <span class="at">y =</span> <span class="st">"Trips ('000)"</span>, <span class="at">x =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
-<span id="cb7-7"><a href="#cb7-7"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span>
-<span id="cb7-8"><a href="#cb7-8"></a></span>
-<span id="cb7-9"><a href="#cb7-9"></a>p</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb7-6"><a href="#cb7-6"></a>       <span class="at">y =</span> <span class="st">"Trips ('000)"</span>, <span class="at">x =</span> <span class="cn">NULL</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
+</div>
+<div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
+<div class="cell-output-display light-content">
+<div>
 <figure class="figure">
-<p><a href="hierarchical_files/figure-html/full-hts-plot-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="State-level trips split by purpose of travel."><img src="hierarchical_files/figure-html/full-hts-plot-1.png" class="img-fluid figure-img" width="672" alt="State-level trips split by purpose of travel."></a></p>
-<figcaption>State-level trips split by purpose of travel.</figcaption>
+<p><a href="hierarchical_files/figure-revealjs/full-hts-plot-render-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="hierarchical_files/figure-revealjs/full-hts-plot-render-1.png" class="img-fluid figure-img" width="960"></a></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display dark-content">
+<div>
+<figure class="figure">
+<p><a href="hierarchical_files/figure-revealjs/full-hts-plot-render-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img src="hierarchical_files/figure-revealjs/full-hts-plot-render-2.png" class="img-fluid figure-img" width="960"></a></p>
 </figure>
 </div>
 </div>
@@ -1214,7 +1222,7 @@ tourism_hts"><pre class="sourceCode r code-annotation-code code-with-copy code-a
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-21" data-llms-code-original="tourism_bu <- tourism_fit |>
   reconcile(bu = bottom_up(ets)) #<1>
 
-tourism_bu |>
+reconcile_bu_p <- tourism_bu |>
   forecast(h = &quot;2 years&quot;) |>
   filter(is_aggregated(State)) |>
   autoplot(tourism_hts |> filter_index(&quot;2012 Q1&quot; ~ .)) +
@@ -1222,7 +1230,7 @@ tourism_bu |>
        y = &quot;Trips ('000)&quot;, x = NULL)"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-21-1"><a href="#annotated-cell-21-1" aria-hidden="true" tabindex="-1"></a>tourism_bu <span class="ot">&lt;-</span> tourism_fit <span class="sc">|&gt;</span></span>
 <a class="code-annotation-anchor" data-target-cell="annotated-cell-21" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-21-2" class="code-annotation-target"><a href="#annotated-cell-21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">reconcile</span>(<span class="at">bu =</span> <span class="fu">bottom_up</span>(ets))</span>
 <span id="annotated-cell-21-3"><a href="#annotated-cell-21-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="annotated-cell-21-4"><a href="#annotated-cell-21-4" aria-hidden="true" tabindex="-1"></a>tourism_bu <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-21-4"><a href="#annotated-cell-21-4" aria-hidden="true" tabindex="-1"></a>reconcile_bu_p <span class="ot">&lt;-</span> tourism_bu <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-21-5"><a href="#annotated-cell-21-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"2 years"</span>) <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-21-6"><a href="#annotated-cell-21-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">is_aggregated</span>(State)) <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-21-7"><a href="#annotated-cell-21-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(tourism_hts <span class="sc">|&gt;</span> <span class="fu">filter_index</span>(<span class="st">"2012 Q1"</span> <span class="sc">~</span> .)) <span class="sc">+</span></span>
@@ -1237,10 +1245,19 @@ tourism_bu |>
 </dd>
 </dl>
 </div>
-<div class="cell-output-display">
+</div>
+<div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
+<div class="cell-output-display light-content">
 <div>
 <figure class="figure">
-<p><a href="hierarchical_files/figure-html/reconcile-bu-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="hierarchical_files/figure-html/reconcile-bu-1.png" class="img-fluid figure-img" width="672"></a></p>
+<p><a href="hierarchical_files/figure-revealjs/reconcile-bu-render-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img src="hierarchical_files/figure-revealjs/reconcile-bu-render-1.png" class="img-fluid figure-img" width="960"></a></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display dark-content">
+<div>
+<figure class="figure">
+<p><a href="hierarchical_files/figure-revealjs/reconcile-bu-render-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img src="hierarchical_files/figure-revealjs/reconcile-bu-render-2.png" class="img-fluid figure-img" width="960"></a></p>
 </figure>
 </div>
 </div>
@@ -1689,7 +1706,7 @@ tourism_bu |>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>tourism_fc <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>accuracy_all_p <span class="ot">&lt;-</span> tourism_fc <span class="sc">|&gt;</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">accuracy</span>(<span class="at">data =</span> tourism_hts, <span class="at">measures =</span> <span class="fu">list</span>(<span class="at">RMSSE =</span> RMSSE)) <span class="sc">|&gt;</span></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">Level =</span> <span class="fu">case_when</span>(</span>
@@ -1706,14 +1723,21 @@ tourism_bu |>
 <span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
 <span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> Level, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
 <span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
-<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"Mean RMSSE"</span>) <span class="sc">+</span></span>
-<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"Mean RMSSE"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
+</div>
+<div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
+<div class="cell-output-display light-content">
+<div>
 <figure class="figure">
-<p><a href="hierarchical_files/figure-html/accuracy-all-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Mean RMSSE by reconciliation method and aggregation level."><img src="hierarchical_files/figure-html/accuracy-all-1.png" class="img-fluid figure-img" width="672" alt="Mean RMSSE by reconciliation method and aggregation level."></a></p>
-<figcaption>Mean RMSSE by reconciliation method and aggregation level.</figcaption>
+<p><a href="hierarchical_files/figure-revealjs/accuracy-all-render-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7"><img src="hierarchical_files/figure-revealjs/accuracy-all-render-1.png" class="img-fluid figure-img" width="960"></a></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display dark-content">
+<div>
+<figure class="figure">
+<p><a href="hierarchical_files/figure-revealjs/accuracy-all-render-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8"><img src="hierarchical_files/figure-revealjs/accuracy-all-render-2.png" class="img-fluid figure-img" width="960"></a></p>
 </figure>
 </div>
 </div>
@@ -1803,7 +1827,7 @@ pbs_hts"><pre class="sourceCode r code-annotation-code code-with-copy code-annot
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>pbs_fc <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>pbs_accuracy_p <span class="ot">&lt;-</span> pbs_fc <span class="sc">|&gt;</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">accuracy</span>(<span class="at">data =</span> pbs_hts, <span class="at">measures =</span> <span class="fu">list</span>(<span class="at">RMSSE =</span> RMSSE)) <span class="sc">|&gt;</span></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">Level =</span> <span class="fu">case_when</span>(</span>
@@ -1823,14 +1847,21 @@ pbs_hts"><pre class="sourceCode r code-annotation-code code-with-copy code-annot
 <span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
 <span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> Level, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
 <span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
-<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"Mean RMSSE"</span>) <span class="sc">+</span></span>
-<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"Mean RMSSE"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
+</div>
+<div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
+<div class="cell-output-display light-content">
+<div>
 <figure class="figure">
-<p><a href="hierarchical_files/figure-html/pbs-accuracy-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Mean RMSSE for the PBS mixed hierarchy by method and aggregation level."><img src="hierarchical_files/figure-html/pbs-accuracy-1.png" class="img-fluid figure-img" width="672" alt="Mean RMSSE for the PBS mixed hierarchy by method and aggregation level."></a></p>
-<figcaption>Mean RMSSE for the PBS mixed hierarchy by method and aggregation level.</figcaption>
+<p><a href="hierarchical_files/figure-revealjs/pbs-accuracy-render-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9"><img src="hierarchical_files/figure-revealjs/pbs-accuracy-render-1.png" class="img-fluid figure-img" width="960"></a></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display dark-content">
+<div>
+<figure class="figure">
+<p><a href="hierarchical_files/figure-revealjs/pbs-accuracy-render-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10"><img src="hierarchical_files/figure-revealjs/pbs-accuracy-render-2.png" class="img-fluid figure-img" width="960"></a></p>
 </figure>
 </div>
 </div>
@@ -1905,6 +1936,44 @@ pbs_hts"><pre class="sourceCode r code-annotation-code code-with-copy code-annot
 </section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+
+<script>
+  // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+  // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+  // slide changes (different for each slide format).
+  (function () {
+    // dispatch for htmlwidgets
+    function fireSlideEnter() {
+      const event = window.document.createEvent("Event");
+      event.initEvent("slideenter", true, true);
+      window.document.dispatchEvent(event);
+    }
+
+    function fireSlideChanged(previousSlide, currentSlide) {
+      fireSlideEnter();
+
+      // dispatch for shiny
+      if (window.jQuery) {
+        if (previousSlide) {
+          window.jQuery(previousSlide).trigger("hidden");
+        }
+        if (currentSlide) {
+          window.jQuery(currentSlide).trigger("shown");
+        }
+      }
+    }
+
+    // hookup for slidy
+    if (window.w3c_slidy) {
+      window.w3c_slidy.add_observer(function (slide_num) {
+        // slide_num starts at position 1
+        fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+      });
+    }
+
+  })();
+</script>
+
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right

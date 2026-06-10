@@ -52,6 +52,18 @@ Which of the following six series are stationary (i.e., which look more *stable*
 
 [![](stationarity_files/figure-html/all-six-html-6.png)](stationarity_files/figure-html/all-six-html-6.png)
 
+[![](stationarity_files/figure-html/all-six-html-7.png)](stationarity_files/figure-html/all-six-html-7.png)
+
+[![](stationarity_files/figure-html/all-six-html-8.png)](stationarity_files/figure-html/all-six-html-8.png)
+
+[![](stationarity_files/figure-html/all-six-html-9.png)](stationarity_files/figure-html/all-six-html-9.png)
+
+[![](stationarity_files/figure-html/all-six-html-10.png)](stationarity_files/figure-html/all-six-html-10.png)
+
+[![](stationarity_files/figure-html/all-six-html-11.png)](stationarity_files/figure-html/all-six-html-11.png)
+
+[![](stationarity_files/figure-html/all-six-html-12.png)](stationarity_files/figure-html/all-six-html-12.png)
+
 > **TIP:**
 >
 > - **(a)** and **(b)**: clear trends (upward and downward) → **not stationary** ✗
@@ -107,6 +119,14 @@ a non-stationary series
 
 a stationary series
 
+[![a non-stationary series](stationarity_files/figure-html/google-reveal-pres-3.png)](stationarity_files/figure-html/google-reveal-pres-3.png "a non-stationary series")
+
+a non-stationary series
+
+[![a stationary series](stationarity_files/figure-html/google-reveal-pres-4.png)](stationarity_files/figure-html/google-reveal-pres-4.png "a stationary series")
+
+a stationary series
+
 The second series was produced directly from the first. Can you figure out how?
 
 > **NOTE:**
@@ -131,13 +151,15 @@ y'\_t = y_t - y\_{t-1}
 Code
 
 ``` r
-google_2015 |>
+google_tsdisplay_p <- google_2015 |>
   autoplot(difference(Close)) #<1>
 ```
 
 1.  `difference(Close)` computes the first difference of the `Close` variable.
 
-[![](stationarity_files/figure-html/google-tsdisplay-1.png)](stationarity_files/figure-html/google-tsdisplay-1.png)
+[![](stationarity_files/figure-html/google-tsdisplay-render-1.png)](stationarity_files/figure-html/google-tsdisplay-render-1.png)
+
+[![](stationarity_files/figure-html/google-tsdisplay-render-2.png)](stationarity_files/figure-html/google-tsdisplay-render-2.png)
 
 ## 2.2 Second Differences
 
@@ -156,13 +178,15 @@ Sometimes the first-differenced series is still non-stationary. We can **differe
 Code
 
 ``` r
-google_2015 |>
+google_second_diff_p <- google_2015 |>
   autoplot(difference(Close, differences = 2)) #<1>
 ```
 
 1.  The argument `differences = 2` tells `difference()` to apply the differencing operation twice.
 
-[![](stationarity_files/figure-html/google-second-diff-1.png)](stationarity_files/figure-html/google-second-diff-1.png)
+[![](stationarity_files/figure-html/google-second-diff-render-1.png)](stationarity_files/figure-html/google-second-diff-render-1.png)
+
+[![](stationarity_files/figure-html/google-second-diff-render-2.png)](stationarity_files/figure-html/google-second-diff-render-2.png)
 
 ## 2.3 Seasonal Differencing
 
@@ -176,18 +200,22 @@ where m is the seasonal period (m = 12 for monthly data, m = 4 for quarterly, �
 - Also called **lag-m differences**.
 - After seasonal differencing, any remaining non-seasonal trend can be removed with a first difference.
 
-[![](stationarity_files/figure-html/pbs-setup-1.png)](stationarity_files/figure-html/pbs-setup-1.png)
+[![](stationarity_files/figure-html/pbs-setup-render-1.png)](stationarity_files/figure-html/pbs-setup-render-1.png)
+
+[![](stationarity_files/figure-html/pbs-setup-render-2.png)](stationarity_files/figure-html/pbs-setup-render-2.png)
 
 Code
 
 ``` r
-h02 |>
+h02_sdiff_p <- h02 |>
   autoplot(difference(log(Cost), lag = 12)) #<1>
 ```
 
 1.  The argument `lag = 12` tells `difference()` to compute the seasonal difference with a lag of 12 periods (i.e. y_t - y\_{t-12}). If no `lag` is specified, it defaults to 1 (the first difference).
 
-[![](stationarity_files/figure-html/h02-sdiff-1.png)](stationarity_files/figure-html/h02-sdiff-1.png)
+[![](stationarity_files/figure-html/h02-sdiff-render-1.png)](stationarity_files/figure-html/h02-sdiff-render-1.png)
+
+[![](stationarity_files/figure-html/h02-sdiff-render-2.png)](stationarity_files/figure-html/h02-sdiff-render-2.png)
 
 ## 2.4 Does the Order of Differencing Matter?
 
@@ -392,23 +420,33 @@ r_k = \text{Corr}(y_t,\\ y\_{t-k})
 
 ## Trend only
 
-[![](stationarity_files/figure-html/acf-trend-1.png)](stationarity_files/figure-html/acf-trend-1.png)
+[![](stationarity_files/figure-html/acf-trend-render-1.png)](stationarity_files/figure-html/acf-trend-render-1.png)
+
+[![](stationarity_files/figure-html/acf-trend-render-2.png)](stationarity_files/figure-html/acf-trend-render-2.png)
 
 ## Seasonality only
 
-[![](stationarity_files/figure-html/acf-season-only-1.png)](stationarity_files/figure-html/acf-season-only-1.png)
+[![](stationarity_files/figure-html/acf-season-only-render-1.png)](stationarity_files/figure-html/acf-season-only-render-1.png)
+
+[![](stationarity_files/figure-html/acf-season-only-render-2.png)](stationarity_files/figure-html/acf-season-only-render-2.png)
 
 ## Trend + seasonality
 
-[![](stationarity_files/figure-html/acf-trend-season-1.png)](stationarity_files/figure-html/acf-trend-season-1.png)
+[![](stationarity_files/figure-html/acf-trend-season-render-1.png)](stationarity_files/figure-html/acf-trend-season-render-1.png)
+
+[![](stationarity_files/figure-html/acf-trend-season-render-2.png)](stationarity_files/figure-html/acf-trend-season-render-2.png)
 
 ## Stationary
 
-[![](stationarity_files/figure-html/acf-stationary-1.png)](stationarity_files/figure-html/acf-stationary-1.png)
+[![](stationarity_files/figure-html/acf-stationary-render-1.png)](stationarity_files/figure-html/acf-stationary-render-1.png)
+
+[![](stationarity_files/figure-html/acf-stationary-render-2.png)](stationarity_files/figure-html/acf-stationary-render-2.png)
 
 ## mexretail after differencing
 
-[![](stationarity_files/figure-html/acf-mexretail-diff-1.png)](stationarity_files/figure-html/acf-mexretail-diff-1.png)
+[![](stationarity_files/figure-html/acf-mexretail-diff-render-1.png)](stationarity_files/figure-html/acf-mexretail-diff-render-1.png)
+
+[![](stationarity_files/figure-html/acf-mexretail-diff-render-2.png)](stationarity_files/figure-html/acf-mexretail-diff-render-2.png)
 
 ## 4.3 Partial Autocorrelation Function (PACF)
 
@@ -424,6 +462,395 @@ The ACF at lag k captures both the *direct* relationship between y_t and y\_{t-k
 ## 4.4 ACF and PACF Together
 
 `gg_tsdisplay()` with `plot_type = "partial"` shows the time series, ACF, and PACF together — this is the standard diagnostic display for the rest of the module.
+
+Code
+
+``` r
+theme_narsil()
+```
+
+    <theme> List of 144
+     $ line                            : <ggplot2::element_line>
+      ..@ colour       : chr "black"
+      ..@ linewidth    : num 0.545
+      ..@ linetype     : num 1
+      ..@ lineend      : chr "butt"
+      ..@ linejoin     : chr "round"
+      ..@ arrow        : logi FALSE
+      ..@ arrow.fill   : chr "black"
+      ..@ inherit.blank: logi TRUE
+     $ rect                            : <ggplot2::element_rect>
+      ..@ fill         : chr "white"
+      ..@ colour       : chr "black"
+      ..@ linewidth    : num 0.545
+      ..@ linetype     : num 1
+      ..@ linejoin     : chr "round"
+      ..@ inherit.blank: logi TRUE
+     $ text                            : <ggplot2::element_text>
+      ..@ family       : chr ""
+      ..@ face         : chr "plain"
+      ..@ italic       : chr NA
+      ..@ fontweight   : num NA
+      ..@ fontwidth    : num NA
+      ..@ colour       : chr "#2A2520"
+      ..@ size         : num 12
+      ..@ hjust        : num 0.5
+      ..@ vjust        : num 0.5
+      ..@ angle        : num 0
+      ..@ lineheight   : num 0.9
+      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 0 0
+      ..@ debug        : logi FALSE
+      ..@ inherit.blank: logi FALSE
+     $ title                           : <ggplot2::element_text>
+      ..@ family       : NULL
+      ..@ face         : NULL
+      ..@ italic       : chr NA
+      ..@ fontweight   : num NA
+      ..@ fontwidth    : num NA
+      ..@ colour       : NULL
+      ..@ size         : NULL
+      ..@ hjust        : NULL
+      ..@ vjust        : NULL
+      ..@ angle        : NULL
+      ..@ lineheight   : NULL
+      ..@ margin       : NULL
+      ..@ debug        : NULL
+      ..@ inherit.blank: logi TRUE
+     $ point                           : <ggplot2::element_point>
+      ..@ colour       : chr "black"
+      ..@ shape        : num 19
+      ..@ size         : num 1.64
+      ..@ fill         : chr "white"
+      ..@ stroke       : num 0.545
+      ..@ inherit.blank: logi TRUE
+     $ polygon                         : <ggplot2::element_polygon>
+      ..@ fill         : chr "white"
+      ..@ colour       : chr "black"
+      ..@ linewidth    : num 0.545
+      ..@ linetype     : num 1
+      ..@ linejoin     : chr "round"
+      ..@ inherit.blank: logi TRUE
+     $ geom                            : <ggplot2::element_geom>
+      ..@ ink        : chr "black"
+      ..@ paper      : chr "white"
+      ..@ accent     : chr "#3366FF"
+      ..@ linewidth  : num 0.545
+      ..@ borderwidth: num 0.545
+      ..@ linetype   : int 1
+      ..@ bordertype : int 1
+      ..@ family     : chr ""
+      ..@ fontsize   : num 4.22
+      ..@ pointsize  : num 1.64
+      ..@ pointshape : num 19
+      ..@ colour     : NULL
+      ..@ fill       : NULL
+     $ spacing                         : 'simpleUnit' num 6points
+      ..- attr(*, "unit")= int 8
+     $ margins                         : <ggplot2::margin> num [1:4] 6 6 6 6
+     $ aspect.ratio                    : NULL
+     $ axis.title                      : <ggplot2::element_text>
+      ..@ family       : NULL
+      ..@ face         : NULL
+      ..@ italic       : chr NA
+      ..@ fontweight   : num NA
+      ..@ fontwidth    : num NA
+      ..@ colour       : chr "#2A2520"
+      ..@ size         : NULL
+      ..@ hjust        : NULL
+      ..@ vjust        : NULL
+      ..@ angle        : NULL
+      ..@ lineheight   : NULL
+      ..@ margin       : NULL
+      ..@ debug        : NULL
+      ..@ inherit.blank: logi FALSE
+     $ axis.title.x                    : <ggplot2::element_text>
+      ..@ family       : NULL
+      ..@ face         : NULL
+      ..@ italic       : chr NA
+      ..@ fontweight   : num NA
+      ..@ fontwidth    : num NA
+      ..@ colour       : NULL
+      ..@ size         : NULL
+      ..@ hjust        : NULL
+      ..@ vjust        : num 1
+      ..@ angle        : NULL
+      ..@ lineheight   : NULL
+      ..@ margin       : <ggplot2::margin> num [1:4] 3 0 0 0
+      ..@ debug        : NULL
+      ..@ inherit.blank: logi TRUE
+     $ axis.title.x.top                : <ggplot2::element_text>
+      ..@ family       : NULL
+      ..@ face         : NULL
+      ..@ italic       : chr NA
+      ..@ fontweight   : num NA
+      ..@ fontwidth    : num NA
+      ..@ colour       : NULL
+      ..@ size         : NULL
+      ..@ hjust        : NULL
+      ..@ vjust        : num 0
+      ..@ angle        : NULL
+      ..@ lineheight   : NULL
+      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 3 0
+      ..@ debug        : NULL
+      ..@ inherit.blank: logi TRUE
+     $ axis.title.x.bottom             : NULL
+     $ axis.title.y                    : <ggplot2::element_text>
+      ..@ family       : NULL
+      ..@ face         : NULL
+      ..@ italic       : chr NA
+      ..@ fontweight   : num NA
+      ..@ fontwidth    : num NA
+      ..@ colour       : NULL
+      ..@ size         : NULL
+      ..@ hjust        : NULL
+      ..@ vjust        : num 1
+      ..@ angle        : num 90
+      ..@ lineheight   : NULL
+      ..@ margin       : <ggplot2::margin> num [1:4] 0 3 0 0
+      ..@ debug        : NULL
+      ..@ inherit.blank: logi TRUE
+     $ axis.title.y.left               : NULL
+     $ axis.title.y.right              : <ggplot2::element_text>
+      ..@ family       : NULL
+      ..@ face         : NULL
+      ..@ italic       : chr NA
+      ..@ fontweight   : num NA
+      ..@ fontwidth    : num NA
+      ..@ colour       : NULL
+      ..@ size         : NULL
+      ..@ hjust        : NULL
+      ..@ vjust        : num 1
+      ..@ angle        : num -90
+      ..@ lineheight   : NULL
+      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 0 3
+      ..@ debug        : NULL
+      ..@ inherit.blank: logi TRUE
+     $ axis.text                       : <ggplot2::element_text>
+      ..@ family       : NULL
+      ..@ face         : NULL
+      ..@ italic       : chr NA
+      ..@ fontweight   : num NA
+      ..@ fontwidth    : num NA
+      ..@ colour       : chr "#2A2520"
+      ..@ size         : 'rel' num 0.8
+      ..@ hjust        : NULL
+      ..@ vjust        : NULL
+      ..@ angle        : NULL
+      ..@ lineheight   : NULL
+      ..@ margin       : NULL
+      ..@ debug        : NULL
+      ..@ inherit.blank: logi FALSE
+     $ axis.text.x                     : <ggplot2::element_text>
+      ..@ family       : NULL
+      ..@ face         : NULL
+      ..@ italic       : chr NA
+      ..@ fontweight   : num NA
+      ..@ fontwidth    : num NA
+      ..@ colour       : NULL
+      ..@ size         : NULL
+      ..@ hjust        : NULL
+      ..@ vjust        : num 1
+      ..@ angle        : NULL
+      ..@ lineheight   : NULL
+      ..@ margin       : <ggplot2::margin> num [1:4] 2.4 0 0 0
+      ..@ debug        : NULL
+      ..@ inherit.blank: logi TRUE
+     $ axis.text.x.top                 : <ggplot2::element_text>
+      ..@ family       : NULL
+      ..@ face         : NULL
+      ..@ italic       : chr NA
+      ..@ fontweight   : num NA
+      ..@ fontwidth    : num NA
+      ..@ colour       : NULL
+      ..@ size         : NULL
+      ..@ hjust        : NULL
+      ..@ vjust        : NULL
+      ..@ angle        : NULL
+      ..@ lineheight   : NULL
+      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 5.4 0
+      ..@ debug        : NULL
+      ..@ inherit.blank: logi TRUE
+     $ axis.text.x.bottom              : <ggplot2::element_text>
+      ..@ family       : NULL
+      ..@ face         : NULL
+      ..@ italic       : chr NA
+      ..@ fontweight   : num NA
+      ..@ fontwidth    : num NA
+      ..@ colour       : NULL
+      ..@ size         : NULL
+      ..@ hjust        : NULL
+      ..@ vjust        : NULL
+      ..@ angle        : NULL
+      ..@ lineheight   : NULL
+      ..@ margin       : <ggplot2::margin> num [1:4] 5.4 0 0 0
+      ..@ debug        : NULL
+      ..@ inherit.blank: logi TRUE
+     $ axis.text.y                     : <ggplot2::element_text>
+      ..@ family       : NULL
+      ..@ face         : NULL
+      ..@ italic       : chr NA
+      ..@ fontweight   : num NA
+      ..@ fontwidth    : num NA
+      ..@ colour       : NULL
+      ..@ size         : NULL
+      ..@ hjust        : num 1
+      ..@ vjust        : NULL
+      ..@ angle        : NULL
+      ..@ lineheight   : NULL
+      ..@ margin       : <ggplot2::margin> num [1:4] 0 2.4 0 0
+      ..@ debug        : NULL
+      ..@ inherit.blank: logi TRUE
+     $ axis.text.y.left                : <ggplot2::element_text>
+      ..@ family       : NULL
+      ..@ face         : NULL
+      ..@ italic       : chr NA
+      ..@ fontweight   : num NA
+      ..@ fontwidth    : num NA
+      ..@ colour       : NULL
+      ..@ size         : NULL
+      ..@ hjust        : NULL
+      ..@ vjust        : NULL
+      ..@ angle        : NULL
+      ..@ lineheight   : NULL
+      ..@ margin       : <ggplot2::margin> num [1:4] 0 5.4 0 0
+      ..@ debug        : NULL
+      ..@ inherit.blank: logi TRUE
+     $ axis.text.y.right               : <ggplot2::element_text>
+      ..@ family       : NULL
+      ..@ face         : NULL
+      ..@ italic       : chr NA
+      ..@ fontweight   : num NA
+      ..@ fontwidth    : num NA
+      ..@ colour       : NULL
+      ..@ size         : NULL
+      ..@ hjust        : NULL
+      ..@ vjust        : NULL
+      ..@ angle        : NULL
+      ..@ lineheight   : NULL
+      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 0 5.4
+      ..@ debug        : NULL
+      ..@ inherit.blank: logi TRUE
+     $ axis.text.theta                 : NULL
+     $ axis.text.r                     : <ggplot2::element_text>
+      ..@ family       : NULL
+      ..@ face         : NULL
+      ..@ italic       : chr NA
+      ..@ fontweight   : num NA
+      ..@ fontwidth    : num NA
+      ..@ colour       : NULL
+      ..@ size         : NULL
+      ..@ hjust        : num 0.5
+      ..@ vjust        : NULL
+      ..@ angle        : NULL
+      ..@ lineheight   : NULL
+      ..@ margin       : <ggplot2::margin> num [1:4] 0 2.4 0 2.4
+      ..@ debug        : NULL
+      ..@ inherit.blank: logi TRUE
+     $ axis.ticks                      : <ggplot2::element_blank>
+     $ axis.ticks.x                    : NULL
+     $ axis.ticks.x.top                : NULL
+     $ axis.ticks.x.bottom             : NULL
+     $ axis.ticks.y                    : NULL
+     $ axis.ticks.y.left               : NULL
+     $ axis.ticks.y.right              : NULL
+     $ axis.ticks.theta                : NULL
+     $ axis.ticks.r                    : NULL
+     $ axis.minor.ticks.x.top          : NULL
+     $ axis.minor.ticks.x.bottom       : NULL
+     $ axis.minor.ticks.y.left         : NULL
+     $ axis.minor.ticks.y.right        : NULL
+     $ axis.minor.ticks.theta          : NULL
+     $ axis.minor.ticks.r              : NULL
+     $ axis.ticks.length               : 'rel' num 0.5
+     $ axis.ticks.length.x             : NULL
+     $ axis.ticks.length.x.top         : NULL
+     $ axis.ticks.length.x.bottom      : NULL
+     $ axis.ticks.length.y             : NULL
+     $ axis.ticks.length.y.left        : NULL
+     $ axis.ticks.length.y.right       : NULL
+     $ axis.ticks.length.theta         : NULL
+     $ axis.ticks.length.r             : NULL
+     $ axis.minor.ticks.length         : 'rel' num 0.75
+     $ axis.minor.ticks.length.x       : NULL
+     $ axis.minor.ticks.length.x.top   : NULL
+     $ axis.minor.ticks.length.x.bottom: NULL
+     $ axis.minor.ticks.length.y       : NULL
+     $ axis.minor.ticks.length.y.left  : NULL
+     $ axis.minor.ticks.length.y.right : NULL
+     $ axis.minor.ticks.length.theta   : NULL
+     $ axis.minor.ticks.length.r       : NULL
+     $ axis.line                       : <ggplot2::element_blank>
+     $ axis.line.x                     : NULL
+     $ axis.line.x.top                 : NULL
+     $ axis.line.x.bottom              : NULL
+     $ axis.line.y                     : NULL
+     $ axis.line.y.left                : NULL
+     $ axis.line.y.right               : NULL
+     $ axis.line.theta                 : NULL
+     $ axis.line.r                     : NULL
+     $ legend.background               : <ggplot2::element_blank>
+     $ legend.margin                   : NULL
+     $ legend.spacing                  : 'rel' num 2
+     $ legend.spacing.x                : NULL
+     $ legend.spacing.y                : NULL
+     $ legend.key                      : <ggplot2::element_blank>
+     $ legend.key.size                 : 'simpleUnit' num 1.2lines
+      ..- attr(*, "unit")= int 3
+     $ legend.key.height               : NULL
+     $ legend.key.width                : NULL
+     $ legend.key.spacing              : NULL
+     $ legend.key.spacing.x            : NULL
+     $ legend.key.spacing.y            : NULL
+     $ legend.key.justification        : NULL
+     $ legend.frame                    : NULL
+     $ legend.ticks                    : NULL
+     $ legend.ticks.length             : 'rel' num 0.2
+     $ legend.axis.line                : NULL
+     $ legend.text                     : <ggplot2::element_text>
+      ..@ family       : NULL
+      ..@ face         : NULL
+      ..@ italic       : chr NA
+      ..@ fontweight   : num NA
+      ..@ fontwidth    : num NA
+      ..@ colour       : chr "#2A2520"
+      ..@ size         : 'rel' num 0.8
+      ..@ hjust        : NULL
+      ..@ vjust        : NULL
+      ..@ angle        : NULL
+      ..@ lineheight   : NULL
+      ..@ margin       : NULL
+      ..@ debug        : NULL
+      ..@ inherit.blank: logi FALSE
+     $ legend.text.position            : NULL
+     $ legend.title                    : <ggplot2::element_text>
+      ..@ family       : NULL
+      ..@ face         : chr "bold"
+      ..@ italic       : chr NA
+      ..@ fontweight   : num NA
+      ..@ fontwidth    : num NA
+      ..@ colour       : chr "#2A2520"
+      ..@ size         : NULL
+      ..@ hjust        : num 0
+      ..@ vjust        : NULL
+      ..@ angle        : NULL
+      ..@ lineheight   : NULL
+      ..@ margin       : NULL
+      ..@ debug        : NULL
+      ..@ inherit.blank: logi FALSE
+     $ legend.title.position           : NULL
+     $ legend.position                 : chr "right"
+     $ legend.position.inside          : NULL
+     $ legend.direction                : NULL
+     $ legend.byrow                    : NULL
+     $ legend.justification            : chr "center"
+     $ legend.justification.top        : NULL
+     $ legend.justification.bottom     : NULL
+     $ legend.justification.left       : NULL
+     $ legend.justification.right      : NULL
+     $ legend.justification.inside     : NULL
+      [list output truncated]
+     @ complete: logi TRUE
+     @ validate: logi TRUE
 
 Code
 
@@ -450,14 +877,18 @@ y_t = c + \phi_1 y\_{t-1} + \phi_2 y\_{t-2} + \cdots + \phi_p y\_{t-p} + \vareps
 - p is the number of past values used.
 - \varepsilon_t is white noise.
 
-[![](stationarity_files/figure-html/ar-examples-1.png)](stationarity_files/figure-html/ar-examples-1.png)
+[![](stationarity_files/figure-html/ar-examples-render-1.png)](stationarity_files/figure-html/ar-examples-render-1.png)
+
+[![](stationarity_files/figure-html/ar-examples-render-2.png)](stationarity_files/figure-html/ar-examples-render-2.png)
 
 > **NOTE:**
 >
 > - **PACF** cuts off sharply after lag p — this is how you read the order.
 > - **ACF** decays exponentially or sinusoidal.
 
-[![](stationarity_files/figure-html/unnamed-chunk-1-1.png)](stationarity_files/figure-html/unnamed-chunk-1-1.png)
+[![](stationarity_files/figure-html/ar-acf-pacf-render-1.png)](stationarity_files/figure-html/ar-acf-pacf-render-1.png)
+
+[![](stationarity_files/figure-html/ar-acf-pacf-render-2.png)](stationarity_files/figure-html/ar-acf-pacf-render-2.png)
 
 ## 5.2 Moving Average Models — MA(q)
 
@@ -478,7 +909,9 @@ y_t = c + \varepsilon_t + \theta_1 \varepsilon\_{t-1} + \theta_2 \varepsilon\_{t
 > - **ACF** cuts off sharply after lag q — the mirror image of the AR signature.
 > - **PACF** decays exponentially or sinusoidal.
 
-[![](stationarity_files/figure-html/unnamed-chunk-2-1.png)](stationarity_files/figure-html/unnamed-chunk-2-1.png)
+[![](stationarity_files/figure-html/ma-acf-pacf-render-1.png)](stationarity_files/figure-html/ma-acf-pacf-render-1.png)
+
+[![](stationarity_files/figure-html/ma-acf-pacf-render-2.png)](stationarity_files/figure-html/ma-acf-pacf-render-2.png)
 
 > **IMPORTANT:**
 >

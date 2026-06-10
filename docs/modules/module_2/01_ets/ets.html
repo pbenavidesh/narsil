@@ -85,9 +85,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-6d40f8af7092f34acea1908532066003.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../../../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../../../site_libs/bootstrap/bootstrap-98236e9fc1ba6b77f129162d30afddfc.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../../../site_libs/bootstrap/bootstrap-dark-64716958dbf59fb6281636d81e36cb22.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../../../../site_libs/bootstrap/bootstrap-98236e9fc1ba6b77f129162d30afddfc.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../../../../site_libs/bootstrap/bootstrap-0a5cb87ae7604579b1002b0a08797104.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../../../site_libs/bootstrap/bootstrap-dark-78bce59163bf7139fbb22915b3b3de0a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../../../site_libs/bootstrap/bootstrap-0a5cb87ae7604579b1002b0a08797104.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script src="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
@@ -195,16 +195,16 @@ window.Quarto = {
 
 <meta property="og:title" content="Exponential smoothing – Time Series Forecasting">
 <meta property="og:description" content="Course materials for Time Series Forecasting at ITESO — covering decomposition, ETS, ARIMA, regression, dynamic regression, Prophet, and hierarchical forecasting using R and the tidyverts ecosystem.">
-<meta property="og:image" content="https://pbenavidesh.github.io/narsil/docs/modules/module_2/01_ets/ets_files/figure-html/alg-plot-1.png">
+<meta property="og:image" content="https://pbenavidesh.github.io/narsil/docs/modules/module_2/01_ets/ets_files/figure-revealjs/alg-plot-render-1.png">
 <meta property="og:site_name" content="Time Series Forecasting">
 <meta property="og:image:height" content="960">
-<meta property="og:image:width" content="1344">
+<meta property="og:image:width" content="1920">
 <meta name="twitter:title" content="Exponential smoothing – Time Series Forecasting">
 <meta name="twitter:description" content="Course materials for Time Series Forecasting at ITESO — covering decomposition, ETS, ARIMA, regression, dynamic regression, Prophet, and hierarchical forecasting using R and the tidyverts ecosystem.">
-<meta name="twitter:image" content="https://pbenavidesh.github.io/narsil/docs/modules/module_2/01_ets/ets_files/figure-html/alg-plot-1.png">
+<meta name="twitter:image" content="https://pbenavidesh.github.io/narsil/docs/modules/module_2/01_ets/ets_files/figure-revealjs/alg-plot-render-1.png">
 <meta name="twitter:creator" content="@PabsBenavides">
 <meta name="twitter:image-height" content="960">
-<meta name="twitter:image-width" content="1344">
+<meta name="twitter:image-width" content="1920">
 <meta name="twitter:card" content="summary_large_image">
 </head>
 
@@ -881,14 +881,23 @@ Table&nbsp;1: Weights for different values of <span class="math inline">\alpha</
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>algeria_economy <span class="ot">&lt;-</span> global_economy <span class="sc">|&gt;</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Country <span class="sc">==</span> <span class="st">"Algeria"</span>)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>algeria_economy <span class="sc">|&gt;</span> </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>alg_plot_p <span class="ot">&lt;-</span> algeria_economy <span class="sc">|&gt;</span></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(Exports)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output-display">
+</div>
+<div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
+<div class="cell-output-display light-content">
 <div>
 <figure class="figure">
-<p><a href="ets_files/figure-html/alg-plot-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="ets_files/figure-html/alg-plot-1.png" class="img-fluid figure-img" width="672"></a></p>
+<p><a href="ets_files/figure-revealjs/alg-plot-render-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="ets_files/figure-revealjs/alg-plot-render-1.png" class="img-fluid figure-img" width="960"></a></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display dark-content">
+<div>
+<figure class="figure">
+<p><a href="ets_files/figure-revealjs/alg-plot-render-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="ets_files/figure-revealjs/alg-plot-render-2.png" class="img-fluid figure-img" width="960"></a></p>
 </figure>
 </div>
 </div>
@@ -986,21 +995,35 @@ Model: ETS(A,N,N)
 </div>
 </div>
 </div>
-<div class="cell">
-<div class="cell-output-display">
+<div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
+<div class="cell-output-display light-content">
 <div>
 <figure class="figure">
-<p><a href="ets_files/figure-html/ses-plot-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="ets_files/figure-html/ses-plot-1.png" class="img-fluid figure-img" width="672"></a></p>
+<p><a href="ets_files/figure-revealjs/ses-plot-render-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="ets_files/figure-revealjs/ses-plot-render-1.png" class="img-fluid figure-img" width="960"></a></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display dark-content">
+<div>
+<figure class="figure">
+<p><a href="ets_files/figure-revealjs/ses-plot-render-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img src="ets_files/figure-revealjs/ses-plot-render-2.png" class="img-fluid figure-img" width="960"></a></p>
 </figure>
 </div>
 </div>
 </div>
 <p>Comparing the SES and Naive forecasts:</p>
-<div class="cell">
-<div class="cell-output-display">
+<div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
+<div class="cell-output-display light-content">
 <div>
 <figure class="figure">
-<p><a href="ets_files/figure-html/ses-v-naive-plot-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="ets_files/figure-html/ses-v-naive-plot-1.png" class="img-fluid figure-img" width="672"></a></p>
+<p><a href="ets_files/figure-revealjs/ses-v-naive-plot-render-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img src="ets_files/figure-revealjs/ses-v-naive-plot-render-1.png" class="img-fluid figure-img" width="960"></a></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display dark-content">
+<div>
+<figure class="figure">
+<p><a href="ets_files/figure-revealjs/ses-v-naive-plot-render-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img src="ets_files/figure-revealjs/ses-v-naive-plot-render-2.png" class="img-fluid figure-img" width="960"></a></p>
 </figure>
 </div>
 </div>
@@ -1051,17 +1074,26 @@ Model: ETS(A,N,N)
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>bra_economy <span class="ot">&lt;-</span> global_economy <span class="sc">|&gt;</span> </span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Code <span class="sc">==</span> <span class="st">"BRA"</span>) <span class="sc">|&gt;</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>bra_economy <span class="ot">&lt;-</span> global_economy <span class="sc">|&gt;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Code <span class="sc">==</span> <span class="st">"BRA"</span>) <span class="sc">|&gt;</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Pop =</span> Population <span class="sc">/</span> <span class="fl">1e6</span>)</span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>bra_economy <span class="sc">|&gt;</span> </span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>bra_pop_p <span class="ot">&lt;-</span> bra_economy <span class="sc">|&gt;</span></span>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(Pop)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output-display">
+</div>
+<div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
+<div class="cell-output-display light-content">
 <div>
 <figure class="figure">
-<p><a href="ets_files/figure-html/bra-pop-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img src="ets_files/figure-html/bra-pop-1.png" class="img-fluid figure-img" width="672"></a></p>
+<p><a href="ets_files/figure-revealjs/bra-pop-render-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7"><img src="ets_files/figure-revealjs/bra-pop-render-1.png" class="img-fluid figure-img" width="960"></a></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display dark-content">
+<div>
+<figure class="figure">
+<p><a href="ets_files/figure-revealjs/bra-pop-render-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8"><img src="ets_files/figure-revealjs/bra-pop-render-2.png" class="img-fluid figure-img" width="960"></a></p>
 </figure>
 </div>
 </div>
@@ -1121,15 +1153,24 @@ Model: ETS(A,A,N)
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>bra_fc <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>holt_full_plt_p <span class="ot">&lt;-</span> bra_fc <span class="sc">|&gt;</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(bra_economy, <span class="at">level =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Brazilian population"</span>, <span class="at">y =</span> <span class="st">"Millions"</span>) <span class="sc">+</span></span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">colour =</span> <span class="fu">guide_legend</span>(<span class="at">title =</span> <span class="st">"Forecast"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output-display">
+</div>
+<div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
+<div class="cell-output-display light-content">
 <div>
 <figure class="figure">
-<p><a href="ets_files/figure-html/holt_full_plt-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img src="ets_files/figure-html/holt_full_plt-1.png" class="img-fluid figure-img" width="672"></a></p>
+<p><a href="ets_files/figure-revealjs/holt_full_plt-render-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9"><img src="ets_files/figure-revealjs/holt_full_plt-render-1.png" class="img-fluid figure-img" width="960"></a></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display dark-content">
+<div>
+<figure class="figure">
+<p><a href="ets_files/figure-revealjs/holt_full_plt-render-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10"><img src="ets_files/figure-revealjs/holt_full_plt-render-2.png" class="img-fluid figure-img" width="960"></a></p>
 </figure>
 </div>
 </div>
@@ -1175,24 +1216,40 @@ Model: ETS(A,A,N)
 </div>
 <section id="example-forecasting-brazils-population-continued-3" class="level4 unnumbered">
 <h4 class="unnumbered anchored" data-anchor-id="example-forecasting-brazils-population-continued-3">Example: Forecasting Brazil’s population (continued)</h4>
+<div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
+<div class="cell-output-display light-content">
+<div>
+<figure class="figure">
+<p><a href="ets_files/figure-revealjs/damped_full-render-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-11"><img src="ets_files/figure-revealjs/damped_full-render-1.png" class="img-fluid figure-img" width="960"></a></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display dark-content">
+<div>
+<figure class="figure">
+<p><a href="ets_files/figure-revealjs/damped_full-render-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-12"><img src="ets_files/figure-revealjs/damped_full-render-2.png" class="img-fluid figure-img" width="960"></a></p>
+</figure>
+</div>
+</div>
+</div>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-4" data-llms-code-original="bra_economy |> 
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-4" data-llms-code-original="damped_full_p <- bra_economy |>
   model(
     Holt   = ETS(Pop ~ error(&quot;A&quot;) + trend(&quot;A&quot;) + season(&quot;N&quot;)),
     Damped = ETS(Pop ~ error(&quot;A&quot;) + trend(&quot;Ad&quot;, phi = 0.9) + season(&quot;N&quot;)) #<1>
-  ) |> 
-  forecast(h = 15) |> 
+  ) |>
+  forecast(h = 15) |>
   autoplot(bra_economy, level = NULL) +
   labs(title = &quot;Brazilian population&quot;,
        y = &quot;Millions&quot;) +
-  guides(colour = guide_legend(title = &quot;Forecast&quot;))"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-4-1"><a href="#annotated-cell-4-1" aria-hidden="true" tabindex="-1"></a>bra_economy <span class="sc">|&gt;</span> </span>
+  guides(colour = guide_legend(title = &quot;Forecast&quot;))"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-4-1"><a href="#annotated-cell-4-1" aria-hidden="true" tabindex="-1"></a>damped_full_p <span class="ot">&lt;-</span> bra_economy <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-4-2"><a href="#annotated-cell-4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(</span>
 <span id="annotated-cell-4-3"><a href="#annotated-cell-4-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">Holt   =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>)),</span>
 <a class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-4-4" class="code-annotation-target"><a href="#annotated-cell-4-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">Damped =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"Ad"</span>, <span class="at">phi =</span> <span class="fl">0.9</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
-<span id="annotated-cell-4-5"><a href="#annotated-cell-4-5" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
-<span id="annotated-cell-4-6"><a href="#annotated-cell-4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">15</span>) <span class="sc">|&gt;</span> </span>
+<span id="annotated-cell-4-5"><a href="#annotated-cell-4-5" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-4-6"><a href="#annotated-cell-4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">15</span>) <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-4-7"><a href="#annotated-cell-4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(bra_economy, <span class="at">level =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
 <span id="annotated-cell-4-8"><a href="#annotated-cell-4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Brazilian population"</span>,</span>
 <span id="annotated-cell-4-9"><a href="#annotated-cell-4-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Millions"</span>) <span class="sc">+</span></span>
@@ -1205,13 +1262,6 @@ Model: ETS(A,A,N)
 <span data-code-cell="annotated-cell-4" data-code-lines="4" data-code-annotation="1">We specify <code>trend("Ad")</code> to indicate that we want a damped trend, and <code>phi = 0.9</code> sets the damping parameter to 0.9. We could also let the model estimate <span class="math inline">\phi</span> automatically by omitting the <code>phi</code> argument.</span>
 </dd>
 </dl>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><a href="ets_files/figure-html/damped_full-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img src="ets_files/figure-html/damped_full-1.png" class="img-fluid figure-img" width="672"></a></p>
-</figure>
-</div>
 </div>
 </div>
 </section>
@@ -1268,18 +1318,43 @@ Model: ETS(A,A,N)
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>aus_holidays <span class="ot">&lt;-</span> tourism <span class="sc">|&gt;</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>aus_holidays <span class="ot">&lt;-</span> tourism <span class="sc">|&gt;</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Purpose <span class="sc">==</span> <span class="st">"Holiday"</span>) <span class="sc">|&gt;</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">Trips =</span> <span class="fu">sum</span>(Trips))</span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>aus_holidays <span class="sc">|&gt;</span> <span class="fu">autoplot</span>(Trips) <span class="sc">+</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>aus_holidays_data_p <span class="ot">&lt;-</span> aus_holidays <span class="sc">|&gt;</span> <span class="fu">autoplot</span>(Trips) <span class="sc">+</span></span>
 <span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Australian holiday trips"</span>,</span>
 <span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Overnight trips (millions)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output-display">
+</div>
+<div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
+<div class="cell-output-display light-content">
 <div>
 <figure class="figure">
-<p><a href="ets_files/figure-html/aus-holidays-data-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7"><img src="ets_files/figure-html/aus-holidays-data-1.png" class="img-fluid figure-img" width="672"></a></p>
+<p><a href="ets_files/figure-revealjs/aus-holidays-data-render-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-13"><img src="ets_files/figure-revealjs/aus-holidays-data-render-1.png" class="img-fluid figure-img" width="960"></a></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display dark-content">
+<div>
+<figure class="figure">
+<p><a href="ets_files/figure-revealjs/aus-holidays-data-render-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-14"><img src="ets_files/figure-revealjs/aus-holidays-data-render-2.png" class="img-fluid figure-img" width="960"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
+<div class="cell-output-display light-content">
+<div>
+<figure class="figure">
+<p><a href="ets_files/figure-revealjs/stl_ets_full-render-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-15"><img src="ets_files/figure-revealjs/stl_ets_full-render-1.png" class="img-fluid figure-img" width="960"></a></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display dark-content">
+<div>
+<figure class="figure">
+<p><a href="ets_files/figure-revealjs/stl_ets_full-render-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-16"><img src="ets_files/figure-revealjs/stl_ets_full-render-2.png" class="img-fluid figure-img" width="960"></a></p>
 </figure>
 </div>
 </div>
@@ -1297,16 +1372,15 @@ stl_ets_mul_spec <- decomposition_model(                                        
   ETS(season_adjust ~ error(&quot;M&quot;) + trend(&quot;A&quot;) + season(&quot;N&quot;))                    #<4>
 )
 
-aus_holidays |> 
+stl_ets_full_p <- aus_holidays |>
   model(
     stl_ets_add = stl_ets_add_spec,
     stl_ets_mul = stl_ets_mul_spec
-  ) |> 
-  forecast(h = &quot;2 years&quot;) |> 
+  ) |>
+  forecast(h = &quot;2 years&quot;) |>
   autoplot(aus_holidays, level = NULL) +
   labs(title = &quot;STL + ETS forecasts&quot;,
-       y = &quot;Overnight trips (millions)&quot;) +
-  scale_color_brewer(type = &quot;qual&quot;, palette = &quot;Dark2&quot;)"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><a class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-6-1" class="code-annotation-target"><a href="#annotated-cell-6-1" aria-hidden="true" tabindex="-1"></a>stl_ets_add_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
+       y = &quot;Overnight trips (millions)&quot;)"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><a class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-6-1" class="code-annotation-target"><a href="#annotated-cell-6-1" aria-hidden="true" tabindex="-1"></a>stl_ets_add_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
 <span id="annotated-cell-6-2"><a href="#annotated-cell-6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">STL</span>(Trips <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="dv">7</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
 <a class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-6-3" class="code-annotation-target"><a href="#annotated-cell-6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ETS</span>(season_adjust <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
 <span id="annotated-cell-6-4"><a href="#annotated-cell-6-4" aria-hidden="true" tabindex="-1"></a>)</span>
@@ -1316,16 +1390,15 @@ aus_holidays |>
 <a class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="4" onclick="event.preventDefault();">4</a><span id="annotated-cell-6-8" class="code-annotation-target"><a href="#annotated-cell-6-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ETS</span>(season_adjust <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"M"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
 <span id="annotated-cell-6-9"><a href="#annotated-cell-6-9" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="annotated-cell-6-10"><a href="#annotated-cell-6-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="annotated-cell-6-11"><a href="#annotated-cell-6-11" aria-hidden="true" tabindex="-1"></a>aus_holidays <span class="sc">|&gt;</span> </span>
+<span id="annotated-cell-6-11"><a href="#annotated-cell-6-11" aria-hidden="true" tabindex="-1"></a>stl_ets_full_p <span class="ot">&lt;-</span> aus_holidays <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-6-12"><a href="#annotated-cell-6-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(</span>
 <span id="annotated-cell-6-13"><a href="#annotated-cell-6-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">stl_ets_add =</span> stl_ets_add_spec,</span>
 <span id="annotated-cell-6-14"><a href="#annotated-cell-6-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">stl_ets_mul =</span> stl_ets_mul_spec</span>
-<span id="annotated-cell-6-15"><a href="#annotated-cell-6-15" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
-<span id="annotated-cell-6-16"><a href="#annotated-cell-6-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"2 years"</span>) <span class="sc">|&gt;</span> </span>
+<span id="annotated-cell-6-15"><a href="#annotated-cell-6-15" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-6-16"><a href="#annotated-cell-6-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"2 years"</span>) <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-6-17"><a href="#annotated-cell-6-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(aus_holidays, <span class="at">level =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
 <span id="annotated-cell-6-18"><a href="#annotated-cell-6-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"STL + ETS forecasts"</span>,</span>
-<span id="annotated-cell-6-19"><a href="#annotated-cell-6-19" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Overnight trips (millions)"</span>) <span class="sc">+</span></span>
-<span id="annotated-cell-6-20"><a href="#annotated-cell-6-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_brewer</span>(<span class="at">type =</span> <span class="st">"qual"</span>, <span class="at">palette =</span> <span class="st">"Dark2"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-6-19"><a href="#annotated-cell-6-19" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Overnight trips (millions)"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-annotation">
 <dl class="code-annotation-container-grid">
@@ -1346,13 +1419,6 @@ aus_holidays |>
 <span data-code-cell="annotated-cell-6" data-code-lines="8" data-code-annotation="4">Multiplicative errors (<code>error("M")</code>) are often better when the variance of the series grows with its level.</span>
 </dd>
 </dl>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><a href="ets_files/figure-html/stl_ets_full-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8"><img src="ets_files/figure-html/stl_ets_full-1.png" class="img-fluid figure-img" width="672"></a></p>
-</figure>
-</div>
 </div>
 </div>
 <div class="callout callout-style-simple callout-note callout-titled">
@@ -1446,7 +1512,7 @@ aus_holidays |>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>aus_fit_hw <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>hw_full_plt_p <span class="ot">&lt;-</span> aus_fit_hw <span class="sc">|&gt;</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"3 years"</span>) <span class="sc">|&gt;</span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(aus_holidays, <span class="at">level =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
@@ -1454,13 +1520,21 @@ aus_holidays |>
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Overnight trips (millions)"</span>,</span>
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"Can you spot any differences between both forecasts?"</span></span>
 <span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_brewer</span>(<span class="at">type =</span> <span class="st">"qual"</span>, <span class="at">palette =</span> <span class="st">"Dark2"</span>) <span class="sc">+</span></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">colour =</span> <span class="fu">guide_legend</span>(<span class="at">title =</span> <span class="st">"Forecast"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">colour =</span> <span class="fu">guide_legend</span>(<span class="at">title =</span> <span class="st">"Forecast"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output-display">
+</div>
+<div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
+<div class="cell-output-display light-content">
 <div>
 <figure class="figure">
-<p><a href="ets_files/figure-html/hw_full_plt-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9"><img src="ets_files/figure-html/hw_full_plt-1.png" class="img-fluid figure-img" width="672"></a></p>
+<p><a href="ets_files/figure-revealjs/hw_full_plt-render-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-17"><img src="ets_files/figure-revealjs/hw_full_plt-render-1.png" class="img-fluid figure-img" width="960"></a></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display dark-content">
+<div>
+<figure class="figure">
+<p><a href="ets_files/figure-revealjs/hw_full_plt-render-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-18"><img src="ets_files/figure-revealjs/hw_full_plt-render-2.png" class="img-fluid figure-img" width="960"></a></p>
 </figure>
 </div>
 </div>
@@ -1538,7 +1612,7 @@ aus_holidays |>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>sth_cross_ped <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>hw_damped_p <span class="ot">&lt;-</span> sth_cross_ped <span class="sc">|&gt;</span></span>
 <span id="cb10-2"><a href="#cb10-2"></a>  <span class="fu">filter</span>(Date <span class="sc">&lt;=</span> <span class="st">"2016-07-31"</span>) <span class="sc">|&gt;</span></span>
 <span id="cb10-3"><a href="#cb10-3"></a>  <span class="fu">model</span>(</span>
 <span id="cb10-4"><a href="#cb10-4"></a>    <span class="at">hw =</span> <span class="fu">ETS</span>(Count <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"M"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"Ad"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"M"</span>))</span>
@@ -1548,10 +1622,19 @@ aus_holidays |>
 <span id="cb10-8"><a href="#cb10-8"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Daily traffic: Southern Cross"</span>,</span>
 <span id="cb10-9"><a href="#cb10-9"></a>       <span class="at">y=</span><span class="st">"Pedestrians ('000)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output-display">
+</div>
+<div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
+<div class="cell-output-display light-content">
 <div>
 <figure class="figure">
-<p><a href="ets_files/figure-html/hw_damped-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10"><img src="ets_files/figure-html/hw_damped-1.png" class="img-fluid figure-img" width="672"></a></p>
+<p><a href="ets_files/figure-revealjs/hw_damped-render-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-19"><img src="ets_files/figure-revealjs/hw_damped-render-1.png" class="img-fluid figure-img" width="960"></a></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display dark-content">
+<div>
+<figure class="figure">
+<p><a href="ets_files/figure-revealjs/hw_damped-render-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-20"><img src="ets_files/figure-revealjs/hw_damped-render-2.png" class="img-fluid figure-img" width="960"></a></p>
 </figure>
 </div>
 </div>
@@ -1681,7 +1764,7 @@ holidays_test <- aus_holidays |>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>holidays_train <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>train_test_split_plt_p <span class="ot">&lt;-</span> holidays_train <span class="sc">|&gt;</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(Trips) <span class="sc">+</span></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autolayer</span>(holidays_test, Trips, <span class="at">colour =</span> <span class="st">"#C0392B"</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
@@ -1692,10 +1775,19 @@ holidays_test <- aus_holidays |>
 <span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Overnight trips (millions)"</span></span>
 <span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output-display">
+</div>
+<div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
+<div class="cell-output-display light-content">
 <div>
 <figure class="figure">
-<p><a href="ets_files/figure-html/train-test-split-plt-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-11"><img src="ets_files/figure-html/train-test-split-plt-1.png" class="img-fluid figure-img" width="672"></a></p>
+<p><a href="ets_files/figure-revealjs/train-test-split-plt-render-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-21"><img src="ets_files/figure-revealjs/train-test-split-plt-render-1.png" class="img-fluid figure-img" width="960"></a></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display dark-content">
+<div>
+<figure class="figure">
+<p><a href="ets_files/figure-revealjs/train-test-split-plt-render-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-22"><img src="ets_files/figure-revealjs/train-test-split-plt-render-2.png" class="img-fluid figure-img" width="960"></a></p>
 </figure>
 </div>
 </div>
@@ -1798,10 +1890,10 @@ holidays_fit"><pre class="sourceCode r code-annotation-code code-with-copy code-
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>holidays_fc <span class="ot">&lt;-</span> holidays_fit <span class="sc">|&gt;</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>holidays_fc <span class="ot">&lt;-</span> holidays_fit <span class="sc">|&gt;</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> h)</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>holidays_fc <span class="sc">|&gt;</span> </span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>all_models_fc_p <span class="ot">&lt;-</span> holidays_fc <span class="sc">|&gt;</span></span>
 <span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(</span>
 <span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    aus_holidays <span class="sc">|&gt;</span> <span class="fu">filter_index</span>(<span class="st">"2012 Q1"</span> <span class="sc">~</span> .),</span>
 <span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">level =</span> <span class="cn">NULL</span></span>
@@ -1810,13 +1902,21 @@ holidays_fit"><pre class="sourceCode r code-annotation-code code-with-copy code-
 <span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"ETS model comparison: 5 models, 8-quarter horizon"</span>,</span>
 <span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Overnight trips (millions)"</span></span>
 <span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_brewer</span>(<span class="at">type =</span> <span class="st">"qual"</span>, <span class="at">palette =</span> <span class="st">"Dark2"</span>) <span class="sc">+</span></span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">colour =</span> <span class="fu">guide_legend</span>(<span class="at">title =</span> <span class="st">"Model"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">colour =</span> <span class="fu">guide_legend</span>(<span class="at">title =</span> <span class="st">"Model"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output-display">
+</div>
+<div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
+<div class="cell-output-display light-content">
 <div>
 <figure class="figure">
-<p><a href="ets_files/figure-html/all-models-fc-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-12"><img src="ets_files/figure-html/all-models-fc-1.png" class="img-fluid figure-img" width="672"></a></p>
+<p><a href="ets_files/figure-revealjs/all-models-fc-render-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-23"><img src="ets_files/figure-revealjs/all-models-fc-render-1.png" class="img-fluid figure-img" width="960"></a></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display dark-content">
+<div>
+<figure class="figure">
+<p><a href="ets_files/figure-revealjs/all-models-fc-render-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-24"><img src="ets_files/figure-revealjs/all-models-fc-render-2.png" class="img-fluid figure-img" width="960"></a></p>
 </figure>
 </div>
 </div>
@@ -2018,6 +2118,44 @@ Table&nbsp;3: Names of some popular ETS models
 <li id="fn3"><p>e.g., <span class="math inline">m=4</span> for quarterly data, <span class="math inline">m=12</span> for monthly data, …<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section></div></main> <!-- /main -->
+
+<script>
+  // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+  // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+  // slide changes (different for each slide format).
+  (function () {
+    // dispatch for htmlwidgets
+    function fireSlideEnter() {
+      const event = window.document.createEvent("Event");
+      event.initEvent("slideenter", true, true);
+      window.document.dispatchEvent(event);
+    }
+
+    function fireSlideChanged(previousSlide, currentSlide) {
+      fireSlideEnter();
+
+      // dispatch for shiny
+      if (window.jQuery) {
+        if (previousSlide) {
+          window.jQuery(previousSlide).trigger("hidden");
+        }
+        if (currentSlide) {
+          window.jQuery(currentSlide).trigger("shown");
+        }
+      }
+    }
+
+    // hookup for slidy
+    if (window.w3c_slidy) {
+      window.w3c_slidy.add_observer(function (slide_num) {
+        // slide_num starts at position 1
+        fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+      });
+    }
+
+  })();
+</script>
+
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right

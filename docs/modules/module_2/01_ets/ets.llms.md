@@ -94,12 +94,14 @@ Code
 ``` r
 algeria_economy <- global_economy |>
   filter(Country == "Algeria")
-  
-algeria_economy |> 
+
+alg_plot_p <- algeria_economy |>
   autoplot(Exports)
 ```
 
-[![](ets_files/figure-html/alg-plot-1.png)](ets_files/figure-html/alg-plot-1.png)
+[![](ets_files/figure-revealjs/alg-plot-render-1.png)](ets_files/figure-revealjs/alg-plot-render-1.png)
+
+[![](ets_files/figure-revealjs/alg-plot-render-2.png)](ets_files/figure-revealjs/alg-plot-render-2.png)
 
 Code
 
@@ -146,11 +148,15 @@ alg_fc <- alg_fit |>
 >          AIC     AICc      BIC 
 >     446.7154 447.1599 452.8968 
 
-[![](ets_files/figure-html/ses-plot-1.png)](ets_files/figure-html/ses-plot-1.png)
+[![](ets_files/figure-revealjs/ses-plot-render-1.png)](ets_files/figure-revealjs/ses-plot-render-1.png)
+
+[![](ets_files/figure-revealjs/ses-plot-render-2.png)](ets_files/figure-revealjs/ses-plot-render-2.png)
 
 Comparing the SES and Naive forecasts:
 
-[![](ets_files/figure-html/ses-v-naive-plot-1.png)](ets_files/figure-html/ses-v-naive-plot-1.png)
+[![](ets_files/figure-revealjs/ses-v-naive-plot-render-1.png)](ets_files/figure-revealjs/ses-v-naive-plot-render-1.png)
+
+[![](ets_files/figure-revealjs/ses-v-naive-plot-render-2.png)](ets_files/figure-revealjs/ses-v-naive-plot-render-2.png)
 
 ## 1.2 Methods with trend
 
@@ -174,15 +180,17 @@ Let’s see an example using Holt’s linear trend method to forecast Brazil’s
 Code
 
 ``` r
-bra_economy <- global_economy |> 
-  filter(Code == "BRA") |> 
+bra_economy <- global_economy |>
+  filter(Code == "BRA") |>
   mutate(Pop = Population / 1e6)
 
-bra_economy |> 
+bra_pop_p <- bra_economy |>
   autoplot(Pop)
 ```
 
-[![](ets_files/figure-html/bra-pop-1.png)](ets_files/figure-html/bra-pop-1.png)
+[![](ets_files/figure-revealjs/bra-pop-render-1.png)](ets_files/figure-revealjs/bra-pop-render-1.png)
+
+[![](ets_files/figure-revealjs/bra-pop-render-2.png)](ets_files/figure-revealjs/bra-pop-render-2.png)
 
 Code
 
@@ -221,13 +229,15 @@ bra_fc <- bra_fit |>
 Code
 
 ``` r
-bra_fc |>
+holt_full_plt_p <- bra_fc |>
   autoplot(bra_economy, level = NULL) +
   labs(title = "Brazilian population", y = "Millions") +
   guides(colour = guide_legend(title = "Forecast"))
 ```
 
-[![](ets_files/figure-html/holt_full_plt-1.png)](ets_files/figure-html/holt_full_plt-1.png)
+[![](ets_files/figure-revealjs/holt_full_plt-render-1.png)](ets_files/figure-revealjs/holt_full_plt-render-1.png)
+
+[![](ets_files/figure-revealjs/holt_full_plt-render-2.png)](ets_files/figure-revealjs/holt_full_plt-render-2.png)
 
 ### 1.2.2 Damped trend
 
@@ -246,15 +256,19 @@ where 0 \< \phi \< 1[^2] is the damping parameter.
 
 #### Example: Forecasting Brazil’s population (continued)
 
+[![](ets_files/figure-revealjs/damped_full-render-1.png)](ets_files/figure-revealjs/damped_full-render-1.png)
+
+[![](ets_files/figure-revealjs/damped_full-render-2.png)](ets_files/figure-revealjs/damped_full-render-2.png)
+
 Code
 
 ``` r
-bra_economy |> 
+damped_full_p <- bra_economy |>
   model(
     Holt   = ETS(Pop ~ error("A") + trend("A") + season("N")),
     Damped = ETS(Pop ~ error("A") + trend("Ad", phi = 0.9) + season("N")) #<1>
-  ) |> 
-  forecast(h = 15) |> 
+  ) |>
+  forecast(h = 15) |>
   autoplot(bra_economy, level = NULL) +
   labs(title = "Brazilian population",
        y = "Millions") +
@@ -262,8 +276,6 @@ bra_economy |>
 ```
 
 1.  We specify `trend("Ad")` to indicate that we want a damped trend, and `phi = 0.9` sets the damping parameter to 0.9. We could also let the model estimate \phi automatically by omitting the `phi` argument.
-
-[![](ets_files/figure-html/damped_full-1.png)](ets_files/figure-html/damped_full-1.png)
 
 ## 1.3 Handling seasonality: two strategies
 
@@ -283,16 +295,22 @@ In Module 1 you used `decomposition_model()` to pair STL with Drift + SNAIVE. Th
 Code
 
 ``` r
-aus_holidays <- tourism |> 
+aus_holidays <- tourism |>
   filter(Purpose == "Holiday") |>
   summarise(Trips = sum(Trips))
 
-aus_holidays |> autoplot(Trips) +
+aus_holidays_data_p <- aus_holidays |> autoplot(Trips) +
   labs(title = "Australian holiday trips",
        y = "Overnight trips (millions)")
 ```
 
-[![](ets_files/figure-html/aus-holidays-data-1.png)](ets_files/figure-html/aus-holidays-data-1.png)
+[![](ets_files/figure-revealjs/aus-holidays-data-render-1.png)](ets_files/figure-revealjs/aus-holidays-data-render-1.png)
+
+[![](ets_files/figure-revealjs/aus-holidays-data-render-2.png)](ets_files/figure-revealjs/aus-holidays-data-render-2.png)
+
+[![](ets_files/figure-revealjs/stl_ets_full-render-1.png)](ets_files/figure-revealjs/stl_ets_full-render-1.png)
+
+[![](ets_files/figure-revealjs/stl_ets_full-render-2.png)](ets_files/figure-revealjs/stl_ets_full-render-2.png)
 
 Code
 
@@ -307,24 +325,21 @@ stl_ets_mul_spec <- decomposition_model(                                        
   ETS(season_adjust ~ error("M") + trend("A") + season("N"))                    #<4>
 )
 
-aus_holidays |> 
+stl_ets_full_p <- aus_holidays |>
   model(
     stl_ets_add = stl_ets_add_spec,
     stl_ets_mul = stl_ets_mul_spec
-  ) |> 
-  forecast(h = "2 years") |> 
+  ) |>
+  forecast(h = "2 years") |>
   autoplot(aus_holidays, level = NULL) +
   labs(title = "STL + ETS forecasts",
-       y = "Overnight trips (millions)") +
-  scale_color_brewer(type = "qual", palette = "Dark2")
+       y = "Overnight trips (millions)")
 ```
 
 1.  Save the decomposition spec as a standalone object — this keeps `model()` clean and allows reuse.
 2.  The ETS model is fitted on `season_adjust` (the STL-extracted seasonally adjusted series). We set `season("N")` because STL has already removed the seasonal component; SNAIVE handles it implicitly via `decomposition_model()`.
 3.  A multiplicative error version of the same spec.
 4.  Multiplicative errors (`error("M")`) are often better when the variance of the series grows with its level.
-
-[![](ets_files/figure-html/stl_ets_full-1.png)](ets_files/figure-html/stl_ets_full-1.png)
 
 > **NOTE:**
 >
@@ -368,7 +383,7 @@ aus_fit_hw <- aus_holidays |>
 Code
 
 ``` r
-aus_fit_hw |>
+hw_full_plt_p <- aus_fit_hw |>
   forecast(h = "3 years") |>
   autoplot(aus_holidays, level = NULL) +
   labs(
@@ -376,11 +391,12 @@ aus_fit_hw |>
     y = "Overnight trips (millions)",
     caption = "Can you spot any differences between both forecasts?"
   ) +
-  scale_color_brewer(type = "qual", palette = "Dark2") +
   guides(colour = guide_legend(title = "Forecast"))
 ```
 
-[![](ets_files/figure-html/hw_full_plt-1.png)](ets_files/figure-html/hw_full_plt-1.png)
+[![](ets_files/figure-revealjs/hw_full_plt-render-1.png)](ets_files/figure-revealjs/hw_full_plt-render-1.png)
+
+[![](ets_files/figure-revealjs/hw_full_plt-render-2.png)](ets_files/figure-revealjs/hw_full_plt-render-2.png)
 
 > **NOTE:**
 >
@@ -415,7 +431,7 @@ sth_cross_ped <- pedestrian |>
 Code
 
 ``` numberSource
-sth_cross_ped |>
+hw_damped_p <- sth_cross_ped |>
   filter(Date <= "2016-07-31") |>
   model(
     hw = ETS(Count ~ error("M") + trend("Ad") + season("M"))
@@ -426,7 +442,9 @@ sth_cross_ped |>
        y="Pedestrians ('000)")
 ```
 
-[![](ets_files/figure-html/hw_damped-1.png)](ets_files/figure-html/hw_damped-1.png)
+[![](ets_files/figure-revealjs/hw_damped-render-1.png)](ets_files/figure-revealjs/hw_damped-render-1.png)
+
+[![](ets_files/figure-revealjs/hw_damped-render-2.png)](ets_files/figure-revealjs/hw_damped-render-2.png)
 
 > **TIP:**
 >
@@ -497,7 +515,7 @@ holidays_test <- aus_holidays |>
 Code
 
 ``` r
-holidays_train |>
+train_test_split_plt_p <- holidays_train |>
   autoplot(Trips) +
   autolayer(holidays_test, Trips, colour = "#C0392B", linetype = "dashed") +
   labs(
@@ -509,7 +527,9 @@ holidays_train |>
   )
 ```
 
-[![](ets_files/figure-html/train-test-split-plt-1.png)](ets_files/figure-html/train-test-split-plt-1.png)
+[![](ets_files/figure-revealjs/train-test-split-plt-render-1.png)](ets_files/figure-revealjs/train-test-split-plt-render-1.png)
+
+[![](ets_files/figure-revealjs/train-test-split-plt-render-2.png)](ets_files/figure-revealjs/train-test-split-plt-render-2.png)
 
 ### 2.0.2 Fitting all five models
 
@@ -562,10 +582,10 @@ holidays_fit
 Code
 
 ``` r
-holidays_fc <- holidays_fit |> 
+holidays_fc <- holidays_fit |>
   forecast(h = h)
 
-holidays_fc |> 
+all_models_fc_p <- holidays_fc |>
   autoplot(
     aus_holidays |> filter_index("2012 Q1" ~ .),
     level = NULL
@@ -574,11 +594,12 @@ holidays_fc |>
     title = "ETS model comparison: 5 models, 8-quarter horizon",
     y = "Overnight trips (millions)"
   ) +
-  scale_color_brewer(type = "qual", palette = "Dark2") +
   guides(colour = guide_legend(title = "Model"))
 ```
 
-[![](ets_files/figure-html/all-models-fc-1.png)](ets_files/figure-html/all-models-fc-1.png)
+[![](ets_files/figure-revealjs/all-models-fc-render-1.png)](ets_files/figure-revealjs/all-models-fc-render-1.png)
+
+[![](ets_files/figure-revealjs/all-models-fc-render-2.png)](ets_files/figure-revealjs/all-models-fc-render-2.png)
 
 ### 2.0.4 Accuracy
 

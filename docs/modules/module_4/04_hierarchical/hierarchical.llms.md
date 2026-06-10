@@ -229,19 +229,16 @@ tourism_full <- tourism |>
 Code
 
 ``` numberSource
-p <- tourism_hts |>
+hts_state_plot_p <- tourism_hts |>
   filter(!is_aggregated(State), is_aggregated(Region)) |>
   autoplot(Trips) +
   facet_wrap(~ as.character(State), scales = "free_y", ncol = 4) +
-  labs(title = "Domestic tourism trips by state", y = "Trips ('000)", x = NULL) +
-  theme(legend.position = "none")
-
-p
+  labs(title = "Domestic tourism trips by state", y = "Trips ('000)", x = NULL)
 ```
 
-[![Quarterly domestic trips by Australian state.](hierarchical_files/figure-html/hts-state-plot-1.png)](hierarchical_files/figure-html/hts-state-plot-1.png "Quarterly domestic trips by Australian state.")
+[![](hierarchical_files/figure-revealjs/hts-state-plot-render-1.png)](hierarchical_files/figure-revealjs/hts-state-plot-render-1.png)
 
-Quarterly domestic trips by Australian state.
+[![](hierarchical_files/figure-revealjs/hts-state-plot-render-2.png)](hierarchical_files/figure-revealjs/hts-state-plot-render-2.png)
 
 ------------------------------------------------------------------------
 
@@ -291,20 +288,17 @@ With `tourism_full`, the Purpose grouping is crossed with the State/Region hiera
 Code
 
 ``` numberSource
-p <- tourism_full |>
+full_hts_plot_p <- tourism_full |>
   filter(!is_aggregated(State), is_aggregated(Region), !is_aggregated(Purpose)) |>
   autoplot(Trips) +
   facet_wrap(~ as.character(Purpose), scales = "free_y") +
   labs(title = "Domestic tourism by state and purpose",
-       y = "Trips ('000)", x = NULL) +
-  theme(legend.position = "none")
-
-p
+       y = "Trips ('000)", x = NULL)
 ```
 
-[![State-level trips split by purpose of travel.](hierarchical_files/figure-html/full-hts-plot-1.png)](hierarchical_files/figure-html/full-hts-plot-1.png "State-level trips split by purpose of travel.")
+[![](hierarchical_files/figure-revealjs/full-hts-plot-render-1.png)](hierarchical_files/figure-revealjs/full-hts-plot-render-1.png)
 
-State-level trips split by purpose of travel.
+[![](hierarchical_files/figure-revealjs/full-hts-plot-render-2.png)](hierarchical_files/figure-revealjs/full-hts-plot-render-2.png)
 
 # 3 Coherent Forecasts
 
@@ -370,7 +364,7 @@ Code
 tourism_bu <- tourism_fit |>
   reconcile(bu = bottom_up(ets)) #<1>
 
-tourism_bu |>
+reconcile_bu_p <- tourism_bu |>
   forecast(h = "2 years") |>
   filter(is_aggregated(State)) |>
   autoplot(tourism_hts |> filter_index("2012 Q1" ~ .)) +
@@ -380,7 +374,9 @@ tourism_bu |>
 
 1.  `bottom_up(ets)` takes the Region-level ETS forecasts as given and sums up. The national and state ETS forecasts are replaced by aggregations of the Region forecasts.
 
-[![](hierarchical_files/figure-html/reconcile-bu-1.png)](hierarchical_files/figure-html/reconcile-bu-1.png)
+[![](hierarchical_files/figure-revealjs/reconcile-bu-render-1.png)](hierarchical_files/figure-revealjs/reconcile-bu-render-1.png)
+
+[![](hierarchical_files/figure-revealjs/reconcile-bu-render-2.png)](hierarchical_files/figure-revealjs/reconcile-bu-render-2.png)
 
 At the Region level, BU coherent forecasts are identical to the original ETS forecasts — nothing changes there.
 
@@ -597,7 +593,7 @@ tourism_fc <- tourism_rec |>
 Code
 
 ``` r
-tourism_fc |>
+accuracy_all_p <- tourism_fc |>
   accuracy(data = tourism_hts, measures = list(RMSSE = RMSSE)) |>
   mutate(
     Level = case_when(
@@ -614,13 +610,12 @@ tourism_fc |>
   geom_col(show.legend = FALSE) +
   facet_wrap(~ Level, scales = "free_y") +
   coord_flip() +
-  labs(x = NULL, y = "Mean RMSSE") +
-  theme_minimal()
+  labs(x = NULL, y = "Mean RMSSE")
 ```
 
-[![Mean RMSSE by reconciliation method and aggregation level.](hierarchical_files/figure-html/accuracy-all-1.png)](hierarchical_files/figure-html/accuracy-all-1.png "Mean RMSSE by reconciliation method and aggregation level.")
+[![](hierarchical_files/figure-revealjs/accuracy-all-render-1.png)](hierarchical_files/figure-revealjs/accuracy-all-render-1.png)
 
-Mean RMSSE by reconciliation method and aggregation level.
+[![](hierarchical_files/figure-revealjs/accuracy-all-render-2.png)](hierarchical_files/figure-revealjs/accuracy-all-render-2.png)
 
 > **TIP:**
 >
@@ -672,7 +667,7 @@ pbs_fc <- pbs_rec |>
 Code
 
 ``` r
-pbs_fc |>
+pbs_accuracy_p <- pbs_fc |>
   accuracy(data = pbs_hts, measures = list(RMSSE = RMSSE)) |>
   mutate(
     Level = case_when(
@@ -692,13 +687,12 @@ pbs_fc |>
   geom_col(show.legend = FALSE) +
   facet_wrap(~ Level, scales = "free_y") +
   coord_flip() +
-  labs(x = NULL, y = "Mean RMSSE") +
-  theme_minimal()
+  labs(x = NULL, y = "Mean RMSSE")
 ```
 
-[![Mean RMSSE for the PBS mixed hierarchy by method and aggregation level.](hierarchical_files/figure-html/pbs-accuracy-1.png)](hierarchical_files/figure-html/pbs-accuracy-1.png "Mean RMSSE for the PBS mixed hierarchy by method and aggregation level.")
+[![](hierarchical_files/figure-revealjs/pbs-accuracy-render-1.png)](hierarchical_files/figure-revealjs/pbs-accuracy-render-1.png)
 
-Mean RMSSE for the PBS mixed hierarchy by method and aggregation level.
+[![](hierarchical_files/figure-revealjs/pbs-accuracy-render-2.png)](hierarchical_files/figure-revealjs/pbs-accuracy-render-2.png)
 
 # 8 Summary
 

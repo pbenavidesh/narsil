@@ -230,7 +230,9 @@ beer_full <- bind_rows(beer_train, beer_test)
 
 1.  We rename `Beer` to `y` — the same convention used for `mexretail`. This is what allows the specs defined above to be reused directly.
 
-[![](modular_forecasting_files/figure-html/unnamed-chunk-1-1.png)](modular_forecasting_files/figure-html/unnamed-chunk-1-1.png)
+[![](modular_forecasting_files/figure-html/beer-train-plot-render-1.png)](modular_forecasting_files/figure-html/beer-train-plot-render-1.png)
+
+[![](modular_forecasting_files/figure-html/beer-train-plot-render-2.png)](modular_forecasting_files/figure-html/beer-train-plot-render-2.png)
 
 > **TIP:**
 >

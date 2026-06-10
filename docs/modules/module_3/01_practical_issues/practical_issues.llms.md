@@ -50,6 +50,10 @@ We decompose the series with STL using `season(period = 1)` to remove **only the
 
 where c = 1.5 is the standard threshold and c = 3 flags only more extreme observations.
 
+[![](practical_issues_files/figure-html/stl-decomp-render-1.png)](practical_issues_files/figure-html/stl-decomp-render-1.png)
+
+[![](practical_issues_files/figure-html/stl-decomp-render-2.png)](practical_issues_files/figure-html/stl-decomp-render-2.png)
+
 Code
 
 ``` r
@@ -59,12 +63,10 @@ ah_dcmp <- ah |>
   ) |>
   components()
 
-ah_dcmp |> autoplot()
+stl_decomp_p <- ah_dcmp |> autoplot()
 ```
 
 1.  `season(period = 1)` fits a non-seasonal STL — only the trend is extracted. This ensures the remainder reflects true anomalies and seasonal variation together, rather than having a genuine outlier absorbed into the seasonal component.
-
-[![](practical_issues_files/figure-html/stl-decomp-1.png)](practical_issues_files/figure-html/stl-decomp-1.png)
 
 Code
 
@@ -191,7 +193,9 @@ ah |>
 
 # 3 Keeping Forecasts Positive
 
-[![](practical_issues_files/figure-html/eggs-with-line-html-1.png)](practical_issues_files/figure-html/eggs-with-line-html-1.png)
+[![](practical_issues_files/figure-html/eggs-with-line-html-render-1.png)](practical_issues_files/figure-html/eggs-with-line-html-render-1.png)
+
+[![](practical_issues_files/figure-html/eggs-with-line-html-render-2.png)](practical_issues_files/figure-html/eggs-with-line-html-render-2.png)
 
 > *What do you observe? Does anything look strange about those prediction intervals?*
 
@@ -208,14 +212,18 @@ ah |>
 - When we model \log(y_t) and back-transform with \exp(\cdot), the result is **always strictly positive** — regardless of how far the trend extrapolates downward.
 - We saw this in Module 1 with Box-Cox transformations (the \lambda = 0 case). Here we use it explicitly as a forecasting constraint.
 
+[![](practical_issues_files/figure-html/eggs-log-forecast-render-1.png)](practical_issues_files/figure-html/eggs-log-forecast-render-1.png)
+
+[![](practical_issues_files/figure-html/eggs-log-forecast-render-2.png)](practical_issues_files/figure-html/eggs-log-forecast-render-2.png)
+
 Code
 
 ``` r
-egg_prices |>
+eggs_log_forecast_p <- egg_prices |>
   model(ETS(log(eggs) ~ trend("A"))) |> #<1>
   forecast(h = 50) |>
   autoplot(egg_prices, level = 95) +
-  geom_hline(yintercept = 0, color = "firebrick", linetype = "dashed") +
+  geom_hline(yintercept = 0, colour = "#D55E00", linetype = "dashed") +
   labs(
     title   = "Annual egg prices — ETS with log transformation",
     y       = "USD cents (inflation-adjusted)"
@@ -223,8 +231,6 @@ egg_prices |>
 ```
 
 1.  The only change is wrapping `eggs` in `log()`. `fable` handles the back-transformation automatically — forecasts and prediction intervals are returned on the original scale.
-
-[![](practical_issues_files/figure-html/eggs-log-forecast-1.png)](practical_issues_files/figure-html/eggs-log-forecast-1.png)
 
 > **NOTE:**
 >
@@ -297,17 +303,21 @@ my_scaled_logit <- new_transformation(                   #<3>
 
 ### 4.0.2 Applying the scaled logit
 
+[![](practical_issues_files/figure-html/eggs-scaled-logit-render-1.png)](practical_issues_files/figure-html/eggs-scaled-logit-render-1.png)
+
+[![](practical_issues_files/figure-html/eggs-scaled-logit-render-2.png)](practical_issues_files/figure-html/eggs-scaled-logit-render-2.png)
+
 Code
 
 ``` r
-egg_prices |>
+eggs_scaled_logit_p <- egg_prices |>
   model(
     ETS(my_scaled_logit(eggs, lower = 50, upper = 400) ~ trend("A")) #<1>
   ) |>
   forecast(h = 50) |>
   autoplot(egg_prices, level = 95) +
-  geom_hline(yintercept =  50, color = "firebrick", linetype = "dashed") +
-  geom_hline(yintercept = 400, color = "firebrick", linetype = "dashed") +
+  geom_hline(yintercept =  50, colour = "#D55E00", linetype = "dashed") +
+  geom_hline(yintercept = 400, colour = "#D55E00", linetype = "dashed") +
   labs(
     title   = "Annual egg prices — ETS within bounds [50, 400]",
     y       = "USD cents (inflation-adjusted)",
@@ -316,8 +326,6 @@ egg_prices |>
 ```
 
 1.  The bounds `lower = 50` and `upper = 400` reflect a plausible range for egg prices in this dataset. In practice, bounds should be informed by domain knowledge or regulatory constraints — not chosen to make the plot look neat.
-
-[![](practical_issues_files/figure-html/eggs-scaled-logit-1.png)](practical_issues_files/figure-html/eggs-scaled-logit-1.png)
 
 > **WARNING:**
 >
