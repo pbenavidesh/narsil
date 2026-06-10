@@ -345,15 +345,22 @@ tourism_full <- tourism |>
 #| message: false
 #| code-line-numbers: "2"
 #| fig-cap: "Quarterly domestic trips by Australian state."
+#| output: false
 
-p <- tourism_hts |>
+hts_state_plot_p <- tourism_hts |>
   filter(!is_aggregated(State), is_aggregated(Region)) |>
   autoplot(Trips) +
   facet_wrap(~ as.character(State), scales = "free_y", ncol = 4) +
-  labs(title = "Domestic tourism trips by state", y = "Trips ('000)", x = NULL) +
-  theme(legend.position = "none")
+  labs(title = "Domestic tourism trips by state", y = "Trips ('000)", x = NULL)
+```
 
-p
+```{r}
+#| label: hts-state-plot-render
+#| renderings: [light, dark]
+#| echo: false
+
+hts_state_plot_p + theme_narsil() + theme(legend.position = "none")
+hts_state_plot_p + theme_narsil_dark() + theme(legend.position = "none")
 ```
 
 ---
@@ -452,16 +459,23 @@ With `tourism_full`, the Purpose grouping is crossed with the State/Region hiera
 #| message: false
 #| code-line-numbers: "2"
 #| fig-cap: "State-level trips split by purpose of travel."
+#| output: false
 
-p <- tourism_full |>
+full_hts_plot_p <- tourism_full |>
   filter(!is_aggregated(State), is_aggregated(Region), !is_aggregated(Purpose)) |>
   autoplot(Trips) +
   facet_wrap(~ as.character(Purpose), scales = "free_y") +
   labs(title = "Domestic tourism by state and purpose",
-       y = "Trips ('000)", x = NULL) +
-  theme(legend.position = "none")
+       y = "Trips ('000)", x = NULL)
+```
 
-p
+```{r}
+#| label: full-hts-plot-render
+#| renderings: [light, dark]
+#| echo: false
+
+full_hts_plot_p + theme_narsil() + theme(legend.position = "none")
+full_hts_plot_p + theme_narsil_dark() + theme(legend.position = "none")
 ```
 
 # Coherent Forecasts
@@ -584,11 +598,12 @@ tourism_fit
 ```{r}
 #| label: reconcile-bu
 #| message: false
+#| output: false
 
 tourism_bu <- tourism_fit |>
   reconcile(bu = bottom_up(ets)) #<1>
 
-tourism_bu |>
+reconcile_bu_p <- tourism_bu |>
   forecast(h = "2 years") |>
   filter(is_aggregated(State)) |>
   autoplot(tourism_hts |> filter_index("2012 Q1" ~ .)) +
@@ -596,6 +611,15 @@ tourism_bu |>
        y = "Trips ('000)", x = NULL)
 ```
 1. `bottom_up(ets)` takes the Region-level ETS forecasts as given and sums up. The national and state ETS forecasts are replaced by aggregations of the Region forecasts.
+
+```{r}
+#| label: reconcile-bu-render
+#| renderings: [light, dark]
+#| echo: false
+
+reconcile_bu_p + scale_narsil()
+reconcile_bu_p + scale_narsil_dark()
+```
 
 :::
 
@@ -1054,8 +1078,9 @@ tourism_fc <- tourism_rec |>
 #| label: accuracy-all
 #| message: false
 #| fig-cap: "Mean RMSSE by reconciliation method and aggregation level."
+#| output: false
 
-tourism_fc |>
+accuracy_all_p <- tourism_fc |>
   accuracy(data = tourism_hts, measures = list(RMSSE = RMSSE)) |>
   mutate(
     Level = case_when(
@@ -1072,8 +1097,16 @@ tourism_fc |>
   geom_col(show.legend = FALSE) +
   facet_wrap(~ Level, scales = "free_y") +
   coord_flip() +
-  labs(x = NULL, y = "Mean RMSSE") +
-  theme_minimal()
+  labs(x = NULL, y = "Mean RMSSE")
+```
+
+```{r}
+#| label: accuracy-all-render
+#| renderings: [light, dark]
+#| echo: false
+
+accuracy_all_p + scale_narsil() + scale_fill_narsil()
+accuracy_all_p + scale_narsil_dark() + scale_fill_narsil(dark = TRUE)
 ```
 
 :::{.fragment}
@@ -1165,8 +1198,9 @@ pbs_fc <- pbs_rec |>
 #| label: pbs-accuracy
 #| message: false
 #| fig-cap: "Mean RMSSE for the PBS mixed hierarchy by method and aggregation level."
+#| output: false
 
-pbs_fc |>
+pbs_accuracy_p <- pbs_fc |>
   accuracy(data = pbs_hts, measures = list(RMSSE = RMSSE)) |>
   mutate(
     Level = case_when(
@@ -1186,8 +1220,16 @@ pbs_fc |>
   geom_col(show.legend = FALSE) +
   facet_wrap(~ Level, scales = "free_y") +
   coord_flip() +
-  labs(x = NULL, y = "Mean RMSSE") +
-  theme_minimal()
+  labs(x = NULL, y = "Mean RMSSE")
+```
+
+```{r}
+#| label: pbs-accuracy-render
+#| renderings: [light, dark]
+#| echo: false
+
+pbs_accuracy_p + scale_narsil() + scale_fill_narsil()
+pbs_accuracy_p + scale_narsil_dark() + scale_fill_narsil(dark = TRUE)
 ```
 
 # Summary

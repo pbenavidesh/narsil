@@ -293,8 +293,9 @@ We can extract both error types from the fitted model:
 
 ```{r}
 #| label: us-two-residuals
+#| output: false
 
-bind_rows(
+us_two_residuals_p <- bind_rows(
   `Regression errors` = as_tibble(                               #<1>
     residuals(us_change_fit_dyn |> select(dynamic),              #<1>
               type = "regression")),                             #<1>
@@ -307,6 +308,15 @@ bind_rows(
   geom_line() +
   facet_wrap(~ type, nrow = 2, scales = "free_y") +
   labs(y = NULL, x = NULL)
+```
+
+```{r}
+#| label: us-two-residuals-render
+#| renderings: [light, dark]
+#| echo: false
+
+us_two_residuals_p + theme_narsil()
+us_two_residuals_p + theme_narsil_dark()
 ```
 
 1. `type = "regression"` → $\hat{\eta}_t$: the regression residuals. These still have autocorrelation structure, now captured by the ARIMA component.
@@ -327,6 +337,7 @@ bind_rows(
 ```{r}
 #| label: us-diagnostics
 
+theme_narsil()
 us_change_fit_dyn |>
   select(dynamic) |>
   gg_tsresiduals()
@@ -441,6 +452,7 @@ us_change_future
 
 ```{r}
 #| label: us-forecast-full
+#| output: false
 
 us_change_future <- us_change |>
   pivot_longer(-c(Quarter, Consumption),      #<1>
@@ -452,7 +464,7 @@ us_change_future <- us_change |>
   pivot_wider(names_from  = variable,         #<4>
               values_from = .mean)
 
-us_change_fit_dyn |>
+us_forecast_full_p <- us_change_fit_dyn |>
   select(dynamic) |>
   forecast(new_data = us_change_future) |>
   autoplot(tail(us_change, 60)) +
@@ -461,6 +473,15 @@ us_change_fit_dyn |>
     subtitle = "Baseline scenario: predictors forecast with MEAN",
     y = "% change", x = NULL
   )
+```
+
+```{r}
+#| label: us-forecast-full-render
+#| renderings: [light, dark]
+#| echo: false
+
+us_forecast_full_p + theme_narsil()
+us_forecast_full_p + theme_narsil_dark()
 ```
 
 1. Pivot the four predictor columns to long format — each variable becomes its own series, identified by `variable`.
@@ -500,8 +521,9 @@ model(ARIMA(value))         # best ARIMA for each predictor
 ```{r}
 #| label: us-interval-compare
 #| message: false
+#| output: false
 
-us_change_fit_dyn |>
+us_interval_compare_p <- us_change_fit_dyn |>
   forecast(new_data = us_change_future) |>
   autoplot(tail(us_change, 60), level = 80, alpha = 0.6) +   #<1>
   labs(
@@ -509,6 +531,15 @@ us_change_fit_dyn |>
     subtitle = "80% prediction intervals shown",
     y = "% change", x = NULL
   )
+```
+
+```{r}
+#| label: us-interval-compare-render
+#| renderings: [light, dark]
+#| echo: false
+
+us_interval_compare_p + scale_narsil()
+us_interval_compare_p + scale_narsil_dark()
 ```
 
 1. Both models are overlaid on the same axes. The difference in interval width is immediately visible.
@@ -547,19 +578,26 @@ Daily electricity demand in Victoria, Australia (2014):
 ```{r}
 #| label: elec-scatter
 #| echo: false
+#| output: false
 
-p <- vic_elec_daily |>
+elec_scatter_p <- vic_elec_daily |>
   ggplot(aes(x = Temperature, y = Demand, colour = Day_Type)) +
   geom_point(alpha = 0.7) +
-  scale_color_brewer(palette = "Set1") +
   labs(
     title = "U-shaped relationship between temperature and demand",
     x = "Maximum daily temperature (°C)",
     y = "Demand (GW)",
     colour = "Day type"
   )
+```
 
-ggplotly(p)
+```{r}
+#| label: elec-scatter-render
+#| renderings: [light, dark]
+#| echo: false
+
+ggplotly(elec_scatter_p + scale_narsil()) |> gg_to_plotly_narsil()
+ggplotly(elec_scatter_p + scale_narsil_dark()) |> gg_to_plotly_narsil(dark = TRUE)
 ```
 
 :::{.content-hidden unless-format="revealjs"}
@@ -681,6 +719,7 @@ Neither is universally better — let residual diagnostics and AIC$_c$ guide the
 ```{r}
 #| label: elec-diagnostics
 
+theme_narsil()
 vic_elec_fit |> gg_tsresiduals()
 ```
 
@@ -720,11 +759,21 @@ vic_elec_future_26 <- new_data(vic_elec_daily, 14) |>
 ```{r}
 #| label: elec-forecast-conservative-plot
 #| echo: false
+#| output: false
 
-forecast(vic_elec_fit, vic_elec_future_26) |>
+elec_forecast_conservative_plot_p <- forecast(vic_elec_fit, vic_elec_future_26) |>
   autoplot(vic_elec_daily) +
   labs(title = "Scenario: constant 26°C",
        y = "Electricity demand (GW)")
+```
+
+```{r}
+#| label: elec-forecast-conservative-plot-render
+#| renderings: [light, dark]
+#| echo: false
+
+elec_forecast_conservative_plot_p + theme_narsil()
+elec_forecast_conservative_plot_p + theme_narsil_dark()
 ```
 
 ### Heatwave
@@ -749,11 +798,21 @@ vic_elec_future_hw <- new_data(vic_elec_daily, 14) |>
 ```{r}
 #| label: elec-forecast-heatwave-plot
 #| echo: false
+#| output: false
 
-forecast(vic_elec_fit, vic_elec_future_hw) |>
+elec_forecast_heatwave_plot_p <- forecast(vic_elec_fit, vic_elec_future_hw) |>
   autoplot(vic_elec_daily) +
   labs(title = "Scenario: rising temperatures (heatwave)",
        y = "Electricity demand (GW)")
+```
+
+```{r}
+#| label: elec-forecast-heatwave-plot-render
+#| renderings: [light, dark]
+#| echo: false
+
+elec_forecast_heatwave_plot_p + theme_narsil()
+elec_forecast_heatwave_plot_p + theme_narsil_dark()
 ```
 
 :::
@@ -798,16 +857,24 @@ The `fpp3` package includes the `insurance` dataset: monthly US insurance quotes
 ```{r}
 #| label: insurance-plot
 #| echo: false
+#| output: false
 
-p <- insurance |>
+insurance_plot_p <- insurance |>
   pivot_longer(c(Quotes, TVadverts), names_to = "var", values_to = "value") |>
   ggplot(aes(x = Month, y = value)) +
-  geom_line(color = "steelblue") +
+  geom_line() +
   facet_wrap(~ var, nrow = 2, scales = "free_y", strip.position = "right") +
   labs(y = NULL, x = NULL,
        title = "Insurance quotes and TV advertising spend")
+```
 
-ggplotly(p, dynamicTicks = TRUE)
+```{r}
+#| label: insurance-plot-render
+#| renderings: [light, dark]
+#| echo: false
+
+ggplotly(insurance_plot_p + theme_narsil(), dynamicTicks = TRUE) |> gg_to_plotly_narsil()
+ggplotly(insurance_plot_p + theme_narsil_dark(), dynamicTicks = TRUE) |> gg_to_plotly_narsil(dark = TRUE)
 ```
 
 :::{.content-hidden unless-format="revealjs"}
@@ -897,17 +964,27 @@ When forecasting, you need future values of $x_t$ *and* the most recent observed
 
 ```{r}
 #| label: insurance-forecast
+#| output: false
 
 insurance_future <- new_data(insurance, 20) |>
   mutate(TVadverts = 8)                                        #<1>
 
-insurance_fit |>
+insurance_forecast_p <- insurance_fit |>
   select(lag1) |>
   forecast(new_data = insurance_future) |>
   autoplot(insurance) +
   labs(title = "Insurance quotes forecast: lag-1 distributed lag model",
        subtitle = "Scenario: advertising held constant at 8",
        y = "Quotes (thousands)", x = NULL)
+```
+
+```{r}
+#| label: insurance-forecast-render
+#| renderings: [light, dark]
+#| echo: false
+
+insurance_forecast_p + theme_narsil()
+insurance_forecast_p + theme_narsil_dark()
 ```
 
 1. We assume a constant advertising level of 8 for the forecast horizon — a simple scenario.
@@ -1049,10 +1126,20 @@ aus_cafe <- aus_retail |>
 ```{r}
 #| label: cafe-plot
 #| echo: false
+#| output: false
 
-aus_cafe |> autoplot(Turnover) +
+cafe_plot_p <- aus_cafe |> autoplot(Turnover) +
   labs(title = "Australian café & restaurant turnover",
        y = "AUD (millions)", x = NULL)
+```
+
+```{r}
+#| label: cafe-plot-render
+#| renderings: [light, dark]
+#| echo: false
+
+cafe_plot_p + theme_narsil()
+cafe_plot_p + theme_narsil_dark()
 ```
 
 :::{.content-hidden unless-format="revealjs"}
@@ -1134,8 +1221,9 @@ glance(cafe_fit) |>
 ```{r}
 #| label: cafe-forecast-comparison
 #| echo: false
+#| output: false
 
-cafe_fit |>
+cafe_forecast_comparison_p <- cafe_fit |>
   forecast(h = "2 years") |>
   autoplot(aus_cafe) +
   facet_wrap(~ .model, ncol = 2) +
@@ -1144,6 +1232,15 @@ cafe_fit |>
     y = "Turnover (AUD millions)", x = NULL
   ) +
   guides(colour = "none")
+```
+
+```{r}
+#| label: cafe-forecast-comparison-render
+#| renderings: [light, dark]
+#| echo: false
+
+cafe_forecast_comparison_p + scale_narsil()
+cafe_forecast_comparison_p + scale_narsil_dark()
 ```
 
 :::{.callout-note appearance="simple"}
@@ -1165,17 +1262,25 @@ Consider electricity demand measured every **30 minutes**:
 ```{r}
 #| label: elec-hourly-plot
 #| echo: false
+#| output: false
 
-p <- vic_elec |>
+elec_hourly_plot_p <- vic_elec |>
   filter(year(Time) == 2014, month(Time) == 1) |>
-  autoplot(Demand, color = "steelblue") +
+  autoplot(Demand) +
   labs(
     title = "Half-hourly electricity demand — January 2014",
     subtitle = "How many seasonal patterns can you see?",
     y = "Demand (MWh)", x = NULL
   )
+```
 
-ggplotly(p, dynamicTicks = TRUE)
+```{r}
+#| label: elec-hourly-plot-render
+#| renderings: [light, dark]
+#| echo: false
+
+ggplotly(elec_hourly_plot_p + theme_narsil(), dynamicTicks = TRUE) |> gg_to_plotly_narsil()
+ggplotly(elec_hourly_plot_p + theme_narsil_dark(), dynamicTicks = TRUE) |> gg_to_plotly_narsil(dark = TRUE)
 ```
 
 :::

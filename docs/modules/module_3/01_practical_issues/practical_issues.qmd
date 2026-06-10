@@ -61,16 +61,24 @@ ah <- tourism |>
 #| label: tourism-plot-html
 #| echo: false
 #| message: false
+#| output: false
 
-p <- ah |>
-  autoplot(Trips, color = "steelblue") +
+tourism_plot_html_p <- ah |>
+  autoplot(Trips) +
   labs(
     title   = "Quarterly overnight trips to Adelaide Hills",
     y       = "Thousands of trips",
     caption = "Source: Tourism Research Australia"
   )
+```
 
-ggplotly(p, dynamicTicks = TRUE)
+```{r}
+#| label: tourism-plot-html-render
+#| renderings: [light, dark]
+#| echo: false
+
+ggplotly(tourism_plot_html_p + theme_narsil(), dynamicTicks = TRUE) |> gg_to_plotly_narsil()
+ggplotly(tourism_plot_html_p + theme_narsil_dark(), dynamicTicks = TRUE) |> gg_to_plotly_narsil(dark = TRUE)
 ```
 
 :::
@@ -154,6 +162,7 @@ where $c = 1.5$ is the standard threshold and $c = 3$ flags only more extreme ob
 ```{r}
 #| label: stl-decomp
 #| message: false
+#| output: false
 
 ah_dcmp <- ah |>
   model(
@@ -161,7 +170,16 @@ ah_dcmp <- ah |>
   ) |>
   components()
 
-ah_dcmp |> autoplot()
+stl_decomp_p <- ah_dcmp |> autoplot()
+```
+
+```{r}
+#| label: stl-decomp-render
+#| renderings: [light, dark]
+#| echo: false
+
+stl_decomp_p + theme_narsil()
+stl_decomp_p + theme_narsil_dark()
 ```
 
 1. `season(period = 1)` fits a non-seasonal STL — only the trend is extracted. This ensures the remainder reflects true anomalies and seasonal variation together, rather than having a genuine outlier absorbed into the seasonal component.
@@ -218,15 +236,23 @@ ah_miss
 ```{r}
 #| label: plot-with-gaps
 #| echo: false
+#| output: false
 
-p <- ah_miss |>
-  autoplot(Trips, color = "steelblue") +
+plot_with_gaps_p <- ah_miss |>
+  autoplot(Trips) +
   labs(
     title = "Adelaide Hills — after removing outliers",
     y     = "Thousands of trips"
   )
+```
 
-ggplotly(p, dynamicTicks = TRUE)
+```{r}
+#| label: plot-with-gaps-render
+#| renderings: [light, dark]
+#| echo: false
+
+ggplotly(plot_with_gaps_p + theme_narsil(), dynamicTicks = TRUE) |> gg_to_plotly_narsil()
+ggplotly(plot_with_gaps_p + theme_narsil_dark(), dynamicTicks = TRUE) |> gg_to_plotly_narsil(dark = TRUE)
 ```
 
 :::
@@ -366,17 +392,18 @@ ah |>
 #| label: plot-imputed
 #| echo: false
 #| message: false
+#| output: false
 
 ah_imputed_pts <- ah_fill |>              #<1>
   semi_join(ah_outliers, by = "Quarter")
 
-p <- ah |>
-  autoplot(Trips, color = "grey70") +
-  autolayer(ah_fill, Trips, color = "steelblue") +
+plot_imputed_p <- ah |>
+  autoplot(Trips) +
+  autolayer(ah_fill, Trips) +
   geom_point(                             #<2>
     data  = ah_imputed_pts,
     aes(x = Quarter, y = Trips),
-    color = "firebrick",
+    colour = "#D55E00",
     size  = 3,
     shape = 18
   ) +
@@ -384,7 +411,7 @@ p <- ah |>
     data  = ah_imputed_pts,
     aes(x = Quarter, y = Trips,
         label = round(Trips, 1)),
-    color  = "firebrick",
+    colour = "#D55E00",
     vjust  = -0.6,
     size   = 3
   ) +
@@ -394,8 +421,15 @@ p <- ah |>
     y        = "Thousands of trips",
     caption  = "Source: Tourism Research Australia"
   )
+```
 
-ggplotly(p, dynamicTicks = TRUE)
+```{r}
+#| label: plot-imputed-render
+#| renderings: [light, dark]
+#| echo: false
+
+ggplotly(plot_imputed_p + theme_narsil(), dynamicTicks = TRUE) |> gg_to_plotly_narsil()
+ggplotly(plot_imputed_p + theme_narsil_dark(), dynamicTicks = TRUE) |> gg_to_plotly_narsil(dark = TRUE)
 ```
 
 1. Extract the imputed periods as a separate tibble for targeted highlighting — avoids the rendering issue that occurs when `autolayer` tries to draw a line segment over only 2–3 isolated points.
@@ -476,15 +510,25 @@ eggs_fc |>
 #| echo: false
 #| message: false
 #| warning: false
+#| output: false
 
-eggs_fc |>
+eggs_with_line_html_p <- eggs_fc |>
   autoplot(egg_prices, level = 95) +
-  geom_hline(yintercept = 0, color = "firebrick", linetype = "dashed") +
+  geom_hline(yintercept = 0, colour = "#D55E00", linetype = "dashed") +
   labs(
     title   = "Annual egg prices — ETS forecast",
     y       = "USD cents (inflation-adjusted)",
     caption = "Dashed red line: zero. Notice anything?"
   )
+```
+
+```{r}
+#| label: eggs-with-line-html-render
+#| renderings: [light, dark]
+#| echo: false
+
+eggs_with_line_html_p + scale_narsil()
+eggs_with_line_html_p + scale_narsil_dark()
 ```
 
 :::
@@ -536,16 +580,26 @@ eggs_fc |>
 #| label: eggs-log-forecast
 #| message: false
 #| warning: false
+#| output: false
 
-egg_prices |>
+eggs_log_forecast_p <- egg_prices |>
   model(ETS(log(eggs) ~ trend("A"))) |> #<1>
   forecast(h = 50) |>
   autoplot(egg_prices, level = 95) +
-  geom_hline(yintercept = 0, color = "firebrick", linetype = "dashed") +
+  geom_hline(yintercept = 0, colour = "#D55E00", linetype = "dashed") +
   labs(
     title   = "Annual egg prices — ETS with log transformation",
     y       = "USD cents (inflation-adjusted)"
   )
+```
+
+```{r}
+#| label: eggs-log-forecast-render
+#| renderings: [light, dark]
+#| echo: false
+
+eggs_log_forecast_p + scale_narsil()
+eggs_log_forecast_p + scale_narsil_dark()
 ```
 
 1. The only change is wrapping `eggs` in `log()`. `fable` handles the back-transformation automatically — forecasts and prediction intervals are returned on the original scale.
@@ -662,20 +716,30 @@ my_scaled_logit <- new_transformation(                   #<3>
 #| label: eggs-scaled-logit
 #| message: false
 #| warning: false
+#| output: false
 
-egg_prices |>
+eggs_scaled_logit_p <- egg_prices |>
   model(
     ETS(my_scaled_logit(eggs, lower = 50, upper = 400) ~ trend("A")) #<1>
   ) |>
   forecast(h = 50) |>
   autoplot(egg_prices, level = 95) +
-  geom_hline(yintercept =  50, color = "firebrick", linetype = "dashed") +
-  geom_hline(yintercept = 400, color = "firebrick", linetype = "dashed") +
+  geom_hline(yintercept =  50, colour = "#D55E00", linetype = "dashed") +
+  geom_hline(yintercept = 400, colour = "#D55E00", linetype = "dashed") +
   labs(
     title   = "Annual egg prices — ETS within bounds [50, 400]",
     y       = "USD cents (inflation-adjusted)",
     caption = "Dashed red lines: lower bound (50) and upper bound (400)."
   )
+```
+
+```{r}
+#| label: eggs-scaled-logit-render
+#| renderings: [light, dark]
+#| echo: false
+
+eggs_scaled_logit_p + scale_narsil()
+eggs_scaled_logit_p + scale_narsil_dark()
 ```
 
 1. The bounds `lower = 50` and `upper = 400` reflect a plausible range for egg prices in this dataset. In practice, bounds should be informed by domain knowledge or regulatory constraints — not chosen to make the plot look neat.

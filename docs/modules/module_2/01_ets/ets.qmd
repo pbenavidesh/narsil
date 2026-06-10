@@ -206,12 +206,22 @@ SES has a flat forecast function, so it is appropriate for data with **no trend*
 ```{r}
 #| label: alg-plot
 #| code-fold: true
+#| output: false
 
 algeria_economy <- global_economy |>
   filter(Country == "Algeria")
-  
-algeria_economy |> 
+
+alg_plot_p <- algeria_economy |>
   autoplot(Exports)
+```
+
+```{r}
+#| label: alg-plot-render
+#| renderings: [light, dark]
+#| echo: false
+
+alg_plot_p + theme_narsil()
+alg_plot_p + theme_narsil_dark()
 ```
 
 :::{.fragment}
@@ -269,17 +279,27 @@ alg_fit |>
 ```{r}
 #| label: ses-plot
 #| echo: false
+#| output: false
 
-alg_fc |> 
-  filter(.model == "SES") |> 
+ses_plot_p <- alg_fc |>
+  filter(.model == "SES") |>
   autoplot(algeria_economy) +
-  geom_line(aes(y = .fitted), color = "darkorange",
+  geom_line(aes(y = .fitted),
             data = alg_fit |> select(SES) |> augment()) +
   labs(
     x = "",
-    y = "% of GDP", 
+    y = "% of GDP",
     title = "Forecasting Algeria's exports using SES"
   )
+```
+
+```{r}
+#| label: ses-plot-render
+#| renderings: [light, dark]
+#| echo: false
+
+ses_plot_p + theme_narsil()
+ses_plot_p + theme_narsil_dark()
 ```
 
 ::: {.content-hidden unless-format="revealjs"}
@@ -291,8 +311,9 @@ Comparing the SES and Naive forecasts:
 ```{r}
 #| label: ses-v-naive-plot
 #| echo: false
+#| output: false
 
-alg_fc |> 
+ses_v_naive_plot_p <- alg_fc |>
   autoplot(algeria_economy |> filter_index(2005 ~ .), level = NULL) +
   labs(
     x = "",
@@ -300,6 +321,15 @@ alg_fc |>
     title = "Forecasting using SES vs. Naive",
     caption = "Why is the SES forecast below the Naive here?"
   )
+```
+
+```{r}
+#| label: ses-v-naive-plot-render
+#| renderings: [light, dark]
+#| echo: false
+
+ses_v_naive_plot_p + scale_narsil()
+ses_v_naive_plot_p + scale_narsil_dark()
 ```
 
 
@@ -352,13 +382,23 @@ Let's see an example using Holt's linear trend method to forecast Brazil's popul
 
 ```{r}
 #| label: bra-pop
+#| output: false
 
-bra_economy <- global_economy |> 
-  filter(Code == "BRA") |> 
+bra_economy <- global_economy |>
+  filter(Code == "BRA") |>
   mutate(Pop = Population / 1e6)
 
-bra_economy |> 
+bra_pop_p <- bra_economy |>
   autoplot(Pop)
+```
+
+```{r}
+#| label: bra-pop-render
+#| renderings: [light, dark]
+#| echo: false
+
+bra_pop_p + theme_narsil()
+bra_pop_p + theme_narsil_dark()
 ```
 
 :::
@@ -456,10 +496,20 @@ bra_fc <- bra_fit |>
 ```{r}
 #| label: holt_full_plt
 #| code-fold: true
-bra_fc |>
+#| output: false
+holt_full_plt_p <- bra_fc |>
   autoplot(bra_economy, level = NULL) +
   labs(title = "Brazilian population", y = "Millions") +
   guides(colour = guide_legend(title = "Forecast"))
+```
+
+```{r}
+#| label: holt_full_plt-render
+#| renderings: [light, dark]
+#| echo: false
+
+holt_full_plt_p + scale_narsil()
+holt_full_plt_p + scale_narsil_dark()
 ```
 
 ::: {.content-hidden unless-format="revealjs"}
@@ -533,17 +583,27 @@ bra_economy |>
 
 ```{r}
 #| label: damped_full
+#| output: false
 
-bra_economy |> 
+damped_full_p <- bra_economy |>
   model(
     Holt   = ETS(Pop ~ error("A") + trend("A") + season("N")),
     Damped = ETS(Pop ~ error("A") + trend("Ad", phi = 0.9) + season("N")) #<1>
-  ) |> 
-  forecast(h = 15) |> 
+  ) |>
+  forecast(h = 15) |>
   autoplot(bra_economy, level = NULL) +
   labs(title = "Brazilian population",
        y = "Millions") +
   guides(colour = guide_legend(title = "Forecast"))
+```
+
+```{r}
+#| label: damped_full-render
+#| renderings: [light, dark]
+#| echo: false
+
+damped_full_p + scale_narsil()
+damped_full_p + scale_narsil_dark()
 ```
 
 1. We specify `trend("Ad")` to indicate that we want a damped trend, and `phi = 0.9` sets the damping parameter to 0.9. We could also let the model estimate $\phi$ automatically by omitting the `phi` argument.
@@ -594,14 +654,24 @@ In Module 1 you used `decomposition_model()` to pair STL with Drift + SNAIVE. Th
 ```{r}
 #| label: aus-holidays-data
 #| code-fold: true
+#| output: false
 
-aus_holidays <- tourism |> 
+aus_holidays <- tourism |>
   filter(Purpose == "Holiday") |>
   summarise(Trips = sum(Trips))
 
-aus_holidays |> autoplot(Trips) +
+aus_holidays_data_p <- aus_holidays |> autoplot(Trips) +
   labs(title = "Australian holiday trips",
        y = "Overnight trips (millions)")
+```
+
+```{r}
+#| label: aus-holidays-data-render
+#| renderings: [light, dark]
+#| echo: false
+
+aus_holidays_data_p + theme_narsil()
+aus_holidays_data_p + theme_narsil_dark()
 ```
 
 ::: {.content-hidden unless-format="revealjs"}
@@ -657,6 +727,7 @@ stl_ets_mul_spec <- decomposition_model(
 
 ```{r}
 #| label: stl_ets_full
+#| output: false
 
 stl_ets_add_spec <- decomposition_model(                                        #<1>
   STL(Trips ~ trend(window = 7) + season(window = "periodic"), robust = TRUE),
@@ -668,16 +739,24 @@ stl_ets_mul_spec <- decomposition_model(                                        
   ETS(season_adjust ~ error("M") + trend("A") + season("N"))                    #<4>
 )
 
-aus_holidays |> 
+stl_ets_full_p <- aus_holidays |>
   model(
     stl_ets_add = stl_ets_add_spec,
     stl_ets_mul = stl_ets_mul_spec
-  ) |> 
-  forecast(h = "2 years") |> 
+  ) |>
+  forecast(h = "2 years") |>
   autoplot(aus_holidays, level = NULL) +
   labs(title = "STL + ETS forecasts",
-       y = "Overnight trips (millions)") +
-  scale_color_brewer(type = "qual", palette = "Dark2")
+       y = "Overnight trips (millions)")
+```
+
+```{r}
+#| label: stl_ets_full-render
+#| renderings: [light, dark]
+#| echo: false
+
+stl_ets_full_p + scale_narsil()
+stl_ets_full_p + scale_narsil_dark()
 ```
 
 1. Save the decomposition spec as a standalone object — this keeps `model()` clean and allows reuse.
@@ -793,7 +872,8 @@ aus_fit_hw <- aus_holidays |>
 ```{r}
 #| label: hw_full_plt
 #| code-fold: true
-aus_fit_hw |>
+#| output: false
+hw_full_plt_p <- aus_fit_hw |>
   forecast(h = "3 years") |>
   autoplot(aus_holidays, level = NULL) +
   labs(
@@ -801,8 +881,16 @@ aus_fit_hw |>
     y = "Overnight trips (millions)",
     caption = "Can you spot any differences between both forecasts?"
   ) +
-  scale_color_brewer(type = "qual", palette = "Dark2") +
   guides(colour = guide_legend(title = "Forecast"))
+```
+
+```{r}
+#| label: hw_full_plt-render
+#| renderings: [light, dark]
+#| echo: false
+
+hw_full_plt_p + scale_narsil()
+hw_full_plt_p + scale_narsil_dark()
 ```
 
 ::: {.callout-note collapse="true"}
@@ -868,8 +956,9 @@ sth_cross_ped <- pedestrian |>
 ```{r}
 #| label: hw_damped
 #| code-line-numbers: "|4"
+#| output: false
 
-sth_cross_ped |>
+hw_damped_p <- sth_cross_ped |>
   filter(Date <= "2016-07-31") |>
   model(
     hw = ETS(Count ~ error("M") + trend("Ad") + season("M"))
@@ -878,6 +967,15 @@ sth_cross_ped |>
   autoplot(sth_cross_ped |> filter(Date <= "2016-08-14")) +
   labs(title = "Daily traffic: Southern Cross",
        y="Pedestrians ('000)")
+```
+
+```{r}
+#| label: hw_damped-render
+#| renderings: [light, dark]
+#| echo: false
+
+hw_damped_p + theme_narsil()
+hw_damped_p + theme_narsil_dark()
 ```
 
 :::{.callout-tip appearance="simple"}
@@ -1001,7 +1099,8 @@ holidays_test <- aus_holidays |>
 ```{r}
 #| label: train-test-split-plt
 #| code-fold: true
-holidays_train |>
+#| output: false
+train_test_split_plt_p <- holidays_train |>
   autoplot(Trips) +
   autolayer(holidays_test, Trips, colour = "#C0392B", linetype = "dashed") +
   labs(
@@ -1011,6 +1110,15 @@ holidays_train |>
     ),
     y = "Overnight trips (millions)"
   )
+```
+
+```{r}
+#| label: train-test-split-plt-render
+#| renderings: [light, dark]
+#| echo: false
+
+train_test_split_plt_p + theme_narsil()
+train_test_split_plt_p + theme_narsil_dark()
 ```
 
 ::: {.content-hidden unless-format="revealjs"}
@@ -1137,11 +1245,12 @@ holidays_fit
 ```{r}
 #| label: all-models-fc
 #| code-fold: true
+#| output: false
 
-holidays_fc <- holidays_fit |> 
+holidays_fc <- holidays_fit |>
   forecast(h = h)
 
-holidays_fc |> 
+all_models_fc_p <- holidays_fc |>
   autoplot(
     aus_holidays |> filter_index("2012 Q1" ~ .),
     level = NULL
@@ -1150,8 +1259,16 @@ holidays_fc |>
     title = "ETS model comparison: 5 models, 8-quarter horizon",
     y = "Overnight trips (millions)"
   ) +
-  scale_color_brewer(type = "qual", palette = "Dark2") +
   guides(colour = guide_legend(title = "Model"))
+```
+
+```{r}
+#| label: all-models-fc-render
+#| renderings: [light, dark]
+#| echo: false
+
+all_models_fc_p + scale_narsil()
+all_models_fc_p + scale_narsil_dark()
 ```
 
 ::: {.content-hidden unless-format="revealjs"}

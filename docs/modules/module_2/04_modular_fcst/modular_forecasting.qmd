@@ -296,8 +296,9 @@ mexretail_fc <- mexretail_fit |>
 #| echo: false
 #| message: false
 #| warning: false
+#| output: false
 
-p <- mexretail_fc |>
+mexretail_fc_plot_p <- mexretail_fc |>
   autoplot(mexretail |> filter(year(date) >= 2015), level = 80) +
   facet_wrap(vars(.model), ncol = 2) +
   labs(
@@ -305,8 +306,15 @@ p <- mexretail_fc |>
     y        = "Index 2015=100",
     subtitle = "80% prediction intervals"
   )
+```
 
-ggplotly(p, dynamicTicks = TRUE)
+```{r}
+#| label: mexretail-fc-plot-render
+#| renderings: [light, dark]
+#| echo: false
+
+ggplotly(mexretail_fc_plot_p + scale_narsil(), dynamicTicks = TRUE) |> gg_to_plotly_narsil()
+ggplotly(mexretail_fc_plot_p + scale_narsil_dark(), dynamicTicks = TRUE) |> gg_to_plotly_narsil(dark = TRUE)
 ```
 
 :::
@@ -384,15 +392,26 @@ beer_full <- bind_rows(beer_train, beer_test)
 1. We rename `Beer` to `y` — the same convention used for `mexretail`. This is what allows the specs defined above to be reused directly.
 
 ```{r}
+#| label: beer-train-plot
 #| echo: false
+#| output: false
 
-beer_train |>
-  autoplot(y, color = "goldenrod3") +
+beer_train_plot_p <- beer_train |>
+  autoplot(y) +
   labs(
     title = "Australian beer production (train set)",
     y     = "Megalitres",
     x     = ""
   )
+```
+
+```{r}
+#| label: beer-train-plot-render
+#| renderings: [light, dark]
+#| echo: false
+
+beer_train_plot_p + theme_narsil()
+beer_train_plot_p + theme_narsil_dark()
 ```
 
 :::{.callout-tip appearance="simple"}
@@ -446,8 +465,9 @@ beer_fc <- beer_fit |>
 #| echo: false
 #| message: false
 #| warning: false
+#| output: false
 
-p <- beer_fc |>
+beer_fc_plot_p <- beer_fc |>
   autoplot(beer_full |> filter(year(Quarter) >= 2000), level = 80) +
   facet_wrap(vars(.model), ncol = 2) +
   labs(
@@ -455,8 +475,15 @@ p <- beer_fc |>
     y        = "Megalitres",
     subtitle = "80% prediction intervals"
   )
+```
 
-ggplotly(p, dynamicTicks = TRUE)
+```{r}
+#| label: beer-fc-plot-render
+#| renderings: [light, dark]
+#| echo: false
+
+ggplotly(beer_fc_plot_p + scale_narsil(), dynamicTicks = TRUE) |> gg_to_plotly_narsil()
+ggplotly(beer_fc_plot_p + scale_narsil_dark(), dynamicTicks = TRUE) |> gg_to_plotly_narsil(dark = TRUE)
 ```
 
 :::

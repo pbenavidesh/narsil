@@ -120,19 +120,32 @@ At half-hourly granularity, STL would estimate a "sub-hourly" seasonal component
 ```{r}
 #| label: full-series-plot
 #| echo: false
+#| output: false
 
-p <- vic_elec_hourly |>
+full_series_plot_p <- vic_elec_hourly |>
   ggplot(aes(x = Hour, y = Demand)) +
-  geom_line(color = "steelblue", linewidth = 0.3, alpha = 0.8) +
+  geom_line(linewidth = 0.3, alpha = 0.8) +
   labs(
     title    = "Hourly electricity demand — Victoria, Australia (2012–2014)",
     subtitle = "Use the slider to zoom in on any period",
     y        = "Demand (MWh)", x = NULL
   )
+```
 
-ggplotly(p, dynamicTicks = TRUE) |>
+```{r}
+#| label: full-series-plot-render
+#| renderings: [light, dark]
+#| echo: false
+
+ggplotly(full_series_plot_p + theme_narsil(), dynamicTicks = TRUE) |>
   rangeslider() |>
-  layout(yaxis = list(fixedrange = FALSE))
+  layout(yaxis = list(fixedrange = FALSE)) |>
+  gg_to_plotly_narsil()
+
+ggplotly(full_series_plot_p + theme_narsil_dark(), dynamicTicks = TRUE) |>
+  rangeslider() |>
+  layout(yaxis = list(fixedrange = FALSE)) |>
+  gg_to_plotly_narsil(dark = TRUE)
 ```
 
 :::{.notes}
@@ -179,8 +192,9 @@ We can make both cycles visible using seasonal plots at each period:
 ```{r}
 #| label: season-daily
 #| echo: false
+#| output: false
 
-p <- vic_elec_hourly |>
+season_daily_p <- vic_elec_hourly |>
   filter_index("2014-01-01" ~ "2014-03-31") |>
   gg_season(Demand, period = "day", alpha = 0.4) +
   labs(
@@ -188,10 +202,19 @@ p <- vic_elec_hourly |>
     y      = "Demand (MWh)",
     x      = "Hour of day",
     colour = "Date"
-  ) +
-  theme(legend.position = "none")
+  )
+```
 
-ggplotly(p, dynamicTicks = TRUE)
+```{r}
+#| label: season-daily-render
+#| renderings: [light, dark]
+#| echo: false
+
+ggplotly(season_daily_p + theme_narsil() + theme(legend.position = "none"), dynamicTicks = TRUE) |>
+  gg_to_plotly_narsil()
+
+ggplotly(season_daily_p + theme_narsil_dark() + theme(legend.position = "none"), dynamicTicks = TRUE) |>
+  gg_to_plotly_narsil(dark = TRUE)
 ```
 
 ### Weekly pattern (168h)
@@ -199,8 +222,9 @@ ggplotly(p, dynamicTicks = TRUE)
 ```{r}
 #| label: season-weekly
 #| echo: false
+#| output: false
 
-p <- vic_elec_hourly |>
+season_weekly_p <- vic_elec_hourly |>
   filter_index("2014-01-01" ~ "2014-03-31") |>
   gg_season(Demand, period = "week", alpha = 0.4) +
   labs(
@@ -208,10 +232,19 @@ p <- vic_elec_hourly |>
     y      = "Demand (MWh)",
     x      = "Hour of week",
     colour = "Week"
-  ) +
-  theme(legend.position = "none")
+  )
+```
 
-ggplotly(p, dynamicTicks = TRUE)
+```{r}
+#| label: season-weekly-render
+#| renderings: [light, dark]
+#| echo: false
+
+ggplotly(season_weekly_p + theme_narsil() + theme(legend.position = "none"), dynamicTicks = TRUE) |>
+  gg_to_plotly_narsil()
+
+ggplotly(season_weekly_p + theme_narsil_dark() + theme(legend.position = "none"), dynamicTicks = TRUE) |>
+  gg_to_plotly_narsil(dark = TRUE)
 ```
 
 ### ACF
@@ -219,8 +252,9 @@ ggplotly(p, dynamicTicks = TRUE)
 ```{r}
 #| label: acf-plot
 #| echo: false
+#| output: false
 
-vic_elec_hourly |>
+acf_plot_p <- vic_elec_hourly |>
   filter_index("2014-01-01" ~ "2014-03-31") |>
   ACF(Demand, lag_max = 24 * 14) |>
   autoplot() +
@@ -228,6 +262,15 @@ vic_elec_hourly |>
     title = "ACF of hourly demand — up to 14 days of lags",
     x = "Lag (hours)"
   )
+```
+
+```{r}
+#| label: acf-plot-render
+#| renderings: [light, dark]
+#| echo: false
+
+acf_plot_p + theme_narsil()
+acf_plot_p + theme_narsil_dark()
 ```
 
 :::
@@ -300,10 +343,20 @@ vic_elec_dcmp
 ```{r}
 #| label: stl-decomp-plot
 #| echo: false
+#| output: false
 
-vic_elec_dcmp |>
+stl_decomp_plot_p <- vic_elec_dcmp |>
   autoplot() +
   labs(title = "STL decomposition with two seasonal periods")
+```
+
+```{r}
+#| label: stl-decomp-plot-render
+#| renderings: [light, dark]
+#| echo: false
+
+stl_decomp_plot_p + theme_narsil()
+stl_decomp_plot_p + theme_narsil_dark()
 ```
 
 :::{.callout-note appearance="simple"}
@@ -359,8 +412,9 @@ stl_fc <- stl_fit |>
 #| label: stl-fc-plot
 #| echo: false
 #| message: false
+#| output: false
 
-p <- stl_fc |>
+stl_fc_plot_p <- stl_fc |>
   autoplot(
     vic_elec_hourly |> filter_index("2014-11-15" ~ .),
     level = 80, alpha = 0.6
@@ -372,8 +426,18 @@ p <- stl_fc |>
     y        = "Demand (MWh)", x = NULL
   ) +
   guides(colour = "none")
+```
 
-ggplotly(p, dynamicTicks = TRUE)
+```{r}
+#| label: stl-fc-plot-render
+#| renderings: [light, dark]
+#| echo: false
+
+ggplotly(stl_fc_plot_p + scale_narsil(), dynamicTicks = TRUE) |>
+  gg_to_plotly_narsil()
+
+ggplotly(stl_fc_plot_p + scale_narsil_dark(), dynamicTicks = TRUE) |>
+  gg_to_plotly_narsil(dark = TRUE)
 ```
 
 # Approach 2 — Harmonic Regression with Covariates
@@ -538,8 +602,9 @@ fourier_fc <- fourier_fit |>
 #| label: fourier-fc-plot
 #| echo: false
 #| message: false
+#| output: false
 
-p <- fourier_fc |>
+fourier_fc_plot_p <- fourier_fc |>
   autoplot(
     vic_elec_hourly |> filter_index("2014-11-15" ~ .),
     level = 80, alpha = 0.6
@@ -551,8 +616,18 @@ p <- fourier_fc |>
     y        = "Demand (MWh)", x = NULL
   ) +
   guides(colour = "none")
+```
 
-ggplotly(p, dynamicTicks = TRUE)
+```{r}
+#| label: fourier-fc-plot-render
+#| renderings: [light, dark]
+#| echo: false
+
+ggplotly(fourier_fc_plot_p + scale_narsil(), dynamicTicks = TRUE) |>
+  gg_to_plotly_narsil()
+
+ggplotly(fourier_fc_plot_p + scale_narsil_dark(), dynamicTicks = TRUE) |>
+  gg_to_plotly_narsil(dark = TRUE)
 ```
 
 # Model Comparison
@@ -579,6 +654,7 @@ bind_rows(stl_fc, fourier_fc) |>
 ```{r}
 #| label: resid-stl-ets
 
+theme_narsil()
 stl_fit |>
   select(STL_ETS) |>
   gg_tsresiduals(lag_max = 48)
@@ -589,6 +665,7 @@ stl_fit |>
 ```{r}
 #| label: resid-stl-arima
 
+theme_narsil()
 stl_fit |>
   select(STL_ARIMA) |>
   gg_tsresiduals(lag_max = 48)
@@ -599,6 +676,7 @@ stl_fit |>
 ```{r}
 #| label: resid-fourier-cov
 
+theme_narsil()
 fourier_fit |>
   select(fourier_cov) |>
   gg_tsresiduals(lag_max = 48)
@@ -646,20 +724,33 @@ bank_calls
 ```{r}
 #| label: bank-eda-plot
 #| echo: false
+#| output: false
 
-p <- bank_calls |>
+bank_eda_plot_p <- bank_calls |>
   fill_gaps() |>
   ggplot(aes(x = DateTime, y = Calls)) +
-  geom_line(color = "coral3", linewidth = 0.3, alpha = 0.8) +
+  geom_line(linewidth = 0.3, alpha = 0.8) +
   labs(
     title    = "5-minute call arrivals — North American bank call centre",
     subtitle = "Use the slider to zoom in on any period",
     y        = "Number of calls", x = NULL
   )
+```
 
-ggplotly(p, dynamicTicks = TRUE) |>
+```{r}
+#| label: bank-eda-plot-render
+#| renderings: [light, dark]
+#| echo: false
+
+ggplotly(bank_eda_plot_p + theme_narsil(), dynamicTicks = TRUE) |>
   rangeslider() |>
-  layout(yaxis = list(fixedrange = FALSE))
+  layout(yaxis = list(fixedrange = FALSE)) |>
+  gg_to_plotly_narsil()
+
+ggplotly(bank_eda_plot_p + theme_narsil_dark(), dynamicTicks = TRUE) |>
+  rangeslider() |>
+  layout(yaxis = list(fixedrange = FALSE)) |>
+  gg_to_plotly_narsil(dark = TRUE)
 ```
 
 ## Exercise 1 — Exploratory Analysis

@@ -181,20 +181,20 @@ We can predict eclipses with complete certainty.
 #| label: google_2
 #| fig-cap: It's not so easy to predict stock prices
 
-google_stock <- tsibbledata::gafa_stock %>%
-  filter(Symbol == "GOOG") %>%
-  mutate(day = row_number()) %>%
+google_stock <- tsibbledata::gafa_stock |>
+  filter(Symbol == "GOOG") |>
+  mutate(day = row_number()) |>
   tsibble::update_tsibble(index = day, regular = TRUE)
 
 # Filter the year of interest
-google_2015 <- google_stock %>% filter(year(Date) == 2015)
+google_2015 <- google_stock |> filter(year(Date) == 2015)
 
-fit <- google_2015 %>%
+fit <- google_2015 |>
   model(NAIVE(Close))
 
-sim <- fit %>%  generate(h = 30, times = 50, bootstrap = TRUE, seed = 123)
+sim <- fit |>  generate(h = 30, times = 50, bootstrap = TRUE, seed = 123)
 
-p <- google_2015 %>%
+p <- google_2015 |>
   ggplot(aes(x = day)) +
   geom_line(aes(y = Close), size = 1) +
   geom_line(aes(y = .sim, colour = as.factor(.rep)), data = sim, size = 1) +
@@ -215,14 +215,14 @@ Other variables can't be predicted that easily. What does it depend on?
 
 ```{r}
 #| label: energy
-vic_elec_daily <- vic_elec %>%
-  # filter(year(Time) == 2014) %>%
-  index_by(Date = date(Time)) %>%
+vic_elec_daily <- vic_elec |>
+  # filter(year(Time) == 2014) |>
+  index_by(Date = date(Time)) |>
   summarise(
     Demand = sum(Demand)/1e3,
     Temperature = max(Temperature),
     Holiday = any(Holiday)
-  ) %>%
+  ) |>
   mutate(Day_Type = case_when(
     Holiday ~ "Holiday",
     wday(Date) %in% 2:6 ~ "Weekday",
@@ -277,7 +277,7 @@ aus_production |>
 ```{r}
 #| label: empleo
 
-us_retail_employment <- us_employment %>%
+us_retail_employment <- us_employment |>
   filter(year(Month) >= 1990, Title == "Retail Trade")
 ```
 

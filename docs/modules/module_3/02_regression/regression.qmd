@@ -340,16 +340,24 @@ Before fitting any model, we look at the data.
 ```{r}
 #| label: us-change-time
 #| echo: false
+#| output: false
 
-p <- us_change |>
+us_change_time_p <- us_change |>
   pivot_longer(-Quarter) |>
   ggplot(aes(x = Quarter, y = value, color = name)) +
   geom_line() +
   facet_wrap(~name, scales = "free_y", ncol = 2) +
   theme(legend.position = "none") +
   labs(y = "% change", x = NULL)
+```
 
-ggplotly(p, dynamicTicks = TRUE)
+```{r}
+#| label: us-change-time-render
+#| renderings: [light, dark]
+#| echo: false
+
+ggplotly(us_change_time_p + scale_narsil() + theme(legend.position = "none"), dynamicTicks = TRUE) |> gg_to_plotly_narsil()
+ggplotly(us_change_time_p + scale_narsil_dark() + theme(legend.position = "none"), dynamicTicks = TRUE) |> gg_to_plotly_narsil(dark = TRUE)
 ```
 
 ### Scatter matrix
@@ -465,16 +473,24 @@ If residuals are autocorrelated, OLS estimates are still unbiased but **no longe
 ```{r}
 #| label: us-change-simple-aug
 #| echo: false
+#| output: false
 
-p <- augment(us_change_fit_simple) |>
+us_change_simple_aug_p <- augment(us_change_fit_simple) |>
   ggplot(aes(x = Quarter)) +
   geom_line(aes(y = Consumption, color = "Actual")) +
   geom_line(aes(y = .fitted, color = "Fitted")) +
   labs(y = "% change", x = NULL, color = NULL,
        title = "US Consumption: actual vs. fitted") +
   theme(legend.position = "top")
+```
 
-ggplotly(p, dynamicTicks = TRUE)
+```{r}
+#| label: us-change-simple-aug-render
+#| renderings: [light, dark]
+#| echo: false
+
+ggplotly(us_change_simple_aug_p + scale_narsil() + theme(legend.position = "top"), dynamicTicks = TRUE) |> gg_to_plotly_narsil()
+ggplotly(us_change_simple_aug_p + scale_narsil_dark() + theme(legend.position = "top"), dynamicTicks = TRUE) |> gg_to_plotly_narsil(dark = TRUE)
 ```
 
 ### Fitted vs. actual (45° line)
@@ -482,13 +498,23 @@ ggplotly(p, dynamicTicks = TRUE)
 ```{r}
 #| label: us-change-simple-scatter
 #| echo: false
+#| output: false
 
-augment(us_change_fit_simple) |>
+us_change_simple_scatter_p <- augment(us_change_fit_simple) |>
   ggplot(aes(x = Consumption, y = .fitted)) +
   geom_point(alpha = 0.6) +
-  geom_abline(intercept = 0, slope = 1, color = "firebrick") +
+  geom_abline(intercept = 0, slope = 1, colour = "#D55E00") +
   labs(x = "Actual", y = "Fitted",
        title = "Points close to the 45° line = good fit")
+```
+
+```{r}
+#| label: us-change-simple-scatter-render
+#| renderings: [light, dark]
+#| echo: false
+
+us_change_simple_scatter_p + theme_narsil()
+us_change_simple_scatter_p + theme_narsil_dark()
 ```
 
 ### Residual diagnostics
@@ -496,6 +522,7 @@ augment(us_change_fit_simple) |>
 ```{r}
 #| label: us-change-simple-resid
 
+theme_narsil()
 us_change_fit_simple |>
   gg_tsresiduals()
 ```
@@ -594,19 +621,30 @@ us_change_aug_both <- bind_rows(us_change_aug_simple, us_change_aug_mult) |>
 ```{r}
 #| label: us-change-compare-time-html
 #| echo: false
+#| output: false
 #| fig-cap: "Grey line = actual consumption; colored line = fitted values. The multiple model tracks the data much more closely."
 #| lightbox:
 #|   group: comparing-models
 
-p <- us_change_aug_both |>
+us_change_compare_time_html_p <- us_change_aug_both |>
   ggplot(aes(x = Quarter)) +
   geom_line(aes(y = Consumption), color = "grey50") +
   geom_line(aes(y = .fitted, color = .model)) +
   facet_wrap(~.model, ncol = 2) +
   labs(y = "% change", x = NULL) +
   theme(legend.position = "none")
+```
 
-ggplotly(p, dynamicTicks = TRUE)
+```{r}
+#| label: us-change-compare-time-html-render
+#| renderings: [light, dark]
+#| echo: false
+#| fig-cap: "Grey line = actual consumption; colored line = fitted values. The multiple model tracks the data much more closely."
+#| lightbox:
+#|   group: comparing-models
+
+ggplotly(us_change_compare_time_html_p + scale_narsil() + theme(legend.position = "none"), dynamicTicks = TRUE) |> gg_to_plotly_narsil()
+ggplotly(us_change_compare_time_html_p + scale_narsil_dark() + theme(legend.position = "none"), dynamicTicks = TRUE) |> gg_to_plotly_narsil(dark = TRUE)
 ```
 
 :::
@@ -638,19 +676,30 @@ us_change_aug_both |>
 ```{r}
 #| label: us-change-compare-scatter-html
 #| echo: false
+#| output: false
 #| fig-cap: "Points closer to the 45° line indicate better fit. The multiple model shows a much tighter cloud."
 #| lightbox:
 #|   group: comparing-models
 
-p <- us_change_aug_both |>
+us_change_compare_scatter_html_p <- us_change_aug_both |>
   ggplot(aes(x = Consumption, y = .fitted, color = .model)) +
   geom_point(alpha = 0.6) +
-  geom_abline(intercept = 0, slope = 1, color = "grey30") +
+  geom_abline(intercept = 0, slope = 1) +
   facet_wrap(~.model, ncol = 2) +
   labs(x = "Actual", y = "Fitted") +
   theme(legend.position = "none")
+```
 
-ggplotly(p)
+```{r}
+#| label: us-change-compare-scatter-html-render
+#| renderings: [light, dark]
+#| echo: false
+#| fig-cap: "Points closer to the 45° line indicate better fit. The multiple model shows a much tighter cloud."
+#| lightbox:
+#|   group: comparing-models
+
+ggplotly(us_change_compare_scatter_html_p + scale_narsil() + theme(legend.position = "none")) |> gg_to_plotly_narsil()
+ggplotly(us_change_compare_scatter_html_p + scale_narsil_dark() + theme(legend.position = "none")) |> gg_to_plotly_narsil(dark = TRUE)
 ```
 
 :::
@@ -684,6 +733,7 @@ us_change_aug_both |>
 #| lightbox:
 #|   group: comparing-models
 
+theme_narsil()
 us_change_fit_simple |>
   gg_tsresiduals() +
   labs(title = "Simple model")
@@ -695,6 +745,7 @@ us_change_fit_simple |>
 #| lightbox:
 #|   group: comparing-models
 
+theme_narsil()
 us_change_fit_mult |>
   gg_tsresiduals() +
   labs(title = "Multiple model")
@@ -704,11 +755,12 @@ us_change_fit_mult |>
 ```{r}
 #| label: us-change-resid-pred
 #| echo: false
+#| output: false
 #| fig-cap: "Residuals from the multiple model vs. each predictor. No strong patterns suggest the linear specification is adequate."
 #| lightbox:
 #|   group: comparing-models
 
-left_join(
+us_change_resid_pred_p <- left_join(
   us_change,
   residuals(us_change_fit_mult),
   by = "Quarter"
@@ -716,9 +768,21 @@ left_join(
   pivot_longer(Income:Unemployment, names_to = "predictor") |>
   ggplot(aes(x = value, y = .resid)) +
   geom_point(alpha = 0.5) +
-  geom_hline(yintercept = 0, color = "firebrick", linetype = "dashed") +
+  geom_hline(yintercept = 0, colour = "#D55E00", linetype = "dashed") +
   facet_wrap(~predictor, scales = "free_x") +
   labs(x = "Predictor value", y = "Residual")
+```
+
+```{r}
+#| label: us-change-resid-pred-render
+#| renderings: [light, dark]
+#| echo: false
+#| fig-cap: "Residuals from the multiple model vs. each predictor. No strong patterns suggest the linear specification is adequate."
+#| lightbox:
+#|   group: comparing-models
+
+us_change_resid_pred_p + theme_narsil()
+us_change_resid_pred_p + theme_narsil_dark()
 ```
 
 ### Ljung-Box
@@ -1026,6 +1090,7 @@ This is the "true" forecast — it is what you would actually produce in a real 
 
 ```{r}
 #| label: us-change-exante
+#| output: false
 
 us_change_future <- us_change |>
   pivot_longer(-c(Quarter, Consumption), names_to = "variable") |> #<1>
@@ -1035,11 +1100,20 @@ us_change_future <- us_change |>
   select(-c(.model, value)) |>
   pivot_wider(names_from = variable, values_from = .mean) #<5>
 
-us_change_fit_mult |>
+us_change_exante_p <- us_change_fit_mult |>
   forecast(new_data = us_change_future) |>
   autoplot(us_change |> filter_index("2010 Q1" ~ .)) +
   labs(title = "Ex-ante forecast: US Consumption",
        y = "% change", x = NULL)
+```
+
+```{r}
+#| label: us-change-exante-render
+#| renderings: [light, dark]
+#| echo: false
+
+us_change_exante_p + theme_narsil()
+us_change_exante_p + theme_narsil_dark()
 ```
 
 1. Pivot to long format — each predictor becomes a separate series keyed by `variable`.
@@ -1057,6 +1131,7 @@ These are not "real" forecasts — they are used to **evaluate the regression mo
 ```{r}
 #| label: us-change-expost
 #| message: false
+#| output: false
 
 # Use filter_index to create a train/test split
 us_change_train <- us_change |>
@@ -1071,11 +1146,20 @@ us_change_fit_expost <- us_change_train |>
   )
 
 # Ex-post: we supply actual future predictor values
-us_change_fit_expost |>
+us_change_expost_p <- us_change_fit_expost |>
   forecast(new_data = us_change_test) |>
   autoplot(us_change |> filter_index("2014 Q1" ~ .)) +
   labs(title = "Ex-post forecast: actual predictor values used",
        y = "% change", x = NULL)
+```
+
+```{r}
+#| label: us-change-expost-render
+#| renderings: [light, dark]
+#| echo: false
+
+us_change_expost_p + theme_narsil()
+us_change_expost_p + theme_narsil_dark()
 ```
 
 ### Scenario-based
@@ -1087,6 +1171,7 @@ These are especially useful for stress-testing and strategic planning.
 
 ````{r}
 #| label: us-change-scenarios
+#| output: false
 
 us_change_fit_scen <- us_change |>
   model(TSLM(Consumption ~ Income + Savings + Unemployment)) #<1>
@@ -1103,12 +1188,21 @@ us_change_scenarios <- scenarios(
   names_to = "Scenario"                               #<4>
 )
 
-us_change |>
+us_change_scenarios_p <- us_change |>
   autoplot(Consumption) +
   autolayer(forecast(us_change_fit_scen, new_data = us_change_scenarios)) + #<5>
   labs(title = "Scenario-based forecast: US Consumption",
        y = "% change", x = NULL)
 ````
+
+```{r}
+#| label: us-change-scenarios-render
+#| renderings: [light, dark]
+#| echo: false
+
+us_change_scenarios_p + theme_narsil()
+us_change_scenarios_p + theme_narsil_dark()
+```
 
 1. We fit a simpler model using only the three predictors with clearest economic interpretation.
 2. Optimistic scenario: income grows steadily, savings fluctuate mildly, unemployment falls slightly.
@@ -1149,11 +1243,21 @@ beer <- aus_production |>
 ```{r}
 #| label: beer-plot
 #| echo: false
- 
-beer |>
+#| output: false
+
+beer_plot_p <- beer |>
   autoplot(Beer) +
   labs(title = "Australian quarterly beer production",
        y = "Megalitres", x = NULL)
+```
+
+```{r}
+#| label: beer-plot-render
+#| renderings: [light, dark]
+#| echo: false
+
+beer_plot_p + theme_narsil()
+beer_plot_p + theme_narsil_dark()
 ```
  
 :::{.content-hidden unless-format="revealjs"}
@@ -1264,23 +1368,32 @@ For series with multiple seasonal periods or very long seasons (daily, hourly da
 ```{r}
 #| label: beer-fitted
 #| echo: false
- 
-p <- augment(beer_fit) |>
+#| output: false
+
+beer_fitted_p <- augment(beer_fit) |>
   ggplot(aes(x = Quarter)) +
   geom_line(aes(y = Beer, color = "Actual")) +
   geom_line(aes(y = .fitted, color = "Fitted")) +
   labs(y = "Megalitres", color = NULL,
        title = "Beer production: actual vs. fitted") +
   theme(legend.position = "top")
- 
-ggplotly(p, dynamicTicks = TRUE)
+```
+
+```{r}
+#| label: beer-fitted-render
+#| renderings: [light, dark]
+#| echo: false
+
+ggplotly(beer_fitted_p + scale_narsil() + theme(legend.position = "top"), dynamicTicks = TRUE) |> gg_to_plotly_narsil()
+ggplotly(beer_fitted_p + scale_narsil_dark() + theme(legend.position = "top"), dynamicTicks = TRUE) |> gg_to_plotly_narsil(dark = TRUE)
 ```
  
 ### Residual diagnostics
  
 ```{r}
 #| label: beer-resid
- 
+
+theme_narsil()
 beer_fit |>
   gg_tsresiduals()
 ```
@@ -1341,16 +1454,26 @@ beer_outliers |>
 ```{r}
 #| label: beer-outlier-plot
 #| echo: false
- 
-beer |>
-  autoplot(Beer, color = "grey50") +
+#| output: false
+
+beer_outlier_plot_p <- beer |>
+  autoplot(Beer) +
   geom_point(
     data = beer |> semi_join(beer_outliers |> filter(outlier_15), by = "Quarter"),
     aes(y = Beer),
-    color = "firebrick", size = 3
+    colour = "#D55E00", size = 3
   ) +
   labs(title = "Beer production: outliers detected via STL remainder (c = 1.5)",
        y = "Megalitres", x = NULL)
+```
+
+```{r}
+#| label: beer-outlier-plot-render
+#| renderings: [light, dark]
+#| echo: false
+
+beer_outlier_plot_p + theme_narsil()
+beer_outlier_plot_p + theme_narsil_dark()
 ```
  
 :::{.content-hidden unless-format="revealjs"}
@@ -1399,16 +1522,24 @@ report(beer_fit_interv)
 ```{r}
 #| label: beer-intervention-plot
 #| echo: false
- 
-p <- augment(beer_fit_interv) |>
+#| output: false
+
+beer_intervention_plot_p <- augment(beer_fit_interv) |>
   ggplot(aes(x = Quarter)) +
   geom_line(aes(y = Beer, color = "Actual")) +
   geom_line(aes(y = .fitted, color = "Fitted")) +
   labs(y = "Megalitres", color = NULL,
        title = "Beer production: model with intervention variables") +
   theme(legend.position = "top")
- 
-ggplotly(p, dynamicTicks = TRUE)
+```
+
+```{r}
+#| label: beer-intervention-plot-render
+#| renderings: [light, dark]
+#| echo: false
+
+ggplotly(beer_intervention_plot_p + scale_narsil() + theme(legend.position = "top"), dynamicTicks = TRUE) |> gg_to_plotly_narsil()
+ggplotly(beer_intervention_plot_p + scale_narsil_dark() + theme(legend.position = "top"), dynamicTicks = TRUE) |> gg_to_plotly_narsil(dark = TRUE)
 ```
  
 :::{.callout-tip appearance="simple"}
@@ -1481,15 +1612,25 @@ We use the Boston Marathon winning times — a series with clear structural brea
  
 ```{r}
 #| label: boston-data
- 
+#| output: false
+
 boston_men <- boston_marathon |>
   filter(Event == "Men's open division") |>
   mutate(Minutes = as.numeric(Time) / 60)
- 
-boston_men |>
+
+boston_data_p <- boston_men |>
   autoplot(Minutes) +
   labs(title = "Boston Marathon: men's open division winning times",
        y = "Minutes", x = NULL)
+```
+
+```{r}
+#| label: boston-data-render
+#| renderings: [light, dark]
+#| echo: false
+
+boston_data_p + theme_narsil()
+boston_data_p + theme_narsil_dark()
 ```
  
 :::{.content-hidden unless-format="revealjs"}
@@ -1508,11 +1649,12 @@ What does a single linear trend produce on this data?
  
 ```{r}
 #| label: boston-linear-only
- 
+#| output: false
+
 boston_fit_linear <- boston_men |>
   model(linear = TSLM(Minutes ~ trend()))
- 
-boston_men |>
+
+boston_linear_only_p <- boston_men |>
   autoplot(Minutes, color = "grey60") +
   geom_line(
     data = fitted(boston_fit_linear),
@@ -1522,6 +1664,15 @@ boston_men |>
             alpha = 0.5, level = 95) +
   labs(title = "Boston Marathon: linear trend",
        y = "Minutes", x = NULL)
+```
+
+```{r}
+#| label: boston-linear-only-render
+#| renderings: [light, dark]
+#| echo: false
+
+boston_linear_only_p + theme_narsil()
+boston_linear_only_p + theme_narsil_dark()
 ```
  
 :::{.fragment}
@@ -1543,15 +1694,16 @@ The forecast predicts times will keep falling indefinitely — eventually reachi
 ```{r}
 #| label: boston-fit
 #| code-line-numbers: "|4,5"
- 
+#| output: false
+
 boston_fit <- boston_men |>
   model(
     linear      = TSLM(Minutes ~ trend()),
     exponential = TSLM(log(Minutes) ~ trend()),                #<1>
     piecewise   = TSLM(Minutes ~ trend(knots = c(1940, 1980))) #<2>
   )
- 
-boston_men |>
+
+boston_fit_p <- boston_men |>
   autoplot(Minutes, color = "grey60") +
   geom_line(
     data = fitted(boston_fit),
@@ -1562,6 +1714,15 @@ boston_men |>
   labs(title = "Boston Marathon: three functional forms",
        y = "Minutes", x = NULL, color = "Model") +
   theme(legend.position = "top")
+```
+
+```{r}
+#| label: boston-fit-render
+#| renderings: [light, dark]
+#| echo: false
+
+boston_fit_p + scale_narsil() + theme(legend.position = "top")
+boston_fit_p + scale_narsil_dark() + theme(legend.position = "top")
 ```
  
 1. Log-transformed response: assumes times decrease at a declining rate.
@@ -1592,15 +1753,16 @@ A key limitation of piecewise regression: **we must choose the knots ourselves**
 ```{r}
 #| label: boston-knots
 #| code-line-numbers: "|3,4,5"
- 
+#| output: false
+
 boston_fit_knots <- boston_men |>
   model(
     k1 = TSLM(Minutes ~ trend(knots = c(1940, 1980))),
     k2 = TSLM(Minutes ~ trend(knots = c(1915, 1950))),
     k3 = TSLM(Minutes ~ trend(knots = c(1950, 1970, 1990)))
   )
- 
-boston_men |>
+
+boston_knots_p <- boston_men |>
   autoplot(Minutes, color = "grey60") +
   geom_line(
     data = fitted(boston_fit_knots),
@@ -1611,6 +1773,15 @@ boston_men |>
   labs(title = "Different knots → very different forecasts",
        y = "Minutes", x = NULL, color = "Model") +
   theme(legend.position = "top")
+```
+
+```{r}
+#| label: boston-knots-render
+#| renderings: [light, dark]
+#| echo: false
+
+boston_knots_p + scale_narsil() + theme(legend.position = "top")
+boston_knots_p + scale_narsil_dark() + theme(legend.position = "top")
 ```
  
 :::{.callout-warning appearance="simple"}

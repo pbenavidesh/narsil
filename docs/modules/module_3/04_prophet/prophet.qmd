@@ -345,16 +345,24 @@ lax_passengers
 ```{r}
 #| label: lax-plot
 #| echo: false
+#| output: false
 
-p <- lax_passengers |>
+lax_plot_p <- lax_passengers |>
   autoplot(passengers) +
   labs(title   = "Monthly passengers at LAX",
        y        = "Passengers",
        x        = NULL,
        color    = "Type") +
   theme(legend.position = "top")
+```
 
-ggplotly(p, dynamicTicks = TRUE)
+```{r}
+#| label: lax-plot-render
+#| renderings: [light, dark]
+#| echo: false
+
+ggplotly(lax_plot_p + scale_narsil(), dynamicTicks = TRUE) |> gg_to_plotly_narsil()
+ggplotly(lax_plot_p + scale_narsil_dark(), dynamicTicks = TRUE) |> gg_to_plotly_narsil(dark = TRUE)
 ```
 
 :::{.notes}
@@ -432,6 +440,7 @@ One of Prophet's biggest advantages in practice: **interpretable components** th
 ```{r}
 #| label: lax-components
 
+theme_narsil()
 lax_fit |>
   select(type, Prophet) |>
   components() |>
@@ -458,8 +467,9 @@ We can also visualize the seasonal component overlaid by year — useful to chec
 
 ```{r}
 #| label: lax-seasonal
+#| output: false
 
-lax_fit |>
+lax_seasonal_p <- lax_fit |>
   select(type, Prophet) |>
   components() |>
   ggplot(aes(
@@ -474,8 +484,16 @@ lax_fit |>
     x     = "Month",
     y     = "Seasonal effect",
     color = "Type"
-  ) +
-  theme(legend.position = "top")
+  )
+```
+
+```{r}
+#| label: lax-seasonal-render
+#| renderings: [light, dark]
+#| echo: false
+
+lax_seasonal_p + scale_narsil() + theme(legend.position = "top")
+lax_seasonal_p + scale_narsil_dark() + theme(legend.position = "top")
 ```
 
 1. Extract the month name from the time index for the x-axis.
@@ -499,11 +517,12 @@ If the seasonal lines are stacked consistently, the shape is stable across years
 #| label: lax-forecast
 #| message: false
 #| warning: false
+#| output: false
 
 lax_fc <- lax_fit |>
   forecast(h = "2 years")
 
-lax_fc |>
+lax_forecast_p <- lax_fc |>
   autoplot(
     lax_passengers |> filter_index("2012 Jan." ~ .),
     level = 80
@@ -514,8 +533,16 @@ lax_fc |>
     y      = "Passengers",
     x      = NULL,
     color  = "Model"
-  ) +
-  theme(legend.position = "top")
+  )
+```
+
+```{r}
+#| label: lax-forecast-render
+#| renderings: [light, dark]
+#| echo: false
+
+lax_forecast_p + scale_narsil() + theme(legend.position = "top")
+lax_forecast_p + scale_narsil_dark() + theme(legend.position = "top")
 ```
 
 :::{.content-hidden unless-format="revealjs"}
@@ -554,6 +581,7 @@ When your `tsibble` has a key variable (like `type` here), `accuracy()` returns 
 ```{r}
 #| label: lax-resid
 
+theme_narsil()
 lax_fit |>
   select(type, Prophet) |>
   filter(type == "Domestic") |>
@@ -581,6 +609,7 @@ We can extract the changepoints Prophet detected and plot them against the origi
 ```{r}
 #| label: lax-changepoints
 
+theme_narsil()
 # Extract trend component to visualize changepoints
 lax_fit |>
   select(type, Prophet) |>
@@ -618,8 +647,9 @@ Let's put all models side by side — zooming in on the test period:
 
 ```{r}
 #| label: lax-comparison
+#| output: false
 
-p <- lax_fc |>
+lax_comparison_p <- lax_fc |>
   ggplot(aes(x = month, y = .mean, color = .model)) +
   geom_line() +
   geom_line(
@@ -636,8 +666,15 @@ p <- lax_fc |>
     color = "Model"
   ) +
   theme(legend.position = "top")
+```
 
-ggplotly(p)
+```{r}
+#| label: lax-comparison-render
+#| renderings: [light, dark]
+#| echo: false
+
+ggplotly(lax_comparison_p + scale_narsil()) |> gg_to_plotly_narsil()
+ggplotly(lax_comparison_p + scale_narsil_dark()) |> gg_to_plotly_narsil(dark = TRUE)
 ```
 
 :::{.content-visible unless-format="revealjs"}

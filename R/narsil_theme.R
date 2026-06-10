@@ -22,12 +22,16 @@
     fg = "#2A2520",
     grid = "#D5D0C6",
     palette = c(
-      "#1A5276",
-      "#7D6608",
-      "#6C3483",
-      "#009E73",
-      "#D55E00",
-      "#5B8DB8"
+      "#1A5276",  # Anduin
+      "#7D6608",  # Mithril
+      "#6C3483",  # Númenor
+      "#009E73",  # Ithilien
+      "#D55E00",  # Anor
+      "#5B8DB8",  # Pelargir
+      "#B03A2E",  # Rohan
+      "#1A7A6E",  # Enedwaith
+      "#4A235A",  # Rhûn
+      "#B7860B"   # Harad
     )
   ),
   dark = list(
@@ -36,12 +40,16 @@
     fg = "#E8DDD0",
     grid = "#555566",
     palette = c(
-      "#E8651A",
-      "#E2C12B",
-      "#A569BD",
-      "#D4548C",
-      "#5DADE2",
-      "#AAB7B8"
+      "#E8651A",  # Orodruin
+      "#E2C12B",  # Eye of Sauron
+      "#A569BD",  # Morgul
+      "#D4548C",  # Palantír
+      "#5DADE2",  # Ithildin
+      "#AAB7B8",  # Gorgoroth
+      "#E8565A",  # Grond
+      "#45C4A0",  # Shelob
+      "#C084FC",  # Nazgûl
+      "#F5C842"   # Smaug
     )
   )
 )

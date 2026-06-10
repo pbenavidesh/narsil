@@ -356,13 +356,23 @@ The right benchmark depends on the structure of the series.
 ```{r}
 #| label: hare-plot
 #| echo: false
+#| output: false
 
-pelt |>
+hare_plot_p <- pelt |>
   autoplot(Hare) +
   labs(title = "Hudson Bay Company: Snowshoe Hare Pelts",
        subtitle = "Annual, 1845–1935",
        y = "Number of pelts (thousands)",
        x = NULL)
+```
+
+```{r}
+#| label: hare-plot-render
+#| renderings: [light, dark]
+#| echo: false
+
+hare_plot_p + theme_narsil()
+hare_plot_p + theme_narsil_dark()
 ```
 
 ```{r}
@@ -388,13 +398,23 @@ hare_fc <- hare_fit |>
 ```{r}
 #| label: hare-fcst-plot
 #| echo: false
+#| output: false
 
-hare_fc |>
+hare_fcst_plot_p <- hare_fc |>
   autoplot(pelt, level = NULL) +
   labs(title = "Hare pelts: benchmark forecasts",
        y = "Number of pelts (thousands)",
        x = NULL) +
   guides(colour = guide_legend(title = "Model"))
+```
+
+```{r}
+#| label: hare-fcst-plot-render
+#| renderings: [light, dark]
+#| echo: false
+
+hare_fcst_plot_p + scale_narsil()
+hare_fcst_plot_p + scale_narsil_dark()
 ```
 
 ::: {.fragment}
@@ -423,14 +443,24 @@ for annual data with no seasonal structure.
 ```{r}
 #| label: beer-plot
 #| echo: false
+#| output: false
 
-aus_production |>
+beer_plot_p <- aus_production |>
   filter(year(Quarter) >= 1992) |>
   autoplot(Beer) +
   labs(title = "Australian beer production",
        subtitle = "Quarterly, 1992–2010",
        y = "Megalitres",
        x = NULL)
+```
+
+```{r}
+#| label: beer-plot-render
+#| renderings: [light, dark]
+#| echo: false
+
+beer_plot_p + theme_narsil()
+beer_plot_p + theme_narsil_dark()
 ```
 
 ```{r}
@@ -460,13 +490,23 @@ beer_fc <- beer_fit |>
 ```{r}
 #| label: beer-fcst-plot
 #| echo: false
+#| output: false
 
-beer_fc |>
+beer_fcst_plot_p <- beer_fc |>
   autoplot(beer, level = NULL) +
   labs(title = "Beer production: benchmark forecasts",
        y = "Megalitres",
        x = NULL) +
   guides(colour = guide_legend(title = "Model"))
+```
+
+```{r}
+#| label: beer-fcst-plot-render
+#| renderings: [light, dark]
+#| echo: false
+
+beer_fcst_plot_p + scale_narsil()
+beer_fcst_plot_p + scale_narsil_dark()
 ```
 
 ::: {.fragment}
@@ -493,14 +533,24 @@ tracking the seasonal pattern without inventing a trend that isn't there.
 ```{r}
 #| label: gdp-plot
 #| echo: false
+#| output: false
 
-global_economy |>
+gdp_plot_p <- global_economy |>
   filter(Country == "Mexico") |>
   autoplot(GDP) +
   labs(title = "Mexico: Gross Domestic Product",
        subtitle = "Annual, current USD",
        y = "GDP (USD)",
        x = NULL)
+```
+
+```{r}
+#| label: gdp-plot-render
+#| renderings: [light, dark]
+#| echo: false
+
+gdp_plot_p + theme_narsil()
+gdp_plot_p + theme_narsil_dark()
 ```
 
 ```{r}
@@ -530,13 +580,23 @@ mexico_fc <- mexico_fit |>
 ```{r}
 #| label: gdp-fcst-plot
 #| echo: false
+#| output: false
 
-mexico_fc |>
+gdp_fcst_plot_p <- mexico_fc |>
   autoplot(mexico, level = NULL) +
   labs(title = "Mexico GDP: benchmark forecasts",
        y = "GDP (USD)",
        x = NULL) +
   guides(colour = guide_legend(title = "Model"))
+```
+
+```{r}
+#| label: gdp-fcst-plot-render
+#| renderings: [light, dark]
+#| echo: false
+
+gdp_fcst_plot_p + scale_narsil()
+gdp_fcst_plot_p + scale_narsil_dark()
 ```
 
 ::: {.fragment}
@@ -563,13 +623,23 @@ far below recent observations. SNAIVE makes no sense for annual data.
 ```{r}
 #| label: gas-plot
 #| echo: false
+#| output: false
 
-aus_production |>
+gas_plot_p <- aus_production |>
   autoplot(Gas) +
   labs(title = "Australian gas production",
        subtitle = "Quarterly",
        y = "Petajoules",
        x = NULL)
+```
+
+```{r}
+#| label: gas-plot-render
+#| renderings: [light, dark]
+#| echo: false
+
+gas_plot_p + theme_narsil()
+gas_plot_p + theme_narsil_dark()
 ```
 
 ```{r}
@@ -598,13 +668,23 @@ gas_fc <- gas_fit |>
 ```{r}
 #| label: gas-fcst-plot
 #| echo: false
+#| output: false
 
-gas_fc |>
+gas_fcst_plot_p <- gas_fc |>
   autoplot(aus_production, level = NULL) +
   labs(title = "Gas production: benchmark forecasts",
        y = "Petajoules",
        x = NULL) +
   guides(colour = guide_legend(title = "Model"))
+```
+
+```{r}
+#| label: gas-fcst-plot-render
+#| renderings: [light, dark]
+#| echo: false
+
+gas_fcst_plot_p + scale_narsil()
+gas_fcst_plot_p + scale_narsil_dark()
 ```
 
 ::: {.fragment}
@@ -722,6 +802,7 @@ A well-specified model should leave residuals that behave like **white noise**.
 ```{r}
 #| label: hare-resid
 
+theme_narsil()
 hare_fit |>
   select(naive) |>
   gg_tsresiduals() +
@@ -733,6 +814,7 @@ hare_fit |>
 ```{r}
 #| label: beer-resid
 
+theme_narsil()
 beer_fit |>
   select(snaive) |>
   gg_tsresiduals() +
@@ -744,6 +826,7 @@ beer_fit |>
 ```{r}
 #| label: gdp-resid
 
+theme_narsil()
 mexico_fit |>
   select(drift) |>
   gg_tsresiduals() +
@@ -755,6 +838,7 @@ mexico_fit |>
 ```{r}
 #| label: gas-resid
 
+theme_narsil()
 gas_fit |>
   select(snaive) |>
   gg_tsresiduals() +
@@ -1026,6 +1110,7 @@ Using all observations generally improves parameter estimates and reflects how m
 
 ```{r}
 #| label: hare-refit
+#| output: false
 
 hare_final_fit <- pelt |>
   model(naive = NAIVE(Hare))
@@ -1033,16 +1118,26 @@ hare_final_fit <- pelt |>
 hare_final_fc <- hare_final_fit |>
   forecast(h = 15)
 
-hare_final_fc |>
+hare_refit_p <- hare_final_fc |>
   autoplot(pelt) +
   labs(title = "Hare pelts — NAIVE forecast (refit on full data)",
        y = "Number of pelts (thousands)", x = NULL)
+```
+
+```{r}
+#| label: hare-refit-render
+#| renderings: [light, dark]
+#| echo: false
+
+hare_refit_p + theme_narsil()
+hare_refit_p + theme_narsil_dark()
 ```
 
 ## Beer
 
 ```{r}
 #| label: beer-refit
+#| output: false
 
 beer_final_fit <- beer |>
   model(snaive = SNAIVE(Beer))
@@ -1050,16 +1145,26 @@ beer_final_fit <- beer |>
 beer_final_fc <- beer_final_fit |>
   forecast(h = "2 years")
 
-beer_final_fc |>
+beer_refit_p <- beer_final_fc |>
   autoplot(beer) +
   labs(title = "Beer production — SNAIVE forecast (refit on full data)",
        y = "Megalitres", x = NULL)
+```
+
+```{r}
+#| label: beer-refit-render
+#| renderings: [light, dark]
+#| echo: false
+
+beer_refit_p + theme_narsil()
+beer_refit_p + theme_narsil_dark()
 ```
 
 ## Mexico GDP
 
 ```{r}
 #| label: gdp-refit
+#| output: false
 
 mexico_final_fit <- mexico |>
   model(drift = RW(GDP ~ drift()))
@@ -1067,10 +1172,19 @@ mexico_final_fit <- mexico |>
 mexico_final_fc <- mexico_final_fit |>
   forecast(h = "5 years")
 
-mexico_final_fc |>
+gdp_refit_p <- mexico_final_fc |>
   autoplot(mexico) +
   labs(title = "Mexico GDP — Drift forecast (refit on full data)",
        y = "GDP (USD)", x = NULL)
+```
+
+```{r}
+#| label: gdp-refit-render
+#| renderings: [light, dark]
+#| echo: false
+
+gdp_refit_p + theme_narsil()
+gdp_refit_p + theme_narsil_dark()
 ```
 
 :::
