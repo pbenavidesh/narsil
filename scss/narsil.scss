@@ -2,7 +2,7 @@
 // -----------------------------------------------------------------------------
 // Course-wide Sass theme for the narsil Time Series Forecasting website.
 //
-// NOTE: --narsil-c1 through --narsil-c6 must stay in sync with the `palette`
+// NOTE: --narsil-c1 through --narsil-c10 must stay in sync with the `palette`
 // vectors of .narsil_pal in R/narsil_theme.R (light = :root, dark = .quarto-dark).
 // -----------------------------------------------------------------------------
 
@@ -11,20 +11,35 @@
 
 /*-- scss:rules --*/
 
+/* Navbar — Gondor light / Mordor dark */
+.navbar {
+  background-color: #1A5276 !important;
+  /* Anduin */
+}
+
+.quarto-dark .navbar {
+  background-color: #2D1B3E !important;
+  /* Volcanic rock */
+}
+
 p {
   text-align: justify;
 }
 
 // Light palette ("Gondor") — must match .narsil_pal$light$palette in R.
 :root {
-  --narsil-c1: #1A5276;
-  --narsil-c2: #7D6608;
-  --narsil-c3: #6C3483;
-  --narsil-c4: #009E73;
-  --narsil-c5: #D55E00;
-  --narsil-c6: #5B8DB8;
-  --narsil-code-fg: #6C3483;
-  --narsil-code-bg: #F0EBF8;
+  --narsil-c1: #0072B2;
+  --narsil-c2: #E69F00;
+  --narsil-c3: #009E73;
+  --narsil-c4: #D55E00;
+  --narsil-c5: #56B4E9;
+  --narsil-c6: #CC79A7;
+  --narsil-c7: #F0E442;  /* Rohan */
+  --narsil-c8: #1A7A6E;  /* Enedwaith */
+  --narsil-c9: #7B2D8B;  /* Rhûn */
+  --narsil-c10: #B7860B; /* Harad */
+  --narsil-code-fg: #c7254e;
+  --narsil-code-bg: #f9f2f4;
 }
 
 // Dark palette ("Mordor") — must match .narsil_pal$dark$palette in R.
@@ -35,8 +50,12 @@ p {
   --narsil-c4: #D4548C;
   --narsil-c5: #5DADE2;
   --narsil-c6: #AAB7B8;
-  --narsil-code-fg: #E8651A;
-  --narsil-code-bg: #3A2018;
+  --narsil-c7: #E8565A;  /* Grond */
+  --narsil-c8: #45C4A0;  /* Shelob */
+  --narsil-c9: #C084FC;  /* Nazgûl */
+  --narsil-c10: #F5C842; /* Smaug */
+  --narsil-code-fg: #f0a0b8;
+  --narsil-code-bg: #3a2a2e;
 }
 
 // Inline code only — :not(pre) > code avoids restyling code chunks.
@@ -45,47 +64,4 @@ p {
   background-color: var(--narsil-code-bg);
   border-radius: 3px;
   padding: 0.1em 0.3em;
-}
-
-/* Navbar */
-.navbar {
-  background-color: #1A5276 !important;
-}
-.quarto-dark .navbar {
-  background-color: #2D1B3E !important;
-}
-
-/* Links */
-.quarto-dark a {
-  color: #5DADE2;
-}
-.quarto-dark a:hover {
-  color: #AED6F1;
-}
-
-/* Active sidebar link */
-.quarto-dark .sidebar-item-text.sidebar-link.active {
-  color: #E8651A !important;
-}
-
-/* Tab active indicator */
-.quarto-dark .nav-tabs .nav-link.active,
-.quarto-dark .nav-tabs .nav-link.active:hover {
-  border-bottom-color: #E8651A !important;
-  color: #E8651A !important;
-}
-
-/* Tab hover */
-.quarto-dark .nav-tabs .nav-link:hover {
-  color: #AAB7B8;
-}
-
-/* TOC active link — dark mode */
-.quarto-dark .nav-link.active {
-  color: #E8651A !important;
-}
-
-/* Sidebar active link — light mode */
-.sidebar-item-text.sidebar-link.active {
-  color: #1A5276 !important;
 }

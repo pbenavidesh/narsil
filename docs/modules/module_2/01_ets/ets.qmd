@@ -285,7 +285,9 @@ ses_plot_p <- alg_fc |>
   filter(.model == "SES") |>
   autoplot(algeria_economy) +
   geom_line(aes(y = .fitted),
-            data = alg_fit |> select(SES) |> augment()) +
+            data     = alg_fit |> select(SES) |> augment(),
+            colour   = "#7D6608",
+            linetype = "dashed") +
   labs(
     x = "",
     y = "% of GDP",

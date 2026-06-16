@@ -299,12 +299,11 @@ mexretail_fc <- mexretail_fit |>
 #| output: false
 
 mexretail_fc_plot_p <- mexretail_fc |>
-  autoplot(mexretail |> filter(year(date) >= 2015), level = 80) +
-  facet_wrap(vars(.model), ncol = 2) +
+  autoplot(mexretail |> filter(year(date) >= 2015), level = NULL) +
   labs(
     title    = "mexretail — all approaches compared",
     y        = "Index 2015=100",
-    subtitle = "80% prediction intervals"
+    subtitle = "point forecasts only"
   )
 ```
 
@@ -324,17 +323,23 @@ ggplotly(mexretail_fc_plot_p + scale_narsil_dark(), dynamicTicks = TRUE) |> gg_t
 ```{r}
 #| label: mexretail-fc-plot-pres
 #| echo: false
-#| message: false
-#| warning: false
+#| output: false
 
-mexretail_fc |>
-  autoplot(mexretail |> filter(year(date) >= 2015), level = 80) +
-  facet_wrap(vars(.model), ncol = 2) +
+mexretail_fc_pres_p <- mexretail_fc |>
+  autoplot(mexretail |> filter(year(date) >= 2015), level = NULL) +
   labs(
-    title    = "mexretail — all approaches compared",
-    y        = "Index 2015=100",
-    subtitle = "80% prediction intervals"
+    title = "mexretail — all approaches compared",
+    y     = "Index 2015=100"
   )
+```
+
+```{r}
+#| label: mexretail-fc-plot-pres-render
+#| renderings: [light, dark]
+#| echo: false
+
+mexretail_fc_pres_p + scale_narsil()
+mexretail_fc_pres_p + scale_narsil_dark()
 ```
 
 :::
@@ -468,12 +473,11 @@ beer_fc <- beer_fit |>
 #| output: false
 
 beer_fc_plot_p <- beer_fc |>
-  autoplot(beer_full |> filter(year(Quarter) >= 2000), level = 80) +
-  facet_wrap(vars(.model), ncol = 2) +
+  autoplot(beer_full |> filter(year(Quarter) >= 2000), level = NULL) +
   labs(
     title    = "Australian beer production — all approaches compared",
     y        = "Megalitres",
-    subtitle = "80% prediction intervals"
+    subtitle = "point forecasts only"
   )
 ```
 
@@ -493,17 +497,23 @@ ggplotly(beer_fc_plot_p + scale_narsil_dark(), dynamicTicks = TRUE) |> gg_to_plo
 ```{r}
 #| label: beer-fc-plot-pres
 #| echo: false
-#| message: false
-#| warning: false
+#| output: false
 
-beer_fc |>
-  autoplot(beer_full |> filter(year(Quarter) >= 2000), level = 80) +
-  facet_wrap(vars(.model), ncol = 2) +
+beer_fc_pres_p <- beer_fc |>
+  autoplot(beer_full |> filter(year(Quarter) >= 2000), level = NULL) +
   labs(
-    title    = "Australian beer — all approaches",
-    y        = "Megalitres",
-    subtitle = "80% prediction intervals"
+    title = "Australian beer — all approaches compared",
+    y     = "Megalitres"
   )
+```
+
+```{r}
+#| label: beer-fc-plot-pres-render
+#| renderings: [light, dark]
+#| echo: false
+
+beer_fc_pres_p + scale_narsil()
+beer_fc_pres_p + scale_narsil_dark()
 ```
 
 :::

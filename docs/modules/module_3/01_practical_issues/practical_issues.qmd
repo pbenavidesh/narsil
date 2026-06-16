@@ -399,7 +399,7 @@ ah_imputed_pts <- ah_fill |>              #<1>
 
 plot_imputed_p <- ah |>
   autoplot(Trips) +
-  autolayer(ah_fill, Trips) +
+  autolayer(ah_fill, Trips, colour = "#5B8DB8") +
   geom_point(                             #<2>
     data  = ah_imputed_pts,
     aes(x = Quarter, y = Trips),

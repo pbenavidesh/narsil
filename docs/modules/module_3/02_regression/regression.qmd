@@ -366,7 +366,9 @@ ggplotly(us_change_time_p + scale_narsil_dark() + theme(legend.position = "none"
 #| label: us-change-pairs
 #| message: false
 #| warning: false
+#| results: hide
 
+theme_narsil()
 us_change |>
   as_tibble() |>
   select(-Quarter) |>
@@ -521,6 +523,7 @@ us_change_simple_scatter_p + theme_narsil_dark()
 
 ```{r}
 #| label: us-change-simple-resid
+#| results: hide
 
 theme_narsil()
 us_change_fit_simple |>
@@ -732,6 +735,7 @@ us_change_aug_both |>
 #| fig-cap: "Simple model residuals: significant ACF spikes indicate remaining autocorrelation."
 #| lightbox:
 #|   group: comparing-models
+#| results: hide
 
 theme_narsil()
 us_change_fit_simple |>
@@ -744,6 +748,7 @@ us_change_fit_simple |>
 #| fig-cap: "Multiple model residuals: ACF spikes are much reduced and the distribution is closer to normal."
 #| lightbox:
 #|   group: comparing-models
+#| results: hide
 
 theme_narsil()
 us_change_fit_mult |>
@@ -1392,6 +1397,7 @@ ggplotly(beer_fitted_p + scale_narsil_dark() + theme(legend.position = "top"), d
  
 ```{r}
 #| label: beer-resid
+#| results: hide
 
 theme_narsil()
 beer_fit |>

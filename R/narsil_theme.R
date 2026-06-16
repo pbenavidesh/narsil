@@ -17,21 +17,21 @@
 # Course colour palettes ------------------------------------------------------
 .narsil_pal <- list(
   light = list(
-    bg = "#EAF0F8",
-    bg_panel = "#DCE7F4",
+    bg = "#F4F6F9",
+    bg_panel = "#E8ECF2",
     fg = "#2A2520",
     grid = "#D5D0C6",
     palette = c(
-      "#1A5276",  # Anduin
-      "#7D6608",  # Mithril
-      "#6C3483",  # Númenor
+      "#0072B2",  # Anduin
+      "#E69F00",  # Mithril
       "#009E73",  # Ithilien
       "#D55E00",  # Anor
-      "#5B8DB8",  # Pelargir
-      "#B03A2E",  # Rohan
+      "#56B4E9",  # Pelargir
+      "#CC79A7",  # Númenor
+      "#F0E442",  # Rohan
       "#1A7A6E",  # Enedwaith
-      "#4A235A",  # Rhûn
-      "#B7860B"   # Harad
+      "#7B2D8B",  # Rhûn
+      "#B8860B"   # Harad
     )
   ),
   dark = list(
