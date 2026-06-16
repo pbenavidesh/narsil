@@ -2,7 +2,7 @@
 
 Modified
 
-June 10, 2026
+June 16, 2026
 
 Code
 
@@ -12,8 +12,6 @@ library(plotly)    #<1>
 ```
 
 1.  In addition to the regular packages, here we’ll use `tidyquant` and `plotly`.
-
-# 1 ARIMA Models
 
 In the [previous topic](../../../../docs/modules/module_2/02_stationarity/stationarity.llms.md#ar-and-ma-models) we introduced the two basic building blocks for modeling the correlation structure of a stationary time series:
 
@@ -28,7 +26,7 @@ In practice, neither model alone is usually sufficient. Real series often show p
 >
 > That framework is **ARIMA**.
 
-## 1.1 The ARIMA Equation
+## 0.1 The ARIMA Equation
 
 **ARIMA** stands for **A**uto**R**egressive **I**ntegrated **M**oving **A**verage. The “Integrated” part refers to the reverse operation of differencing: if we difference a series d times to make it stationary, the model is said to be integrated of order d.
 
@@ -44,7 +42,7 @@ y'\_t = c + \phi_1 y'\_{t-1} + \cdots + \phi_p y'\_{t-p} + \theta_1 \varepsilon\
 
 where y'\_t denotes the d-times differenced series and \varepsilon_t is white noise.
 
-## 1.2 Backshift Notation
+## 0.2 Backshift Notation
 
 Recall from the [previous topic](../../../../docs/modules/module_2/02_stationarity/stationarity.llms.md#backshift-notation) that the backshift operator B satisfies By_t = y\_{t-1}, and that d-th order differencing can be written as (1-B)^d y_t.
 
@@ -64,7 +62,7 @@ where \theta(B) = \theta_1 B + \theta_2 B^2 + \cdots + \theta_q B^q.
 
 This compact form shows clearly how the three components interact. The differencing operator (1-B)^d is applied first, and the AR and MA operators act on the resulting stationary series.
 
-## 1.3 Special Cases
+## 0.3 Special Cases
 
 Several models we have already encountered are special cases of the ARIMA family:
 
@@ -88,9 +86,9 @@ Several models we have already encountered are special cases of the ARIMA family
 >
 > Higher values of d also produce wider prediction intervals that grow faster.
 
-# 2 ARIMA in R
+# 1 ARIMA in R
 
-## 2.1 Choosing the Orders
+## 1.1 Choosing the Orders
 
 Selecting the right ARIMA order involves three decisions:
 
@@ -108,392 +106,139 @@ Selecting the right ARIMA order involves three decisions:
 >
 > Real data rarely produces textbook-perfect ACF/PACF shapes. Use the plots to narrow down candidate models, then compare them formally with AIC\_c.
 
-## 2.2 Manual and Automatic Specification
+Before formalizing model selection, let’s fit a few manual AR candidates suggested by the PACF and compare them with AIC\_c:
+
+Code
+
+``` r
+us_change_fit <- us_change |>
+  model(
+    ar1 = ARIMA(Consumption ~ pdq(1, 0, 0) + PDQ(0, 0, 0)), #<1>
+    ar2 = ARIMA(Consumption ~ pdq(2, 0, 0) + PDQ(0, 0, 0)), #<2>
+    ar3 = ARIMA(Consumption ~ pdq(3, 0, 0) + PDQ(0, 0, 0))  #<3>
+  )
+
+glance(us_change_fit) |>
+  arrange(AICc) |>
+  select(.model, AIC, AICc, BIC)
+```
+
+1.  AR(1) — simplest candidate suggested by the PACF.
+2.  AR(2) — one lag more; borderline significant in the PACF.
+3.  AR(3) — the order the PACF most clearly supports.
+
+## 1.2 Model Selection
+
+When we fit a statistical model, we face a fundamental tension: a more complex model (more parameters) will always fit the observed data better, but it may simply be memorizing noise rather than capturing genuine structure. This is the **bias-variance tradeoff**.
+
+**Information criteria** address this by penalizing model complexity — they reward goodness of fit but add a cost for each additional parameter estimated. The goal is to find the model that generalizes best, not the one that fits best in-sample.
+
+When comparing candidate ARIMA models, we use three related criteria:
+
+- **AIC** — Akaike Information Criterion
+
+\text{AIC} = -2\log(L) + 2(p + q + k + 1)
+
+- **AIC\_c** — AIC corrected for small sample sizes
+
+\text{AIC}\_c = \text{AIC} + \frac{2(p + q + k + 1)(p + q + k + 2)}{T - p - q - k - 2}
+
+- **BIC** — Bayesian Information Criterion (also known as Schwarz criterion)
+
+\text{BIC} = \text{AIC} + \[\log(T) - 2\](p + q + k + 1)
+
+where k = 1 if the model includes a constant, k = 0 otherwise. **Lower is better** for all three. The preferred criterion is AIC\_c — it converges to AIC as T grows, but is more conservative with small samples.
+
+> **TIP:**
+>
+> Both penalize complexity, but BIC applies a heavier penalty (it grows with \log T rather than a fixed 2). In practice:
+>
+> - **AIC\_c** tends to select slightly richer models and is generally preferred for forecasting.
+> - **BIC** tends to select more parsimonious models and is preferred when interpretability matters.
+>
+> For this course, use **AIC\_c** as the default.
+
+> **IMPORTANT:**
+>
+> Information criteria are only comparable across models fitted to **identical data** — same transformation, same differencing order. You cannot compare AIC\_c of an ARIMA fitted to \log(y_t) vs. one fitted to y_t, or ARIMA(1,1,1) vs. ARIMA(1,0,1). When models differ in d, use forecast accuracy on a test set instead.
+
+## 1.3 Box-Jenkins Methodology
+
+ARIMA model building follows an iterative procedure known as the **Box-Jenkins methodology**:
+
+1.  **Plot the data.** Identify unusual observations, structural breaks, outliers.
+2.  **Stabilize the variance** if needed — apply a log or Box-Cox transformation.
+3.  **Determine d** — use `unitroot_nsdiffs()` and `unitroot_ndiffs()`.
+4.  **Examine ACF and PACF** of the stationary series to identify candidate orders p and q.
+
+5.  **Fit candidate models** and compare using AIC\_c.
+6.  **Check residuals** — ACF of residuals and Ljung-Box test. If not white noise, refine.
+7.  **Forecast** once residuals pass diagnostic checks.
+
+> **NOTE:**
+>
+> The Box-Jenkins procedure is a cycle, not a checklist. It is normal to go through steps 4–6 two or three times before settling on a model.
+
+## 1.4 Residual Diagnostics
+
+We have already used the Ljung-Box test to check residuals from benchmark models. When applying it to **ARIMA models**, there is one important adjustment: you must account for the degrees of freedom consumed by the estimated AR and MA parameters.
+
+Code
+
+``` r
+theme_narsil()
+us_change_fit |>
+  select(ar3) |>
+  gg_tsresiduals()
+```
+
+[![](arima_files/figure-html/us-change-residuals-1.png)](arima_files/figure-html/us-change-residuals-1.png)
+
+Code
+
+``` r
+us_change_fit |>
+  select(ar3) |>
+  augment() |>
+  features(.innov, ljung_box,
+           lag = 10,
+           dof = us_change_fit |>                          #<1>
+                   select(ar3) |>
+                   coefficients() |>
+                   filter(str_detect(term, "^ar|^ma")) |>
+                   nrow())
+```
+
+1.  `dof` is computed dynamically as the number of estimated AR and MA coefficients, so it always matches the fitted model regardless of order.
+
+## 1.5 Forecasting
+
+Once the model passes residual diagnostics, forecasting uses the same `forecast()` workflow as all other `fable` models:
+
+Code
+
+``` r
+us_change_forecast_p <- us_change_fit |>
+  select(ar3) |>
+  forecast(h = 10) |>
+  autoplot(us_change |> filter(year(Quarter) >= 2005)) +
+  labs(
+    title = "US consumption — AR(3) forecast",
+    y = "% change"
+  )
+```
+
+[![](arima_files/figure-html/us-change-forecast-render-1.png)](arima_files/figure-html/us-change-forecast-render-1.png)
+
+[![](arima_files/figure-html/us-change-forecast-render-2.png)](arima_files/figure-html/us-change-forecast-render-2.png)
+
+> **NOTE:**
+>
+> ARIMA prediction intervals are derived analytically from the model’s MA representation. Their width grows with the forecast horizon, and **grows faster as d increases** — a direct consequence of accumulated uncertainty from differencing. For a random walk (d = 1), intervals widen at rate \sqrt{h}; for d = 2, they widen even faster.
+
+## 1.6 Manual and Automatic Specification
 
 In `fable`, ARIMA models are specified inside `model()` using the `ARIMA()` function. The order is controlled with `pdq()` for non-seasonal terms and `PDQ()` for seasonal terms. When `pdq()` is left unspecified, `fable` searches for the best order automatically.
-
-    <theme> List of 144
-     $ line                            : <ggplot2::element_line>
-      ..@ colour       : chr "black"
-      ..@ linewidth    : num 0.545
-      ..@ linetype     : num 1
-      ..@ lineend      : chr "butt"
-      ..@ linejoin     : chr "round"
-      ..@ arrow        : logi FALSE
-      ..@ arrow.fill   : chr "black"
-      ..@ inherit.blank: logi TRUE
-     $ rect                            : <ggplot2::element_rect>
-      ..@ fill         : chr "white"
-      ..@ colour       : chr "black"
-      ..@ linewidth    : num 0.545
-      ..@ linetype     : num 1
-      ..@ linejoin     : chr "round"
-      ..@ inherit.blank: logi TRUE
-     $ text                            : <ggplot2::element_text>
-      ..@ family       : chr ""
-      ..@ face         : chr "plain"
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : chr "#2A2520"
-      ..@ size         : num 12
-      ..@ hjust        : num 0.5
-      ..@ vjust        : num 0.5
-      ..@ angle        : num 0
-      ..@ lineheight   : num 0.9
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 0 0
-      ..@ debug        : logi FALSE
-      ..@ inherit.blank: logi FALSE
-     $ title                           : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : NULL
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ point                           : <ggplot2::element_point>
-      ..@ colour       : chr "black"
-      ..@ shape        : num 19
-      ..@ size         : num 1.64
-      ..@ fill         : chr "white"
-      ..@ stroke       : num 0.545
-      ..@ inherit.blank: logi TRUE
-     $ polygon                         : <ggplot2::element_polygon>
-      ..@ fill         : chr "white"
-      ..@ colour       : chr "black"
-      ..@ linewidth    : num 0.545
-      ..@ linetype     : num 1
-      ..@ linejoin     : chr "round"
-      ..@ inherit.blank: logi TRUE
-     $ geom                            : <ggplot2::element_geom>
-      ..@ ink        : chr "black"
-      ..@ paper      : chr "white"
-      ..@ accent     : chr "#3366FF"
-      ..@ linewidth  : num 0.545
-      ..@ borderwidth: num 0.545
-      ..@ linetype   : int 1
-      ..@ bordertype : int 1
-      ..@ family     : chr ""
-      ..@ fontsize   : num 4.22
-      ..@ pointsize  : num 1.64
-      ..@ pointshape : num 19
-      ..@ colour     : NULL
-      ..@ fill       : NULL
-     $ spacing                         : 'simpleUnit' num 6points
-      ..- attr(*, "unit")= int 8
-     $ margins                         : <ggplot2::margin> num [1:4] 6 6 6 6
-     $ aspect.ratio                    : NULL
-     $ axis.title                      : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : chr "#2A2520"
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : NULL
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi FALSE
-     $ axis.title.x                    : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : num 1
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 3 0 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.title.x.top                : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : num 0
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 3 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.title.x.bottom             : NULL
-     $ axis.title.y                    : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : num 1
-      ..@ angle        : num 90
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 3 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.title.y.left               : NULL
-     $ axis.title.y.right              : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : num 1
-      ..@ angle        : num -90
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 0 3
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text                       : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : chr "#2A2520"
-      ..@ size         : 'rel' num 0.8
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : NULL
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi FALSE
-     $ axis.text.x                     : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : num 1
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 2.4 0 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.x.top                 : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 5.4 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.x.bottom              : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 5.4 0 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.y                     : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : num 1
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 2.4 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.y.left                : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 5.4 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.y.right               : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 0 5.4
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.theta                 : NULL
-     $ axis.text.r                     : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : num 0.5
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 2.4 0 2.4
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.ticks                      : <ggplot2::element_blank>
-     $ axis.ticks.x                    : NULL
-     $ axis.ticks.x.top                : NULL
-     $ axis.ticks.x.bottom             : NULL
-     $ axis.ticks.y                    : NULL
-     $ axis.ticks.y.left               : NULL
-     $ axis.ticks.y.right              : NULL
-     $ axis.ticks.theta                : NULL
-     $ axis.ticks.r                    : NULL
-     $ axis.minor.ticks.x.top          : NULL
-     $ axis.minor.ticks.x.bottom       : NULL
-     $ axis.minor.ticks.y.left         : NULL
-     $ axis.minor.ticks.y.right        : NULL
-     $ axis.minor.ticks.theta          : NULL
-     $ axis.minor.ticks.r              : NULL
-     $ axis.ticks.length               : 'rel' num 0.5
-     $ axis.ticks.length.x             : NULL
-     $ axis.ticks.length.x.top         : NULL
-     $ axis.ticks.length.x.bottom      : NULL
-     $ axis.ticks.length.y             : NULL
-     $ axis.ticks.length.y.left        : NULL
-     $ axis.ticks.length.y.right       : NULL
-     $ axis.ticks.length.theta         : NULL
-     $ axis.ticks.length.r             : NULL
-     $ axis.minor.ticks.length         : 'rel' num 0.75
-     $ axis.minor.ticks.length.x       : NULL
-     $ axis.minor.ticks.length.x.top   : NULL
-     $ axis.minor.ticks.length.x.bottom: NULL
-     $ axis.minor.ticks.length.y       : NULL
-     $ axis.minor.ticks.length.y.left  : NULL
-     $ axis.minor.ticks.length.y.right : NULL
-     $ axis.minor.ticks.length.theta   : NULL
-     $ axis.minor.ticks.length.r       : NULL
-     $ axis.line                       : <ggplot2::element_blank>
-     $ axis.line.x                     : NULL
-     $ axis.line.x.top                 : NULL
-     $ axis.line.x.bottom              : NULL
-     $ axis.line.y                     : NULL
-     $ axis.line.y.left                : NULL
-     $ axis.line.y.right               : NULL
-     $ axis.line.theta                 : NULL
-     $ axis.line.r                     : NULL
-     $ legend.background               : <ggplot2::element_blank>
-     $ legend.margin                   : NULL
-     $ legend.spacing                  : 'rel' num 2
-     $ legend.spacing.x                : NULL
-     $ legend.spacing.y                : NULL
-     $ legend.key                      : <ggplot2::element_blank>
-     $ legend.key.size                 : 'simpleUnit' num 1.2lines
-      ..- attr(*, "unit")= int 3
-     $ legend.key.height               : NULL
-     $ legend.key.width                : NULL
-     $ legend.key.spacing              : NULL
-     $ legend.key.spacing.x            : NULL
-     $ legend.key.spacing.y            : NULL
-     $ legend.key.justification        : NULL
-     $ legend.frame                    : NULL
-     $ legend.ticks                    : NULL
-     $ legend.ticks.length             : 'rel' num 0.2
-     $ legend.axis.line                : NULL
-     $ legend.text                     : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : chr "#2A2520"
-      ..@ size         : 'rel' num 0.8
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : NULL
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi FALSE
-     $ legend.text.position            : NULL
-     $ legend.title                    : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : chr "bold"
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : chr "#2A2520"
-      ..@ size         : NULL
-      ..@ hjust        : num 0
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : NULL
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi FALSE
-     $ legend.title.position           : NULL
-     $ legend.position                 : chr "right"
-     $ legend.position.inside          : NULL
-     $ legend.direction                : NULL
-     $ legend.byrow                    : NULL
-     $ legend.justification            : chr "center"
-     $ legend.justification.top        : NULL
-     $ legend.justification.bottom     : NULL
-     $ legend.justification.left       : NULL
-     $ legend.justification.right      : NULL
-     $ legend.justification.inside     : NULL
-      [list output truncated]
-     @ complete: logi TRUE
-     @ validate: logi TRUE
 
 [![](arima_files/figure-html/us-change-tsdisplay-1.png)](arima_files/figure-html/us-change-tsdisplay-1.png)
 
@@ -504,12 +249,14 @@ Code
 ``` r
 us_change_fit <- us_change |>
   model(
-    manual     = ARIMA(Consumption ~ pdq(3, 0, 0) + PDQ(0, 0, 0)),     #<1>
-    auto       = ARIMA(Consumption ~ PDQ(0, 0, 0)),                     #<2>
-    semi_auto  = ARIMA(Consumption ~ pdq(1:3, 0, 0:2) + PDQ(0, 0, 0)), #<3>
+    ar1        = ARIMA(Consumption ~ pdq(1, 0, 0) + PDQ(0, 0, 0)),
+    ar2        = ARIMA(Consumption ~ pdq(2, 0, 0) + PDQ(0, 0, 0)),
+    ar3        = ARIMA(Consumption ~ pdq(3, 0, 0) + PDQ(0, 0, 0)),
+    auto       = ARIMA(Consumption ~ PDQ(0, 0, 0)),                     #<1>
+    semi_auto  = ARIMA(Consumption ~ pdq(1:3, 0, 0:2) + PDQ(0, 0, 0)), #<2>
     exhaustive = ARIMA(Consumption ~ PDQ(0, 0, 0),
-                       stepwise      = FALSE,                           #<4>
-                       approximation = FALSE)                           #<5>
+                       stepwise      = FALSE,                           #<3>
+                       approximation = FALSE)                           #<4>
   )
 
 glance(us_change_fit) |>
@@ -517,11 +264,10 @@ glance(us_change_fit) |>
   select(.model, AIC, AICc, BIC)
 ```
 
-1.  Manual specification using `pdq()`. `PDQ(0,0,0)` explicitly forces a non-seasonal model.
-2.  Leaving `pdq()` unspecified triggers automatic stepwise order selection.
-3.  Evaluates all combinations of p \in \\1,2,3\\ and q \in \\0,1,2\\, returns the lowest AIC\_c.
-4.  `stepwise = FALSE` explores all combinations rather than navigating step by step.
-5.  `approximation = FALSE` uses exact likelihood. More accurate but slower on long series.
+1.  Stepwise automatic search — pdq() left unspecified.
+2.  Evaluates all combinations of p ∈ {1,2,3} and q ∈ {0,1,2}; returns the lowest AICc.
+3.  stepwise = FALSE explores all combinations rather than navigating step by step.
+4.  approximation = FALSE uses exact likelihood — more accurate but slower on long series.
 
 > **NOTE:**
 >
@@ -555,7 +301,7 @@ glance(us_change_fit) |>
 > tictoc::toc()
 > ```
 >
->     auto: 0.12 sec elapsed
+>     auto: 0.09 sec elapsed
 >
 > Code
 >
@@ -573,507 +319,13 @@ glance(us_change_fit) |>
 > tictoc::toc()
 > ```
 >
->     exhaustive: 0.64 sec elapsed
+>     exhaustive: 0.72 sec elapsed
 >
-> Times will vary by hardware, but the **relative difference** is what matters. On longer series like `mexretail` (480+ monthly observations with seasonal structure), the gap is even more pronounced — which is why `freeze` is recommended for documents containing exhaustive ARIMA searches.
+> Times will vary by hardware, but the **relative difference** is what matters. On longer series like `mexretail` (480+ monthly observations with seasonal structure), the gap is even more pronounced.
 
-## 2.3 Model Selection
+# 2 Seasonal ARIMA
 
-When we fit a statistical model, we face a fundamental tension: a more complex model (more parameters) will always fit the observed data better, but it may simply be memorizing noise rather than capturing genuine structure. This is the **bias-variance tradeoff**.
-
-**Information criteria** address this by penalizing model complexity — they reward goodness of fit but add a cost for each additional parameter estimated. The goal is to find the model that generalizes best, not the one that fits best in-sample.
-
-When comparing candidate ARIMA models, we use three related criteria:
-
-- **AIC** — Akaike Information Criterion
-- **AIC\_c** — AIC corrected for small sample sizes
-- **BIC** — Bayesian Information Criterion (also known as Schwarz criterion)
-
-\text{AIC} = -2\log(L) + 2(p + q + k + 1)
-
-\text{AIC}\_c = \text{AIC} + \frac{2(p + q + k + 1)(p + q + k + 2)}{T - p - q - k - 2}
-
-\text{BIC} = \text{AIC} + \[\log(T) - 2\](p + q + k + 1)
-
-where k = 1 if the model includes a constant, k = 0 otherwise. **Lower is better** for all three. The preferred criterion is AIC\_c — it converges to AIC as T grows, but is more conservative with small samples.
-
-> **TIP:**
->
-> Both penalize complexity, but BIC applies a heavier penalty (it grows with \log T rather than a fixed 2). In practice:
->
-> - **AIC\_c** tends to select slightly richer models and is generally preferred for forecasting.
-> - **BIC** tends to select more parsimonious models and is preferred when interpretability matters.
->
-> For this course, use **AIC\_c** as the default.
-
-> **IMPORTANT:**
->
-> Information criteria are only comparable across models fitted to **identical data** — same transformation, same differencing order. You cannot compare AIC\_c of an ARIMA fitted to \log(y_t) vs. one fitted to y_t, or ARIMA(1,1,1) vs. ARIMA(1,0,1). When models differ in d, use forecast accuracy on a test set instead.
-
-## 2.4 Box-Jenkins Methodology
-
-ARIMA model building follows an iterative procedure known as the **Box-Jenkins methodology**:
-
-1.  **Plot the data.** Identify unusual observations, structural breaks, outliers.
-2.  **Stabilize the variance** if needed — apply a log or Box-Cox transformation.
-3.  **Determine d** — use `unitroot_nsdiffs()` and `unitroot_ndiffs()`.
-4.  **Examine ACF and PACF** of the stationary series to identify candidate orders p and q.
-5.  **Fit candidate models** and compare using AIC\_c.
-6.  **Check residuals** — ACF of residuals and Ljung-Box test. If not white noise, refine.
-7.  **Forecast** once residuals pass diagnostic checks.
-
-> **NOTE:**
->
-> The Box-Jenkins procedure is a cycle, not a checklist. It is normal to go through steps 4–6 two or three times before settling on a model.
-
-## 2.5 Residual Diagnostics
-
-We have already used the Ljung-Box test to check residuals from benchmark models. When applying it to **ARIMA models**, there is one important adjustment: you must account for the degrees of freedom consumed by the estimated AR and MA parameters.
-
-Code
-
-``` r
-theme_narsil()
-```
-
-    <theme> List of 144
-     $ line                            : <ggplot2::element_line>
-      ..@ colour       : chr "black"
-      ..@ linewidth    : num 0.545
-      ..@ linetype     : num 1
-      ..@ lineend      : chr "butt"
-      ..@ linejoin     : chr "round"
-      ..@ arrow        : logi FALSE
-      ..@ arrow.fill   : chr "black"
-      ..@ inherit.blank: logi TRUE
-     $ rect                            : <ggplot2::element_rect>
-      ..@ fill         : chr "white"
-      ..@ colour       : chr "black"
-      ..@ linewidth    : num 0.545
-      ..@ linetype     : num 1
-      ..@ linejoin     : chr "round"
-      ..@ inherit.blank: logi TRUE
-     $ text                            : <ggplot2::element_text>
-      ..@ family       : chr ""
-      ..@ face         : chr "plain"
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : chr "#2A2520"
-      ..@ size         : num 12
-      ..@ hjust        : num 0.5
-      ..@ vjust        : num 0.5
-      ..@ angle        : num 0
-      ..@ lineheight   : num 0.9
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 0 0
-      ..@ debug        : logi FALSE
-      ..@ inherit.blank: logi FALSE
-     $ title                           : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : NULL
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ point                           : <ggplot2::element_point>
-      ..@ colour       : chr "black"
-      ..@ shape        : num 19
-      ..@ size         : num 1.64
-      ..@ fill         : chr "white"
-      ..@ stroke       : num 0.545
-      ..@ inherit.blank: logi TRUE
-     $ polygon                         : <ggplot2::element_polygon>
-      ..@ fill         : chr "white"
-      ..@ colour       : chr "black"
-      ..@ linewidth    : num 0.545
-      ..@ linetype     : num 1
-      ..@ linejoin     : chr "round"
-      ..@ inherit.blank: logi TRUE
-     $ geom                            : <ggplot2::element_geom>
-      ..@ ink        : chr "black"
-      ..@ paper      : chr "white"
-      ..@ accent     : chr "#3366FF"
-      ..@ linewidth  : num 0.545
-      ..@ borderwidth: num 0.545
-      ..@ linetype   : int 1
-      ..@ bordertype : int 1
-      ..@ family     : chr ""
-      ..@ fontsize   : num 4.22
-      ..@ pointsize  : num 1.64
-      ..@ pointshape : num 19
-      ..@ colour     : NULL
-      ..@ fill       : NULL
-     $ spacing                         : 'simpleUnit' num 6points
-      ..- attr(*, "unit")= int 8
-     $ margins                         : <ggplot2::margin> num [1:4] 6 6 6 6
-     $ aspect.ratio                    : NULL
-     $ axis.title                      : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : chr "#2A2520"
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : NULL
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi FALSE
-     $ axis.title.x                    : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : num 1
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 3 0 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.title.x.top                : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : num 0
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 3 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.title.x.bottom             : NULL
-     $ axis.title.y                    : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : num 1
-      ..@ angle        : num 90
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 3 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.title.y.left               : NULL
-     $ axis.title.y.right              : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : num 1
-      ..@ angle        : num -90
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 0 3
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text                       : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : chr "#2A2520"
-      ..@ size         : 'rel' num 0.8
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : NULL
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi FALSE
-     $ axis.text.x                     : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : num 1
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 2.4 0 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.x.top                 : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 5.4 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.x.bottom              : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 5.4 0 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.y                     : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : num 1
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 2.4 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.y.left                : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 5.4 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.y.right               : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 0 5.4
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.theta                 : NULL
-     $ axis.text.r                     : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : num 0.5
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 2.4 0 2.4
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.ticks                      : <ggplot2::element_blank>
-     $ axis.ticks.x                    : NULL
-     $ axis.ticks.x.top                : NULL
-     $ axis.ticks.x.bottom             : NULL
-     $ axis.ticks.y                    : NULL
-     $ axis.ticks.y.left               : NULL
-     $ axis.ticks.y.right              : NULL
-     $ axis.ticks.theta                : NULL
-     $ axis.ticks.r                    : NULL
-     $ axis.minor.ticks.x.top          : NULL
-     $ axis.minor.ticks.x.bottom       : NULL
-     $ axis.minor.ticks.y.left         : NULL
-     $ axis.minor.ticks.y.right        : NULL
-     $ axis.minor.ticks.theta          : NULL
-     $ axis.minor.ticks.r              : NULL
-     $ axis.ticks.length               : 'rel' num 0.5
-     $ axis.ticks.length.x             : NULL
-     $ axis.ticks.length.x.top         : NULL
-     $ axis.ticks.length.x.bottom      : NULL
-     $ axis.ticks.length.y             : NULL
-     $ axis.ticks.length.y.left        : NULL
-     $ axis.ticks.length.y.right       : NULL
-     $ axis.ticks.length.theta         : NULL
-     $ axis.ticks.length.r             : NULL
-     $ axis.minor.ticks.length         : 'rel' num 0.75
-     $ axis.minor.ticks.length.x       : NULL
-     $ axis.minor.ticks.length.x.top   : NULL
-     $ axis.minor.ticks.length.x.bottom: NULL
-     $ axis.minor.ticks.length.y       : NULL
-     $ axis.minor.ticks.length.y.left  : NULL
-     $ axis.minor.ticks.length.y.right : NULL
-     $ axis.minor.ticks.length.theta   : NULL
-     $ axis.minor.ticks.length.r       : NULL
-     $ axis.line                       : <ggplot2::element_blank>
-     $ axis.line.x                     : NULL
-     $ axis.line.x.top                 : NULL
-     $ axis.line.x.bottom              : NULL
-     $ axis.line.y                     : NULL
-     $ axis.line.y.left                : NULL
-     $ axis.line.y.right               : NULL
-     $ axis.line.theta                 : NULL
-     $ axis.line.r                     : NULL
-     $ legend.background               : <ggplot2::element_blank>
-     $ legend.margin                   : NULL
-     $ legend.spacing                  : 'rel' num 2
-     $ legend.spacing.x                : NULL
-     $ legend.spacing.y                : NULL
-     $ legend.key                      : <ggplot2::element_blank>
-     $ legend.key.size                 : 'simpleUnit' num 1.2lines
-      ..- attr(*, "unit")= int 3
-     $ legend.key.height               : NULL
-     $ legend.key.width                : NULL
-     $ legend.key.spacing              : NULL
-     $ legend.key.spacing.x            : NULL
-     $ legend.key.spacing.y            : NULL
-     $ legend.key.justification        : NULL
-     $ legend.frame                    : NULL
-     $ legend.ticks                    : NULL
-     $ legend.ticks.length             : 'rel' num 0.2
-     $ legend.axis.line                : NULL
-     $ legend.text                     : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : chr "#2A2520"
-      ..@ size         : 'rel' num 0.8
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : NULL
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi FALSE
-     $ legend.text.position            : NULL
-     $ legend.title                    : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : chr "bold"
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : chr "#2A2520"
-      ..@ size         : NULL
-      ..@ hjust        : num 0
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : NULL
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi FALSE
-     $ legend.title.position           : NULL
-     $ legend.position                 : chr "right"
-     $ legend.position.inside          : NULL
-     $ legend.direction                : NULL
-     $ legend.byrow                    : NULL
-     $ legend.justification            : chr "center"
-     $ legend.justification.top        : NULL
-     $ legend.justification.bottom     : NULL
-     $ legend.justification.left       : NULL
-     $ legend.justification.right      : NULL
-     $ legend.justification.inside     : NULL
-      [list output truncated]
-     @ complete: logi TRUE
-     @ validate: logi TRUE
-
-Code
-
-``` r
-us_change_fit |>
-  select(manual) |>
-  gg_tsresiduals()
-```
-
-[![](arima_files/figure-html/us-change-residuals-1.png)](arima_files/figure-html/us-change-residuals-1.png)
-
-Code
-
-``` r
-us_change_fit |>
-  select(manual) |>
-  augment() |>
-  features(.innov, ljung_box,
-           lag = 10,
-           dof = us_change_fit |>                          #<1>
-                   select(manual) |>
-                   coefficients() |>
-                   filter(str_detect(term, "^ar|^ma")) |>
-                   nrow())
-```
-
-1.  `dof` is computed dynamically as the number of estimated AR and MA coefficients, so it always matches the fitted model regardless of order.
-
-## 2.6 Forecasting
-
-Once the model passes residual diagnostics, forecasting uses the same `forecast()` workflow as all other `fable` models:
-
-Code
-
-``` r
-us_change_forecast_p <- us_change_fit |>
-  select(manual) |>
-  forecast(h = 10) |>
-  autoplot(us_change |> filter(year(Quarter) >= 2005)) +
-  labs(
-    title = "US consumption — ARIMA(3,0,0) forecast",
-    y = "% change"
-  )
-```
-
-[![](arima_files/figure-html/us-change-forecast-render-1.png)](arima_files/figure-html/us-change-forecast-render-1.png)
-
-[![](arima_files/figure-html/us-change-forecast-render-2.png)](arima_files/figure-html/us-change-forecast-render-2.png)
-
-> **NOTE:**
->
-> ARIMA prediction intervals are derived analytically from the model’s MA representation. Their width grows with the forecast horizon, and **grows faster as d increases** — a direct consequence of accumulated uncertainty from differencing. For a random walk (d = 1), intervals widen at rate \sqrt{h}; for d = 2, they widen even faster.
-
-# 3 Seasonal ARIMA
-
-## 3.1 STL + ARIMA
+## 2.1 STL + ARIMA
 
 `mexretail` is a monthly series with strong trend and seasonality. We already know how to handle it with STL decomposition. In Module 1 we combined STL with SNAIVE; in Module 2 we replaced SNAIVE with ETS. The natural next step is to replace it with ARIMA.
 
@@ -1126,394 +378,6 @@ Code
 
 ``` r
 theme_narsil()
-```
-
-    <theme> List of 144
-     $ line                            : <ggplot2::element_line>
-      ..@ colour       : chr "black"
-      ..@ linewidth    : num 0.545
-      ..@ linetype     : num 1
-      ..@ lineend      : chr "butt"
-      ..@ linejoin     : chr "round"
-      ..@ arrow        : logi FALSE
-      ..@ arrow.fill   : chr "black"
-      ..@ inherit.blank: logi TRUE
-     $ rect                            : <ggplot2::element_rect>
-      ..@ fill         : chr "white"
-      ..@ colour       : chr "black"
-      ..@ linewidth    : num 0.545
-      ..@ linetype     : num 1
-      ..@ linejoin     : chr "round"
-      ..@ inherit.blank: logi TRUE
-     $ text                            : <ggplot2::element_text>
-      ..@ family       : chr ""
-      ..@ face         : chr "plain"
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : chr "#2A2520"
-      ..@ size         : num 12
-      ..@ hjust        : num 0.5
-      ..@ vjust        : num 0.5
-      ..@ angle        : num 0
-      ..@ lineheight   : num 0.9
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 0 0
-      ..@ debug        : logi FALSE
-      ..@ inherit.blank: logi FALSE
-     $ title                           : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : NULL
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ point                           : <ggplot2::element_point>
-      ..@ colour       : chr "black"
-      ..@ shape        : num 19
-      ..@ size         : num 1.64
-      ..@ fill         : chr "white"
-      ..@ stroke       : num 0.545
-      ..@ inherit.blank: logi TRUE
-     $ polygon                         : <ggplot2::element_polygon>
-      ..@ fill         : chr "white"
-      ..@ colour       : chr "black"
-      ..@ linewidth    : num 0.545
-      ..@ linetype     : num 1
-      ..@ linejoin     : chr "round"
-      ..@ inherit.blank: logi TRUE
-     $ geom                            : <ggplot2::element_geom>
-      ..@ ink        : chr "black"
-      ..@ paper      : chr "white"
-      ..@ accent     : chr "#3366FF"
-      ..@ linewidth  : num 0.545
-      ..@ borderwidth: num 0.545
-      ..@ linetype   : int 1
-      ..@ bordertype : int 1
-      ..@ family     : chr ""
-      ..@ fontsize   : num 4.22
-      ..@ pointsize  : num 1.64
-      ..@ pointshape : num 19
-      ..@ colour     : NULL
-      ..@ fill       : NULL
-     $ spacing                         : 'simpleUnit' num 6points
-      ..- attr(*, "unit")= int 8
-     $ margins                         : <ggplot2::margin> num [1:4] 6 6 6 6
-     $ aspect.ratio                    : NULL
-     $ axis.title                      : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : chr "#2A2520"
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : NULL
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi FALSE
-     $ axis.title.x                    : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : num 1
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 3 0 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.title.x.top                : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : num 0
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 3 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.title.x.bottom             : NULL
-     $ axis.title.y                    : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : num 1
-      ..@ angle        : num 90
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 3 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.title.y.left               : NULL
-     $ axis.title.y.right              : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : num 1
-      ..@ angle        : num -90
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 0 3
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text                       : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : chr "#2A2520"
-      ..@ size         : 'rel' num 0.8
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : NULL
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi FALSE
-     $ axis.text.x                     : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : num 1
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 2.4 0 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.x.top                 : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 5.4 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.x.bottom              : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 5.4 0 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.y                     : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : num 1
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 2.4 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.y.left                : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 5.4 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.y.right               : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 0 5.4
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.theta                 : NULL
-     $ axis.text.r                     : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : num 0.5
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 2.4 0 2.4
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.ticks                      : <ggplot2::element_blank>
-     $ axis.ticks.x                    : NULL
-     $ axis.ticks.x.top                : NULL
-     $ axis.ticks.x.bottom             : NULL
-     $ axis.ticks.y                    : NULL
-     $ axis.ticks.y.left               : NULL
-     $ axis.ticks.y.right              : NULL
-     $ axis.ticks.theta                : NULL
-     $ axis.ticks.r                    : NULL
-     $ axis.minor.ticks.x.top          : NULL
-     $ axis.minor.ticks.x.bottom       : NULL
-     $ axis.minor.ticks.y.left         : NULL
-     $ axis.minor.ticks.y.right        : NULL
-     $ axis.minor.ticks.theta          : NULL
-     $ axis.minor.ticks.r              : NULL
-     $ axis.ticks.length               : 'rel' num 0.5
-     $ axis.ticks.length.x             : NULL
-     $ axis.ticks.length.x.top         : NULL
-     $ axis.ticks.length.x.bottom      : NULL
-     $ axis.ticks.length.y             : NULL
-     $ axis.ticks.length.y.left        : NULL
-     $ axis.ticks.length.y.right       : NULL
-     $ axis.ticks.length.theta         : NULL
-     $ axis.ticks.length.r             : NULL
-     $ axis.minor.ticks.length         : 'rel' num 0.75
-     $ axis.minor.ticks.length.x       : NULL
-     $ axis.minor.ticks.length.x.top   : NULL
-     $ axis.minor.ticks.length.x.bottom: NULL
-     $ axis.minor.ticks.length.y       : NULL
-     $ axis.minor.ticks.length.y.left  : NULL
-     $ axis.minor.ticks.length.y.right : NULL
-     $ axis.minor.ticks.length.theta   : NULL
-     $ axis.minor.ticks.length.r       : NULL
-     $ axis.line                       : <ggplot2::element_blank>
-     $ axis.line.x                     : NULL
-     $ axis.line.x.top                 : NULL
-     $ axis.line.x.bottom              : NULL
-     $ axis.line.y                     : NULL
-     $ axis.line.y.left                : NULL
-     $ axis.line.y.right               : NULL
-     $ axis.line.theta                 : NULL
-     $ axis.line.r                     : NULL
-     $ legend.background               : <ggplot2::element_blank>
-     $ legend.margin                   : NULL
-     $ legend.spacing                  : 'rel' num 2
-     $ legend.spacing.x                : NULL
-     $ legend.spacing.y                : NULL
-     $ legend.key                      : <ggplot2::element_blank>
-     $ legend.key.size                 : 'simpleUnit' num 1.2lines
-      ..- attr(*, "unit")= int 3
-     $ legend.key.height               : NULL
-     $ legend.key.width                : NULL
-     $ legend.key.spacing              : NULL
-     $ legend.key.spacing.x            : NULL
-     $ legend.key.spacing.y            : NULL
-     $ legend.key.justification        : NULL
-     $ legend.frame                    : NULL
-     $ legend.ticks                    : NULL
-     $ legend.ticks.length             : 'rel' num 0.2
-     $ legend.axis.line                : NULL
-     $ legend.text                     : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : chr "#2A2520"
-      ..@ size         : 'rel' num 0.8
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : NULL
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi FALSE
-     $ legend.text.position            : NULL
-     $ legend.title                    : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : chr "bold"
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : chr "#2A2520"
-      ..@ size         : NULL
-      ..@ hjust        : num 0
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : NULL
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi FALSE
-     $ legend.title.position           : NULL
-     $ legend.position                 : chr "right"
-     $ legend.position.inside          : NULL
-     $ legend.direction                : NULL
-     $ legend.byrow                    : NULL
-     $ legend.justification            : chr "center"
-     $ legend.justification.top        : NULL
-     $ legend.justification.bottom     : NULL
-     $ legend.justification.left       : NULL
-     $ legend.justification.right      : NULL
-     $ legend.justification.inside     : NULL
-      [list output truncated]
-     @ complete: logi TRUE
-     @ validate: logi TRUE
-
-Code
-
-``` r
 mexretail_fit_stl_arima |> gg_tsresiduals()
 ```
 
@@ -1535,7 +399,7 @@ stl_arima_forecast_p <- mexretail_fit_stl_arima |>
 
 [![](arima_files/figure-html/stl-arima-forecast-render-2.png)](arima_files/figure-html/stl-arima-forecast-render-2.png)
 
-## 3.2 SARIMA
+## 2.2 SARIMA
 
 STL + ARIMA is a two-stage approach: decompose first, then model. An alternative is to handle seasonality **within a single ARIMA model** by adding seasonal AR and MA terms. This is a **Seasonal ARIMA** model, written as:
 
@@ -1547,7 +411,7 @@ The full model in backshift notation is:
 
 \underbrace{\Phi(B^m)}\_{\text{seasonal AR}} \underbrace{\phi(B)}\_{\text{non-seasonal AR}} \underbrace{(1-B^m)^D (1-B)^d}\_{\text{differencing}} y_t = c + \underbrace{\Theta(B^m)}\_{\text{seasonal MA}} \underbrace{\theta(B)}\_{\text{non-seasonal MA}} \varepsilon_t
 
-### 3.2.1 Reading ACF/PACF for Seasonal Orders
+### 2.2.1 Reading ACF/PACF for Seasonal Orders
 
 The non-seasonal orders (p, q) are read from the first few lags of the ACF/PACF, as before. The seasonal orders (P, Q) are read from the **seasonal lags** (m, 2m, 3m, …):
 
@@ -1561,7 +425,7 @@ The non-seasonal orders (p, q) are read from the first few lags of the ACF/PACF,
 >
 > Focus on the seasonal lags *separately* from the non-seasonal lags. Use `lag_max = 3m` or `4m` to make the seasonal structure clearly visible.
 
-### 3.2.2 SARIMA for `mexretail`
+### 2.2.2 SARIMA for `mexretail`
 
 The stationarity protocol for `mexretail` established that we need D = 1 and d = 1 applied to the Box-Cox-transformed series. Let’s inspect the ACF/PACF to choose p, q, P, Q:
 
@@ -1569,394 +433,6 @@ Code
 
 ``` r
 theme_narsil()
-```
-
-    <theme> List of 144
-     $ line                            : <ggplot2::element_line>
-      ..@ colour       : chr "black"
-      ..@ linewidth    : num 0.545
-      ..@ linetype     : num 1
-      ..@ lineend      : chr "butt"
-      ..@ linejoin     : chr "round"
-      ..@ arrow        : logi FALSE
-      ..@ arrow.fill   : chr "black"
-      ..@ inherit.blank: logi TRUE
-     $ rect                            : <ggplot2::element_rect>
-      ..@ fill         : chr "white"
-      ..@ colour       : chr "black"
-      ..@ linewidth    : num 0.545
-      ..@ linetype     : num 1
-      ..@ linejoin     : chr "round"
-      ..@ inherit.blank: logi TRUE
-     $ text                            : <ggplot2::element_text>
-      ..@ family       : chr ""
-      ..@ face         : chr "plain"
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : chr "#2A2520"
-      ..@ size         : num 12
-      ..@ hjust        : num 0.5
-      ..@ vjust        : num 0.5
-      ..@ angle        : num 0
-      ..@ lineheight   : num 0.9
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 0 0
-      ..@ debug        : logi FALSE
-      ..@ inherit.blank: logi FALSE
-     $ title                           : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : NULL
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ point                           : <ggplot2::element_point>
-      ..@ colour       : chr "black"
-      ..@ shape        : num 19
-      ..@ size         : num 1.64
-      ..@ fill         : chr "white"
-      ..@ stroke       : num 0.545
-      ..@ inherit.blank: logi TRUE
-     $ polygon                         : <ggplot2::element_polygon>
-      ..@ fill         : chr "white"
-      ..@ colour       : chr "black"
-      ..@ linewidth    : num 0.545
-      ..@ linetype     : num 1
-      ..@ linejoin     : chr "round"
-      ..@ inherit.blank: logi TRUE
-     $ geom                            : <ggplot2::element_geom>
-      ..@ ink        : chr "black"
-      ..@ paper      : chr "white"
-      ..@ accent     : chr "#3366FF"
-      ..@ linewidth  : num 0.545
-      ..@ borderwidth: num 0.545
-      ..@ linetype   : int 1
-      ..@ bordertype : int 1
-      ..@ family     : chr ""
-      ..@ fontsize   : num 4.22
-      ..@ pointsize  : num 1.64
-      ..@ pointshape : num 19
-      ..@ colour     : NULL
-      ..@ fill       : NULL
-     $ spacing                         : 'simpleUnit' num 6points
-      ..- attr(*, "unit")= int 8
-     $ margins                         : <ggplot2::margin> num [1:4] 6 6 6 6
-     $ aspect.ratio                    : NULL
-     $ axis.title                      : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : chr "#2A2520"
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : NULL
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi FALSE
-     $ axis.title.x                    : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : num 1
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 3 0 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.title.x.top                : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : num 0
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 3 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.title.x.bottom             : NULL
-     $ axis.title.y                    : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : num 1
-      ..@ angle        : num 90
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 3 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.title.y.left               : NULL
-     $ axis.title.y.right              : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : num 1
-      ..@ angle        : num -90
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 0 3
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text                       : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : chr "#2A2520"
-      ..@ size         : 'rel' num 0.8
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : NULL
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi FALSE
-     $ axis.text.x                     : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : num 1
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 2.4 0 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.x.top                 : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 5.4 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.x.bottom              : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 5.4 0 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.y                     : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : num 1
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 2.4 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.y.left                : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 5.4 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.y.right               : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 0 5.4
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.theta                 : NULL
-     $ axis.text.r                     : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : num 0.5
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 2.4 0 2.4
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.ticks                      : <ggplot2::element_blank>
-     $ axis.ticks.x                    : NULL
-     $ axis.ticks.x.top                : NULL
-     $ axis.ticks.x.bottom             : NULL
-     $ axis.ticks.y                    : NULL
-     $ axis.ticks.y.left               : NULL
-     $ axis.ticks.y.right              : NULL
-     $ axis.ticks.theta                : NULL
-     $ axis.ticks.r                    : NULL
-     $ axis.minor.ticks.x.top          : NULL
-     $ axis.minor.ticks.x.bottom       : NULL
-     $ axis.minor.ticks.y.left         : NULL
-     $ axis.minor.ticks.y.right        : NULL
-     $ axis.minor.ticks.theta          : NULL
-     $ axis.minor.ticks.r              : NULL
-     $ axis.ticks.length               : 'rel' num 0.5
-     $ axis.ticks.length.x             : NULL
-     $ axis.ticks.length.x.top         : NULL
-     $ axis.ticks.length.x.bottom      : NULL
-     $ axis.ticks.length.y             : NULL
-     $ axis.ticks.length.y.left        : NULL
-     $ axis.ticks.length.y.right       : NULL
-     $ axis.ticks.length.theta         : NULL
-     $ axis.ticks.length.r             : NULL
-     $ axis.minor.ticks.length         : 'rel' num 0.75
-     $ axis.minor.ticks.length.x       : NULL
-     $ axis.minor.ticks.length.x.top   : NULL
-     $ axis.minor.ticks.length.x.bottom: NULL
-     $ axis.minor.ticks.length.y       : NULL
-     $ axis.minor.ticks.length.y.left  : NULL
-     $ axis.minor.ticks.length.y.right : NULL
-     $ axis.minor.ticks.length.theta   : NULL
-     $ axis.minor.ticks.length.r       : NULL
-     $ axis.line                       : <ggplot2::element_blank>
-     $ axis.line.x                     : NULL
-     $ axis.line.x.top                 : NULL
-     $ axis.line.x.bottom              : NULL
-     $ axis.line.y                     : NULL
-     $ axis.line.y.left                : NULL
-     $ axis.line.y.right               : NULL
-     $ axis.line.theta                 : NULL
-     $ axis.line.r                     : NULL
-     $ legend.background               : <ggplot2::element_blank>
-     $ legend.margin                   : NULL
-     $ legend.spacing                  : 'rel' num 2
-     $ legend.spacing.x                : NULL
-     $ legend.spacing.y                : NULL
-     $ legend.key                      : <ggplot2::element_blank>
-     $ legend.key.size                 : 'simpleUnit' num 1.2lines
-      ..- attr(*, "unit")= int 3
-     $ legend.key.height               : NULL
-     $ legend.key.width                : NULL
-     $ legend.key.spacing              : NULL
-     $ legend.key.spacing.x            : NULL
-     $ legend.key.spacing.y            : NULL
-     $ legend.key.justification        : NULL
-     $ legend.frame                    : NULL
-     $ legend.ticks                    : NULL
-     $ legend.ticks.length             : 'rel' num 0.2
-     $ legend.axis.line                : NULL
-     $ legend.text                     : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : chr "#2A2520"
-      ..@ size         : 'rel' num 0.8
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : NULL
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi FALSE
-     $ legend.text.position            : NULL
-     $ legend.title                    : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : chr "bold"
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : chr "#2A2520"
-      ..@ size         : NULL
-      ..@ hjust        : num 0
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : NULL
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi FALSE
-     $ legend.title.position           : NULL
-     $ legend.position                 : chr "right"
-     $ legend.position.inside          : NULL
-     $ legend.direction                : NULL
-     $ legend.byrow                    : NULL
-     $ legend.justification            : chr "center"
-     $ legend.justification.top        : NULL
-     $ legend.justification.bottom     : NULL
-     $ legend.justification.left       : NULL
-     $ legend.justification.right      : NULL
-     $ legend.justification.inside     : NULL
-      [list output truncated]
-     @ complete: logi TRUE
-     @ validate: logi TRUE
-
-Code
-
-``` r
 mexretail |>
   gg_tsdisplay(
     difference(box_cox(y, lambda), 12) |> difference(1),
@@ -2029,394 +505,6 @@ Code
 
 ``` r
 theme_narsil()
-```
-
-    <theme> List of 144
-     $ line                            : <ggplot2::element_line>
-      ..@ colour       : chr "black"
-      ..@ linewidth    : num 0.545
-      ..@ linetype     : num 1
-      ..@ lineend      : chr "butt"
-      ..@ linejoin     : chr "round"
-      ..@ arrow        : logi FALSE
-      ..@ arrow.fill   : chr "black"
-      ..@ inherit.blank: logi TRUE
-     $ rect                            : <ggplot2::element_rect>
-      ..@ fill         : chr "white"
-      ..@ colour       : chr "black"
-      ..@ linewidth    : num 0.545
-      ..@ linetype     : num 1
-      ..@ linejoin     : chr "round"
-      ..@ inherit.blank: logi TRUE
-     $ text                            : <ggplot2::element_text>
-      ..@ family       : chr ""
-      ..@ face         : chr "plain"
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : chr "#2A2520"
-      ..@ size         : num 12
-      ..@ hjust        : num 0.5
-      ..@ vjust        : num 0.5
-      ..@ angle        : num 0
-      ..@ lineheight   : num 0.9
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 0 0
-      ..@ debug        : logi FALSE
-      ..@ inherit.blank: logi FALSE
-     $ title                           : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : NULL
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ point                           : <ggplot2::element_point>
-      ..@ colour       : chr "black"
-      ..@ shape        : num 19
-      ..@ size         : num 1.64
-      ..@ fill         : chr "white"
-      ..@ stroke       : num 0.545
-      ..@ inherit.blank: logi TRUE
-     $ polygon                         : <ggplot2::element_polygon>
-      ..@ fill         : chr "white"
-      ..@ colour       : chr "black"
-      ..@ linewidth    : num 0.545
-      ..@ linetype     : num 1
-      ..@ linejoin     : chr "round"
-      ..@ inherit.blank: logi TRUE
-     $ geom                            : <ggplot2::element_geom>
-      ..@ ink        : chr "black"
-      ..@ paper      : chr "white"
-      ..@ accent     : chr "#3366FF"
-      ..@ linewidth  : num 0.545
-      ..@ borderwidth: num 0.545
-      ..@ linetype   : int 1
-      ..@ bordertype : int 1
-      ..@ family     : chr ""
-      ..@ fontsize   : num 4.22
-      ..@ pointsize  : num 1.64
-      ..@ pointshape : num 19
-      ..@ colour     : NULL
-      ..@ fill       : NULL
-     $ spacing                         : 'simpleUnit' num 6points
-      ..- attr(*, "unit")= int 8
-     $ margins                         : <ggplot2::margin> num [1:4] 6 6 6 6
-     $ aspect.ratio                    : NULL
-     $ axis.title                      : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : chr "#2A2520"
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : NULL
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi FALSE
-     $ axis.title.x                    : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : num 1
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 3 0 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.title.x.top                : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : num 0
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 3 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.title.x.bottom             : NULL
-     $ axis.title.y                    : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : num 1
-      ..@ angle        : num 90
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 3 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.title.y.left               : NULL
-     $ axis.title.y.right              : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : num 1
-      ..@ angle        : num -90
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 0 3
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text                       : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : chr "#2A2520"
-      ..@ size         : 'rel' num 0.8
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : NULL
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi FALSE
-     $ axis.text.x                     : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : num 1
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 2.4 0 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.x.top                 : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 5.4 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.x.bottom              : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 5.4 0 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.y                     : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : num 1
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 2.4 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.y.left                : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 5.4 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.y.right               : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 0 5.4
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.theta                 : NULL
-     $ axis.text.r                     : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : num 0.5
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 2.4 0 2.4
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.ticks                      : <ggplot2::element_blank>
-     $ axis.ticks.x                    : NULL
-     $ axis.ticks.x.top                : NULL
-     $ axis.ticks.x.bottom             : NULL
-     $ axis.ticks.y                    : NULL
-     $ axis.ticks.y.left               : NULL
-     $ axis.ticks.y.right              : NULL
-     $ axis.ticks.theta                : NULL
-     $ axis.ticks.r                    : NULL
-     $ axis.minor.ticks.x.top          : NULL
-     $ axis.minor.ticks.x.bottom       : NULL
-     $ axis.minor.ticks.y.left         : NULL
-     $ axis.minor.ticks.y.right        : NULL
-     $ axis.minor.ticks.theta          : NULL
-     $ axis.minor.ticks.r              : NULL
-     $ axis.ticks.length               : 'rel' num 0.5
-     $ axis.ticks.length.x             : NULL
-     $ axis.ticks.length.x.top         : NULL
-     $ axis.ticks.length.x.bottom      : NULL
-     $ axis.ticks.length.y             : NULL
-     $ axis.ticks.length.y.left        : NULL
-     $ axis.ticks.length.y.right       : NULL
-     $ axis.ticks.length.theta         : NULL
-     $ axis.ticks.length.r             : NULL
-     $ axis.minor.ticks.length         : 'rel' num 0.75
-     $ axis.minor.ticks.length.x       : NULL
-     $ axis.minor.ticks.length.x.top   : NULL
-     $ axis.minor.ticks.length.x.bottom: NULL
-     $ axis.minor.ticks.length.y       : NULL
-     $ axis.minor.ticks.length.y.left  : NULL
-     $ axis.minor.ticks.length.y.right : NULL
-     $ axis.minor.ticks.length.theta   : NULL
-     $ axis.minor.ticks.length.r       : NULL
-     $ axis.line                       : <ggplot2::element_blank>
-     $ axis.line.x                     : NULL
-     $ axis.line.x.top                 : NULL
-     $ axis.line.x.bottom              : NULL
-     $ axis.line.y                     : NULL
-     $ axis.line.y.left                : NULL
-     $ axis.line.y.right               : NULL
-     $ axis.line.theta                 : NULL
-     $ axis.line.r                     : NULL
-     $ legend.background               : <ggplot2::element_blank>
-     $ legend.margin                   : NULL
-     $ legend.spacing                  : 'rel' num 2
-     $ legend.spacing.x                : NULL
-     $ legend.spacing.y                : NULL
-     $ legend.key                      : <ggplot2::element_blank>
-     $ legend.key.size                 : 'simpleUnit' num 1.2lines
-      ..- attr(*, "unit")= int 3
-     $ legend.key.height               : NULL
-     $ legend.key.width                : NULL
-     $ legend.key.spacing              : NULL
-     $ legend.key.spacing.x            : NULL
-     $ legend.key.spacing.y            : NULL
-     $ legend.key.justification        : NULL
-     $ legend.frame                    : NULL
-     $ legend.ticks                    : NULL
-     $ legend.ticks.length             : 'rel' num 0.2
-     $ legend.axis.line                : NULL
-     $ legend.text                     : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : chr "#2A2520"
-      ..@ size         : 'rel' num 0.8
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : NULL
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi FALSE
-     $ legend.text.position            : NULL
-     $ legend.title                    : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : chr "bold"
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : chr "#2A2520"
-      ..@ size         : NULL
-      ..@ hjust        : num 0
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : NULL
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi FALSE
-     $ legend.title.position           : NULL
-     $ legend.position                 : chr "right"
-     $ legend.position.inside          : NULL
-     $ legend.direction                : NULL
-     $ legend.byrow                    : NULL
-     $ legend.justification            : chr "center"
-     $ legend.justification.top        : NULL
-     $ legend.justification.bottom     : NULL
-     $ legend.justification.left       : NULL
-     $ legend.justification.right      : NULL
-     $ legend.justification.inside     : NULL
-      [list output truncated]
-     @ complete: logi TRUE
-     @ validate: logi TRUE
-
-Code
-
-``` r
 mexretail_fit_sarima |>
   select(sarima_auto) |>
   gg_tsresiduals(lag_max = 48)
@@ -2441,7 +529,7 @@ mexretail_fit_sarima |>
 
 1.  `dof` is computed dynamically as p + q + P + Q for the fitted model, so it always reflects the actual order selected by the exhaustive search.
 
-# 4 STL + ARIMA vs. SARIMA
+# 3 STL + ARIMA vs. SARIMA
 
 Both approaches are valid for seasonal series. Let’s compare them on `mexretail` using a train/test split:
 
@@ -2483,10 +571,6 @@ mexretail_fit |>
 [![](arima_files/figure-html/comparison-plot-facet-render-1.png)](arima_files/figure-html/comparison-plot-facet-render-1.png)
 
 [![](arima_files/figure-html/comparison-plot-facet-render-2.png)](arima_files/figure-html/comparison-plot-facet-render-2.png)
-
-[![](arima_files/figure-html/comparison-plot-overlay-render-1.png)](arima_files/figure-html/comparison-plot-overlay-render-1.png)
-
-[![](arima_files/figure-html/comparison-plot-overlay-render-2.png)](arima_files/figure-html/comparison-plot-overlay-render-2.png)
 
 > **NOTE:**
 >

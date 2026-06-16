@@ -2,7 +2,7 @@
 
 Modified
 
-June 10, 2026
+June 16, 2026
 
 Code
 
@@ -144,20 +144,122 @@ where each of these is an academic paper
 
 ------------------------------------------------------------------------
 
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Viewership of The Big Bang Theory and the second variable is Google searches for 'how to make baby'. The chart goes from 2008 to 2019, and the two variables track closely in value over that time.](spurious/correlation/image/1402_viewership-of-the-big-bang-theory_correlates-with_google-searches-for-how-to-make-baby.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Viewership of The Big Bang Theory and the second variable is Google searches for 'how to make baby'.  The chart goes from 2008 to 2019, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1402_viewership-of-the-big-bang-theory_correlates-with_google-searches-for-how-to-make-baby_mobile.svg)  
-**View details about correlation \#1,402**](spurious/correlation/1402_viewership-of-the-big-bang-theory_correlates-with_google-searches-for-how-to-make-baby)  
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the first name Annabelle and the second variable is UFO sightings in Maryland. The chart goes from 1975 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/3029_popularity-of-the-first-name-annabelle_correlates-with_ufo-sightings-in-maryland.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the first name Annabelle and the second variable is UFO sightings in Maryland.  The chart goes from 1975 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/3029_popularity-of-the-first-name-annabelle_correlates-with_ufo-sightings-in-maryland_mobile.svg)  
+**View details about correlation \#3,029**](spurious/correlation/3029_popularity-of-the-first-name-annabelle_correlates-with_ufo-sightings-in-maryland)  
   
 
 ^(Show scatterplot)
 
-![](spurious/correlation/scatterplot/1402_viewership-of-the-big-bang-theory_correlates-with_google-searches-for-how-to-make-baby_scatterplot.png)
+![](spurious/correlation/scatterplot/3029_popularity-of-the-first-name-annabelle_correlates-with_ufo-sightings-in-maryland_scatterplot.png)
 
   
   
 
 *What else correlates?*  
-[Viewership of "The Big Bang Theory"](spurious/variable?id=146) · [all films & actors](spurious/view-all-variables/films)  
-[Google searches for 'how to make baby'](spurious/variable?id=1497) · [all google searches](spurious/view-all-variables/google)  
+[Popularity of the first name Annabelle](spurious/variable?id=3599) · [all first names](spurious/view-all-variables/babynames)  
+[UFO sightings in Maryland](spurious/variable?id=1172) · [all random state specific](spurious/view-all-variables/statespecific)  
+
+------------------------------------------------------------------------
+
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Season rating of Two and a Half Men and the second variable is Paychex's stock price (PAYX). The chart goes from 2004 to 2015, and the two variables track closely in value over that time.](spurious/correlation/image/2695_season-rating-of-two-and-a-half-men_correlates-with_paychexs-stock-price.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Season rating of Two and a Half Men and the second variable is Paychex's stock price (PAYX).  The chart goes from 2004 to 2015, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/2695_season-rating-of-two-and-a-half-men_correlates-with_paychexs-stock-price_mobile.svg)  
+**View details about correlation \#2,695**](spurious/correlation/2695_season-rating-of-two-and-a-half-men_correlates-with_paychexs-stock-price)  
+  
+
+^(Show scatterplot)
+
+![](spurious/correlation/scatterplot/2695_season-rating-of-two-and-a-half-men_correlates-with_paychexs-stock-price_scatterplot.png)
+
+  
+  
+
+*What else correlates?*  
+[Season rating of "Two and a Half Men"](spurious/variable?id=147) · [all films & actors](spurious/view-all-variables/films)  
+[Paychex's stock price (PAYX)](spurious/variable?id=1765) · [all stocks](spurious/view-all-variables/stocks)  
+
+------------------------------------------------------------------------
+
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is GDP per capita in Canada and the second variable is Season wins for the San Francisco 49ers. The chart goes from 2009 to 2022, and the two variables track closely in value over that time.](spurious/correlation/image/5909_gdp-per-capita-in-canada_correlates-with_season-wins-for-the-san-francisco-49ers.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is GDP per capita in Canada and the second variable is Season wins for the San Francisco 49ers.  The chart goes from 2009 to 2022, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/5909_gdp-per-capita-in-canada_correlates-with_season-wins-for-the-san-francisco-49ers_mobile.svg)  
+**View details about correlation \#5,909**](spurious/correlation/5909_gdp-per-capita-in-canada_correlates-with_season-wins-for-the-san-francisco-49ers)  
+  
+
+^(Show scatterplot)
+
+![](spurious/correlation/scatterplot/5909_gdp-per-capita-in-canada_correlates-with_season-wins-for-the-san-francisco-49ers_scatterplot.png)
+
+  
+  
+
+*What else correlates?*  
+[GDP per capita in Canada](spurious/variable?id=48) · [all weird & wacky](spurious/view-all-variables/weirdwacky)  
+[Season wins for the San Francisco 49ers](spurious/variable?id=19674) · [all sports](spurious/view-all-variables/sports)  
+
+------------------------------------------------------------------------
+
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The distance between Neptune and the Sun and the second variable is Burglary rates in the US. The chart goes from 1985 to 2022, and the two variables track closely in value over that time.](spurious/correlation/image/1035_the-distance-between-neptune-and-the-sun_correlates-with_burglary-rates.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The distance between Neptune and the Sun and the second variable is Burglary rates in the US.  The chart goes from 1985 to 2022, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1035_the-distance-between-neptune-and-the-sun_correlates-with_burglary-rates_mobile.svg)  
+**View details about correlation \#1,035**](spurious/correlation/1035_the-distance-between-neptune-and-the-sun_correlates-with_burglary-rates)  
+  
+
+^(Show scatterplot)
+
+![](spurious/correlation/scatterplot/1035_the-distance-between-neptune-and-the-sun_correlates-with_burglary-rates_scatterplot.png)
+
+  
+  
+
+*What else correlates?*  
+[The distance between Neptune and the Sun](spurious/variable?id=1932) · [all planets](spurious/view-all-variables/planets)  
+[Burglary rates in the US](spurious/variable?id=20084) · [all random state specific](spurious/view-all-variables/statespecific)  
+
+------------------------------------------------------------------------
+
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the first name Jack and the second variable is Number of public school students in 9th grade. The chart goes from 1990 to 2022, and the two variables track closely in value over that time.](spurious/correlation/image/1951_popularity-of-the-first-name-jack_correlates-with_number-of-public-school-students-in-9th-grade.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the first name Jack and the second variable is Number of public school students in 9th grade.  The chart goes from 1990 to 2022, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1951_popularity-of-the-first-name-jack_correlates-with_number-of-public-school-students-in-9th-grade_mobile.svg)  
+**View details about correlation \#1,951**](spurious/correlation/1951_popularity-of-the-first-name-jack_correlates-with_number-of-public-school-students-in-9th-grade)  
+  
+
+^(Show scatterplot)
+
+![](spurious/correlation/scatterplot/1951_popularity-of-the-first-name-jack_correlates-with_number-of-public-school-students-in-9th-grade_scatterplot.png)
+
+  
+  
+
+*What else correlates?*  
+[Popularity of the first name Jack](spurious/variable?id=2149) · [all first names](spurious/view-all-variables/babynames)  
+[Number of public school students in 9th grade](spurious/variable?id=1307) · [all education](spurious/view-all-variables/education)  
+
+------------------------------------------------------------------------
+
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Google searches for 'where can i stream friends' and the second variable is Lululemon's stock price (LULU). The chart goes from 2008 to 2023, and the two variables track closely in value over that time.](spurious/correlation/image/2694_google-searches-for-where-can-i-stream-friends_correlates-with_lululemons-stock-price.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Google searches for 'where can i stream friends' and the second variable is Lululemon's stock price (LULU).  The chart goes from 2008 to 2023, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/2694_google-searches-for-where-can-i-stream-friends_correlates-with_lululemons-stock-price_mobile.svg)  
+**View details about correlation \#2,694**](spurious/correlation/2694_google-searches-for-where-can-i-stream-friends_correlates-with_lululemons-stock-price)  
+  
+
+^(Show scatterplot)
+
+![](spurious/correlation/scatterplot/2694_google-searches-for-where-can-i-stream-friends_correlates-with_lululemons-stock-price_scatterplot.png)
+
+  
+  
+
+*What else correlates?*  
+[Google searches for 'where can i stream friends'](spurious/variable?id=1427) · [all google searches](spurious/view-all-variables/google)  
+[Lululemon's stock price (LULU)](spurious/variable?id=1735) · [all stocks](spurious/view-all-variables/stocks)  
+
+------------------------------------------------------------------------
+
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is GMO use in corn grown in Michigan and the second variable is Number of registered Yamaha motorcycles in the UK. The chart goes from 2000 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/1370_gmo-use-in-corn-grown-in-michigan_correlates-with_number-of-registered-yamaha-motorcycles-in-the-uk.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is GMO use in corn grown in Michigan and the second variable is Number of registered Yamaha motorcycles in the UK.  The chart goes from 2000 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1370_gmo-use-in-corn-grown-in-michigan_correlates-with_number-of-registered-yamaha-motorcycles-in-the-uk_mobile.svg)  
+**View details about correlation \#1,370**](spurious/correlation/1370_gmo-use-in-corn-grown-in-michigan_correlates-with_number-of-registered-yamaha-motorcycles-in-the-uk)  
+  
+
+^(Show scatterplot)
+
+![](spurious/correlation/scatterplot/1370_gmo-use-in-corn-grown-in-michigan_correlates-with_number-of-registered-yamaha-motorcycles-in-the-uk_scatterplot.png)
+
+  
+  
+
+*What else correlates?*  
+[GMO use in corn grown in Michigan](spurious/variable?id=729) · [all food](spurious/view-all-variables/farmingfood)  
+[Number of registered Yamaha motorcycles in the UK](spurious/variable?id=477) · [all weird & wacky](spurious/view-all-variables/weirdwacky)  
 
 ------------------------------------------------------------------------
 
@@ -399,108 +501,6 @@ where each of these is an academic paper
 
 ------------------------------------------------------------------------
 
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is UFO sightings in South Carolina and the second variable is Total Number of Successful Mount Everest Climbs. The chart goes from 1975 to 2011, and the two variables track closely in value over that time.](spurious/correlation/image/2423_ufo-sightings-in-south-carolina_correlates-with_total-number-of-successful-mount-everest-climbs.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is UFO sightings in South Carolina and the second variable is Total Number of Successful Mount Everest Climbs.  The chart goes from 1975 to 2011, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/2423_ufo-sightings-in-south-carolina_correlates-with_total-number-of-successful-mount-everest-climbs_mobile.svg)  
-**View details about correlation \#2,423**](spurious/correlation/2423_ufo-sightings-in-south-carolina_correlates-with_total-number-of-successful-mount-everest-climbs)  
-  
-
-^(Show scatterplot)
-
-![](spurious/correlation/scatterplot/2423_ufo-sightings-in-south-carolina_correlates-with_total-number-of-successful-mount-everest-climbs_scatterplot.png)
-
-  
-  
-
-*What else correlates?*  
-[UFO sightings in South Carolina](spurious/variable?id=1168) · [all random state specific](spurious/view-all-variables/statespecific)  
-[Total Number of Successful Mount Everest Climbs](spurious/variable?id=498) · [all weird & wacky](spurious/view-all-variables/weirdwacky)  
-
-------------------------------------------------------------------------
-
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the 'y u no' meme and the second variable is The number of loan interviewers and clerks in Nebraska. The chart goes from 2006 to 2022, and the two variables track closely in value over that time.](spurious/correlation/image/5955_popularity-of-the-y-u-no-meme_correlates-with_the-number-of-loan-interviewers-and-clerks-in-nebraska.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the 'y u no' meme and the second variable is The number of loan interviewers and clerks in Nebraska.  The chart goes from 2006 to 2022, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/5955_popularity-of-the-y-u-no-meme_correlates-with_the-number-of-loan-interviewers-and-clerks-in-nebraska_mobile.svg)  
-**View details about correlation \#5,955**](spurious/correlation/5955_popularity-of-the-y-u-no-meme_correlates-with_the-number-of-loan-interviewers-and-clerks-in-nebraska)  
-  
-
-^(Show scatterplot)
-
-![](spurious/correlation/scatterplot/5955_popularity-of-the-y-u-no-meme_correlates-with_the-number-of-loan-interviewers-and-clerks-in-nebraska_scatterplot.png)
-
-  
-  
-
-*What else correlates?*  
-[Popularity of the 'y u no' meme](spurious/variable?id=25164) · [all memes](spurious/view-all-variables/memes)  
-[The number of loan interviewers and clerks in Nebraska](spurious/variable?id=10999) · [all cccupations](spurious/view-all-variables/occupations)  
-
-------------------------------------------------------------------------
-
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Butter consumption and the second variable is Wind power generated in Lithuania. The chart goes from 2004 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/1362_butter-consumption_correlates-with_wind-power-generated-in-lithuania.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Butter consumption and the second variable is Wind power generated in Lithuania.  The chart goes from 2004 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1362_butter-consumption_correlates-with_wind-power-generated-in-lithuania_mobile.svg)  
-**View details about correlation \#1,362**](spurious/correlation/1362_butter-consumption_correlates-with_wind-power-generated-in-lithuania)  
-  
-
-^(Show scatterplot)
-
-![](spurious/correlation/scatterplot/1362_butter-consumption_correlates-with_wind-power-generated-in-lithuania_scatterplot.png)
-
-  
-  
-
-*What else correlates?*  
-[Butter consumption](spurious/variable?id=557) · [all food](spurious/view-all-variables/farmingfood)  
-[Wind power generated in Lithuania](spurious/variable?id=23795) · [all energy](spurious/view-all-variables/energy)  
-
-------------------------------------------------------------------------
-
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Bachelor's degrees awarded in law enforcement and the second variable is Google searches for 'sleepwalking'. The chart goes from 2012 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/1532_bachelors-degrees-awarded-in-law-enforcement_correlates-with_google-searches-for-sleepwalking.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Bachelor's degrees awarded in law enforcement and the second variable is Google searches for 'sleepwalking'.  The chart goes from 2012 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1532_bachelors-degrees-awarded-in-law-enforcement_correlates-with_google-searches-for-sleepwalking_mobile.svg)  
-**View details about correlation \#1,532**](spurious/correlation/1532_bachelors-degrees-awarded-in-law-enforcement_correlates-with_google-searches-for-sleepwalking)  
-  
-
-^(Show scatterplot)
-
-![](spurious/correlation/scatterplot/1532_bachelors-degrees-awarded-in-law-enforcement_correlates-with_google-searches-for-sleepwalking_scatterplot.png)
-
-  
-  
-
-*What else correlates?*  
-[Bachelor's degrees awarded in law enforcement](spurious/variable?id=1279) · [all education](spurious/view-all-variables/education)  
-[Google searches for 'sleepwalking'](spurious/variable?id=1499) · [all google searches](spurious/view-all-variables/google)  
-
-------------------------------------------------------------------------
-
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Divorce rates in the United Kingdom and the second variable is Disney movies released. The chart goes from 2000 to 2012, and the two variables track closely in value over that time.](spurious/correlation/image/1205_divorce-rates-in-the-united-kingdom_correlates-with_disney-movies-released.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Divorce rates in the United Kingdom and the second variable is Disney movies released.  The chart goes from 2000 to 2012, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1205_divorce-rates-in-the-united-kingdom_correlates-with_disney-movies-released_mobile.svg)  
-**View details about correlation \#1,205**](spurious/correlation/1205_divorce-rates-in-the-united-kingdom_correlates-with_disney-movies-released)  
-  
-
-^(Show scatterplot)
-
-![](spurious/correlation/scatterplot/1205_divorce-rates-in-the-united-kingdom_correlates-with_disney-movies-released_scatterplot.png)
-
-  
-  
-
-*What else correlates?*  
-[Divorce rates in the United Kingdom](spurious/variable?id=506) · [all weird & wacky](spurious/view-all-variables/weirdwacky)  
-[Disney movies released](spurious/variable?id=12) · [all films & actors](spurious/view-all-variables/films)  
-
-------------------------------------------------------------------------
-
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the first name Kori and the second variable is Popularity of the 'pepe' meme. The chart goes from 2006 to 2022, and the two variables track closely in value over that time.](spurious/correlation/image/4953_popularity-of-the-first-name-kori_correlates-with_popularity-of-the-pepe-meme.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the first name Kori and the second variable is Popularity of the 'pepe' meme.  The chart goes from 2006 to 2022, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/4953_popularity-of-the-first-name-kori_correlates-with_popularity-of-the-pepe-meme_mobile.svg)  
-**View details about correlation \#4,953**](spurious/correlation/4953_popularity-of-the-first-name-kori_correlates-with_popularity-of-the-pepe-meme)  
-  
-
-^(Show scatterplot)
-
-![](spurious/correlation/scatterplot/4953_popularity-of-the-first-name-kori_correlates-with_popularity-of-the-pepe-meme_scatterplot.png)
-
-  
-  
-
-*What else correlates?*  
-[Popularity of the first name Kori](spurious/variable?id=3237) · [all first names](spurious/view-all-variables/babynames)  
-[Popularity of the 'pepe' meme](spurious/variable?id=25152) · [all memes](spurious/view-all-variables/memes)  
-
-------------------------------------------------------------------------
-
 [![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Per capita consumption of margarine and the second variable is The divorce rate in Maine. The chart goes from 2000 to 2009, and the two variables track closely in value over that time.](spurious/correlation/image/5920_per-capita-consumption-of-margarine_correlates-with_the-divorce-rate-in-maine.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Per capita consumption of margarine and the second variable is The divorce rate in Maine.  The chart goes from 2000 to 2009, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/5920_per-capita-consumption-of-margarine_correlates-with_the-divorce-rate-in-maine_mobile.svg)  
 **View details about correlation \#5,920**](spurious/correlation/5920_per-capita-consumption-of-margarine_correlates-with_the-divorce-rate-in-maine)  
   
@@ -606,13 +606,14 @@ Before fitting any model, we look at the data.
 Code
 
 ``` r
+theme_narsil()
 us_change |>
   as_tibble() |>
   select(-Quarter) |>
   GGally::ggpairs()
 ```
 
-[![](regression_files/figure-revealjs/us-change-pairs-1.png)](regression_files/figure-revealjs/us-change-pairs-1.png)
+[![](regression_files/figure-html/us-change-pairs-1.png)](regression_files/figure-html/us-change-pairs-1.png)
 
 ## Scatter matrix
 
@@ -685,9 +686,9 @@ If residuals are autocorrelated, OLS estimates are still unbiased but **no longe
 
 ## Time series vs. fitted
 
-[![](regression_files/figure-revealjs/us-change-simple-scatter-render-1.png)](regression_files/figure-revealjs/us-change-simple-scatter-render-1.png)
+[![](regression_files/figure-html/us-change-simple-scatter-render-1.png)](regression_files/figure-html/us-change-simple-scatter-render-1.png)
 
-[![](regression_files/figure-revealjs/us-change-simple-scatter-render-2.png)](regression_files/figure-revealjs/us-change-simple-scatter-render-2.png)
+[![](regression_files/figure-html/us-change-simple-scatter-render-2.png)](regression_files/figure-html/us-change-simple-scatter-render-2.png)
 
 ## Fitted vs. actual (45° line)
 
@@ -695,399 +696,11 @@ Code
 
 ``` r
 theme_narsil()
-```
-
-    <theme> List of 144
-     $ line                            : <ggplot2::element_line>
-      ..@ colour       : chr "black"
-      ..@ linewidth    : num 0.545
-      ..@ linetype     : num 1
-      ..@ lineend      : chr "butt"
-      ..@ linejoin     : chr "round"
-      ..@ arrow        : logi FALSE
-      ..@ arrow.fill   : chr "black"
-      ..@ inherit.blank: logi TRUE
-     $ rect                            : <ggplot2::element_rect>
-      ..@ fill         : chr "white"
-      ..@ colour       : chr "black"
-      ..@ linewidth    : num 0.545
-      ..@ linetype     : num 1
-      ..@ linejoin     : chr "round"
-      ..@ inherit.blank: logi TRUE
-     $ text                            : <ggplot2::element_text>
-      ..@ family       : chr ""
-      ..@ face         : chr "plain"
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : chr "#2A2520"
-      ..@ size         : num 12
-      ..@ hjust        : num 0.5
-      ..@ vjust        : num 0.5
-      ..@ angle        : num 0
-      ..@ lineheight   : num 0.9
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 0 0
-      ..@ debug        : logi FALSE
-      ..@ inherit.blank: logi FALSE
-     $ title                           : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : NULL
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ point                           : <ggplot2::element_point>
-      ..@ colour       : chr "black"
-      ..@ shape        : num 19
-      ..@ size         : num 1.64
-      ..@ fill         : chr "white"
-      ..@ stroke       : num 0.545
-      ..@ inherit.blank: logi TRUE
-     $ polygon                         : <ggplot2::element_polygon>
-      ..@ fill         : chr "white"
-      ..@ colour       : chr "black"
-      ..@ linewidth    : num 0.545
-      ..@ linetype     : num 1
-      ..@ linejoin     : chr "round"
-      ..@ inherit.blank: logi TRUE
-     $ geom                            : <ggplot2::element_geom>
-      ..@ ink        : chr "black"
-      ..@ paper      : chr "white"
-      ..@ accent     : chr "#3366FF"
-      ..@ linewidth  : num 0.545
-      ..@ borderwidth: num 0.545
-      ..@ linetype   : int 1
-      ..@ bordertype : int 1
-      ..@ family     : chr ""
-      ..@ fontsize   : num 4.22
-      ..@ pointsize  : num 1.64
-      ..@ pointshape : num 19
-      ..@ colour     : NULL
-      ..@ fill       : NULL
-     $ spacing                         : 'simpleUnit' num 6points
-      ..- attr(*, "unit")= int 8
-     $ margins                         : <ggplot2::margin> num [1:4] 6 6 6 6
-     $ aspect.ratio                    : NULL
-     $ axis.title                      : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : chr "#2A2520"
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : NULL
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi FALSE
-     $ axis.title.x                    : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : num 1
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 3 0 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.title.x.top                : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : num 0
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 3 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.title.x.bottom             : NULL
-     $ axis.title.y                    : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : num 1
-      ..@ angle        : num 90
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 3 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.title.y.left               : NULL
-     $ axis.title.y.right              : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : num 1
-      ..@ angle        : num -90
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 0 3
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text                       : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : chr "#2A2520"
-      ..@ size         : 'rel' num 0.8
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : NULL
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi FALSE
-     $ axis.text.x                     : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : num 1
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 2.4 0 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.x.top                 : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 5.4 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.x.bottom              : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 5.4 0 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.y                     : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : num 1
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 2.4 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.y.left                : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 5.4 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.y.right               : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 0 5.4
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.theta                 : NULL
-     $ axis.text.r                     : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : num 0.5
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 2.4 0 2.4
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.ticks                      : <ggplot2::element_blank>
-     $ axis.ticks.x                    : NULL
-     $ axis.ticks.x.top                : NULL
-     $ axis.ticks.x.bottom             : NULL
-     $ axis.ticks.y                    : NULL
-     $ axis.ticks.y.left               : NULL
-     $ axis.ticks.y.right              : NULL
-     $ axis.ticks.theta                : NULL
-     $ axis.ticks.r                    : NULL
-     $ axis.minor.ticks.x.top          : NULL
-     $ axis.minor.ticks.x.bottom       : NULL
-     $ axis.minor.ticks.y.left         : NULL
-     $ axis.minor.ticks.y.right        : NULL
-     $ axis.minor.ticks.theta          : NULL
-     $ axis.minor.ticks.r              : NULL
-     $ axis.ticks.length               : 'rel' num 0.5
-     $ axis.ticks.length.x             : NULL
-     $ axis.ticks.length.x.top         : NULL
-     $ axis.ticks.length.x.bottom      : NULL
-     $ axis.ticks.length.y             : NULL
-     $ axis.ticks.length.y.left        : NULL
-     $ axis.ticks.length.y.right       : NULL
-     $ axis.ticks.length.theta         : NULL
-     $ axis.ticks.length.r             : NULL
-     $ axis.minor.ticks.length         : 'rel' num 0.75
-     $ axis.minor.ticks.length.x       : NULL
-     $ axis.minor.ticks.length.x.top   : NULL
-     $ axis.minor.ticks.length.x.bottom: NULL
-     $ axis.minor.ticks.length.y       : NULL
-     $ axis.minor.ticks.length.y.left  : NULL
-     $ axis.minor.ticks.length.y.right : NULL
-     $ axis.minor.ticks.length.theta   : NULL
-     $ axis.minor.ticks.length.r       : NULL
-     $ axis.line                       : <ggplot2::element_blank>
-     $ axis.line.x                     : NULL
-     $ axis.line.x.top                 : NULL
-     $ axis.line.x.bottom              : NULL
-     $ axis.line.y                     : NULL
-     $ axis.line.y.left                : NULL
-     $ axis.line.y.right               : NULL
-     $ axis.line.theta                 : NULL
-     $ axis.line.r                     : NULL
-     $ legend.background               : <ggplot2::element_blank>
-     $ legend.margin                   : NULL
-     $ legend.spacing                  : 'rel' num 2
-     $ legend.spacing.x                : NULL
-     $ legend.spacing.y                : NULL
-     $ legend.key                      : <ggplot2::element_blank>
-     $ legend.key.size                 : 'simpleUnit' num 1.2lines
-      ..- attr(*, "unit")= int 3
-     $ legend.key.height               : NULL
-     $ legend.key.width                : NULL
-     $ legend.key.spacing              : NULL
-     $ legend.key.spacing.x            : NULL
-     $ legend.key.spacing.y            : NULL
-     $ legend.key.justification        : NULL
-     $ legend.frame                    : NULL
-     $ legend.ticks                    : NULL
-     $ legend.ticks.length             : 'rel' num 0.2
-     $ legend.axis.line                : NULL
-     $ legend.text                     : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : chr "#2A2520"
-      ..@ size         : 'rel' num 0.8
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : NULL
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi FALSE
-     $ legend.text.position            : NULL
-     $ legend.title                    : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : chr "bold"
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : chr "#2A2520"
-      ..@ size         : NULL
-      ..@ hjust        : num 0
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : NULL
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi FALSE
-     $ legend.title.position           : NULL
-     $ legend.position                 : chr "right"
-     $ legend.position.inside          : NULL
-     $ legend.direction                : NULL
-     $ legend.byrow                    : NULL
-     $ legend.justification            : chr "center"
-     $ legend.justification.top        : NULL
-     $ legend.justification.bottom     : NULL
-     $ legend.justification.left       : NULL
-     $ legend.justification.right      : NULL
-     $ legend.justification.inside     : NULL
-      [list output truncated]
-     @ complete: logi TRUE
-     @ validate: logi TRUE
-
-Code
-
-``` r
 us_change_fit_simple |>
   gg_tsresiduals()
 ```
 
-[![](regression_files/figure-revealjs/us-change-simple-resid-1.png)](regression_files/figure-revealjs/us-change-simple-resid-1.png)
+[![](regression_files/figure-html/us-change-simple-resid-1.png)](regression_files/figure-html/us-change-simple-resid-1.png)
 
 ## Residual diagnostics
 
@@ -1171,787 +784,21 @@ Points closer to the 45° line indicate better fit. The multiple model shows a m
 
 ## Residual diagnostics
 
-    <theme> List of 144
-     $ line                            : <ggplot2::element_line>
-      ..@ colour       : chr "black"
-      ..@ linewidth    : num 0.545
-      ..@ linetype     : num 1
-      ..@ lineend      : chr "butt"
-      ..@ linejoin     : chr "round"
-      ..@ arrow        : logi FALSE
-      ..@ arrow.fill   : chr "black"
-      ..@ inherit.blank: logi TRUE
-     $ rect                            : <ggplot2::element_rect>
-      ..@ fill         : chr "white"
-      ..@ colour       : chr "black"
-      ..@ linewidth    : num 0.545
-      ..@ linetype     : num 1
-      ..@ linejoin     : chr "round"
-      ..@ inherit.blank: logi TRUE
-     $ text                            : <ggplot2::element_text>
-      ..@ family       : chr ""
-      ..@ face         : chr "plain"
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : chr "#2A2520"
-      ..@ size         : num 12
-      ..@ hjust        : num 0.5
-      ..@ vjust        : num 0.5
-      ..@ angle        : num 0
-      ..@ lineheight   : num 0.9
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 0 0
-      ..@ debug        : logi FALSE
-      ..@ inherit.blank: logi FALSE
-     $ title                           : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : NULL
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ point                           : <ggplot2::element_point>
-      ..@ colour       : chr "black"
-      ..@ shape        : num 19
-      ..@ size         : num 1.64
-      ..@ fill         : chr "white"
-      ..@ stroke       : num 0.545
-      ..@ inherit.blank: logi TRUE
-     $ polygon                         : <ggplot2::element_polygon>
-      ..@ fill         : chr "white"
-      ..@ colour       : chr "black"
-      ..@ linewidth    : num 0.545
-      ..@ linetype     : num 1
-      ..@ linejoin     : chr "round"
-      ..@ inherit.blank: logi TRUE
-     $ geom                            : <ggplot2::element_geom>
-      ..@ ink        : chr "black"
-      ..@ paper      : chr "white"
-      ..@ accent     : chr "#3366FF"
-      ..@ linewidth  : num 0.545
-      ..@ borderwidth: num 0.545
-      ..@ linetype   : int 1
-      ..@ bordertype : int 1
-      ..@ family     : chr ""
-      ..@ fontsize   : num 4.22
-      ..@ pointsize  : num 1.64
-      ..@ pointshape : num 19
-      ..@ colour     : NULL
-      ..@ fill       : NULL
-     $ spacing                         : 'simpleUnit' num 6points
-      ..- attr(*, "unit")= int 8
-     $ margins                         : <ggplot2::margin> num [1:4] 6 6 6 6
-     $ aspect.ratio                    : NULL
-     $ axis.title                      : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : chr "#2A2520"
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : NULL
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi FALSE
-     $ axis.title.x                    : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : num 1
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 3 0 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.title.x.top                : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : num 0
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 3 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.title.x.bottom             : NULL
-     $ axis.title.y                    : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : num 1
-      ..@ angle        : num 90
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 3 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.title.y.left               : NULL
-     $ axis.title.y.right              : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : num 1
-      ..@ angle        : num -90
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 0 3
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text                       : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : chr "#2A2520"
-      ..@ size         : 'rel' num 0.8
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : NULL
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi FALSE
-     $ axis.text.x                     : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : num 1
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 2.4 0 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.x.top                 : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 5.4 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.x.bottom              : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 5.4 0 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.y                     : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : num 1
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 2.4 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.y.left                : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 5.4 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.y.right               : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 0 5.4
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.theta                 : NULL
-     $ axis.text.r                     : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : num 0.5
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 2.4 0 2.4
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.ticks                      : <ggplot2::element_blank>
-     $ axis.ticks.x                    : NULL
-     $ axis.ticks.x.top                : NULL
-     $ axis.ticks.x.bottom             : NULL
-     $ axis.ticks.y                    : NULL
-     $ axis.ticks.y.left               : NULL
-     $ axis.ticks.y.right              : NULL
-     $ axis.ticks.theta                : NULL
-     $ axis.ticks.r                    : NULL
-     $ axis.minor.ticks.x.top          : NULL
-     $ axis.minor.ticks.x.bottom       : NULL
-     $ axis.minor.ticks.y.left         : NULL
-     $ axis.minor.ticks.y.right        : NULL
-     $ axis.minor.ticks.theta          : NULL
-     $ axis.minor.ticks.r              : NULL
-     $ axis.ticks.length               : 'rel' num 0.5
-     $ axis.ticks.length.x             : NULL
-     $ axis.ticks.length.x.top         : NULL
-     $ axis.ticks.length.x.bottom      : NULL
-     $ axis.ticks.length.y             : NULL
-     $ axis.ticks.length.y.left        : NULL
-     $ axis.ticks.length.y.right       : NULL
-     $ axis.ticks.length.theta         : NULL
-     $ axis.ticks.length.r             : NULL
-     $ axis.minor.ticks.length         : 'rel' num 0.75
-     $ axis.minor.ticks.length.x       : NULL
-     $ axis.minor.ticks.length.x.top   : NULL
-     $ axis.minor.ticks.length.x.bottom: NULL
-     $ axis.minor.ticks.length.y       : NULL
-     $ axis.minor.ticks.length.y.left  : NULL
-     $ axis.minor.ticks.length.y.right : NULL
-     $ axis.minor.ticks.length.theta   : NULL
-     $ axis.minor.ticks.length.r       : NULL
-     $ axis.line                       : <ggplot2::element_blank>
-     $ axis.line.x                     : NULL
-     $ axis.line.x.top                 : NULL
-     $ axis.line.x.bottom              : NULL
-     $ axis.line.y                     : NULL
-     $ axis.line.y.left                : NULL
-     $ axis.line.y.right               : NULL
-     $ axis.line.theta                 : NULL
-     $ axis.line.r                     : NULL
-     $ legend.background               : <ggplot2::element_blank>
-     $ legend.margin                   : NULL
-     $ legend.spacing                  : 'rel' num 2
-     $ legend.spacing.x                : NULL
-     $ legend.spacing.y                : NULL
-     $ legend.key                      : <ggplot2::element_blank>
-     $ legend.key.size                 : 'simpleUnit' num 1.2lines
-      ..- attr(*, "unit")= int 3
-     $ legend.key.height               : NULL
-     $ legend.key.width                : NULL
-     $ legend.key.spacing              : NULL
-     $ legend.key.spacing.x            : NULL
-     $ legend.key.spacing.y            : NULL
-     $ legend.key.justification        : NULL
-     $ legend.frame                    : NULL
-     $ legend.ticks                    : NULL
-     $ legend.ticks.length             : 'rel' num 0.2
-     $ legend.axis.line                : NULL
-     $ legend.text                     : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : chr "#2A2520"
-      ..@ size         : 'rel' num 0.8
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : NULL
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi FALSE
-     $ legend.text.position            : NULL
-     $ legend.title                    : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : chr "bold"
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : chr "#2A2520"
-      ..@ size         : NULL
-      ..@ hjust        : num 0
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : NULL
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi FALSE
-     $ legend.title.position           : NULL
-     $ legend.position                 : chr "right"
-     $ legend.position.inside          : NULL
-     $ legend.direction                : NULL
-     $ legend.byrow                    : NULL
-     $ legend.justification            : chr "center"
-     $ legend.justification.top        : NULL
-     $ legend.justification.bottom     : NULL
-     $ legend.justification.left       : NULL
-     $ legend.justification.right      : NULL
-     $ legend.justification.inside     : NULL
-      [list output truncated]
-     @ complete: logi TRUE
-     @ validate: logi TRUE
-
-[![Simple model residuals: significant ACF spikes indicate remaining autocorrelation.](regression_files/figure-revealjs/us-change-resid-simple-1.png)](regression_files/figure-revealjs/us-change-resid-simple-1.png "Simple model residuals: significant ACF spikes indicate remaining autocorrelation.")
+[![Simple model residuals: significant ACF spikes indicate remaining autocorrelation.](regression_files/figure-html/us-change-resid-simple-1.png)](regression_files/figure-html/us-change-resid-simple-1.png "Simple model residuals: significant ACF spikes indicate remaining autocorrelation.")
 
 Simple model residuals: significant ACF spikes indicate remaining autocorrelation.
 
-    <theme> List of 144
-     $ line                            : <ggplot2::element_line>
-      ..@ colour       : chr "black"
-      ..@ linewidth    : num 0.545
-      ..@ linetype     : num 1
-      ..@ lineend      : chr "butt"
-      ..@ linejoin     : chr "round"
-      ..@ arrow        : logi FALSE
-      ..@ arrow.fill   : chr "black"
-      ..@ inherit.blank: logi TRUE
-     $ rect                            : <ggplot2::element_rect>
-      ..@ fill         : chr "white"
-      ..@ colour       : chr "black"
-      ..@ linewidth    : num 0.545
-      ..@ linetype     : num 1
-      ..@ linejoin     : chr "round"
-      ..@ inherit.blank: logi TRUE
-     $ text                            : <ggplot2::element_text>
-      ..@ family       : chr ""
-      ..@ face         : chr "plain"
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : chr "#2A2520"
-      ..@ size         : num 12
-      ..@ hjust        : num 0.5
-      ..@ vjust        : num 0.5
-      ..@ angle        : num 0
-      ..@ lineheight   : num 0.9
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 0 0
-      ..@ debug        : logi FALSE
-      ..@ inherit.blank: logi FALSE
-     $ title                           : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : NULL
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ point                           : <ggplot2::element_point>
-      ..@ colour       : chr "black"
-      ..@ shape        : num 19
-      ..@ size         : num 1.64
-      ..@ fill         : chr "white"
-      ..@ stroke       : num 0.545
-      ..@ inherit.blank: logi TRUE
-     $ polygon                         : <ggplot2::element_polygon>
-      ..@ fill         : chr "white"
-      ..@ colour       : chr "black"
-      ..@ linewidth    : num 0.545
-      ..@ linetype     : num 1
-      ..@ linejoin     : chr "round"
-      ..@ inherit.blank: logi TRUE
-     $ geom                            : <ggplot2::element_geom>
-      ..@ ink        : chr "black"
-      ..@ paper      : chr "white"
-      ..@ accent     : chr "#3366FF"
-      ..@ linewidth  : num 0.545
-      ..@ borderwidth: num 0.545
-      ..@ linetype   : int 1
-      ..@ bordertype : int 1
-      ..@ family     : chr ""
-      ..@ fontsize   : num 4.22
-      ..@ pointsize  : num 1.64
-      ..@ pointshape : num 19
-      ..@ colour     : NULL
-      ..@ fill       : NULL
-     $ spacing                         : 'simpleUnit' num 6points
-      ..- attr(*, "unit")= int 8
-     $ margins                         : <ggplot2::margin> num [1:4] 6 6 6 6
-     $ aspect.ratio                    : NULL
-     $ axis.title                      : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : chr "#2A2520"
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : NULL
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi FALSE
-     $ axis.title.x                    : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : num 1
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 3 0 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.title.x.top                : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : num 0
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 3 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.title.x.bottom             : NULL
-     $ axis.title.y                    : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : num 1
-      ..@ angle        : num 90
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 3 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.title.y.left               : NULL
-     $ axis.title.y.right              : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : num 1
-      ..@ angle        : num -90
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 0 3
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text                       : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : chr "#2A2520"
-      ..@ size         : 'rel' num 0.8
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : NULL
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi FALSE
-     $ axis.text.x                     : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : num 1
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 2.4 0 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.x.top                 : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 5.4 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.x.bottom              : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 5.4 0 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.y                     : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : num 1
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 2.4 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.y.left                : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 5.4 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.y.right               : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 0 5.4
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.theta                 : NULL
-     $ axis.text.r                     : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : num 0.5
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 2.4 0 2.4
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.ticks                      : <ggplot2::element_blank>
-     $ axis.ticks.x                    : NULL
-     $ axis.ticks.x.top                : NULL
-     $ axis.ticks.x.bottom             : NULL
-     $ axis.ticks.y                    : NULL
-     $ axis.ticks.y.left               : NULL
-     $ axis.ticks.y.right              : NULL
-     $ axis.ticks.theta                : NULL
-     $ axis.ticks.r                    : NULL
-     $ axis.minor.ticks.x.top          : NULL
-     $ axis.minor.ticks.x.bottom       : NULL
-     $ axis.minor.ticks.y.left         : NULL
-     $ axis.minor.ticks.y.right        : NULL
-     $ axis.minor.ticks.theta          : NULL
-     $ axis.minor.ticks.r              : NULL
-     $ axis.ticks.length               : 'rel' num 0.5
-     $ axis.ticks.length.x             : NULL
-     $ axis.ticks.length.x.top         : NULL
-     $ axis.ticks.length.x.bottom      : NULL
-     $ axis.ticks.length.y             : NULL
-     $ axis.ticks.length.y.left        : NULL
-     $ axis.ticks.length.y.right       : NULL
-     $ axis.ticks.length.theta         : NULL
-     $ axis.ticks.length.r             : NULL
-     $ axis.minor.ticks.length         : 'rel' num 0.75
-     $ axis.minor.ticks.length.x       : NULL
-     $ axis.minor.ticks.length.x.top   : NULL
-     $ axis.minor.ticks.length.x.bottom: NULL
-     $ axis.minor.ticks.length.y       : NULL
-     $ axis.minor.ticks.length.y.left  : NULL
-     $ axis.minor.ticks.length.y.right : NULL
-     $ axis.minor.ticks.length.theta   : NULL
-     $ axis.minor.ticks.length.r       : NULL
-     $ axis.line                       : <ggplot2::element_blank>
-     $ axis.line.x                     : NULL
-     $ axis.line.x.top                 : NULL
-     $ axis.line.x.bottom              : NULL
-     $ axis.line.y                     : NULL
-     $ axis.line.y.left                : NULL
-     $ axis.line.y.right               : NULL
-     $ axis.line.theta                 : NULL
-     $ axis.line.r                     : NULL
-     $ legend.background               : <ggplot2::element_blank>
-     $ legend.margin                   : NULL
-     $ legend.spacing                  : 'rel' num 2
-     $ legend.spacing.x                : NULL
-     $ legend.spacing.y                : NULL
-     $ legend.key                      : <ggplot2::element_blank>
-     $ legend.key.size                 : 'simpleUnit' num 1.2lines
-      ..- attr(*, "unit")= int 3
-     $ legend.key.height               : NULL
-     $ legend.key.width                : NULL
-     $ legend.key.spacing              : NULL
-     $ legend.key.spacing.x            : NULL
-     $ legend.key.spacing.y            : NULL
-     $ legend.key.justification        : NULL
-     $ legend.frame                    : NULL
-     $ legend.ticks                    : NULL
-     $ legend.ticks.length             : 'rel' num 0.2
-     $ legend.axis.line                : NULL
-     $ legend.text                     : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : chr "#2A2520"
-      ..@ size         : 'rel' num 0.8
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : NULL
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi FALSE
-     $ legend.text.position            : NULL
-     $ legend.title                    : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : chr "bold"
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : chr "#2A2520"
-      ..@ size         : NULL
-      ..@ hjust        : num 0
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : NULL
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi FALSE
-     $ legend.title.position           : NULL
-     $ legend.position                 : chr "right"
-     $ legend.position.inside          : NULL
-     $ legend.direction                : NULL
-     $ legend.byrow                    : NULL
-     $ legend.justification            : chr "center"
-     $ legend.justification.top        : NULL
-     $ legend.justification.bottom     : NULL
-     $ legend.justification.left       : NULL
-     $ legend.justification.right      : NULL
-     $ legend.justification.inside     : NULL
-      [list output truncated]
-     @ complete: logi TRUE
-     @ validate: logi TRUE
-
-[![Multiple model residuals: ACF spikes are much reduced and the distribution is closer to normal.](regression_files/figure-revealjs/us-change-resid-mult-1.png)](regression_files/figure-revealjs/us-change-resid-mult-1.png "Multiple model residuals: ACF spikes are much reduced and the distribution is closer to normal.")
+[![Multiple model residuals: ACF spikes are much reduced and the distribution is closer to normal.](regression_files/figure-html/us-change-resid-mult-1.png)](regression_files/figure-html/us-change-resid-mult-1.png "Multiple model residuals: ACF spikes are much reduced and the distribution is closer to normal.")
 
 Multiple model residuals: ACF spikes are much reduced and the distribution is closer to normal.
 
 ## Residuals vs. predictors
 
-[![Residuals from the multiple model vs. each predictor. No strong patterns suggest the linear specification is adequate.](regression_files/figure-revealjs/us-change-resid-pred-render-1.png)](regression_files/figure-revealjs/us-change-resid-pred-render-1.png "Residuals from the multiple model vs. each predictor. No strong patterns suggest the linear specification is adequate.")
+[![Residuals from the multiple model vs. each predictor. No strong patterns suggest the linear specification is adequate.](regression_files/figure-html/us-change-resid-pred-render-1.png)](regression_files/figure-html/us-change-resid-pred-render-1.png "Residuals from the multiple model vs. each predictor. No strong patterns suggest the linear specification is adequate.")
 
 Residuals from the multiple model vs. each predictor. No strong patterns suggest the linear specification is adequate.
 
-[![Residuals from the multiple model vs. each predictor. No strong patterns suggest the linear specification is adequate.](regression_files/figure-revealjs/us-change-resid-pred-render-2.png)](regression_files/figure-revealjs/us-change-resid-pred-render-2.png "Residuals from the multiple model vs. each predictor. No strong patterns suggest the linear specification is adequate.")
+[![Residuals from the multiple model vs. each predictor. No strong patterns suggest the linear specification is adequate.](regression_files/figure-html/us-change-resid-pred-render-2.png)](regression_files/figure-html/us-change-resid-pred-render-2.png "Residuals from the multiple model vs. each predictor. No strong patterns suggest the linear specification is adequate.")
 
 Residuals from the multiple model vs. each predictor. No strong patterns suggest the linear specification is adequate.
 
@@ -2154,9 +1001,9 @@ What changes across the three forecasting types is precisely **what values we as
 
 This is the “true” forecast — it is what you would actually produce in a real deployment.
 
-[![](regression_files/figure-revealjs/us-change-exante-render-1.png)](regression_files/figure-revealjs/us-change-exante-render-1.png)
+[![](regression_files/figure-html/us-change-exante-render-1.png)](regression_files/figure-html/us-change-exante-render-1.png)
 
-[![](regression_files/figure-revealjs/us-change-exante-render-2.png)](regression_files/figure-revealjs/us-change-exante-render-2.png)
+[![](regression_files/figure-html/us-change-exante-render-2.png)](regression_files/figure-html/us-change-exante-render-2.png)
 
 Code
 
@@ -2211,9 +1058,9 @@ us_change_expost_p <- us_change_fit_expost |>
        y = "% change", x = NULL)
 ```
 
-[![](regression_files/figure-revealjs/us-change-expost-render-1.png)](regression_files/figure-revealjs/us-change-expost-render-1.png)
+[![](regression_files/figure-html/us-change-expost-render-1.png)](regression_files/figure-html/us-change-expost-render-1.png)
 
-[![](regression_files/figure-revealjs/us-change-expost-render-2.png)](regression_files/figure-revealjs/us-change-expost-render-2.png)
+[![](regression_files/figure-html/us-change-expost-render-2.png)](regression_files/figure-html/us-change-expost-render-2.png)
 
 ## Scenario-based
 
@@ -2221,9 +1068,9 @@ us_change_expost_p <- us_change_fit_expost |>
 
 These are especially useful for stress-testing and strategic planning.
 
-[![](regression_files/figure-revealjs/us-change-scenarios-render-1.png)](regression_files/figure-revealjs/us-change-scenarios-render-1.png)
+[![](regression_files/figure-html/us-change-scenarios-render-1.png)](regression_files/figure-html/us-change-scenarios-render-1.png)
 
-[![](regression_files/figure-revealjs/us-change-scenarios-render-2.png)](regression_files/figure-revealjs/us-change-scenarios-render-2.png)
+[![](regression_files/figure-html/us-change-scenarios-render-2.png)](regression_files/figure-html/us-change-scenarios-render-2.png)
 
 Code
 
@@ -2272,9 +1119,9 @@ beer <- aus_production |>
   select(Quarter, Beer)
 ```
 
-[![](regression_files/figure-revealjs/beer-plot-render-1.png)](regression_files/figure-revealjs/beer-plot-render-1.png)
+[![](regression_files/figure-html/beer-plot-render-1.png)](regression_files/figure-html/beer-plot-render-1.png)
 
-[![](regression_files/figure-revealjs/beer-plot-render-2.png)](regression_files/figure-revealjs/beer-plot-render-2.png)
+[![](regression_files/figure-html/beer-plot-render-2.png)](regression_files/figure-html/beer-plot-render-2.png)
 
 ## 7.1 Seasonal dummy variables
 
@@ -2358,399 +1205,11 @@ Code
 
 ``` r
 theme_narsil()
-```
-
-    <theme> List of 144
-     $ line                            : <ggplot2::element_line>
-      ..@ colour       : chr "black"
-      ..@ linewidth    : num 0.545
-      ..@ linetype     : num 1
-      ..@ lineend      : chr "butt"
-      ..@ linejoin     : chr "round"
-      ..@ arrow        : logi FALSE
-      ..@ arrow.fill   : chr "black"
-      ..@ inherit.blank: logi TRUE
-     $ rect                            : <ggplot2::element_rect>
-      ..@ fill         : chr "white"
-      ..@ colour       : chr "black"
-      ..@ linewidth    : num 0.545
-      ..@ linetype     : num 1
-      ..@ linejoin     : chr "round"
-      ..@ inherit.blank: logi TRUE
-     $ text                            : <ggplot2::element_text>
-      ..@ family       : chr ""
-      ..@ face         : chr "plain"
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : chr "#2A2520"
-      ..@ size         : num 12
-      ..@ hjust        : num 0.5
-      ..@ vjust        : num 0.5
-      ..@ angle        : num 0
-      ..@ lineheight   : num 0.9
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 0 0
-      ..@ debug        : logi FALSE
-      ..@ inherit.blank: logi FALSE
-     $ title                           : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : NULL
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ point                           : <ggplot2::element_point>
-      ..@ colour       : chr "black"
-      ..@ shape        : num 19
-      ..@ size         : num 1.64
-      ..@ fill         : chr "white"
-      ..@ stroke       : num 0.545
-      ..@ inherit.blank: logi TRUE
-     $ polygon                         : <ggplot2::element_polygon>
-      ..@ fill         : chr "white"
-      ..@ colour       : chr "black"
-      ..@ linewidth    : num 0.545
-      ..@ linetype     : num 1
-      ..@ linejoin     : chr "round"
-      ..@ inherit.blank: logi TRUE
-     $ geom                            : <ggplot2::element_geom>
-      ..@ ink        : chr "black"
-      ..@ paper      : chr "white"
-      ..@ accent     : chr "#3366FF"
-      ..@ linewidth  : num 0.545
-      ..@ borderwidth: num 0.545
-      ..@ linetype   : int 1
-      ..@ bordertype : int 1
-      ..@ family     : chr ""
-      ..@ fontsize   : num 4.22
-      ..@ pointsize  : num 1.64
-      ..@ pointshape : num 19
-      ..@ colour     : NULL
-      ..@ fill       : NULL
-     $ spacing                         : 'simpleUnit' num 6points
-      ..- attr(*, "unit")= int 8
-     $ margins                         : <ggplot2::margin> num [1:4] 6 6 6 6
-     $ aspect.ratio                    : NULL
-     $ axis.title                      : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : chr "#2A2520"
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : NULL
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi FALSE
-     $ axis.title.x                    : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : num 1
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 3 0 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.title.x.top                : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : num 0
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 3 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.title.x.bottom             : NULL
-     $ axis.title.y                    : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : num 1
-      ..@ angle        : num 90
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 3 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.title.y.left               : NULL
-     $ axis.title.y.right              : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : num 1
-      ..@ angle        : num -90
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 0 3
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text                       : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : chr "#2A2520"
-      ..@ size         : 'rel' num 0.8
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : NULL
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi FALSE
-     $ axis.text.x                     : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : num 1
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 2.4 0 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.x.top                 : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 5.4 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.x.bottom              : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 5.4 0 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.y                     : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : num 1
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 2.4 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.y.left                : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 5.4 0 0
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.y.right               : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 0 0 5.4
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.text.theta                 : NULL
-     $ axis.text.r                     : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : NULL
-      ..@ size         : NULL
-      ..@ hjust        : num 0.5
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : <ggplot2::margin> num [1:4] 0 2.4 0 2.4
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi TRUE
-     $ axis.ticks                      : <ggplot2::element_blank>
-     $ axis.ticks.x                    : NULL
-     $ axis.ticks.x.top                : NULL
-     $ axis.ticks.x.bottom             : NULL
-     $ axis.ticks.y                    : NULL
-     $ axis.ticks.y.left               : NULL
-     $ axis.ticks.y.right              : NULL
-     $ axis.ticks.theta                : NULL
-     $ axis.ticks.r                    : NULL
-     $ axis.minor.ticks.x.top          : NULL
-     $ axis.minor.ticks.x.bottom       : NULL
-     $ axis.minor.ticks.y.left         : NULL
-     $ axis.minor.ticks.y.right        : NULL
-     $ axis.minor.ticks.theta          : NULL
-     $ axis.minor.ticks.r              : NULL
-     $ axis.ticks.length               : 'rel' num 0.5
-     $ axis.ticks.length.x             : NULL
-     $ axis.ticks.length.x.top         : NULL
-     $ axis.ticks.length.x.bottom      : NULL
-     $ axis.ticks.length.y             : NULL
-     $ axis.ticks.length.y.left        : NULL
-     $ axis.ticks.length.y.right       : NULL
-     $ axis.ticks.length.theta         : NULL
-     $ axis.ticks.length.r             : NULL
-     $ axis.minor.ticks.length         : 'rel' num 0.75
-     $ axis.minor.ticks.length.x       : NULL
-     $ axis.minor.ticks.length.x.top   : NULL
-     $ axis.minor.ticks.length.x.bottom: NULL
-     $ axis.minor.ticks.length.y       : NULL
-     $ axis.minor.ticks.length.y.left  : NULL
-     $ axis.minor.ticks.length.y.right : NULL
-     $ axis.minor.ticks.length.theta   : NULL
-     $ axis.minor.ticks.length.r       : NULL
-     $ axis.line                       : <ggplot2::element_blank>
-     $ axis.line.x                     : NULL
-     $ axis.line.x.top                 : NULL
-     $ axis.line.x.bottom              : NULL
-     $ axis.line.y                     : NULL
-     $ axis.line.y.left                : NULL
-     $ axis.line.y.right               : NULL
-     $ axis.line.theta                 : NULL
-     $ axis.line.r                     : NULL
-     $ legend.background               : <ggplot2::element_blank>
-     $ legend.margin                   : NULL
-     $ legend.spacing                  : 'rel' num 2
-     $ legend.spacing.x                : NULL
-     $ legend.spacing.y                : NULL
-     $ legend.key                      : <ggplot2::element_blank>
-     $ legend.key.size                 : 'simpleUnit' num 1.2lines
-      ..- attr(*, "unit")= int 3
-     $ legend.key.height               : NULL
-     $ legend.key.width                : NULL
-     $ legend.key.spacing              : NULL
-     $ legend.key.spacing.x            : NULL
-     $ legend.key.spacing.y            : NULL
-     $ legend.key.justification        : NULL
-     $ legend.frame                    : NULL
-     $ legend.ticks                    : NULL
-     $ legend.ticks.length             : 'rel' num 0.2
-     $ legend.axis.line                : NULL
-     $ legend.text                     : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : NULL
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : chr "#2A2520"
-      ..@ size         : 'rel' num 0.8
-      ..@ hjust        : NULL
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : NULL
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi FALSE
-     $ legend.text.position            : NULL
-     $ legend.title                    : <ggplot2::element_text>
-      ..@ family       : NULL
-      ..@ face         : chr "bold"
-      ..@ italic       : chr NA
-      ..@ fontweight   : num NA
-      ..@ fontwidth    : num NA
-      ..@ colour       : chr "#2A2520"
-      ..@ size         : NULL
-      ..@ hjust        : num 0
-      ..@ vjust        : NULL
-      ..@ angle        : NULL
-      ..@ lineheight   : NULL
-      ..@ margin       : NULL
-      ..@ debug        : NULL
-      ..@ inherit.blank: logi FALSE
-     $ legend.title.position           : NULL
-     $ legend.position                 : chr "right"
-     $ legend.position.inside          : NULL
-     $ legend.direction                : NULL
-     $ legend.byrow                    : NULL
-     $ legend.justification            : chr "center"
-     $ legend.justification.top        : NULL
-     $ legend.justification.bottom     : NULL
-     $ legend.justification.left       : NULL
-     $ legend.justification.right      : NULL
-     $ legend.justification.inside     : NULL
-      [list output truncated]
-     @ complete: logi TRUE
-     @ validate: logi TRUE
-
-Code
-
-``` r
 beer_fit |>
   gg_tsresiduals()
 ```
 
-[![](regression_files/figure-revealjs/beer-resid-1.png)](regression_files/figure-revealjs/beer-resid-1.png)
+[![](regression_files/figure-html/beer-resid-1.png)](regression_files/figure-html/beer-resid-1.png)
 
 ## Residual diagnostics
 
@@ -2794,9 +1253,9 @@ beer_outliers |>
 2.  Standard threshold (c = 1.5): flags moderate outliers.
 3.  Stricter threshold (c = 3): flags only extreme observations. Use this when you want to be conservative.
 
-[![](regression_files/figure-revealjs/beer-outlier-plot-render-1.png)](regression_files/figure-revealjs/beer-outlier-plot-render-1.png)
+[![](regression_files/figure-html/beer-outlier-plot-render-1.png)](regression_files/figure-html/beer-outlier-plot-render-1.png)
 
-[![](regression_files/figure-revealjs/beer-outlier-plot-render-2.png)](regression_files/figure-revealjs/beer-outlier-plot-render-2.png)
+[![](regression_files/figure-html/beer-outlier-plot-render-2.png)](regression_files/figure-html/beer-outlier-plot-render-2.png)
 
 ### 7.3.1 Types of intervention variables
 
@@ -2895,9 +1354,9 @@ boston_data_p <- boston_men |>
        y = "Minutes", x = NULL)
 ```
 
-[![](regression_files/figure-revealjs/boston-data-render-1.png)](regression_files/figure-revealjs/boston-data-render-1.png)
+[![](regression_files/figure-html/boston-data-render-1.png)](regression_files/figure-html/boston-data-render-1.png)
 
-[![](regression_files/figure-revealjs/boston-data-render-2.png)](regression_files/figure-revealjs/boston-data-render-2.png)
+[![](regression_files/figure-html/boston-data-render-2.png)](regression_files/figure-html/boston-data-render-2.png)
 
 ### 8.2.1 A linear trend first
 
@@ -2921,17 +1380,17 @@ boston_linear_only_p <- boston_men |>
        y = "Minutes", x = NULL)
 ```
 
-[![](regression_files/figure-revealjs/boston-linear-only-render-1.png)](regression_files/figure-revealjs/boston-linear-only-render-1.png)
+[![](regression_files/figure-html/boston-linear-only-render-1.png)](regression_files/figure-html/boston-linear-only-render-1.png)
 
-[![](regression_files/figure-revealjs/boston-linear-only-render-2.png)](regression_files/figure-revealjs/boston-linear-only-render-2.png)
+[![](regression_files/figure-html/boston-linear-only-render-2.png)](regression_files/figure-html/boston-linear-only-render-2.png)
 
 The forecast predicts times will keep falling indefinitely — eventually reaching zero. A single linear trend is the wrong functional form here.
 
 ### 8.2.2 Three functional forms
 
-[![](regression_files/figure-revealjs/boston-fit-render-1.png)](regression_files/figure-revealjs/boston-fit-render-1.png)
+[![](regression_files/figure-html/boston-fit-render-1.png)](regression_files/figure-html/boston-fit-render-1.png)
 
-[![](regression_files/figure-revealjs/boston-fit-render-2.png)](regression_files/figure-revealjs/boston-fit-render-2.png)
+[![](regression_files/figure-html/boston-fit-render-2.png)](regression_files/figure-html/boston-fit-render-2.png)
 
 Code
 
@@ -2994,9 +1453,9 @@ boston_knots_p <- boston_men |>
   theme(legend.position = "top")
 ```
 
-[![](regression_files/figure-revealjs/boston-knots-render-1.png)](regression_files/figure-revealjs/boston-knots-render-1.png)
+[![](regression_files/figure-html/boston-knots-render-1.png)](regression_files/figure-html/boston-knots-render-1.png)
 
-[![](regression_files/figure-revealjs/boston-knots-render-2.png)](regression_files/figure-revealjs/boston-knots-render-2.png)
+[![](regression_files/figure-html/boston-knots-render-2.png)](regression_files/figure-html/boston-knots-render-2.png)
 
 > **WARNING:**
 >

@@ -2,7 +2,7 @@
 
 Modified
 
-June 10, 2026
+June 16, 2026
 
 ## 0.1 Introduction
 
@@ -99,9 +99,9 @@ alg_plot_p <- algeria_economy |>
   autoplot(Exports)
 ```
 
-[![](ets_files/figure-revealjs/alg-plot-render-1.png)](ets_files/figure-revealjs/alg-plot-render-1.png)
+[![](ets_files/figure-html/alg-plot-render-1.png)](ets_files/figure-html/alg-plot-render-1.png)
 
-[![](ets_files/figure-revealjs/alg-plot-render-2.png)](ets_files/figure-revealjs/alg-plot-render-2.png)
+[![](ets_files/figure-html/alg-plot-render-2.png)](ets_files/figure-html/alg-plot-render-2.png)
 
 Code
 
@@ -148,15 +148,15 @@ alg_fc <- alg_fit |>
 >          AIC     AICc      BIC 
 >     446.7154 447.1599 452.8968 
 
-[![](ets_files/figure-revealjs/ses-plot-render-1.png)](ets_files/figure-revealjs/ses-plot-render-1.png)
+[![](ets_files/figure-html/ses-plot-render-1.png)](ets_files/figure-html/ses-plot-render-1.png)
 
-[![](ets_files/figure-revealjs/ses-plot-render-2.png)](ets_files/figure-revealjs/ses-plot-render-2.png)
+[![](ets_files/figure-html/ses-plot-render-2.png)](ets_files/figure-html/ses-plot-render-2.png)
 
 Comparing the SES and Naive forecasts:
 
-[![](ets_files/figure-revealjs/ses-v-naive-plot-render-1.png)](ets_files/figure-revealjs/ses-v-naive-plot-render-1.png)
+[![](ets_files/figure-html/ses-v-naive-plot-render-1.png)](ets_files/figure-html/ses-v-naive-plot-render-1.png)
 
-[![](ets_files/figure-revealjs/ses-v-naive-plot-render-2.png)](ets_files/figure-revealjs/ses-v-naive-plot-render-2.png)
+[![](ets_files/figure-html/ses-v-naive-plot-render-2.png)](ets_files/figure-html/ses-v-naive-plot-render-2.png)
 
 ## 1.2 Methods with trend
 
@@ -188,9 +188,9 @@ bra_pop_p <- bra_economy |>
   autoplot(Pop)
 ```
 
-[![](ets_files/figure-revealjs/bra-pop-render-1.png)](ets_files/figure-revealjs/bra-pop-render-1.png)
+[![](ets_files/figure-html/bra-pop-render-1.png)](ets_files/figure-html/bra-pop-render-1.png)
 
-[![](ets_files/figure-revealjs/bra-pop-render-2.png)](ets_files/figure-revealjs/bra-pop-render-2.png)
+[![](ets_files/figure-html/bra-pop-render-2.png)](ets_files/figure-html/bra-pop-render-2.png)
 
 Code
 
@@ -235,9 +235,9 @@ holt_full_plt_p <- bra_fc |>
   guides(colour = guide_legend(title = "Forecast"))
 ```
 
-[![](ets_files/figure-revealjs/holt_full_plt-render-1.png)](ets_files/figure-revealjs/holt_full_plt-render-1.png)
+[![](ets_files/figure-html/holt_full_plt-render-1.png)](ets_files/figure-html/holt_full_plt-render-1.png)
 
-[![](ets_files/figure-revealjs/holt_full_plt-render-2.png)](ets_files/figure-revealjs/holt_full_plt-render-2.png)
+[![](ets_files/figure-html/holt_full_plt-render-2.png)](ets_files/figure-html/holt_full_plt-render-2.png)
 
 ### 1.2.2 Damped trend
 
@@ -256,9 +256,9 @@ where 0 \< \phi \< 1[^2] is the damping parameter.
 
 #### Example: Forecasting Brazil’s population (continued)
 
-[![](ets_files/figure-revealjs/damped_full-render-1.png)](ets_files/figure-revealjs/damped_full-render-1.png)
+[![](ets_files/figure-html/damped_full-render-1.png)](ets_files/figure-html/damped_full-render-1.png)
 
-[![](ets_files/figure-revealjs/damped_full-render-2.png)](ets_files/figure-revealjs/damped_full-render-2.png)
+[![](ets_files/figure-html/damped_full-render-2.png)](ets_files/figure-html/damped_full-render-2.png)
 
 Code
 
@@ -304,13 +304,13 @@ aus_holidays_data_p <- aus_holidays |> autoplot(Trips) +
        y = "Overnight trips (millions)")
 ```
 
-[![](ets_files/figure-revealjs/aus-holidays-data-render-1.png)](ets_files/figure-revealjs/aus-holidays-data-render-1.png)
+[![](ets_files/figure-html/aus-holidays-data-render-1.png)](ets_files/figure-html/aus-holidays-data-render-1.png)
 
-[![](ets_files/figure-revealjs/aus-holidays-data-render-2.png)](ets_files/figure-revealjs/aus-holidays-data-render-2.png)
+[![](ets_files/figure-html/aus-holidays-data-render-2.png)](ets_files/figure-html/aus-holidays-data-render-2.png)
 
-[![](ets_files/figure-revealjs/stl_ets_full-render-1.png)](ets_files/figure-revealjs/stl_ets_full-render-1.png)
+[![](ets_files/figure-html/stl_ets_full-render-1.png)](ets_files/figure-html/stl_ets_full-render-1.png)
 
-[![](ets_files/figure-revealjs/stl_ets_full-render-2.png)](ets_files/figure-revealjs/stl_ets_full-render-2.png)
+[![](ets_files/figure-html/stl_ets_full-render-2.png)](ets_files/figure-html/stl_ets_full-render-2.png)
 
 Code
 
@@ -394,9 +394,9 @@ hw_full_plt_p <- aus_fit_hw |>
   guides(colour = guide_legend(title = "Forecast"))
 ```
 
-[![](ets_files/figure-revealjs/hw_full_plt-render-1.png)](ets_files/figure-revealjs/hw_full_plt-render-1.png)
+[![](ets_files/figure-html/hw_full_plt-render-1.png)](ets_files/figure-html/hw_full_plt-render-1.png)
 
-[![](ets_files/figure-revealjs/hw_full_plt-render-2.png)](ets_files/figure-revealjs/hw_full_plt-render-2.png)
+[![](ets_files/figure-html/hw_full_plt-render-2.png)](ets_files/figure-html/hw_full_plt-render-2.png)
 
 > **NOTE:**
 >
@@ -442,9 +442,9 @@ hw_damped_p <- sth_cross_ped |>
        y="Pedestrians ('000)")
 ```
 
-[![](ets_files/figure-revealjs/hw_damped-render-1.png)](ets_files/figure-revealjs/hw_damped-render-1.png)
+[![](ets_files/figure-html/hw_damped-render-1.png)](ets_files/figure-html/hw_damped-render-1.png)
 
-[![](ets_files/figure-revealjs/hw_damped-render-2.png)](ets_files/figure-revealjs/hw_damped-render-2.png)
+[![](ets_files/figure-html/hw_damped-render-2.png)](ets_files/figure-html/hw_damped-render-2.png)
 
 > **TIP:**
 >
@@ -527,9 +527,9 @@ train_test_split_plt_p <- holidays_train |>
   )
 ```
 
-[![](ets_files/figure-revealjs/train-test-split-plt-render-1.png)](ets_files/figure-revealjs/train-test-split-plt-render-1.png)
+[![](ets_files/figure-html/train-test-split-plt-render-1.png)](ets_files/figure-html/train-test-split-plt-render-1.png)
 
-[![](ets_files/figure-revealjs/train-test-split-plt-render-2.png)](ets_files/figure-revealjs/train-test-split-plt-render-2.png)
+[![](ets_files/figure-html/train-test-split-plt-render-2.png)](ets_files/figure-html/train-test-split-plt-render-2.png)
 
 ### 2.0.2 Fitting all five models
 
@@ -597,9 +597,9 @@ all_models_fc_p <- holidays_fc |>
   guides(colour = guide_legend(title = "Model"))
 ```
 
-[![](ets_files/figure-revealjs/all-models-fc-render-1.png)](ets_files/figure-revealjs/all-models-fc-render-1.png)
+[![](ets_files/figure-html/all-models-fc-render-1.png)](ets_files/figure-html/all-models-fc-render-1.png)
 
-[![](ets_files/figure-revealjs/all-models-fc-render-2.png)](ets_files/figure-revealjs/all-models-fc-render-2.png)
+[![](ets_files/figure-html/all-models-fc-render-2.png)](ets_files/figure-html/all-models-fc-render-2.png)
 
 ### 2.0.4 Accuracy
 
