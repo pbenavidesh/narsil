@@ -48,6 +48,6 @@ End-of-module exercise covering the complete Module 2 toolkit — baseline, ETS,
 
 Jun 17, 2025
 
-5 min
+6 min
 
 Back to top

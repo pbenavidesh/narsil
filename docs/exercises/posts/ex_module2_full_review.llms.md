@@ -14,6 +14,8 @@ Code
 
 topic-exercise
 
+module-review
+
 module-2
 
 End-of-module exercise covering the complete Module 2 toolkit — baseline, ETS, ARIMA/SARIMA, and mixed decomposition models — applied to Mexico’s unemployment rate.
@@ -33,8 +35,6 @@ library(tidyverse)
 library(fpp3)
 library(tidyquant)
 library(plotly)
-source(here::here("R/narsil_theme.R"))
-theme_set(theme_narsil())
 ```
 
 ## 0.1 Introduction
@@ -48,7 +48,7 @@ Mexico’s harmonized unemployment rate (FRED ticker `LRHUTTTTMXQ156N`) is a qua
 Code
 
 ``` r
-unemp <- tidyquant::tq_get(
+unemp <- tq_get(
   "LRHUTTTTMXQ156N",
   get = "economic.data",
   from = "2005-01-01"
@@ -67,7 +67,7 @@ Before fitting any model, take time to understand the series. The plots below co
 Code
 
 ``` r
-unemp_p <- unemp |>
+unemp |>
   autoplot(unemp) +
   labs(
     title = "Mexico unemployment rate",
@@ -81,11 +81,12 @@ Note the sharp spike around 2020 Q2 — the COVID-19 shock. Keep this in mind wh
 Code
 
 ``` r
-theme_narsil()
 unemp |> gg_season(unemp)
 ```
 
-[![](ex_module2_full_review_files/figure-html/season-subseries-1.png)](ex_module2_full_review_files/figure-html/season-subseries-1.png)
+[![](ex_module2_full_review_files/figure-html/season-render-1.png)](ex_module2_full_review_files/figure-html/season-render-1.png)
+
+[![](ex_module2_full_review_files/figure-html/season-render-2.png)](ex_module2_full_review_files/figure-html/season-render-2.png)
 
 Code
 
@@ -93,17 +94,17 @@ Code
 unemp |> gg_subseries(unemp)
 ```
 
-[![](ex_module2_full_review_files/figure-html/subseries-1.png)](ex_module2_full_review_files/figure-html/subseries-1.png)
+[![](ex_module2_full_review_files/figure-html/subseries-render-1.png)](ex_module2_full_review_files/figure-html/subseries-render-1.png)
+
+[![](ex_module2_full_review_files/figure-html/subseries-render-2.png)](ex_module2_full_review_files/figure-html/subseries-render-2.png)
 
 Code
 
 ``` r
-theme_narsil()
-unemp |>
-  gg_tsdisplay(unemp, plot_type = "partial")
+unemp |> gg_tsdisplay(unemp, plot_type = "partial")
 ```
 
-[![](ex_module2_full_review_files/figure-html/tsdisplay-1.png)](ex_module2_full_review_files/figure-html/tsdisplay-1.png)
+[![](ex_module2_full_review_files/figure-html/tsdisplay-render-1.png)](ex_module2_full_review_files/figure-html/tsdisplay-render-1.png)
 
 > **NOTE:**
 >
@@ -183,7 +184,7 @@ For each model:
 
 ## 1.4 Exercise 4 — Mixed decomposition models
 
-This section connects directly to the [Modular Forecasting](../../../docs/modules/module_2/04_modular_fcst/modular_forecasting.llms.md) class document.
+This section connects directly to the [Modular Forecasting](../../modules/module_2/04_modular_forecasting/modular_forecasting.qmd) class document.
 
 Add the two mixed combinations to your `mable`:
 
@@ -203,7 +204,7 @@ After fitting:
 - Compute a final accuracy table with all models, sorted by RMSE.
 - Answer: which approach performs best on this series? Does the winner make intuitive sense given what you observed in the EDA?
 
-## 1.5 Exercise 5 — Reflection
+## 1.5 Exercise 5 — Reflection (graduate students)
 
 Write a short paragraph (5–8 sentences) addressing the following:
 

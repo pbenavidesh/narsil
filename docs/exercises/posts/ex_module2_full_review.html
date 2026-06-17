@@ -161,13 +161,13 @@ cookieconsent.run({
 
 <meta property="og:title" content="Module 2 Review: Full Forecasting Pipeline – Time Series Forecasting">
 <meta property="og:description" content="End-of-module exercise covering the complete Module 2 toolkit — baseline, ETS, ARIMA/SARIMA, and mixed decomposition models — applied to Mexico’s unemployment rate.">
-<meta property="og:image" content="https://pbenavidesh.github.io/narsil/docs/exercises/posts/ex_module2_full_review_files/figure-html/season-subseries-1.png">
+<meta property="og:image" content="https://pbenavidesh.github.io/narsil/docs/exercises/posts/ex_module2_full_review_files/figure-html/season-render-1.png">
 <meta property="og:site_name" content="Time Series Forecasting">
 <meta property="og:image:height" content="960">
 <meta property="og:image:width" content="1344">
 <meta name="twitter:title" content="Module 2 Review: Full Forecasting Pipeline – Time Series Forecasting">
 <meta name="twitter:description" content="End-of-module exercise covering the complete Module 2 toolkit — baseline, ETS, ARIMA/SARIMA, and mixed decomposition models — applied to Mexico’s unemployment rate.">
-<meta name="twitter:image" content="https://pbenavidesh.github.io/narsil/docs/exercises/posts/ex_module2_full_review_files/figure-html/season-subseries-1.png">
+<meta name="twitter:image" content="https://pbenavidesh.github.io/narsil/docs/exercises/posts/ex_module2_full_review_files/figure-html/season-render-1.png">
 <meta name="twitter:creator" content="@PabsBenavides">
 <meta name="twitter:image-height" content="960">
 <meta name="twitter:image-width" content="1344">
@@ -432,7 +432,7 @@ cookieconsent.run({
   <li><a href="#exercise-2-ets-models" id="toc-exercise-2-ets-models" class="nav-link" data-scroll-target="#exercise-2-ets-models"><span class="header-section-number">1.2</span> Exercise 2 — ETS models</a></li>
   <li><a href="#exercise-3-arima-and-sarima" id="toc-exercise-3-arima-and-sarima" class="nav-link" data-scroll-target="#exercise-3-arima-and-sarima"><span class="header-section-number">1.3</span> Exercise 3 — ARIMA and SARIMA</a></li>
   <li><a href="#exercise-4-mixed-decomposition-models" id="toc-exercise-4-mixed-decomposition-models" class="nav-link" data-scroll-target="#exercise-4-mixed-decomposition-models"><span class="header-section-number">1.4</span> Exercise 4 — Mixed decomposition models</a></li>
-  <li><a href="#exercise-5-reflection" id="toc-exercise-5-reflection" class="nav-link" data-scroll-target="#exercise-5-reflection"><span class="header-section-number">1.5</span> Exercise 5 — Reflection</a></li>
+  <li><a href="#exercise-5-reflection-graduate-students" id="toc-exercise-5-reflection-graduate-students" class="nav-link" data-scroll-target="#exercise-5-reflection-graduate-students"><span class="header-section-number">1.5</span> Exercise 5 — Reflection (graduate students)</a></li>
   </ul></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/pbenavidesh/narsil/edit/main/docs/exercises/posts/ex_module2_full_review.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/pbenavidesh/narsil/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
@@ -446,6 +446,7 @@ cookieconsent.run({
 <div class="quarto-title-block"><div><h1 class="title">Module 2 Review: Full Forecasting Pipeline</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
   <div class="quarto-categories">
     <div class="quarto-category">topic-exercise</div>
+    <div class="quarto-category">module-review</div>
     <div class="quarto-category">module-2</div>
   </div>
   </div>
@@ -487,9 +488,7 @@ cookieconsent.run({
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fpp3)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyquant)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(plotly)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"R/narsil_theme.R"</span>))</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_narsil</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(plotly)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <section id="introduction" class="level2" data-number="0.1">
@@ -502,7 +501,7 @@ cookieconsent.run({
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>unemp <span class="ot">&lt;-</span> tidyquant<span class="sc">::</span><span class="fu">tq_get</span>(</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>unemp <span class="ot">&lt;-</span> <span class="fu">tq_get</span>(</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"LRHUTTTTMXQ156N"</span>,</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">get =</span> <span class="st">"economic.data"</span>,</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">from =</span> <span class="st">"2005-01-01"</span></span>
@@ -528,7 +527,7 @@ cookieconsent.run({
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>unemp_p <span class="ot">&lt;-</span> unemp <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>unemp <span class="sc">|&gt;</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(unemp) <span class="sc">+</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Mexico unemployment rate"</span>,</span>
@@ -539,25 +538,33 @@ cookieconsent.run({
 </div>
 <div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
 <div class="cell-output-display light-content">
-<div class="plotly html-widget html-fill-item" id="htmlwidget-31e4f721587fa4e3324c" style="width:100%;height:464px;"></div>
-<script type="application/json" data-for="htmlwidget-31e4f721587fa4e3324c">{"x":{"data":[{"x":["2005-01-01","2005-04-01","2005-07-01","2005-10-01","2006-01-01","2006-04-01","2006-07-01","2006-10-01","2007-01-01","2007-04-01","2007-07-01","2007-10-01","2008-01-01","2008-04-01","2008-07-01","2008-10-01","2009-01-01","2009-04-01","2009-07-01","2009-10-01","2010-01-01","2010-04-01","2010-07-01","2010-10-01","2011-01-01","2011-04-01","2011-07-01","2011-10-01","2012-01-01","2012-04-01","2012-07-01","2012-10-01","2013-01-01","2013-04-01","2013-07-01","2013-10-01","2014-01-01","2014-04-01","2014-07-01","2014-10-01","2015-01-01","2015-04-01","2015-07-01","2015-10-01","2016-01-01","2016-04-01","2016-07-01","2016-10-01","2017-01-01","2017-04-01","2017-07-01","2017-10-01","2018-01-01","2018-04-01","2018-07-01","2018-10-01","2019-01-01","2019-04-01","2019-07-01","2019-10-01","2020-01-01","2020-04-01","2020-07-01","2020-10-01","2021-01-01","2021-04-01","2021-07-01","2021-10-01","2022-01-01","2022-04-01","2022-07-01","2022-10-01","2023-01-01","2023-04-01","2023-07-01","2023-10-01","2024-01-01","2024-04-01","2024-07-01","2024-10-01","2025-01-01","2025-04-01","2025-07-01","2025-10-01","2026-01-01"],"y":[3.8708749999999998,3.5528659999999999,3.8293550000000001,3.130045,3.5726740000000001,3.1747049999999999,3.989195,3.6503999999999999,4.0018380000000002,3.3680840000000001,3.9173900000000001,3.5991029999999999,3.9244279999999998,3.4696790000000002,4.1877820000000003,4.3167309999999999,5.0338139999999996,5.2485840000000001,6.2782580000000001,5.3556150000000002,5.3809199999999997,5.1927060000000003,5.6272690000000001,5.3226079999999998,5.1461730000000001,5.2451509999999999,5.7027010000000002,4.8402669999999999,4.9578939999999996,4.835909,5.1397539999999999,4.8775180000000002,4.9292389999999999,4.9950450000000002,5.2065950000000001,4.5869859999999996,4.8420629999999996,4.869707,5.2505319999999998,4.353529,4.2337579999999999,4.3883669999999997,4.6318250000000001,4.1578210000000002,4.0400010000000002,3.9167100000000001,4.0497709999999998,3.518942,3.3841679999999998,3.4312269999999998,3.5111729999999999,3.349615,3.1584340000000002,3.3279079999999999,3.5035129999999999,3.2909280000000001,3.3602599999999998,3.521865,3.7414619999999998,3.33826,3.4062869999999998,4.7904520000000002,5.2456149999999999,4.2841810000000002,4.3234539999999999,4.2234660000000002,4.2978440000000004,3.7097180000000001,3.4727389999999998,3.2177690000000001,3.4345409999999998,2.970037,2.7042109999999999,2.8019859999999999,2.987546,2.6908210000000001,2.5296979999999998,2.6691790000000002,2.9624290000000002,2.5237850000000002,2.4778560000000001,2.6575150000000001,2.8946589999999999,2.5536560000000001,2.5708669999999998],"text":["date: 2005 Q1<br />unemp: 3.870875","date: 2005 Q2<br />unemp: 3.552866","date: 2005 Q3<br />unemp: 3.829355","date: 2005 Q4<br />unemp: 3.130045","date: 2006 Q1<br />unemp: 3.572674","date: 2006 Q2<br />unemp: 3.174705","date: 2006 Q3<br />unemp: 3.989195","date: 2006 Q4<br />unemp: 3.650400","date: 2007 Q1<br />unemp: 4.001838","date: 2007 Q2<br />unemp: 3.368084","date: 2007 Q3<br />unemp: 3.917390","date: 2007 Q4<br />unemp: 3.599103","date: 2008 Q1<br />unemp: 3.924428","date: 2008 Q2<br />unemp: 3.469679","date: 2008 Q3<br />unemp: 4.187782","date: 2008 Q4<br />unemp: 4.316731","date: 2009 Q1<br />unemp: 5.033814","date: 2009 Q2<br />unemp: 5.248584","date: 2009 Q3<br />unemp: 6.278258","date: 2009 Q4<br />unemp: 5.355615","date: 2010 Q1<br />unemp: 5.380920","date: 2010 Q2<br />unemp: 5.192706","date: 2010 Q3<br />unemp: 5.627269","date: 2010 Q4<br />unemp: 5.322608","date: 2011 Q1<br />unemp: 5.146173","date: 2011 Q2<br />unemp: 5.245151","date: 2011 Q3<br />unemp: 5.702701","date: 2011 Q4<br />unemp: 4.840267","date: 2012 Q1<br />unemp: 4.957894","date: 2012 Q2<br />unemp: 4.835909","date: 2012 Q3<br />unemp: 5.139754","date: 2012 Q4<br />unemp: 4.877518","date: 2013 Q1<br />unemp: 4.929239","date: 2013 Q2<br />unemp: 4.995045","date: 2013 Q3<br />unemp: 5.206595","date: 2013 Q4<br />unemp: 4.586986","date: 2014 Q1<br />unemp: 4.842063","date: 2014 Q2<br />unemp: 4.869707","date: 2014 Q3<br />unemp: 5.250532","date: 2014 Q4<br />unemp: 4.353529","date: 2015 Q1<br />unemp: 4.233758","date: 2015 Q2<br />unemp: 4.388367","date: 2015 Q3<br />unemp: 4.631825","date: 2015 Q4<br />unemp: 4.157821","date: 2016 Q1<br />unemp: 4.040001","date: 2016 Q2<br />unemp: 3.916710","date: 2016 Q3<br />unemp: 4.049771","date: 2016 Q4<br />unemp: 3.518942","date: 2017 Q1<br />unemp: 3.384168","date: 2017 Q2<br />unemp: 3.431227","date: 2017 Q3<br />unemp: 3.511173","date: 2017 Q4<br />unemp: 3.349615","date: 2018 Q1<br />unemp: 3.158434","date: 2018 Q2<br />unemp: 3.327908","date: 2018 Q3<br />unemp: 3.503513","date: 2018 Q4<br />unemp: 3.290928","date: 2019 Q1<br />unemp: 3.360260","date: 2019 Q2<br />unemp: 3.521865","date: 2019 Q3<br />unemp: 3.741462","date: 2019 Q4<br />unemp: 3.338260","date: 2020 Q1<br />unemp: 3.406287","date: 2020 Q2<br />unemp: 4.790452","date: 2020 Q3<br />unemp: 5.245615","date: 2020 Q4<br />unemp: 4.284181","date: 2021 Q1<br />unemp: 4.323454","date: 2021 Q2<br />unemp: 4.223466","date: 2021 Q3<br />unemp: 4.297844","date: 2021 Q4<br />unemp: 3.709718","date: 2022 Q1<br />unemp: 3.472739","date: 2022 Q2<br />unemp: 3.217769","date: 2022 Q3<br />unemp: 3.434541","date: 2022 Q4<br />unemp: 2.970037","date: 2023 Q1<br />unemp: 2.704211","date: 2023 Q2<br />unemp: 2.801986","date: 2023 Q3<br />unemp: 2.987546","date: 2023 Q4<br />unemp: 2.690821","date: 2024 Q1<br />unemp: 2.529698","date: 2024 Q2<br />unemp: 2.669179","date: 2024 Q3<br />unemp: 2.962429","date: 2024 Q4<br />unemp: 2.523785","date: 2025 Q1<br />unemp: 2.477856","date: 2025 Q2<br />unemp: 2.657515","date: 2025 Q3<br />unemp: 2.894659","date: 2025 Q4<br />unemp: 2.553656","date: 2026 Q1<br />unemp: 2.570867"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(42,37,32,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":43.098381070983812,"r":7.9701120797011216,"b":24.707347447073481,"l":34.271481942714829},"plot_bgcolor":"#E8ECF2","paper_bgcolor":"#F4F6F9","font":{"color":"#2A2520","family":"","size":15.940224159402243},"title":{"text":"<b> Mexico unemployment rate <\/b>","font":{"color":"rgba(42,37,32,1)","family":"","size":19.128268991282692},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"date","autorange":true,"range":["2003-12-14","2027-01-19"],"tickmode":"auto","ticktext":["2005 Q1","2010 Q1","2015 Q1","2020 Q1","2025 Q1"],"tickvals":[12784,14610,16436,18262,20089],"categoryorder":"array","categoryarray":["2005 Q1","2010 Q1","2015 Q1","2020 Q1","2025 Q1"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.9850560398505608,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"#2A2520","family":"","size":12.7521793275218},"tickangle":-0,"showline":false,"linecolor":"#D5D0C6","linewidth":0,"showgrid":true,"gridcolor":"#D5D0C6","gridwidth":0.53134080531340799,"zeroline":false,"anchor":"y","title":{"text":"","font":{"color":"rgba(42,37,32,1)","family":"","size":15.940224159402243}},"hoverformat":".2f","zerolinecolor":"#D5D0C6"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":true,"range":[2.2878359000000001,6.4682781],"tickmode":"auto","ticktext":["3","4","5","6"],"tickvals":[3,4,5,6],"categoryorder":"array","categoryarray":["3","4","5","6"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.9850560398505608,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"#2A2520","family":"","size":12.7521793275218},"tickangle":-0,"showline":false,"linecolor":"#D5D0C6","linewidth":0,"showgrid":true,"gridcolor":"#D5D0C6","gridwidth":0.5313408053134081,"zeroline":false,"anchor":"x","title":{"text":"Unemployment rate (%)","font":{"color":"rgba(42,37,32,1)","family":"","size":15.940224159402243}},"hoverformat":".2f","zerolinecolor":"#D5D0C6"},"shapes":[],"showlegend":false,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"#2A2520","family":"","size":12.7521793275218},"title":{"text":"","font":{"color":"rgba(42,37,32,1)","family":"","size":15.940224159402243}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"89bc46bb6ddd":{"x":{},"y":{},"type":"scatter"}},"cur_data":"89bc46bb6ddd","visdat":{"89bc46bb6ddd":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<div class="plotly html-widget html-fill-item" id="htmlwidget-3a835bad566a0560f7da" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-3a835bad566a0560f7da">{"x":{"data":[{"x":["2005-01-01","2005-04-01","2005-07-01","2005-10-01","2006-01-01","2006-04-01","2006-07-01","2006-10-01","2007-01-01","2007-04-01","2007-07-01","2007-10-01","2008-01-01","2008-04-01","2008-07-01","2008-10-01","2009-01-01","2009-04-01","2009-07-01","2009-10-01","2010-01-01","2010-04-01","2010-07-01","2010-10-01","2011-01-01","2011-04-01","2011-07-01","2011-10-01","2012-01-01","2012-04-01","2012-07-01","2012-10-01","2013-01-01","2013-04-01","2013-07-01","2013-10-01","2014-01-01","2014-04-01","2014-07-01","2014-10-01","2015-01-01","2015-04-01","2015-07-01","2015-10-01","2016-01-01","2016-04-01","2016-07-01","2016-10-01","2017-01-01","2017-04-01","2017-07-01","2017-10-01","2018-01-01","2018-04-01","2018-07-01","2018-10-01","2019-01-01","2019-04-01","2019-07-01","2019-10-01","2020-01-01","2020-04-01","2020-07-01","2020-10-01","2021-01-01","2021-04-01","2021-07-01","2021-10-01","2022-01-01","2022-04-01","2022-07-01","2022-10-01","2023-01-01","2023-04-01","2023-07-01","2023-10-01","2024-01-01","2024-04-01","2024-07-01","2024-10-01","2025-01-01","2025-04-01","2025-07-01","2025-10-01","2026-01-01"],"y":[3.8708749999999998,3.5528659999999999,3.8293550000000001,3.130045,3.5726740000000001,3.1747049999999999,3.989195,3.6503999999999999,4.0018380000000002,3.3680840000000001,3.9173900000000001,3.5991029999999999,3.9244279999999998,3.4696790000000002,4.1877820000000003,4.3167309999999999,5.0338139999999996,5.2485840000000001,6.2782580000000001,5.3556150000000002,5.3809199999999997,5.1927060000000003,5.6272690000000001,5.3226079999999998,5.1461730000000001,5.2451509999999999,5.7027010000000002,4.8402669999999999,4.9578939999999996,4.835909,5.1397539999999999,4.8775180000000002,4.9292389999999999,4.9950450000000002,5.2065950000000001,4.5869859999999996,4.8420629999999996,4.869707,5.2505319999999998,4.353529,4.2337579999999999,4.3883669999999997,4.6318250000000001,4.1578210000000002,4.0400010000000002,3.9167100000000001,4.0497709999999998,3.518942,3.3841679999999998,3.4312269999999998,3.5111729999999999,3.349615,3.1584340000000002,3.3279079999999999,3.5035129999999999,3.2909280000000001,3.3602599999999998,3.521865,3.7414619999999998,3.33826,3.4062869999999998,4.7904520000000002,5.2456149999999999,4.2841810000000002,4.3234539999999999,4.2234660000000002,4.2978440000000004,3.7097180000000001,3.4727389999999998,3.2177690000000001,3.4345409999999998,2.970037,2.7042109999999999,2.8019859999999999,2.987546,2.6908210000000001,2.5296979999999998,2.6691790000000002,2.9624290000000002,2.5237850000000002,2.4778560000000001,2.6575150000000001,2.8946589999999999,2.5536560000000001,2.5708669999999998],"text":["date: 2005 Q1<br />unemp: 3.870875","date: 2005 Q2<br />unemp: 3.552866","date: 2005 Q3<br />unemp: 3.829355","date: 2005 Q4<br />unemp: 3.130045","date: 2006 Q1<br />unemp: 3.572674","date: 2006 Q2<br />unemp: 3.174705","date: 2006 Q3<br />unemp: 3.989195","date: 2006 Q4<br />unemp: 3.650400","date: 2007 Q1<br />unemp: 4.001838","date: 2007 Q2<br />unemp: 3.368084","date: 2007 Q3<br />unemp: 3.917390","date: 2007 Q4<br />unemp: 3.599103","date: 2008 Q1<br />unemp: 3.924428","date: 2008 Q2<br />unemp: 3.469679","date: 2008 Q3<br />unemp: 4.187782","date: 2008 Q4<br />unemp: 4.316731","date: 2009 Q1<br />unemp: 5.033814","date: 2009 Q2<br />unemp: 5.248584","date: 2009 Q3<br />unemp: 6.278258","date: 2009 Q4<br />unemp: 5.355615","date: 2010 Q1<br />unemp: 5.380920","date: 2010 Q2<br />unemp: 5.192706","date: 2010 Q3<br />unemp: 5.627269","date: 2010 Q4<br />unemp: 5.322608","date: 2011 Q1<br />unemp: 5.146173","date: 2011 Q2<br />unemp: 5.245151","date: 2011 Q3<br />unemp: 5.702701","date: 2011 Q4<br />unemp: 4.840267","date: 2012 Q1<br />unemp: 4.957894","date: 2012 Q2<br />unemp: 4.835909","date: 2012 Q3<br />unemp: 5.139754","date: 2012 Q4<br />unemp: 4.877518","date: 2013 Q1<br />unemp: 4.929239","date: 2013 Q2<br />unemp: 4.995045","date: 2013 Q3<br />unemp: 5.206595","date: 2013 Q4<br />unemp: 4.586986","date: 2014 Q1<br />unemp: 4.842063","date: 2014 Q2<br />unemp: 4.869707","date: 2014 Q3<br />unemp: 5.250532","date: 2014 Q4<br />unemp: 4.353529","date: 2015 Q1<br />unemp: 4.233758","date: 2015 Q2<br />unemp: 4.388367","date: 2015 Q3<br />unemp: 4.631825","date: 2015 Q4<br />unemp: 4.157821","date: 2016 Q1<br />unemp: 4.040001","date: 2016 Q2<br />unemp: 3.916710","date: 2016 Q3<br />unemp: 4.049771","date: 2016 Q4<br />unemp: 3.518942","date: 2017 Q1<br />unemp: 3.384168","date: 2017 Q2<br />unemp: 3.431227","date: 2017 Q3<br />unemp: 3.511173","date: 2017 Q4<br />unemp: 3.349615","date: 2018 Q1<br />unemp: 3.158434","date: 2018 Q2<br />unemp: 3.327908","date: 2018 Q3<br />unemp: 3.503513","date: 2018 Q4<br />unemp: 3.290928","date: 2019 Q1<br />unemp: 3.360260","date: 2019 Q2<br />unemp: 3.521865","date: 2019 Q3<br />unemp: 3.741462","date: 2019 Q4<br />unemp: 3.338260","date: 2020 Q1<br />unemp: 3.406287","date: 2020 Q2<br />unemp: 4.790452","date: 2020 Q3<br />unemp: 5.245615","date: 2020 Q4<br />unemp: 4.284181","date: 2021 Q1<br />unemp: 4.323454","date: 2021 Q2<br />unemp: 4.223466","date: 2021 Q3<br />unemp: 4.297844","date: 2021 Q4<br />unemp: 3.709718","date: 2022 Q1<br />unemp: 3.472739","date: 2022 Q2<br />unemp: 3.217769","date: 2022 Q3<br />unemp: 3.434541","date: 2022 Q4<br />unemp: 2.970037","date: 2023 Q1<br />unemp: 2.704211","date: 2023 Q2<br />unemp: 2.801986","date: 2023 Q3<br />unemp: 2.987546","date: 2023 Q4<br />unemp: 2.690821","date: 2024 Q1<br />unemp: 2.529698","date: 2024 Q2<br />unemp: 2.669179","date: 2024 Q3<br />unemp: 2.962429","date: 2024 Q4<br />unemp: 2.523785","date: 2025 Q1<br />unemp: 2.477856","date: 2025 Q2<br />unemp: 2.657515","date: 2025 Q3<br />unemp: 2.894659","date: 2025 Q4<br />unemp: 2.553656","date: 2026 Q1<br />unemp: 2.570867"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(42,37,32,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":43.098381070983812,"r":7.9701120797011216,"b":24.707347447073481,"l":34.271481942714829},"plot_bgcolor":"#E8ECF2","paper_bgcolor":"#F4F6F9","font":{"color":"#2A2520","family":"","size":15.940224159402243},"title":{"text":"<b> Mexico unemployment rate <\/b>","font":{"color":"rgba(42,37,32,1)","family":"","size":19.128268991282692},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"date","autorange":true,"range":["2003-12-14","2027-01-19"],"tickmode":"auto","ticktext":["2005 Q1","2010 Q1","2015 Q1","2020 Q1","2025 Q1"],"tickvals":[12784,14610,16436,18262,20089],"categoryorder":"array","categoryarray":["2005 Q1","2010 Q1","2015 Q1","2020 Q1","2025 Q1"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.9850560398505608,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"#2A2520","family":"","size":12.7521793275218},"tickangle":-0,"showline":false,"linecolor":"#D5D0C6","linewidth":0,"showgrid":true,"gridcolor":"#D5D0C6","gridwidth":0.53134080531340799,"zeroline":false,"anchor":"y","title":{"text":"","font":{"color":"rgba(42,37,32,1)","family":"","size":15.940224159402243}},"hoverformat":".2f","zerolinecolor":"#D5D0C6"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":true,"range":[2.2878359000000001,6.4682781],"tickmode":"auto","ticktext":["3","4","5","6"],"tickvals":[3,4,5,6],"categoryorder":"array","categoryarray":["3","4","5","6"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.9850560398505608,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"#2A2520","family":"","size":12.7521793275218},"tickangle":-0,"showline":false,"linecolor":"#D5D0C6","linewidth":0,"showgrid":true,"gridcolor":"#D5D0C6","gridwidth":0.5313408053134081,"zeroline":false,"anchor":"x","title":{"text":"Unemployment rate (%)","font":{"color":"rgba(42,37,32,1)","family":"","size":15.940224159402243}},"hoverformat":".2f","zerolinecolor":"#D5D0C6"},"shapes":[],"showlegend":false,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"#2A2520","family":"","size":12.7521793275218},"title":{"text":"","font":{"color":"rgba(42,37,32,1)","family":"","size":15.940224159402243}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"17f372879ab0":{"x":{},"y":{},"type":"scatter"}},"cur_data":"17f372879ab0","visdat":{"17f372879ab0":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 </div>
 <div class="cell-output-display dark-content">
-<div class="plotly html-widget html-fill-item" id="htmlwidget-1df1cc43cb2f10a2604a" style="width:100%;height:464px;"></div>
-<script type="application/json" data-for="htmlwidget-1df1cc43cb2f10a2604a">{"x":{"data":[{"x":["2005-01-01","2005-04-01","2005-07-01","2005-10-01","2006-01-01","2006-04-01","2006-07-01","2006-10-01","2007-01-01","2007-04-01","2007-07-01","2007-10-01","2008-01-01","2008-04-01","2008-07-01","2008-10-01","2009-01-01","2009-04-01","2009-07-01","2009-10-01","2010-01-01","2010-04-01","2010-07-01","2010-10-01","2011-01-01","2011-04-01","2011-07-01","2011-10-01","2012-01-01","2012-04-01","2012-07-01","2012-10-01","2013-01-01","2013-04-01","2013-07-01","2013-10-01","2014-01-01","2014-04-01","2014-07-01","2014-10-01","2015-01-01","2015-04-01","2015-07-01","2015-10-01","2016-01-01","2016-04-01","2016-07-01","2016-10-01","2017-01-01","2017-04-01","2017-07-01","2017-10-01","2018-01-01","2018-04-01","2018-07-01","2018-10-01","2019-01-01","2019-04-01","2019-07-01","2019-10-01","2020-01-01","2020-04-01","2020-07-01","2020-10-01","2021-01-01","2021-04-01","2021-07-01","2021-10-01","2022-01-01","2022-04-01","2022-07-01","2022-10-01","2023-01-01","2023-04-01","2023-07-01","2023-10-01","2024-01-01","2024-04-01","2024-07-01","2024-10-01","2025-01-01","2025-04-01","2025-07-01","2025-10-01","2026-01-01"],"y":[3.8708749999999998,3.5528659999999999,3.8293550000000001,3.130045,3.5726740000000001,3.1747049999999999,3.989195,3.6503999999999999,4.0018380000000002,3.3680840000000001,3.9173900000000001,3.5991029999999999,3.9244279999999998,3.4696790000000002,4.1877820000000003,4.3167309999999999,5.0338139999999996,5.2485840000000001,6.2782580000000001,5.3556150000000002,5.3809199999999997,5.1927060000000003,5.6272690000000001,5.3226079999999998,5.1461730000000001,5.2451509999999999,5.7027010000000002,4.8402669999999999,4.9578939999999996,4.835909,5.1397539999999999,4.8775180000000002,4.9292389999999999,4.9950450000000002,5.2065950000000001,4.5869859999999996,4.8420629999999996,4.869707,5.2505319999999998,4.353529,4.2337579999999999,4.3883669999999997,4.6318250000000001,4.1578210000000002,4.0400010000000002,3.9167100000000001,4.0497709999999998,3.518942,3.3841679999999998,3.4312269999999998,3.5111729999999999,3.349615,3.1584340000000002,3.3279079999999999,3.5035129999999999,3.2909280000000001,3.3602599999999998,3.521865,3.7414619999999998,3.33826,3.4062869999999998,4.7904520000000002,5.2456149999999999,4.2841810000000002,4.3234539999999999,4.2234660000000002,4.2978440000000004,3.7097180000000001,3.4727389999999998,3.2177690000000001,3.4345409999999998,2.970037,2.7042109999999999,2.8019859999999999,2.987546,2.6908210000000001,2.5296979999999998,2.6691790000000002,2.9624290000000002,2.5237850000000002,2.4778560000000001,2.6575150000000001,2.8946589999999999,2.5536560000000001,2.5708669999999998],"text":["date: 2005 Q1<br />unemp: 3.870875","date: 2005 Q2<br />unemp: 3.552866","date: 2005 Q3<br />unemp: 3.829355","date: 2005 Q4<br />unemp: 3.130045","date: 2006 Q1<br />unemp: 3.572674","date: 2006 Q2<br />unemp: 3.174705","date: 2006 Q3<br />unemp: 3.989195","date: 2006 Q4<br />unemp: 3.650400","date: 2007 Q1<br />unemp: 4.001838","date: 2007 Q2<br />unemp: 3.368084","date: 2007 Q3<br />unemp: 3.917390","date: 2007 Q4<br />unemp: 3.599103","date: 2008 Q1<br />unemp: 3.924428","date: 2008 Q2<br />unemp: 3.469679","date: 2008 Q3<br />unemp: 4.187782","date: 2008 Q4<br />unemp: 4.316731","date: 2009 Q1<br />unemp: 5.033814","date: 2009 Q2<br />unemp: 5.248584","date: 2009 Q3<br />unemp: 6.278258","date: 2009 Q4<br />unemp: 5.355615","date: 2010 Q1<br />unemp: 5.380920","date: 2010 Q2<br />unemp: 5.192706","date: 2010 Q3<br />unemp: 5.627269","date: 2010 Q4<br />unemp: 5.322608","date: 2011 Q1<br />unemp: 5.146173","date: 2011 Q2<br />unemp: 5.245151","date: 2011 Q3<br />unemp: 5.702701","date: 2011 Q4<br />unemp: 4.840267","date: 2012 Q1<br />unemp: 4.957894","date: 2012 Q2<br />unemp: 4.835909","date: 2012 Q3<br />unemp: 5.139754","date: 2012 Q4<br />unemp: 4.877518","date: 2013 Q1<br />unemp: 4.929239","date: 2013 Q2<br />unemp: 4.995045","date: 2013 Q3<br />unemp: 5.206595","date: 2013 Q4<br />unemp: 4.586986","date: 2014 Q1<br />unemp: 4.842063","date: 2014 Q2<br />unemp: 4.869707","date: 2014 Q3<br />unemp: 5.250532","date: 2014 Q4<br />unemp: 4.353529","date: 2015 Q1<br />unemp: 4.233758","date: 2015 Q2<br />unemp: 4.388367","date: 2015 Q3<br />unemp: 4.631825","date: 2015 Q4<br />unemp: 4.157821","date: 2016 Q1<br />unemp: 4.040001","date: 2016 Q2<br />unemp: 3.916710","date: 2016 Q3<br />unemp: 4.049771","date: 2016 Q4<br />unemp: 3.518942","date: 2017 Q1<br />unemp: 3.384168","date: 2017 Q2<br />unemp: 3.431227","date: 2017 Q3<br />unemp: 3.511173","date: 2017 Q4<br />unemp: 3.349615","date: 2018 Q1<br />unemp: 3.158434","date: 2018 Q2<br />unemp: 3.327908","date: 2018 Q3<br />unemp: 3.503513","date: 2018 Q4<br />unemp: 3.290928","date: 2019 Q1<br />unemp: 3.360260","date: 2019 Q2<br />unemp: 3.521865","date: 2019 Q3<br />unemp: 3.741462","date: 2019 Q4<br />unemp: 3.338260","date: 2020 Q1<br />unemp: 3.406287","date: 2020 Q2<br />unemp: 4.790452","date: 2020 Q3<br />unemp: 5.245615","date: 2020 Q4<br />unemp: 4.284181","date: 2021 Q1<br />unemp: 4.323454","date: 2021 Q2<br />unemp: 4.223466","date: 2021 Q3<br />unemp: 4.297844","date: 2021 Q4<br />unemp: 3.709718","date: 2022 Q1<br />unemp: 3.472739","date: 2022 Q2<br />unemp: 3.217769","date: 2022 Q3<br />unemp: 3.434541","date: 2022 Q4<br />unemp: 2.970037","date: 2023 Q1<br />unemp: 2.704211","date: 2023 Q2<br />unemp: 2.801986","date: 2023 Q3<br />unemp: 2.987546","date: 2023 Q4<br />unemp: 2.690821","date: 2024 Q1<br />unemp: 2.529698","date: 2024 Q2<br />unemp: 2.669179","date: 2024 Q3<br />unemp: 2.962429","date: 2024 Q4<br />unemp: 2.523785","date: 2025 Q1<br />unemp: 2.477856","date: 2025 Q2<br />unemp: 2.657515","date: 2025 Q3<br />unemp: 2.894659","date: 2025 Q4<br />unemp: 2.553656","date: 2026 Q1<br />unemp: 2.570867"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(232,221,208,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":43.098381070983812,"r":7.9701120797011216,"b":24.707347447073481,"l":34.271481942714829},"plot_bgcolor":"#303030","paper_bgcolor":"#2A2A2A","font":{"color":"#E8DDD0","family":"","size":15.940224159402243},"title":{"text":"<b> Mexico unemployment rate <\/b>","font":{"color":"rgba(232,221,208,1)","family":"","size":19.128268991282692},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"date","autorange":true,"range":["2003-12-14","2027-01-19"],"tickmode":"auto","ticktext":["2005 Q1","2010 Q1","2015 Q1","2020 Q1","2025 Q1"],"tickvals":[12784,14610,16436,18262,20089],"categoryorder":"array","categoryarray":["2005 Q1","2010 Q1","2015 Q1","2020 Q1","2025 Q1"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.9850560398505608,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"#E8DDD0","family":"","size":12.7521793275218},"tickangle":-0,"showline":false,"linecolor":"#555566","linewidth":0,"showgrid":true,"gridcolor":"#555566","gridwidth":0.53134080531340799,"zeroline":false,"anchor":"y","title":{"text":"","font":{"color":"rgba(232,221,208,1)","family":"","size":15.940224159402243}},"hoverformat":".2f","zerolinecolor":"#555566"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":true,"range":[2.2878359000000001,6.4682781],"tickmode":"auto","ticktext":["3","4","5","6"],"tickvals":[3,4,5,6],"categoryorder":"array","categoryarray":["3","4","5","6"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.9850560398505608,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"#E8DDD0","family":"","size":12.7521793275218},"tickangle":-0,"showline":false,"linecolor":"#555566","linewidth":0,"showgrid":true,"gridcolor":"#555566","gridwidth":0.5313408053134081,"zeroline":false,"anchor":"x","title":{"text":"Unemployment rate (%)","font":{"color":"rgba(232,221,208,1)","family":"","size":15.940224159402243}},"hoverformat":".2f","zerolinecolor":"#555566"},"shapes":[],"showlegend":false,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"#E8DDD0","family":"","size":12.7521793275218},"title":{"text":"","font":{"color":"rgba(232,221,208,1)","family":"","size":15.940224159402243}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"89bc5b711f96":{"x":{},"y":{},"type":"scatter"}},"cur_data":"89bc5b711f96","visdat":{"89bc5b711f96":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<div class="plotly html-widget html-fill-item" id="htmlwidget-e882a26a04e3b10c864f" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-e882a26a04e3b10c864f">{"x":{"data":[{"x":["2005-01-01","2005-04-01","2005-07-01","2005-10-01","2006-01-01","2006-04-01","2006-07-01","2006-10-01","2007-01-01","2007-04-01","2007-07-01","2007-10-01","2008-01-01","2008-04-01","2008-07-01","2008-10-01","2009-01-01","2009-04-01","2009-07-01","2009-10-01","2010-01-01","2010-04-01","2010-07-01","2010-10-01","2011-01-01","2011-04-01","2011-07-01","2011-10-01","2012-01-01","2012-04-01","2012-07-01","2012-10-01","2013-01-01","2013-04-01","2013-07-01","2013-10-01","2014-01-01","2014-04-01","2014-07-01","2014-10-01","2015-01-01","2015-04-01","2015-07-01","2015-10-01","2016-01-01","2016-04-01","2016-07-01","2016-10-01","2017-01-01","2017-04-01","2017-07-01","2017-10-01","2018-01-01","2018-04-01","2018-07-01","2018-10-01","2019-01-01","2019-04-01","2019-07-01","2019-10-01","2020-01-01","2020-04-01","2020-07-01","2020-10-01","2021-01-01","2021-04-01","2021-07-01","2021-10-01","2022-01-01","2022-04-01","2022-07-01","2022-10-01","2023-01-01","2023-04-01","2023-07-01","2023-10-01","2024-01-01","2024-04-01","2024-07-01","2024-10-01","2025-01-01","2025-04-01","2025-07-01","2025-10-01","2026-01-01"],"y":[3.8708749999999998,3.5528659999999999,3.8293550000000001,3.130045,3.5726740000000001,3.1747049999999999,3.989195,3.6503999999999999,4.0018380000000002,3.3680840000000001,3.9173900000000001,3.5991029999999999,3.9244279999999998,3.4696790000000002,4.1877820000000003,4.3167309999999999,5.0338139999999996,5.2485840000000001,6.2782580000000001,5.3556150000000002,5.3809199999999997,5.1927060000000003,5.6272690000000001,5.3226079999999998,5.1461730000000001,5.2451509999999999,5.7027010000000002,4.8402669999999999,4.9578939999999996,4.835909,5.1397539999999999,4.8775180000000002,4.9292389999999999,4.9950450000000002,5.2065950000000001,4.5869859999999996,4.8420629999999996,4.869707,5.2505319999999998,4.353529,4.2337579999999999,4.3883669999999997,4.6318250000000001,4.1578210000000002,4.0400010000000002,3.9167100000000001,4.0497709999999998,3.518942,3.3841679999999998,3.4312269999999998,3.5111729999999999,3.349615,3.1584340000000002,3.3279079999999999,3.5035129999999999,3.2909280000000001,3.3602599999999998,3.521865,3.7414619999999998,3.33826,3.4062869999999998,4.7904520000000002,5.2456149999999999,4.2841810000000002,4.3234539999999999,4.2234660000000002,4.2978440000000004,3.7097180000000001,3.4727389999999998,3.2177690000000001,3.4345409999999998,2.970037,2.7042109999999999,2.8019859999999999,2.987546,2.6908210000000001,2.5296979999999998,2.6691790000000002,2.9624290000000002,2.5237850000000002,2.4778560000000001,2.6575150000000001,2.8946589999999999,2.5536560000000001,2.5708669999999998],"text":["date: 2005 Q1<br />unemp: 3.870875","date: 2005 Q2<br />unemp: 3.552866","date: 2005 Q3<br />unemp: 3.829355","date: 2005 Q4<br />unemp: 3.130045","date: 2006 Q1<br />unemp: 3.572674","date: 2006 Q2<br />unemp: 3.174705","date: 2006 Q3<br />unemp: 3.989195","date: 2006 Q4<br />unemp: 3.650400","date: 2007 Q1<br />unemp: 4.001838","date: 2007 Q2<br />unemp: 3.368084","date: 2007 Q3<br />unemp: 3.917390","date: 2007 Q4<br />unemp: 3.599103","date: 2008 Q1<br />unemp: 3.924428","date: 2008 Q2<br />unemp: 3.469679","date: 2008 Q3<br />unemp: 4.187782","date: 2008 Q4<br />unemp: 4.316731","date: 2009 Q1<br />unemp: 5.033814","date: 2009 Q2<br />unemp: 5.248584","date: 2009 Q3<br />unemp: 6.278258","date: 2009 Q4<br />unemp: 5.355615","date: 2010 Q1<br />unemp: 5.380920","date: 2010 Q2<br />unemp: 5.192706","date: 2010 Q3<br />unemp: 5.627269","date: 2010 Q4<br />unemp: 5.322608","date: 2011 Q1<br />unemp: 5.146173","date: 2011 Q2<br />unemp: 5.245151","date: 2011 Q3<br />unemp: 5.702701","date: 2011 Q4<br />unemp: 4.840267","date: 2012 Q1<br />unemp: 4.957894","date: 2012 Q2<br />unemp: 4.835909","date: 2012 Q3<br />unemp: 5.139754","date: 2012 Q4<br />unemp: 4.877518","date: 2013 Q1<br />unemp: 4.929239","date: 2013 Q2<br />unemp: 4.995045","date: 2013 Q3<br />unemp: 5.206595","date: 2013 Q4<br />unemp: 4.586986","date: 2014 Q1<br />unemp: 4.842063","date: 2014 Q2<br />unemp: 4.869707","date: 2014 Q3<br />unemp: 5.250532","date: 2014 Q4<br />unemp: 4.353529","date: 2015 Q1<br />unemp: 4.233758","date: 2015 Q2<br />unemp: 4.388367","date: 2015 Q3<br />unemp: 4.631825","date: 2015 Q4<br />unemp: 4.157821","date: 2016 Q1<br />unemp: 4.040001","date: 2016 Q2<br />unemp: 3.916710","date: 2016 Q3<br />unemp: 4.049771","date: 2016 Q4<br />unemp: 3.518942","date: 2017 Q1<br />unemp: 3.384168","date: 2017 Q2<br />unemp: 3.431227","date: 2017 Q3<br />unemp: 3.511173","date: 2017 Q4<br />unemp: 3.349615","date: 2018 Q1<br />unemp: 3.158434","date: 2018 Q2<br />unemp: 3.327908","date: 2018 Q3<br />unemp: 3.503513","date: 2018 Q4<br />unemp: 3.290928","date: 2019 Q1<br />unemp: 3.360260","date: 2019 Q2<br />unemp: 3.521865","date: 2019 Q3<br />unemp: 3.741462","date: 2019 Q4<br />unemp: 3.338260","date: 2020 Q1<br />unemp: 3.406287","date: 2020 Q2<br />unemp: 4.790452","date: 2020 Q3<br />unemp: 5.245615","date: 2020 Q4<br />unemp: 4.284181","date: 2021 Q1<br />unemp: 4.323454","date: 2021 Q2<br />unemp: 4.223466","date: 2021 Q3<br />unemp: 4.297844","date: 2021 Q4<br />unemp: 3.709718","date: 2022 Q1<br />unemp: 3.472739","date: 2022 Q2<br />unemp: 3.217769","date: 2022 Q3<br />unemp: 3.434541","date: 2022 Q4<br />unemp: 2.970037","date: 2023 Q1<br />unemp: 2.704211","date: 2023 Q2<br />unemp: 2.801986","date: 2023 Q3<br />unemp: 2.987546","date: 2023 Q4<br />unemp: 2.690821","date: 2024 Q1<br />unemp: 2.529698","date: 2024 Q2<br />unemp: 2.669179","date: 2024 Q3<br />unemp: 2.962429","date: 2024 Q4<br />unemp: 2.523785","date: 2025 Q1<br />unemp: 2.477856","date: 2025 Q2<br />unemp: 2.657515","date: 2025 Q3<br />unemp: 2.894659","date: 2025 Q4<br />unemp: 2.553656","date: 2026 Q1<br />unemp: 2.570867"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(232,221,208,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":43.098381070983812,"r":7.9701120797011216,"b":24.707347447073481,"l":34.271481942714829},"plot_bgcolor":"#303030","paper_bgcolor":"#2A2A2A","font":{"color":"#E8DDD0","family":"","size":15.940224159402243},"title":{"text":"<b> Mexico unemployment rate <\/b>","font":{"color":"rgba(232,221,208,1)","family":"","size":19.128268991282692},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"date","autorange":true,"range":["2003-12-14","2027-01-19"],"tickmode":"auto","ticktext":["2005 Q1","2010 Q1","2015 Q1","2020 Q1","2025 Q1"],"tickvals":[12784,14610,16436,18262,20089],"categoryorder":"array","categoryarray":["2005 Q1","2010 Q1","2015 Q1","2020 Q1","2025 Q1"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.9850560398505608,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"#E8DDD0","family":"","size":12.7521793275218},"tickangle":-0,"showline":false,"linecolor":"#555566","linewidth":0,"showgrid":true,"gridcolor":"#555566","gridwidth":0.53134080531340799,"zeroline":false,"anchor":"y","title":{"text":"","font":{"color":"rgba(232,221,208,1)","family":"","size":15.940224159402243}},"hoverformat":".2f","zerolinecolor":"#555566"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":true,"range":[2.2878359000000001,6.4682781],"tickmode":"auto","ticktext":["3","4","5","6"],"tickvals":[3,4,5,6],"categoryorder":"array","categoryarray":["3","4","5","6"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.9850560398505608,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"#E8DDD0","family":"","size":12.7521793275218},"tickangle":-0,"showline":false,"linecolor":"#555566","linewidth":0,"showgrid":true,"gridcolor":"#555566","gridwidth":0.5313408053134081,"zeroline":false,"anchor":"x","title":{"text":"Unemployment rate (%)","font":{"color":"rgba(232,221,208,1)","family":"","size":15.940224159402243}},"hoverformat":".2f","zerolinecolor":"#555566"},"shapes":[],"showlegend":false,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"#E8DDD0","family":"","size":12.7521793275218},"title":{"text":"","font":{"color":"rgba(232,221,208,1)","family":"","size":15.940224159402243}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"17f372c49c2a":{"x":{},"y":{},"type":"scatter"}},"cur_data":"17f372c49c2a","visdat":{"17f372c49c2a":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <p>Note the sharp spike around 2020 Q2 — the COVID-19 shock. Keep this in mind when interpreting model diagnostics and accuracy.</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_narsil</span>()</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>unemp <span class="sc">|&gt;</span> <span class="fu">gg_season</span>(unemp)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>unemp <span class="sc">|&gt;</span> <span class="fu">gg_season</span>(unemp)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output-display">
+</div>
+<div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
+<div class="cell-output-display light-content">
 <div>
 <figure class="figure">
-<p><a href="ex_module2_full_review_files/figure-html/season-subseries-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="ex_module2_full_review_files/figure-html/season-subseries-1.png" class="img-fluid figure-img" width="672"></a></p>
+<p><a href="ex_module2_full_review_files/figure-html/season-render-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="ex_module2_full_review_files/figure-html/season-render-1.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display dark-content">
+<div>
+<figure class="figure">
+<p><a href="ex_module2_full_review_files/figure-html/season-render-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="ex_module2_full_review_files/figure-html/season-render-2.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
 </div>
@@ -567,10 +574,19 @@ cookieconsent.run({
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>unemp <span class="sc">|&gt;</span> <span class="fu">gg_subseries</span>(unemp)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output-display">
+</div>
+<div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
+<div class="cell-output-display light-content">
 <div>
 <figure class="figure">
-<p><a href="ex_module2_full_review_files/figure-html/subseries-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="ex_module2_full_review_files/figure-html/subseries-1.png" class="img-fluid figure-img" width="672"></a></p>
+<p><a href="ex_module2_full_review_files/figure-html/subseries-render-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="ex_module2_full_review_files/figure-html/subseries-render-1.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display dark-content">
+<div>
+<figure class="figure">
+<p><a href="ex_module2_full_review_files/figure-html/subseries-render-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img src="ex_module2_full_review_files/figure-html/subseries-render-2.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
 </div>
@@ -578,14 +594,14 @@ cookieconsent.run({
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_narsil</span>()</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>unemp <span class="sc">|&gt;</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gg_tsdisplay</span>(unemp, <span class="at">plot_type =</span> <span class="st">"partial"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>unemp <span class="sc">|&gt;</span> <span class="fu">gg_tsdisplay</span>(unemp, <span class="at">plot_type =</span> <span class="st">"partial"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+</div>
+<div class="cell">
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><a href="ex_module2_full_review_files/figure-html/tsdisplay-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="ex_module2_full_review_files/figure-html/tsdisplay-1.png" class="img-fluid figure-img" width="672"></a></p>
+<p><a href="ex_module2_full_review_files/figure-html/tsdisplay-render-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img src="ex_module2_full_review_files/figure-html/tsdisplay-render-1.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
 </div>
@@ -698,7 +714,7 @@ cookieconsent.run({
 </section>
 <section id="exercise-4-mixed-decomposition-models" class="level2" data-number="1.4">
 <h2 data-number="1.4" class="anchored" data-anchor-id="exercise-4-mixed-decomposition-models"><span class="header-section-number">1.4</span> Exercise 4 — Mixed decomposition models</h2>
-<p>This section connects directly to the <a href="../../../docs/modules/module_2/04_modular_fcst/modular_forecasting.html">Modular Forecasting</a> class document.</p>
+<p>This section connects directly to the <a href="../../modules/module_2/04_modular_forecasting/modular_forecasting.qmd">Modular Forecasting</a> class document.</p>
 <p>Add the two mixed combinations to your <code>mable</code>:</p>
 <ol type="a">
 <li><strong>STL + ETS + ARIMA</strong>: ETS models the seasonally adjusted component (<code>season_adjust</code>); ARIMA models the seasonal component (<code>season_year</code>).</li>
@@ -733,8 +749,8 @@ cookieconsent.run({
 <li>Answer: which approach performs best on this series? Does the winner make intuitive sense given what you observed in the EDA?</li>
 </ul>
 </section>
-<section id="exercise-5-reflection" class="level2" data-number="1.5">
-<h2 data-number="1.5" class="anchored" data-anchor-id="exercise-5-reflection"><span class="header-section-number">1.5</span> Exercise 5 — Reflection</h2>
+<section id="exercise-5-reflection-graduate-students" class="level2" data-number="1.5">
+<h2 data-number="1.5" class="anchored" data-anchor-id="exercise-5-reflection-graduate-students"><span class="header-section-number">1.5</span> Exercise 5 — Reflection (graduate students)</h2>
 <p>Write a short paragraph (5–8 sentences) addressing the following:</p>
 <ol type="a">
 <li>The COVID-19 spike in 2020 Q2 is a clear outlier. How does it affect model diagnostics and accuracy metrics? Which models appear most sensitive to it?</li>
@@ -1227,206 +1243,253 @@ cookieconsent.run({
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">  fred-data: true</span></span>
 <span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="an">categories:</span></span>
 <span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co">  - topic-exercise</span></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co">  - module-2</span></span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup</span></span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co">  - module-review</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co">  - module-2</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup</span></span>
 <span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fpp3)</span>
 <span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyquant)</span>
 <span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(plotly)</span>
-<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"R/narsil_theme.R"</span>))</span>
-<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_narsil</span>())</span>
-<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a><span class="fu">## Introduction</span></span>
-<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>This exercise brings together everything covered in Module 2. You will apply the full forecasting pipeline — from EDA through model comparison — to a new series: Mexico's quarterly unemployment rate. Your goal is to build all model families covered in Module 2, evaluate them against the Module 1 baseline, and identify which approach performs best on this series.</span>
-<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a><span class="fu">## The Series: Mexico Unemployment Rate</span></span>
-<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>Mexico's harmonized unemployment rate (FRED ticker <span class="in">`LRHUTTTTMXQ156N`</span>) is a quarterly series published by the OECD. It measures the percentage of the labor force that is unemployed and actively seeking work.</span>
-<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: data-load</span></span>
-<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
-<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a>unemp <span class="ot">&lt;-</span> tidyquant<span class="sc">::</span><span class="fu">tq_get</span>(</span>
-<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a>  <span class="st">"LRHUTTTTMXQ156N"</span>,</span>
-<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a>  <span class="at">get =</span> <span class="st">"economic.data"</span>,</span>
-<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a>  <span class="at">from =</span> <span class="st">"2005-01-01"</span></span>
-<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">yearquarter</span>(date)) <span class="sc">|&gt;</span></span>
-<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tsibble</span>(<span class="at">index =</span> date) <span class="sc">|&gt;</span></span>
-<span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">unemp =</span> price)</span>
-<span id="cb8-49"><a href="#cb8-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-50"><a href="#cb8-50" aria-hidden="true" tabindex="-1"></a>unemp</span>
-<span id="cb8-51"><a href="#cb8-51" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb8-52"><a href="#cb8-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-53"><a href="#cb8-53" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exploratory Data Analysis</span></span>
-<span id="cb8-54"><a href="#cb8-54" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-55"><a href="#cb8-55" aria-hidden="true" tabindex="-1"></a>Before fitting any model, take time to understand the series. The plots below cover the four standard views.</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: narsil-setup</span></span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"R/narsil_theme.R"</span>))</span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_narsil</span>())</span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a><span class="fu">## Introduction</span></span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>This exercise brings together everything covered in Module 2. You will apply the full forecasting pipeline — from EDA through model comparison — to a new series: Mexico's quarterly unemployment rate. Your goal is to build all model families covered in Module 2, evaluate them against the Module 1 baseline, and identify which approach performs best on this series.</span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a><span class="fu">## The Series: Mexico Unemployment Rate</span></span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a>Mexico's harmonized unemployment rate (FRED ticker <span class="in">`LRHUTTTTMXQ156N`</span>) is a quarterly series published by the OECD. It measures the percentage of the labor force that is unemployed and actively seeking work.</span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: data-load</span></span>
+<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a>unemp <span class="ot">&lt;-</span> <span class="fu">tq_get</span>(</span>
+<span id="cb8-49"><a href="#cb8-49" aria-hidden="true" tabindex="-1"></a>  <span class="st">"LRHUTTTTMXQ156N"</span>,</span>
+<span id="cb8-50"><a href="#cb8-50" aria-hidden="true" tabindex="-1"></a>  <span class="at">get =</span> <span class="st">"economic.data"</span>,</span>
+<span id="cb8-51"><a href="#cb8-51" aria-hidden="true" tabindex="-1"></a>  <span class="at">from =</span> <span class="st">"2005-01-01"</span></span>
+<span id="cb8-52"><a href="#cb8-52" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb8-53"><a href="#cb8-53" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">yearquarter</span>(date)) <span class="sc">|&gt;</span></span>
+<span id="cb8-54"><a href="#cb8-54" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tsibble</span>(<span class="at">index =</span> date) <span class="sc">|&gt;</span></span>
+<span id="cb8-55"><a href="#cb8-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">unemp =</span> price)</span>
 <span id="cb8-56"><a href="#cb8-56" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-59"><a href="#cb8-59" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb8-60"><a href="#cb8-60" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: autoplot</span></span>
-<span id="cb8-61"><a href="#cb8-61" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: false</span></span>
-<span id="cb8-62"><a href="#cb8-62" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-63"><a href="#cb8-63" aria-hidden="true" tabindex="-1"></a>unemp_p <span class="ot">&lt;-</span> unemp <span class="sc">|&gt;</span></span>
-<span id="cb8-64"><a href="#cb8-64" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(unemp) <span class="sc">+</span></span>
-<span id="cb8-65"><a href="#cb8-65" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb8-66"><a href="#cb8-66" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Mexico unemployment rate"</span>,</span>
-<span id="cb8-67"><a href="#cb8-67" aria-hidden="true" tabindex="-1"></a>    <span class="at">y     =</span> <span class="st">"Unemployment rate (%)"</span>,</span>
-<span id="cb8-68"><a href="#cb8-68" aria-hidden="true" tabindex="-1"></a>    <span class="at">x     =</span> <span class="st">""</span></span>
-<span id="cb8-69"><a href="#cb8-69" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb8-70"><a href="#cb8-70" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb8-71"><a href="#cb8-71" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-74"><a href="#cb8-74" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb8-75"><a href="#cb8-75" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: autoplot-render</span></span>
-<span id="cb8-76"><a href="#cb8-76" aria-hidden="true" tabindex="-1"></a><span class="co">#| renderings: [light, dark]</span></span>
-<span id="cb8-77"><a href="#cb8-77" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb8-57"><a href="#cb8-57" aria-hidden="true" tabindex="-1"></a>unemp</span>
+<span id="cb8-58"><a href="#cb8-58" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb8-59"><a href="#cb8-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-60"><a href="#cb8-60" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exploratory Data Analysis</span></span>
+<span id="cb8-61"><a href="#cb8-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-62"><a href="#cb8-62" aria-hidden="true" tabindex="-1"></a>Before fitting any model, take time to understand the series. The plots below cover the four standard views.</span>
+<span id="cb8-63"><a href="#cb8-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-66"><a href="#cb8-66" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb8-67"><a href="#cb8-67" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: autoplot-student</span></span>
+<span id="cb8-68"><a href="#cb8-68" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb8-69"><a href="#cb8-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-70"><a href="#cb8-70" aria-hidden="true" tabindex="-1"></a>unemp <span class="sc">|&gt;</span></span>
+<span id="cb8-71"><a href="#cb8-71" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(unemp) <span class="sc">+</span></span>
+<span id="cb8-72"><a href="#cb8-72" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb8-73"><a href="#cb8-73" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Mexico unemployment rate"</span>,</span>
+<span id="cb8-74"><a href="#cb8-74" aria-hidden="true" tabindex="-1"></a>    <span class="at">y     =</span> <span class="st">"Unemployment rate (%)"</span>,</span>
+<span id="cb8-75"><a href="#cb8-75" aria-hidden="true" tabindex="-1"></a>    <span class="at">x     =</span> <span class="st">""</span></span>
+<span id="cb8-76"><a href="#cb8-76" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb8-77"><a href="#cb8-77" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb8-78"><a href="#cb8-78" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-79"><a href="#cb8-79" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplotly</span>(unemp_p <span class="sc">+</span> <span class="fu">scale_narsil</span>(), <span class="at">dynamicTicks =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> <span class="fu">gg_to_plotly_narsil</span>()</span>
-<span id="cb8-80"><a href="#cb8-80" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplotly</span>(unemp_p <span class="sc">+</span> <span class="fu">scale_narsil_dark</span>(), <span class="at">dynamicTicks =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> <span class="fu">gg_to_plotly_narsil</span>(<span class="at">dark =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb8-81"><a href="#cb8-81" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb8-82"><a href="#cb8-82" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-83"><a href="#cb8-83" aria-hidden="true" tabindex="-1"></a>Note the sharp spike around 2020 Q2 — the COVID-19 shock. Keep this in mind when interpreting model diagnostics and accuracy.</span>
-<span id="cb8-84"><a href="#cb8-84" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-87"><a href="#cb8-87" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb8-88"><a href="#cb8-88" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: season-subseries</span></span>
-<span id="cb8-89"><a href="#cb8-89" aria-hidden="true" tabindex="-1"></a><span class="co">#| results: hide</span></span>
-<span id="cb8-90"><a href="#cb8-90" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-91"><a href="#cb8-91" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_narsil</span>()</span>
-<span id="cb8-92"><a href="#cb8-92" aria-hidden="true" tabindex="-1"></a>unemp <span class="sc">|&gt;</span> <span class="fu">gg_season</span>(unemp)</span>
+<span id="cb8-81"><a href="#cb8-81" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb8-82"><a href="#cb8-82" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: autoplot-p</span></span>
+<span id="cb8-83"><a href="#cb8-83" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb8-84"><a href="#cb8-84" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: false</span></span>
+<span id="cb8-85"><a href="#cb8-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-86"><a href="#cb8-86" aria-hidden="true" tabindex="-1"></a>unemp_p <span class="ot">&lt;-</span> unemp <span class="sc">|&gt;</span></span>
+<span id="cb8-87"><a href="#cb8-87" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(unemp) <span class="sc">+</span></span>
+<span id="cb8-88"><a href="#cb8-88" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb8-89"><a href="#cb8-89" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Mexico unemployment rate"</span>,</span>
+<span id="cb8-90"><a href="#cb8-90" aria-hidden="true" tabindex="-1"></a>    <span class="at">y     =</span> <span class="st">"Unemployment rate (%)"</span>,</span>
+<span id="cb8-91"><a href="#cb8-91" aria-hidden="true" tabindex="-1"></a>    <span class="at">x     =</span> <span class="st">""</span></span>
+<span id="cb8-92"><a href="#cb8-92" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb8-93"><a href="#cb8-93" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb8-94"><a href="#cb8-94" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-97"><a href="#cb8-97" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb8-98"><a href="#cb8-98" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: subseries</span></span>
-<span id="cb8-99"><a href="#cb8-99" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-100"><a href="#cb8-100" aria-hidden="true" tabindex="-1"></a>unemp <span class="sc">|&gt;</span> <span class="fu">gg_subseries</span>(unemp)</span>
-<span id="cb8-101"><a href="#cb8-101" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb8-102"><a href="#cb8-102" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-105"><a href="#cb8-105" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb8-106"><a href="#cb8-106" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tsdisplay</span></span>
-<span id="cb8-107"><a href="#cb8-107" aria-hidden="true" tabindex="-1"></a><span class="co">#| results: hide</span></span>
-<span id="cb8-108"><a href="#cb8-108" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-109"><a href="#cb8-109" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_narsil</span>()</span>
-<span id="cb8-110"><a href="#cb8-110" aria-hidden="true" tabindex="-1"></a>unemp <span class="sc">|&gt;</span></span>
-<span id="cb8-111"><a href="#cb8-111" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gg_tsdisplay</span>(unemp, <span class="at">plot_type =</span> <span class="st">"partial"</span>)</span>
-<span id="cb8-112"><a href="#cb8-112" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb8-98"><a href="#cb8-98" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: autoplot-render</span></span>
+<span id="cb8-99"><a href="#cb8-99" aria-hidden="true" tabindex="-1"></a><span class="co">#| renderings: [light, dark]</span></span>
+<span id="cb8-100"><a href="#cb8-100" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb8-101"><a href="#cb8-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-102"><a href="#cb8-102" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplotly</span>(unemp_p <span class="sc">+</span> <span class="fu">scale_narsil</span>(), <span class="at">dynamicTicks =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> <span class="fu">gg_to_plotly_narsil</span>()</span>
+<span id="cb8-103"><a href="#cb8-103" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplotly</span>(unemp_p <span class="sc">+</span> <span class="fu">scale_narsil_dark</span>(), <span class="at">dynamicTicks =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> <span class="fu">gg_to_plotly_narsil</span>(<span class="at">dark =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb8-104"><a href="#cb8-104" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb8-105"><a href="#cb8-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-106"><a href="#cb8-106" aria-hidden="true" tabindex="-1"></a>Note the sharp spike around 2020 Q2 — the COVID-19 shock. Keep this in mind when interpreting model diagnostics and accuracy.</span>
+<span id="cb8-107"><a href="#cb8-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-110"><a href="#cb8-110" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb8-111"><a href="#cb8-111" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: season-student</span></span>
+<span id="cb8-112"><a href="#cb8-112" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
 <span id="cb8-113"><a href="#cb8-113" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-114"><a href="#cb8-114" aria-hidden="true" tabindex="-1"></a>::: {.callout-note appearance="simple"}</span>
-<span id="cb8-115"><a href="#cb8-115" aria-hidden="true" tabindex="-1"></a><span class="fu">## What to look for</span></span>
+<span id="cb8-114"><a href="#cb8-114" aria-hidden="true" tabindex="-1"></a>unemp <span class="sc">|&gt;</span> <span class="fu">gg_season</span>(unemp)</span>
+<span id="cb8-115"><a href="#cb8-115" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb8-116"><a href="#cb8-116" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-117"><a href="#cb8-117" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Trend**: Is there a long-run level shift, or does the series return to a stable mean after shocks?</span>
-<span id="cb8-118"><a href="#cb8-118" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Seasonality**: Is there a repeating quarterly pattern? How stable is it across years?</span>
-<span id="cb8-119"><a href="#cb8-119" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**ACF/PACF**: What correlation structure would you expect in the residuals? Does the series look stationary?</span>
-<span id="cb8-120"><a href="#cb8-120" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb8-121"><a href="#cb8-121" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-122"><a href="#cb8-122" aria-hidden="true" tabindex="-1"></a><span class="fu">## Train/Test Split</span></span>
-<span id="cb8-123"><a href="#cb8-123" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-126"><a href="#cb8-126" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb8-127"><a href="#cb8-127" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: split</span></span>
-<span id="cb8-128"><a href="#cb8-128" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-129"><a href="#cb8-129" aria-hidden="true" tabindex="-1"></a>h <span class="ot">&lt;-</span> <span class="dv">8</span> <span class="co"># 2 years ahead</span></span>
+<span id="cb8-119"><a href="#cb8-119" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb8-120"><a href="#cb8-120" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: season-render</span></span>
+<span id="cb8-121"><a href="#cb8-121" aria-hidden="true" tabindex="-1"></a><span class="co">#| renderings: [light, dark]</span></span>
+<span id="cb8-122"><a href="#cb8-122" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb8-123"><a href="#cb8-123" aria-hidden="true" tabindex="-1"></a><span class="co">#| results: hide</span></span>
+<span id="cb8-124"><a href="#cb8-124" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-125"><a href="#cb8-125" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_narsil</span>()</span>
+<span id="cb8-126"><a href="#cb8-126" aria-hidden="true" tabindex="-1"></a>unemp <span class="sc">|&gt;</span> <span class="fu">gg_season</span>(unemp)</span>
+<span id="cb8-127"><a href="#cb8-127" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_narsil_dark</span>()</span>
+<span id="cb8-128"><a href="#cb8-128" aria-hidden="true" tabindex="-1"></a>unemp <span class="sc">|&gt;</span> <span class="fu">gg_season</span>(unemp)</span>
+<span id="cb8-129"><a href="#cb8-129" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb8-130"><a href="#cb8-130" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-131"><a href="#cb8-131" aria-hidden="true" tabindex="-1"></a>unemp_train <span class="ot">&lt;-</span> unemp <span class="sc">|&gt;</span> <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="fu">nrow</span>(unemp) <span class="sc">-</span> h)</span>
-<span id="cb8-132"><a href="#cb8-132" aria-hidden="true" tabindex="-1"></a>unemp_test  <span class="ot">&lt;-</span> unemp <span class="sc">|&gt;</span> <span class="fu">slice_tail</span>(<span class="at">n =</span> h)</span>
-<span id="cb8-133"><a href="#cb8-133" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb8-134"><a href="#cb8-134" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-135"><a href="#cb8-135" aria-hidden="true" tabindex="-1"></a>The test set covers the most recent 8 quarters (2 years). All model fitting is done on <span class="in">`unemp_train`</span>; accuracy is evaluated against the full <span class="in">`unemp`</span> tsibble.</span>
+<span id="cb8-133"><a href="#cb8-133" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb8-134"><a href="#cb8-134" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: subseries-student</span></span>
+<span id="cb8-135"><a href="#cb8-135" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
 <span id="cb8-136"><a href="#cb8-136" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-137"><a href="#cb8-137" aria-hidden="true" tabindex="-1"></a>---</span>
-<span id="cb8-138"><a href="#cb8-138" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-139"><a href="#cb8-139" aria-hidden="true" tabindex="-1"></a><span class="fu"># Exercise</span></span>
-<span id="cb8-140"><a href="#cb8-140" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-141"><a href="#cb8-141" aria-hidden="true" tabindex="-1"></a>This is a full-pipeline exercise. Work through each section in order — later sections depend on the objects you build earlier.</span>
-<span id="cb8-142"><a href="#cb8-142" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-143"><a href="#cb8-143" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise 1 — Module 1 baseline</span></span>
-<span id="cb8-144"><a href="#cb8-144" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-145"><a href="#cb8-145" aria-hidden="true" tabindex="-1"></a>Re-estimate the Module 1 baseline model on <span class="in">`unemp_train`</span>. This is your benchmark: every model you build in this exercise must be compared against it.</span>
+<span id="cb8-137"><a href="#cb8-137" aria-hidden="true" tabindex="-1"></a>unemp <span class="sc">|&gt;</span> <span class="fu">gg_subseries</span>(unemp)</span>
+<span id="cb8-138"><a href="#cb8-138" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb8-139"><a href="#cb8-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-142"><a href="#cb8-142" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb8-143"><a href="#cb8-143" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: subseries-render</span></span>
+<span id="cb8-144"><a href="#cb8-144" aria-hidden="true" tabindex="-1"></a><span class="co">#| renderings: [light, dark]</span></span>
+<span id="cb8-145"><a href="#cb8-145" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
 <span id="cb8-146"><a href="#cb8-146" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-147"><a href="#cb8-147" aria-hidden="true" tabindex="-1"></a>The baseline uses:</span>
-<span id="cb8-148"><a href="#cb8-148" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-149"><a href="#cb8-149" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>STL decomposition (choose sensible <span class="in">`trend(window)`</span> and <span class="in">`season(window)`</span> values for a quarterly series)</span>
-<span id="cb8-150"><a href="#cb8-150" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Drift on the seasonally adjusted component</span>
-<span id="cb8-151"><a href="#cb8-151" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>SNAIVE on the seasonal component</span>
-<span id="cb8-152"><a href="#cb8-152" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-153"><a href="#cb8-153" aria-hidden="true" tabindex="-1"></a>Save the spec as <span class="in">`baseline_spec`</span> and fit it inside a <span class="in">`mable`</span> called <span class="in">`unemp_fit`</span>. Then:</span>
-<span id="cb8-154"><a href="#cb8-154" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-155"><a href="#cb8-155" aria-hidden="true" tabindex="-1"></a>a. Produce forecasts for <span class="in">`h = 8`</span> quarters.</span>
-<span id="cb8-156"><a href="#cb8-156" aria-hidden="true" tabindex="-1"></a>b. Plot the forecast (overlay, <span class="in">`level = NULL`</span>).</span>
-<span id="cb8-157"><a href="#cb8-157" aria-hidden="true" tabindex="-1"></a>c. Inspect residual diagnostics with <span class="in">`gg_tsresiduals()`</span>. Do the residuals look like white noise? Is the COVID spike visible?</span>
-<span id="cb8-158"><a href="#cb8-158" aria-hidden="true" tabindex="-1"></a>d. Compute test-set accuracy using <span class="in">`accuracy(unemp_fc, unemp)`</span>.</span>
+<span id="cb8-147"><a href="#cb8-147" aria-hidden="true" tabindex="-1"></a>unemp <span class="sc">|&gt;</span> <span class="fu">gg_subseries</span>(unemp) <span class="sc">+</span> <span class="fu">scale_narsil</span>()</span>
+<span id="cb8-148"><a href="#cb8-148" aria-hidden="true" tabindex="-1"></a>unemp <span class="sc">|&gt;</span> <span class="fu">gg_subseries</span>(unemp) <span class="sc">+</span> <span class="fu">scale_narsil_dark</span>()</span>
+<span id="cb8-149"><a href="#cb8-149" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb8-150"><a href="#cb8-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-153"><a href="#cb8-153" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb8-154"><a href="#cb8-154" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tsdisplay-student</span></span>
+<span id="cb8-155"><a href="#cb8-155" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb8-156"><a href="#cb8-156" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-157"><a href="#cb8-157" aria-hidden="true" tabindex="-1"></a>unemp <span class="sc">|&gt;</span> <span class="fu">gg_tsdisplay</span>(unemp, <span class="at">plot_type =</span> <span class="st">"partial"</span>)</span>
+<span id="cb8-158"><a href="#cb8-158" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb8-159"><a href="#cb8-159" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-160"><a href="#cb8-160" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip}</span>
-<span id="cb8-161"><a href="#cb8-161" aria-hidden="true" tabindex="-1"></a><span class="fu">## Hint</span></span>
-<span id="cb8-162"><a href="#cb8-162" aria-hidden="true" tabindex="-1"></a>Remember that <span class="in">`accuracy()`</span> requires the **full** tsibble — not just the test set — so that MASE and RMSSE denominators are computed correctly.</span>
-<span id="cb8-163"><a href="#cb8-163" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb8-164"><a href="#cb8-164" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-165"><a href="#cb8-165" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise 2 — ETS models</span></span>
+<span id="cb8-162"><a href="#cb8-162" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb8-163"><a href="#cb8-163" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tsdisplay-render</span></span>
+<span id="cb8-164"><a href="#cb8-164" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb8-165"><a href="#cb8-165" aria-hidden="true" tabindex="-1"></a><span class="co">#| results: hide</span></span>
 <span id="cb8-166"><a href="#cb8-166" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-167"><a href="#cb8-167" aria-hidden="true" tabindex="-1"></a>Add at least two ETS-based approaches to <span class="in">`unemp_fit`</span>:</span>
-<span id="cb8-168"><a href="#cb8-168" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-169"><a href="#cb8-169" aria-hidden="true" tabindex="-1"></a>a. **STL + ETS**: Use <span class="in">`decomposition_model()`</span> with an ETS model on <span class="in">`season_adjust`</span>. Suppress seasonality in the ETS spec (<span class="in">`season("N")`</span>). The seasonal component defaults to SNAIVE.</span>
-<span id="cb8-170"><a href="#cb8-170" aria-hidden="true" tabindex="-1"></a>b. **Full ETS**: Fit <span class="in">`ETS(unemp)`</span> directly, without explicit decomposition. Let R select the best error/trend/season structure automatically.</span>
-<span id="cb8-171"><a href="#cb8-171" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-172"><a href="#cb8-172" aria-hidden="true" tabindex="-1"></a>For each model:</span>
+<span id="cb8-167"><a href="#cb8-167" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_narsil</span>()</span>
+<span id="cb8-168"><a href="#cb8-168" aria-hidden="true" tabindex="-1"></a>unemp <span class="sc">|&gt;</span> <span class="fu">gg_tsdisplay</span>(unemp, <span class="at">plot_type =</span> <span class="st">"partial"</span>)</span>
+<span id="cb8-169"><a href="#cb8-169" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb8-170"><a href="#cb8-170" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-171"><a href="#cb8-171" aria-hidden="true" tabindex="-1"></a>::: {.callout-note appearance="simple"}</span>
+<span id="cb8-172"><a href="#cb8-172" aria-hidden="true" tabindex="-1"></a><span class="fu">## What to look for</span></span>
 <span id="cb8-173"><a href="#cb8-173" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-174"><a href="#cb8-174" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Add it to the same <span class="in">`mable`</span> as the baseline (a single <span class="in">`model()`</span> call with all specs).</span>
-<span id="cb8-175"><a href="#cb8-175" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Check residual diagnostics for the STL + ETS model.</span>
-<span id="cb8-176"><a href="#cb8-176" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Include both in the accuracy comparison at the end.</span>
-<span id="cb8-177"><a href="#cb8-177" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-178"><a href="#cb8-178" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise 3 — ARIMA and SARIMA</span></span>
-<span id="cb8-179"><a href="#cb8-179" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-180"><a href="#cb8-180" aria-hidden="true" tabindex="-1"></a>Add at least two ARIMA-based approaches:</span>
-<span id="cb8-181"><a href="#cb8-181" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-182"><a href="#cb8-182" aria-hidden="true" tabindex="-1"></a>a. **STL + ARIMA**: Use <span class="in">`decomposition_model()`</span> with <span class="in">`ARIMA(season_adjust ~ PDQ(0,0,0))`</span>. The seasonal component defaults to SNAIVE.</span>
-<span id="cb8-183"><a href="#cb8-183" aria-hidden="true" tabindex="-1"></a>b. **Automatic SARIMA**: Fit a full seasonal ARIMA directly — <span class="in">`ARIMA(unemp, stepwise = FALSE, approximation = FALSE)`</span> — without explicit decomposition.</span>
-<span id="cb8-184"><a href="#cb8-184" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-185"><a href="#cb8-185" aria-hidden="true" tabindex="-1"></a>For each model:</span>
-<span id="cb8-186"><a href="#cb8-186" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-187"><a href="#cb8-187" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Add it to the same <span class="in">`mable`</span>.</span>
-<span id="cb8-188"><a href="#cb8-188" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Check residual diagnostics for the STL + ARIMA model.</span>
-<span id="cb8-189"><a href="#cb8-189" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Include both in the accuracy comparison.</span>
-<span id="cb8-190"><a href="#cb8-190" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-191"><a href="#cb8-191" aria-hidden="true" tabindex="-1"></a>::: {.callout-note appearance="simple"}</span>
-<span id="cb8-192"><a href="#cb8-192" aria-hidden="true" tabindex="-1"></a><span class="fu">## Identifying a manual SARIMA candidate (optional stretch)</span></span>
+<span id="cb8-174"><a href="#cb8-174" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Trend**: Is there a long-run level shift, or does the series return to a stable mean after shocks?</span>
+<span id="cb8-175"><a href="#cb8-175" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Seasonality**: Is there a repeating quarterly pattern? How stable is it across years?</span>
+<span id="cb8-176"><a href="#cb8-176" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**ACF/PACF**: What correlation structure would you expect in the residuals? Does the series look stationary?</span>
+<span id="cb8-177"><a href="#cb8-177" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb8-178"><a href="#cb8-178" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-179"><a href="#cb8-179" aria-hidden="true" tabindex="-1"></a><span class="fu">## Train/Test Split</span></span>
+<span id="cb8-180"><a href="#cb8-180" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-183"><a href="#cb8-183" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb8-184"><a href="#cb8-184" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: split</span></span>
+<span id="cb8-185"><a href="#cb8-185" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-186"><a href="#cb8-186" aria-hidden="true" tabindex="-1"></a>h <span class="ot">&lt;-</span> <span class="dv">8</span> <span class="co"># 2 years ahead</span></span>
+<span id="cb8-187"><a href="#cb8-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-188"><a href="#cb8-188" aria-hidden="true" tabindex="-1"></a>unemp_train <span class="ot">&lt;-</span> unemp <span class="sc">|&gt;</span> <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="fu">nrow</span>(unemp) <span class="sc">-</span> h)</span>
+<span id="cb8-189"><a href="#cb8-189" aria-hidden="true" tabindex="-1"></a>unemp_test  <span class="ot">&lt;-</span> unemp <span class="sc">|&gt;</span> <span class="fu">slice_tail</span>(<span class="at">n =</span> h)</span>
+<span id="cb8-190"><a href="#cb8-190" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb8-191"><a href="#cb8-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-192"><a href="#cb8-192" aria-hidden="true" tabindex="-1"></a>The test set covers the most recent 8 quarters (2 years). All model fitting is done on <span class="in">`unemp_train`</span>; accuracy is evaluated against the full <span class="in">`unemp`</span> tsibble.</span>
 <span id="cb8-193"><a href="#cb8-193" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-194"><a href="#cb8-194" aria-hidden="true" tabindex="-1"></a>Use <span class="in">`gg_tsdisplay()`</span> on the differenced series to identify a candidate ARIMA order manually, then add it as a third model (<span class="in">`sarima_manual`</span>). Compare it against the automatic selection.</span>
-<span id="cb8-195"><a href="#cb8-195" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb8-196"><a href="#cb8-196" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-197"><a href="#cb8-197" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise 4 — Mixed decomposition models</span></span>
-<span id="cb8-198"><a href="#cb8-198" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-199"><a href="#cb8-199" aria-hidden="true" tabindex="-1"></a>This section connects directly to the <span class="co">[</span><span class="ot">Modular Forecasting</span><span class="co">](../../modules/module_2/04_modular_fcst/modular_forecasting.qmd)</span> class document.</span>
-<span id="cb8-200"><a href="#cb8-200" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-201"><a href="#cb8-201" aria-hidden="true" tabindex="-1"></a>Add the two mixed combinations to your <span class="in">`mable`</span>:</span>
-<span id="cb8-202"><a href="#cb8-202" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-203"><a href="#cb8-203" aria-hidden="true" tabindex="-1"></a>a. **STL + ETS + ARIMA**: ETS models the seasonally adjusted component (<span class="in">`season_adjust`</span>); ARIMA models the seasonal component (<span class="in">`season_year`</span>).</span>
-<span id="cb8-204"><a href="#cb8-204" aria-hidden="true" tabindex="-1"></a>b. **STL + ARIMA + ETS**: ARIMA models the seasonally adjusted component (<span class="in">`season_adjust ~ PDQ(0,0,0)`</span>); ETS models the seasonal component (<span class="in">`season_year ~ trend("N")`</span>).</span>
+<span id="cb8-194"><a href="#cb8-194" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb8-195"><a href="#cb8-195" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-196"><a href="#cb8-196" aria-hidden="true" tabindex="-1"></a><span class="fu"># Exercise</span></span>
+<span id="cb8-197"><a href="#cb8-197" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-198"><a href="#cb8-198" aria-hidden="true" tabindex="-1"></a>This is a full-pipeline exercise. Work through each section in order — later sections depend on the objects you build earlier.</span>
+<span id="cb8-199"><a href="#cb8-199" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-200"><a href="#cb8-200" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise 1 — Module 1 baseline</span></span>
+<span id="cb8-201"><a href="#cb8-201" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-202"><a href="#cb8-202" aria-hidden="true" tabindex="-1"></a>Re-estimate the Module 1 baseline model on <span class="in">`unemp_train`</span>. This is your benchmark: every model you build in this exercise must be compared against it.</span>
+<span id="cb8-203"><a href="#cb8-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-204"><a href="#cb8-204" aria-hidden="true" tabindex="-1"></a>The baseline uses:</span>
 <span id="cb8-205"><a href="#cb8-205" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-206"><a href="#cb8-206" aria-hidden="true" tabindex="-1"></a>Recall the constraint logic for each component:</span>
-<span id="cb8-207"><a href="#cb8-207" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-208"><a href="#cb8-208" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Component <span class="pp">|</span> What it contains <span class="pp">|</span> What to suppress <span class="pp">|</span></span>
-<span id="cb8-209"><a href="#cb8-209" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span>:--<span class="pp">|</span>:--<span class="pp">|</span>:--<span class="pp">|</span></span>
-<span id="cb8-210"><a href="#cb8-210" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`season_adjust`</span> <span class="pp">|</span> trend + cycle + remainder <span class="pp">|</span> seasonality <span class="pp">|</span></span>
-<span id="cb8-211"><a href="#cb8-211" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`season_year`</span> <span class="pp">|</span> seasonal pattern only <span class="pp">|</span> trend <span class="pp">|</span></span>
-<span id="cb8-212"><a href="#cb8-212" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-213"><a href="#cb8-213" aria-hidden="true" tabindex="-1"></a>After fitting:</span>
-<span id="cb8-214"><a href="#cb8-214" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-215"><a href="#cb8-215" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Produce a single forecast plot with all models overlaid (<span class="in">`level = NULL`</span>).</span>
-<span id="cb8-216"><a href="#cb8-216" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Compute a final accuracy table with all models, sorted by RMSE.</span>
-<span id="cb8-217"><a href="#cb8-217" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Answer: which approach performs best on this series? Does the winner make intuitive sense given what you observed in the EDA?</span>
-<span id="cb8-218"><a href="#cb8-218" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-219"><a href="#cb8-219" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise 5 — Reflection</span></span>
-<span id="cb8-220"><a href="#cb8-220" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-221"><a href="#cb8-221" aria-hidden="true" tabindex="-1"></a>Write a short paragraph (5–8 sentences) addressing the following:</span>
-<span id="cb8-222"><a href="#cb8-222" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-223"><a href="#cb8-223" aria-hidden="true" tabindex="-1"></a>a. The COVID-19 spike in 2020 Q2 is a clear outlier. How does it affect model diagnostics and accuracy metrics? Which models appear most sensitive to it?</span>
-<span id="cb8-224"><a href="#cb8-224" aria-hidden="true" tabindex="-1"></a>b. The baseline was designed in Module 1 for a different series (<span class="in">`mexretail`</span>). Is it still a competitive benchmark here, or does the unemployment series favor a different model family? What characteristics of the series drive your answer?</span>
-<span id="cb8-225"><a href="#cb8-225" aria-hidden="true" tabindex="-1"></a>c. Would you expect the same model ranking to hold on a different country's unemployment series? What would you check first before deciding?</span>
+<span id="cb8-206"><a href="#cb8-206" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>STL decomposition (choose sensible <span class="in">`trend(window)`</span> and <span class="in">`season(window)`</span> values for a quarterly series)</span>
+<span id="cb8-207"><a href="#cb8-207" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Drift on the seasonally adjusted component</span>
+<span id="cb8-208"><a href="#cb8-208" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>SNAIVE on the seasonal component</span>
+<span id="cb8-209"><a href="#cb8-209" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-210"><a href="#cb8-210" aria-hidden="true" tabindex="-1"></a>Save the spec as <span class="in">`baseline_spec`</span> and fit it inside a <span class="in">`mable`</span> called <span class="in">`unemp_fit`</span>. Then:</span>
+<span id="cb8-211"><a href="#cb8-211" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-212"><a href="#cb8-212" aria-hidden="true" tabindex="-1"></a>a. Produce forecasts for <span class="in">`h = 8`</span> quarters.</span>
+<span id="cb8-213"><a href="#cb8-213" aria-hidden="true" tabindex="-1"></a>b. Plot the forecast (overlay, <span class="in">`level = NULL`</span>).</span>
+<span id="cb8-214"><a href="#cb8-214" aria-hidden="true" tabindex="-1"></a>c. Inspect residual diagnostics with <span class="in">`gg_tsresiduals()`</span>. Do the residuals look like white noise? Is the COVID spike visible?</span>
+<span id="cb8-215"><a href="#cb8-215" aria-hidden="true" tabindex="-1"></a>d. Compute test-set accuracy using <span class="in">`accuracy(unemp_fc, unemp)`</span>.</span>
+<span id="cb8-216"><a href="#cb8-216" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-217"><a href="#cb8-217" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip}</span>
+<span id="cb8-218"><a href="#cb8-218" aria-hidden="true" tabindex="-1"></a><span class="fu">## Hint</span></span>
+<span id="cb8-219"><a href="#cb8-219" aria-hidden="true" tabindex="-1"></a>Remember that <span class="in">`accuracy()`</span> requires the **full** tsibble — not just the test set — so that MASE and RMSSE denominators are computed correctly.</span>
+<span id="cb8-220"><a href="#cb8-220" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb8-221"><a href="#cb8-221" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-222"><a href="#cb8-222" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise 2 — ETS models</span></span>
+<span id="cb8-223"><a href="#cb8-223" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-224"><a href="#cb8-224" aria-hidden="true" tabindex="-1"></a>Add at least two ETS-based approaches to <span class="in">`unemp_fit`</span>:</span>
+<span id="cb8-225"><a href="#cb8-225" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-226"><a href="#cb8-226" aria-hidden="true" tabindex="-1"></a>a. **STL + ETS**: Use <span class="in">`decomposition_model()`</span> with an ETS model on <span class="in">`season_adjust`</span>. Suppress seasonality in the ETS spec (<span class="in">`season("N")`</span>). The seasonal component defaults to SNAIVE.</span>
+<span id="cb8-227"><a href="#cb8-227" aria-hidden="true" tabindex="-1"></a>b. **Full ETS**: Fit <span class="in">`ETS(unemp)`</span> directly, without explicit decomposition. Let R select the best error/trend/season structure automatically.</span>
+<span id="cb8-228"><a href="#cb8-228" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-229"><a href="#cb8-229" aria-hidden="true" tabindex="-1"></a>For each model:</span>
+<span id="cb8-230"><a href="#cb8-230" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-231"><a href="#cb8-231" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Add it to the same <span class="in">`mable`</span> as the baseline (a single <span class="in">`model()`</span> call with all specs).</span>
+<span id="cb8-232"><a href="#cb8-232" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Check residual diagnostics for the STL + ETS model.</span>
+<span id="cb8-233"><a href="#cb8-233" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Include both in the accuracy comparison at the end.</span>
+<span id="cb8-234"><a href="#cb8-234" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-235"><a href="#cb8-235" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise 3 — ARIMA and SARIMA</span></span>
+<span id="cb8-236"><a href="#cb8-236" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-237"><a href="#cb8-237" aria-hidden="true" tabindex="-1"></a>Add at least two ARIMA-based approaches:</span>
+<span id="cb8-238"><a href="#cb8-238" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-239"><a href="#cb8-239" aria-hidden="true" tabindex="-1"></a>a. **STL + ARIMA**: Use <span class="in">`decomposition_model()`</span> with <span class="in">`ARIMA(season_adjust ~ PDQ(0,0,0))`</span>. The seasonal component defaults to SNAIVE.</span>
+<span id="cb8-240"><a href="#cb8-240" aria-hidden="true" tabindex="-1"></a>b. **Automatic SARIMA**: Fit a full seasonal ARIMA directly — <span class="in">`ARIMA(unemp, stepwise = FALSE, approximation = FALSE)`</span> — without explicit decomposition.</span>
+<span id="cb8-241"><a href="#cb8-241" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-242"><a href="#cb8-242" aria-hidden="true" tabindex="-1"></a>For each model:</span>
+<span id="cb8-243"><a href="#cb8-243" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-244"><a href="#cb8-244" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Add it to the same <span class="in">`mable`</span>.</span>
+<span id="cb8-245"><a href="#cb8-245" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Check residual diagnostics for the STL + ARIMA model.</span>
+<span id="cb8-246"><a href="#cb8-246" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Include both in the accuracy comparison.</span>
+<span id="cb8-247"><a href="#cb8-247" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-248"><a href="#cb8-248" aria-hidden="true" tabindex="-1"></a>::: {.callout-note appearance="simple"}</span>
+<span id="cb8-249"><a href="#cb8-249" aria-hidden="true" tabindex="-1"></a><span class="fu">## Identifying a manual SARIMA candidate (optional stretch)</span></span>
+<span id="cb8-250"><a href="#cb8-250" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-251"><a href="#cb8-251" aria-hidden="true" tabindex="-1"></a>Use <span class="in">`gg_tsdisplay()`</span> on the differenced series to identify a candidate ARIMA order manually, then add it as a third model (<span class="in">`sarima_manual`</span>). Compare it against the automatic selection.</span>
+<span id="cb8-252"><a href="#cb8-252" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb8-253"><a href="#cb8-253" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-254"><a href="#cb8-254" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise 4 — Mixed decomposition models</span></span>
+<span id="cb8-255"><a href="#cb8-255" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-256"><a href="#cb8-256" aria-hidden="true" tabindex="-1"></a>This section connects directly to the <span class="co">[</span><span class="ot">Modular Forecasting</span><span class="co">](../../modules/module_2/04_modular_forecasting/modular_forecasting.qmd)</span> class document.</span>
+<span id="cb8-257"><a href="#cb8-257" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-258"><a href="#cb8-258" aria-hidden="true" tabindex="-1"></a>Add the two mixed combinations to your <span class="in">`mable`</span>:</span>
+<span id="cb8-259"><a href="#cb8-259" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-260"><a href="#cb8-260" aria-hidden="true" tabindex="-1"></a>a. **STL + ETS + ARIMA**: ETS models the seasonally adjusted component (<span class="in">`season_adjust`</span>); ARIMA models the seasonal component (<span class="in">`season_year`</span>).</span>
+<span id="cb8-261"><a href="#cb8-261" aria-hidden="true" tabindex="-1"></a>b. **STL + ARIMA + ETS**: ARIMA models the seasonally adjusted component (<span class="in">`season_adjust ~ PDQ(0,0,0)`</span>); ETS models the seasonal component (<span class="in">`season_year ~ trend("N")`</span>).</span>
+<span id="cb8-262"><a href="#cb8-262" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-263"><a href="#cb8-263" aria-hidden="true" tabindex="-1"></a>Recall the constraint logic for each component:</span>
+<span id="cb8-264"><a href="#cb8-264" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-265"><a href="#cb8-265" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Component <span class="pp">|</span> What it contains <span class="pp">|</span> What to suppress <span class="pp">|</span></span>
+<span id="cb8-266"><a href="#cb8-266" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span>:--<span class="pp">|</span>:--<span class="pp">|</span>:--<span class="pp">|</span></span>
+<span id="cb8-267"><a href="#cb8-267" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`season_adjust`</span> <span class="pp">|</span> trend + cycle + remainder <span class="pp">|</span> seasonality <span class="pp">|</span></span>
+<span id="cb8-268"><a href="#cb8-268" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`season_year`</span> <span class="pp">|</span> seasonal pattern only <span class="pp">|</span> trend <span class="pp">|</span></span>
+<span id="cb8-269"><a href="#cb8-269" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-270"><a href="#cb8-270" aria-hidden="true" tabindex="-1"></a>After fitting:</span>
+<span id="cb8-271"><a href="#cb8-271" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-272"><a href="#cb8-272" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Produce a single forecast plot with all models overlaid (<span class="in">`level = NULL`</span>).</span>
+<span id="cb8-273"><a href="#cb8-273" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Compute a final accuracy table with all models, sorted by RMSE.</span>
+<span id="cb8-274"><a href="#cb8-274" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Answer: which approach performs best on this series? Does the winner make intuitive sense given what you observed in the EDA?</span>
+<span id="cb8-275"><a href="#cb8-275" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-276"><a href="#cb8-276" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exercise 5 — Reflection (graduate students)</span></span>
+<span id="cb8-277"><a href="#cb8-277" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-278"><a href="#cb8-278" aria-hidden="true" tabindex="-1"></a>Write a short paragraph (5–8 sentences) addressing the following:</span>
+<span id="cb8-279"><a href="#cb8-279" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-280"><a href="#cb8-280" aria-hidden="true" tabindex="-1"></a>a. The COVID-19 spike in 2020 Q2 is a clear outlier. How does it affect model diagnostics and accuracy metrics? Which models appear most sensitive to it?</span>
+<span id="cb8-281"><a href="#cb8-281" aria-hidden="true" tabindex="-1"></a>b. The baseline was designed in Module 1 for a different series (<span class="in">`mexretail`</span>). Is it still a competitive benchmark here, or does the unemployment series favor a different model family? What characteristics of the series drive your answer?</span>
+<span id="cb8-282"><a href="#cb8-282" aria-hidden="true" tabindex="-1"></a>c. Would you expect the same model ranking to hold on a different country's unemployment series? What would you check first before deciding?</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
