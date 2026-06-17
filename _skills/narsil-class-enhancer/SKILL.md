@@ -114,23 +114,53 @@ Example: "Suavización exponencial" → "ETS Forecasting".
 
 ## Setup chunk
 
-Replace any bare `library()` call at the top with a single setup chunk.
-Keep it **visible** (`include: false` is not used here) — students
-download and run these documents, so they need to see which packages
-to load.
+Replace any bare `library()` call at the top with two chunks.
+`message: false` and `warning: false` are set globally in
+`_quarto.yml` — do not repeat them in individual chunks.
+
+**Chunk 1 — visible to students**: packages only.
 
 ```r
 #| label: setup
-#| message: false
 
 library(tidyverse)
 library(fpp3)
+```
+
+Add `tidyquant` and/or `plotly` here if used in student-visible code.
+
+**Chunk 2 — narsil infrastructure**: always `include: false`.
+
+```r
+#| label: narsil-setup
+#| include: false
+
 source(here::here("R/narsil_theme.R"))
 theme_set(theme_narsil())
 ```
 
-Add `tidyquant` here if used for data loading. Do not create a
-separate visible chunk for it.
+Packages only needed for narsil render chunks (e.g., `plotly` when
+used exclusively in `echo: false` chunks) go here instead of chunk 1.
+
+> **Global narsil visibility rule**: No visible chunk (`echo: true`,
+> the default) anywhere on the narsil site may call narsil-specific
+> functions: `theme_narsil()`, `theme_narsil_dark()`, `scale_narsil()`,
+> `scale_narsil_dark()`, `gg_to_plotly_narsil()`, or any standalone
+> `theme_narsil()` reset call. All narsil rendering infrastructure must
+> live in chunks with `echo: false` or `include: false`.
+>
+> When a plot in the instructor-provided section (EDA, series overview)
+> would be useful for students to replicate, use the **student/render
+> pair pattern**:
+>
+> - **Chunk A** (`eval: false`, no `echo` override → visible): plain
+>   ggplot2 code the student can copy and run.
+> - **Chunk B** (`echo: false`, `eval: true`): the actual narsil render
+>   (base plot + `renderings: [light, dark]` or `scale_narsil()`) that
+>   produces the plot shown on the site.
+>
+> Label chunk B by appending `-render` to chunk A's label.
+> Example: `autoplot-student` / `autoplot-render`.
 
 ---
 

@@ -154,41 +154,71 @@ format:
 
 ## Standard setup chunk
 
+`message: false` and `warning: false` are set globally in `_quarto.yml`
+— do not repeat them in individual chunks.
+
 ### More documents
 
-Include a minimal setup chunk. Load `fpp3` only if the document works
-with time series data or uses functions from `tsibble`, `fable`, or
-`feasts`. For `stats`, `quarto`, `r-tools`, and `tidyverse-applied`
-documents, `fpp3` is usually not needed.
+Two chunks. Load `fpp3` only if the document uses `tsibble`, `fable`,
+or `feasts`.
 
 ```r
 #| label: setup
-#| message: false
-#| include: false
 
 library(tidyverse)
 # library(fpp3)  # add if working with time series data
+```
+
+```r
+#| label: narsil-setup
+#| include: false
+
 source(here::here("R/narsil_theme.R"))
 theme_set(theme_narsil())
 ```
 
-### Exercise documents
+### Exercise and class-notebook documents
 
-Always load both:
+Two chunks. The first is visible to students (packages they need);
+the second is always `include: false`.
 
 ```r
 #| label: setup
-#| message: false
-#| include: false
 
 library(tidyverse)
 library(fpp3)
+```
+
+```r
+#| label: narsil-setup
+#| include: false
+
 source(here::here("R/narsil_theme.R"))
 theme_set(theme_narsil())
 ```
 
-Add extra libraries (e.g., `tidyquant`, `plotly`) only when needed,
-in a separate visible chunk with numbered code annotations (`#<1>`).
+Add `tidyquant` and/or `plotly` to the visible chunk if used in
+student-visible code. If they are only needed inside `echo: false`
+render chunks, add them to `narsil-setup` instead.
+
+> **Global narsil visibility rule**: No visible chunk (`echo: true`,
+> the default) anywhere on the narsil site may call narsil-specific
+> functions: `theme_narsil()`, `theme_narsil_dark()`, `scale_narsil()`,
+> `scale_narsil_dark()`, `gg_to_plotly_narsil()`, or any standalone
+> `theme_narsil()` reset call. All narsil rendering infrastructure must
+> live in chunks with `echo: false` or `include: false`.
+>
+> When a plot in the instructor-provided section would be useful for
+> students to replicate, use the **student/render pair pattern**:
+>
+> - **Chunk A** (`eval: false`, no `echo` override → visible): plain
+>   ggplot2 code the student can copy and run.
+> - **Chunk B** (`echo: false`, `eval: true`): the actual narsil render
+>   (base plot + `renderings: [light, dark]` or `scale_narsil()`) that
+>   produces the plot shown on the site.
+>
+> Label chunk B by appending `-render` to chunk A's label.
+> Example: `autoplot-student` / `autoplot-render`.
 
 ---
 
