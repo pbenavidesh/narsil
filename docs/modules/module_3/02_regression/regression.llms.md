@@ -2,7 +2,7 @@
 
 Modified
 
-June 16, 2026
+June 17, 2026
 
 Code
 
@@ -144,20 +144,37 @@ where each of these is an academic paper
 
 ------------------------------------------------------------------------
 
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the first name Annabelle and the second variable is UFO sightings in Maryland. The chart goes from 1975 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/3029_popularity-of-the-first-name-annabelle_correlates-with_ufo-sightings-in-maryland.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the first name Annabelle and the second variable is UFO sightings in Maryland.  The chart goes from 1975 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/3029_popularity-of-the-first-name-annabelle_correlates-with_ufo-sightings-in-maryland_mobile.svg)  
-**View details about correlation \#3,029**](spurious/correlation/3029_popularity-of-the-first-name-annabelle_correlates-with_ufo-sightings-in-maryland)  
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Annual US household spending on fresh fruits and the second variable is Canadian National Railway Company's stock price (CNI). The chart goes from 2002 to 2022, and the two variables track closely in value over that time.](spurious/correlation/image/5901_annual-us-household-spending-on-fresh-fruits_correlates-with_canadian-national-railway-companys-stock-price-cni.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Annual US household spending on fresh fruits and the second variable is Canadian National Railway Company's stock price (CNI).  The chart goes from 2002 to 2022, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/5901_annual-us-household-spending-on-fresh-fruits_correlates-with_canadian-national-railway-companys-stock-price-cni_mobile.svg)  
+**View details about correlation \#5,901**](spurious/correlation/5901_annual-us-household-spending-on-fresh-fruits_correlates-with_canadian-national-railway-companys-stock-price-cni)  
   
 
 ^(Show scatterplot)
 
-![](spurious/correlation/scatterplot/3029_popularity-of-the-first-name-annabelle_correlates-with_ufo-sightings-in-maryland_scatterplot.png)
+![](spurious/correlation/scatterplot/5901_annual-us-household-spending-on-fresh-fruits_correlates-with_canadian-national-railway-companys-stock-price-cni_scatterplot.png)
 
   
   
 
 *What else correlates?*  
-[Popularity of the first name Annabelle](spurious/variable?id=3599) · [all first names](spurious/view-all-variables/babynames)  
-[UFO sightings in Maryland](spurious/variable?id=1172) · [all random state specific](spurious/view-all-variables/statespecific)  
+[Annual US household spending on fresh fruits](spurious/variable?id=19897) · [all weird & wacky](spurious/view-all-variables/weirdwacky)  
+[Canadian National Railway Company's stock price (CNI)](spurious/variable?id=1667) · [all stocks](spurious/view-all-variables/stocks)  
+
+------------------------------------------------------------------------
+
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is US kids in public school and the second variable is The number of pipelayers in North Dakota. The chart goes from 2003 to 2022, and the two variables track closely in value over that time.](spurious/correlation/image/2284_us-kids-in-public-school_correlates-with_the-number-of-pipelayers-in-north-dakota.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is US kids in public school and the second variable is The number of pipelayers in North Dakota.  The chart goes from 2003 to 2022, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/2284_us-kids-in-public-school_correlates-with_the-number-of-pipelayers-in-north-dakota_mobile.svg)  
+**View details about correlation \#2,284**](spurious/correlation/2284_us-kids-in-public-school_correlates-with_the-number-of-pipelayers-in-north-dakota)  
+  
+
+^(Show scatterplot)
+
+![](spurious/correlation/scatterplot/2284_us-kids-in-public-school_correlates-with_the-number-of-pipelayers-in-north-dakota_scatterplot.png)
+
+  
+  
+
+*What else correlates?*  
+[US kids in public school](spurious/variable?id=1296) · [all education](spurious/view-all-variables/education)  
+[The number of pipelayers in North Dakota](spurious/variable?id=12691) · [all cccupations](spurious/view-all-variables/occupations)  
 
 ------------------------------------------------------------------------
 
@@ -481,23 +498,6 @@ where each of these is an academic paper
 *What else correlates?*  
 [The distance between Jupiter and Mercury](spurious/variable?id=1952) · [all planets](spurious/view-all-variables/planets)  
 [Anheuser-Busch InBev's stock price (BUD)](spurious/variable?id=1623) · [all stocks](spurious/view-all-variables/stocks)  
-
-------------------------------------------------------------------------
-
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Bachelor's degrees awarded in Library science and the second variable is Google searches for 'how to hide a body'. The chart goes from 2012 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/1840_bachelors-degrees-awarded-in-library-science_correlates-with_google-searches-for-how-to-hide-a-body.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Bachelor's degrees awarded in Library science and the second variable is Google searches for 'how to hide a body'.  The chart goes from 2012 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1840_bachelors-degrees-awarded-in-library-science_correlates-with_google-searches-for-how-to-hide-a-body_mobile.svg)  
-**View details about correlation \#1,840**](spurious/correlation/1840_bachelors-degrees-awarded-in-library-science_correlates-with_google-searches-for-how-to-hide-a-body)  
-  
-
-^(Show scatterplot)
-
-![](spurious/correlation/scatterplot/1840_bachelors-degrees-awarded-in-library-science_correlates-with_google-searches-for-how-to-hide-a-body_scatterplot.png)
-
-  
-  
-
-*What else correlates?*  
-[Bachelor's degrees awarded in Library science](spurious/variable?id=1282) · [all education](spurious/view-all-variables/education)  
-[Google searches for 'how to hide a body'](spurious/variable?id=1513) · [all google searches](spurious/view-all-variables/google)  
 
 ------------------------------------------------------------------------
 

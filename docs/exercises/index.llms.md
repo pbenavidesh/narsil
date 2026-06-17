@@ -42,4 +42,12 @@ Pablo Benavides Herrera
 
 2 min
 
+### [Module 2 Review: Full Forecasting Pipeline](../../docs/exercises/posts/ex_module2_full_review.llms.md)
+
+End-of-module exercise covering the complete Module 2 toolkit — baseline, ETS, ARIMA/SARIMA, and mixed decomposition models — applied to Mexico’s unemployment rate.
+
+Jun 17, 2025
+
+5 min
+
 Back to top

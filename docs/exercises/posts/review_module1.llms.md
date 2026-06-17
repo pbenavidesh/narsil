@@ -20,7 +20,7 @@ End-of-module integrative exercise covering the full Module 1 workflow: explorat
 
 Modified
 
-June 16, 2026
+June 17, 2026
 
 ## 1 Context
 
