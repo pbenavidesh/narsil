@@ -82,15 +82,19 @@ The `format: html` declaration is **required** — without it Quarto
 inherits both `html` and `revealjs` from `_quarto.yml` and fails to
 render exercise documents.
 
-Add `freeze: false` only when the document calls `tq_get()` or any
-live FRED/financial data source. In that case:
+When the document calls `tq_get()` or any live financial/FRED data
+source, add `params: fred-data: true` instead of `freeze: false`.
+The site uses `freeze: auto` globally; FRED document invalidation is
+controlled via `workflow_dispatch` in GitHub Actions — do **not** use
+`freeze: false`:
 
 ```yaml
 ---
 title: "Title in English"
 description: "One-sentence description for the listing card."
 date: YYYY-MM-DD
-freeze: false
+params:
+  fred-data: true
 format: html
 categories:
   - topic-exercise

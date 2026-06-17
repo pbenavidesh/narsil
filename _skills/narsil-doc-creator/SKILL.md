@@ -125,6 +125,28 @@ draft: false
 ---
 ```
 
+When the document calls `tq_get()` or any live financial/FRED data
+source, add `params: fred-data: true`. Do **not** use `freeze: false`
+— the site uses `freeze: auto` globally and FRED document invalidation
+is controlled via `workflow_dispatch` in GitHub Actions:
+
+```yaml
+---
+title: "Document Title"
+description: "One-sentence description shown in the listing card."
+date: YYYY-MM-DD
+date-modified: last-modified
+params:
+  fred-data: true
+format:
+  html: default
+categories:
+  - [class-notebook | topic-exercise | module-review]
+  - [module-1 | module-2 | module-3 | module-4]
+draft: false
+---
+```
+
 ### Module document (dual-format)
 
 Module documents (those under `docs/modules/`) render as both HTML
