@@ -183,7 +183,7 @@ For each model:
 
 ## 1.4 Exercise 4 — Mixed decomposition models
 
-This section connects directly to the [Modular Forecasting](../../modules/module_2/04_modular_forecasting/modular_forecasting.qmd) class document.
+This section connects directly to the [Modular Forecasting](../../../docs/modules/module_2/04_modular_fcst/modular_forecasting.llms.md) class document.
 
 Add the two mixed combinations to your `mable`:
 

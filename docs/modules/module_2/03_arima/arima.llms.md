@@ -301,7 +301,7 @@ glance(us_change_fit) |>
 > tictoc::toc()
 > ```
 >
->     auto: 0.09 sec elapsed
+>     auto: 0.122 sec elapsed
 >
 > Code
 >
@@ -319,7 +319,7 @@ glance(us_change_fit) |>
 > tictoc::toc()
 > ```
 >
->     exhaustive: 0.72 sec elapsed
+>     exhaustive: 0.751 sec elapsed
 >
 > Times will vary by hardware, but the **relative difference** is what matters. On longer series like `mexretail` (480+ monthly observations with seasonal structure), the gap is even more pronounced.
 
