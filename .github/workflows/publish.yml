@@ -1,5 +1,10 @@
 on:
   workflow_dispatch:
+    inputs:
+      refresh_fred:
+        description: 'Refresh FRED documents (fred-data: true)?'
+        type: boolean
+        default: false
   push:
     branches: main
 
@@ -29,9 +34,22 @@ jobs:
         with:
           cache-version: 4
 
+      - name: Invalidate FRED freeze if requested
+        if: ${{ github.event.inputs.refresh_fred == 'true' }}
+        run: Rscript scripts/invalidate_fred.R
+
       - name: Render and Publish
         uses: quarto-dev/quarto-actions/publish@v2
         with:
           target: gh-pages
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Commit updated _freeze
+        if: ${{ github.event.inputs.refresh_fred == 'true' }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add _freeze/
+          git commit -m "chore: update _freeze for FRED documents [skip ci]" || echo "Nothing to commit"
+          git push
