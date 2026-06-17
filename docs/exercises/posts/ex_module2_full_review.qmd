@@ -7,17 +7,22 @@ params:
   fred-data: true
 categories:
   - topic-exercise
+  - module-review
   - module-2
 ---
 
 ```{r}
 #| label: setup
-#| message: false
 
 library(tidyverse)
 library(fpp3)
 library(tidyquant)
 library(plotly)
+```
+
+```{r}
+#| label: narsil-setup
+#| include: false
 source(here::here("R/narsil_theme.R"))
 theme_set(theme_narsil())
 ```
@@ -34,7 +39,7 @@ Mexico's harmonized unemployment rate (FRED ticker `LRHUTTTTMXQ156N`) is a quart
 #| label: data-load
 #| message: false
 
-unemp <- tidyquant::tq_get(
+unemp <- tq_get(
   "LRHUTTTTMXQ156N",
   get = "economic.data",
   from = "2005-01-01"
@@ -51,7 +56,21 @@ unemp
 Before fitting any model, take time to understand the series. The plots below cover the four standard views.
 
 ```{r}
-#| label: autoplot
+#| label: autoplot-student
+#| eval: false
+
+unemp |>
+  autoplot(unemp) +
+  labs(
+    title = "Mexico unemployment rate",
+    y     = "Unemployment rate (%)",
+    x     = ""
+  )
+```
+
+```{r}
+#| label: autoplot-p
+#| echo: false
 #| output: false
 
 unemp_p <- unemp |>
@@ -75,26 +94,54 @@ ggplotly(unemp_p + scale_narsil_dark(), dynamicTicks = TRUE) |> gg_to_plotly_nar
 Note the sharp spike around 2020 Q2 — the COVID-19 shock. Keep this in mind when interpreting model diagnostics and accuracy.
 
 ```{r}
-#| label: season-subseries
-#| results: hide
+#| label: season-student
+#| eval: false
 
-theme_narsil()
 unemp |> gg_season(unemp)
 ```
 
 ```{r}
-#| label: subseries
+#| label: season-render
+#| renderings: [light, dark]
+#| echo: false
+#| results: hide
+
+theme_narsil()
+unemp |> gg_season(unemp)
+theme_narsil_dark()
+unemp |> gg_season(unemp)
+```
+
+```{r}
+#| label: subseries-student
+#| eval: false
 
 unemp |> gg_subseries(unemp)
 ```
 
 ```{r}
-#| label: tsdisplay
+#| label: subseries-render
+#| renderings: [light, dark]
+#| echo: false
+
+unemp |> gg_subseries(unemp) + scale_narsil()
+unemp |> gg_subseries(unemp) + scale_narsil_dark()
+```
+
+```{r}
+#| label: tsdisplay-student
+#| eval: false
+
+unemp |> gg_tsdisplay(unemp, plot_type = "partial")
+```
+
+```{r}
+#| label: tsdisplay-render
+#| echo: false
 #| results: hide
 
 theme_narsil()
-unemp |>
-  gg_tsdisplay(unemp, plot_type = "partial")
+unemp |> gg_tsdisplay(unemp, plot_type = "partial")
 ```
 
 ::: {.callout-note appearance="simple"}
@@ -180,7 +227,7 @@ Use `gg_tsdisplay()` on the differenced series to identify a candidate ARIMA ord
 
 ## Exercise 4 — Mixed decomposition models
 
-This section connects directly to the [Modular Forecasting](../../modules/module_2/04_modular_fcst/modular_forecasting.qmd) class document.
+This section connects directly to the [Modular Forecasting](../../modules/module_2/04_modular_forecasting/modular_forecasting.qmd) class document.
 
 Add the two mixed combinations to your `mable`:
 
@@ -200,7 +247,7 @@ After fitting:
 - Compute a final accuracy table with all models, sorted by RMSE.
 - Answer: which approach performs best on this series? Does the winner make intuitive sense given what you observed in the EDA?
 
-## Exercise 5 — Reflection
+## Exercise 5 — Reflection (graduate students)
 
 Write a short paragraph (5–8 sentences) addressing the following:
 
