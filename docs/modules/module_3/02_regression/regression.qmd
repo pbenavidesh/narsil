@@ -103,9 +103,7 @@ Each module has asked: *what does my current model fail to capture?* The answer 
 # The Linear Regression Model
 
 :::{.content-hidden unless-format="revealjs"}
-
 ## The linear model
-
 :::
 
 The simplest case is the **simple linear regression model**:
@@ -114,18 +112,19 @@ $$
 y_t = \beta_0 + \beta_1 x_t + \varepsilon_t
 $$
 
+:::{.fragment}
 where:
-
-:::{.incremental}
 
 - $\beta_0$ is the **intercept**: the predicted value of $y$ when $x = 0$.
 - $\beta_1$ is the **slope**: the average change in $y$ for a one-unit change in $x$.
 - $\varepsilon_t$ is the **error term**: captures all other influences on $y_t$ not explicitly modeled.
-
 :::
 
+:::{.fragment}
 ![*[(Hyndman, 2019)](https://otexts.com/fpp3/)*](linreg.PNG)
+:::
 
+:::{.fragment}
 :::{.callout-tip collapse="true"}
 ## How are the $\beta$'s estimated? Ordinary Least Squares (OLS)
 
@@ -152,29 +151,22 @@ where $\mathbf{X}$ is the **design matrix** — a column of ones (for the interc
 In practice, R handles all of this internally. But knowing the objective function matters: OLS penalizes **large** residuals more than small ones (because of the square), and under the classical assumptions the Gauss-Markov theorem guarantees the estimates are **BLUE** (Best Linear Unbiased Estimators) — regardless of whether we have one predictor or twenty.
 
 :::
-
+:::
 
 :::{.content-hidden unless-format="revealjs"}
-
 ## Real examples
-
 :::
 
 :::{.content-visible unless-format="revealjs"}
-
 ## Some motivating examples
-
 :::
-
-:::{.incremental}
 
 - **Ice cream sales** ($y$) and **daily temperature** ($x$).
 - **Nike revenue** ($y$) and **marketing spend** ($x$).
 - **US consumption growth** ($y$) and **income growth** ($x$).
 - **Mexico retail trade** ($y$) and **consumer confidence index** ($x$).
 
-:::
-
+:::{.fragment}
 :::{.callout-note collapse="true"}
 ## Terminology: many names for $y$ and $x$
 
@@ -190,7 +182,9 @@ The same concept appears under different names depending on the discipline:
 
 In time series forecasting, FPP3 uses **forecast variable** and **predictor variables**.
 :::
+:::
 
+:::{.fragment}
 :::{.callout-note collapse="true"}
 ## The origin of "regression" — Galton, 1886
 
@@ -203,6 +197,7 @@ His finding: tall parents tend to have tall children, but on average their child
 Without this regression to the mean, the distribution of heights across generations would diverge — we would eventually have people of Hobbit stature and people of giant stature, with nothing in between.
 
 Modern regression analysis generalizes this idea: studying the dependence of one variable on one or more others to predict its **average value**.
+:::
 :::
 
 
@@ -254,26 +249,19 @@ The web is full of striking examples where two completely unrelated time series 
 
 :::
 
-
+:::{.fragment}
 :::{.callout-important}
 A regression model would happily fit a line through any of those charts. The model does not know the relationship is nonsense — **you** have to know. Causal direction requires theory, domain knowledge, or experimental design, not statistical strength alone.
 :::
-
+:::
 
 ## What Does "Linear" Mean?
 
-:::{.content-hidden unless-format="revealjs"}
-
-##
-
-:::
-
-
-
+:::{.fragment}
 *Are these models linear?*
 
 ![](linear.png)
-
+:::
 
 
 
@@ -319,17 +307,9 @@ We will use `us_change` — quarterly percentage changes in US macroeconomic var
 us_change
 ```
 
-:::{.content-hidden unless-format="revealjs"}
 
 ## Exploratory analysis
 
-:::
-
-:::{.content-visible unless-format="revealjs"}
-
-## Exploratory analysis
-
-:::
 
 Before fitting any model, we look at the data.
 
@@ -364,9 +344,8 @@ ggplotly(us_change_time_p + scale_narsil_dark() + theme(legend.position = "none"
 
 ```{r}
 #| label: us-change-pairs
-#| message: false
-#| warning: false
 #| results: hide
+#| code-fold: true
 
 theme_narsil()
 us_change |>
@@ -374,11 +353,13 @@ us_change |>
   select(-Quarter) |>
   GGally::ggpairs()
 ```
-
 :::
 
+
+:::{.fragment}
 :::{.callout-warning appearance="simple"}
 The scatter matrix shows correlations between all pairs of variables. Notice that some predictors are correlated with each other — we will return to this when we discuss multicollinearity.
+:::
 :::
 
 ## Simple Linear Regression
@@ -444,17 +425,7 @@ For every 1 percentage point increase in income growth, consumption growth incre
 
 ## Residual Diagnostics
 
-:::{.content-hidden unless-format="revealjs"}
-
-### Gauss-Markov assumptions and why they matter in time series
-
-:::
-
-:::{.content-visible unless-format="revealjs"}
-
 ### Gauss-Markov assumptions
-
-:::
 
 OLS produces BLUE estimators only if the classical assumptions hold. The one most frequently violated in time series is **no autocorrelation in the errors**:
 
