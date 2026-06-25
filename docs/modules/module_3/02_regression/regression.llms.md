@@ -2,7 +2,7 @@
 
 Modified
 
-June 17, 2026
+June 25, 2026
 
 Code
 
@@ -144,20 +144,156 @@ where each of these is an academic paper
 
 ------------------------------------------------------------------------
 
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Annual US household spending on fresh fruits and the second variable is Canadian National Railway Company's stock price (CNI). The chart goes from 2002 to 2022, and the two variables track closely in value over that time.](spurious/correlation/image/5901_annual-us-household-spending-on-fresh-fruits_correlates-with_canadian-national-railway-companys-stock-price-cni.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Annual US household spending on fresh fruits and the second variable is Canadian National Railway Company's stock price (CNI).  The chart goes from 2002 to 2022, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/5901_annual-us-household-spending-on-fresh-fruits_correlates-with_canadian-national-railway-companys-stock-price-cni_mobile.svg)  
-**View details about correlation \#5,901**](spurious/correlation/5901_annual-us-household-spending-on-fresh-fruits_correlates-with_canadian-national-railway-companys-stock-price-cni)  
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Google searches for 'report UFO sighting' and the second variable is Kerosene used in South Korea. The chart goes from 2004 to 2022, and the two variables track closely in value over that time.](spurious/correlation/image/1112_google-searches-for-report-ufo-sighting_correlates-with_kerosene-used-in-south-korea.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Google searches for 'report UFO sighting' and the second variable is Kerosene used in South Korea.  The chart goes from 2004 to 2022, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1112_google-searches-for-report-ufo-sighting_correlates-with_kerosene-used-in-south-korea_mobile.svg)  
+**View details about correlation \#1,112**](spurious/correlation/1112_google-searches-for-report-ufo-sighting_correlates-with_kerosene-used-in-south-korea)  
   
 
 ^(Show scatterplot)
 
-![](spurious/correlation/scatterplot/5901_annual-us-household-spending-on-fresh-fruits_correlates-with_canadian-national-railway-companys-stock-price-cni_scatterplot.png)
+![](spurious/correlation/scatterplot/1112_google-searches-for-report-ufo-sighting_correlates-with_kerosene-used-in-south-korea_scatterplot.png)
 
   
   
 
 *What else correlates?*  
-[Annual US household spending on fresh fruits](spurious/variable?id=19897) · [all weird & wacky](spurious/view-all-variables/weirdwacky)  
-[Canadian National Railway Company's stock price (CNI)](spurious/variable?id=1667) · [all stocks](spurious/view-all-variables/stocks)  
+[Google searches for 'report UFO sighting'](spurious/variable?id=1392) · [all random state specific](spurious/view-all-variables/statespecific)  
+[Kerosene used in South Korea](spurious/variable?id=24928) · [all energy](spurious/view-all-variables/energy)  
+
+------------------------------------------------------------------------
+
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is GMO use in corn grown in Iowa and the second variable is Google searches for 'black holes'. The chart goes from 2004 to 2023, and the two variables track closely in value over that time.](spurious/correlation/image/1302_gmo-use-in-corn-grown-in-iowa_correlates-with_google-searches-for-black-holes.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is GMO use in corn grown in Iowa and the second variable is Google searches for 'black holes'.  The chart goes from 2004 to 2023, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1302_gmo-use-in-corn-grown-in-iowa_correlates-with_google-searches-for-black-holes_mobile.svg)  
+**View details about correlation \#1,302**](spurious/correlation/1302_gmo-use-in-corn-grown-in-iowa_correlates-with_google-searches-for-black-holes)  
+  
+
+^(Show scatterplot)
+
+![](spurious/correlation/scatterplot/1302_gmo-use-in-corn-grown-in-iowa_correlates-with_google-searches-for-black-holes_scatterplot.png)
+
+  
+  
+
+*What else correlates?*  
+[GMO use in corn grown in Iowa](spurious/variable?id=712) · [all food](spurious/view-all-variables/farmingfood)  
+[Google searches for 'black holes'](spurious/variable?id=1530) · [all google searches](spurious/view-all-variables/google)  
+
+------------------------------------------------------------------------
+
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the first name Waylon and the second variable is Wind power generated in China. The chart goes from 1990 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/3018_popularity-of-the-first-name-waylon_correlates-with_wind-power-generated-in-china.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the first name Waylon and the second variable is Wind power generated in China.  The chart goes from 1990 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/3018_popularity-of-the-first-name-waylon_correlates-with_wind-power-generated-in-china_mobile.svg)  
+**View details about correlation \#3,018**](spurious/correlation/3018_popularity-of-the-first-name-waylon_correlates-with_wind-power-generated-in-china)  
+  
+
+^(Show scatterplot)
+
+![](spurious/correlation/scatterplot/3018_popularity-of-the-first-name-waylon_correlates-with_wind-power-generated-in-china_scatterplot.png)
+
+  
+  
+
+*What else correlates?*  
+[Popularity of the first name Waylon](spurious/variable?id=4273) · [all first names](spurious/view-all-variables/babynames)  
+[Wind power generated in China](spurious/variable?id=23591) · [all energy](spurious/view-all-variables/energy)  
+
+------------------------------------------------------------------------
+
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The distance between Uranus and Earth and the second variable is Asthma prevalence in American children. The chart goes from 2003 to 2019, and the two variables track closely in value over that time.](spurious/correlation/image/2592_the-distance-between-uranus-and-earth_correlates-with_asthma-prevalence-in-american-children.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The distance between Uranus and Earth and the second variable is Asthma prevalence in American children.  The chart goes from 2003 to 2019, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/2592_the-distance-between-uranus-and-earth_correlates-with_asthma-prevalence-in-american-children_mobile.svg)  
+**View details about correlation \#2,592**](spurious/correlation/2592_the-distance-between-uranus-and-earth_correlates-with_asthma-prevalence-in-american-children)  
+  
+
+^(Show scatterplot)
+
+![](spurious/correlation/scatterplot/2592_the-distance-between-uranus-and-earth_correlates-with_asthma-prevalence-in-american-children_scatterplot.png)
+
+  
+  
+
+*What else correlates?*  
+[The distance between Uranus and Earth](spurious/variable?id=1943) · [all planets](spurious/view-all-variables/planets)  
+[Asthma prevalence in American children](spurious/variable?id=1133) · [all weird & wacky](spurious/view-all-variables/weirdwacky)  
+
+------------------------------------------------------------------------
+
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Master's degrees awarded in Psychology and the second variable is Amazon.com's stock price (AMZN). The chart goes from 2012 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/2539_masters-degrees-awarded-in-psychology_correlates-with_amazoncoms-stock-price.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Master's degrees awarded in Psychology and the second variable is Amazon.com's stock price (AMZN).  The chart goes from 2012 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/2539_masters-degrees-awarded-in-psychology_correlates-with_amazoncoms-stock-price_mobile.svg)  
+**View details about correlation \#2,539**](spurious/correlation/2539_masters-degrees-awarded-in-psychology_correlates-with_amazoncoms-stock-price)  
+  
+
+^(Show scatterplot)
+
+![](spurious/correlation/scatterplot/2539_masters-degrees-awarded-in-psychology_correlates-with_amazoncoms-stock-price_scatterplot.png)
+
+  
+  
+
+*What else correlates?*  
+[Master's degrees awarded in Psychology](spurious/variable?id=1337) · [all education](spurious/view-all-variables/education)  
+[Amazon.com's stock price (AMZN)](spurious/variable?id=1543) · [all stocks](spurious/view-all-variables/stocks)  
+
+------------------------------------------------------------------------
+
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is GMO use in corn grown in Wisconsin and the second variable is The number of executive administrative assistants in Wisconsin. The chart goes from 2010 to 2022, and the two variables track closely in value over that time.](spurious/correlation/image/1301_gmo-use-in-corn-grown-in-wisconsin_correlates-with_the-number-of-executive-administrative-assistants-in-wisconsin.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is GMO use in corn grown in Wisconsin and the second variable is The number of executive administrative assistants in Wisconsin.  The chart goes from 2010 to 2022, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1301_gmo-use-in-corn-grown-in-wisconsin_correlates-with_the-number-of-executive-administrative-assistants-in-wisconsin_mobile.svg)  
+**View details about correlation \#1,301**](spurious/correlation/1301_gmo-use-in-corn-grown-in-wisconsin_correlates-with_the-number-of-executive-administrative-assistants-in-wisconsin)  
+  
+
+^(Show scatterplot)
+
+![](spurious/correlation/scatterplot/1301_gmo-use-in-corn-grown-in-wisconsin_correlates-with_the-number-of-executive-administrative-assistants-in-wisconsin_scatterplot.png)
+
+  
+  
+
+*What else correlates?*  
+[GMO use in corn grown in Wisconsin](spurious/variable?id=737) · [all food](spurious/view-all-variables/farmingfood)  
+[The number of executive administrative assistants in Wisconsin](spurious/variable?id=18777) · [all cccupations](spurious/view-all-variables/occupations)  
+
+------------------------------------------------------------------------
+
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the 'floss dance' meme and the second variable is Jet fuel used in Kazakhstan. The chart goes from 2006 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/5133_popularity-of-the-floss-dance-meme_correlates-with_jet-fuel-used-in-kazakhstan.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the 'floss dance' meme and the second variable is Jet fuel used in Kazakhstan.  The chart goes from 2006 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/5133_popularity-of-the-floss-dance-meme_correlates-with_jet-fuel-used-in-kazakhstan_mobile.svg)  
+**View details about correlation \#5,133**](spurious/correlation/5133_popularity-of-the-floss-dance-meme_correlates-with_jet-fuel-used-in-kazakhstan)  
+  
+
+^(Show scatterplot)
+
+![](spurious/correlation/scatterplot/5133_popularity-of-the-floss-dance-meme_correlates-with_jet-fuel-used-in-kazakhstan_scatterplot.png)
+
+  
+  
+
+*What else correlates?*  
+[Popularity of the 'floss dance' meme](spurious/variable?id=25130) · [all memes](spurious/view-all-variables/memes)  
+[Jet fuel used in Kazakhstan](spurious/variable?id=24586) · [all energy](spurious/view-all-variables/energy)  
+
+------------------------------------------------------------------------
+
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Total Runs Scored by Chicago Cubs Team in National League (Central and East Division) and the second variable is The divorce rate in Connecticut. The chart goes from 1999 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/1173_total-runs-scored-by-chicago-cubs-team-in-national-league-central-and-east-division_correlates-with_the-divorce-rate-in-connecticut.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Total Runs Scored by Chicago Cubs Team in National League (Central and East Division) and the second variable is The divorce rate in Connecticut.  The chart goes from 1999 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1173_total-runs-scored-by-chicago-cubs-team-in-national-league-central-and-east-division_correlates-with_the-divorce-rate-in-connecticut_mobile.svg)  
+**View details about correlation \#1,173**](spurious/correlation/1173_total-runs-scored-by-chicago-cubs-team-in-national-league-central-and-east-division_correlates-with_the-divorce-rate-in-connecticut)  
+  
+
+^(Show scatterplot)
+
+![](spurious/correlation/scatterplot/1173_total-runs-scored-by-chicago-cubs-team-in-national-league-central-and-east-division_correlates-with_the-divorce-rate-in-connecticut_scatterplot.png)
+
+  
+  
+
+*What else correlates?*  
+[Total Runs Scored by Chicago Cubs Team in National League (Central and East Division)](spurious/variable?id=206) · [all weird & wacky](spurious/view-all-variables/weirdwacky)  
+[The divorce rate in Connecticut](spurious/variable?id=19793) · [all random state specific](spurious/view-all-variables/statespecific)  
+
+------------------------------------------------------------------------
+
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the first name Tyler and the second variable is Google searches for 'desktop background'. The chart goes from 2007 to 2022, and the two variables track closely in value over that time.](spurious/correlation/image/5827_popularity-of-the-first-name-tyler_correlates-with_google-searches-for-desktop-background.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the first name Tyler and the second variable is Google searches for 'desktop background'.  The chart goes from 2007 to 2022, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/5827_popularity-of-the-first-name-tyler_correlates-with_google-searches-for-desktop-background_mobile.svg)  
+**View details about correlation \#5,827**](spurious/correlation/5827_popularity-of-the-first-name-tyler_correlates-with_google-searches-for-desktop-background)  
+  
+
+^(Show scatterplot)
+
+![](spurious/correlation/scatterplot/5827_popularity-of-the-first-name-tyler_correlates-with_google-searches-for-desktop-background_scatterplot.png)
+
+  
+  
+
+*What else correlates?*  
+[Popularity of the first name Tyler](spurious/variable?id=1978) · [all first names](spurious/view-all-variables/babynames)  
+[Google searches for 'desktop background'](spurious/variable?id=1462) · [all google searches](spurious/view-all-variables/google)  
 
 ------------------------------------------------------------------------
 
@@ -362,142 +498,6 @@ where each of these is an academic paper
 *What else correlates?*  
 [The distance between Uranus and Saturn](spurious/variable?id=1966) · [all planets](spurious/view-all-variables/planets)  
 [Nuclear power generation in Brazil](spurious/variable?id=23536) · [all energy](spurious/view-all-variables/energy)  
-
-------------------------------------------------------------------------
-
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Burglaries in Oregon and the second variable is Viewership count for Days of Our Lives. The chart goes from 1985 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/1218_burglaries-in-oregon_correlates-with_viewership-count-for-days-of-our-lives.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Burglaries in Oregon and the second variable is Viewership count for Days of Our Lives.  The chart goes from 1985 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1218_burglaries-in-oregon_correlates-with_viewership-count-for-days-of-our-lives_mobile.svg)  
-**View details about correlation \#1,218**](spurious/correlation/1218_burglaries-in-oregon_correlates-with_viewership-count-for-days-of-our-lives)  
-  
-
-^(Show scatterplot)
-
-![](spurious/correlation/scatterplot/1218_burglaries-in-oregon_correlates-with_viewership-count-for-days-of-our-lives_scatterplot.png)
-
-  
-  
-
-*What else correlates?*  
-[Burglaries in Oregon](spurious/variable?id=20115) · [all random state specific](spurious/view-all-variables/statespecific)  
-[Viewership count for Days of Our Lives](spurious/variable?id=87) · [all weird & wacky](spurious/view-all-variables/weirdwacky)  
-
-------------------------------------------------------------------------
-
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the first name Tiarra and the second variable is Google searches for 'why isnt 11 pronounced onety one'. The chart goes from 2004 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/1041_popularity-of-the-first-name-tiarra_correlates-with_google-searches-for-why-isnt-11-pronounced-onety-one.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the first name Tiarra and the second variable is Google searches for 'why isnt 11 pronounced onety one'.  The chart goes from 2004 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1041_popularity-of-the-first-name-tiarra_correlates-with_google-searches-for-why-isnt-11-pronounced-onety-one_mobile.svg)  
-**View details about correlation \#1,041**](spurious/correlation/1041_popularity-of-the-first-name-tiarra_correlates-with_google-searches-for-why-isnt-11-pronounced-onety-one)  
-  
-
-^(Show scatterplot)
-
-![](spurious/correlation/scatterplot/1041_popularity-of-the-first-name-tiarra_correlates-with_google-searches-for-why-isnt-11-pronounced-onety-one_scatterplot.png)
-
-  
-  
-
-*What else correlates?*  
-[Popularity of the first name Tiarra](spurious/variable?id=3786) · [all first names](spurious/view-all-variables/babynames)  
-[Google searches for 'why isnt 11 pronounced onety one'](spurious/variable?id=1469) · [all google searches](spurious/view-all-variables/google)  
-
-------------------------------------------------------------------------
-
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Master's degrees awarded in Education and the second variable is GMO use in corn grown in Ohio. The chart goes from 2012 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/1254_masters-degrees-awarded-in-education_correlates-with_gmo-use-in-corn-grown-in-ohio.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Master's degrees awarded in Education and the second variable is GMO use in corn grown in Ohio.  The chart goes from 2012 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1254_masters-degrees-awarded-in-education_correlates-with_gmo-use-in-corn-grown-in-ohio_mobile.svg)  
-**View details about correlation \#1,254**](spurious/correlation/1254_masters-degrees-awarded-in-education_correlates-with_gmo-use-in-corn-grown-in-ohio)  
-  
-
-^(Show scatterplot)
-
-![](spurious/correlation/scatterplot/1254_masters-degrees-awarded-in-education_correlates-with_gmo-use-in-corn-grown-in-ohio_scatterplot.png)
-
-  
-  
-
-*What else correlates?*  
-[Master's degrees awarded in Education](spurious/variable?id=1319) · [all education](spurious/view-all-variables/education)  
-[GMO use in corn grown in Ohio](spurious/variable?id=719) · [all food](spurious/view-all-variables/farmingfood)  
-
-------------------------------------------------------------------------
-
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The distance between Saturn and Earth and the second variable is Fomento Econ's stock price (FMX). The chart goes from 2002 to 2023, and the two variables track closely in value over that time.](spurious/correlation/image/1526_the-distance-between-saturn-and-earth_correlates-with_fomento-econmico-mexicanos-stock-price.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The distance between Saturn and Earth and the second variable is Fomento Econ's stock price (FMX).  The chart goes from 2002 to 2023, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1526_the-distance-between-saturn-and-earth_correlates-with_fomento-econmico-mexicanos-stock-price_mobile.svg)  
-**View details about correlation \#1,526**](spurious/correlation/1526_the-distance-between-saturn-and-earth_correlates-with_fomento-econmico-mexicanos-stock-price)  
-  
-
-^(Show scatterplot)
-
-![](spurious/correlation/scatterplot/1526_the-distance-between-saturn-and-earth_correlates-with_fomento-econmico-mexicanos-stock-price_scatterplot.png)
-
-  
-  
-
-*What else correlates?*  
-[The distance between Saturn and Earth](spurious/variable?id=1942) · [all planets](spurious/view-all-variables/planets)  
-[Fomento Econ's stock price (FMX)](spurious/variable?id=1579) · [all stocks](spurious/view-all-variables/stocks)  
-
-------------------------------------------------------------------------
-
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The number of phlebotomists in Minnesota and the second variable is Arson in United States. The chart goes from 2012 to 2022, and the two variables track closely in value over that time.](spurious/correlation/image/4252_the-number-of-phlebotomists-in-minnesota_correlates-with_arson-in-united-states.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The number of phlebotomists in Minnesota and the second variable is Arson in United States.  The chart goes from 2012 to 2022, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/4252_the-number-of-phlebotomists-in-minnesota_correlates-with_arson-in-united-states_mobile.svg)  
-**View details about correlation \#4,252**](spurious/correlation/4252_the-number-of-phlebotomists-in-minnesota_correlates-with_arson-in-united-states)  
-  
-
-^(Show scatterplot)
-
-![](spurious/correlation/scatterplot/4252_the-number-of-phlebotomists-in-minnesota_correlates-with_arson-in-united-states_scatterplot.png)
-
-  
-  
-
-*What else correlates?*  
-[The number of phlebotomists in Minnesota](spurious/variable?id=19215) · [all cccupations](spurious/view-all-variables/occupations)  
-[Arson in United States](spurious/variable?id=20038) · [all random state specific](spurious/view-all-variables/statespecific)  
-
-------------------------------------------------------------------------
-
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is How 'hip and with it' Numberphile YouTube video titles are and the second variable is Wind power generated in Latvia. The chart goes from 2011 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/4554_how-hip-and-with-it-numberphile-youtube-video-titles-are_correlates-with_wind-power-generated-in-latvia.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is How 'hip and with it' Numberphile YouTube video titles are and the second variable is Wind power generated in Latvia.  The chart goes from 2011 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/4554_how-hip-and-with-it-numberphile-youtube-video-titles-are_correlates-with_wind-power-generated-in-latvia_mobile.svg)  
-**View details about correlation \#4,554**](spurious/correlation/4554_how-hip-and-with-it-numberphile-youtube-video-titles-are_correlates-with_wind-power-generated-in-latvia)  
-  
-
-^(Show scatterplot)
-
-![](spurious/correlation/scatterplot/4554_how-hip-and-with-it-numberphile-youtube-video-titles-are_correlates-with_wind-power-generated-in-latvia_scatterplot.png)
-
-  
-  
-
-*What else correlates?*  
-[How 'hip and with it' Numberphile YouTube video titles are](spurious/variable?id=25476) · [all YouTube](spurious/view-all-variables/youtube)  
-[Wind power generated in Latvia](spurious/variable?id=23783) · [all energy](spurious/view-all-variables/energy)  
-
-------------------------------------------------------------------------
-
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is American cheese consumption and the second variable is Popularity of the 'this is fine' meme. The chart goes from 2006 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/5468_american-cheese-consumption_correlates-with_popularity-of-the-this-is-fine-meme.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is American cheese consumption and the second variable is Popularity of the 'this is fine' meme.  The chart goes from 2006 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/5468_american-cheese-consumption_correlates-with_popularity-of-the-this-is-fine-meme_mobile.svg)  
-**View details about correlation \#5,468**](spurious/correlation/5468_american-cheese-consumption_correlates-with_popularity-of-the-this-is-fine-meme)  
-  
-
-^(Show scatterplot)
-
-![](spurious/correlation/scatterplot/5468_american-cheese-consumption_correlates-with_popularity-of-the-this-is-fine-meme_scatterplot.png)
-
-  
-  
-
-*What else correlates?*  
-[American cheese consumption](spurious/variable?id=553) · [all food](spurious/view-all-variables/farmingfood)  
-[Popularity of the 'this is fine' meme](spurious/variable?id=25124) · [all memes](spurious/view-all-variables/memes)  
-
-------------------------------------------------------------------------
-
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The distance between Jupiter and Mercury and the second variable is Anheuser-Busch InBev's stock price (BUD). The chart goes from 2010 to 2023, and the two variables track closely in value over that time.](spurious/correlation/image/2734_the-distance-between-jupiter-and-mercury_correlates-with_anheuser-busch-inbevs-stock-price.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The distance between Jupiter and Mercury and the second variable is Anheuser-Busch InBev's stock price (BUD).  The chart goes from 2010 to 2023, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/2734_the-distance-between-jupiter-and-mercury_correlates-with_anheuser-busch-inbevs-stock-price_mobile.svg)  
-**View details about correlation \#2,734**](spurious/correlation/2734_the-distance-between-jupiter-and-mercury_correlates-with_anheuser-busch-inbevs-stock-price)  
-  
-
-^(Show scatterplot)
-
-![](spurious/correlation/scatterplot/2734_the-distance-between-jupiter-and-mercury_correlates-with_anheuser-busch-inbevs-stock-price_scatterplot.png)
-
-  
-  
-
-*What else correlates?*  
-[The distance between Jupiter and Mercury](spurious/variable?id=1952) · [all planets](spurious/view-all-variables/planets)  
-[Anheuser-Busch InBev's stock price (BUD)](spurious/variable?id=1623) · [all stocks](spurious/view-all-variables/stocks)  
 
 ------------------------------------------------------------------------
 
