@@ -456,7 +456,8 @@ Code
 beer_fit <- beer_train |>
   mable_spec() #<1>
 
-beer_fit
+beer_fit |> 
+  glimpse()
 
 beer_fc <- beer_fit |>
   forecast(h = nrow(beer_test))
@@ -464,11 +465,15 @@ beer_fc <- beer_fit |>
 
 1.  We simply use our `mable_spec()` function to fit all our models.
 
-    # A mable: 1 x 7
-         tslm           ets                    arima                      stlf
-      <model>       <model>                  <model>                   <model>
-    1  <TSLM> <ETS(A,Ad,A)> <ARIMA(1,0,2)(0,1,2)[4]> <STL decomposition model>
-    # ℹ 3 more variables: prophet <model>, comb_equal <model>, comb_inv_var <model>
+    Rows: 1
+    Columns: 7
+    $ tslm         <model> [TSLM]
+    $ ets          <model> [ETS(A,Ad,A)]
+    $ arima        <model> [ARIMA(1,0,2)(0,1,2)[4]]
+    $ stlf         <model> [STL decomposition model]
+    $ prophet      <model> [prophet]
+    $ comb_equal   <model> [COMBINATION]
+    $ comb_inv_var <model> [COMBINATION]
 
 Code
 
@@ -532,14 +537,19 @@ Code
 mexretail_fit <- mexretail_train |>
   mable_spec()
 
-mexretail_fit
+mexretail_fit |> 
+  glimpse()
 ```
 
-    # A mable: 1 x 7
-         tslm          ets                     arima                      stlf
-      <model>      <model>                   <model>                   <model>
-    1  <TSLM> <ETS(A,N,A)> <ARIMA(3,1,1)(1,1,1)[12]> <STL decomposition model>
-    # ℹ 3 more variables: prophet <model>, comb_equal <model>, comb_inv_var <model>
+    Rows: 1
+    Columns: 7
+    $ tslm         <model> [TSLM]
+    $ ets          <model> [ETS(A,N,A)]
+    $ arima        <model> [ARIMA(3,1,1)(1,1,1)[12]]
+    $ stlf         <model> [STL decomposition model]
+    $ prophet      <model> [prophet]
+    $ comb_equal   <model> [COMBINATION]
+    $ comb_inv_var <model> [COMBINATION]
 
 Code
 
@@ -621,7 +631,8 @@ nsw_fit <- nsw_train |>
       comb_inv_var = comb_inv_var_spec
     )  
 
-nsw_fit
+nsw_fit |> 
+  glimpse()
 
 nsw_fc <- nsw_fit |>
   forecast(new_data = nsw_test)
@@ -631,12 +642,16 @@ nsw_fc <- nsw_fit |>
 2.  Dynamic regression: ARIMA errors + CPI regressor.
 3.  Prophet allows including predictors as well, so we use CPI here too.
 
-    # A mable: 1 x 8
-         tslm          ets                             arima
-      <model>      <model>                           <model>
-    1  <TSLM> <ETS(A,N,A)> <ARIMA(1,0,0)(0,1,1)[4] w/ drift>
-    # ℹ 5 more variables: dynamic <model>, stlf <model>, prophet <model>,
-    #   comb_equal <model>, comb_inv_var <model>
+    Rows: 1
+    Columns: 8
+    $ tslm         <model> [TSLM]
+    $ ets          <model> [ETS(A,N,A)]
+    $ arima        <model> [ARIMA(1,0,0)(0,1,1)[4] w/ drift]
+    $ dynamic      <model> [LM w/ ARIMA(1,0,0)(0,1,1)[4] errors]
+    $ stlf         <model> [STL decomposition model]
+    $ prophet      <model> [prophet]
+    $ comb_equal   <model> [COMBINATION]
+    $ comb_inv_var <model> [COMBINATION]
 
 Code
 
