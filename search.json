@@ -2927,6 +2927,216 @@
     "text": "9 Wrap-up\nYou have now completed the full Module 1 workflow on a real series:\n\nExtracted and inspected a tsibble\nDecided on and applied a variance-stabilizing transformation\nDecomposed the series with STL and interpreted the components\nEvaluated four benchmark models\nBuilt and assessed a decomposition model that beats the benchmarks\nDiagnosed residuals and interpreted the Ljung-Box test\nRefit on the full data and generated a final forecast with prediction intervals\n\n\n\n\n\n\n\nNoteWhat’s still missing?\n\n\n\nThe Drift component in your model assumes that the long-run average growth rate observed in the training data will continue into the future. This is a strong assumption — and for a series whose trend has flattened and become irregular, it may not hold. In Module 2, you will replace Drift with ETS and ARIMA, which can adapt to changing trend dynamics rather than extrapolating a fixed one."
   },
   {
+    "objectID": "talks/estancia_verano_pres.html#quién-de-aquí-es-adivino",
+    "href": "talks/estancia_verano_pres.html#quién-de-aquí-es-adivino",
+    "title": "El arte de anticipar el futuro",
+    "section": "¿Quién de aquí es adivino? 🔮",
+    "text": "¿Quién de aquí es adivino? 🔮\n\nManos arriba quien sepa exactamente qué va a pasar mañana…\n… ¿va a llover?, con el tráfico, con tu antojo de comida\n¿Hoy gana Egipto o Argenfifa?\n\n\nPausa real, espera que casi nadie levante la mano (o que lo hagan de broma). Deja que se rían un poco."
+  },
+  {
+    "objectID": "talks/estancia_verano_pres.html#pero-el-domingo-todos-fuimos-adivinos",
+    "href": "talks/estancia_verano_pres.html#pero-el-domingo-todos-fuimos-adivinos",
+    "title": "El arte de anticipar el futuro",
+    "section": "Pero el domingo todos fuimos adivinos",
+    "text": "Pero el domingo todos fuimos adivinos\n\n¿Cuántos aquí dijeron “hoy le ganamos” antes del partido contra Inglaterra?\n\n\n\n\n\n\n\n\n\nMéxico compitió de tú a tú contra una potencia — con hombre de más, hasta se puso el marcador cerca\n\n\nTono: cálido, no burlón. Es una herida fresca (fue ayer). No te quedes mucho tiempo aquí — 1 minuto máximo, valida el orgullo del equipo, y sigue. Si notas que el tema sigue muy sensible, salta directo al siguiente slide sin profundizar."
+  },
+  {
+    "objectID": "talks/estancia_verano_pres.html#spoiler-eso-que-hicimos-todos-tiene-nombre",
+    "href": "talks/estancia_verano_pres.html#spoiler-eso-que-hicimos-todos-tiene-nombre",
+    "title": "El arte de anticipar el futuro",
+    "section": "Spoiler: eso que hicimos todos tiene nombre",
+    "text": "Spoiler: eso que hicimos todos tiene nombre\n\n\n\n\n\n\nCalcular quién va a ganar, cuánto va a subir la gasolina, o si va a llover — es hacer pronósticos. Y sí, se puede aprender a hacerlo mejor que “a ojo”.\n\n\n\n\n\n\n\n\n\nEsta es la frase-ancla de toda la sesión. Repítela más adelante casi textual."
+  },
+  {
+    "objectID": "talks/estancia_verano_pres.html#cualquier-cosa-que-se-mide-a-través-del-tiempo",
+    "href": "talks/estancia_verano_pres.html#cualquier-cosa-que-se-mide-a-través-del-tiempo",
+    "title": "El arte de anticipar el futuro",
+    "section": "Cualquier cosa que se mide a través del tiempo",
+    "text": "Cualquier cosa que se mide a través del tiempo\n\nEl precio de la gasolina, mes a mes\nLos streams de tu canción favorita, día a día\nLos goles de tu equipo, partido a partido\nCuánta gente viaja en avión de GDL a CDMX\nLiteral cualquier número que cambia con el tiempo"
+  },
+  {
+    "objectID": "talks/estancia_verano_pres.html#ejemplo-1-un-patrón-que-se-repite",
+    "href": "talks/estancia_verano_pres.html#ejemplo-1-un-patrón-que-se-repite",
+    "title": "El arte de anticipar el futuro",
+    "section": "Ejemplo 1 — Un patrón que se repite",
+    "text": "Ejemplo 1 — Un patrón que se repite\n\n\n\n\n\n\n\n\n\n\nCada punto es un Mundial. Cada altura, hasta dónde llegó México\n2022 rompió el patrón… y 2026 lo regresó\n\n\nAquí es donde el dato “cae bien”: no estamos criticando al equipo, estamos mostrando que hay un patrón estadístico real (7 de 9 veces, mismo resultado). Esto es honestamente fascinante, no doloroso, si lo enmarcas así. Alternativa si el grupo sigue sensible: sustituir por “cuántas veces nieva en Guadalajara” (spoiler: nunca) como ejemplo de patrón perfecto."
+  },
+  {
+    "objectID": "talks/estancia_verano_pres.html#ejemplo-2-algo-bien-cotidiano",
+    "href": "talks/estancia_verano_pres.html#ejemplo-2-algo-bien-cotidiano",
+    "title": "El arte de anticipar el futuro",
+    "section": "Ejemplo 2 — Algo bien cotidiano",
+    "text": "Ejemplo 2 — Algo bien cotidiano\n\nVentas de una paletería, mes con mes\n\n\n\n\n\n\n\n\n\n\n\n\n\nGuárdate esta gráfica — la vamos a volver a usar en la actividad. No reveles nada todavía."
+  },
+  {
+    "objectID": "talks/estancia_verano_pres.html#en-resumen",
+    "href": "talks/estancia_verano_pres.html#en-resumen",
+    "title": "El arte de anticipar el futuro",
+    "section": "En resumen",
+    "text": "En resumen\n\n\n\n\n\n\nSerie de tiempo = cualquier variable que va cambiando, medida en orden, a través del tiempo."
+  },
+  {
+    "objectID": "talks/estancia_verano_pres.html#señal-vs.-ruido",
+    "href": "talks/estancia_verano_pres.html#señal-vs.-ruido",
+    "title": "El arte de anticipar el futuro",
+    "section": "Señal vs. ruido",
+    "text": "Señal vs. ruido\n\nSeñal: lo que sí sigue un patrón (las estaciones del año)\nRuido: lo que es pura casualidad (un rebote de balón, un )"
+  },
+  {
+    "objectID": "talks/estancia_verano_pres.html#lo-predecible",
+    "href": "talks/estancia_verano_pres.html#lo-predecible",
+    "title": "El arte de anticipar el futuro",
+    "section": "Lo predecible",
+    "text": "Lo predecible\n\nEl estado del tiempo de mañana (con margen de error, pero se acerca)\nQue en diciembre bajan las ventas de helado\nQue noviembre trae Buen Fin\nQue se agotan las flores y chocolates el 14 de febrero"
+  },
+  {
+    "objectID": "talks/estancia_verano_pres.html#lo-impredecible",
+    "href": "talks/estancia_verano_pres.html#lo-impredecible",
+    "title": "El arte de anticipar el futuro",
+    "section": "Lo impredecible",
+    "text": "Lo impredecible\n\nUn sismo\nUn penal fallado en el último minuto\nCuándo tu mamá se va a dar cuenta de que llegaste tarde\n\n\nEl chiste de la mamá siempre funciona con este público. Pausa para la risa."
+  },
+  {
+    "objectID": "talks/estancia_verano_pres.html#hasta-los-expertos-se-equivocan",
+    "href": "talks/estancia_verano_pres.html#hasta-los-expertos-se-equivocan",
+    "title": "El arte de anticipar el futuro",
+    "section": "Hasta los expertos se equivocan",
+    "text": "Hasta los expertos se equivocan\n\nEmpresas enteras no vieron venir cambios grandes\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNo se trata de tener la bola de cristal perfecta\n\n\n\n\n\n\n\n\nSe trata de leer patrones mejor que la persona de al lado — no de adivinar sin margen de error."
+  },
+  {
+    "objectID": "talks/estancia_verano_pres.html#tendencia",
+    "href": "talks/estancia_verano_pres.html#tendencia",
+    "title": "El arte de anticipar el futuro",
+    "section": "Tendencia 📈",
+    "text": "Tendencia 📈\n\nLa dirección general, a largo plazo\nEjemplo: las ventas de la paletería suben poco a poco cada año\nLa población crece año con año\nLas ventas de discos (físicos) caen cada año"
+  },
+  {
+    "objectID": "talks/estancia_verano_pres.html#estacionalidad",
+    "href": "talks/estancia_verano_pres.html#estacionalidad",
+    "title": "El arte de anticipar el futuro",
+    "section": "Estacionalidad 🌞❄️",
+    "text": "Estacionalidad 🌞❄️\n\nLo que se repite cada cierto periodo fijo (cada año, cada semana)\nEjemplos:\n\nla paletería vende más en verano, siempre\nSe venden más juguetes en diciembre cada año\nmás gente va al cine en fin de semana\nhay más tráfico a las 8am que a las 4am"
+  },
+  {
+    "objectID": "talks/estancia_verano_pres.html#ciclos",
+    "href": "talks/estancia_verano_pres.html#ciclos",
+    "title": "El arte de anticipar el futuro",
+    "section": "Ciclos 🔁",
+    "text": "Ciclos 🔁\n\nPatrones que se repiten, pero sin un periodo fijo exacto\nEjemplos:\n\nMéxico llegando a octavos casi cada Mundial — con una excepción en 2022\nCrisis financieras\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nEste es el mismo dato de antes, pero ahora con vocabulario técnico encima. El punto pedagógico: un patrón se puede romper (2022) y regresar (2026) — eso también es parte de la ciencia, no invalida el patrón."
+  },
+  {
+    "objectID": "talks/estancia_verano_pres.html#entonces-ya-sabemos-qué-pasará-en-2030",
+    "href": "talks/estancia_verano_pres.html#entonces-ya-sabemos-qué-pasará-en-2030",
+    "title": "El arte de anticipar el futuro",
+    "section": "¿Entonces ya sabemos qué pasará en 2030?",
+    "text": "¿Entonces ya sabemos qué pasará en 2030?\n\nNo con certeza — pero el patrón nos da una apuesta informada, no una adivinanza a ciegas\nEso es literalmente lo que hace un modelo de pronóstico"
+  },
+  {
+    "objectID": "talks/estancia_verano_pres.html#las-reglas",
+    "href": "talks/estancia_verano_pres.html#las-reglas",
+    "title": "El arte de anticipar el futuro",
+    "section": "Las reglas",
+    "text": "Las reglas\n\nVan a ver una gráfica con los últimos meses ocultos\nEn equipos (o individualmente) escriban su predicción de los siguientes 6 meses\nEl que se acerque más, gana\n\n\nCon menos de 20, mejor individual o parejas — más participación real que en equipos grandes."
+  },
+  {
+    "objectID": "talks/estancia_verano_pres.html#ronda-1-el-reto",
+    "href": "talks/estancia_verano_pres.html#ronda-1-el-reto",
+    "title": "El arte de anticipar el futuro",
+    "section": "Ronda 1 — el reto",
+    "text": "Ronda 1 — el reto\n\n\n\n\n\n\n\n\n\n\n¿Sube, baja, o se mantiene? ¿Cuánto?\n\n\nDa 2-3 minutos. Pide que griten o levanten su número en papel. Si tienes Menti a la mano, este es el único momento del día para usarlo (una sola pregunta, para no gastar tu plan gratis)."
+  },
+  {
+    "objectID": "talks/estancia_verano_pres.html#revelación",
+    "href": "talks/estancia_verano_pres.html#revelación",
+    "title": "El arte de anticipar el futuro",
+    "section": "¡Revelación! 🎉",
+    "text": "¡Revelación! 🎉\n\n\n\n\n\n\n\n\n\n\n¿Quién le atinó? ¿En qué se fijaron para adivinar?\n\n\nCasi siempre alguien dice “porque en verano se vende más” — ahí conectas: “eso que acabas de decir se llama estacionalidad, y ya lo entendiste sin que te lo explicara.” Reparte el premio/dulce aquí."
+  },
+  {
+    "objectID": "talks/estancia_verano_pres.html#las-ventas-reales",
+    "href": "talks/estancia_verano_pres.html#las-ventas-reales",
+    "title": "El arte de anticipar el futuro",
+    "section": "Las ventas reales",
+    "text": "Las ventas reales\n\npaleteria |&gt; filter(mes &gt; yearmonth(\"2026 Jun\"))"
+  },
+  {
+    "objectID": "talks/estancia_verano_pres.html#bonus-ahora-que-méxico-ya-salió",
+    "href": "talks/estancia_verano_pres.html#bonus-ahora-que-méxico-ya-salió",
+    "title": "El arte de anticipar el futuro",
+    "section": "Bonus — ahora que México ya salió…",
+    "text": "Bonus — ahora que México ya salió…\n\n¿A quién le va tu corazón para quedarse con la Copa?\nVota levantando la mano\n\n\nCierre emocional positivo del tema mundialista: no se resuelve hoy, pero deja el sabor de “seguimos viendo el torneo con ganas”, no de derrota. No uses Menti aquí, solo mano levantada — rápido y ligero."
+  },
+  {
+    "objectID": "talks/estancia_verano_pres.html#nombres-que-vas-a-escuchar-en-la-carrera",
+    "href": "talks/estancia_verano_pres.html#nombres-que-vas-a-escuchar-en-la-carrera",
+    "title": "El arte de anticipar el futuro",
+    "section": "Nombres que vas a escuchar en la carrera",
+    "text": "Nombres que vas a escuchar en la carrera\n\nETS, ARIMA — métodos estadísticos clásicos\nProphet — creado por Meta (sí, la misma empresa de Facebook)\nTodo esto se enseña con R y Python en Ingeniería Financiera"
+  },
+  {
+    "objectID": "talks/estancia_verano_pres.html#quién-usa-esto-en-la-vida-real",
+    "href": "talks/estancia_verano_pres.html#quién-usa-esto-en-la-vida-real",
+    "title": "El arte de anticipar el futuro",
+    "section": "¿Quién usa esto en la vida real?",
+    "text": "¿Quién usa esto en la vida real?\n\nUber calculando cuántos coches va a necesitar\nWalmart decidiendo cuánto surtir cada tienda\nBancos midiendo riesgo antes de dar un crédito\nNetflix, prediciendo cuántos servidores necesita para el viernes de estreno"
+  },
+  {
+    "objectID": "talks/estancia_verano_pres.html#un-vistazo-real",
+    "href": "talks/estancia_verano_pres.html#un-vistazo-real",
+    "title": "El arte de anticipar el futuro",
+    "section": "Un vistazo real",
+    "text": "Un vistazo real\n\nfit &lt;- paleteria_visible |&gt; model(ETS(ventas ~ error(\"A\") + trend(\"Ad\") + season(\"A\")))\nfc &lt;- fit |&gt; forecast(h = 6)\nfc |&gt; autoplot(paleteria_visible)\n\n\n\n\n\n\n\n\n\nfc |&gt; \n    pull(.mean)\n\n[1] 611.9810 633.3178 634.4647 586.6072 529.7602 464.1949\n\n\n\nEste chunk SÍ va con echo:true — es el único momento “con código” de toda la sesión. Dilo en voz alta: “esto que tardamos 10 minutos adivinando entre todos, la computadora lo hace con 3 líneas.”"
+  },
+  {
+    "objectID": "talks/estancia_verano_pres.html#la-computadora-contra-nosotros",
+    "href": "talks/estancia_verano_pres.html#la-computadora-contra-nosotros",
+    "title": "El arte de anticipar el futuro",
+    "section": "La computadora, contra nosotros",
+    "text": "La computadora, contra nosotros\n\n\n\n\n\n\n\n\n\n\nLa zona sombreada es la incertidumbre del modelo — ni la máquina promete certeza absoluta"
+  },
+  {
+    "objectID": "talks/estancia_verano_pres.html#no-es-solo-contar-dinero",
+    "href": "talks/estancia_verano_pres.html#no-es-solo-contar-dinero",
+    "title": "El arte de anticipar el futuro",
+    "section": "No es solo “contar dinero”",
+    "text": "No es solo “contar dinero”\n\nEs entender riesgo, patrones, y tomar mejores decisiones con datos\nLas finanzas modernas son, en buena parte, ciencia de datos aplicada"
+  },
+  {
+    "objectID": "talks/estancia_verano_pres.html#lo-que-te-llevas-de-la-carrera",
+    "href": "talks/estancia_verano_pres.html#lo-que-te-llevas-de-la-carrera",
+    "title": "El arte de anticipar el futuro",
+    "section": "Lo que te llevas de la carrera",
+    "text": "Lo que te llevas de la carrera\n\nProgramación en R, Python (y en otras herramientas)\nPensamiento estadístico — para no dejarte engañar por coincidencias\nCasos reales: bancos, fintechs, mercados, empresas"
+  },
+  {
+    "objectID": "talks/estancia_verano_pres.html#a-dónde-puede-llevarte",
+    "href": "talks/estancia_verano_pres.html#a-dónde-puede-llevarte",
+    "title": "El arte de anticipar el futuro",
+    "section": "A dónde puede llevarte",
+    "text": "A dónde puede llevarte\n\nBanca y análisis de riesgo\nFintech y startups\nCiencia de datos y consultoría\n\n\nAquí entra tu anécdota personal — corta, real, no de venta. 1-2 minutos."
+  },
+  {
+    "objectID": "talks/estancia_verano_pres.html#la-frase-que-se-llevan-a-casa",
+    "href": "talks/estancia_verano_pres.html#la-frase-que-se-llevan-a-casa",
+    "title": "El arte de anticipar el futuro",
+    "section": "La frase que se llevan a casa",
+    "text": "La frase que se llevan a casa\n\n\n\n\n\n\nNadie tiene bola de cristal. Pero quien sabe leer patrones, le atina más seguido que quien solo adivina."
+  },
+  {
+    "objectID": "talks/estancia_verano_pres.html#preguntas",
+    "href": "talks/estancia_verano_pres.html#preguntas",
+    "title": "El arte de anticipar el futuro",
+    "section": "¿Preguntas?",
+    "text": "¿Preguntas?"
+  },
+  {
+    "objectID": "talks/estancia_verano_pres.html#gracias",
+    "href": "talks/estancia_verano_pres.html#gracias",
+    "title": "El arte de anticipar el futuro",
+    "section": "Gracias 🙌",
+    "text": "Gracias 🙌\n\npbenavidesh.github.io/narsil\npbenavides@iteso.mx"
+  },
+  {
     "objectID": "docs/exercises/posts/26-02-11 - fcst.html",
     "href": "docs/exercises/posts/26-02-11 - fcst.html",
     "title": "Pronósticos con métodos benchmark",
@@ -4546,7 +4756,7 @@
     "href": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_pres.html#forecasts-and-accuracy",
     "title": "4.2 Bootstrapping, Bagging & Model Combinations",
     "section": "Forecasts and Accuracy",
-    "text": "Forecasts and Accuracy\n\ncement_fc2 &lt;- cement_fit2 |&gt;\n  forecast(h = nrow(cement_test))\n\ncement_accu &lt;- cement_fc2 |&gt;\n  accuracy(cement_test) |&gt;\n  select(.model, RMSE, MAE, MAPE, MASE) |&gt;\n  arrange(RMSE)\n\ncement_accu"
+    "text": "Forecasts and Accuracy\n\ncement_fc2 &lt;- cement_fit2 |&gt;\n  forecast(h = nrow(cement_test))\n\ncement_accu &lt;- cement_fc2 |&gt;\n  accuracy(cement) |&gt;\n  select(.model, RMSE, MAE, MAPE, MASE) |&gt;\n  arrange(RMSE)\n\ncement_accu"
   },
   {
     "objectID": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_pres.html#the-idea-simulating-alternative-histories",
@@ -4588,7 +4798,7 @@
     "href": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_pres.html#comparing-bagging-with-individual-models",
     "title": "4.2 Bootstrapping, Bagging & Model Combinations",
     "section": "Comparing Bagging with Individual Models",
-    "text": "Comparing Bagging with Individual Models\n\ncement_bag_accu &lt;- cement_test |&gt;\n  left_join(cement_bag_mean, by = \"Quarter\") |&gt;\n  summarise(\n    .model = \"bagging_ets\",\n    RMSE   = sqrt(mean((Cement - bagged_mean)^2)),\n    MAE    = mean(abs(Cement - bagged_mean)),\n    MAPE   = mean(abs((Cement - bagged_mean) / Cement)) * 100\n  )\n\nbind_rows(cement_accu, cement_bag_accu) |&gt; arrange(RMSE)\n\n\n\n\n\n\n\nBagging and fable combinations\n\n\nBagged forecasts come from 100 separately keyed series (.rep) and cannot be piped into combination_ensemble() alongside standard models. Compare them with other models manually via accuracy().\n\n\n\n\n\n\n\n\n\nBagging helps most when the series is short or volatile. On longer, stable series the improvement over a single well-fitted model is often modest."
+    "text": "Comparing Bagging with Individual Models\n\n\nCode\ncement_bag_accu &lt;- cement_test |&gt;\n  left_join(cement_bag_mean, by = \"Quarter\") |&gt;\n  as_tibble() |&gt; \n  summarise(\n    .model = \"bagging_ets\",\n    RMSE   = sqrt(mean((Cement - bagged_mean)^2)),\n    MAE    = mean(abs(Cement - bagged_mean)),\n    MAPE   = mean(abs((Cement - bagged_mean) / Cement)) * 100\n  )\n\nbind_rows(cement_accu, cement_bag_accu) |&gt; arrange(RMSE)\n\n\n\n  \n\n\n\n\n\n\n\n\n\nBagging and fable combinations\n\n\nBagged forecasts come from 100 separately keyed series (.rep) and cannot be piped into combination_ensemble() alongside standard models. Compare them with other models manually via accuracy().\n\n\n\n\n\n\n\n\n\nBagging helps most when the series is short or volatile. On longer, stable series the improvement over a single well-fitted model is often modest."
   },
   {
     "objectID": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_pres.html#series-overview",
@@ -4602,28 +4812,35 @@
     "href": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_pres.html#data-setup",
     "title": "4.2 Bootstrapping, Bagging & Model Combinations",
     "section": "Data Setup",
-    "text": "Data Setup\n\n# --- Beer ---\nbeer &lt;- aus_production |&gt;\n  select(Quarter, Beer) |&gt;\n  filter(!is.na(Beer))\n\nbeer_train &lt;- beer |&gt; filter(year(Quarter) &lt;= 2006)\nbeer_test  &lt;- beer |&gt; filter(year(Quarter) &gt;  2006)\n\n# --- mexretail ---\nmexretail &lt;- tq_get(\n  \"MEXSLRTTO01IXOBM\",\n  get  = \"economic.data\",\n  from = \"1985-01-01\"\n) |&gt;\n  mutate(date = yearmonth(date)) |&gt;\n  rename(y = price) |&gt;\n  as_tsibble(index = date)\n\nmexretail_train &lt;- mexretail |&gt; filter(year(date) &lt;= 2019)\nmexretail_test  &lt;- mexretail |&gt; filter(year(date) &gt;  2019)\n\n# --- NSW accommodation ---\nnsw &lt;- aus_accommodation |&gt;\n  filter(State == \"New South Wales\") |&gt;\n  select(Quarter, Takings, CPI)\n\nnsw_train &lt;- nsw |&gt; filter(year(Quarter) &lt;= 2012)\nnsw_test  &lt;- nsw |&gt; filter(year(Quarter) &gt;  2012)"
+    "text": "Data Setup\n\nBeer productionMEXRETAILNSW accomodation\n\n\n\nbeer &lt;- aus_production |&gt;\n  select(Quarter, Beer) |&gt;\n  filter_index(\"1990 Q1\" ~ .) |&gt; \n  rename(y = Beer)\n\nbeer_train &lt;- beer |&gt; filter(year(Quarter) &lt;= 2006)\nbeer_test  &lt;- beer |&gt; filter(year(Quarter) &gt;  2006)\n\n\n\n\nmexretail &lt;- tq_get(\n  \"MEXSLRTTO01IXOBM\",\n  get = \"economic.data\",\n  from = \"1985-01-01\",\n  to = \"2019-12-31\"\n) |&gt;\n  mutate(date = yearmonth(date)) |&gt;\n  rename(y = price) |&gt;\n  as_tsibble(index = date)\n\nmexretail_train &lt;- mexretail |&gt; filter(year(date) &lt;= 2017)\nmexretail_test &lt;- mexretail |&gt; filter(year(date) &gt; 2017)\n\n\n\n\nnsw &lt;- aus_accommodation |&gt;\n  filter(State == \"New South Wales\") |&gt;\n  select(Date, Takings, CPI) |&gt;\n  rename(y = Takings)\n\nnsw_train &lt;- nsw |&gt; filter(year(Date) &lt;= 2012)\nnsw_test &lt;- nsw |&gt; filter(year(Date) &gt; 2012)\n\n\n\n\n\n\n\n\n\n\nImportant\n\n\nWe rename our forecast variable to y in every tsibble so that we can reuse the model specs and save lines of code."
+  },
+  {
+    "objectID": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_pres.html#model-specs",
+    "href": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_pres.html#model-specs",
+    "title": "4.2 Bootstrapping, Bagging & Model Combinations",
+    "section": "Model Specs",
+    "text": "Model Specs\nWe will use the same models across the three datasets:\n\nModel specsCombination specsmable specs\n\n\n\n1tslm_spec &lt;- TSLM(log(y) ~ trend() + season())\n\nets_spec &lt;- ETS(log(y))\n\narima_spec &lt;- ARIMA(log(y))\n\nstlf_spec &lt;- decomposition_model(\n  STL(\n    log(y) ~ trend(window = NULL) + season(window = \"periodic\"),\n    robust = TRUE\n  ),\n  ETS(season_adjust ~ season(\"N\"))\n)\n\n2prophet_spec &lt;- prophet(y)\n\n\n1\n\nTSLM with deterministic trend and seasonal dummies — no external regressors available for Beer.\n\n2\n\nRequires fable.prophet. Uses default automatic specification.\n\n\n\n\n\n\n\ncomb_equal_spec &lt;- combination_ensemble(\n  tslm_spec,\n  ets_spec,\n  arima_spec,\n  stlf_spec,\n  prophet_spec,\n3  weights = \"equal\"\n)\n\ncomb_inv_var_spec &lt;- combination_ensemble(\n  tslm_spec,\n  ets_spec,\n  arima_spec,\n  stlf_spec,\n  prophet_spec,\n4  weights = \"inv_var\"\n)\n\n\n3\n\nCombining all the models using equal weights.\n\n4\n\nCombining all the models using an inverse variance weighted ensemble.\n\n\n\n\n\n\n\n5mable_spec &lt;- function(.train_tsb) {\n  .train_tsb |&gt;\n    model(\n      tslm         = tslm_spec,\n      ets          = ets_spec,\n      arima        = arima_spec,\n      stlf         = stlf_spec,\n      prophet      = prophet_spec,\n      comb_equal   = comb_equal_spec,\n      comb_inv_var = comb_inv_var_spec\n    )\n}\n\n\n5\n\nWe define a function containing the mable to fit with all our model specifications."
   },
   {
     "objectID": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_pres.html#beer-full-model-comparison",
     "href": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_pres.html#beer-full-model-comparison",
     "title": "4.2 Bootstrapping, Bagging & Model Combinations",
     "section": "Beer: Full Model Comparison",
-    "text": "Beer: Full Model Comparison\n\nModels & CombinationsBaggingAccuracy\n\n\n\nbeer_fit &lt;- beer_train |&gt;\n  model(\n1    tslm         = TSLM(Beer ~ trend() + season()),\n    ets          = ETS(Beer),\n    arima        = ARIMA(Beer),\n    stlf         = decomposition_model(\n                     STL(Beer ~ trend(window = NULL) +\n                           season(window = \"periodic\"),\n                         robust = TRUE),\n                     ETS(season_adjust ~ season(\"N\"))\n                   ),\n2    prophet      = prophet(Beer),\n    comb_equal   = combination_ensemble(\n                     TSLM(Beer ~ trend() + season()),\n                     ETS(Beer),\n                     ARIMA(Beer),\n                     decomposition_model(\n                       STL(Beer ~ trend(window = NULL) +\n                             season(window = \"periodic\"),\n                           robust = TRUE),\n                       ETS(season_adjust ~ season(\"N\"))\n                     ),\n                     prophet(Beer),\n                     weights = \"equal\"\n                   ),\n    comb_inv_var = combination_ensemble(\n                     TSLM(Beer ~ trend() + season()),\n                     ETS(Beer),\n                     ARIMA(Beer),\n                     decomposition_model(\n                       STL(Beer ~ trend(window = NULL) +\n                             season(window = \"periodic\"),\n                           robust = TRUE),\n                       ETS(season_adjust ~ season(\"N\"))\n                     ),\n                     prophet(Beer),\n                     weights = \"inv_var\"\n                   )\n  )\n\n\n1\n\nTSLM with deterministic trend and seasonal dummies — no external regressors available for Beer.\n\n2\n\nRequires fable.prophet. Uses default automatic specification.\n\n\n\n\n\n\n\nset.seed(2025)\n\nbeer_bag_mean &lt;- beer_train |&gt;\n  model(stl = STL(Beer ~ trend(window = NULL) +\n                    season(window = \"periodic\"),\n                  robust = TRUE)) |&gt;\n  generate(\n    new_data             = beer_train,\n    times                = 100,\n    bootstrap_block_size = 4\n  ) |&gt;\n  select(-.model, -Beer) |&gt;\n  model(ets = ETS(.sim)) |&gt;\n  forecast(h = nrow(beer_test)) |&gt;\n  summarise(bagged_mean = mean(.mean), .by = Quarter)\n\n\n\n\nbeer_accu_std &lt;- beer_fit |&gt;\n  forecast(h = nrow(beer_test)) |&gt;\n  accuracy(beer_test) |&gt;\n  select(.model, RMSE, MAE, MAPE)\n\nbeer_accu_bag &lt;- beer_test |&gt;\n  left_join(beer_bag_mean, by = \"Quarter\") |&gt;\n  summarise(\n    .model = \"bagging_ets\",\n    RMSE   = sqrt(mean((Beer - bagged_mean)^2)),\n    MAE    = mean(abs(Beer - bagged_mean)),\n    MAPE   = mean(abs((Beer - bagged_mean) / Beer)) * 100\n  )\n\nbind_rows(beer_accu_std, beer_accu_bag) |&gt; arrange(RMSE)"
+    "text": "Beer: Full Model Comparison\n\nModels & CombinationsBaggingAccuracy\n\n\n\nbeer_fit &lt;- beer_train |&gt;\n1  mable_spec()\n\nbeer_fit\n\nbeer_fc &lt;- beer_fit |&gt;\n  forecast(h = nrow(beer_test))\n\n\n1\n\nWe simply use our mable_spec() function to fit all our models.\n\n\n\n\n# A mable: 1 x 7\n     tslm           ets                    arima                      stlf\n  &lt;model&gt;       &lt;model&gt;                  &lt;model&gt;                   &lt;model&gt;\n1  &lt;TSLM&gt; &lt;ETS(A,Ad,A)&gt; &lt;ARIMA(1,0,2)(0,1,2)[4]&gt; &lt;STL decomposition model&gt;\n# ℹ 3 more variables: prophet &lt;model&gt;, comb_equal &lt;model&gt;, comb_inv_var &lt;model&gt;\n\n\n\n\nCode\np &lt;- beer_fc |&gt; \n  autoplot(beer |&gt; filter_index(\"1998 Q1\" ~ .), level = NULL)\n\nggplotly(p, dynamicTicks = TRUE)\n\n\n\n\n\n\n\n\n\nset.seed(2025)\n\nbeer_bag_mean &lt;- beer_train |&gt;\n  model(stl = STL(log(y) ~ trend(window = NULL) + season(window = \"periodic\"),\n                  robust = TRUE)) |&gt;\n  generate(\n    new_data             = beer_train,\n    times                = 100,\n    bootstrap_block_size = 4\n  ) |&gt;\n  select(-.model, -y) |&gt;\n  model(ets = ETS(.sim)) |&gt;\n  forecast(h = nrow(beer_test)) |&gt;\n  summarise(bagged_mean = mean(.mean))\n\n\n\n\n\nCode\nbeer_accu_std &lt;- beer_fc |&gt;\n  accuracy(beer) |&gt;\n  select(.model, RMSE, MAE, MAPE)\n\nbeer_accu_bag &lt;- beer_test |&gt;\n  left_join(beer_bag_mean, by = \"Quarter\") |&gt;\n  as_tibble() |&gt; \n  summarise(\n    .model = \"bagging_ets\",\n    RMSE   = sqrt(mean((y - bagged_mean)^2)),\n    MAE    = mean(abs(y - bagged_mean)),\n    MAPE   = mean(abs((y - bagged_mean) / y)) * 100\n  )\n\nbind_rows(beer_accu_std, beer_accu_bag) |&gt; arrange(RMSE)"
   },
   {
     "objectID": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_pres.html#mexretail-full-model-comparison",
     "href": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_pres.html#mexretail-full-model-comparison",
     "title": "4.2 Bootstrapping, Bagging & Model Combinations",
     "section": "mexretail: Full Model Comparison",
-    "text": "mexretail: Full Model Comparison\n\nModels & CombinationsBaggingAccuracy\n\n\n\nmexretail_fit &lt;- mexretail_train |&gt;\n  model(\n    tslm         = TSLM(log(y) ~ trend() + season()),\n    ets          = ETS(y),\n    arima        = ARIMA(log(y)),\n    stlf         = decomposition_model(\n                     STL(log(y) ~ trend(window = NULL) +\n                           season(window = \"periodic\"),\n                         robust = TRUE),\n                     ETS(season_adjust ~ season(\"N\"))\n                   ),\n    prophet      = prophet(y),\n    comb_equal   = combination_ensemble(\n                     TSLM(log(y) ~ trend() + season()),\n                     ETS(y),\n                     ARIMA(log(y)),\n                     decomposition_model(\n                       STL(log(y) ~ trend(window = NULL) +\n                             season(window = \"periodic\"),\n                           robust = TRUE),\n                       ETS(season_adjust ~ season(\"N\"))\n                     ),\n                     prophet(y),\n                     weights = \"equal\"\n                   ),\n    comb_inv_var = combination_ensemble(\n                     TSLM(log(y) ~ trend() + season()),\n                     ETS(y),\n                     ARIMA(log(y)),\n                     decomposition_model(\n                       STL(log(y) ~ trend(window = NULL) +\n                             season(window = \"periodic\"),\n                           robust = TRUE),\n                       ETS(season_adjust ~ season(\"N\"))\n                     ),\n                     prophet(y),\n                     weights = \"inv_var\"\n                   )\n  )\n\n\n\n\nset.seed(2025)\n\nmexretail_bag_mean &lt;- mexretail_train |&gt;\n  model(stl = STL(log(y) ~ trend(window = NULL) +\n                    season(window = \"periodic\"),\n                  robust = TRUE)) |&gt;\n  generate(\n    new_data             = mexretail_train,\n    times                = 100,\n    bootstrap_block_size = 12\n  ) |&gt;\n  select(-.model, -y) |&gt;\n  model(ets = ETS(.sim)) |&gt;\n  forecast(h = nrow(mexretail_test)) |&gt;\n  summarise(bagged_mean = mean(.mean), .by = date)\n\n\n\n\nmexretail_accu_std &lt;- mexretail_fit |&gt;\n  forecast(h = nrow(mexretail_test)) |&gt;\n  accuracy(mexretail_test) |&gt;\n  select(.model, RMSE, MAE, MAPE)\n\nmexretail_accu_bag &lt;- mexretail_test |&gt;\n  left_join(mexretail_bag_mean, by = \"date\") |&gt;\n  summarise(\n    .model = \"bagging_ets\",\n    RMSE   = sqrt(mean((y - bagged_mean)^2, na.rm = TRUE)),\n    MAE    = mean(abs(y - bagged_mean), na.rm = TRUE),\n    MAPE   = mean(abs((y - bagged_mean) / y), na.rm = TRUE) * 100\n  )\n\nbind_rows(mexretail_accu_std, mexretail_accu_bag) |&gt; arrange(RMSE)"
+    "text": "mexretail: Full Model Comparison\n\nModels & CombinationsBaggingAccuracy\n\n\n\nmexretail_fit &lt;- mexretail_train |&gt;\n  mable_spec()\n\nmexretail_fit\n\n# A mable: 1 x 7\n     tslm          ets                     arima                      stlf\n  &lt;model&gt;      &lt;model&gt;                   &lt;model&gt;                   &lt;model&gt;\n1  &lt;TSLM&gt; &lt;ETS(A,N,A)&gt; &lt;ARIMA(3,1,1)(1,1,1)[12]&gt; &lt;STL decomposition model&gt;\n# ℹ 3 more variables: prophet &lt;model&gt;, comb_equal &lt;model&gt;, comb_inv_var &lt;model&gt;\n\nmexretail_fc &lt;- mexretail_fit |&gt;\n  forecast(h = nrow(mexretail_test))\n\n\n\nCode\np &lt;- mexretail_fc |&gt; \n  autoplot(mexretail, level = NULL)\n\nggplotly(p, dynamicTicks = TRUE)\n\n\n\n\n\n\n\n\n\nset.seed(2025)\n\nmexretail_bag_mean &lt;- mexretail_train |&gt;\n  model(stl = STL(log(y) ~ trend(window = NULL) + season(window = \"periodic\"),\n                  robust = TRUE)) |&gt;\n  generate(\n    new_data             = mexretail_train,\n    times                = 100,\n    bootstrap_block_size = 12\n  ) |&gt;\n  select(-.model, -y) |&gt;\n  model(ets = ETS(.sim)) |&gt;\n  forecast(h = nrow(mexretail_test)) |&gt;\n  summarise(bagged_mean = mean(.mean))\n\n\n\n\n\nCode\nmexretail_accu_std &lt;- mexretail_fc |&gt;\n  accuracy(mexretail) |&gt;\n  select(.model, RMSE, MAE, MAPE)\n\nmexretail_accu_bag &lt;- mexretail_test |&gt;\n  left_join(mexretail_bag_mean, by = \"date\") |&gt;\n  as_tibble() |&gt;\n  summarise(\n    .model = \"bagging_ets\",\n    RMSE = sqrt(mean((y - bagged_mean)^2, na.rm = TRUE)),\n    MAE = mean(abs(y - bagged_mean), na.rm = TRUE),\n    MAPE = mean(abs((y - bagged_mean) / y), na.rm = TRUE) * 100\n  )\n\nbind_rows(mexretail_accu_std, mexretail_accu_bag) |&gt; arrange(RMSE)"
   },
   {
     "objectID": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_pres.html#nsw-accommodation-full-model-comparison",
     "href": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_pres.html#nsw-accommodation-full-model-comparison",
     "title": "4.2 Bootstrapping, Bagging & Model Combinations",
     "section": "NSW Accommodation: Full Model Comparison",
-    "text": "NSW Accommodation: Full Model Comparison\n\nModels & CombinationsBaggingAccuracy\n\n\n\nnsw_fit &lt;- nsw_train |&gt;\n  model(\n1    tslm         = TSLM(log(Takings) ~ trend() + season() + CPI),\n    ets          = ETS(log(Takings)),\n    arima        = ARIMA(log(Takings)),\n2    dynreg       = ARIMA(log(Takings) ~ CPI),\n    stlf         = decomposition_model(\n                     STL(log(Takings) ~ trend(window = NULL) +\n                           season(window = \"periodic\"),\n                         robust = TRUE),\n                     ETS(season_adjust ~ season(\"N\"))\n                   ),\n    prophet      = prophet(log(Takings)),\n3    comb_equal   = combination_ensemble(\n                     TSLM(log(Takings) ~ trend() + season() + CPI),\n                     ETS(log(Takings)),\n                     ARIMA(log(Takings)),\n                     decomposition_model(\n                       STL(log(Takings) ~ trend(window = NULL) +\n                             season(window = \"periodic\"),\n                           robust = TRUE),\n                       ETS(season_adjust ~ season(\"N\"))\n                     ),\n                     prophet(log(Takings)),\n                     weights = \"equal\"\n                   ),\n    comb_inv_var = combination_ensemble(\n                     TSLM(log(Takings) ~ trend() + season() + CPI),\n                     ETS(log(Takings)),\n                     ARIMA(log(Takings)),\n                     decomposition_model(\n                       STL(log(Takings) ~ trend(window = NULL) +\n                             season(window = \"periodic\"),\n                           robust = TRUE),\n                       ETS(season_adjust ~ season(\"N\"))\n                     ),\n                     prophet(log(Takings)),\n                     weights = \"inv_var\"\n                   )\n  )\n\n\n1\n\nNSW has CPI available, so TSLM can use it as a predictor — unlike Beer and mexretail.\n\n2\n\nDynamic regression: ARIMA errors + CPI regressor. Kept outside the combination (see note above).\n\n3\n\nThe combination includes TSLM with CPI but not dynreg — both use CPI but their structures are incompatible inside combination_ensemble().\n\n\n\n\n\n\n\nset.seed(2025)\n\nnsw_bag_mean &lt;- nsw_train |&gt;\n  model(stl = STL(log(Takings) ~ trend(window = NULL) +\n                    season(window = \"periodic\"),\n                  robust = TRUE)) |&gt;\n  generate(\n    new_data             = nsw_train,\n    times                = 100,\n    bootstrap_block_size = 4\n  ) |&gt;\n  select(-.model, -Takings) |&gt;\n  model(ets = ETS(.sim)) |&gt;\n  forecast(h = nrow(nsw_test)) |&gt;\n  summarise(bagged_mean = mean(.mean), .by = Quarter)\n\n\n\n\nnsw_accu_std &lt;- nsw_fit |&gt;\n  forecast(h = nrow(nsw_test), new_data = nsw_test) |&gt;\n  accuracy(nsw_test) |&gt;\n  select(.model, RMSE, MAE, MAPE)\n\nnsw_accu_bag &lt;- nsw_test |&gt;\n  left_join(nsw_bag_mean, by = \"Quarter\") |&gt;\n  summarise(\n    .model = \"bagging_ets\",\n    RMSE   = sqrt(mean((Takings - bagged_mean)^2, na.rm = TRUE)),\n    MAE    = mean(abs(Takings - bagged_mean), na.rm = TRUE),\n    MAPE   = mean(abs((Takings - bagged_mean) / Takings), na.rm = TRUE) * 100\n  )\n\nbind_rows(nsw_accu_std, nsw_accu_bag) |&gt; arrange(RMSE)"
+    "text": "NSW Accommodation: Full Model Comparison\n\nModels & CombinationsBaggingAccuracy\n\n\n\nnsw_fit &lt;- nsw_train |&gt;\n  model(                             \n1      tslm         = TSLM(y ~ trend()+ season() + CPI),\n      ets          = ets_spec,\n      arima        = ARIMA(y),         \n2      dynamic      = ARIMA(y ~ CPI),\n      stlf         = stlf_spec,       \n3      prophet      = prophet(y ~ CPI + season(period = \"year\", type = \"additive\")),\n      comb_equal   = comb_equal_spec, \n      comb_inv_var = comb_inv_var_spec\n    )  \n\nnsw_fit\n\nnsw_fc &lt;- nsw_fit |&gt;\n  forecast(new_data = nsw_test)\n\n\n1\n\nNSW has CPI available, so TSLM can use it as a predictor — unlike Beer and mexretail.\n\n2\n\nDynamic regression: ARIMA errors + CPI regressor.\n\n3\n\nProphet allows including predictors as well, so we use CPI here too.\n\n\n\n\n# A mable: 1 x 8\n     tslm          ets                             arima\n  &lt;model&gt;      &lt;model&gt;                           &lt;model&gt;\n1  &lt;TSLM&gt; &lt;ETS(A,N,A)&gt; &lt;ARIMA(1,0,0)(0,1,1)[4] w/ drift&gt;\n# ℹ 5 more variables: dynamic &lt;model&gt;, stlf &lt;model&gt;, prophet &lt;model&gt;,\n#   comb_equal &lt;model&gt;, comb_inv_var &lt;model&gt;\n\n\n\n\nCode\np &lt;- nsw_fc |&gt; \n  autoplot(nsw, level = NULL)\n\nggplotly(p, dynamicTicks = TRUE)\n\n\n\n\n\n\n\n\n\nset.seed(2025)\n\nnsw_bag_mean &lt;- nsw_train |&gt;\n  model(stl = STL(log(y) ~ trend(window = NULL) + season(window = \"periodic\"),\n                  robust = TRUE)) |&gt;\n  generate(\n    new_data             = nsw_train,\n    times                = 100,\n    bootstrap_block_size = 4\n  ) |&gt;\n  select(-.model, -y) |&gt;\n  model(ets = ETS(.sim)) |&gt;\n  forecast(h = nrow(nsw_test)) |&gt;\n  summarise(bagged_mean = mean(.mean))\n\n\n\n\n\nCode\nnsw_accu_std &lt;- nsw_fc |&gt;\n  accuracy(nsw) |&gt;\n  select(.model, RMSE, MAE, MAPE)\n\nnsw_accu_bag &lt;- nsw_test |&gt;\n  left_join(nsw_bag_mean, by = \"Date\") |&gt;\n  as_tibble() |&gt;\n  summarise(\n    .model = \"bagging_ets\",\n    RMSE = sqrt(mean((y - bagged_mean)^2, na.rm = TRUE)),\n    MAE = mean(abs(y - bagged_mean), na.rm = TRUE),\n    MAPE = mean(abs((y - bagged_mean) / y), na.rm = TRUE) * 100\n  )\n\nbind_rows(nsw_accu_std, nsw_accu_bag) |&gt; arrange(RMSE)"
   },
   {
     "objectID": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_pres.html#what-to-remember",
@@ -4633,144 +4850,235 @@
     "text": "What to remember\n\n\n\n\n\n\nKey points\n\n\n\nForecast combinations work because diverse models make different errors — one of the most robust findings in forecasting.\nEqual-weight averaging is surprisingly hard to beat. Complex weighted schemes need careful validation to justify the added complexity.\nBagging averages across simulated alternative histories, not different models. Most useful for short or volatile series.\nMore complex ≠ always better. Always compare on a held-out test set — sometimes a single model wins.\nBagged forecasts cannot be combined with standard fable models inside combination_ensemble() — compare them via accuracy() separately.\n\n\n\n\nFPP3 references: §12.5 Bootstrapping and bagging · §12.6 Forecast combinations"
   },
   {
-    "objectID": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_draft.html",
-    "href": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_draft.html",
+    "objectID": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations.html",
+    "href": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations.html",
     "title": "4.2 Bootstrapping, Bagging & Model Combinations",
     "section": "",
-    "text": "Code\n1library(plotly)\n2library(tidyquant)\n\n\n\n1\n\nFor interactive plots.\n\n2\n\nFor retrieving mexretail from FRED."
+    "text": "Code\n1library(plotly)\n2library(tidyquant)\n3library(fable.prophet)\n\n\n\n1\n\nFor interactive plots.\n\n2\n\nFor retrieving mexretail from FRED.\n\n3\n\nNeccesary for fitting prophet models.",
+    "crumbs": [
+      "4. Forecasting at scale",
+      "4.2 Bootstrapping, Bagging & Model Combinations"
+    ]
   },
   {
-    "objectID": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_draft.html#the-core-idea",
-    "href": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_draft.html#the-core-idea",
+    "objectID": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations.html#the-core-idea",
+    "href": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations.html#the-core-idea",
     "title": "4.2 Bootstrapping, Bagging & Model Combinations",
     "section": "2.1 The core idea",
-    "text": "2.1 The core idea\n\n“The results have been virtually unanimous: combining multiple forecasts leads to increased forecast accuracy. In many cases one can make dramatic performance improvements by simply averaging the forecasts.”\n— Hyndman & Athanasopoulos, FPP3\n\n\nThis result, first documented by Bates & Granger (1969), has been replicated across hundreds of forecasting competitions and domains. It is one of the most robust empirical findings in the field."
+    "text": "2.1 The core idea\n\n“The results have been virtually unanimous: combining multiple forecasts leads to increased forecast accuracy. In many cases one can make dramatic performance improvements by simply averaging the forecasts.”\n— Hyndman & Athanasopoulos, FPP3\n\n\nThis result, first documented by Bates & Granger (1969), has been replicated across hundreds of forecasting competitions and domains. It is one of the most robust empirical findings in the field.",
+    "crumbs": [
+      "4. Forecasting at scale",
+      "4.2 Bootstrapping, Bagging & Model Combinations"
+    ]
   },
   {
-    "objectID": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_draft.html#why-does-combination-work",
-    "href": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_draft.html#why-does-combination-work",
+    "objectID": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations.html#why-does-combination-work",
+    "href": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations.html#why-does-combination-work",
     "title": "4.2 Bootstrapping, Bagging & Model Combinations",
     "section": "2.2 Why Does Combination Work?",
-    "text": "2.2 Why Does Combination Work?\nIntuitively: each model captures some patterns but misses others. When models make different kinds of errors, averaging them out reduces overall error.\n\nThe key condition is diversity — combining models that fail in the same way provides little benefit. This is why combining ETS, ARIMA, and Prophet tends to work better than combining three variants of ARIMA.\n\n\n\n\n\n\n\n\nNoteThe math behind it\n\n\n\nIf two unbiased forecasts f_1 and f_2 have errors with equal variance \\sigma^2 and correlation \\rho, the equal-weight combination has error variance:\n\\text{Var}\\left(\\frac{e_1 + e_2}{2}\\right) = \\frac{\\sigma^2(1 + \\rho)}{2}\nWhen \\rho &lt; 1, the combination always beats the average individual model. When \\rho = 0, variance halves."
+    "text": "2.2 Why Does Combination Work?\nIntuitively: each model captures some patterns but misses others. When models make different kinds of errors, averaging them out reduces overall error.\n\nThe key condition is diversity — combining models that fail in the same way provides little benefit. This is why combining ETS, ARIMA, and Prophet tends to work better than combining three variants of ARIMA.\n\n\n\n\n\n\n\n\nNoteThe math behind it\n\n\n\nIf two unbiased forecasts f_1 and f_2 have errors with equal variance \\sigma^2 and correlation \\rho, the equal-weight combination has error variance:\n\\text{Var}\\left(\\frac{e_1 + e_2}{2}\\right) = \\frac{\\sigma^2(1 + \\rho)}{2}\nWhen \\rho &lt; 1, the combination always beats the average individual model. When \\rho = 0, variance halves.",
+    "crumbs": [
+      "4. Forecasting at scale",
+      "4.2 Bootstrapping, Bagging & Model Combinations"
+    ]
   },
   {
-    "objectID": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_draft.html#sec-cement-intro",
-    "href": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_draft.html#sec-cement-intro",
+    "objectID": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations.html#sec-cement-intro",
+    "href": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations.html#sec-cement-intro",
     "title": "4.2 Bootstrapping, Bagging & Model Combinations",
     "section": "2.3 A First Example: Australian Cement Production",
-    "text": "2.3 A First Example: Australian Cement Production\nWe introduce combinations with aus_production (Cement) — a quarterly manufacturing series with clear trend and seasonality.\n\n\nCode\ncement &lt;- aus_production |&gt;\n  select(Quarter, Cement) |&gt;\n  filter(!is.na(Cement))\n\n1cement_train &lt;- cement |&gt; filter(year(Quarter) &lt;= 2005)\n2cement_test  &lt;- cement |&gt; filter(year(Quarter) &gt;  2005)\n\n\n\n1\n\nTraining set: up to and including 2005.\n\n2\n\nTest set: 2006 Q1 through 2010 Q2 — 18 quarters."
+    "text": "2.3 A First Example: Australian Cement Production\nWe introduce combinations with aus_production (Cement) — a quarterly manufacturing series with clear trend and seasonality.\n\n\nCode\ncement &lt;- aus_production |&gt;\n  select(Quarter, Cement) |&gt;\n  filter(!is.na(Cement))\n\n1cement_train &lt;- cement |&gt; filter(year(Quarter) &lt;= 2005)\n2cement_test  &lt;- cement |&gt; filter(year(Quarter) &gt;  2005)\n\n\n\n1\n\nTraining set: up to and including 2005.\n\n2\n\nTest set: 2006 Q1 through 2010 Q2 — 18 quarters.",
+    "crumbs": [
+      "4. Forecasting at scale",
+      "4.2 Bootstrapping, Bagging & Model Combinations"
+    ]
   },
   {
-    "objectID": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_draft.html#fitting-individual-models",
-    "href": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_draft.html#fitting-individual-models",
+    "objectID": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations.html#fitting-individual-models",
+    "href": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations.html#fitting-individual-models",
     "title": "4.2 Bootstrapping, Bagging & Model Combinations",
     "section": "2.4 Fitting Individual Models",
-    "text": "2.4 Fitting Individual Models\n\n\nCode\ncement_fit &lt;- cement_train |&gt;\n  model(\n1    ets   = ETS(Cement),\n2    arima = ARIMA(Cement),\n3    stlf  = decomposition_model(\n              STL(Cement ~ trend(window = NULL) +\n                    season(window = \"periodic\"),\n                  robust = TRUE),\n              ETS(season_adjust ~ season(\"N\"))\n            )\n  )\n\n\n\n1\n\nAutomatic ETS selection.\n\n2\n\nAutomatic ARIMA selection.\n\n3\n\nSTL + ETS on the seasonally adjusted component — our Module 2 approach."
+    "text": "2.4 Fitting Individual Models\n\n\nCode\ncement_fit &lt;- cement_train |&gt;\n  model(\n1    ets   = ETS(Cement),\n2    arima = ARIMA(Cement),\n3    stlf  = decomposition_model(\n              STL(Cement ~ trend(window = NULL) +\n                    season(window = \"periodic\"),\n                  robust = TRUE),\n              ETS(season_adjust ~ season(\"N\"))\n            )\n  )\n\n\n\n1\n\nAutomatic ETS selection.\n\n2\n\nAutomatic ARIMA selection.\n\n3\n\nSTL + ETS on the seasonally adjusted component — our Module 2 approach.",
+    "crumbs": [
+      "4. Forecasting at scale",
+      "4.2 Bootstrapping, Bagging & Model Combinations"
+    ]
   },
   {
-    "objectID": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_draft.html#combining-the-manual-approach",
-    "href": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_draft.html#combining-the-manual-approach",
+    "objectID": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations.html#combining-the-manual-approach",
+    "href": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations.html#combining-the-manual-approach",
     "title": "4.2 Bootstrapping, Bagging & Model Combinations",
     "section": "2.5 Combining: The Manual Approach",
-    "text": "2.5 Combining: The Manual Approach\nThe simplest combination is an equal-weight average computed after forecasting, using mutate() on the fable object. This is the approach shown in FPP3.\n\n\nCode\ncement_fc_manual &lt;- cement_fit |&gt;\n1  mutate(\n    combination = (ets + arima) / 2\n  ) |&gt; \n  forecast(h = nrow(cement_test))\n\n\n\n1\n\nmutate() on a mable object adds a new model column.\n\n\n\n\n\n\n\n\n\n\nThe .mean of the combined distribution is the average of the individual .mean values."
+    "text": "2.5 Combining: The Manual Approach\nThe simplest combination is an equal-weight average computed after forecasting, using mutate() on the fable object. This is the approach shown in FPP3.\n\n\nCode\ncement_fc_manual &lt;- cement_fit |&gt;\n1  mutate(\n    combination = (ets + arima) / 2\n  ) |&gt; \n  forecast(h = nrow(cement_test))\n\n\n\n1\n\nmutate() on a mable object adds a new model column.\n\n\n\n\n\n\n\n\n\n\nThe .mean of the combined distribution is the average of the individual .mean values.",
+    "crumbs": [
+      "4. Forecasting at scale",
+      "4.2 Bootstrapping, Bagging & Model Combinations"
+    ]
   },
   {
-    "objectID": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_draft.html#combining-inside-model-with-combination_ensemble",
-    "href": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_draft.html#combining-inside-model-with-combination_ensemble",
+    "objectID": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations.html#combining-inside-model-with-combination_ensemble",
+    "href": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations.html#combining-inside-model-with-combination_ensemble",
     "title": "4.2 Bootstrapping, Bagging & Model Combinations",
     "section": "2.6 Combining: Inside model() with combination_ensemble()",
-    "text": "2.6 Combining: Inside model() with combination_ensemble()\nfable also provides combination_ensemble() to define combinations inside model(), keeping the entire workflow within a single mable. This is cleaner and more consistent with the fable framework.\n\n\nCode\ncement_fit2 &lt;- cement_train |&gt;\n  model(\n    ets   = ETS(Cement),\n    arima = ARIMA(Cement),\n    stlf  = decomposition_model(\n              STL(Cement ~ trend(window = NULL) +\n                    season(window = \"periodic\"),\n                  robust = TRUE),\n              ETS(season_adjust ~ season(\"N\"))\n            ),\n1    comb_equal = combination_ensemble(\n                   ETS(Cement),\n                   ARIMA(Cement),\n                   decomposition_model(\n                     STL(Cement ~ trend(window = NULL) +\n                           season(window = \"periodic\"),\n                         robust = TRUE),\n                     ETS(season_adjust ~ season(\"N\"))\n                   ),\n2                   weights = \"equal\"\n                 ),\n3    comb_inv_var = combination_ensemble(\n                     ETS(Cement),\n                     ARIMA(Cement),\n                     decomposition_model(\n                       STL(Cement ~ trend(window = NULL) +\n                             season(window = \"periodic\"),\n                           robust = TRUE),\n                       ETS(season_adjust ~ season(\"N\"))\n                     ),\n4                     weights = \"inv_var\"\n                   )\n  )\n\n\n\n1\n\ncombination_ensemble() defines the combination inside model(). Every sub-model is re-fitted automatically.\n\n2\n\nweights = \"equal\" gives each model weight 1/K. Equivalent to the mutate() average.\n\n3\n\nA second combination with data-driven weights.\n\n4\n\nweights = \"inv_var\" assigns weights inversely proportional to each model’s in-sample error variance.\n\n\n\n\n\n\n\n\n\n\nNotecombination_ensemble() vs. combination_model() vs. combination_weighted()\n\n\n\n\n\n\n\n\n\n\n\nFunction\nWeights\nBest for\n\n\n\n\ncombination_ensemble()\n\"equal\" or \"inv_var\"\nStandard use — let the data or equal weighting decide\n\n\ncombination_weighted()\nExplicit numeric vector\nWhen you have domain knowledge about which model to trust more\n\n\ncombination_model()\nExplicit numeric vector\nSame as above, slightly different syntax\n\n\n\nFor most applications, combination_ensemble() with \"equal\" or \"inv_var\" is the right choice."
+    "text": "2.6 Combining: Inside model() with combination_ensemble()\nfable also provides combination_ensemble() to define combinations inside model(), keeping the entire workflow within a single mable. This is cleaner and more consistent with the fable framework.\n\n\nCode\ncement_fit2 &lt;- cement_train |&gt;\n  model(\n    ets   = ETS(Cement),\n    arima = ARIMA(Cement),\n    stlf  = decomposition_model(\n              STL(Cement ~ trend(window = NULL) +\n                    season(window = \"periodic\"),\n                  robust = TRUE),\n              ETS(season_adjust ~ season(\"N\"))\n            ),\n1    comb_equal = combination_ensemble(\n                   ETS(Cement),\n                   ARIMA(Cement),\n                   decomposition_model(\n                     STL(Cement ~ trend(window = NULL) +\n                           season(window = \"periodic\"),\n                         robust = TRUE),\n                     ETS(season_adjust ~ season(\"N\"))\n                   ),\n2                   weights = \"equal\"\n                 ),\n3    comb_inv_var = combination_ensemble(\n                     ETS(Cement),\n                     ARIMA(Cement),\n                     decomposition_model(\n                       STL(Cement ~ trend(window = NULL) +\n                             season(window = \"periodic\"),\n                           robust = TRUE),\n                       ETS(season_adjust ~ season(\"N\"))\n                     ),\n4                     weights = \"inv_var\"\n                   )\n  )\n\n\n\n1\n\ncombination_ensemble() defines the combination inside model(). Every sub-model is re-fitted automatically.\n\n2\n\nweights = \"equal\" gives each model weight 1/K. Equivalent to the mutate() average.\n\n3\n\nA second combination with data-driven weights.\n\n4\n\nweights = \"inv_var\" assigns weights inversely proportional to each model’s in-sample error variance.\n\n\n\n\n\n\n\n\n\n\nNotecombination_ensemble() vs. combination_model() vs. combination_weighted()\n\n\n\n\n\n\n\n\n\n\n\nFunction\nWeights\nBest for\n\n\n\n\ncombination_ensemble()\n\"equal\" or \"inv_var\"\nStandard use — let the data or equal weighting decide\n\n\ncombination_weighted()\nExplicit numeric vector\nWhen you have domain knowledge about which model to trust more\n\n\ncombination_model()\nExplicit numeric vector\nSame as above, slightly different syntax\n\n\n\nFor most applications, combination_ensemble() with \"equal\" or \"inv_var\" is the right choice.",
+    "crumbs": [
+      "4. Forecasting at scale",
+      "4.2 Bootstrapping, Bagging & Model Combinations"
+    ]
   },
   {
-    "objectID": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_draft.html#forecasts-and-accuracy",
-    "href": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_draft.html#forecasts-and-accuracy",
+    "objectID": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations.html#forecasts-and-accuracy",
+    "href": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations.html#forecasts-and-accuracy",
     "title": "4.2 Bootstrapping, Bagging & Model Combinations",
     "section": "2.7 Forecasts and Accuracy",
-    "text": "2.7 Forecasts and Accuracy\n\n\nCode\ncement_fc2 &lt;- cement_fit2 |&gt;\n  forecast(h = nrow(cement_test))\n\ncement_accu &lt;- cement_fc2 |&gt;\n  accuracy(cement_test) |&gt;\n  select(.model, RMSE, MAE, MAPE, MASE) |&gt;\n  arrange(RMSE)\n\ncement_accu"
+    "text": "2.7 Forecasts and Accuracy\n\n\nCode\ncement_fc2 &lt;- cement_fit2 |&gt;\n  forecast(h = nrow(cement_test))\n\ncement_accu &lt;- cement_fc2 |&gt;\n  accuracy(cement) |&gt;\n  select(.model, RMSE, MAE, MAPE, MASE) |&gt;\n  arrange(RMSE)\n\ncement_accu",
+    "crumbs": [
+      "4. Forecasting at scale",
+      "4.2 Bootstrapping, Bagging & Model Combinations"
+    ]
   },
   {
-    "objectID": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_draft.html#the-idea-simulating-alternative-histories",
-    "href": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_draft.html#the-idea-simulating-alternative-histories",
+    "objectID": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations.html#the-idea-simulating-alternative-histories",
+    "href": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations.html#the-idea-simulating-alternative-histories",
     "title": "4.2 Bootstrapping, Bagging & Model Combinations",
     "section": "3.1 The idea: simulating alternative histories",
-    "text": "3.1 The idea: simulating alternative histories\nCombinations average across different models fitted to the same data. Bagging takes a complementary approach: average across the same model fitted to many simulated versions of the data.\n\nA single model fit is one realization of what could have happened given a different path of random shocks. If we observe many plausible alternative histories of the series, we can average forecasts from all of them — reducing variance without changing the model family."
+    "text": "3.1 The idea: simulating alternative histories\nCombinations average across different models fitted to the same data. Bagging takes a complementary approach: average across the same model fitted to many simulated versions of the data.\n\nA single model fit is one realization of what could have happened given a different path of random shocks. If we observe many plausible alternative histories of the series, we can average forecasts from all of them — reducing variance without changing the model family.",
+    "crumbs": [
+      "4. Forecasting at scale",
+      "4.2 Bootstrapping, Bagging & Model Combinations"
+    ]
   },
   {
-    "objectID": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_draft.html#how-block-bootstrap-works",
-    "href": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_draft.html#how-block-bootstrap-works",
+    "objectID": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations.html#how-block-bootstrap-works",
+    "href": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations.html#how-block-bootstrap-works",
     "title": "4.2 Bootstrapping, Bagging & Model Combinations",
     "section": "3.2 How Block Bootstrap Works",
-    "text": "3.2 How Block Bootstrap Works\nStandard bootstrap (resample observations independently) breaks temporal dependence. For time series, we use block bootstrap:\n\n\nDecompose the series with STL → isolate the remainder component\nResample the remainder in blocks to preserve local autocorrelation\nReconstruct synthetic series: trend + seasonal + bootstrapped remainder\nRepeat B times → B plausible alternative histories\n\n\n\nBagging (Bootstrap AGGregating) = fit a model to each bootstrapped series, then average the B forecasts."
+    "text": "3.2 How Block Bootstrap Works\nStandard bootstrap (resample observations independently) breaks temporal dependence. For time series, we use block bootstrap:\n\n\nDecompose the series with STL → isolate the remainder component\nResample the remainder in blocks to preserve local autocorrelation\nReconstruct synthetic series: trend + seasonal + bootstrapped remainder\nRepeat B times → B plausible alternative histories\n\n\n\nBagging (Bootstrap AGGregating) = fit a model to each bootstrapped series, then average the B forecasts.",
+    "crumbs": [
+      "4. Forecasting at scale",
+      "4.2 Bootstrapping, Bagging & Model Combinations"
+    ]
   },
   {
-    "objectID": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_draft.html#generating-bootstrap-series",
-    "href": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_draft.html#generating-bootstrap-series",
+    "objectID": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations.html#generating-bootstrap-series",
+    "href": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations.html#generating-bootstrap-series",
     "title": "4.2 Bootstrapping, Bagging & Model Combinations",
     "section": "3.3 Generating Bootstrap Series",
-    "text": "3.3 Generating Bootstrap Series\nWe continue with Cement to maintain continuity:\n\n\nCode\ncement_stl &lt;- cement_train |&gt;\n1  model(stl = STL(Cement ~ trend(window = NULL) +\n                    season(window = \"periodic\"),\n                  robust = TRUE))\n\n\n\n1\n\nWe need the fitted STL object to generate bootstrap series from it.\n\n\n\n\n\n\nCode\nset.seed(2025)\n\ncement_sim &lt;- cement_stl |&gt;\n  generate(\n1    new_data             = cement_train,\n2    times                = 100,\n3    bootstrap_block_size = 8\n  ) |&gt;\n4  select(-.model, -Cement)\n\n\n\n1\n\nRegenerate over the training period.\n\n2\n\n100 bootstrapped alternative histories.\n\n3\n\nBlock size of 8 quarters (~2 years) — preserves seasonal autocorrelation in the remainder.\n\n4\n\nDrop the original series column; .sim contains the bootstrapped values.\n\n\n\n\n\n\n\n\n\n\nTipChoosing the block size\n\n\n\nA rule of thumb: one or two seasonal periods. For quarterly data (m = 4), bootstrap_block_size = 4 or 8 is typically appropriate."
+    "text": "3.3 Generating Bootstrap Series\nWe continue with Cement to maintain continuity:\n\n\nCode\ncement_stl &lt;- cement_train |&gt;\n1  model(stl = STL(Cement ~ trend(window = NULL) +\n                    season(window = \"periodic\"),\n                  robust = TRUE))\n\n\n\n1\n\nWe need the fitted STL object to generate bootstrap series from it.\n\n\n\n\n\n\nCode\nset.seed(2025)\n\ncement_sim &lt;- cement_stl |&gt;\n  generate(\n1    new_data             = cement_train,\n2    times                = 100,\n3    bootstrap_block_size = 8\n  ) |&gt;\n4  select(-.model, -Cement)\n\n\n\n1\n\nRegenerate over the training period.\n\n2\n\n100 bootstrapped alternative histories.\n\n3\n\nBlock size of 8 quarters (~2 years) — preserves seasonal autocorrelation in the remainder.\n\n4\n\nDrop the original series column; .sim contains the bootstrapped values.\n\n\n\n\n\n\n\n\n\n\nTipChoosing the block size\n\n\n\nA rule of thumb: one or two seasonal periods. For quarterly data (m = 4), bootstrap_block_size = 4 or 8 is typically appropriate.",
+    "crumbs": [
+      "4. Forecasting at scale",
+      "4.2 Bootstrapping, Bagging & Model Combinations"
+    ]
   },
   {
-    "objectID": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_draft.html#visualizing-the-bootstrap-series",
-    "href": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_draft.html#visualizing-the-bootstrap-series",
+    "objectID": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations.html#visualizing-the-bootstrap-series",
+    "href": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations.html#visualizing-the-bootstrap-series",
     "title": "4.2 Bootstrapping, Bagging & Model Combinations",
     "section": "3.4 Visualizing the Bootstrap Series",
-    "text": "3.4 Visualizing the Bootstrap Series"
+    "text": "3.4 Visualizing the Bootstrap Series",
+    "crumbs": [
+      "4. Forecasting at scale",
+      "4.2 Bootstrapping, Bagging & Model Combinations"
+    ]
   },
   {
-    "objectID": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_draft.html#fitting-forecasting-and-averaging",
-    "href": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_draft.html#fitting-forecasting-and-averaging",
+    "objectID": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations.html#fitting-forecasting-and-averaging",
+    "href": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations.html#fitting-forecasting-and-averaging",
     "title": "4.2 Bootstrapping, Bagging & Model Combinations",
     "section": "3.5 Fitting, Forecasting, and Averaging",
-    "text": "3.5 Fitting, Forecasting, and Averaging\n\n\nCode\ncement_bag_fit &lt;- cement_sim |&gt;\n1  model(ets = ETS(.sim))\n\n\n\n1\n\nfable fits one ETS model per bootstrapped series (100 models). The key variable .rep distinguishes each replicate.\n\n\n\n\n\n\nCode\ncement_bag_mean &lt;- cement_bag_fit |&gt;\n  forecast(h = nrow(cement_test)) |&gt;\n1  summarise(\n2    bagged_mean = mean(.mean)\n  )\n\n\n\n1\n\nCollapse the 100 forecast trajectories into a single point forecast.\n\n2\n\nThe bagged forecast is the simple average across replicates."
+    "text": "3.5 Fitting, Forecasting, and Averaging\n\n\nCode\ncement_bag_fit &lt;- cement_sim |&gt;\n1  model(ets = ETS(.sim))\n\n\n\n1\n\nfable fits one ETS model per bootstrapped series (100 models). The key variable .rep distinguishes each replicate.\n\n\n\n\n\n\nCode\ncement_bag_mean &lt;- cement_bag_fit |&gt;\n  forecast(h = nrow(cement_test)) |&gt;\n1  summarise(\n2    bagged_mean = mean(.mean)\n  )\n\n\n\n1\n\nCollapse the 100 forecast trajectories into a single point forecast.\n\n2\n\nThe bagged forecast is the simple average across replicates.",
+    "crumbs": [
+      "4. Forecasting at scale",
+      "4.2 Bootstrapping, Bagging & Model Combinations"
+    ]
   },
   {
-    "objectID": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_draft.html#comparing-bagging-with-individual-models",
-    "href": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_draft.html#comparing-bagging-with-individual-models",
+    "objectID": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations.html#comparing-bagging-with-individual-models",
+    "href": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations.html#comparing-bagging-with-individual-models",
     "title": "4.2 Bootstrapping, Bagging & Model Combinations",
     "section": "3.6 Comparing Bagging with Individual Models",
-    "text": "3.6 Comparing Bagging with Individual Models\n\n\nCode\ncement_bag_accu &lt;- cement_test |&gt;\n  left_join(cement_bag_mean, by = \"Quarter\") |&gt;\n  summarise(\n    .model = \"bagging_ets\",\n    RMSE   = sqrt(mean((Cement - bagged_mean)^2)),\n    MAE    = mean(abs(Cement - bagged_mean)),\n    MAPE   = mean(abs((Cement - bagged_mean) / Cement)) * 100\n  )\n\nbind_rows(cement_accu, cement_bag_accu) |&gt; arrange(RMSE)\n\n\n\n\n\n\n\n\nWarningBagging and fable combinations\n\n\n\nBagged forecasts come from 100 separately keyed series (.rep) and cannot be piped into combination_ensemble() alongside standard models. Compare them with other models manually via accuracy().\n\n\n\n\n\n\n\n\nBagging helps most when the series is short or volatile. On longer, stable series the improvement over a single well-fitted model is often modest."
+    "text": "3.6 Comparing Bagging with Individual Models\n\n\nCode\ncement_bag_accu &lt;- cement_test |&gt;\n  left_join(cement_bag_mean, by = \"Quarter\") |&gt;\n  as_tibble() |&gt; \n  summarise(\n    .model = \"bagging_ets\",\n    RMSE   = sqrt(mean((Cement - bagged_mean)^2)),\n    MAE    = mean(abs(Cement - bagged_mean)),\n    MAPE   = mean(abs((Cement - bagged_mean) / Cement)) * 100\n  )\n\nbind_rows(cement_accu, cement_bag_accu) |&gt; arrange(RMSE)\n\n\n\n  \n\n\n\n\n\n\n\n\n\nWarningBagging and fable combinations\n\n\n\nBagged forecasts come from 100 separately keyed series (.rep) and cannot be piped into combination_ensemble() alongside standard models. Compare them with other models manually via accuracy().\n\n\n\n\n\n\n\n\nBagging helps most when the series is short or volatile. On longer, stable series the improvement over a single well-fitted model is often modest.",
+    "crumbs": [
+      "4. Forecasting at scale",
+      "4.2 Bootstrapping, Bagging & Model Combinations"
+    ]
   },
   {
-    "objectID": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_draft.html#series-overview",
-    "href": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_draft.html#series-overview",
+    "objectID": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations.html#series-overview",
+    "href": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations.html#series-overview",
     "title": "4.2 Bootstrapping, Bagging & Model Combinations",
     "section": "4.1 Series overview",
-    "text": "4.1 Series overview\nWe now apply both strategies to three series from across the course, putting every model we have built this semester head-to-head:\n\n\n\n\n\n\n\n\nDataset\nModels available\nNotes\n\n\n\n\naus_production (Beer)\nETS, ARIMA, STLF, TSLM, Prophet\nNo external regressors — TSLM uses trend + season only\n\n\nmexretail\nETS, ARIMA, STLF, TSLM, Prophet\nSame — TSLM with trend + season\n\n\naus_accommodation (NSW)\nAll above + dynamic regression (CPI)\nFull Module 3 arsenal available\n\n\n\n\n\n\n\n\n\nNoteBagging with other models\n\n\n\nThe bagging pipeline works with any model that fable can fit — ARIMA, Prophet, etc. We use ETS here because it is the approach validated by Bergmeir, Hyndman & Benitez (2016), and because fitting 100 ARIMAs with automatic order selection is substantially slower. ETS is fast, robust, and well-supported by the literature for this use case."
+    "text": "4.1 Series overview\nWe now apply both strategies to three series from across the course, putting every model we have built this semester head-to-head:\n\n\n\n\n\n\n\n\nDataset\nModels available\nNotes\n\n\n\n\naus_production (Beer)\nETS, ARIMA, STLF, TSLM, Prophet\nNo external regressors — TSLM uses trend + season only\n\n\nmexretail\nETS, ARIMA, STLF, TSLM, Prophet\nSame — TSLM with trend + season\n\n\naus_accommodation (NSW)\nAll above + dynamic regression (CPI)\nFull Module 3 arsenal available\n\n\n\n\n\n\n\n\n\nNoteBagging with other models\n\n\n\nThe bagging pipeline works with any model that fable can fit — ARIMA, Prophet, etc. We use ETS here because it is the approach validated by Bergmeir, Hyndman & Benitez (2016), and because fitting 100 ARIMAs with automatic order selection is substantially slower. ETS is fast, robust, and well-supported by the literature for this use case.",
+    "crumbs": [
+      "4. Forecasting at scale",
+      "4.2 Bootstrapping, Bagging & Model Combinations"
+    ]
   },
   {
-    "objectID": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_draft.html#data-setup",
-    "href": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_draft.html#data-setup",
+    "objectID": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations.html#data-setup",
+    "href": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations.html#data-setup",
     "title": "4.2 Bootstrapping, Bagging & Model Combinations",
     "section": "4.2 Data Setup",
-    "text": "4.2 Data Setup\n\n\nCode\n# --- Beer ---\nbeer &lt;- aus_production |&gt;\n  select(Quarter, Beer) |&gt;\n  filter(!is.na(Beer))\n\nbeer_train &lt;- beer |&gt; filter(year(Quarter) &lt;= 2006)\nbeer_test  &lt;- beer |&gt; filter(year(Quarter) &gt;  2006)\n\n# --- mexretail ---\nmexretail &lt;- tq_get(\n  \"MEXSLRTTO01IXOBM\",\n  get  = \"economic.data\",\n  from = \"1985-01-01\"\n) |&gt;\n  mutate(date = yearmonth(date)) |&gt;\n  rename(y = price) |&gt;\n  as_tsibble(index = date)\n\nmexretail_train &lt;- mexretail |&gt; filter(year(date) &lt;= 2019)\nmexretail_test  &lt;- mexretail |&gt; filter(year(date) &gt;  2019)\n\n# --- NSW accommodation ---\nnsw &lt;- aus_accommodation |&gt;\n  filter(State == \"New South Wales\") |&gt;\n  select(Quarter, Takings, CPI)\n\nnsw_train &lt;- nsw |&gt; filter(year(Quarter) &lt;= 2012)\nnsw_test  &lt;- nsw |&gt; filter(year(Quarter) &gt;  2012)"
+    "text": "4.2 Data Setup\n\nBeer productionMEXRETAILNSW accomodation\n\n\n\n\nCode\nbeer &lt;- aus_production |&gt;\n  select(Quarter, Beer) |&gt;\n  filter_index(\"1990 Q1\" ~ .) |&gt; \n  rename(y = Beer)\n\nbeer_train &lt;- beer |&gt; filter(year(Quarter) &lt;= 2006)\nbeer_test  &lt;- beer |&gt; filter(year(Quarter) &gt;  2006)\n\n\n\n\n\n\nCode\nmexretail &lt;- tq_get(\n  \"MEXSLRTTO01IXOBM\",\n  get = \"economic.data\",\n  from = \"1985-01-01\",\n  to = \"2019-12-31\"\n) |&gt;\n  mutate(date = yearmonth(date)) |&gt;\n  rename(y = price) |&gt;\n  as_tsibble(index = date)\n\nmexretail_train &lt;- mexretail |&gt; filter(year(date) &lt;= 2017)\nmexretail_test &lt;- mexretail |&gt; filter(year(date) &gt; 2017)\n\n\n\n\n\n\nCode\nnsw &lt;- aus_accommodation |&gt;\n  filter(State == \"New South Wales\") |&gt;\n  select(Date, Takings, CPI) |&gt;\n  rename(y = Takings)\n\nnsw_train &lt;- nsw |&gt; filter(year(Date) &lt;= 2012)\nnsw_test &lt;- nsw |&gt; filter(year(Date) &gt; 2012)\n\n\n\n\n\n\n\n\n\n\n\nImportant\n\n\n\nWe rename our forecast variable to y in every tsibble so that we can reuse the model specs and save lines of code.",
+    "crumbs": [
+      "4. Forecasting at scale",
+      "4.2 Bootstrapping, Bagging & Model Combinations"
+    ]
   },
   {
-    "objectID": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_draft.html#beer-full-model-comparison",
-    "href": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_draft.html#beer-full-model-comparison",
+    "objectID": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations.html#model-specs",
+    "href": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations.html#model-specs",
     "title": "4.2 Bootstrapping, Bagging & Model Combinations",
-    "section": "4.3 Beer: Full Model Comparison",
-    "text": "4.3 Beer: Full Model Comparison\n\nModels & CombinationsBaggingAccuracy\n\n\n\n\nCode\nbeer_fit &lt;- beer_train |&gt;\n  model(\n1    tslm         = TSLM(Beer ~ trend() + season()),\n    ets          = ETS(Beer),\n    arima        = ARIMA(Beer),\n    stlf         = decomposition_model(\n                     STL(Beer ~ trend(window = NULL) +\n                           season(window = \"periodic\"),\n                         robust = TRUE),\n                     ETS(season_adjust ~ season(\"N\"))\n                   ),\n2    prophet      = prophet(Beer),\n    comb_equal   = combination_ensemble(\n                     TSLM(Beer ~ trend() + season()),\n                     ETS(Beer),\n                     ARIMA(Beer),\n                     decomposition_model(\n                       STL(Beer ~ trend(window = NULL) +\n                             season(window = \"periodic\"),\n                           robust = TRUE),\n                       ETS(season_adjust ~ season(\"N\"))\n                     ),\n                     prophet(Beer),\n                     weights = \"equal\"\n                   ),\n    comb_inv_var = combination_ensemble(\n                     TSLM(Beer ~ trend() + season()),\n                     ETS(Beer),\n                     ARIMA(Beer),\n                     decomposition_model(\n                       STL(Beer ~ trend(window = NULL) +\n                             season(window = \"periodic\"),\n                           robust = TRUE),\n                       ETS(season_adjust ~ season(\"N\"))\n                     ),\n                     prophet(Beer),\n                     weights = \"inv_var\"\n                   )\n  )\n\n\n\n1\n\nTSLM with deterministic trend and seasonal dummies — no external regressors available for Beer.\n\n2\n\nRequires fable.prophet. Uses default automatic specification.\n\n\n\n\n\n\n\n\nCode\nset.seed(2025)\n\nbeer_bag_mean &lt;- beer_train |&gt;\n  model(stl = STL(Beer ~ trend(window = NULL) +\n                    season(window = \"periodic\"),\n                  robust = TRUE)) |&gt;\n  generate(\n    new_data             = beer_train,\n    times                = 100,\n    bootstrap_block_size = 4\n  ) |&gt;\n  select(-.model, -Beer) |&gt;\n  model(ets = ETS(.sim)) |&gt;\n  forecast(h = nrow(beer_test)) |&gt;\n  summarise(bagged_mean = mean(.mean), .by = Quarter)\n\n\n\n\n\n\nCode\nbeer_accu_std &lt;- beer_fit |&gt;\n  forecast(h = nrow(beer_test)) |&gt;\n  accuracy(beer_test) |&gt;\n  select(.model, RMSE, MAE, MAPE)\n\nbeer_accu_bag &lt;- beer_test |&gt;\n  left_join(beer_bag_mean, by = \"Quarter\") |&gt;\n  summarise(\n    .model = \"bagging_ets\",\n    RMSE   = sqrt(mean((Beer - bagged_mean)^2)),\n    MAE    = mean(abs(Beer - bagged_mean)),\n    MAPE   = mean(abs((Beer - bagged_mean) / Beer)) * 100\n  )\n\nbind_rows(beer_accu_std, beer_accu_bag) |&gt; arrange(RMSE)"
+    "section": "4.3 Model Specs",
+    "text": "4.3 Model Specs\nWe will use the same models across the three datasets:\n\nModel specsCombination specsmable specs\n\n\n\n\nCode\n1tslm_spec &lt;- TSLM(log(y) ~ trend() + season())\n\nets_spec &lt;- ETS(log(y))\n\narima_spec &lt;- ARIMA(log(y))\n\nstlf_spec &lt;- decomposition_model(\n  STL(\n    log(y) ~ trend(window = NULL) + season(window = \"periodic\"),\n    robust = TRUE\n  ),\n  ETS(season_adjust ~ season(\"N\"))\n)\n\n2prophet_spec &lt;- prophet(y)\n\n\n\n1\n\nTSLM with deterministic trend and seasonal dummies — no external regressors available for Beer.\n\n2\n\nRequires fable.prophet. Uses default automatic specification.\n\n\n\n\n\n\n\n\nCode\ncomb_equal_spec &lt;- combination_ensemble(\n  tslm_spec,\n  ets_spec,\n  arima_spec,\n  stlf_spec,\n  prophet_spec,\n3  weights = \"equal\"\n)\n\ncomb_inv_var_spec &lt;- combination_ensemble(\n  tslm_spec,\n  ets_spec,\n  arima_spec,\n  stlf_spec,\n  prophet_spec,\n4  weights = \"inv_var\"\n)\n\n\n\n3\n\nCombining all the models using equal weights.\n\n4\n\nCombining all the models using an inverse variance weighted ensemble.\n\n\n\n\n\n\n\n\nCode\n5mable_spec &lt;- function(.train_tsb) {\n  .train_tsb |&gt;\n    model(\n      tslm         = tslm_spec,\n      ets          = ets_spec,\n      arima        = arima_spec,\n      stlf         = stlf_spec,\n      prophet      = prophet_spec,\n      comb_equal   = comb_equal_spec,\n      comb_inv_var = comb_inv_var_spec\n    )\n}\n\n\n\n5\n\nWe define a function containing the mable to fit with all our model specifications.",
+    "crumbs": [
+      "4. Forecasting at scale",
+      "4.2 Bootstrapping, Bagging & Model Combinations"
+    ]
   },
   {
-    "objectID": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_draft.html#mexretail-full-model-comparison",
-    "href": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_draft.html#mexretail-full-model-comparison",
+    "objectID": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations.html#beer-full-model-comparison",
+    "href": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations.html#beer-full-model-comparison",
     "title": "4.2 Bootstrapping, Bagging & Model Combinations",
-    "section": "4.4 mexretail: Full Model Comparison",
-    "text": "4.4 mexretail: Full Model Comparison\n\nModels & CombinationsBaggingAccuracy\n\n\n\n\nCode\nmexretail_fit &lt;- mexretail_train |&gt;\n  model(\n    tslm         = TSLM(log(y) ~ trend() + season()),\n    ets          = ETS(y),\n    arima        = ARIMA(log(y)),\n    stlf         = decomposition_model(\n                     STL(log(y) ~ trend(window = NULL) +\n                           season(window = \"periodic\"),\n                         robust = TRUE),\n                     ETS(season_adjust ~ season(\"N\"))\n                   ),\n    prophet      = prophet(y),\n    comb_equal   = combination_ensemble(\n                     TSLM(log(y) ~ trend() + season()),\n                     ETS(y),\n                     ARIMA(log(y)),\n                     decomposition_model(\n                       STL(log(y) ~ trend(window = NULL) +\n                             season(window = \"periodic\"),\n                           robust = TRUE),\n                       ETS(season_adjust ~ season(\"N\"))\n                     ),\n                     prophet(y),\n                     weights = \"equal\"\n                   ),\n    comb_inv_var = combination_ensemble(\n                     TSLM(log(y) ~ trend() + season()),\n                     ETS(y),\n                     ARIMA(log(y)),\n                     decomposition_model(\n                       STL(log(y) ~ trend(window = NULL) +\n                             season(window = \"periodic\"),\n                           robust = TRUE),\n                       ETS(season_adjust ~ season(\"N\"))\n                     ),\n                     prophet(y),\n                     weights = \"inv_var\"\n                   )\n  )\n\n\n\n\n\n\nCode\nset.seed(2025)\n\nmexretail_bag_mean &lt;- mexretail_train |&gt;\n  model(stl = STL(log(y) ~ trend(window = NULL) +\n                    season(window = \"periodic\"),\n                  robust = TRUE)) |&gt;\n  generate(\n    new_data             = mexretail_train,\n    times                = 100,\n    bootstrap_block_size = 12\n  ) |&gt;\n  select(-.model, -y) |&gt;\n  model(ets = ETS(.sim)) |&gt;\n  forecast(h = nrow(mexretail_test)) |&gt;\n  summarise(bagged_mean = mean(.mean), .by = date)\n\n\n\n\n\n\nCode\nmexretail_accu_std &lt;- mexretail_fit |&gt;\n  forecast(h = nrow(mexretail_test)) |&gt;\n  accuracy(mexretail_test) |&gt;\n  select(.model, RMSE, MAE, MAPE)\n\nmexretail_accu_bag &lt;- mexretail_test |&gt;\n  left_join(mexretail_bag_mean, by = \"date\") |&gt;\n  summarise(\n    .model = \"bagging_ets\",\n    RMSE   = sqrt(mean((y - bagged_mean)^2, na.rm = TRUE)),\n    MAE    = mean(abs(y - bagged_mean), na.rm = TRUE),\n    MAPE   = mean(abs((y - bagged_mean) / y), na.rm = TRUE) * 100\n  )\n\nbind_rows(mexretail_accu_std, mexretail_accu_bag) |&gt; arrange(RMSE)"
+    "section": "4.4 Beer: Full Model Comparison",
+    "text": "4.4 Beer: Full Model Comparison\n\nModels & CombinationsBaggingAccuracy\n\n\n\n\nCode\nbeer_fit &lt;- beer_train |&gt;\n1  mable_spec()\n\nbeer_fit\n\nbeer_fc &lt;- beer_fit |&gt;\n  forecast(h = nrow(beer_test))\n\n\n\n1\n\nWe simply use our mable_spec() function to fit all our models.\n\n\n\n\n# A mable: 1 x 7\n     tslm           ets                    arima                      stlf\n  &lt;model&gt;       &lt;model&gt;                  &lt;model&gt;                   &lt;model&gt;\n1  &lt;TSLM&gt; &lt;ETS(A,Ad,A)&gt; &lt;ARIMA(1,0,2)(0,1,2)[4]&gt; &lt;STL decomposition model&gt;\n# ℹ 3 more variables: prophet &lt;model&gt;, comb_equal &lt;model&gt;, comb_inv_var &lt;model&gt;\n\n\n\n\nCode\np &lt;- beer_fc |&gt; \n  autoplot(beer |&gt; filter_index(\"1998 Q1\" ~ .), level = NULL)\n\nggplotly(p, dynamicTicks = TRUE)\n\n\n\n\n\n\n\n\n\n\nCode\nset.seed(2025)\n\nbeer_bag_mean &lt;- beer_train |&gt;\n  model(stl = STL(log(y) ~ trend(window = NULL) + season(window = \"periodic\"),\n                  robust = TRUE)) |&gt;\n  generate(\n    new_data             = beer_train,\n    times                = 100,\n    bootstrap_block_size = 4\n  ) |&gt;\n  select(-.model, -y) |&gt;\n  model(ets = ETS(.sim)) |&gt;\n  forecast(h = nrow(beer_test)) |&gt;\n  summarise(bagged_mean = mean(.mean))\n\n\n\n\n\n\nCode\nbeer_accu_std &lt;- beer_fc |&gt;\n  accuracy(beer) |&gt;\n  select(.model, RMSE, MAE, MAPE)\n\nbeer_accu_bag &lt;- beer_test |&gt;\n  left_join(beer_bag_mean, by = \"Quarter\") |&gt;\n  as_tibble() |&gt; \n  summarise(\n    .model = \"bagging_ets\",\n    RMSE   = sqrt(mean((y - bagged_mean)^2)),\n    MAE    = mean(abs(y - bagged_mean)),\n    MAPE   = mean(abs((y - bagged_mean) / y)) * 100\n  )\n\nbind_rows(beer_accu_std, beer_accu_bag) |&gt; arrange(RMSE)",
+    "crumbs": [
+      "4. Forecasting at scale",
+      "4.2 Bootstrapping, Bagging & Model Combinations"
+    ]
   },
   {
-    "objectID": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_draft.html#nsw-accommodation-full-model-comparison",
-    "href": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_draft.html#nsw-accommodation-full-model-comparison",
+    "objectID": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations.html#mexretail-full-model-comparison",
+    "href": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations.html#mexretail-full-model-comparison",
     "title": "4.2 Bootstrapping, Bagging & Model Combinations",
-    "section": "4.5 NSW Accommodation: Full Model Comparison",
-    "text": "4.5 NSW Accommodation: Full Model Comparison\nNSW is the richest comparison: it includes CPI as a covariate, so dynamic regression enters the mix. Note that dynreg is excluded from combination_ensemble() — mixing models with and without external regressors creates structural incompatibilities inside fable. In practice you would build a separate combination for models that share the same predictor set.\n\nModels & CombinationsBaggingAccuracy\n\n\n\n\nCode\nnsw_fit &lt;- nsw_train |&gt;\n  model(\n1    tslm         = TSLM(log(Takings) ~ trend() + season() + CPI),\n    ets          = ETS(log(Takings)),\n    arima        = ARIMA(log(Takings)),\n2    dynreg       = ARIMA(log(Takings) ~ CPI),\n    stlf         = decomposition_model(\n                     STL(log(Takings) ~ trend(window = NULL) +\n                           season(window = \"periodic\"),\n                         robust = TRUE),\n                     ETS(season_adjust ~ season(\"N\"))\n                   ),\n    prophet      = prophet(log(Takings)),\n3    comb_equal   = combination_ensemble(\n                     TSLM(log(Takings) ~ trend() + season() + CPI),\n                     ETS(log(Takings)),\n                     ARIMA(log(Takings)),\n                     decomposition_model(\n                       STL(log(Takings) ~ trend(window = NULL) +\n                             season(window = \"periodic\"),\n                           robust = TRUE),\n                       ETS(season_adjust ~ season(\"N\"))\n                     ),\n                     prophet(log(Takings)),\n                     weights = \"equal\"\n                   ),\n    comb_inv_var = combination_ensemble(\n                     TSLM(log(Takings) ~ trend() + season() + CPI),\n                     ETS(log(Takings)),\n                     ARIMA(log(Takings)),\n                     decomposition_model(\n                       STL(log(Takings) ~ trend(window = NULL) +\n                             season(window = \"periodic\"),\n                           robust = TRUE),\n                       ETS(season_adjust ~ season(\"N\"))\n                     ),\n                     prophet(log(Takings)),\n                     weights = \"inv_var\"\n                   )\n  )\n\n\n\n1\n\nNSW has CPI available, so TSLM can use it as a predictor — unlike Beer and mexretail.\n\n2\n\nDynamic regression: ARIMA errors + CPI regressor. Kept outside the combination (see note above).\n\n3\n\nThe combination includes TSLM with CPI but not dynreg — both use CPI but their structures are incompatible inside combination_ensemble().\n\n\n\n\n\n\n\n\nCode\nset.seed(2025)\n\nnsw_bag_mean &lt;- nsw_train |&gt;\n  model(stl = STL(log(Takings) ~ trend(window = NULL) +\n                    season(window = \"periodic\"),\n                  robust = TRUE)) |&gt;\n  generate(\n    new_data             = nsw_train,\n    times                = 100,\n    bootstrap_block_size = 4\n  ) |&gt;\n  select(-.model, -Takings) |&gt;\n  model(ets = ETS(.sim)) |&gt;\n  forecast(h = nrow(nsw_test)) |&gt;\n  summarise(bagged_mean = mean(.mean), .by = Quarter)\n\n\n\n\n\n\nCode\nnsw_accu_std &lt;- nsw_fit |&gt;\n  forecast(h = nrow(nsw_test), new_data = nsw_test) |&gt;\n  accuracy(nsw_test) |&gt;\n  select(.model, RMSE, MAE, MAPE)\n\nnsw_accu_bag &lt;- nsw_test |&gt;\n  left_join(nsw_bag_mean, by = \"Quarter\") |&gt;\n  summarise(\n    .model = \"bagging_ets\",\n    RMSE   = sqrt(mean((Takings - bagged_mean)^2, na.rm = TRUE)),\n    MAE    = mean(abs(Takings - bagged_mean), na.rm = TRUE),\n    MAPE   = mean(abs((Takings - bagged_mean) / Takings), na.rm = TRUE) * 100\n  )\n\nbind_rows(nsw_accu_std, nsw_accu_bag) |&gt; arrange(RMSE)"
+    "section": "4.5 mexretail: Full Model Comparison",
+    "text": "4.5 mexretail: Full Model Comparison\n\nModels & CombinationsBaggingAccuracy\n\n\n\n\nCode\nmexretail_fit &lt;- mexretail_train |&gt;\n  mable_spec()\n\nmexretail_fit\n\n\n# A mable: 1 x 7\n     tslm          ets                     arima                      stlf\n  &lt;model&gt;      &lt;model&gt;                   &lt;model&gt;                   &lt;model&gt;\n1  &lt;TSLM&gt; &lt;ETS(A,N,A)&gt; &lt;ARIMA(3,1,1)(1,1,1)[12]&gt; &lt;STL decomposition model&gt;\n# ℹ 3 more variables: prophet &lt;model&gt;, comb_equal &lt;model&gt;, comb_inv_var &lt;model&gt;\n\n\nCode\nmexretail_fc &lt;- mexretail_fit |&gt;\n  forecast(h = nrow(mexretail_test))\n\n\n\n\nCode\np &lt;- mexretail_fc |&gt; \n  autoplot(mexretail, level = NULL)\n\nggplotly(p, dynamicTicks = TRUE)\n\n\n\n\n\n\n\n\n\n\nCode\nset.seed(2025)\n\nmexretail_bag_mean &lt;- mexretail_train |&gt;\n  model(stl = STL(log(y) ~ trend(window = NULL) + season(window = \"periodic\"),\n                  robust = TRUE)) |&gt;\n  generate(\n    new_data             = mexretail_train,\n    times                = 100,\n    bootstrap_block_size = 12\n  ) |&gt;\n  select(-.model, -y) |&gt;\n  model(ets = ETS(.sim)) |&gt;\n  forecast(h = nrow(mexretail_test)) |&gt;\n  summarise(bagged_mean = mean(.mean))\n\n\n\n\n\n\nCode\nmexretail_accu_std &lt;- mexretail_fc |&gt;\n  accuracy(mexretail) |&gt;\n  select(.model, RMSE, MAE, MAPE)\n\nmexretail_accu_bag &lt;- mexretail_test |&gt;\n  left_join(mexretail_bag_mean, by = \"date\") |&gt;\n  as_tibble() |&gt;\n  summarise(\n    .model = \"bagging_ets\",\n    RMSE = sqrt(mean((y - bagged_mean)^2, na.rm = TRUE)),\n    MAE = mean(abs(y - bagged_mean), na.rm = TRUE),\n    MAPE = mean(abs((y - bagged_mean) / y), na.rm = TRUE) * 100\n  )\n\nbind_rows(mexretail_accu_std, mexretail_accu_bag) |&gt; arrange(RMSE)",
+    "crumbs": [
+      "4. Forecasting at scale",
+      "4.2 Bootstrapping, Bagging & Model Combinations"
+    ]
   },
   {
-    "objectID": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_draft.html#what-to-remember",
-    "href": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations_draft.html#what-to-remember",
+    "objectID": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations.html#nsw-accommodation-full-model-comparison",
+    "href": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations.html#nsw-accommodation-full-model-comparison",
+    "title": "4.2 Bootstrapping, Bagging & Model Combinations",
+    "section": "4.6 NSW Accommodation: Full Model Comparison",
+    "text": "4.6 NSW Accommodation: Full Model Comparison\nNSW is the richest comparison: it includes CPI as a covariate, so dynamic regression enters the mix.\n\nModels & CombinationsBaggingAccuracy\n\n\n\n\nCode\nnsw_fit &lt;- nsw_train |&gt;\n  model(                             \n1      tslm         = TSLM(y ~ trend()+ season() + CPI),\n      ets          = ets_spec,\n      arima        = ARIMA(y),         \n2      dynamic      = ARIMA(y ~ CPI),\n      stlf         = stlf_spec,       \n3      prophet      = prophet(y ~ CPI + season(period = \"year\", type = \"additive\")),\n      comb_equal   = comb_equal_spec, \n      comb_inv_var = comb_inv_var_spec\n    )  \n\nnsw_fit\n\nnsw_fc &lt;- nsw_fit |&gt;\n  forecast(new_data = nsw_test)\n\n\n\n1\n\nNSW has CPI available, so TSLM can use it as a predictor — unlike Beer and mexretail.\n\n2\n\nDynamic regression: ARIMA errors + CPI regressor.\n\n3\n\nProphet allows including predictors as well, so we use CPI here too.\n\n\n\n\n# A mable: 1 x 8\n     tslm          ets                             arima\n  &lt;model&gt;      &lt;model&gt;                           &lt;model&gt;\n1  &lt;TSLM&gt; &lt;ETS(A,N,A)&gt; &lt;ARIMA(1,0,0)(0,1,1)[4] w/ drift&gt;\n# ℹ 5 more variables: dynamic &lt;model&gt;, stlf &lt;model&gt;, prophet &lt;model&gt;,\n#   comb_equal &lt;model&gt;, comb_inv_var &lt;model&gt;\n\n\n\n\nCode\np &lt;- nsw_fc |&gt; \n  autoplot(nsw, level = NULL)\n\nggplotly(p, dynamicTicks = TRUE)\n\n\n\n\n\n\n\n\n\n\nCode\nset.seed(2025)\n\nnsw_bag_mean &lt;- nsw_train |&gt;\n  model(stl = STL(log(y) ~ trend(window = NULL) + season(window = \"periodic\"),\n                  robust = TRUE)) |&gt;\n  generate(\n    new_data             = nsw_train,\n    times                = 100,\n    bootstrap_block_size = 4\n  ) |&gt;\n  select(-.model, -y) |&gt;\n  model(ets = ETS(.sim)) |&gt;\n  forecast(h = nrow(nsw_test)) |&gt;\n  summarise(bagged_mean = mean(.mean))\n\n\n\n\n\n\nCode\nnsw_accu_std &lt;- nsw_fc |&gt;\n  accuracy(nsw) |&gt;\n  select(.model, RMSE, MAE, MAPE)\n\nnsw_accu_bag &lt;- nsw_test |&gt;\n  left_join(nsw_bag_mean, by = \"Date\") |&gt;\n  as_tibble() |&gt;\n  summarise(\n    .model = \"bagging_ets\",\n    RMSE = sqrt(mean((y - bagged_mean)^2, na.rm = TRUE)),\n    MAE = mean(abs(y - bagged_mean), na.rm = TRUE),\n    MAPE = mean(abs((y - bagged_mean) / y), na.rm = TRUE) * 100\n  )\n\nbind_rows(nsw_accu_std, nsw_accu_bag) |&gt; arrange(RMSE)",
+    "crumbs": [
+      "4. Forecasting at scale",
+      "4.2 Bootstrapping, Bagging & Model Combinations"
+    ]
+  },
+  {
+    "objectID": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations.html#what-to-remember",
+    "href": "docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations.html#what-to-remember",
     "title": "4.2 Bootstrapping, Bagging & Model Combinations",
     "section": "5.1 What to remember",
-    "text": "5.1 What to remember\n\n\n\n\n\n\nImportantKey points\n\n\n\n\nForecast combinations work because diverse models make different errors — one of the most robust findings in forecasting.\nEqual-weight averaging is surprisingly hard to beat. Complex weighted schemes need careful validation to justify the added complexity.\nBagging averages across simulated alternative histories, not different models. Most useful for short or volatile series.\nMore complex ≠ always better. Always compare on a held-out test set — sometimes a single model wins.\nBagged forecasts cannot be combined with standard fable models inside combination_ensemble() — compare them via accuracy() separately.\n\n\n\n\n5.1.1 When to use each strategy\n\n\n\n\n\n\n\n\nStrategy\nUse when…\nAvoid when…\n\n\n\n\nEqual-weight combination\nModels have comparable accuracy, diverse error structures\nAll models fail the same way\n\n\ninv_var combination\nOne model is clearly better in-sample\nSample too small to reliably estimate variances\n\n\nBagging\nSeries is short or volatile\nSeries is long and stable — marginal gain rarely justifies computation\n\n\nNo combination\nOne model dominates clearly on the test set\n—\n\n\n\nFPP3 references: §12.5 Bootstrapping and bagging · §12.6 Forecast combinations"
+    "text": "5.1 What to remember\n\n\n\n\n\n\nImportantKey points\n\n\n\n\nForecast combinations work because diverse models make different errors — one of the most robust findings in forecasting.\nEqual-weight averaging is surprisingly hard to beat. Complex weighted schemes need careful validation to justify the added complexity.\nBagging averages across simulated alternative histories, not different models. Most useful for short or volatile series.\nMore complex ≠ always better. Always compare on a held-out test set — sometimes a single model wins.\nBagged forecasts cannot be combined with standard fable models inside combination_ensemble() — compare them via accuracy() separately.\n\n\n\n\n5.1.1 When to use each strategy\n\n\n\n\n\n\n\n\nStrategy\nUse when…\nAvoid when…\n\n\n\n\nEqual-weight combination\nModels have comparable accuracy, diverse error structures\nAll models fail the same way\n\n\ninv_var combination\nOne model is clearly better in-sample\nSample too small to reliably estimate variances\n\n\nBagging\nSeries is short or volatile\nSeries is long and stable — marginal gain rarely justifies computation\n\n\nNo combination\nOne model dominates clearly on the test set\n—\n\n\n\nFPP3 references: §12.5 Bootstrapping and bagging · §12.6 Forecast combinations",
+    "crumbs": [
+      "4. Forecasting at scale",
+      "4.2 Bootstrapping, Bagging & Model Combinations"
+    ]
   },
   {
     "objectID": "docs/modules/module_4/01_complex_seasonality/complex_seasonality_pres.html#from-half-hourly-to-hourly",

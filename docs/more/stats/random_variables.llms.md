@@ -10,7 +10,7 @@ Pablo Benavides-Herrera
 
 Modified
 
-June 25, 2026
+July 8, 2026
 
 This document is **optional**, but strongly recommended.
 

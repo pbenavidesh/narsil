@@ -2,17 +2,19 @@
 
 Modified
 
-June 25, 2026
+July 8, 2026
 
 Code
 
 ``` r
 library(plotly)    #<1>
 library(tidyquant) #<2>
+library(fable.prophet) #<3>
 ```
 
 1.  For interactive plots.
 2.  For retrieving `mexretail` from FRED.
+3.  Neccesary for fitting `prophet` models.
 
 # 1 Where We Are
 
@@ -182,7 +184,7 @@ cement_fc2 <- cement_fit2 |>
   forecast(h = nrow(cement_test))
 
 cement_accu <- cement_fc2 |>
-  accuracy(cement_test) |>
+  accuracy(cement) |>
   select(.model, RMSE, MAE, MAPE, MASE) |>
   arrange(RMSE)
 
@@ -225,7 +227,7 @@ cement_stl <- cement_train |>
 
 Code
 
-``` r
+``` numberSource
 set.seed(2025)
 
 cement_sim <- cement_stl |>
@@ -279,6 +281,7 @@ Code
 ``` r
 cement_bag_accu <- cement_test |>
   left_join(cement_bag_mean, by = "Quarter") |>
+  as_tibble() |> 
   summarise(
     .model = "bagging_ets",
     RMSE   = sqrt(mean((Cement - bagged_mean)^2)),
@@ -315,40 +318,135 @@ We now apply both strategies to three series from across the course, putting eve
 
 ## 4.2 Data Setup
 
+## Beer production
+
 Code
 
-``` r
-# --- Beer ---
+``` numberSource
 beer <- aus_production |>
   select(Quarter, Beer) |>
-  filter(!is.na(Beer))
+  filter_index("1990 Q1" ~ .) |> 
+  rename(y = Beer)
 
 beer_train <- beer |> filter(year(Quarter) <= 2006)
 beer_test  <- beer |> filter(year(Quarter) >  2006)
+```
 
-# --- mexretail ---
+## MEXRETAIL
+
+Code
+
+``` numberSource
 mexretail <- tq_get(
   "MEXSLRTTO01IXOBM",
-  get  = "economic.data",
-  from = "1985-01-01"
+  get = "economic.data",
+  from = "1985-01-01",
+  to = "2019-12-31"
 ) |>
   mutate(date = yearmonth(date)) |>
   rename(y = price) |>
   as_tsibble(index = date)
 
-mexretail_train <- mexretail |> filter(year(date) <= 2019)
-mexretail_test  <- mexretail |> filter(year(date) >  2019)
-
-# --- NSW accommodation ---
-nsw <- aus_accommodation |>
-  filter(State == "New South Wales") |>
-  select(Quarter, Takings, CPI)
-
-nsw_train <- nsw |> filter(year(Quarter) <= 2012)
-nsw_test  <- nsw |> filter(year(Quarter) >  2012)
+mexretail_train <- mexretail |> filter(year(date) <= 2017)
+mexretail_test <- mexretail |> filter(year(date) > 2017)
 ```
 
-## 4.3 Beer: Full Model Comparison
+## NSW accomodation
+
+Code
+
+``` numberSource
+nsw <- aus_accommodation |>
+  filter(State == "New South Wales") |>
+  select(Date, Takings, CPI) |>
+  rename(y = Takings)
+
+nsw_train <- nsw |> filter(year(Date) <= 2012)
+nsw_test <- nsw |> filter(year(Date) > 2012)
+```
+
+> **IMPORTANT:**
+>
+> We rename our forecast variable to `y` in every `tsibble` so that we can reuse the model specs and save lines of code.
+
+## 4.3 Model Specs
+
+We will use the same models across the three datasets:
+
+## Model specs
+
+Code
+
+``` r
+tslm_spec <- TSLM(log(y) ~ trend() + season()) #<1>
+
+ets_spec <- ETS(log(y))
+
+arima_spec <- ARIMA(log(y))
+
+stlf_spec <- decomposition_model(
+  STL(
+    log(y) ~ trend(window = NULL) + season(window = "periodic"),
+    robust = TRUE
+  ),
+  ETS(season_adjust ~ season("N"))
+)
+
+prophet_spec <- prophet(y) #<2>
+```
+
+1.  TSLM with deterministic trend and seasonal dummies — no external regressors available for Beer.
+2.  Requires `fable.prophet`. Uses default automatic specification.
+
+## Combination specs
+
+Code
+
+``` r
+comb_equal_spec <- combination_ensemble(
+  tslm_spec,
+  ets_spec,
+  arima_spec,
+  stlf_spec,
+  prophet_spec,
+  weights = "equal" #<3>
+)
+
+comb_inv_var_spec <- combination_ensemble(
+  tslm_spec,
+  ets_spec,
+  arima_spec,
+  stlf_spec,
+  prophet_spec,
+  weights = "inv_var" #<4>
+)
+```
+
+1.  Combining all the models using equal weights.
+2.  Combining all the models using an inverse variance weighted ensemble.
+
+## `mable` specs
+
+Code
+
+``` r
+mable_spec <- function(.train_tsb) {   #<5>  
+  .train_tsb |>                        #<5> 
+    model(                             #<5> 
+      tslm         = tslm_spec,        #<5> 
+      ets          = ets_spec,         #<5> 
+      arima        = arima_spec,       #<5> 
+      stlf         = stlf_spec,        #<5>
+      prophet      = prophet_spec,     #<5>
+      comb_equal   = comb_equal_spec,  #<5>
+      comb_inv_var = comb_inv_var_spec #<5>
+    )                                  #<5>
+}
+```
+
+1.  We define a function containing the `mable` to fit with all our model specifications.
+
+## 4.4 Beer: Full Model Comparison
 
 ## Models & Combinations
 
@@ -356,48 +454,30 @@ Code
 
 ``` r
 beer_fit <- beer_train |>
-  model(
-    tslm         = TSLM(Beer ~ trend() + season()),        #<1>
-    ets          = ETS(Beer),
-    arima        = ARIMA(Beer),
-    stlf         = decomposition_model(
-                     STL(Beer ~ trend(window = NULL) +
-                           season(window = "periodic"),
-                         robust = TRUE),
-                     ETS(season_adjust ~ season("N"))
-                   ),
-    prophet      = prophet(Beer),                          #<2>
-    comb_equal   = combination_ensemble(
-                     TSLM(Beer ~ trend() + season()),
-                     ETS(Beer),
-                     ARIMA(Beer),
-                     decomposition_model(
-                       STL(Beer ~ trend(window = NULL) +
-                             season(window = "periodic"),
-                           robust = TRUE),
-                       ETS(season_adjust ~ season("N"))
-                     ),
-                     prophet(Beer),
-                     weights = "equal"
-                   ),
-    comb_inv_var = combination_ensemble(
-                     TSLM(Beer ~ trend() + season()),
-                     ETS(Beer),
-                     ARIMA(Beer),
-                     decomposition_model(
-                       STL(Beer ~ trend(window = NULL) +
-                             season(window = "periodic"),
-                           robust = TRUE),
-                       ETS(season_adjust ~ season("N"))
-                     ),
-                     prophet(Beer),
-                     weights = "inv_var"
-                   )
-  )
+  mable_spec() #<1>
+
+beer_fit
+
+beer_fc <- beer_fit |>
+  forecast(h = nrow(beer_test))
 ```
 
-1.  TSLM with deterministic trend and seasonal dummies — no external regressors available for Beer.
-2.  Requires `fable.prophet`. Uses default automatic specification.
+1.  We simply use our `mable_spec()` function to fit all our models.
+
+    # A mable: 1 x 7
+         tslm           ets                    arima                      stlf
+      <model>       <model>                  <model>                   <model>
+    1  <TSLM> <ETS(A,Ad,A)> <ARIMA(1,0,2)(0,1,2)[4]> <STL decomposition model>
+    # ℹ 3 more variables: prophet <model>, comb_equal <model>, comb_inv_var <model>
+
+Code
+
+``` r
+p <- beer_fc |> 
+  autoplot(beer |> filter_index("1998 Q1" ~ .), level = NULL)
+
+ggplotly(p, dynamicTicks = TRUE)
+```
 
 ## Bagging
 
@@ -407,18 +487,17 @@ Code
 set.seed(2025)
 
 beer_bag_mean <- beer_train |>
-  model(stl = STL(Beer ~ trend(window = NULL) +
-                    season(window = "periodic"),
+  model(stl = STL(log(y) ~ trend(window = NULL) + season(window = "periodic"),
                   robust = TRUE)) |>
   generate(
     new_data             = beer_train,
     times                = 100,
     bootstrap_block_size = 4
   ) |>
-  select(-.model, -Beer) |>
+  select(-.model, -y) |>
   model(ets = ETS(.sim)) |>
   forecast(h = nrow(beer_test)) |>
-  summarise(bagged_mean = mean(.mean), .by = Quarter)
+  summarise(bagged_mean = mean(.mean))
 ```
 
 ## Accuracy
@@ -426,24 +505,24 @@ beer_bag_mean <- beer_train |>
 Code
 
 ``` r
-beer_accu_std <- beer_fit |>
-  forecast(h = nrow(beer_test)) |>
-  accuracy(beer_test) |>
+beer_accu_std <- beer_fc |>
+  accuracy(beer) |>
   select(.model, RMSE, MAE, MAPE)
 
 beer_accu_bag <- beer_test |>
   left_join(beer_bag_mean, by = "Quarter") |>
+  as_tibble() |> 
   summarise(
     .model = "bagging_ets",
-    RMSE   = sqrt(mean((Beer - bagged_mean)^2)),
-    MAE    = mean(abs(Beer - bagged_mean)),
-    MAPE   = mean(abs((Beer - bagged_mean) / Beer)) * 100
+    RMSE   = sqrt(mean((y - bagged_mean)^2)),
+    MAE    = mean(abs(y - bagged_mean)),
+    MAPE   = mean(abs((y - bagged_mean) / y)) * 100
   )
 
 bind_rows(beer_accu_std, beer_accu_bag) |> arrange(RMSE)
 ```
 
-## 4.4 mexretail: Full Model Comparison
+## 4.5 mexretail: Full Model Comparison
 
 ## Models & Combinations
 
@@ -451,44 +530,31 @@ Code
 
 ``` r
 mexretail_fit <- mexretail_train |>
-  model(
-    tslm         = TSLM(log(y) ~ trend() + season()),
-    ets          = ETS(y),
-    arima        = ARIMA(log(y)),
-    stlf         = decomposition_model(
-                     STL(log(y) ~ trend(window = NULL) +
-                           season(window = "periodic"),
-                         robust = TRUE),
-                     ETS(season_adjust ~ season("N"))
-                   ),
-    prophet      = prophet(y),
-    comb_equal   = combination_ensemble(
-                     TSLM(log(y) ~ trend() + season()),
-                     ETS(y),
-                     ARIMA(log(y)),
-                     decomposition_model(
-                       STL(log(y) ~ trend(window = NULL) +
-                             season(window = "periodic"),
-                           robust = TRUE),
-                       ETS(season_adjust ~ season("N"))
-                     ),
-                     prophet(y),
-                     weights = "equal"
-                   ),
-    comb_inv_var = combination_ensemble(
-                     TSLM(log(y) ~ trend() + season()),
-                     ETS(y),
-                     ARIMA(log(y)),
-                     decomposition_model(
-                       STL(log(y) ~ trend(window = NULL) +
-                             season(window = "periodic"),
-                           robust = TRUE),
-                       ETS(season_adjust ~ season("N"))
-                     ),
-                     prophet(y),
-                     weights = "inv_var"
-                   )
-  )
+  mable_spec()
+
+mexretail_fit
+```
+
+    # A mable: 1 x 7
+         tslm          ets                     arima                      stlf
+      <model>      <model>                   <model>                   <model>
+    1  <TSLM> <ETS(A,N,A)> <ARIMA(3,1,1)(1,1,1)[12]> <STL decomposition model>
+    # ℹ 3 more variables: prophet <model>, comb_equal <model>, comb_inv_var <model>
+
+Code
+
+``` r
+mexretail_fc <- mexretail_fit |>
+  forecast(h = nrow(mexretail_test))
+```
+
+Code
+
+``` r
+p <- mexretail_fc |> 
+  autoplot(mexretail, level = NULL)
+
+ggplotly(p, dynamicTicks = TRUE)
 ```
 
 ## Bagging
@@ -499,8 +565,7 @@ Code
 set.seed(2025)
 
 mexretail_bag_mean <- mexretail_train |>
-  model(stl = STL(log(y) ~ trend(window = NULL) +
-                    season(window = "periodic"),
+  model(stl = STL(log(y) ~ trend(window = NULL) + season(window = "periodic"),
                   robust = TRUE)) |>
   generate(
     new_data             = mexretail_train,
@@ -510,7 +575,7 @@ mexretail_bag_mean <- mexretail_train |>
   select(-.model, -y) |>
   model(ets = ETS(.sim)) |>
   forecast(h = nrow(mexretail_test)) |>
-  summarise(bagged_mean = mean(.mean), .by = date)
+  summarise(bagged_mean = mean(.mean))
 ```
 
 ## Accuracy
@@ -518,26 +583,26 @@ mexretail_bag_mean <- mexretail_train |>
 Code
 
 ``` r
-mexretail_accu_std <- mexretail_fit |>
-  forecast(h = nrow(mexretail_test)) |>
-  accuracy(mexretail_test) |>
+mexretail_accu_std <- mexretail_fc |>
+  accuracy(mexretail) |>
   select(.model, RMSE, MAE, MAPE)
 
 mexretail_accu_bag <- mexretail_test |>
   left_join(mexretail_bag_mean, by = "date") |>
+  as_tibble() |>
   summarise(
     .model = "bagging_ets",
-    RMSE   = sqrt(mean((y - bagged_mean)^2, na.rm = TRUE)),
-    MAE    = mean(abs(y - bagged_mean), na.rm = TRUE),
-    MAPE   = mean(abs((y - bagged_mean) / y), na.rm = TRUE) * 100
+    RMSE = sqrt(mean((y - bagged_mean)^2, na.rm = TRUE)),
+    MAE = mean(abs(y - bagged_mean), na.rm = TRUE),
+    MAPE = mean(abs((y - bagged_mean) / y), na.rm = TRUE) * 100
   )
 
 bind_rows(mexretail_accu_std, mexretail_accu_bag) |> arrange(RMSE)
 ```
 
-## 4.5 NSW Accommodation: Full Model Comparison
+## 4.6 NSW Accommodation: Full Model Comparison
 
-NSW is the richest comparison: it includes CPI as a covariate, so dynamic regression enters the mix. Note that `dynreg` is excluded from `combination_ensemble()` — mixing models with and without external regressors creates structural incompatibilities inside `fable`. In practice you would build a separate combination for models that share the same predictor set.
+NSW is the richest comparison: it includes CPI as a covariate, so dynamic regression enters the mix.
 
 ## Models & Combinations
 
@@ -545,50 +610,42 @@ Code
 
 ``` r
 nsw_fit <- nsw_train |>
-  model(
-    tslm         = TSLM(log(Takings) ~ trend() + season() + CPI), #<1>
-    ets          = ETS(log(Takings)),
-    arima        = ARIMA(log(Takings)),
-    dynreg       = ARIMA(log(Takings) ~ CPI),                     #<2>
-    stlf         = decomposition_model(
-                     STL(log(Takings) ~ trend(window = NULL) +
-                           season(window = "periodic"),
-                         robust = TRUE),
-                     ETS(season_adjust ~ season("N"))
-                   ),
-    prophet      = prophet(log(Takings)),
-    comb_equal   = combination_ensemble(                           #<3>
-                     TSLM(log(Takings) ~ trend() + season() + CPI),
-                     ETS(log(Takings)),
-                     ARIMA(log(Takings)),
-                     decomposition_model(
-                       STL(log(Takings) ~ trend(window = NULL) +
-                             season(window = "periodic"),
-                           robust = TRUE),
-                       ETS(season_adjust ~ season("N"))
-                     ),
-                     prophet(log(Takings)),
-                     weights = "equal"
-                   ),
-    comb_inv_var = combination_ensemble(
-                     TSLM(log(Takings) ~ trend() + season() + CPI),
-                     ETS(log(Takings)),
-                     ARIMA(log(Takings)),
-                     decomposition_model(
-                       STL(log(Takings) ~ trend(window = NULL) +
-                             season(window = "periodic"),
-                           robust = TRUE),
-                       ETS(season_adjust ~ season("N"))
-                     ),
-                     prophet(log(Takings)),
-                     weights = "inv_var"
-                   )
-  )
+  model(                             
+      tslm         = TSLM(y ~ trend()+ season() + CPI),  #<1>     
+      ets          = ets_spec,
+      arima        = ARIMA(y),         
+      dynamic      = ARIMA(y ~ CPI),                     #<2>  
+      stlf         = stlf_spec,       
+      prophet      = prophet(y ~ CPI + season(period = "year", type = "additive")), #<3>   
+      comb_equal   = comb_equal_spec, 
+      comb_inv_var = comb_inv_var_spec
+    )  
+
+nsw_fit
+
+nsw_fc <- nsw_fit |>
+  forecast(new_data = nsw_test)
 ```
 
 1.  NSW has CPI available, so TSLM can use it as a predictor — unlike Beer and mexretail.
-2.  Dynamic regression: ARIMA errors + CPI regressor. Kept outside the combination (see note above).
-3.  The combination includes TSLM with CPI but not `dynreg` — both use CPI but their structures are incompatible inside `combination_ensemble()`.
+2.  Dynamic regression: ARIMA errors + CPI regressor.
+3.  Prophet allows including predictors as well, so we use CPI here too.
+
+    # A mable: 1 x 8
+         tslm          ets                             arima
+      <model>      <model>                           <model>
+    1  <TSLM> <ETS(A,N,A)> <ARIMA(1,0,0)(0,1,1)[4] w/ drift>
+    # ℹ 5 more variables: dynamic <model>, stlf <model>, prophet <model>,
+    #   comb_equal <model>, comb_inv_var <model>
+
+Code
+
+``` r
+p <- nsw_fc |> 
+  autoplot(nsw, level = NULL)
+
+ggplotly(p, dynamicTicks = TRUE)
+```
 
 ## Bagging
 
@@ -598,18 +655,17 @@ Code
 set.seed(2025)
 
 nsw_bag_mean <- nsw_train |>
-  model(stl = STL(log(Takings) ~ trend(window = NULL) +
-                    season(window = "periodic"),
+  model(stl = STL(log(y) ~ trend(window = NULL) + season(window = "periodic"),
                   robust = TRUE)) |>
   generate(
     new_data             = nsw_train,
     times                = 100,
     bootstrap_block_size = 4
   ) |>
-  select(-.model, -Takings) |>
+  select(-.model, -y) |>
   model(ets = ETS(.sim)) |>
   forecast(h = nrow(nsw_test)) |>
-  summarise(bagged_mean = mean(.mean), .by = Quarter)
+  summarise(bagged_mean = mean(.mean))
 ```
 
 ## Accuracy
@@ -617,18 +673,18 @@ nsw_bag_mean <- nsw_train |>
 Code
 
 ``` r
-nsw_accu_std <- nsw_fit |>
-  forecast(h = nrow(nsw_test), new_data = nsw_test) |>
-  accuracy(nsw_test) |>
+nsw_accu_std <- nsw_fc |>
+  accuracy(nsw) |>
   select(.model, RMSE, MAE, MAPE)
 
 nsw_accu_bag <- nsw_test |>
-  left_join(nsw_bag_mean, by = "Quarter") |>
+  left_join(nsw_bag_mean, by = "Date") |>
+  as_tibble() |>
   summarise(
     .model = "bagging_ets",
-    RMSE   = sqrt(mean((Takings - bagged_mean)^2, na.rm = TRUE)),
-    MAE    = mean(abs(Takings - bagged_mean), na.rm = TRUE),
-    MAPE   = mean(abs((Takings - bagged_mean) / Takings), na.rm = TRUE) * 100
+    RMSE = sqrt(mean((y - bagged_mean)^2, na.rm = TRUE)),
+    MAE = mean(abs(y - bagged_mean), na.rm = TRUE),
+    MAPE = mean(abs((y - bagged_mean) / y), na.rm = TRUE) * 100
   )
 
 bind_rows(nsw_accu_std, nsw_accu_bag) |> arrange(RMSE)
