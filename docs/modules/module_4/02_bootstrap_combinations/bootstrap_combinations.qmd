@@ -590,7 +590,7 @@ beer_test  <- beer |> filter(year(Quarter) >  2006)
 
 ```{r}
 #| label: mexretail-data-setup
-#| code-line-numbers: "7"
+#| code-line-numbers: "8"
 
 mexretail <- tq_get(
   "MEXSLRTTO01IXOBM",
@@ -722,7 +722,8 @@ mable_spec <- function(.train_tsb) {   #<5>
 beer_fit <- beer_train |>
   mable_spec() #<1>
 
-beer_fit
+beer_fit |> 
+  glimpse()
 
 beer_fc <- beer_fit |>
   forecast(h = nrow(beer_test))
@@ -801,7 +802,8 @@ bind_rows(beer_accu_std, beer_accu_bag) |> arrange(RMSE)
 mexretail_fit <- mexretail_train |>
   mable_spec()
 
-mexretail_fit
+mexretail_fit |> 
+  glimpse()
 
 mexretail_fc <- mexretail_fit |>
   forecast(h = nrow(mexretail_test))
@@ -893,7 +895,8 @@ nsw_fit <- nsw_train |>
       comb_inv_var = comb_inv_var_spec
     )  
 
-nsw_fit
+nsw_fit |> 
+  glimpse()
 
 nsw_fc <- nsw_fit |>
   forecast(new_data = nsw_test)
