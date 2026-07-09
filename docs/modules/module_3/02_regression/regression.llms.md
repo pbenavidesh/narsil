@@ -2,7 +2,7 @@
 
 Modified
 
-July 8, 2026
+July 9, 2026
 
 Code
 
@@ -144,20 +144,37 @@ where each of these is an academic paper
 
 ------------------------------------------------------------------------
 
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The distance between Jupiter and the Sun and the second variable is The number of secretaries in Alaska. The chart goes from 2010 to 2022, and the two variables track closely in value over that time.](spurious/correlation/image/2733_the-distance-between-jupiter-and-the-sun_correlates-with_the-number-of-secretaries-in-alaska.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The distance between Jupiter and the Sun and the second variable is The number of secretaries in Alaska.  The chart goes from 2010 to 2022, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/2733_the-distance-between-jupiter-and-the-sun_correlates-with_the-number-of-secretaries-in-alaska_mobile.svg)  
-**View details about correlation \#2,733**](spurious/correlation/2733_the-distance-between-jupiter-and-the-sun_correlates-with_the-number-of-secretaries-in-alaska)  
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Yogurt consumption and the second variable is Google searches for 'i cant even'. The chart goes from 2004 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/2203_yogurt-consumption_correlates-with_google-searches-for-i-cant-even.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Yogurt consumption and the second variable is Google searches for 'i cant even'.  The chart goes from 2004 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/2203_yogurt-consumption_correlates-with_google-searches-for-i-cant-even_mobile.svg)  
+**View details about correlation \#2,203**](spurious/correlation/2203_yogurt-consumption_correlates-with_google-searches-for-i-cant-even)  
   
 
 ^(Show scatterplot)
 
-![](spurious/correlation/scatterplot/2733_the-distance-between-jupiter-and-the-sun_correlates-with_the-number-of-secretaries-in-alaska_scatterplot.png)
+![](spurious/correlation/scatterplot/2203_yogurt-consumption_correlates-with_google-searches-for-i-cant-even_scatterplot.png)
 
   
   
 
 *What else correlates?*  
-[The distance between Jupiter and the Sun](spurious/variable?id=1928) · [all planets](spurious/view-all-variables/planets)  
-[The number of secretaries in Alaska](spurious/variable?id=17805) · [all cccupations](spurious/view-all-variables/occupations)  
+[Yogurt consumption](spurious/variable?id=568) · [all food](spurious/view-all-variables/farmingfood)  
+[Google searches for 'i cant even'](spurious/variable?id=1525) · [all google searches](spurious/view-all-variables/google)  
+
+------------------------------------------------------------------------
+
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the first name Sunny and the second variable is Solar power generated in Egypt. The chart goes from 1983 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/1902_popularity-of-the-first-name-sunny_correlates-with_solar-power-generated-in-egypt.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the first name Sunny and the second variable is Solar power generated in Egypt.  The chart goes from 1983 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1902_popularity-of-the-first-name-sunny_correlates-with_solar-power-generated-in-egypt_mobile.svg)  
+**View details about correlation \#1,902**](spurious/correlation/1902_popularity-of-the-first-name-sunny_correlates-with_solar-power-generated-in-egypt)  
+  
+
+^(Show scatterplot)
+
+![](spurious/correlation/scatterplot/1902_popularity-of-the-first-name-sunny_correlates-with_solar-power-generated-in-egypt_scatterplot.png)
+
+  
+  
+
+*What else correlates?*  
+[Popularity of the first name Sunny](spurious/variable?id=3898) · [all first names](spurious/view-all-variables/babynames)  
+[Solar power generated in Egypt](spurious/variable?id=23644) · [all energy](spurious/view-all-variables/energy)  
 
 ------------------------------------------------------------------------
 
@@ -481,23 +498,6 @@ where each of these is an academic paper
 *What else correlates?*  
 [Popularity of the 'floss dance' meme](spurious/variable?id=25130) · [all memes](spurious/view-all-variables/memes)  
 [Jet fuel used in Kazakhstan](spurious/variable?id=24586) · [all energy](spurious/view-all-variables/energy)  
-
-------------------------------------------------------------------------
-
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Total Runs Scored by Chicago Cubs Team in National League (Central and East Division) and the second variable is The divorce rate in Connecticut. The chart goes from 1999 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/1173_total-runs-scored-by-chicago-cubs-team-in-national-league-central-and-east-division_correlates-with_the-divorce-rate-in-connecticut.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Total Runs Scored by Chicago Cubs Team in National League (Central and East Division) and the second variable is The divorce rate in Connecticut.  The chart goes from 1999 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1173_total-runs-scored-by-chicago-cubs-team-in-national-league-central-and-east-division_correlates-with_the-divorce-rate-in-connecticut_mobile.svg)  
-**View details about correlation \#1,173**](spurious/correlation/1173_total-runs-scored-by-chicago-cubs-team-in-national-league-central-and-east-division_correlates-with_the-divorce-rate-in-connecticut)  
-  
-
-^(Show scatterplot)
-
-![](spurious/correlation/scatterplot/1173_total-runs-scored-by-chicago-cubs-team-in-national-league-central-and-east-division_correlates-with_the-divorce-rate-in-connecticut_scatterplot.png)
-
-  
-  
-
-*What else correlates?*  
-[Total Runs Scored by Chicago Cubs Team in National League (Central and East Division)](spurious/variable?id=206) · [all weird & wacky](spurious/view-all-variables/weirdwacky)  
-[The divorce rate in Connecticut](spurious/variable?id=19793) · [all random state specific](spurious/view-all-variables/statespecific)  
 
 ------------------------------------------------------------------------
 

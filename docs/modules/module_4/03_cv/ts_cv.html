@@ -1,0 +1,2053 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="">
+
+<title>Time Series Cross-Validation – Time Series Forecasting</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../../">
+<link href="../../../../docs/modules/module_4/04_hierarchical/hierarchical.html" rel="next">
+<link href="../../../../docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations.html" rel="prev">
+<link href="../../../../images/narsil_logo.png" rel="icon" type="image/png">
+<script src="../../../../site_libs/cookie-consent/cookie-consent.js"></script>
+<link href="../../../../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
+<script src="../../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-6d40f8af7092f34acea1908532066003.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-dark-cac0433bb97fa58dc0fc6599c25c149a.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-6d40f8af7092f34acea1908532066003.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../../site_libs/bootstrap/bootstrap-aab9513c491cfcc7371c3c38ef8cfb4b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../../../site_libs/bootstrap/bootstrap-dark-a87e31ea9844b0638a7f0ecb9688f18e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../../../site_libs/bootstrap/bootstrap-aab9513c491cfcc7371c3c38ef8cfb4b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-BRNYXN29K7"></script>
+
+<script type="text/plain" cookie-consent="tracking">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-BRNYXN29K7', { 'anonymize_ip': true});
+</script>
+
+<script type="text/javascript" charset="UTF-8">
+document.addEventListener('DOMContentLoaded', function () {
+cookieconsent.run({
+  "notice_banner_type":"simple",
+  "consent_type":"express",
+  "palette":"light",
+  "language":"en",
+  "page_load_consent_levels":["strictly-necessary"],
+  "notice_banner_reject_button_hide":false,
+  "preferences_center_close_button_hide":false,
+  "website_name":""
+  ,
+"language":"en"
+  });
+});
+</script> 
+  
+<style>html{ scroll-behavior: smooth; }</style>
+<link href="../../../../site_libs/htmltools-fill-0.5.9/fill.css" rel="stylesheet">
+<script src="../../../../site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<script src="../../../../site_libs/plotly-binding-4.12.0/plotly.js"></script>
+<script src="../../../../site_libs/typedarray-0.1/typedarray.min.js"></script>
+<script src="../../../../site_libs/jquery-3.5.1/jquery.min.js"></script>
+<link href="../../../../site_libs/crosstalk-1.2.2/css/crosstalk.min.css" rel="stylesheet">
+<script src="../../../../site_libs/crosstalk-1.2.2/js/crosstalk.min.js"></script>
+<link href="../../../../site_libs/plotly-htmlwidgets-css-2.25.2/plotly-htmlwidgets.css" rel="stylesheet">
+<script src="../../../../site_libs/plotly-main-2.25.2/plotly-latest.min.js"></script>
+<link href="../../../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="../../../../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+
+
+<meta property="og:title" content="Time Series Cross-Validation – Time Series Forecasting">
+<meta property="og:description" content="Course materials for Time Series Forecasting at ITESO — covering decomposition, ETS, ARIMA, regression, dynamic regression, Prophet, and hierarchical forecasting using R and the tidyverts ecosystem.">
+<meta property="og:image" content="https://pbenavidesh.github.io/narsil/docs/modules/module_4/03_cv/ts_cv_files/figure-revealjs/fold-diagram-render-1.png">
+<meta property="og:site_name" content="Time Series Forecasting">
+<meta property="og:image:height" content="960">
+<meta property="og:image:width" content="1920">
+<meta name="twitter:title" content="Time Series Cross-Validation – Time Series Forecasting">
+<meta name="twitter:description" content="Course materials for Time Series Forecasting at ITESO — covering decomposition, ETS, ARIMA, regression, dynamic regression, Prophet, and hierarchical forecasting using R and the tidyverts ecosystem.">
+<meta name="twitter:image" content="https://pbenavidesh.github.io/narsil/docs/modules/module_4/03_cv/ts_cv_files/figure-revealjs/fold-diagram-render-1.png">
+<meta name="twitter:creator" content="@PabsBenavides">
+<meta name="twitter:image-height" content="960">
+<meta name="twitter:image-width" content="1920">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../../../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../../../images/iteso_logo_blanco.png" alt="" class="navbar-logo light-content">
+    <img src="../../../../images/iteso_logo_blanco.png" alt="" class="navbar-logo dark-content">
+    </a>
+    <a class="navbar-brand" href="../../../../index.html">
+    <span class="navbar-title">Time Series Forecasting</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../docs/modules/index.html"> 
+<span class="menu-text">Modules</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../docs/exercises/index.html"> 
+<span class="menu-text">Exercises</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../docs/more/index.html"> 
+<span class="menu-text">More</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../docs/about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-elendil-ta" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+      <i class="bi bi-robot" role="img">
+</i> 
+ <span class="menu-text">Elendil TA</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-elendil-ta">    
+        <li>
+    <a class="dropdown-item" href="../../../../docs/more/elendil-ta/index.html"><i class="bi bi-claude" role="img">
+</i> 
+ <span class="dropdown-text">Claude Skill</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://chatgpt.com/g/g-68e6907c12a48191a07fb0888500a7fa-elendil-ta" target="_blank"><i class="bi bi-openai" role="img">
+</i> 
+ <span class="dropdown-text">Custom GPT</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools tools-wide">
+    <a href="https://github.com/pbenavidesh/narsil" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../../docs/modules/module_4/01_complex_seasonality/complex_seasonality.html">4. Forecasting at scale</a></li><li class="breadcrumb-item"><a href="../../../../docs/modules/module_4/03_cv/ts_cv.html">4.3 Time Series Cross-Validation</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+  <div id="quarto-announcement" data-announcement-id="c3ea80d6de2bba97e886d34031327e60" class="alert alert-primary hidden"><i class="bi bi-megaphone quarto-announcement-icon"></i><div class="quarto-announcement-content">
+<p><strong>Elendil TA</strong> is now available for Claude! <a href="../../../../docs/more/elendil-ta/index.html">Install it here</a> and get course-aware AI help for your time series questions.</p>
+</div><i class="bi bi-x-lg quarto-announcement-action"></i></div>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false">
+ <span class="menu-text">1. Forecasting models based on decomposition methods</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../docs/modules/module_1/00_intro/intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1.0 Introduction</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../docs/modules/module_1/01_time_series/r_time_series.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1.1 RStudio, R, and Time Series</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../docs/modules/module_1/02_ts_dcmp/ts_dcmp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1.2 Time Series Decomposition</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../docs/modules/module_1/03_fcst/forecasting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1.3 Forecasting principles</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../docs/modules/module_1/04_model_diagnostics/model_diagnostics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1.4 Model Diagnostics and Advanced Forecasting</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false">
+ <span class="menu-text">2. Adding ETS and ARIMA filters</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../docs/modules/module_2/01_ets/ets.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2.1 Exponential Smoothing</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../docs/modules/module_2/02_stationarity/stationarity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2.2 Stationarity &amp; Differencing</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../docs/modules/module_2/03_arima/arima.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2.3 ARIMA models</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../docs/modules/module_2/04_modular_fcst/modular_forecasting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2.4 Modular Forecasting: Mixing ETS and ARIMA</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false">
+ <span class="menu-text">3. Regression and exogenous variables</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../docs/modules/module_3/01_practical_issues/practical_issues.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3.1 Practical Issues</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../docs/modules/module_3/02_regression/regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3.2 Linear Regression Models</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../docs/modules/module_3/03_dynamic/dynamic_regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3.3 Dynamic &amp; Harmonic Regression</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../docs/modules/module_3/04_prophet/prophet.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3.4 Prophet</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">4. Forecasting at scale</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../docs/modules/module_4/01_complex_seasonality/complex_seasonality.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">4.1 Complex Seasonality</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">4.2 Bootstrapping, Bagging &amp; Model Combinations</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../docs/modules/module_4/03_cv/ts_cv.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">4.3 Time Series Cross-Validation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../../docs/modules/module_4/04_hierarchical/hierarchical.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">4.4 Hierarchical &amp; Grouped Forecasting</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#the-cost-of-one-split" id="toc-the-cost-of-one-split" class="nav-link active" data-scroll-target="#the-cost-of-one-split"><span class="header-section-number">1</span> The Cost of One Split</a>
+  <ul class="collapse">
+  <li><a href="#same-models-two-cutoffs-two-winners" id="toc-same-models-two-cutoffs-two-winners" class="nav-link" data-scroll-target="#same-models-two-cutoffs-two-winners"><span class="header-section-number">1.1</span> Same Models, Two Cutoffs, Two Winners</a></li>
+  </ul></li>
+  <li><a href="#rolling-origin-evaluation" id="toc-rolling-origin-evaluation" class="nav-link" data-scroll-target="#rolling-origin-evaluation"><span class="header-section-number">2</span> Rolling-Origin Evaluation</a>
+  <ul class="collapse">
+  <li><a href="#expanding-windows" id="toc-expanding-windows" class="nav-link" data-scroll-target="#expanding-windows"><span class="header-section-number">2.1</span> Expanding Windows</a></li>
+  <li><a href="#sliding-windows" id="toc-sliding-windows" class="nav-link" data-scroll-target="#sliding-windows"><span class="header-section-number">2.2</span> Sliding Windows</a></li>
+  <li><a href="#expanding-vs.-sliding-a-quick-comparison" id="toc-expanding-vs.-sliding-a-quick-comparison" class="nav-link" data-scroll-target="#expanding-vs.-sliding-a-quick-comparison"><span class="header-section-number">2.3</span> Expanding vs.&nbsp;Sliding: A Quick Comparison</a></li>
+  </ul></li>
+  <li><a href="#evaluating-across-the-horizon" id="toc-evaluating-across-the-horizon" class="nav-link" data-scroll-target="#evaluating-across-the-horizon"><span class="header-section-number">3</span> Evaluating Across the Horizon</a>
+  <ul class="collapse">
+  <li><a href="#from-folds-to-a-forecast-horizon-curve" id="toc-from-folds-to-a-forecast-horizon-curve" class="nav-link" data-scroll-target="#from-folds-to-a-forecast-horizon-curve"><span class="header-section-number">3.1</span> From Folds to a Forecast-Horizon Curve</a></li>
+  </ul></li>
+  <li><a href="#the-real-cost-of-cross-validating-every-model" id="toc-the-real-cost-of-cross-validating-every-model" class="nav-link" data-scroll-target="#the-real-cost-of-cross-validating-every-model"><span class="header-section-number">4</span> The Real Cost of Cross-Validating Every Model</a>
+  <ul class="collapse">
+  <li><a href="#why-this-gets-expensive-fast" id="toc-why-this-gets-expensive-fast" class="nav-link" data-scroll-target="#why-this-gets-expensive-fast"><span class="header-section-number">4.1</span> Why This Gets Expensive Fast</a></li>
+  <li><a href="#making-it-feasible" id="toc-making-it-feasible" class="nav-link" data-scroll-target="#making-it-feasible"><span class="header-section-number">4.2</span> Making It Feasible</a></li>
+  <li><a href="#mexretail-does-the-4.2-winner-still-win" id="toc-mexretail-does-the-4.2-winner-still-win" class="nav-link" data-scroll-target="#mexretail-does-the-4.2-winner-still-win"><span class="header-section-number">4.3</span> mexretail: Does the 4.2 Winner Still Win?</a></li>
+  </ul></li>
+  <li><a href="#a-different-kind-of-cv" id="toc-a-different-kind-of-cv" class="nav-link" data-scroll-target="#a-different-kind-of-cv"><span class="header-section-number">5</span> A Different Kind of CV</a>
+  <ul class="collapse">
+  <li><a href="#leave-one-out-cv-for-selecting-predictors" id="toc-leave-one-out-cv-for-selecting-predictors" class="nav-link" data-scroll-target="#leave-one-out-cv-for-selecting-predictors"><span class="header-section-number">5.1</span> Leave-One-Out CV for Selecting Predictors</a></li>
+  </ul></li>
+  <li><a href="#key-takeaways" id="toc-key-takeaways" class="nav-link" data-scroll-target="#key-takeaways"><span class="header-section-number">6</span> Key Takeaways</a>
+  <ul class="collapse">
+  <li><a href="#what-to-remember" id="toc-what-to-remember" class="nav-link" data-scroll-target="#what-to-remember"><span class="header-section-number">6.1</span> What to Remember</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/pbenavidesh/narsil/edit/main/docs/modules/module_4/03_cv/ts_cv.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/pbenavidesh/narsil/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div><div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="ts_cv_pres.html"><i class="bi bi-file-slides"></i>RevealJS</a></li></ul></div><div class="quarto-other-links"><h2>Other Links</h2><ul><li><a href="https://otexts.com/fpp3/tscv.html"><i class="bi bi-link-45deg"></i>FPP3 §5.10: Time series cross-validation</a></li><li><a href="https://otexts.com/fpp3/selecting-predictors.html"><i class="bi bi-link-45deg"></i>FPP3 §7.5: Selecting predictors (CV statistic)</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../../../docs/modules/module_4/01_complex_seasonality/complex_seasonality.html">4. Forecasting at scale</a></li><li class="breadcrumb-item"><a href="../../../../docs/modules/module_4/03_cv/ts_cv.html">4.3 Time Series Cross-Validation</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Time Series Cross-Validation</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">July 9, 2026</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-15" data-llms-code-original="library(plotly)        #<1>
+library(tidyquant)     #<2>
+library(fable.prophet) #<3>"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><a class="code-annotation-anchor" data-target-cell="annotated-cell-15" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-15-1" class="code-annotation-target"><a href="#annotated-cell-15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(plotly)</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-15" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-15-2" class="code-annotation-target"><a href="#annotated-cell-15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyquant)</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-15" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-15-3" class="code-annotation-target"><a href="#annotated-cell-15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fable.prophet)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-15" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-15" data-code-lines="1" data-code-annotation="1">For interactive plots.</span>
+</dd>
+<dt data-target-cell="annotated-cell-15" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-15" data-code-lines="2" data-code-annotation="2">For retrieving <code>mexretail</code> from FRED.</span>
+</dd>
+<dt data-target-cell="annotated-cell-15" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-15" data-code-lines="3" data-code-annotation="3">Needed to fit <code>prophet()</code> models later in the document.</span>
+</dd>
+</dl>
+</div>
+</div>
+<section id="the-cost-of-one-split" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> The Cost of One Split</h1>
+<p>Every model built this semester — decomposition benchmarks, ETS, ARIMA, TSLM, dynamic regression, Prophet — has been evaluated with a single train/test split.</p>
+<section id="same-models-two-cutoffs-two-winners" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="same-models-two-cutoffs-two-winners"><span class="header-section-number">1.1</span> Same Models, Two Cutoffs, Two Winners</h2>
+<p>We fit the same two models on <code>canadian_gas</code>, changing only where the training set ends. <code>canadian_gas</code> is monthly, January 1960 through February 2005, with a well-documented change in seasonal strength through the 1990s — Cutoff A sits before it, Cutoff B after.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-1" data-llms-code-original="cutoff_a_train <- canadian_gas |>
+  filter_index(. ~ &quot;1995 Dec&quot;)                     #<1>
+
+cutoff_a_fit <- cutoff_a_train |>
+  model(ets = ETS(Volume), arima = ARIMA(Volume))
+
+cutoff_a_fc <- cutoff_a_fit |>
+  forecast(h = 24)                                 #<2>
+
+cutoff_a_accu <- cutoff_a_fc |>
+  accuracy(canadian_gas) |>
+  select(.model, RMSE, MAE, MAPE, MASE) |>
+  arrange(RMSE)"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1" aria-hidden="true" tabindex="-1"></a>cutoff_a_train <span class="ot">&lt;-</span> canadian_gas <span class="sc">|&gt;</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-1-2" class="code-annotation-target"><a href="#annotated-cell-1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter_index</span>(. <span class="sc">~</span> <span class="st">"1995 Dec"</span>)</span>
+<span id="annotated-cell-1-3"><a href="#annotated-cell-1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-1-4"><a href="#annotated-cell-1-4" aria-hidden="true" tabindex="-1"></a>cutoff_a_fit <span class="ot">&lt;-</span> cutoff_a_train <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-1-5"><a href="#annotated-cell-1-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(<span class="at">ets =</span> <span class="fu">ETS</span>(Volume), <span class="at">arima =</span> <span class="fu">ARIMA</span>(Volume))</span>
+<span id="annotated-cell-1-6"><a href="#annotated-cell-1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-1-7"><a href="#annotated-cell-1-7" aria-hidden="true" tabindex="-1"></a>cutoff_a_fc <span class="ot">&lt;-</span> cutoff_a_fit <span class="sc">|&gt;</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-1-8" class="code-annotation-target"><a href="#annotated-cell-1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">24</span>)</span>
+<span id="annotated-cell-1-9"><a href="#annotated-cell-1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-1-10"><a href="#annotated-cell-1-10" aria-hidden="true" tabindex="-1"></a>cutoff_a_accu <span class="ot">&lt;-</span> cutoff_a_fc <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-1-11"><a href="#annotated-cell-1-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">accuracy</span>(canadian_gas) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-1-12"><a href="#annotated-cell-1-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(.model, RMSE, MAE, MAPE, MASE) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-1-13"><a href="#annotated-cell-1-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(RMSE)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-1" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-1" data-code-lines="2" data-code-annotation="1">Training set: January 1960 through December 1995.</span>
+</dd>
+<dt data-target-cell="annotated-cell-1" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-1" data-code-lines="8" data-code-annotation="2">Two years ahead: January 1996 through December 1997.</span>
+</dd>
+</dl>
+</div>
+</div>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2" data-llms-code-original="cutoff_b_train <- canadian_gas |>
+  filter_index(. ~ &quot;1999 Dec&quot;)                     #<1>
+
+cutoff_b_fit <- cutoff_b_train |>
+  model(ets = ETS(Volume), arima = ARIMA(Volume))
+
+cutoff_b_fc <- cutoff_b_fit |>
+  forecast(h = 24)                                 #<2>
+
+cutoff_b_accu <- cutoff_b_fc |>
+  accuracy(canadian_gas) |>
+  select(.model, RMSE, MAE, MAPE, MASE) |>
+  arrange(RMSE)"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1" aria-hidden="true" tabindex="-1"></a>cutoff_b_train <span class="ot">&lt;-</span> canadian_gas <span class="sc">|&gt;</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-2-2" class="code-annotation-target"><a href="#annotated-cell-2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter_index</span>(. <span class="sc">~</span> <span class="st">"1999 Dec"</span>)</span>
+<span id="annotated-cell-2-3"><a href="#annotated-cell-2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-2-4"><a href="#annotated-cell-2-4" aria-hidden="true" tabindex="-1"></a>cutoff_b_fit <span class="ot">&lt;-</span> cutoff_b_train <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-2-5"><a href="#annotated-cell-2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(<span class="at">ets =</span> <span class="fu">ETS</span>(Volume), <span class="at">arima =</span> <span class="fu">ARIMA</span>(Volume))</span>
+<span id="annotated-cell-2-6"><a href="#annotated-cell-2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-2-7"><a href="#annotated-cell-2-7" aria-hidden="true" tabindex="-1"></a>cutoff_b_fc <span class="ot">&lt;-</span> cutoff_b_fit <span class="sc">|&gt;</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-2-8" class="code-annotation-target"><a href="#annotated-cell-2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">24</span>)</span>
+<span id="annotated-cell-2-9"><a href="#annotated-cell-2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-2-10"><a href="#annotated-cell-2-10" aria-hidden="true" tabindex="-1"></a>cutoff_b_accu <span class="ot">&lt;-</span> cutoff_b_fc <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-2-11"><a href="#annotated-cell-2-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">accuracy</span>(canadian_gas) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-2-12"><a href="#annotated-cell-2-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(.model, RMSE, MAE, MAPE, MASE) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-2-13"><a href="#annotated-cell-2-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(RMSE)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-2" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="2" data-code-annotation="1">Training set: January 1960 through December 1999 — four years further than Cutoff A.</span>
+</dd>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="8" data-code-annotation="2">Two years ahead: January 2000 through December 2001.</span>
+</dd>
+</dl>
+</div>
+</div>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">Cutoff A: train through 1995</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">Cutoff B: train through 1999</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>cutoff_a_accu</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[".model"],"name":[1],"type":["chr"],"align":["left"]},{"label":["RMSE"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["MAE"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["MAPE"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["MASE"],"name":[5],"type":["dbl"],"align":["right"]}],"data":[{"1":"ets","2":"0.5112478","3":"0.4012629","4":"2.453820","5":"0.7317633"},{"1":"arima","2":"0.6734157","3":"0.5488424","4":"3.348868","5":"1.0008966"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>cutoff_b_accu</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[".model"],"name":[1],"type":["chr"],"align":["left"]},{"label":["RMSE"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["MAE"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["MAPE"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["MASE"],"name":[5],"type":["dbl"],"align":["right"]}],"data":[{"1":"arima","2":"0.3621360","3":"0.2949663","4":"1.629338","5":"0.5527969"},{"1":"ets","2":"0.3831148","3":"0.3035358","4":"1.681883","5":"0.5688571"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p>Move the training cutoff by four years and the ranking flips. Under Cutoff A, <code>ETS()</code> wins — RMSE 0.511 against ARIMA’s 0.673 — with an <code>ETS(M,A,M)</code> beating an <code>ARIMA(2,1,2)(0,1,1)[12]</code>. Under Cutoff B, <code>ARIMA()</code> wins — RMSE 0.362 against ETS’s 0.383 — the very same <code>ETS(M,A,M)</code> specification, now beaten by a different fitted order, <code>ARIMA(1,1,1)(0,1,2)[12]</code>. One split would have crowned a permanent winner. Two splits show there isn’t one.</p>
+</div>
+</section>
+</section>
+<section id="rolling-origin-evaluation" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Rolling-Origin Evaluation</h1>
+<p>Chronological train/test ordering — training data always earlier, test data always later, never shuffled — was established in <a href="../../../../docs/modules/module_1/03_fcst/forecasting.html#train-test-split">Module 1.3</a>. Rolling-origin evaluation keeps that rule intact; it just repeats the split many times, sliding the origin forward through the series instead of fixing it once.</p>
+<section id="expanding-windows" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="expanding-windows"><span class="header-section-number">2.1</span> Expanding Windows</h2>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3" data-llms-code-original="canadian_gas_stretch <- canadian_gas |>
+  stretch_tsibble(.step = 12, .init = 120, .id = &quot;.id&quot;) #<1>
+
+canadian_gas_stretch |>
+  as_tibble() |>
+  count(.id, name = &quot;n_obs&quot;) |>
+  slice(1, 2, n())                                       #<2>"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1" aria-hidden="true" tabindex="-1"></a>canadian_gas_stretch <span class="ot">&lt;-</span> canadian_gas <span class="sc">|&gt;</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-3-2" class="code-annotation-target"><a href="#annotated-cell-3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stretch_tsibble</span>(<span class="at">.step =</span> <span class="dv">12</span>, <span class="at">.init =</span> <span class="dv">120</span>, <span class="at">.id =</span> <span class="st">".id"</span>)</span>
+<span id="annotated-cell-3-3"><a href="#annotated-cell-3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-3-4"><a href="#annotated-cell-3-4" aria-hidden="true" tabindex="-1"></a>canadian_gas_stretch <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-3-5"><a href="#annotated-cell-3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-3-6"><a href="#annotated-cell-3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(.id, <span class="at">name =</span> <span class="st">"n_obs"</span>) <span class="sc">|&gt;</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-3-7" class="code-annotation-target"><a href="#annotated-cell-3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="fu">n</span>())</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-3" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-3" data-code-lines="2" data-code-annotation="1"><code>.init = 120</code> — the first fold trains on 120 months (10 years). <code>.step = 12</code> — each following fold adds 12 more months before forecasting again.</span>
+</dd>
+<dt data-target-cell="annotated-cell-3" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-3" data-code-lines="7" data-code-annotation="2">Fold 1 has 120 observations, fold 2 has 132, and the last fold — fold 36 — has 540, nearly the entire 542-month series.</span>
+</dd>
+</dl>
+</div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[".id"],"name":[1],"type":["int"],"align":["right"]},{"label":["n_obs"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"1","2":"120"},{"1":"2","2":"132"},{"1":"36","2":"540"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section>
+<section id="sliding-windows" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="sliding-windows"><span class="header-section-number">2.2</span> Sliding Windows</h2>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-4" data-llms-code-original="canadian_gas_slide <- canadian_gas |>
+  slide_tsibble(.size = 120, .step = 12, .id = &quot;.id&quot;)    #<1>
+
+canadian_gas_slide |>
+  as_tibble() |>
+  count(.id, name = &quot;n_obs&quot;) |>
+  slice(1, 2, n())                                        #<2>"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-4-1"><a href="#annotated-cell-4-1" aria-hidden="true" tabindex="-1"></a>canadian_gas_slide <span class="ot">&lt;-</span> canadian_gas <span class="sc">|&gt;</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-4-2" class="code-annotation-target"><a href="#annotated-cell-4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slide_tsibble</span>(<span class="at">.size =</span> <span class="dv">120</span>, <span class="at">.step =</span> <span class="dv">12</span>, <span class="at">.id =</span> <span class="st">".id"</span>)</span>
+<span id="annotated-cell-4-3"><a href="#annotated-cell-4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-4-4"><a href="#annotated-cell-4-4" aria-hidden="true" tabindex="-1"></a>canadian_gas_slide <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-4-5"><a href="#annotated-cell-4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-4-6"><a href="#annotated-cell-4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(.id, <span class="at">name =</span> <span class="st">"n_obs"</span>) <span class="sc">|&gt;</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-4-7" class="code-annotation-target"><a href="#annotated-cell-4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="fu">n</span>())</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-4" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-4" data-code-lines="2" data-code-annotation="1"><code>.size = 120</code> fixes every training window at 120 months. <code>.step = 12</code> shifts the window forward one year at a time.</span>
+</dd>
+<dt data-target-cell="annotated-cell-4" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-4" data-code-lines="7" data-code-annotation="2">Every fold — first, second, and last (fold 36) — has exactly 120 observations.</span>
+</dd>
+</dl>
+</div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[".id"],"name":[1],"type":["int"],"align":["right"]},{"label":["n_obs"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"1","2":"120"},{"1":"2","2":"120"},{"1":"36","2":"120"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section>
+<section id="expanding-vs.-sliding-a-quick-comparison" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="expanding-vs.-sliding-a-quick-comparison"><span class="header-section-number">2.3</span> Expanding vs.&nbsp;Sliding: A Quick Comparison</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Expanding</strong> (<code>stretch_tsibble</code>)</th>
+<th><strong>Sliding</strong> (<code>slide_tsibble</code>)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Training set size</td>
+<td>Grows every fold</td>
+<td>Fixed (<code>.size</code>)</td>
+</tr>
+<tr class="even">
+<td>Uses full history?</td>
+<td>Yes, always from the start</td>
+<td>No — drops the oldest observations</td>
+</tr>
+<tr class="odd">
+<td>Cost per fold</td>
+<td>Increases over time</td>
+<td>Constant</td>
+</tr>
+<tr class="even">
+<td>Robust to regime changes</td>
+<td>No — keeps carrying stale data</td>
+<td>Yes — “forgets” the distant past</td>
+</tr>
+<tr class="odd">
+<td>Good when…</td>
+<td>Series is short, stable, no structural breaks, and you want to use all available data</td>
+<td>Series is long, has structural changes, or compute is limited</td>
+</tr>
+<tr class="even">
+<td>Main risk</td>
+<td>Early folds are unstable (little training data)</td>
+<td>Choosing <code>.size</code> poorly (too small → unstable; too large → doesn’t adapt)</td>
+</tr>
+</tbody>
+</table>
+<div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
+<div class="cell-output-display light-content">
+<div>
+<figure class="figure">
+<p><a href="ts_cv_files/figure-revealjs/fold-diagram-render-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="ts_cv_files/figure-revealjs/fold-diagram-render-1.png" class="img-fluid figure-img" width="960"></a></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display dark-content">
+<div>
+<figure class="figure">
+<p><a href="ts_cv_files/figure-revealjs/fold-diagram-render-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="ts_cv_files/figure-revealjs/fold-diagram-render-2.png" class="img-fluid figure-img" width="960"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>On a toy 20-point index, four expanding folds train on 8, 11, 14, then 17 points before testing on the next 2; four sliding folds always train on exactly 8.</p>
+</section>
+</section>
+<section id="evaluating-across-the-horizon" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Evaluating Across the Horizon</h1>
+<section id="from-folds-to-a-forecast-horizon-curve" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="from-folds-to-a-forecast-horizon-curve"><span class="header-section-number">3.1</span> From Folds to a Forecast-Horizon Curve</h2>
+<p>Using the expanding folds already built in <code>canadian_gas_stretch</code>, fit both models on every fold and forecast:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-5" data-llms-code-original="canadian_gas_cv_fc <- canadian_gas_stretch |>
+  model(ets = ETS(Volume), arima = ARIMA(Volume)) |>
+  forecast(h = 12) |>
+  group_by(.id, .model) |>          #<1>
+  mutate(h = row_number()) |>
+  ungroup() |>
+  as_fable(response = &quot;Volume&quot;, distribution = Volume)
+
+canadian_gas_cv_accu <- canadian_gas_cv_fc |>
+  accuracy(canadian_gas, by = c(&quot;h&quot;, &quot;.model&quot;))
+
+canadian_gas_cv_accu"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-5-1"><a href="#annotated-cell-5-1" aria-hidden="true" tabindex="-1"></a>canadian_gas_cv_fc <span class="ot">&lt;-</span> canadian_gas_stretch <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-5-2"><a href="#annotated-cell-5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(<span class="at">ets =</span> <span class="fu">ETS</span>(Volume), <span class="at">arima =</span> <span class="fu">ARIMA</span>(Volume)) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-5-3"><a href="#annotated-cell-5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">12</span>) <span class="sc">|&gt;</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-5" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-5-4" class="code-annotation-target"><a href="#annotated-cell-5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(.id, .model) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-5-5"><a href="#annotated-cell-5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">h =</span> <span class="fu">row_number</span>()) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-5-6"><a href="#annotated-cell-5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-5-7"><a href="#annotated-cell-5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_fable</span>(<span class="at">response =</span> <span class="st">"Volume"</span>, <span class="at">distribution =</span> Volume)</span>
+<span id="annotated-cell-5-8"><a href="#annotated-cell-5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-5-9"><a href="#annotated-cell-5-9" aria-hidden="true" tabindex="-1"></a>canadian_gas_cv_accu <span class="ot">&lt;-</span> canadian_gas_cv_fc <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-5-10"><a href="#annotated-cell-5-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">accuracy</span>(canadian_gas, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"h"</span>, <span class="st">".model"</span>))</span>
+<span id="annotated-cell-5-11"><a href="#annotated-cell-5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-5-12"><a href="#annotated-cell-5-12" aria-hidden="true" tabindex="-1"></a>canadian_gas_cv_accu</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-5" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-5" data-code-lines="4" data-code-annotation="1">Group by <code>.id</code> <strong>and</strong> <code>.model</code> before numbering the horizon. Grouping by <code>.id</code> alone lets the row counter run across both models inside a fold — every <code>arima</code> row would silently pick up horizons 13–24 instead of 1–12.</span>
+</dd>
+</dl>
+</div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["h"],"name":[1],"type":["int"],"align":["right"]},{"label":[".model"],"name":[2],"type":["chr"],"align":["left"]},{"label":[".type"],"name":[3],"type":["chr"],"align":["left"]},{"label":["ME"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["RMSE"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["MAE"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["MPE"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["MAPE"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["MASE"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["RMSSE"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["ACF1"],"name":[11],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"arima","3":"Test","4":"0.005215340","5":"0.3267519","6":"0.2530656","7":"0.01952445","8":"2.094555","9":"0.4865307","10":"0.5094894","11":"-0.1005575568"},{"1":"1","2":"ets","3":"Test","4":"-0.060240233","5":"0.3565145","6":"0.2940156","7":"-0.54683312","8":"2.464619","9":"0.5652590","10":"0.5558969","11":"0.0106011819"},{"1":"2","2":"arima","3":"Test","4":"-0.098507270","5":"0.4950196","6":"0.4085259","7":"-0.98189179","8":"3.822244","9":"0.7860837","10":"0.7724483","11":"-0.2751715844"},{"1":"2","2":"ets","3":"Test","4":"-0.101294209","5":"0.5720731","6":"0.4561501","7":"-1.12207222","8":"4.281943","9":"0.8777220","10":"0.8926855","11":"-0.2110354129"},{"1":"3","2":"arima","3":"Test","4":"-0.033553378","5":"0.4482815","6":"0.3843251","7":"-0.41051898","8":"3.483682","9":"0.7386624","10":"0.6990476","11":"-0.1786085651"},{"1":"3","2":"ets","3":"Test","4":"-0.103988262","5":"0.6685893","6":"0.5206068","7":"-1.16017986","8":"4.652845","9":"1.0005922","10":"1.0425944","11":"0.1049095945"},{"1":"4","2":"arima","3":"Test","4":"-0.050892070","5":"0.5057672","6":"0.4055710","7":"-0.76207671","8":"4.180837","9":"0.7794964","10":"0.7886905","11":"-0.0759171745"},{"1":"4","2":"ets","3":"Test","4":"-0.026146547","5":"0.7786825","6":"0.5923754","7":"-0.75293204","8":"5.692979","9":"1.1385295","10":"1.2142732","11":"0.3354015645"},{"1":"5","2":"arima","3":"Test","4":"-0.010047323","5":"0.4995042","6":"0.3972743","7":"-0.53576633","8":"4.213192","9":"0.7635505","10":"0.7789240","11":"0.1175166407"},{"1":"5","2":"ets","3":"Test","4":"0.017426426","5":"0.8473135","6":"0.6160532","7":"-0.62023247","8":"6.275366","9":"1.1840376","10":"1.3212960","11":"0.5426584017"},{"1":"6","2":"arima","3":"Test","4":"-0.039188290","5":"0.5228901","6":"0.3876120","7":"-0.97991726","8":"4.359324","9":"0.7449798","10":"0.8153920","11":"0.2007666853"},{"1":"6","2":"ets","3":"Test","4":"0.087996931","5":"0.9564279","6":"0.6605491","7":"-0.17538019","8":"7.091055","9":"1.2695576","10":"1.4914485","11":"0.6084087253"},{"1":"7","2":"arima","3":"Test","4":"-0.003762454","5":"0.5966964","6":"0.4521976","7":"-0.61129464","8":"4.781597","9":"0.8691116","10":"0.9304850","11":"0.3416573774"},{"1":"7","2":"ets","3":"Test","4":"0.182873690","5":"1.0614126","6":"0.7515485","7":"0.77918035","8":"7.907345","9":"1.4444560","10":"1.6551609","11":"0.6721478399"},{"1":"8","2":"arima","3":"Test","4":"-0.028760050","5":"0.6184696","6":"0.4870317","7":"-0.85990611","8":"4.986920","9":"0.9360618","10":"0.9644381","11":"0.3964955516"},{"1":"8","2":"ets","3":"Test","4":"0.166531587","5":"1.1018590","6":"0.7913833","7":"0.43818431","8":"8.141247","9":"1.5210172","10":"1.7182328","11":"0.6585613958"},{"1":"9","2":"arima","3":"Test","4":"-0.085186378","5":"0.5775555","6":"0.4768367","7":"-1.25927138","8":"5.214437","9":"0.9164673","10":"0.9006369","11":"0.2582705019"},{"1":"9","2":"ets","3":"Test","4":"0.130299530","5":"0.9616867","6":"0.7098727","7":"0.33797138","8":"7.421916","9":"1.3643562","10":"1.4996488","11":"0.6287309133"},{"1":"10","2":"arima","3":"Test","4":"-0.061101318","5":"0.5456084","6":"0.4250056","7":"-0.72246649","8":"4.143064","9":"0.8168493","10":"0.8508187","11":"0.1332245563"},{"1":"10","2":"ets","3":"Test","4":"0.109580288","5":"0.8946428","6":"0.6926091","7":"0.40285767","8":"6.463022","9":"1.3311761","10":"1.3951010","11":"0.5522909972"},{"1":"11","2":"arima","3":"Test","4":"-0.093436171","5":"0.5306091","6":"0.4514854","7":"-0.83108469","8":"4.095656","9":"0.8677427","10":"0.8274288","11":"0.0006013797"},{"1":"11","2":"ets","3":"Test","4":"0.049454854","5":"0.6643023","6":"0.5327928","7":"0.26486724","8":"4.626150","9":"1.0240133","10":"1.0359094","11":"0.3720527611"},{"1":"12","2":"arima","3":"Test","4":"-0.043787831","5":"0.5274786","6":"0.4074856","7":"-0.33798534","8":"3.465323","9":"0.7831764","10":"0.8225472","11":"-0.1844566627"},{"1":"12","2":"ets","3":"Test","4":"0.013563042","5":"0.5528252","6":"0.4136719","7":"0.16167370","8":"3.402758","9":"0.7950662","10":"0.8620725","11":"-0.2725206699"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div class="plotly html-widget html-fill-item" id="htmlwidget-c49a88bddc98bca59f04" style="width:960px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-c49a88bddc98bca59f04">{"x":{"data":[{"x":[1,2,3,4,5,6,7,8,9,10,11,12],"y":[0.32675186586113314,0.49501962910082981,0.44828146278845848,0.50576716505247366,0.49950417251389051,0.52289013933884099,0.59669637139775844,0.61846963187199178,0.57755554336907078,0.54560841540741112,0.53060905671911462,0.52747861357365744],"text":["h:  1<br />RMSE: 0.3267519<br />.model: arima","h:  2<br />RMSE: 0.4950196<br />.model: arima","h:  3<br />RMSE: 0.4482815<br />.model: arima","h:  4<br />RMSE: 0.5057672<br />.model: arima","h:  5<br />RMSE: 0.4995042<br />.model: arima","h:  6<br />RMSE: 0.5228901<br />.model: arima","h:  7<br />RMSE: 0.5966964<br />.model: arima","h:  8<br />RMSE: 0.6184696<br />.model: arima","h:  9<br />RMSE: 0.5775555<br />.model: arima","h: 10<br />RMSE: 0.5456084<br />.model: arima","h: 11<br />RMSE: 0.5306091<br />.model: arima","h: 12<br />RMSE: 0.5274786<br />.model: arima"],"type":"scatter","mode":"lines+markers","line":{"width":3.4015748031496069,"color":"rgba(248,118,109,1)","dash":"solid"},"hoveron":"points","name":"arima","legendgroup":"arima","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","marker":{"autocolorscale":false,"color":"rgba(248,118,109,1)","opacity":1,"size":6.0472440944881898,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(248,118,109,1)"}},"frame":null},{"x":[1,2,3,4,5,6,7,8,9,10,11,12],"y":[0.35651452679095424,0.57207305817498899,0.66858925413549708,0.77868249277352042,0.8473134887764433,0.9564279499338928,1.0614126082105475,1.1018589555638463,0.96168665155491051,0.89464277961176086,0.66430234769058383,0.55282517717003554],"text":["h:  1<br />RMSE: 0.3565145<br />.model: ets","h:  2<br />RMSE: 0.5720731<br />.model: ets","h:  3<br />RMSE: 0.6685893<br />.model: ets","h:  4<br />RMSE: 0.7786825<br />.model: ets","h:  5<br />RMSE: 0.8473135<br />.model: ets","h:  6<br />RMSE: 0.9564279<br />.model: ets","h:  7<br />RMSE: 1.0614126<br />.model: ets","h:  8<br />RMSE: 1.1018590<br />.model: ets","h:  9<br />RMSE: 0.9616867<br />.model: ets","h: 10<br />RMSE: 0.8946428<br />.model: ets","h: 11<br />RMSE: 0.6643023<br />.model: ets","h: 12<br />RMSE: 0.5528252<br />.model: ets"],"type":"scatter","mode":"lines+markers","line":{"width":3.4015748031496069,"color":"rgba(0,191,196,1)","dash":"solid"},"hoveron":"points","name":"ets","legendgroup":"ets","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","marker":{"autocolorscale":false,"color":"rgba(0,191,196,1)","opacity":1,"size":6.0472440944881898,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(0,191,196,1)"}},"frame":null}],"layout":{"margin":{"t":43.098381070983812,"r":7.9701120797011216,"b":40.647571606475722,"l":47.023661270236623},"plot_bgcolor":"rgba(232,236,242,1)","paper_bgcolor":"rgba(244,246,249,1)","font":{"color":"rgba(42,37,32,1)","family":"","size":15.940224159402243},"title":{"text":"<b> RMSE by forecast horizon — expanding-window CV <\/b>","font":{"color":"rgba(42,37,32,1)","family":"","size":19.128268991282692},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":true,"range":[0.44999999999999996,12.550000000000001],"tickmode":"auto","ticktext":["2.5","5.0","7.5","10.0","12.5"],"tickvals":[2.5,5,7.5,10,12.5],"categoryorder":"array","categoryarray":["2.5","5.0","7.5","10.0","12.5"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.9850560398505608,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(42,37,32,1)","family":"","size":12.7521793275218},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(213,208,198,1)","gridwidth":0.53134080531340799,"zeroline":false,"anchor":"y","title":{"text":"Horizon (months)","font":{"color":"rgba(42,37,32,1)","family":"","size":15.940224159402243}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":true,"range":[0.28799651137599747,1.1406143100489818],"tickmode":"auto","ticktext":["0.3","0.5","0.7","0.9","1.1"],"tickvals":[0.30000000000000004,0.5,0.70000000000000007,0.90000000000000013,1.1000000000000001],"categoryorder":"array","categoryarray":["0.3","0.5","0.7","0.9","1.1"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.9850560398505608,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(42,37,32,1)","family":"","size":12.7521793275218},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(213,208,198,1)","gridwidth":0.53134080531340799,"zeroline":false,"anchor":"x","title":{"text":"RMSE","font":{"color":"rgba(42,37,32,1)","family":"","size":15.940224159402243}},"hoverformat":".2f"},"shapes":[],"showlegend":true,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(42,37,32,1)","family":"","size":12.7521793275218},"title":{"text":"Model","font":{"color":"rgba(42,37,32,1)","family":"","size":15.940224159402243}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"62bc2c2731b9":{"x":{},"y":{},"colour":{},"type":"scatter"},"62bc33e06cc5":{"x":{},"y":{},"colour":{}}},"cur_data":"62bc2c2731b9","visdat":{"62bc2c2731b9":["function (y) ","x"],"62bc33e06cc5":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<p><code>ARIMA()</code> sits below <code>ETS()</code> at every one of the 12 horizons, both curves rising through mid-horizon and easing off by month 12 as the seasonal cycle comes back around.</p>
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Why RMSE for CV comparisons?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Scale-dependent measures like RMSE can’t be used to compare <em>different</em> series — that’s why we used MASE to compare Cement, Beer, mexretail, and NSW in Module 4.2. Cross-validation compares models on the <em>same</em> series, fold after fold, so scale is never an issue here.</p>
+<p>RMSE also matches what most of our models are built to do: ETS, ARIMA, and TSLM are fitted by least squares or Gaussian likelihood, which targets the conditional mean — the point forecast that minimizes <em>squared</em> error. Grading that forecast with an absolute-error measure evaluates it against a different target (the median). RMSE is the measure that matches the model’s own fitting objective.</p>
+<p>One caveat: because it squares errors, RMSE is dominated by a handful of bad folds. A single structural break sitting inside a few folds can outweigh good performance everywhere else.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="the-real-cost-of-cross-validating-every-model" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> The Real Cost of Cross-Validating Every Model</h1>
+<section id="why-this-gets-expensive-fast" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="why-this-gets-expensive-fast"><span class="header-section-number">4.1</span> Why This Gets Expensive Fast</h2>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-6" data-llms-code-original="mexretail_full_cv <- mexretail_train |>
+  stretch_tsibble(.step = 1, .init = 120, .id = &quot;.id&quot;) |> #<1>
+  model(
+    ets     = ETS(log(y)),
+    arima   = ARIMA(log(y)),
+    stlf    = stlf_spec,
+    tslm    = tslm_spec,
+    prophet = prophet_spec
+  ) |>
+  forecast(h = 12)"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-6-1"><a href="#annotated-cell-6-1" aria-hidden="true" tabindex="-1"></a>mexretail_full_cv <span class="ot">&lt;-</span> mexretail_train <span class="sc">|&gt;</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-6-2" class="code-annotation-target"><a href="#annotated-cell-6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stretch_tsibble</span>(<span class="at">.step =</span> <span class="dv">1</span>, <span class="at">.init =</span> <span class="dv">120</span>, <span class="at">.id =</span> <span class="st">".id"</span>) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-6-3"><a href="#annotated-cell-6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(</span>
+<span id="annotated-cell-6-4"><a href="#annotated-cell-6-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">ets     =</span> <span class="fu">ETS</span>(<span class="fu">log</span>(y)),</span>
+<span id="annotated-cell-6-5"><a href="#annotated-cell-6-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">arima   =</span> <span class="fu">ARIMA</span>(<span class="fu">log</span>(y)),</span>
+<span id="annotated-cell-6-6"><a href="#annotated-cell-6-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">stlf    =</span> stlf_spec,</span>
+<span id="annotated-cell-6-7"><a href="#annotated-cell-6-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">tslm    =</span> tslm_spec,</span>
+<span id="annotated-cell-6-8"><a href="#annotated-cell-6-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">prophet =</span> prophet_spec</span>
+<span id="annotated-cell-6-9"><a href="#annotated-cell-6-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-6-10"><a href="#annotated-cell-6-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">12</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-6" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-6" data-code-lines="2" data-code-annotation="1"><code>.step = 1</code> on 384 monthly observations with <code>.init = 120</code> produces 264 folds — every one of the five models below gets refit from scratch, 264 times.</span>
+</dd>
+</dl>
+</div>
+</div>
+<p><code>mexretail_train</code> has 384 monthly observations. With <code>.init = 120</code>, <code>.step = 1</code> produces 264 folds. Five models per fold, each re-running its own search from scratch every time — ARIMA’s stepwise order selection, ETS’s state-space search, Prophet’s changepoint and seasonality fitting. That is 264 × 5 = 1,320 independent model fits for one series, before combinations or a second series enter the picture.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-7" data-llms-code-original="canadian_gas_recent <- canadian_gas |>
+  filter_index(&quot;1988 Jan&quot; ~ .)                                        #<1>
+
+cg_stretch_step1  <- canadian_gas_recent |>
+  stretch_tsibble(.step = 1,  .init = 100, .id = &quot;.id&quot;)                #<2>
+cg_stretch_step12 <- canadian_gas_recent |>
+  stretch_tsibble(.step = 12, .init = 100, .id = &quot;.id&quot;)                #<2>
+
+time_step1  <- system.time(cg_stretch_step1  |> model(ets = ETS(Volume)) |> forecast(h = 12)) #<3>
+time_step12 <- system.time(cg_stretch_step12 |> model(ets = ETS(Volume)) |> forecast(h = 12)) #<3>
+
+tibble(
+  step        = c(1, 12),
+  n_folds     = c(max(cg_stretch_step1$.id), max(cg_stretch_step12$.id)),
+  elapsed_sec = c(time_step1[[&quot;elapsed&quot;]], time_step12[[&quot;elapsed&quot;]])
+)                                                                       #<4>"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-7-1"><a href="#annotated-cell-7-1" aria-hidden="true" tabindex="-1"></a>canadian_gas_recent <span class="ot">&lt;-</span> canadian_gas <span class="sc">|&gt;</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-7-2" class="code-annotation-target"><a href="#annotated-cell-7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter_index</span>(<span class="st">"1988 Jan"</span> <span class="sc">~</span> .)</span>
+<span id="annotated-cell-7-3"><a href="#annotated-cell-7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-7-4"><a href="#annotated-cell-7-4" aria-hidden="true" tabindex="-1"></a>cg_stretch_step1  <span class="ot">&lt;-</span> canadian_gas_recent <span class="sc">|&gt;</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-7-5" class="code-annotation-target"><a href="#annotated-cell-7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stretch_tsibble</span>(<span class="at">.step =</span> <span class="dv">1</span>,  <span class="at">.init =</span> <span class="dv">100</span>, <span class="at">.id =</span> <span class="st">".id"</span>)</span>
+<span id="annotated-cell-7-6"><a href="#annotated-cell-7-6" aria-hidden="true" tabindex="-1"></a>cg_stretch_step12 <span class="ot">&lt;-</span> canadian_gas_recent <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-7-7"><a href="#annotated-cell-7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stretch_tsibble</span>(<span class="at">.step =</span> <span class="dv">12</span>, <span class="at">.init =</span> <span class="dv">100</span>, <span class="at">.id =</span> <span class="st">".id"</span>)</span>
+<span id="annotated-cell-7-8"><a href="#annotated-cell-7-8" aria-hidden="true" tabindex="-1"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-7-9" class="code-annotation-target"><a href="#annotated-cell-7-9" aria-hidden="true" tabindex="-1"></a>time_step1  <span class="ot">&lt;-</span> <span class="fu">system.time</span>(cg_stretch_step1  <span class="sc">|&gt;</span> <span class="fu">model</span>(<span class="at">ets =</span> <span class="fu">ETS</span>(Volume)) <span class="sc">|&gt;</span> <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">12</span>))</span>
+<span id="annotated-cell-7-10"><a href="#annotated-cell-7-10" aria-hidden="true" tabindex="-1"></a>time_step12 <span class="ot">&lt;-</span> <span class="fu">system.time</span>(cg_stretch_step12 <span class="sc">|&gt;</span> <span class="fu">model</span>(<span class="at">ets =</span> <span class="fu">ETS</span>(Volume)) <span class="sc">|&gt;</span> <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">12</span>))</span>
+<span id="annotated-cell-7-11"><a href="#annotated-cell-7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-7-12"><a href="#annotated-cell-7-12" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="annotated-cell-7-13"><a href="#annotated-cell-7-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">step        =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">12</span>),</span>
+<span id="annotated-cell-7-14"><a href="#annotated-cell-7-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_folds     =</span> <span class="fu">c</span>(<span class="fu">max</span>(cg_stretch_step1<span class="sc">$</span>.id), <span class="fu">max</span>(cg_stretch_step12<span class="sc">$</span>.id)),</span>
+<span id="annotated-cell-7-15"><a href="#annotated-cell-7-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">elapsed_sec =</span> <span class="fu">c</span>(time_step1[[<span class="st">"elapsed"</span>]], time_step12[[<span class="st">"elapsed"</span>]])</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="4" onclick="event.preventDefault();">4</a><span id="annotated-cell-7-16" class="code-annotation-target"><a href="#annotated-cell-7-16" aria-hidden="true" tabindex="-1"></a>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-7" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-7" data-code-lines="2" data-code-annotation="1">A shorter 206-month window — long enough to show the cost multiplier, short enough to keep this comparison quick.</span>
+</dd>
+<dt data-target-cell="annotated-cell-7" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-7" data-code-lines="5,7" data-code-annotation="2">Same data, same <code>.init</code>, only <code>.step</code> changes — isolates the effect of fold count on runtime.</span>
+</dd>
+<dt data-target-cell="annotated-cell-7" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-7" data-code-lines="9,10" data-code-annotation="3"><code>system.time()</code> wraps the full fit-and-forecast step for a single model (<code>ETS()</code>), so the comparison reflects fold count alone, not model complexity.</span>
+</dd>
+<dt data-target-cell="annotated-cell-7" data-target-annotation="4">4</dt>
+<dd>
+<span data-code-cell="annotated-cell-7" data-code-lines="16" data-code-annotation="4">Fold counts come straight from the max <code>.id</code> in each stretched tsibble, not a manual calculation — if the window or <code>.init</code> changes later, this table stays correct.</span>
+</dd>
+</dl>
+</div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["step"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["n_folds"],"name":[2],"type":["int"],"align":["right"]},{"label":["elapsed_sec"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"107","3":"54.22"},{"1":"12","2":"9","3":"4.49"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p>Cutting <code>.step</code> from 1 to 12 drops the fold count from over a hundred to single digits, and the runtime falls by more than 10×, for a single ETS model on a 206-month window. Scale that to five heavier models across the full 384 months of <code>mexretail_train</code>, and <code>.step = 1</code> easily crosses the hour mark.</p>
+</div>
+</section>
+<section id="making-it-feasible" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="making-it-feasible"><span class="header-section-number">4.2</span> Making It Feasible</h2>
+<p><strong>Larger <code>.step</code>.</strong> The timing chunk above already made the case: fewer folds means proportionally less fitting.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-8" data-llms-code-original="canadian_gas |> stretch_tsibble(.step = 12, .init = 120, .id = &quot;.id&quot;) #<1>
+canadian_gas |> stretch_tsibble(.step = 1,  .init = 120, .id = &quot;.id&quot;) #<2>"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><a class="code-annotation-anchor" data-target-cell="annotated-cell-8" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-8-1" class="code-annotation-target"><a href="#annotated-cell-8-1" aria-hidden="true" tabindex="-1"></a>canadian_gas <span class="sc">|&gt;</span> <span class="fu">stretch_tsibble</span>(<span class="at">.step =</span> <span class="dv">12</span>, <span class="at">.init =</span> <span class="dv">120</span>, <span class="at">.id =</span> <span class="st">".id"</span>)</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-8" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-8-2" class="code-annotation-target"><a href="#annotated-cell-8-2" aria-hidden="true" tabindex="-1"></a>canadian_gas <span class="sc">|&gt;</span> <span class="fu">stretch_tsibble</span>(<span class="at">.step =</span> <span class="dv">1</span>,  <span class="at">.init =</span> <span class="dv">120</span>, <span class="at">.id =</span> <span class="st">".id"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-8" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-8" data-code-lines="1" data-code-annotation="1">36 folds.</span>
+</dd>
+<dt data-target-cell="annotated-cell-8" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-8" data-code-lines="2" data-code-annotation="2">423 folds.</span>
+</dd>
+</dl>
+</div>
+</div>
+<p><strong>Freezing the ARIMA order.</strong> Instead of re-running automatic order search on every fold, fix the order found once on the full training set:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-9" data-llms-code-original="ARIMA(Volume ~ pdq(1, 1, 1) + PDQ(0, 1, 2)) #<1>"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><a class="code-annotation-anchor" data-target-cell="annotated-cell-9" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-9-1" class="code-annotation-target"><a href="#annotated-cell-9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ARIMA</span>(Volume <span class="sc">~</span> <span class="fu">pdq</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">+</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-9" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-9" data-code-lines="1" data-code-annotation="1">The order found for Cutoff B in the opening demo (<code>ARIMA(1,1,1)(0,1,2)[12]</code>), fixed instead of re-searched from scratch on every fold.</span>
+</dd>
+</dl>
+</div>
+</div>
+<p><strong>Screening with a single split first.</strong> Module 4.2 already ran this exact comparison for <code>mexretail</code>; we reuse its setup and its seven-model roster through one <code>mable_spec()</code> function:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-10" data-llms-code-original="mexretail <- tq_get(
+  &quot;MEXSLRTTO01IXOBM&quot;,
+  get  = &quot;economic.data&quot;,
+  from = &quot;1985-01-01&quot;,
+  to   = &quot;2019-12-31&quot;
+) |>
+  mutate(date = yearmonth(date)) |>
+  rename(y = price) |>
+  as_tsibble(index = date)
+
+mexretail_train <- mexretail |> filter(year(date) <= 2017) #<1>
+mexretail_test  <- mexretail |> filter(year(date) >  2017)"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-10-1"><a href="#annotated-cell-10-1" aria-hidden="true" tabindex="-1"></a>mexretail <span class="ot">&lt;-</span> <span class="fu">tq_get</span>(</span>
+<span id="annotated-cell-10-2"><a href="#annotated-cell-10-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"MEXSLRTTO01IXOBM"</span>,</span>
+<span id="annotated-cell-10-3"><a href="#annotated-cell-10-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">get  =</span> <span class="st">"economic.data"</span>,</span>
+<span id="annotated-cell-10-4"><a href="#annotated-cell-10-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">from =</span> <span class="st">"1985-01-01"</span>,</span>
+<span id="annotated-cell-10-5"><a href="#annotated-cell-10-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">to   =</span> <span class="st">"2019-12-31"</span></span>
+<span id="annotated-cell-10-6"><a href="#annotated-cell-10-6" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-10-7"><a href="#annotated-cell-10-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">yearmonth</span>(date)) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-10-8"><a href="#annotated-cell-10-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">y =</span> price) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-10-9"><a href="#annotated-cell-10-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tsibble</span>(<span class="at">index =</span> date)</span>
+<span id="annotated-cell-10-10"><a href="#annotated-cell-10-10" aria-hidden="true" tabindex="-1"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-10" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-10-11" class="code-annotation-target"><a href="#annotated-cell-10-11" aria-hidden="true" tabindex="-1"></a>mexretail_train <span class="ot">&lt;-</span> mexretail <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">year</span>(date) <span class="sc">&lt;=</span> <span class="dv">2017</span>)</span>
+<span id="annotated-cell-10-12"><a href="#annotated-cell-10-12" aria-hidden="true" tabindex="-1"></a>mexretail_test  <span class="ot">&lt;-</span> mexretail <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">year</span>(date) <span class="sc">&gt;</span>  <span class="dv">2017</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-10" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-10" data-code-lines="11" data-code-annotation="1">Same split as <a href="../../../../docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations.html">Module 4.2</a>: training through 2017, the last two years held out.</span>
+</dd>
+</dl>
+</div>
+</div>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-11" data-llms-code-original="tslm_spec  <- TSLM(log(y) ~ trend() + season())
+ets_spec   <- ETS(log(y))
+arima_spec <- ARIMA(log(y))
+stlf_spec  <- decomposition_model(
+  STL(log(y) ~ trend(window = NULL) + season(window = &quot;periodic&quot;), robust = TRUE),
+  ETS(season_adjust ~ season(&quot;N&quot;))
+)
+prophet_spec <- prophet(y)                                    #<1>
+
+comb_equal_spec <- combination_ensemble(
+  tslm_spec, ets_spec, arima_spec, stlf_spec, prophet_spec,
+  weights = &quot;equal&quot;
+)
+comb_inv_var_spec <- combination_ensemble(
+  tslm_spec, ets_spec, arima_spec, stlf_spec, prophet_spec,
+  weights = &quot;inv_var&quot;
+)                                                               #<2>
+
+mable_spec <- function(.train_tsb) {   #<3>
+  .train_tsb |>
+    model(
+      tslm         = tslm_spec,
+      ets          = ets_spec,
+      arima        = arima_spec,
+      stlf         = stlf_spec,
+      prophet      = prophet_spec,
+      comb_equal   = comb_equal_spec,
+      comb_inv_var = comb_inv_var_spec
+    )
+}"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-11-1"><a href="#annotated-cell-11-1" aria-hidden="true" tabindex="-1"></a>tslm_spec  <span class="ot">&lt;-</span> <span class="fu">TSLM</span>(<span class="fu">log</span>(y) <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>())</span>
+<span id="annotated-cell-11-2"><a href="#annotated-cell-11-2" aria-hidden="true" tabindex="-1"></a>ets_spec   <span class="ot">&lt;-</span> <span class="fu">ETS</span>(<span class="fu">log</span>(y))</span>
+<span id="annotated-cell-11-3"><a href="#annotated-cell-11-3" aria-hidden="true" tabindex="-1"></a>arima_spec <span class="ot">&lt;-</span> <span class="fu">ARIMA</span>(<span class="fu">log</span>(y))</span>
+<span id="annotated-cell-11-4"><a href="#annotated-cell-11-4" aria-hidden="true" tabindex="-1"></a>stlf_spec  <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
+<span id="annotated-cell-11-5"><a href="#annotated-cell-11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">STL</span>(<span class="fu">log</span>(y) <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="cn">NULL</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<span id="annotated-cell-11-6"><a href="#annotated-cell-11-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ETS</span>(season_adjust <span class="sc">~</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
+<span id="annotated-cell-11-7"><a href="#annotated-cell-11-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-11" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-11-8" class="code-annotation-target"><a href="#annotated-cell-11-8" aria-hidden="true" tabindex="-1"></a>prophet_spec <span class="ot">&lt;-</span> <span class="fu">prophet</span>(y)</span>
+<span id="annotated-cell-11-9"><a href="#annotated-cell-11-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-11-10"><a href="#annotated-cell-11-10" aria-hidden="true" tabindex="-1"></a>comb_equal_spec <span class="ot">&lt;-</span> <span class="fu">combination_ensemble</span>(</span>
+<span id="annotated-cell-11-11"><a href="#annotated-cell-11-11" aria-hidden="true" tabindex="-1"></a>  tslm_spec, ets_spec, arima_spec, stlf_spec, prophet_spec,</span>
+<span id="annotated-cell-11-12"><a href="#annotated-cell-11-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">weights =</span> <span class="st">"equal"</span></span>
+<span id="annotated-cell-11-13"><a href="#annotated-cell-11-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="annotated-cell-11-14"><a href="#annotated-cell-11-14" aria-hidden="true" tabindex="-1"></a>comb_inv_var_spec <span class="ot">&lt;-</span> <span class="fu">combination_ensemble</span>(</span>
+<span id="annotated-cell-11-15"><a href="#annotated-cell-11-15" aria-hidden="true" tabindex="-1"></a>  tslm_spec, ets_spec, arima_spec, stlf_spec, prophet_spec,</span>
+<span id="annotated-cell-11-16"><a href="#annotated-cell-11-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">weights =</span> <span class="st">"inv_var"</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-11" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-11-17" class="code-annotation-target"><a href="#annotated-cell-11-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="annotated-cell-11-18"><a href="#annotated-cell-11-18" aria-hidden="true" tabindex="-1"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-11" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-11-19" class="code-annotation-target"><a href="#annotated-cell-11-19" aria-hidden="true" tabindex="-1"></a>mable_spec <span class="ot">&lt;-</span> <span class="cf">function</span>(.train_tsb) {</span>
+<span id="annotated-cell-11-20"><a href="#annotated-cell-11-20" aria-hidden="true" tabindex="-1"></a>  .train_tsb <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-11-21"><a href="#annotated-cell-11-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">model</span>(</span>
+<span id="annotated-cell-11-22"><a href="#annotated-cell-11-22" aria-hidden="true" tabindex="-1"></a>      <span class="at">tslm         =</span> tslm_spec,</span>
+<span id="annotated-cell-11-23"><a href="#annotated-cell-11-23" aria-hidden="true" tabindex="-1"></a>      <span class="at">ets          =</span> ets_spec,</span>
+<span id="annotated-cell-11-24"><a href="#annotated-cell-11-24" aria-hidden="true" tabindex="-1"></a>      <span class="at">arima        =</span> arima_spec,</span>
+<span id="annotated-cell-11-25"><a href="#annotated-cell-11-25" aria-hidden="true" tabindex="-1"></a>      <span class="at">stlf         =</span> stlf_spec,</span>
+<span id="annotated-cell-11-26"><a href="#annotated-cell-11-26" aria-hidden="true" tabindex="-1"></a>      <span class="at">prophet      =</span> prophet_spec,</span>
+<span id="annotated-cell-11-27"><a href="#annotated-cell-11-27" aria-hidden="true" tabindex="-1"></a>      <span class="at">comb_equal   =</span> comb_equal_spec,</span>
+<span id="annotated-cell-11-28"><a href="#annotated-cell-11-28" aria-hidden="true" tabindex="-1"></a>      <span class="at">comb_inv_var =</span> comb_inv_var_spec</span>
+<span id="annotated-cell-11-29"><a href="#annotated-cell-11-29" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="annotated-cell-11-30"><a href="#annotated-cell-11-30" aria-hidden="true" tabindex="-1"></a>}</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-11" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-11" data-code-lines="8" data-code-annotation="1">The same five base specs from Module 4.2, all on <code>log(y)</code> — nothing changes about the models themselves, only how often they get refit.</span>
+</dd>
+<dt data-target-cell="annotated-cell-11" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-11" data-code-lines="17" data-code-annotation="2">Two combinations of the five base specs: equal weights, and weights inversely proportional to each model’s variance.</span>
+</dd>
+<dt data-target-cell="annotated-cell-11" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-11" data-code-lines="19" data-code-annotation="3">Same seven-model roster as Module 4.2, wrapped in a function so it can be refit on any training tsibble — the single split now, the CV folds below.</span>
+</dd>
+</dl>
+</div>
+</div>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-12" data-llms-code-original="mexretail_fit <- mexretail_train |> mable_spec()          #<1>
+
+mexretail_fc <- mexretail_fit |>
+  forecast(h = nrow(mexretail_test))                       #<2>
+
+mexretail_accu <- mexretail_fc |>
+  accuracy(mexretail) |>
+  select(.model, RMSE, MAE, MAPE, MASE) |>
+  arrange(RMSE)
+
+mexretail_accu"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><a class="code-annotation-anchor" data-target-cell="annotated-cell-12" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-12-1" class="code-annotation-target"><a href="#annotated-cell-12-1" aria-hidden="true" tabindex="-1"></a>mexretail_fit <span class="ot">&lt;-</span> mexretail_train <span class="sc">|&gt;</span> <span class="fu">mable_spec</span>()</span>
+<span id="annotated-cell-12-2"><a href="#annotated-cell-12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-12-3"><a href="#annotated-cell-12-3" aria-hidden="true" tabindex="-1"></a>mexretail_fc <span class="ot">&lt;-</span> mexretail_fit <span class="sc">|&gt;</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-12" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-12-4" class="code-annotation-target"><a href="#annotated-cell-12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="fu">nrow</span>(mexretail_test))</span>
+<span id="annotated-cell-12-5"><a href="#annotated-cell-12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-12-6"><a href="#annotated-cell-12-6" aria-hidden="true" tabindex="-1"></a>mexretail_accu <span class="ot">&lt;-</span> mexretail_fc <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-12-7"><a href="#annotated-cell-12-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">accuracy</span>(mexretail) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-12-8"><a href="#annotated-cell-12-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(.model, RMSE, MAE, MAPE, MASE) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-12-9"><a href="#annotated-cell-12-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(RMSE)</span>
+<span id="annotated-cell-12-10"><a href="#annotated-cell-12-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-12-11"><a href="#annotated-cell-12-11" aria-hidden="true" tabindex="-1"></a>mexretail_accu</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-12" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-12" data-code-lines="1" data-code-annotation="1">All seven specs fit once, on the full 2017-and-earlier training set — this is exactly Module 4.2’s comparison, reused rather than redone.</span>
+</dd>
+<dt data-target-cell="annotated-cell-12" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-12" data-code-lines="4" data-code-annotation="2">Horizon matches the held-out test set exactly, so every model forecasts the same 24 months.</span>
+</dd>
+</dl>
+</div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[".model"],"name":[1],"type":["chr"],"align":["left"]},{"label":["RMSE"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["MAE"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["MAPE"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["MASE"],"name":[5],"type":["dbl"],"align":["right"]}],"data":[{"1":"arima","2":"2.070138","3":"1.777916","4":"1.607073","5":"0.3750868"},{"1":"comb_inv_var","2":"2.368185","3":"1.981201","4":"1.800187","5":"0.4179737"},{"1":"prophet","2":"2.435910","3":"1.745466","4":"1.600294","5":"0.3682408"},{"1":"ets","2":"2.455677","3":"1.955982","4":"1.784059","5":"0.4126533"},{"1":"comb_equal","2":"2.643673","3":"1.626882","4":"1.420004","5":"0.3432230"},{"1":"stlf","2":"3.723264","3":"3.236561","4":"2.962921","5":"0.6828168"},{"1":"tslm","2":"11.291962","3":"9.572534","4":"8.648218","5":"2.0195166"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p><code>arima</code>, <code>comb_inv_var</code>, <code>prophet</code>, and <code>ets</code> all land under RMSE 2.5. <code>stlf</code> (3.72) and <code>tslm</code> (11.3) are well behind — in a CV run built purely for speed, those two would be the first cut, which alone would trim the fold × model workload by nearly a third. The run below keeps all seven anyway: the question driving this section is whether the <em>entire</em> 4.2 leaderboard holds up under CV, not just its front-runners, so trimming it here would answer a different question than the one being asked.</p>
+</div>
+<p><strong>Caching.</strong> Every chunk above that fits a model across folds carries <code>#| cache: true</code> — recomputing hundreds of fits on every render would defeat the purpose of <code>freeze: auto</code>.</p>
+<p><strong>Parallelization.</strong> For CV runs too large even after screening, <code>future</code>/<code>furrr</code> can distribute folds across cores: a <code>plan(multisession)</code> call before the fitting step parallelizes fold-level computation without touching the modeling code itself.</p>
+</section>
+<section id="mexretail-does-the-4.2-winner-still-win" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="mexretail-does-the-4.2-winner-still-win"><span class="header-section-number">4.3</span> mexretail: Does the 4.2 Winner Still Win?</h2>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-13" data-llms-code-original="mexretail_stretch <- mexretail_train |>
+  stretch_tsibble(.step = 12, .init = 264, .id = &quot;.id&quot;) #<1>
+
+mexretail_cv_fc <- mexretail_stretch |>
+  mable_spec() |>
+  forecast(h = 12)                                        #<2>
+
+mexretail_cv_accu <- mexretail_cv_fc |>
+  accuracy(mexretail_train) |>
+  select(.model, RMSE, MAE, MAPE, MASE) |>
+  arrange(RMSE)
+
+mexretail_cv_accu"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-13-1"><a href="#annotated-cell-13-1" aria-hidden="true" tabindex="-1"></a>mexretail_stretch <span class="ot">&lt;-</span> mexretail_train <span class="sc">|&gt;</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-13" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-13-2" class="code-annotation-target"><a href="#annotated-cell-13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stretch_tsibble</span>(<span class="at">.step =</span> <span class="dv">12</span>, <span class="at">.init =</span> <span class="dv">264</span>, <span class="at">.id =</span> <span class="st">".id"</span>)</span>
+<span id="annotated-cell-13-3"><a href="#annotated-cell-13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-13-4"><a href="#annotated-cell-13-4" aria-hidden="true" tabindex="-1"></a>mexretail_cv_fc <span class="ot">&lt;-</span> mexretail_stretch <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-13-5"><a href="#annotated-cell-13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mable_spec</span>() <span class="sc">|&gt;</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-13" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-13-6" class="code-annotation-target"><a href="#annotated-cell-13-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">12</span>)</span>
+<span id="annotated-cell-13-7"><a href="#annotated-cell-13-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-13-8"><a href="#annotated-cell-13-8" aria-hidden="true" tabindex="-1"></a>mexretail_cv_accu <span class="ot">&lt;-</span> mexretail_cv_fc <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-13-9"><a href="#annotated-cell-13-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">accuracy</span>(mexretail_train) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-13-10"><a href="#annotated-cell-13-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(.model, RMSE, MAE, MAPE, MASE) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-13-11"><a href="#annotated-cell-13-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(RMSE)</span>
+<span id="annotated-cell-13-12"><a href="#annotated-cell-13-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-13-13"><a href="#annotated-cell-13-13" aria-hidden="true" tabindex="-1"></a>mexretail_cv_accu</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-13" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-13" data-code-lines="2" data-code-annotation="1"><code>.init = 264</code> (22 years) keeps every fold’s training window long enough for <code>ARIMA()</code> and <code>prophet()</code> to fit reliably; <code>.step = 12</code> yields 11 folds, one year apart, instead of 264.</span>
+</dd>
+<dt data-target-cell="annotated-cell-13" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-13" data-code-lines="6" data-code-annotation="2">All seven specs, refit on every fold — kept intact so the comparison below covers the full 4.2 leaderboard, not a pre-trimmed one.</span>
+</dd>
+</dl>
+</div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[".model"],"name":[1],"type":["chr"],"align":["left"]},{"label":["RMSE"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["MAE"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["MAPE"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["MASE"],"name":[5],"type":["dbl"],"align":["right"]}],"data":[{"1":"arima","2":"2.768519","3":"2.196100","4":"2.245253","5":"0.4633110"},{"1":"ets","2":"3.122851","3":"2.416755","4":"2.473896","5":"0.5098626"},{"1":"comb_inv_var","2":"3.311302","3":"2.673481","4":"2.738567","5":"0.5640239"},{"1":"comb_equal","2":"3.373050","3":"2.527980","4":"2.546593","5":"0.5333277"},{"1":"prophet","2":"4.142246","3":"3.287714","4":"3.457461","5":"0.6936086"},{"1":"stlf","2":"8.031322","3":"7.520952","4":"7.942033","5":"1.5866944"},{"1":"tslm","2":"11.810614","3":"10.330746","4":"10.712411","5":"2.1794764"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p><code>arima</code> wins under both evaluations — RMSE 2.07 in the single split, RMSE 2.77 averaged over the 11 CV folds. The winner doesn’t change. What does change is the order behind it: <code>ets</code> moves from fourth place in the single split to second place under CV, while <code>prophet</code> drops from third to fifth. A single split can get the runner-up ranking wrong even when it gets the winner right.</p>
+</div>
+</section>
+</section>
+<section id="a-different-kind-of-cv" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> A Different Kind of CV</h1>
+<section id="leave-one-out-cv-for-selecting-predictors" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="leave-one-out-cv-for-selecting-predictors"><span class="header-section-number">5.1</span> Leave-One-Out CV for Selecting Predictors</h2>
+<p>FPP3 §7.5 uses “CV” for something narrower than everything above: classical leave-one-out cross-validation, applied inside a single <code>TSLM()</code> fit to decide which predictors belong in the model.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-14" data-llms-code-original="canadian_gas_tslm_fit <- canadian_gas |>
+  model(
+    full       = TSLM(Volume ~ trend() + season()), #<1>
+    trend_only = TSLM(Volume ~ trend())              #<2>
+  )
+
+canadian_gas_tslm_fit |>
+  glance() |>
+  select(.model, CV, AICc, adj_r_squared)"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-14-1"><a href="#annotated-cell-14-1" aria-hidden="true" tabindex="-1"></a>canadian_gas_tslm_fit <span class="ot">&lt;-</span> canadian_gas <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-14-2"><a href="#annotated-cell-14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model</span>(</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-14" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-14-3" class="code-annotation-target"><a href="#annotated-cell-14-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">full       =</span> <span class="fu">TSLM</span>(Volume <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>()),</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-14" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-14-4" class="code-annotation-target"><a href="#annotated-cell-14-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">trend_only =</span> <span class="fu">TSLM</span>(Volume <span class="sc">~</span> <span class="fu">trend</span>())</span>
+<span id="annotated-cell-14-5"><a href="#annotated-cell-14-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="annotated-cell-14-6"><a href="#annotated-cell-14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-14-7"><a href="#annotated-cell-14-7" aria-hidden="true" tabindex="-1"></a>canadian_gas_tslm_fit <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-14-8"><a href="#annotated-cell-14-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glance</span>() <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-14-9"><a href="#annotated-cell-14-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(.model, CV, AICc, adj_r_squared)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-14" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-14" data-code-lines="3" data-code-annotation="1">Trend plus monthly seasonal dummies.</span>
+</dd>
+<dt data-target-cell="annotated-cell-14" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-14" data-code-lines="4" data-code-annotation="2">Trend only — the seasonal predictors are dropped.</span>
+</dd>
+</dl>
+</div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[".model"],"name":[1],"type":["chr"],"align":["left"]},{"label":["CV"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["AICc"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["adj_r_squared"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"full","2":"1.532181","3":"234.6492","4":"0.9433135"},{"1":"trend_only","2":"1.942622","3":"362.9413","4":"0.9266212"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p>Dropping the seasonal dummies raises the CV statistic from 1.53 to 1.94 — lower is better, so the seasonal predictors earn their place by this measure too.</p>
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Not the same CV
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This <code>CV</code> column evaluates predictor subsets on one fitted model over the whole sample. It is not the rolling-origin evaluation covered everywhere else in this document — no forecasts are made against genuinely future, unseen observations here.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="key-takeaways" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Key Takeaways</h1>
+<section id="what-to-remember" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="what-to-remember"><span class="header-section-number">6.1</span> What to Remember</h2>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>What this document established
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>A single train/test split is one draw from many possible outcomes: the <code>canadian_gas</code> demo flipped the <code>ETS()</code> vs.&nbsp;<code>ARIMA()</code> ranking just by moving the cutoff from 1995 to 1999.</li>
+<li>Expanding windows (<code>stretch_tsibble()</code>) keep all history but drag stale pre-regime-shift data through every fold; sliding windows (<code>slide_tsibble()</code>) fix the window size and forget the distant past, at the cost of choosing <code>.size</code> deliberately.</li>
+<li>RMSE fits cross-validation because every fold compares models on the <em>same</em> series — scale is never an issue — and because it matches the squared-error objective that ETS, ARIMA, and TSLM are fitted to minimize in the first place.</li>
+<li>Cross-validation gets expensive by multiplication: folds × models × any per-fold order search. Moving from <code>.step = 1</code> to <code>.step = 12</code> cut this document’s own timing test by more than 10×; freezing ARIMA orders and screening with a single split first cut it further.</li>
+<li>On <code>mexretail</code>, <code>ARIMA()</code> won both the single split (RMSE 2.07) and the 11-fold CV (RMSE 2.77) — the winner from Module 4.2 didn’t change, though the order of the runners-up did.</li>
+</ul>
+</div>
+</div>
+<div class="fragment">
+<div class="callout callout-style-simple callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>The Module 4 picture so far
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Session</th>
+<th style="text-align: left;">What we added</th>
+<th style="text-align: left;">Key tool</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">4.1</td>
+<td style="text-align: left;">Multiple seasonal periods</td>
+<td style="text-align: left;">STL + multiple seasons, Fourier terms</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">4.2</td>
+<td style="text-align: left;">Robustness and forecast combinations</td>
+<td style="text-align: left;">Bootstrapping, bagging</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>4.3 (now)</strong></td>
+<td style="text-align: left;"><strong>Robust evaluation</strong></td>
+<td style="text-align: left;"><strong>Time series cross-validation</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">4.4</td>
+<td style="text-align: left;">Hierarchical structure</td>
+<td style="text-align: left;">Reconciliation</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p><strong>FPP3 references:</strong> <a href="https://otexts.com/fpp3/tscv.html">§5.10 Time series cross-validation</a> · <a href="https://otexts.com/fpp3/selecting-predictors.html">§7.5 Selecting predictors</a></p>
+
+
+</section>
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+
+<script>
+  // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+  // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+  // slide changes (different for each slide format).
+  (function () {
+    // dispatch for htmlwidgets
+    function fireSlideEnter() {
+      const event = window.document.createEvent("Event");
+      event.initEvent("slideenter", true, true);
+      window.document.dispatchEvent(event);
+    }
+
+    function fireSlideChanged(previousSlide, currentSlide) {
+      fireSlideEnter();
+
+      // dispatch for shiny
+      if (window.jQuery) {
+        if (previousSlide) {
+          window.jQuery(previousSlide).trigger("hidden");
+        }
+        if (currentSlide) {
+          window.jQuery(currentSlide).trigger("shown");
+        }
+      }
+    }
+
+    // hookup for slidy
+    if (window.w3c_slidy) {
+      window.w3c_slidy.add_observer(function (slide_num) {
+        // slide_num starts at position 1
+        fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+      });
+    }
+
+  })();
+</script>
+
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/pbenavidesh\.github\.io\/narsil\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../../../docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations.html" class="pagination-link" aria-label="4.2 Bootstrapping, Bagging &amp; Model Combinations">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">4.2 Bootstrapping, Bagging &amp; Model Combinations</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../../../docs/modules/module_4/04_hierarchical/hierarchical.html" class="pagination-link" aria-label="4.4 Hierarchical &amp; Grouped Forecasting">
+        <span class="nav-page-text">4.4 Hierarchical &amp; Grouped Forecasting</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/pbenavidesh/narsil/edit/main/docs/modules/module_4/03_cv/ts_cv.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/pbenavidesh/narsil/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div><div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+
+
+<script src="../../../../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>
