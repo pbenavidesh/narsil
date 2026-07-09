@@ -1,0 +1,561 @@
+---
+title: "Time Series Cross-Validation"
+format:
+  html:
+    other-links:
+      - text: "FPP3 §5.10: Time series cross-validation"
+        href: https://otexts.com/fpp3/tscv.html
+      - text: "FPP3 §7.5: Selecting predictors (CV statistic)"
+        href: https://otexts.com/fpp3/selecting-predictors.html
+  revealjs:
+    output-file: ts_cv_pres.html
+freeze: auto
+params:
+  fred-data: true
+---
+
+```{r}
+#| label: pkgs
+#| message: false
+#| include: false
+
+library(tidyverse)
+library(fpp3)
+library(patchwork)
+
+source(here::here("R/narsil_theme.R"))
+theme_set(theme_narsil())
+```
+
+:::{.content-visible unless-format="revealjs"}
+
+```{r}
+#| label: pkgs_special
+#| message: false
+
+library(plotly)        #<1>
+library(tidyquant)     #<2>
+library(fable.prophet) #<3>
+```
+1. For interactive plots.
+2. For retrieving `mexretail` from FRED.
+3. Needed to fit `prophet()` models later in the document.
+
+:::
+
+# The Cost of One Split
+
+Every model built this semester — decomposition benchmarks, ETS, ARIMA, TSLM, dynamic regression, Prophet — has been evaluated with a single train/test split.
+
+## Same Models, Two Cutoffs, Two Winners
+
+We fit the same two models on `canadian_gas`, changing only where the training set ends. `canadian_gas` is monthly, January 1960 through February 2005, with a well-documented change in seasonal strength through the 1990s — Cutoff A sits before it, Cutoff B after.
+
+```{r}
+#| label: cutoffA-fit
+#| cache: true
+
+cutoff_a_train <- canadian_gas |>
+  filter_index(. ~ "1995 Dec")                     #<1>
+
+cutoff_a_fit <- cutoff_a_train |>
+  model(ets = ETS(Volume), arima = ARIMA(Volume))
+
+cutoff_a_fc <- cutoff_a_fit |>
+  forecast(h = 24)                                 #<2>
+
+cutoff_a_accu <- cutoff_a_fc |>
+  accuracy(canadian_gas) |>
+  select(.model, RMSE, MAE, MAPE, MASE) |>
+  arrange(RMSE)
+```
+1. Training set: January 1960 through December 1995.
+2. Two years ahead: January 1996 through December 1997.
+
+```{r}
+#| label: cutoffB-fit
+#| cache: true
+
+cutoff_b_train <- canadian_gas |>
+  filter_index(. ~ "1999 Dec")
+
+cutoff_b_fit <- cutoff_b_train |>
+  model(ets = ETS(Volume), arima = ARIMA(Volume))
+
+cutoff_b_fc <- cutoff_b_fit |>
+  forecast(h = 24)
+
+cutoff_b_accu <- cutoff_b_fc |>
+  accuracy(canadian_gas) |>
+  select(.model, RMSE, MAE, MAPE, MASE) |>
+  arrange(RMSE)
+```
+
+::: {.panel-tabset}
+
+### Cutoff A: train through 1995
+
+```{r}
+#| label: cutoffA-table
+
+cutoff_a_accu
+```
+
+### Cutoff B: train through 1999
+
+```{r}
+#| label: cutoffB-table
+
+cutoff_b_accu
+```
+
+:::
+
+:::{.fragment}
+
+Move the training cutoff by four years and the ranking flips. Under Cutoff A, `ETS()` wins — RMSE 0.511 against ARIMA's 0.673 — with an `ETS(M,A,M)` beating an `ARIMA(2,1,2)(0,1,1)[12]`. Under Cutoff B, `ARIMA()` wins — RMSE 0.362 against ETS's 0.383 — the very same `ETS(M,A,M)` specification, now beaten by a different fitted order, `ARIMA(1,1,1)(0,1,2)[12]`. One split would have crowned a permanent winner. Two splits show there isn't one.
+
+:::
+
+# Rolling-Origin Evaluation
+
+Chronological train/test ordering — training data always earlier, test data always later, never shuffled — was established in [Module 1.3](../../module_1/03_fcst/forecasting.qmd#train-test-split). Rolling-origin evaluation keeps that rule intact; it just repeats the split many times, sliding the origin forward through the series instead of fixing it once.
+
+## Expanding Windows
+
+```{r}
+#| label: stretch-demo
+
+canadian_gas_stretch <- canadian_gas |>
+  stretch_tsibble(.step = 12, .init = 120, .id = ".id") #<1>
+
+canadian_gas_stretch |>
+  as_tibble() |>
+  count(.id, name = "n_obs") |>
+  slice(1, 2, n())                                       #<2>
+```
+1. `.init = 120` — the first fold trains on 120 months (10 years). `.step = 12` — each following fold adds 12 more months before forecasting again.
+2. Fold 1 has 120 observations, fold 2 has 132, and the last fold — fold 36 — has 540, nearly the entire 542-month series.
+
+## Sliding Windows
+
+```{r}
+#| label: slide-demo
+
+canadian_gas_slide <- canadian_gas |>
+  slide_tsibble(.size = 120, .step = 12, .id = ".id")    #<1>
+
+canadian_gas_slide |>
+  as_tibble() |>
+  count(.id, name = "n_obs") |>
+  slice(1, 2, n())                                        #<2>
+```
+1. `.size = 120` fixes every training window at 120 months. `.step = 12` shifts the window forward one year at a time.
+2. Every fold — first, second, and last (fold 36) — has exactly 120 observations.
+
+## Expanding vs. Sliding: A Quick Comparison
+
+| | **Expanding** (`stretch_tsibble`) | **Sliding** (`slide_tsibble`) |
+|---|---|---|
+| Training set size | Grows every fold | Fixed (`.size`) |
+| Uses full history? | Yes, always from the start | No — drops the oldest observations |
+| Cost per fold | Increases over time | Constant |
+| Robust to regime changes | No — keeps carrying stale data | Yes — "forgets" the distant past |
+| Good when... | Series is short, stable, no structural breaks, and you want to use all available data | Series is long, has structural changes, or compute is limited |
+| Main risk | Early folds are unstable (little training data) | Choosing `.size` poorly (too small → unstable; too large → doesn't adapt) |
+
+```{r}
+#| label: fold-diagram-data
+#| echo: false
+#| output: false
+
+fold_n <- 20
+
+expanding_folds_df <- map_dfr(1:4, function(i) {
+  train_end <- 8 + (i - 1) * 3
+  test_end  <- train_end + 2
+  tibble(t = 1:fold_n, fold = i) |>
+    mutate(status = case_when(
+      t <= train_end ~ "train",
+      t <= test_end  ~ "test",
+      TRUE           ~ "unused"
+    ))
+})
+
+sliding_folds_df <- map_dfr(1:4, function(i) {
+  start     <- 1 + (i - 1) * 3
+  train_end <- start + 7
+  test_end  <- train_end + 2
+  tibble(t = 1:fold_n, fold = i) |>
+    mutate(status = case_when(
+      t < start       ~ "unused",
+      t <= train_end  ~ "train",
+      t <= test_end   ~ "test",
+      TRUE            ~ "unused"
+    ))
+})
+
+fold_diagram_tile <- function(.df, .title) {
+  .df |>
+    mutate(status = factor(status, levels = c("train", "test", "unused"))) |>
+    ggplot(aes(x = t, y = factor(fold), fill = status)) +
+    geom_tile(colour = "white", linewidth = 0.3) +
+    labs(title = .title, x = "Time index", y = "Fold", fill = NULL)
+}
+
+fold_diagram_p <- (fold_diagram_tile(expanding_folds_df, "Expanding window") +
+                      fold_diagram_tile(sliding_folds_df, "Sliding window")) +
+  plot_layout(guides = "collect")
+```
+
+```{r}
+#| label: fold-diagram-render
+#| renderings: [light, dark]
+#| echo: false
+
+fold_diagram_p &
+  theme_narsil() &
+  scale_fill_manual(values = c(
+    train  = narsil_pal("light")$palette[1],
+    test   = narsil_pal("light")$palette[4],
+    unused = narsil_pal("light")$grid
+  )) &
+  theme(legend.position = "bottom")
+
+fold_diagram_p &
+  theme_narsil_dark() &
+  scale_fill_manual(values = c(
+    train  = narsil_pal("dark")$palette[1],
+    test   = narsil_pal("dark")$palette[4],
+    unused = narsil_pal("dark")$grid
+  )) &
+  theme(legend.position = "bottom")
+```
+
+On a toy 20-point index, four expanding folds train on 8, 11, 14, then 17 points before testing on the next 2; four sliding folds always train on exactly 8.
+
+# Evaluating Across the Horizon
+
+## From Folds to a Forecast-Horizon Curve
+
+Using the expanding folds already built in `canadian_gas_stretch`, fit both models on every fold and forecast:
+
+```{r}
+#| label: cv-horizon-fit
+#| cache: true
+
+canadian_gas_cv_fc <- canadian_gas_stretch |>
+  model(ets = ETS(Volume), arima = ARIMA(Volume)) |>
+  forecast(h = 12) |>
+  group_by(.id, .model) |>          #<1>
+  mutate(h = row_number()) |>
+  ungroup() |>
+  as_fable(response = "Volume", distribution = Volume)
+
+canadian_gas_cv_accu <- canadian_gas_cv_fc |>
+  accuracy(canadian_gas, by = c("h", ".model"))
+
+canadian_gas_cv_accu
+```
+1. Group by `.id` **and** `.model` before numbering the horizon. Grouping by `.id` alone lets the row counter run across both models inside a fold — every `arima` row would silently pick up horizons 13–24 instead of 1–12.
+
+:::{.content-visible unless-format="revealjs"}
+
+```{r}
+#| label: cv-horizon-plot-html
+#| echo: false
+
+p <- canadian_gas_cv_accu |>
+  ggplot(aes(x = h, y = RMSE, colour = .model)) +
+  geom_line(linewidth = 0.9) +
+  geom_point(size = 1.6) +
+  labs(
+    title  = "RMSE by forecast horizon — expanding-window CV",
+    x      = "Horizon (months)",
+    y      = "RMSE",
+    colour = "Model"
+  )
+
+ggplotly(p, dynamicTicks = TRUE)
+```
+
+:::
+
+:::{.content-hidden unless-format="revealjs"}
+
+```{r}
+#| label: cv-horizon-plot-revealjs
+#| echo: false
+
+canadian_gas_cv_accu |>
+  ggplot(aes(x = h, y = RMSE, colour = .model)) +
+  geom_line(linewidth = 0.9) +
+  geom_point(size = 1.6) +
+  labs(
+    title  = "RMSE by forecast horizon",
+    x      = "Horizon (months)",
+    y      = "RMSE",
+    colour = "Model"
+  )
+```
+
+:::
+
+`ARIMA()` sits below `ETS()` at every one of the 12 horizons, both curves rising through mid-horizon and easing off by month 12 as the seasonal cycle comes back around.
+
+:::{.callout-note appearance="simple"}
+## Why RMSE for CV comparisons?
+
+Scale-dependent measures like RMSE can't be used to compare *different* series — that's why we used MASE to compare Cement, Beer, mexretail, and NSW in Module 4.2. Cross-validation compares models on the *same* series, fold after fold, so scale is never an issue here.
+
+RMSE also matches what most of our models are built to do: ETS, ARIMA, and TSLM are fitted by least squares or Gaussian likelihood, which targets the conditional mean — the point forecast that minimizes *squared* error. Grading that forecast with an absolute-error measure evaluates it against a different target (the median). RMSE is the measure that matches the model's own fitting objective.
+
+One caveat: because it squares errors, RMSE is dominated by a handful of bad folds. A single structural break sitting inside a few folds can outweigh good performance everywhere else.
+:::
+
+# The Real Cost of Cross-Validating Every Model
+
+## Why This Gets Expensive Fast
+
+```{r}
+#| label: naive-cv-illustration
+#| eval: false
+
+mexretail_full_cv <- mexretail_train |>
+  stretch_tsibble(.step = 1, .init = 120, .id = ".id") |>
+  model(
+    ets     = ETS(log(y)),
+    arima   = ARIMA(log(y)),
+    stlf    = stlf_spec,
+    tslm    = tslm_spec,
+    prophet = prophet_spec
+  ) |>
+  forecast(h = 12)
+```
+
+`mexretail_train` has 384 monthly observations. With `.init = 120`, `.step = 1` produces 264 folds. Five models per fold, each re-running its own search from scratch every time — ARIMA's stepwise order selection, ETS's state-space search, Prophet's changepoint and seasonality fitting. That is 264 × 5 = 1,320 independent model fits for one series, before combinations or a second series enter the picture.
+
+```{r}
+#| label: step-timing
+#| cache: true
+
+canadian_gas_recent <- canadian_gas |>
+  filter_index("1988 Jan" ~ .)                                        #<1>
+
+cg_stretch_step1  <- canadian_gas_recent |>
+  stretch_tsibble(.step = 1,  .init = 100, .id = ".id")
+cg_stretch_step12 <- canadian_gas_recent |>
+  stretch_tsibble(.step = 12, .init = 100, .id = ".id")
+
+time_step1  <- system.time(cg_stretch_step1  |> model(ets = ETS(Volume)) |> forecast(h = 12))
+time_step12 <- system.time(cg_stretch_step12 |> model(ets = ETS(Volume)) |> forecast(h = 12))
+
+tibble(
+  step        = c(1, 12),
+  n_folds     = c(max(cg_stretch_step1$.id), max(cg_stretch_step12$.id)),
+  elapsed_sec = c(time_step1[["elapsed"]], time_step12[["elapsed"]])
+)
+```
+1. A shorter 206-month window — long enough to show the cost multiplier, short enough to keep this comparison quick.
+
+:::{.fragment}
+
+Cutting `.step` from 1 to 12 drops the fold count from over a hundred to single digits, and the runtime falls by more than 10×, for a single ETS model on a 206-month window. Scale that to five heavier models across the full 384 months of `mexretail_train`, and `.step = 1` easily crosses the hour mark.
+
+:::
+
+## Making It Feasible
+
+**Larger `.step`.** The timing chunk above already made the case: fewer folds means proportionally less fitting.
+
+```{r}
+#| label: step-tradeoff
+#| eval: false
+
+canadian_gas |> stretch_tsibble(.step = 12, .init = 120, .id = ".id") # 36 folds
+canadian_gas |> stretch_tsibble(.step = 1,  .init = 120, .id = ".id") # 423 folds
+```
+
+**Freezing the ARIMA order.** Instead of re-running automatic order search on every fold, fix the order found once on the full training set:
+
+```{r}
+#| label: frozen-arima
+#| eval: false
+
+ARIMA(Volume ~ pdq(1, 1, 1) + PDQ(0, 1, 2)) #<1>
+```
+1. The order found for Cutoff B in the opening demo (`ARIMA(1,1,1)(0,1,2)[12]`), fixed instead of re-searched from scratch on every fold.
+
+**Screening with a single split first.** Module 4.2 already ran this exact comparison for `mexretail`; we reuse its setup and its seven-model roster through one `mable_spec()` function:
+
+```{r}
+#| label: mexretail-setup
+#| message: false
+#| cache: true
+
+mexretail <- tq_get(
+  "MEXSLRTTO01IXOBM",
+  get  = "economic.data",
+  from = "1985-01-01",
+  to   = "2019-12-31"
+) |>
+  mutate(date = yearmonth(date)) |>
+  rename(y = price) |>
+  as_tsibble(index = date)
+
+mexretail_train <- mexretail |> filter(year(date) <= 2017) #<1>
+mexretail_test  <- mexretail |> filter(year(date) >  2017)
+```
+1. Same split as [Module 4.2](../02_bootstrap_combinations/bootstrap_combinations.qmd): training through 2017, the last two years held out.
+
+```{r}
+#| label: mexretail-specs
+
+tslm_spec  <- TSLM(log(y) ~ trend() + season())
+ets_spec   <- ETS(log(y))
+arima_spec <- ARIMA(log(y))
+stlf_spec  <- decomposition_model(
+  STL(log(y) ~ trend(window = NULL) + season(window = "periodic"), robust = TRUE),
+  ETS(season_adjust ~ season("N"))
+)
+prophet_spec <- prophet(y)
+
+comb_equal_spec <- combination_ensemble(
+  tslm_spec, ets_spec, arima_spec, stlf_spec, prophet_spec,
+  weights = "equal"
+)
+comb_inv_var_spec <- combination_ensemble(
+  tslm_spec, ets_spec, arima_spec, stlf_spec, prophet_spec,
+  weights = "inv_var"
+)
+
+mable_spec <- function(.train_tsb) {   #<1>
+  .train_tsb |>
+    model(
+      tslm         = tslm_spec,
+      ets          = ets_spec,
+      arima        = arima_spec,
+      stlf         = stlf_spec,
+      prophet      = prophet_spec,
+      comb_equal   = comb_equal_spec,
+      comb_inv_var = comb_inv_var_spec
+    )
+}
+```
+1. Same seven-model roster as Module 4.2, wrapped in a function so it can be refit on any training tsibble — the single split now, the CV folds below.
+
+```{r}
+#| label: mexretail-single-split
+#| cache: true
+
+mexretail_fit <- mexretail_train |> mable_spec()
+
+mexretail_fc <- mexretail_fit |>
+  forecast(h = nrow(mexretail_test))
+
+mexretail_accu <- mexretail_fc |>
+  accuracy(mexretail) |>
+  select(.model, RMSE, MAE, MAPE, MASE) |>
+  arrange(RMSE)
+
+mexretail_accu
+```
+
+:::{.fragment}
+
+`arima`, `comb_inv_var`, `prophet`, and `ets` all land under RMSE 2.5. `stlf` (3.72) and `tslm` (11.3) are well behind. Carrying only the top four into cross-validation instead of all seven cuts the fold × model workload nearly in half.
+
+:::
+
+**Caching.** Every chunk above that fits a model across folds carries `#| cache: true` — recomputing hundreds of fits on every render would defeat the purpose of `freeze: auto`.
+
+**Parallelization.** For CV runs too large even after screening, `future`/`furrr` can distribute folds across cores: a `plan(multisession)` call before the fitting step parallelizes fold-level computation without touching the modeling code itself.
+
+## mexretail: Does the 4.2 Winner Still Win?
+
+```{r}
+#| label: mexretail-cv
+#| cache: true
+
+mexretail_stretch <- mexretail_train |>
+  stretch_tsibble(.step = 12, .init = 264, .id = ".id") #<1>
+
+mexretail_cv_fc <- mexretail_stretch |>
+  mable_spec() |>
+  forecast(h = 12)
+
+mexretail_cv_accu <- mexretail_cv_fc |>
+  accuracy(mexretail_train) |>
+  select(.model, RMSE, MAE, MAPE, MASE) |>
+  arrange(RMSE)
+
+mexretail_cv_accu
+```
+1. `.init = 264` (22 years) keeps every fold's training window long enough for `ARIMA()` and `prophet()` to fit reliably; `.step = 12` yields 11 folds, one year apart, instead of 264.
+
+:::{.fragment}
+
+`arima` wins under both evaluations — RMSE 2.07 in the single split, RMSE 2.77 averaged over the 11 CV folds. The winner doesn't change. What does change is the order behind it: `ets` moves from fourth place in the single split to second place under CV, while `prophet` drops from third to fifth. A single split can get the runner-up ranking wrong even when it gets the winner right.
+
+:::
+
+# A Different Kind of CV
+
+## Leave-One-Out CV for Selecting Predictors
+
+FPP3 §7.5 uses "CV" for something narrower than everything above: classical leave-one-out cross-validation, applied inside a single `TSLM()` fit to decide which predictors belong in the model.
+
+```{r}
+#| label: loocv-tslm
+#| message: false
+
+canadian_gas_tslm_fit <- canadian_gas |>
+  model(
+    full       = TSLM(Volume ~ trend() + season()), #<1>
+    trend_only = TSLM(Volume ~ trend())              #<2>
+  )
+
+canadian_gas_tslm_fit |>
+  glance() |>
+  select(.model, CV, AICc, adj_r_squared)
+```
+1. Trend plus monthly seasonal dummies.
+2. Trend only — the seasonal predictors are dropped.
+
+Dropping the seasonal dummies raises the CV statistic from 1.53 to 1.94 — lower is better, so the seasonal predictors earn their place by this measure too.
+
+:::{.callout-note appearance="simple"}
+## Not the same CV
+
+This `CV` column evaluates predictor subsets on one fitted model over the whole sample. It is not the rolling-origin evaluation covered everywhere else in this document — no forecasts are made against genuinely future, unseen observations here.
+:::
+
+# Key Takeaways
+
+:::{.callout-important}
+## What this document established
+
+- A single train/test split is one draw from many possible outcomes: the `canadian_gas` demo flipped the `ETS()` vs. `ARIMA()` ranking just by moving the cutoff from 1995 to 1999.
+- Expanding windows (`stretch_tsibble()`) keep all history but drag stale pre-regime-shift data through every fold; sliding windows (`slide_tsibble()`) fix the window size and forget the distant past, at the cost of choosing `.size` deliberately.
+- RMSE fits cross-validation because every fold compares models on the *same* series — scale is never an issue — and because it matches the squared-error objective that ETS, ARIMA, and TSLM are fitted to minimize in the first place.
+- Cross-validation gets expensive by multiplication: folds × models × any per-fold order search. Moving from `.step = 1` to `.step = 12` cut this document's own timing test by more than 10×; freezing ARIMA orders and screening with a single split first cut it further.
+- On `mexretail`, `ARIMA()` won both the single split (RMSE 2.07) and the 11-fold CV (RMSE 2.77) — the winner from Module 4.2 didn't change, though the order of the runners-up did.
+:::
+
+:::{.fragment}
+
+:::{.callout-tip appearance="simple"}
+## The Module 4 picture so far
+
+| Session | What we added | Key tool |
+|:---|:---|:---|
+| 4.1 | Multiple seasonal periods | STL + multiple seasons, Fourier terms |
+| 4.2 | Robustness and forecast combinations | Bootstrapping, bagging |
+| **4.3 (now)** | **Robust evaluation** | **Time series cross-validation** |
+| 4.4 | Hierarchical structure | Reconciliation |
+
+:::
+
+:::
+
+**FPP3 references:** [§5.10 Time series cross-validation](https://otexts.com/fpp3/tscv.html) · [§7.5 Selecting predictors](https://otexts.com/fpp3/selecting-predictors.html)
