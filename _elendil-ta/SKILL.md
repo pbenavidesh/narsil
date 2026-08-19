@@ -313,7 +313,7 @@ When a student has a model and asks "is this good?" or shares confusing output:
 | `has_gaps()` returns TRUE | Irregular time index | `fill_gaps()` or check index type |
 | ARIMA selects high order | Non-stationary series | Difference first or use `d=1` |
 | `freeze: auto` not re-rendering | First render already cached | Delete `_freeze/` folder for that file |
-| `renv` library corrupted | OneDrive sync conflict | Close RStudio, delete via Explorer |
+| `renv` library corrupted | OneDrive sync conflict | Close Positron, delete via Explorer |
 
 ---
 
