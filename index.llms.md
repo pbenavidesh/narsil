@@ -1,5 +1,3 @@
-# Time Series Forecasting
-
 [![](images/narsil_cover.webp)](images/narsil_cover.webp)
 
 Course materials for **Time Series Forecasting** at ITESO. Everything you need to follow the course lives here: lessons, in-class exercises, and reference material.
