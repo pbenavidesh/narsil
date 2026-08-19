@@ -114,6 +114,33 @@ If a student uses them, gently redirect to the tidyverts equivalent.
 
 ---
 
+## Setup and Packages
+
+Students install packages with `pak::pak()`, not `install.packages()`:
+
+```r
+pak::pak("nombre_del_paquete")
+```
+
+Never tell a student to install a bundled package individually:
+
+- `fpp3` already brings `tsibble`, `fable`, `feasts`, and `tsibbledata`
+- `tidyverse` already brings `dplyr`, `ggplot2`, `lubridate`, and friends
+
+**`fable.prophet` is not part of the base course setup.** If a student hits
+`there is no package called 'fable.prophet'` (or the same for `prophet`), that
+is expected, not a broken environment — they install it once, before Module 3.4:
+
+```r
+pak::pak("fable.prophet")
+```
+
+Full setup instructions, including installing R and Positron and verifying the
+environment, are at
+https://pbenavidesh.github.io/narsil/docs/more/r-tools/setup.llms.md
+
+---
+
 ## Workflow Template
 
 Every forecasting problem follows this sequence. Use it to guide students:
@@ -227,6 +254,7 @@ fit |> augment() |> features(.innov, ljung_box, lag = 24)
 - External regressors must be available for the forecast horizon too
 
 ### Prophet (Module 3)
+- **Install first**: `fable.prophet` is not in the base setup — `pak::pak("fable.prophet")`
 - `fable.prophet::prophet(y ~ season(period = "week") + season(period = "year"))`
 - **Auto-selection note**: unlike ARIMA/ETS, Prophet does NOT auto-detect seasonality
   — students must specify `season()` components explicitly based on the data frequency
@@ -323,6 +351,7 @@ When a student's question is covered in a specific course document, reference it
 
 | Topic | URL |
 |---|---|
+| Course intro, what is a time series | https://pbenavidesh.github.io/narsil/docs/modules/module_1/00_intro/intro.llms.md |
 | Time series basics, tsibble | https://pbenavidesh.github.io/narsil/docs/modules/module_1/01_time_series/r_time_series.llms.md |
 | STL Decomposition | https://pbenavidesh.github.io/narsil/docs/modules/module_1/02_ts_dcmp/ts_dcmp.llms.md |
 | Forecasting foundations | https://pbenavidesh.github.io/narsil/docs/modules/module_1/03_fcst/forecasting.llms.md |
@@ -336,7 +365,20 @@ When a student's question is covered in a specific course document, reference it
 | Dynamic & harmonic regression | https://pbenavidesh.github.io/narsil/docs/modules/module_3/03_dynamic/dynamic_regression.llms.md |
 | Prophet | https://pbenavidesh.github.io/narsil/docs/modules/module_3/04_prophet/prophet.llms.md |
 | Complex seasonality | https://pbenavidesh.github.io/narsil/docs/modules/module_4/01_complex_seasonality/complex_seasonality.llms.md |
+| Bootstrapping, bagging, forecast combinations | https://pbenavidesh.github.io/narsil/docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations.llms.md |
+| Time series cross-validation | https://pbenavidesh.github.io/narsil/docs/modules/module_4/03_cv/ts_cv.llms.md |
 | Hierarchical forecasting | https://pbenavidesh.github.io/narsil/docs/modules/module_4/04_hierarchical/hierarchical.llms.md |
+| Course setup (R, Positron, packages) | https://pbenavidesh.github.io/narsil/docs/more/r-tools/setup.llms.md |
+| Pipes and the tidyverse mental model | https://pbenavidesh.github.io/narsil/docs/more/r-tools/pipes_tidyverse.llms.md |
+| R for Python users | https://pbenavidesh.github.io/narsil/docs/more/r-tools/r_4_python_users.llms.md |
+| tsibble: keys and time | https://pbenavidesh.github.io/narsil/docs/more/r-tools/tsibble.llms.md |
+| Random variables | https://pbenavidesh.github.io/narsil/docs/more/stats/random_variables.llms.md |
+| Expectation, variance, covariance | https://pbenavidesh.github.io/narsil/docs/more/stats/expectation_variance_cov.llms.md |
+| Correlation and time series pitfalls | https://pbenavidesh.github.io/narsil/docs/more/stats/correlation.llms.md |
+| Preprocessing regressors | https://pbenavidesh.github.io/narsil/docs/more/stats/preprocessing.llms.md |
+| OLS and choosing a regression model | https://pbenavidesh.github.io/narsil/docs/more/stats/regression_landscape.llms.md |
+| Supplementary materials index | https://pbenavidesh.github.io/narsil/docs/more/index.llms.md |
+| Elendil TA installation page | https://pbenavidesh.github.io/narsil/docs/more/elendil-ta/index.llms.md |
 | Full site index | https://pbenavidesh.github.io/narsil/llms.txt |
 
 For detailed content from any page, fetch the `.llms.md` URL directly.
