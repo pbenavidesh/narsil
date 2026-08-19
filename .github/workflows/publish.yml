@@ -1,3 +1,18 @@
+# fable.prophet and prophet are excluded from renv.lock (see renv/settings.json).
+# Their Stan dependencies fail to install on CI due to a TBB binary mismatch.
+# This is safe only while every Prophet-using document has a committed _freeze/.
+# If you ever need to force re-execution of docs/modules/module_3/04_prophet/,
+# you must restore these packages first.
+#
+# The same applies to the refresh_fred input below: module_4/02_bootstrap_combinations
+# and module_4/03_cv are marked `fred-data: true` AND load fable.prophet, so a
+# refresh_fred run deletes their freeze and will fail at library(fable.prophet)
+# unless the packages are restored for that run.
+#
+# rstan, rstantools, inline, loo, posterior and QuickJSR are ignored too -- they
+# entered only via prophet. StanHeaders, BH and RcppParallel are NOT ignored:
+# modeltime needs StanHeaders, and anytime (via timetk/tsibble) needs BH.
+
 on:
   workflow_dispatch:
     inputs:
@@ -32,7 +47,7 @@ jobs:
       - name: Install R Dependencies
         uses: r-lib/actions/setup-renv@v2
         with:
-          cache-version: 4
+          cache-version: 5
 
       - name: Invalidate FRED freeze if requested
         if: ${{ github.event.inputs.refresh_fred == 'true' }}

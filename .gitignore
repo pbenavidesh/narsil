@@ -8,7 +8,11 @@ site_libs/
 /.quarto/
 /_site/
 .Rprofile
-renv
+# renv: ignore the library, but track settings.json / activate.R
+# (renv/.gitignore already excludes library/, staging/, etc.)
+renv/library/
+renv/staging/
+renv/sandbox/
 *.Rhistory
 *index-listing.json
 
