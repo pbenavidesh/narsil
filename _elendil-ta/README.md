@@ -39,3 +39,4 @@ re-download will automatically get the latest version.
 | Version | Date | Changes |
 |---------|------|---------|
 | 1.0 | 2026-05 | Initial release |
+| 1.1 | 2026-08-19 | Course structure resynced with the site (all 17 lessons, module/lesson numbering instead of weeks); URL table completed (Module 4 lessons, course intro, all supplementary pages); setup and packages guidance added (`pak::pak()`, Prophet installed separately); Positron replaces RStudio as the course IDE |
