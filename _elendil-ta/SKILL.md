@@ -325,7 +325,8 @@ When a student's question is covered in a specific course document, reference it
 |---|---|
 | Time series basics, tsibble | https://pbenavidesh.github.io/narsil/docs/modules/module_1/01_time_series/r_time_series.llms.md |
 | STL Decomposition | https://pbenavidesh.github.io/narsil/docs/modules/module_1/02_ts_dcmp/ts_dcmp.llms.md |
-| Forecasting workflow | https://pbenavidesh.github.io/narsil/docs/modules/forecasting_workflow.llms.md |
+| Forecasting foundations | https://pbenavidesh.github.io/narsil/docs/modules/module_1/03_fcst/forecasting.llms.md |
+| Model diagnostics | https://pbenavidesh.github.io/narsil/docs/modules/module_1/04_model_diagnostics/model_diagnostics.llms.md |
 | ETS | https://pbenavidesh.github.io/narsil/docs/modules/module_2/01_ets/ets.llms.md |
 | Stationarity | https://pbenavidesh.github.io/narsil/docs/modules/module_2/02_stationarity/stationarity.llms.md |
 | ARIMA | https://pbenavidesh.github.io/narsil/docs/modules/module_2/03_arima/arima.llms.md |
