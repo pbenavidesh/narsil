@@ -4,6 +4,7 @@ format: html
 ---
 
 ```{r}
+#| label: setup
 #| message: false
 
 library(tidyverse)
@@ -14,6 +15,7 @@ theme_set(theme_narsil())
 ```
 
 ```{r}
+#| label: show-data
 #| echo: false
 
 aus_production
@@ -24,6 +26,7 @@ aus_production
 Vamos a hacer pronósticos a 3 años, por lo que necesitamos dejar los últimos 3 años como el conjunto de test.
 
 ```{r}
+#| label: train-test-split
 gas_train <- aus_production |> 
   filter_index(. ~ "2007 Q2")
 
@@ -33,6 +36,7 @@ gas_train
 ## Visualize
 
 ```{r}
+#| label: plot-gas
 gas_train |> 
   autoplot(Gas)
 ```
@@ -40,6 +44,7 @@ gas_train |>
 Intentamos estabilizar la varianza con logaritmos.
 
 ```{r}
+#| label: plot-gas-log
 gas_train |> 
   autoplot(log(Gas))
 ```
@@ -49,6 +54,7 @@ Parece que todavía no es completamente estable (ahora al inicio la varianza es 
 Probemos con Box-Cox:
 
 ```{r}
+#| label: plot-gas-box-cox
 gas_lambda <- gas_train |> 
   features(Gas, guerrero) |> 
   pull()
@@ -66,6 +72,7 @@ Parece que mejora un poco.
 Vamos a separar la serie transformada usando STL.
 
 ```{r}
+#| label: plot-stl-components
 gas_train |> 
   model(
     stl = STL(box_cox(Gas, gas_lambda), robust = TRUE)
@@ -79,6 +86,7 @@ gas_train |>
 Primero vamos a probar los 4 modelos benchmark por separado, y posteriormente vamos a crear un modelo a partir de la descomposición que hicimos arriba.
 
 ```{r}
+#| label: fit-benchmarks
 gas_fit <- gas_train |> 
   model(
     media = MEAN(box_cox(Gas, gas_lambda)),
@@ -93,6 +101,7 @@ gas_fit
 ## Evaluación
 
 ```{r}
+#| label: plot-residuals
 #| warning: false
 
 gas_aug <- gas_fit |> 
@@ -119,12 +128,14 @@ gas_aug |>
 La prueba de Box-Pierce:
 
 ```{r}
+#| label: box-pierce-test
 gas_aug |> 
   features(.innov, box_pierce, lag = 8, dof = 0)
 ```
 La prueba de Ljung-Box
 
 ```{r}
+#| label: ljung-box-test
 gas_aug |> 
   features(.innov, ljung_box, lag = 8, dof = 0) |> 
   mutate(decision = if_else(lb_pvalue < 0.05, "Rechazar H0: Residuos autocorrelacionados", "No rechazar H0: Residuos no autocorrelacionados"))
@@ -134,6 +145,7 @@ gas_aug |>
 ### Pronóstico a partir de descomposición
 
 ```{r}
+#| label: fit-stl
 gas_fit_stl <- gas_train |> 
   model(
     stlf = decomposition_model(
@@ -147,6 +159,7 @@ gas_fit_stl
 ```
 
 ```{r}
+#| label: plot-residuals-stl
 #| warning: false
 
 gas_fit_stl |> 
@@ -159,6 +172,7 @@ gas_fit_stl |>
 
 
 ```{r}
+#| label: fit-all-models
 gas_fit_todos <- gas_train |> 
   model(
     media = MEAN(box_cox(Gas, gas_lambda)),
@@ -176,6 +190,7 @@ gas_fit_todos <- gas_train |>
 ## Pronóstico
 
 ```{r}
+#| label: forecast-all-models
 gas_fc_todos <- gas_fit_todos |> 
   forecast(h = "3 years")
 
@@ -192,6 +207,7 @@ gas_fc_todos |>
 ### Métricas de error (Accuracy)
 
 ```{r}
+#| label: accuracy-table
 gas_fc_todos |> 
   accuracy(aus_production) |> 
   arrange(RMSE)
@@ -200,6 +216,7 @@ gas_fc_todos |>
 El mejor modelo parece ser el SNAIVE. Vamos a utilizar este para hacer el pronóstico final.
 
 ```{r}
+#| label: forecast-final-snaive
 aus_production |> 
   model(
     snaive = SNAIVE(box_cox(Gas, gas_lambda))
