@@ -10,7 +10,7 @@ Pablo Benavides-Herrera
 
 Modified
 
-July 9, 2026
+August 19, 2026
 
 This document is **optional**, but strongly recommended.
 
@@ -40,7 +40,7 @@ By construction,
 
 Correlation measures **linear association** between two random variables.
 
-If \rho(X,Y) \neq 0, there is evidence of a linear relationship.  
+If \rho(X,Y) \neq 0, there is evidence of a linear relationship.\
 If \rho(X,Y) = 0, there is **no linear relationship**.
 
 > **NOTE:**
@@ -63,7 +63,7 @@ Correlation, by contrast, captures only one specific aspect of dependence.
 
 > **IMPORTANT:**
 >
-> Independence \Rightarrow zero correlation  
+> Independence \Rightarrow zero correlation\
 > Zero correlation \nRightarrow independence
 
 This distinction is often ignored — with consequences.
@@ -91,7 +91,7 @@ This phenomenon is known as **spurious correlation**.
 
 > **WARNING:**
 >
-> High correlation does not imply meaningful dependence  
+> High correlation does not imply meaningful dependence\
 > when time series share common structure.
 
 This is one of the most common pitfalls in applied forecasting.

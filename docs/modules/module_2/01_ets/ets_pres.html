@@ -9,14 +9,14 @@
 <script src="../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../../../../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-6d40f8af7092f34acea1908532066003.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-eec68b17241c1efd3eae2de50d816e3e.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.9.38">
+  <meta name="generator" content="quarto-1.10.18">
 
   <meta name="author" content="">
-  <title>Time Series Forecasting – Exponential smoothing</title>
+  <title>Time Series Forecasting – Exponential Smoothing</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -26,10 +26,13 @@
     /* Default styles provided by pandoc.
     ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
     */
-    code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
     ul.task-list li input[type="checkbox"] {
@@ -244,9 +247,9 @@
   </style>
   <link href="../../../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
   <script src="../../../../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
-<meta property="og:title" content="Exponential smoothing – Time Series Forecasting">
+<meta property="og:title" content="Exponential Smoothing – Time Series Forecasting">
 <meta property="og:site_name" content="Time Series Forecasting">
-<meta name="twitter:title" content="Exponential smoothing – Time Series Forecasting">
+<meta name="twitter:title" content="Exponential Smoothing – Time Series Forecasting">
 <meta name="twitter:creator" content="@PabsBenavides">
 <meta name="twitter:card" content="summary">
 </head>
@@ -255,7 +258,7 @@
     <div class="slides">
 
 <section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">Exponential smoothing</h1>
+  <h1 class="title">Exponential Smoothing</h1>
 
 <div class="quarto-title-authors">
 </div>
@@ -280,14 +283,14 @@
 </div>
 <div class="callout-content">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>tsibble <span class="sc">|&gt;</span></span>
-<span id="cb1-2"><a></a>  <span class="fu">model</span>(</span>
-<span id="cb1-3"><a></a>    <span class="at">baseline =</span> <span class="fu">decomposition_model</span>(</span>
-<span id="cb1-4"><a></a>      <span class="fu">STL</span>(y <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="cn">NULL</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb1-5"><a></a>      <span class="fu">RW</span>(season_adjust <span class="sc">~</span> <span class="fu">drift</span>()),</span>
-<span id="cb1-6"><a></a>      <span class="fu">SNAIVE</span>(season_year)</span>
-<span id="cb1-7"><a></a>    )</span>
-<span id="cb1-8"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a aria-label="1"></a>tsibble <span class="sc">|&gt;</span></span>
+<span id="cb1-2"><a aria-label="2"></a>  <span class="fu">model</span>(</span>
+<span id="cb1-3"><a aria-label="3"></a>    <span class="at">baseline =</span> <span class="fu">decomposition_model</span>(</span>
+<span id="cb1-4"><a aria-label="4"></a>      <span class="fu">STL</span>(y <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="cn">NULL</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb1-5"><a aria-label="5"></a>      <span class="fu">RW</span>(season_adjust <span class="sc">~</span> <span class="fu">drift</span>()),</span>
+<span id="cb1-6"><a aria-label="6"></a>      <span class="fu">SNAIVE</span>(season_year)</span>
+<span id="cb1-7"><a aria-label="7"></a>    )</span>
+<span id="cb1-8"><a aria-label="8"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>This is your <strong>benchmark</strong>. Every model we build from now on must beat it.</p>
 </div>
@@ -548,11 +551,11 @@ Table&nbsp;1: Weights for different values of <span class="math inline">\alpha</
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a>algeria_economy <span class="ot">&lt;-</span> global_economy <span class="sc">|&gt;</span></span>
-<span id="cb2-2"><a></a>  <span class="fu">filter</span>(Country <span class="sc">==</span> <span class="st">"Algeria"</span>)</span>
-<span id="cb2-3"><a></a></span>
-<span id="cb2-4"><a></a>alg_plot_p <span class="ot">&lt;-</span> algeria_economy <span class="sc">|&gt;</span></span>
-<span id="cb2-5"><a></a>  <span class="fu">autoplot</span>(Exports)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a aria-label="1"></a>algeria_economy <span class="ot">&lt;-</span> global_economy <span class="sc">|&gt;</span></span>
+<span id="cb2-2"><a aria-label="2"></a>  <span class="fu">filter</span>(Country <span class="sc">==</span> <span class="st">"Algeria"</span>)</span>
+<span id="cb2-3"><a aria-label="3"></a></span>
+<span id="cb2-4"><a aria-label="4"></a>alg_plot_p <span class="ot">&lt;-</span> algeria_economy <span class="sc">|&gt;</span></span>
+<span id="cb2-5"><a aria-label="5"></a>  <span class="fu">autoplot</span>(Exports)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
@@ -573,14 +576,14 @@ Table&nbsp;1: Weights for different values of <span class="math inline">\alpha</
   )
 
 alg_fc <- alg_fit |>
-  forecast(h = 5)"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-17-1"><a href="#annotated-cell-17-1"></a>alg_fit <span class="ot">&lt;-</span> algeria_economy <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-17-2"><a href="#annotated-cell-17-2"></a>  <span class="fu">model</span>(</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-17" data-target-annotation="1">1</button><span id="annotated-cell-17-3" class="code-annotation-target"><a href="#annotated-cell-17-3"></a>    <span class="at">SES =</span> <span class="fu">ETS</span>(Exports <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"N"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>)),</span>
-<span id="annotated-cell-17-4"><a href="#annotated-cell-17-4"></a>    <span class="at">Naive =</span> <span class="fu">NAIVE</span>(Exports)</span>
-<span id="annotated-cell-17-5"><a href="#annotated-cell-17-5"></a>  )</span>
-<span id="annotated-cell-17-6"><a href="#annotated-cell-17-6"></a></span>
-<span id="annotated-cell-17-7"><a href="#annotated-cell-17-7"></a>alg_fc <span class="ot">&lt;-</span> alg_fit <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-17-8"><a href="#annotated-cell-17-8"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">5</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+  forecast(h = 5)"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-17-1"><a href="#annotated-cell-17-1" aria-label="1"></a>alg_fit <span class="ot">&lt;-</span> algeria_economy <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-17-2"><a href="#annotated-cell-17-2" aria-label="2"></a>  <span class="fu">model</span>(</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-17" data-target-annotation="1">1</button><span id="annotated-cell-17-3" class="code-annotation-target"><a href="#annotated-cell-17-3" aria-label="3"></a>    <span class="at">SES =</span> <span class="fu">ETS</span>(Exports <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"N"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>)),</span>
+<span id="annotated-cell-17-4"><a href="#annotated-cell-17-4" aria-label="4"></a>    <span class="at">Naive =</span> <span class="fu">NAIVE</span>(Exports)</span>
+<span id="annotated-cell-17-5"><a href="#annotated-cell-17-5" aria-label="5"></a>  )</span>
+<span id="annotated-cell-17-6"><a href="#annotated-cell-17-6" aria-label="6"></a></span>
+<span id="annotated-cell-17-7"><a href="#annotated-cell-17-7" aria-label="7"></a>alg_fc <span class="ot">&lt;-</span> alg_fit <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-17-8"><a href="#annotated-cell-17-8" aria-label="8"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">5</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-17" data-target-annotation="1">1</dt>
@@ -604,9 +607,9 @@ alg_fc <- alg_fit |>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-18" data-llms-code-original="alg_fit |> 
   select(SES) |> 
-  report()        #<1>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-18-1"><a href="#annotated-cell-18-1"></a>alg_fit <span class="sc">|&gt;</span> </span>
-<span id="annotated-cell-18-2"><a href="#annotated-cell-18-2"></a>  <span class="fu">select</span>(SES) <span class="sc">|&gt;</span> </span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-18" data-target-annotation="1">1</button><span id="annotated-cell-18-3" class="code-annotation-target"><a href="#annotated-cell-18-3"></a>  <span class="fu">report</span>()</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+  report()        #<1>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-18-1"><a href="#annotated-cell-18-1" aria-label="1"></a>alg_fit <span class="sc">|&gt;</span> </span>
+<span id="annotated-cell-18-2"><a href="#annotated-cell-18-2" aria-label="2"></a>  <span class="fu">select</span>(SES) <span class="sc">|&gt;</span> </span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-18" data-target-annotation="1">1</button><span id="annotated-cell-18-3" class="code-annotation-target"><a href="#annotated-cell-18-3" aria-label="3"></a>  <span class="fu">report</span>()</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-18" data-target-annotation="1">1</dt>
@@ -736,12 +739,12 @@ Model: ETS(A,N,N)
 <section id="example-forecasting-brazils-population-2" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Example: Forecasting Brazil’s population</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb4-1" class="hljs-ln-code"><a></a>bra_fit <span class="ot">&lt;-</span> bra_economy <span class="sc">|&gt;</span> </span>
-<span id="cb4-2" class="hljs-ln-code"><a></a>  <span class="fu">model</span>(</span>
-<span id="cb4-3" class="hljs-ln-code"><a></a>    <span class="at">Holt  =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
-<span id="cb4-4" class="hljs-ln-code"><a></a>  )</span>
-<span id="cb4-5" class="hljs-ln-code"><a></a></span>
-<span id="cb4-6" class="hljs-ln-code"><a></a>bra_fit</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb4-1" class="hljs-ln-code"><a aria-label="1"></a>bra_fit <span class="ot">&lt;-</span> bra_economy <span class="sc">|&gt;</span> </span>
+<span id="cb4-2" class="hljs-ln-code"><a aria-label="2"></a>  <span class="fu">model</span>(</span>
+<span id="cb4-3" class="hljs-ln-code"><a aria-label="3"></a>    <span class="at">Holt  =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
+<span id="cb4-4" class="hljs-ln-code"><a aria-label="4"></a>  )</span>
+<span id="cb4-5" class="hljs-ln-code"><a aria-label="5"></a></span>
+<span id="cb4-6" class="hljs-ln-code"><a aria-label="6"></a>bra_fit</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -754,13 +757,13 @@ Model: ETS(A,N,N)
 <section id="example-forecasting-brazils-population-3" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Example: Forecasting Brazil’s population</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb5-1" class="hljs-ln-code"><a></a>bra_fit <span class="ot">&lt;-</span> bra_economy <span class="sc">|&gt;</span> </span>
-<span id="cb5-2" class="hljs-ln-code"><a></a>  <span class="fu">model</span>(</span>
-<span id="cb5-3" class="hljs-ln-code"><a></a>    <span class="at">Holt  =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>)),</span>
-<span id="cb5-4" class="hljs-ln-code"><a></a>    <span class="at">Drift =</span> <span class="fu">RW</span>(Pop <span class="sc">~</span> <span class="fu">drift</span>())</span>
-<span id="cb5-5" class="hljs-ln-code"><a></a>  )</span>
-<span id="cb5-6" class="hljs-ln-code"><a></a></span>
-<span id="cb5-7" class="hljs-ln-code"><a></a>bra_fit</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb5-1" class="hljs-ln-code"><a aria-label="1"></a>bra_fit <span class="ot">&lt;-</span> bra_economy <span class="sc">|&gt;</span> </span>
+<span id="cb5-2" class="hljs-ln-code"><a aria-label="2"></a>  <span class="fu">model</span>(</span>
+<span id="cb5-3" class="hljs-ln-code"><a aria-label="3"></a>    <span class="at">Holt  =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>)),</span>
+<span id="cb5-4" class="hljs-ln-code"><a aria-label="4"></a>    <span class="at">Drift =</span> <span class="fu">RW</span>(Pop <span class="sc">~</span> <span class="fu">drift</span>())</span>
+<span id="cb5-5" class="hljs-ln-code"><a aria-label="5"></a>  )</span>
+<span id="cb5-6" class="hljs-ln-code"><a aria-label="6"></a></span>
+<span id="cb5-7" class="hljs-ln-code"><a aria-label="7"></a>bra_fit</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -773,15 +776,15 @@ Model: ETS(A,N,N)
 <section id="example-forecasting-brazils-population-4" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Example: Forecasting Brazil’s population</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb6-1" class="hljs-ln-code"><a></a>bra_fit <span class="ot">&lt;-</span> bra_economy <span class="sc">|&gt;</span> </span>
-<span id="cb6-2" class="hljs-ln-code"><a></a>  <span class="fu">model</span>(</span>
-<span id="cb6-3" class="hljs-ln-code"><a></a>    <span class="at">Holt  =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>)),</span>
-<span id="cb6-4" class="hljs-ln-code"><a></a>    <span class="at">Drift =</span> <span class="fu">RW</span>(Pop <span class="sc">~</span> <span class="fu">drift</span>())</span>
-<span id="cb6-5" class="hljs-ln-code"><a></a>  )</span>
-<span id="cb6-6" class="hljs-ln-code"><a></a></span>
-<span id="cb6-7" class="hljs-ln-code"><a></a>bra_fit <span class="sc">|&gt;</span>  </span>
-<span id="cb6-8" class="hljs-ln-code"><a></a>  <span class="fu">select</span>(Holt) <span class="sc">|&gt;</span>  </span>
-<span id="cb6-9" class="hljs-ln-code"><a></a>  <span class="fu">report</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb6-1" class="hljs-ln-code"><a aria-label="1"></a>bra_fit <span class="ot">&lt;-</span> bra_economy <span class="sc">|&gt;</span> </span>
+<span id="cb6-2" class="hljs-ln-code"><a aria-label="2"></a>  <span class="fu">model</span>(</span>
+<span id="cb6-3" class="hljs-ln-code"><a aria-label="3"></a>    <span class="at">Holt  =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>)),</span>
+<span id="cb6-4" class="hljs-ln-code"><a aria-label="4"></a>    <span class="at">Drift =</span> <span class="fu">RW</span>(Pop <span class="sc">~</span> <span class="fu">drift</span>())</span>
+<span id="cb6-5" class="hljs-ln-code"><a aria-label="5"></a>  )</span>
+<span id="cb6-6" class="hljs-ln-code"><a aria-label="6"></a></span>
+<span id="cb6-7" class="hljs-ln-code"><a aria-label="7"></a>bra_fit <span class="sc">|&gt;</span>  </span>
+<span id="cb6-8" class="hljs-ln-code"><a aria-label="8"></a>  <span class="fu">select</span>(Holt) <span class="sc">|&gt;</span>  </span>
+<span id="cb6-9" class="hljs-ln-code"><a aria-label="9"></a>  <span class="fu">report</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Series: Pop 
 Model: ETS(A,A,N) 
@@ -814,18 +817,18 @@ bra_fit |>
   report()
 
 bra_fc <- bra_fit |>  
-  forecast(h = 15)"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1"></a>bra_fit <span class="ot">&lt;-</span> bra_economy <span class="sc">|&gt;</span> </span>
-<span id="annotated-cell-2-2"><a href="#annotated-cell-2-2"></a>  <span class="fu">model</span>(</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1">1</button><span id="annotated-cell-2-3" class="code-annotation-target"><a href="#annotated-cell-2-3"></a>    <span class="at">Holt  =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>)),</span>
-<span id="annotated-cell-2-4"><a href="#annotated-cell-2-4"></a>    <span class="at">Drift =</span> <span class="fu">RW</span>(Pop <span class="sc">~</span> <span class="fu">drift</span>())</span>
-<span id="annotated-cell-2-5"><a href="#annotated-cell-2-5"></a>  )</span>
-<span id="annotated-cell-2-6"><a href="#annotated-cell-2-6"></a></span>
-<span id="annotated-cell-2-7"><a href="#annotated-cell-2-7"></a>bra_fit <span class="sc">|&gt;</span>  </span>
-<span id="annotated-cell-2-8"><a href="#annotated-cell-2-8"></a>  <span class="fu">select</span>(Holt) <span class="sc">|&gt;</span>  </span>
-<span id="annotated-cell-2-9"><a href="#annotated-cell-2-9"></a>  <span class="fu">report</span>()</span>
-<span id="annotated-cell-2-10"><a href="#annotated-cell-2-10"></a></span>
-<span id="annotated-cell-2-11"><a href="#annotated-cell-2-11"></a>bra_fc <span class="ot">&lt;-</span> bra_fit <span class="sc">|&gt;</span>  </span>
-<span id="annotated-cell-2-12"><a href="#annotated-cell-2-12"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">15</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+  forecast(h = 15)"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1" aria-label="1"></a>bra_fit <span class="ot">&lt;-</span> bra_economy <span class="sc">|&gt;</span> </span>
+<span id="annotated-cell-2-2"><a href="#annotated-cell-2-2" aria-label="2"></a>  <span class="fu">model</span>(</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1">1</button><span id="annotated-cell-2-3" class="code-annotation-target"><a href="#annotated-cell-2-3" aria-label="3"></a>    <span class="at">Holt  =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>)),</span>
+<span id="annotated-cell-2-4"><a href="#annotated-cell-2-4" aria-label="4"></a>    <span class="at">Drift =</span> <span class="fu">RW</span>(Pop <span class="sc">~</span> <span class="fu">drift</span>())</span>
+<span id="annotated-cell-2-5"><a href="#annotated-cell-2-5" aria-label="5"></a>  )</span>
+<span id="annotated-cell-2-6"><a href="#annotated-cell-2-6" aria-label="6"></a></span>
+<span id="annotated-cell-2-7"><a href="#annotated-cell-2-7" aria-label="7"></a>bra_fit <span class="sc">|&gt;</span>  </span>
+<span id="annotated-cell-2-8"><a href="#annotated-cell-2-8" aria-label="8"></a>  <span class="fu">select</span>(Holt) <span class="sc">|&gt;</span>  </span>
+<span id="annotated-cell-2-9"><a href="#annotated-cell-2-9" aria-label="9"></a>  <span class="fu">report</span>()</span>
+<span id="annotated-cell-2-10"><a href="#annotated-cell-2-10" aria-label="10"></a></span>
+<span id="annotated-cell-2-11"><a href="#annotated-cell-2-11" aria-label="11"></a>bra_fc <span class="ot">&lt;-</span> bra_fit <span class="sc">|&gt;</span>  </span>
+<span id="annotated-cell-2-12"><a href="#annotated-cell-2-12" aria-label="12"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">15</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-2" data-target-annotation="1">1</dt>
@@ -854,10 +857,10 @@ Model: ETS(A,A,N)
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a>holt_full_plt_p <span class="ot">&lt;-</span> bra_fc <span class="sc">|&gt;</span></span>
-<span id="cb9-2"><a></a>  <span class="fu">autoplot</span>(bra_economy, <span class="at">level =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
-<span id="cb9-3"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Brazilian population"</span>, <span class="at">y =</span> <span class="st">"Millions"</span>) <span class="sc">+</span></span>
-<span id="cb9-4"><a></a>  <span class="fu">guides</span>(<span class="at">colour =</span> <span class="fu">guide_legend</span>(<span class="at">title =</span> <span class="st">"Forecast"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a aria-label="1"></a>holt_full_plt_p <span class="ot">&lt;-</span> bra_fc <span class="sc">|&gt;</span></span>
+<span id="cb9-2"><a aria-label="2"></a>  <span class="fu">autoplot</span>(bra_economy, <span class="at">level =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb9-3"><a aria-label="3"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Brazilian population"</span>, <span class="at">y =</span> <span class="st">"Millions"</span>) <span class="sc">+</span></span>
+<span id="cb9-4"><a aria-label="4"></a>  <span class="fu">guides</span>(<span class="at">colour =</span> <span class="fu">guide_legend</span>(<span class="at">title =</span> <span class="st">"Forecast"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
@@ -918,10 +921,10 @@ Model: ETS(A,A,N)
 <section id="example-forecasting-brazils-population-continued" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Example: Forecasting Brazil’s population (continued)</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb10-1" class="hljs-ln-code"><a></a>bra_economy <span class="sc">|&gt;</span> </span>
-<span id="cb10-2" class="hljs-ln-code"><a></a>  <span class="fu">model</span>(</span>
-<span id="cb10-3" class="hljs-ln-code"><a></a>    <span class="at">Holt   =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
-<span id="cb10-4" class="hljs-ln-code"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb10-1" class="hljs-ln-code"><a aria-label="1"></a>bra_economy <span class="sc">|&gt;</span> </span>
+<span id="cb10-2" class="hljs-ln-code"><a aria-label="2"></a>  <span class="fu">model</span>(</span>
+<span id="cb10-3" class="hljs-ln-code"><a aria-label="3"></a>    <span class="at">Holt   =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
+<span id="cb10-4" class="hljs-ln-code"><a aria-label="4"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -934,11 +937,11 @@ Model: ETS(A,A,N)
 <section id="example-forecasting-brazils-population-continued-1" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Example: Forecasting Brazil’s population (continued)</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb11-1" class="hljs-ln-code"><a></a>bra_economy <span class="sc">|&gt;</span> </span>
-<span id="cb11-2" class="hljs-ln-code"><a></a>  <span class="fu">model</span>(</span>
-<span id="cb11-3" class="hljs-ln-code"><a></a>    <span class="at">Holt   =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>)),</span>
-<span id="cb11-4" class="hljs-ln-code"><a></a>    <span class="at">Damped =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"Ad"</span>, <span class="at">phi =</span> <span class="fl">0.9</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
-<span id="cb11-5" class="hljs-ln-code"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb11-1" class="hljs-ln-code"><a aria-label="1"></a>bra_economy <span class="sc">|&gt;</span> </span>
+<span id="cb11-2" class="hljs-ln-code"><a aria-label="2"></a>  <span class="fu">model</span>(</span>
+<span id="cb11-3" class="hljs-ln-code"><a aria-label="3"></a>    <span class="at">Holt   =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>)),</span>
+<span id="cb11-4" class="hljs-ln-code"><a aria-label="4"></a>    <span class="at">Damped =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"Ad"</span>, <span class="at">phi =</span> <span class="fl">0.9</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
+<span id="cb11-5" class="hljs-ln-code"><a aria-label="5"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -969,16 +972,16 @@ Model: ETS(A,A,N)
   autoplot(bra_economy, level = NULL) +
   labs(title = &quot;Brazilian population&quot;,
        y = &quot;Millions&quot;) +
-  guides(colour = guide_legend(title = &quot;Forecast&quot;))"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="annotated-cell-4-1" class="hljs-ln-code"><a href="#annotated-cell-4-1"></a>damped_full_p <span class="ot">&lt;-</span> bra_economy <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-4-2" class="hljs-ln-code"><a href="#annotated-cell-4-2"></a>  <span class="fu">model</span>(</span>
-<span id="annotated-cell-4-3" class="hljs-ln-code"><a href="#annotated-cell-4-3"></a>    <span class="at">Holt   =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>)),</span>
-<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-4" data-target-annotation="1">1</button><span id="annotated-cell-4-4" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-4-4"></a>    <span class="at">Damped =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"Ad"</span>, <span class="at">phi =</span> <span class="fl">0.9</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
-<span id="annotated-cell-4-5" class="hljs-ln-code"><a href="#annotated-cell-4-5"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-4-6" class="hljs-ln-code"><a href="#annotated-cell-4-6"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">15</span>) <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-4-7" class="hljs-ln-code"><a href="#annotated-cell-4-7"></a>  <span class="fu">autoplot</span>(bra_economy, <span class="at">level =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
-<span id="annotated-cell-4-8" class="hljs-ln-code"><a href="#annotated-cell-4-8"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Brazilian population"</span>,</span>
-<span id="annotated-cell-4-9" class="hljs-ln-code"><a href="#annotated-cell-4-9"></a>       <span class="at">y =</span> <span class="st">"Millions"</span>) <span class="sc">+</span></span>
-<span id="annotated-cell-4-10" class="hljs-ln-code"><a href="#annotated-cell-4-10"></a>  <span class="fu">guides</span>(<span class="at">colour =</span> <span class="fu">guide_legend</span>(<span class="at">title =</span> <span class="st">"Forecast"</span>))</span><div class="code-annotation-gutter-bg hljs-ln-code"></div><div class="code-annotation-gutter hljs-ln-code"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+  guides(colour = guide_legend(title = &quot;Forecast&quot;))"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="annotated-cell-4-1" class="hljs-ln-code"><a href="#annotated-cell-4-1" aria-label="1"></a>damped_full_p <span class="ot">&lt;-</span> bra_economy <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-4-2" class="hljs-ln-code"><a href="#annotated-cell-4-2" aria-label="2"></a>  <span class="fu">model</span>(</span>
+<span id="annotated-cell-4-3" class="hljs-ln-code"><a href="#annotated-cell-4-3" aria-label="3"></a>    <span class="at">Holt   =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>)),</span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-4" data-target-annotation="1">1</button><span id="annotated-cell-4-4" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-4-4" aria-label="4"></a>    <span class="at">Damped =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"Ad"</span>, <span class="at">phi =</span> <span class="fl">0.9</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
+<span id="annotated-cell-4-5" class="hljs-ln-code"><a href="#annotated-cell-4-5" aria-label="5"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-4-6" class="hljs-ln-code"><a href="#annotated-cell-4-6" aria-label="6"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">15</span>) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-4-7" class="hljs-ln-code"><a href="#annotated-cell-4-7" aria-label="7"></a>  <span class="fu">autoplot</span>(bra_economy, <span class="at">level =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="annotated-cell-4-8" class="hljs-ln-code"><a href="#annotated-cell-4-8" aria-label="8"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Brazilian population"</span>,</span>
+<span id="annotated-cell-4-9" class="hljs-ln-code"><a href="#annotated-cell-4-9" aria-label="9"></a>       <span class="at">y =</span> <span class="st">"Millions"</span>) <span class="sc">+</span></span>
+<span id="annotated-cell-4-10" class="hljs-ln-code"><a href="#annotated-cell-4-10" aria-label="10"></a>  <span class="fu">guides</span>(<span class="at">colour =</span> <span class="fu">guide_legend</span>(<span class="at">title =</span> <span class="st">"Forecast"</span>))</span><div class="code-annotation-gutter-bg hljs-ln-code"></div><div class="code-annotation-gutter hljs-ln-code"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-4" data-target-annotation="1">1</dt>
@@ -1065,13 +1068,13 @@ Model: ETS(A,A,N)
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a>aus_holidays <span class="ot">&lt;-</span> tourism <span class="sc">|&gt;</span></span>
-<span id="cb12-2"><a></a>  <span class="fu">filter</span>(Purpose <span class="sc">==</span> <span class="st">"Holiday"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb12-3"><a></a>  <span class="fu">summarise</span>(<span class="at">Trips =</span> <span class="fu">sum</span>(Trips))</span>
-<span id="cb12-4"><a></a></span>
-<span id="cb12-5"><a></a>aus_holidays_data_p <span class="ot">&lt;-</span> aus_holidays <span class="sc">|&gt;</span> <span class="fu">autoplot</span>(Trips) <span class="sc">+</span></span>
-<span id="cb12-6"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Australian holiday trips"</span>,</span>
-<span id="cb12-7"><a></a>       <span class="at">y =</span> <span class="st">"Overnight trips (millions)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a aria-label="1"></a>aus_holidays <span class="ot">&lt;-</span> tourism <span class="sc">|&gt;</span></span>
+<span id="cb12-2"><a aria-label="2"></a>  <span class="fu">filter</span>(Purpose <span class="sc">==</span> <span class="st">"Holiday"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb12-3"><a aria-label="3"></a>  <span class="fu">summarise</span>(<span class="at">Trips =</span> <span class="fu">sum</span>(Trips))</span>
+<span id="cb12-4"><a aria-label="4"></a></span>
+<span id="cb12-5"><a aria-label="5"></a>aus_holidays_data_p <span class="ot">&lt;-</span> aus_holidays <span class="sc">|&gt;</span> <span class="fu">autoplot</span>(Trips) <span class="sc">+</span></span>
+<span id="cb12-6"><a aria-label="6"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Australian holiday trips"</span>,</span>
+<span id="cb12-7"><a aria-label="7"></a>       <span class="at">y =</span> <span class="st">"Overnight trips (millions)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
@@ -1091,11 +1094,11 @@ Model: ETS(A,A,N)
   STL(Trips ~ trend(window = 7) + season(window = &quot;periodic&quot;), robust = TRUE),
   SNAIVE(season_year), # <1>
   ETS(season_adjust ~ error(&quot;A&quot;) + trend(&quot;A&quot;) + season(&quot;N&quot;))
-)"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="annotated-cell-27-1" class="hljs-ln-code"><a href="#annotated-cell-27-1"></a>stl_ets_add_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
-<span id="annotated-cell-27-2" class="hljs-ln-code"><a href="#annotated-cell-27-2"></a>  <span class="fu">STL</span>(Trips <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="dv">7</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
-<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-27" data-target-annotation="1">1</button><span id="annotated-cell-27-3" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-27-3"></a>  <span class="fu">SNAIVE</span>(season_year),</span>
-<span id="annotated-cell-27-4" class="hljs-ln-code"><a href="#annotated-cell-27-4"></a>  <span class="fu">ETS</span>(season_adjust <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
-<span id="annotated-cell-27-5" class="hljs-ln-code"><a href="#annotated-cell-27-5"></a>)</span><div class="code-annotation-gutter-bg hljs-ln-code"></div><div class="code-annotation-gutter hljs-ln-code"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+)"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="annotated-cell-27-1" class="hljs-ln-code"><a href="#annotated-cell-27-1" aria-label="1"></a>stl_ets_add_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
+<span id="annotated-cell-27-2" class="hljs-ln-code"><a href="#annotated-cell-27-2" aria-label="2"></a>  <span class="fu">STL</span>(Trips <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="dv">7</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-27" data-target-annotation="1">1</button><span id="annotated-cell-27-3" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-27-3" aria-label="3"></a>  <span class="fu">SNAIVE</span>(season_year),</span>
+<span id="annotated-cell-27-4" class="hljs-ln-code"><a href="#annotated-cell-27-4" aria-label="4"></a>  <span class="fu">ETS</span>(season_adjust <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
+<span id="annotated-cell-27-5" class="hljs-ln-code"><a href="#annotated-cell-27-5" aria-label="5"></a>)</span><div class="code-annotation-gutter-bg hljs-ln-code"></div><div class="code-annotation-gutter hljs-ln-code"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-27" data-target-annotation="1">1</dt>
@@ -1109,24 +1112,24 @@ Model: ETS(A,A,N)
 <section id="strategy-1-stl-ets-1" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Strategy 1: STL + ETS</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb13-1" class="hljs-ln-code"><a></a>stl_ets_add_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(          </span>
-<span id="cb13-2" class="hljs-ln-code"><a></a>  <span class="fu">STL</span>(Trips <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="dv">7</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb13-3" class="hljs-ln-code"><a></a>  <span class="fu">ETS</span>(season_adjust <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>)) </span>
-<span id="cb13-4" class="hljs-ln-code"><a></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb13-1" class="hljs-ln-code"><a aria-label="1"></a>stl_ets_add_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(          </span>
+<span id="cb13-2" class="hljs-ln-code"><a aria-label="2"></a>  <span class="fu">STL</span>(Trips <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="dv">7</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb13-3" class="hljs-ln-code"><a aria-label="3"></a>  <span class="fu">ETS</span>(season_adjust <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>)) </span>
+<span id="cb13-4" class="hljs-ln-code"><a aria-label="4"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="strategy-1-stl-ets-2" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Strategy 1: STL + ETS</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb14-1" class="hljs-ln-code"><a></a>stl_ets_add_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(           </span>
-<span id="cb14-2" class="hljs-ln-code"><a></a>  <span class="fu">STL</span>(Trips <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="dv">7</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb14-3" class="hljs-ln-code"><a></a>  <span class="fu">ETS</span>(season_adjust <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
-<span id="cb14-4" class="hljs-ln-code"><a></a>)</span>
-<span id="cb14-5" class="hljs-ln-code"><a></a></span>
-<span id="cb14-6" class="hljs-ln-code"><a></a>stl_ets_mul_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(     </span>
-<span id="cb14-7" class="hljs-ln-code"><a></a>  <span class="fu">STL</span>(Trips <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="dv">7</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb14-8" class="hljs-ln-code"><a></a>  <span class="fu">ETS</span>(season_adjust <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"M"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
-<span id="cb14-9" class="hljs-ln-code"><a></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb14-1" class="hljs-ln-code"><a aria-label="1"></a>stl_ets_add_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(           </span>
+<span id="cb14-2" class="hljs-ln-code"><a aria-label="2"></a>  <span class="fu">STL</span>(Trips <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="dv">7</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb14-3" class="hljs-ln-code"><a aria-label="3"></a>  <span class="fu">ETS</span>(season_adjust <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
+<span id="cb14-4" class="hljs-ln-code"><a aria-label="4"></a>)</span>
+<span id="cb14-5" class="hljs-ln-code"><a aria-label="5"></a></span>
+<span id="cb14-6" class="hljs-ln-code"><a aria-label="6"></a>stl_ets_mul_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(     </span>
+<span id="cb14-7" class="hljs-ln-code"><a aria-label="7"></a>  <span class="fu">STL</span>(Trips <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="dv">7</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb14-8" class="hljs-ln-code"><a aria-label="8"></a>  <span class="fu">ETS</span>(season_adjust <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"M"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
+<span id="cb14-9" class="hljs-ln-code"><a aria-label="9"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="strategy-1-stl-ets-3" class="slide level2" data-auto-animate="true">
@@ -1159,25 +1162,25 @@ stl_ets_full_p <- aus_holidays |>
   forecast(h = &quot;2 years&quot;) |>
   autoplot(aus_holidays, level = NULL) +
   labs(title = &quot;STL + ETS forecasts&quot;,
-       y = &quot;Overnight trips (millions)&quot;)"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-6" data-target-annotation="1">1</button><span id="annotated-cell-6-1" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-6-1"></a>stl_ets_add_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
-<span id="annotated-cell-6-2" class="hljs-ln-code"><a href="#annotated-cell-6-2"></a>  <span class="fu">STL</span>(Trips <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="dv">7</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
-<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-6" data-target-annotation="2">2</button><span id="annotated-cell-6-3" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-6-3"></a>  <span class="fu">ETS</span>(season_adjust <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
-<span id="annotated-cell-6-4" class="hljs-ln-code"><a href="#annotated-cell-6-4"></a>)</span>
-<span id="annotated-cell-6-5" class="hljs-ln-code"><a href="#annotated-cell-6-5"></a></span>
-<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-6" data-target-annotation="3">3</button><span id="annotated-cell-6-6" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-6-6"></a>stl_ets_mul_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
-<span id="annotated-cell-6-7" class="hljs-ln-code"><a href="#annotated-cell-6-7"></a>  <span class="fu">STL</span>(Trips <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="dv">7</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
-<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-6" data-target-annotation="4">4</button><span id="annotated-cell-6-8" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-6-8"></a>  <span class="fu">ETS</span>(season_adjust <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"M"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
-<span id="annotated-cell-6-9" class="hljs-ln-code"><a href="#annotated-cell-6-9"></a>)</span>
-<span id="annotated-cell-6-10" class="hljs-ln-code"><a href="#annotated-cell-6-10"></a></span>
-<span id="annotated-cell-6-11" class="hljs-ln-code"><a href="#annotated-cell-6-11"></a>stl_ets_full_p <span class="ot">&lt;-</span> aus_holidays <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-6-12" class="hljs-ln-code"><a href="#annotated-cell-6-12"></a>  <span class="fu">model</span>(</span>
-<span id="annotated-cell-6-13" class="hljs-ln-code"><a href="#annotated-cell-6-13"></a>    <span class="at">stl_ets_add =</span> stl_ets_add_spec,</span>
-<span id="annotated-cell-6-14" class="hljs-ln-code"><a href="#annotated-cell-6-14"></a>    <span class="at">stl_ets_mul =</span> stl_ets_mul_spec</span>
-<span id="annotated-cell-6-15" class="hljs-ln-code"><a href="#annotated-cell-6-15"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-6-16" class="hljs-ln-code"><a href="#annotated-cell-6-16"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"2 years"</span>) <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-6-17" class="hljs-ln-code"><a href="#annotated-cell-6-17"></a>  <span class="fu">autoplot</span>(aus_holidays, <span class="at">level =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
-<span id="annotated-cell-6-18" class="hljs-ln-code"><a href="#annotated-cell-6-18"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"STL + ETS forecasts"</span>,</span>
-<span id="annotated-cell-6-19" class="hljs-ln-code"><a href="#annotated-cell-6-19"></a>       <span class="at">y =</span> <span class="st">"Overnight trips (millions)"</span>)</span><div class="code-annotation-gutter-bg hljs-ln-code"></div><div class="code-annotation-gutter hljs-ln-code"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+       y = &quot;Overnight trips (millions)&quot;)"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-6" data-target-annotation="1">1</button><span id="annotated-cell-6-1" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-6-1" aria-label="1"></a>stl_ets_add_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
+<span id="annotated-cell-6-2" class="hljs-ln-code"><a href="#annotated-cell-6-2" aria-label="2"></a>  <span class="fu">STL</span>(Trips <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="dv">7</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-6" data-target-annotation="2">2</button><span id="annotated-cell-6-3" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-6-3" aria-label="3"></a>  <span class="fu">ETS</span>(season_adjust <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
+<span id="annotated-cell-6-4" class="hljs-ln-code"><a href="#annotated-cell-6-4" aria-label="4"></a>)</span>
+<span id="annotated-cell-6-5" class="hljs-ln-code"><a href="#annotated-cell-6-5" aria-label="5"></a></span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-6" data-target-annotation="3">3</button><span id="annotated-cell-6-6" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-6-6" aria-label="6"></a>stl_ets_mul_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
+<span id="annotated-cell-6-7" class="hljs-ln-code"><a href="#annotated-cell-6-7" aria-label="7"></a>  <span class="fu">STL</span>(Trips <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="dv">7</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-6" data-target-annotation="4">4</button><span id="annotated-cell-6-8" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-6-8" aria-label="8"></a>  <span class="fu">ETS</span>(season_adjust <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"M"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
+<span id="annotated-cell-6-9" class="hljs-ln-code"><a href="#annotated-cell-6-9" aria-label="9"></a>)</span>
+<span id="annotated-cell-6-10" class="hljs-ln-code"><a href="#annotated-cell-6-10" aria-label="10"></a></span>
+<span id="annotated-cell-6-11" class="hljs-ln-code"><a href="#annotated-cell-6-11" aria-label="11"></a>stl_ets_full_p <span class="ot">&lt;-</span> aus_holidays <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-6-12" class="hljs-ln-code"><a href="#annotated-cell-6-12" aria-label="12"></a>  <span class="fu">model</span>(</span>
+<span id="annotated-cell-6-13" class="hljs-ln-code"><a href="#annotated-cell-6-13" aria-label="13"></a>    <span class="at">stl_ets_add =</span> stl_ets_add_spec,</span>
+<span id="annotated-cell-6-14" class="hljs-ln-code"><a href="#annotated-cell-6-14" aria-label="14"></a>    <span class="at">stl_ets_mul =</span> stl_ets_mul_spec</span>
+<span id="annotated-cell-6-15" class="hljs-ln-code"><a href="#annotated-cell-6-15" aria-label="15"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-6-16" class="hljs-ln-code"><a href="#annotated-cell-6-16" aria-label="16"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"2 years"</span>) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-6-17" class="hljs-ln-code"><a href="#annotated-cell-6-17" aria-label="17"></a>  <span class="fu">autoplot</span>(aus_holidays, <span class="at">level =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="annotated-cell-6-18" class="hljs-ln-code"><a href="#annotated-cell-6-18" aria-label="18"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"STL + ETS forecasts"</span>,</span>
+<span id="annotated-cell-6-19" class="hljs-ln-code"><a href="#annotated-cell-6-19" aria-label="19"></a>       <span class="at">y =</span> <span class="st">"Overnight trips (millions)"</span>)</span><div class="code-annotation-gutter-bg hljs-ln-code"></div><div class="code-annotation-gutter hljs-ln-code"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-6" data-target-annotation="1">1</dt>
@@ -1260,20 +1263,20 @@ stl_ets_full_p <- aus_holidays |>
 <section id="example-australian-holiday-trips" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Example: Australian holiday trips</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb15-1" class="hljs-ln-code"><a></a>aus_fit_hw <span class="ot">&lt;-</span> aus_holidays <span class="sc">|&gt;</span> </span>
-<span id="cb15-2" class="hljs-ln-code"><a></a>  <span class="fu">model</span>(</span>
-<span id="cb15-3" class="hljs-ln-code"><a></a>    <span class="at">hw_add =</span> <span class="fu">ETS</span>(Trips <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"A"</span>))</span>
-<span id="cb15-4" class="hljs-ln-code"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb15-1" class="hljs-ln-code"><a aria-label="1"></a>aus_fit_hw <span class="ot">&lt;-</span> aus_holidays <span class="sc">|&gt;</span> </span>
+<span id="cb15-2" class="hljs-ln-code"><a aria-label="2"></a>  <span class="fu">model</span>(</span>
+<span id="cb15-3" class="hljs-ln-code"><a aria-label="3"></a>    <span class="at">hw_add =</span> <span class="fu">ETS</span>(Trips <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"A"</span>))</span>
+<span id="cb15-4" class="hljs-ln-code"><a aria-label="4"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="example-australian-holiday-trips-1" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Example: Australian holiday trips</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb16-1" class="hljs-ln-code"><a></a>aus_fit_hw <span class="ot">&lt;-</span> aus_holidays <span class="sc">|&gt;</span> </span>
-<span id="cb16-2" class="hljs-ln-code"><a></a>  <span class="fu">model</span>(</span>
-<span id="cb16-3" class="hljs-ln-code"><a></a>    <span class="at">hw_add =</span> <span class="fu">ETS</span>(Trips <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"A"</span>)),</span>
-<span id="cb16-4" class="hljs-ln-code"><a></a>    <span class="at">hw_mul =</span> <span class="fu">ETS</span>(Trips <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"M"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"M"</span>))</span>
-<span id="cb16-5" class="hljs-ln-code"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb16-1" class="hljs-ln-code"><a aria-label="1"></a>aus_fit_hw <span class="ot">&lt;-</span> aus_holidays <span class="sc">|&gt;</span> </span>
+<span id="cb16-2" class="hljs-ln-code"><a aria-label="2"></a>  <span class="fu">model</span>(</span>
+<span id="cb16-3" class="hljs-ln-code"><a aria-label="3"></a>    <span class="at">hw_add =</span> <span class="fu">ETS</span>(Trips <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"A"</span>)),</span>
+<span id="cb16-4" class="hljs-ln-code"><a aria-label="4"></a>    <span class="at">hw_mul =</span> <span class="fu">ETS</span>(Trips <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"M"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"M"</span>))</span>
+<span id="cb16-5" class="hljs-ln-code"><a aria-label="5"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="example-australian-holiday-trips-2" class="slide level2" data-auto-animate="true">
@@ -1283,11 +1286,11 @@ stl_ets_full_p <- aus_holidays |>
   model(
     hw_add = ETS(Trips ~ error(&quot;A&quot;) + trend(&quot;A&quot;) + season(&quot;A&quot;)), #<1>
     hw_mul = ETS(Trips ~ error(&quot;M&quot;) + trend(&quot;A&quot;) + season(&quot;M&quot;))  #<2>
-  )"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-7-1"><a href="#annotated-cell-7-1"></a>aus_fit_hw <span class="ot">&lt;-</span> aus_holidays <span class="sc">|&gt;</span> </span>
-<span id="annotated-cell-7-2"><a href="#annotated-cell-7-2"></a>  <span class="fu">model</span>(</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="1">1</button><span id="annotated-cell-7-3" class="code-annotation-target"><a href="#annotated-cell-7-3"></a>    <span class="at">hw_add =</span> <span class="fu">ETS</span>(Trips <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"A"</span>)),</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="2">2</button><span id="annotated-cell-7-4" class="code-annotation-target"><a href="#annotated-cell-7-4"></a>    <span class="at">hw_mul =</span> <span class="fu">ETS</span>(Trips <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"M"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"M"</span>))</span>
-<span id="annotated-cell-7-5"><a href="#annotated-cell-7-5"></a>  )</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+  )"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-7-1"><a href="#annotated-cell-7-1" aria-label="1"></a>aus_fit_hw <span class="ot">&lt;-</span> aus_holidays <span class="sc">|&gt;</span> </span>
+<span id="annotated-cell-7-2"><a href="#annotated-cell-7-2" aria-label="2"></a>  <span class="fu">model</span>(</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="1">1</button><span id="annotated-cell-7-3" class="code-annotation-target"><a href="#annotated-cell-7-3" aria-label="3"></a>    <span class="at">hw_add =</span> <span class="fu">ETS</span>(Trips <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"A"</span>)),</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="2">2</button><span id="annotated-cell-7-4" class="code-annotation-target"><a href="#annotated-cell-7-4" aria-label="4"></a>    <span class="at">hw_mul =</span> <span class="fu">ETS</span>(Trips <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"M"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"M"</span>))</span>
+<span id="annotated-cell-7-5"><a href="#annotated-cell-7-5" aria-label="5"></a>  )</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-7" data-target-annotation="1">1</dt>
@@ -1304,15 +1307,15 @@ stl_ets_full_p <- aus_holidays |>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a>hw_full_plt_p <span class="ot">&lt;-</span> aus_fit_hw <span class="sc">|&gt;</span></span>
-<span id="cb17-2"><a></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"3 years"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb17-3"><a></a>  <span class="fu">autoplot</span>(aus_holidays, <span class="at">level =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
-<span id="cb17-4"><a></a>  <span class="fu">labs</span>(</span>
-<span id="cb17-5"><a></a>    <span class="at">title =</span> <span class="st">"Holt-Winters forecasts: additive vs. multiplicative"</span>,</span>
-<span id="cb17-6"><a></a>    <span class="at">y =</span> <span class="st">"Overnight trips (millions)"</span>,</span>
-<span id="cb17-7"><a></a>    <span class="at">caption =</span> <span class="st">"Can you spot any differences between both forecasts?"</span></span>
-<span id="cb17-8"><a></a>  ) <span class="sc">+</span></span>
-<span id="cb17-9"><a></a>  <span class="fu">guides</span>(<span class="at">colour =</span> <span class="fu">guide_legend</span>(<span class="at">title =</span> <span class="st">"Forecast"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a aria-label="1"></a>hw_full_plt_p <span class="ot">&lt;-</span> aus_fit_hw <span class="sc">|&gt;</span></span>
+<span id="cb17-2"><a aria-label="2"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"3 years"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb17-3"><a aria-label="3"></a>  <span class="fu">autoplot</span>(aus_holidays, <span class="at">level =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb17-4"><a aria-label="4"></a>  <span class="fu">labs</span>(</span>
+<span id="cb17-5"><a aria-label="5"></a>    <span class="at">title =</span> <span class="st">"Holt-Winters forecasts: additive vs. multiplicative"</span>,</span>
+<span id="cb17-6"><a aria-label="6"></a>    <span class="at">y =</span> <span class="st">"Overnight trips (millions)"</span>,</span>
+<span id="cb17-7"><a aria-label="7"></a>    <span class="at">caption =</span> <span class="st">"Can you spot any differences between both forecasts?"</span></span>
+<span id="cb17-8"><a aria-label="8"></a>  ) <span class="sc">+</span></span>
+<span id="cb17-9"><a aria-label="9"></a>  <span class="fu">guides</span>(<span class="at">colour =</span> <span class="fu">guide_legend</span>(<span class="at">title =</span> <span class="st">"Forecast"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
@@ -1335,8 +1338,8 @@ stl_ets_full_p <- aus_holidays |>
 <div class="callout-content">
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-32" data-llms-code-original="aus_fit_hw |> 
-  tidy()  #<1>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-32-1"><a href="#annotated-cell-32-1"></a>aus_fit_hw <span class="sc">|&gt;</span> </span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-32" data-target-annotation="1">1</button><span id="annotated-cell-32-2" class="code-annotation-target"><a href="#annotated-cell-32-2"></a>  <span class="fu">tidy</span>()</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+  tidy()  #<1>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-32-1"><a href="#annotated-cell-32-1" aria-label="1"></a>aus_fit_hw <span class="sc">|&gt;</span> </span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-32" data-target-annotation="1">1</button><span id="annotated-cell-32-2" class="code-annotation-target"><a href="#annotated-cell-32-2" aria-label="2"></a>  <span class="fu">tidy</span>()</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-32" data-target-annotation="1">1</dt>
@@ -1392,22 +1395,22 @@ stl_ets_full_p <- aus_holidays |>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a></a>sth_cross_ped <span class="ot">&lt;-</span> pedestrian <span class="sc">|&gt;</span></span>
-<span id="cb18-2"><a></a>  <span class="fu">filter</span>(Date <span class="sc">&gt;=</span> <span class="st">"2016-07-01"</span>, Sensor <span class="sc">==</span> <span class="st">"Southern Cross Station"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb18-3"><a></a>  <span class="fu">index_by</span>(Date) <span class="sc">|&gt;</span></span>
-<span id="cb18-4"><a></a>  <span class="fu">summarise</span>(<span class="at">Count =</span> <span class="fu">sum</span>(Count) <span class="sc">/</span> <span class="dv">1000</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a aria-label="1"></a>sth_cross_ped <span class="ot">&lt;-</span> pedestrian <span class="sc">|&gt;</span></span>
+<span id="cb18-2"><a aria-label="2"></a>  <span class="fu">filter</span>(Date <span class="sc">&gt;=</span> <span class="st">"2016-07-01"</span>, Sensor <span class="sc">==</span> <span class="st">"Southern Cross Station"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb18-3"><a aria-label="3"></a>  <span class="fu">index_by</span>(Date) <span class="sc">|&gt;</span></span>
+<span id="cb18-4"><a aria-label="4"></a>  <span class="fu">summarise</span>(<span class="at">Count =</span> <span class="fu">sum</span>(Count) <span class="sc">/</span> <span class="dv">1000</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19" data-code-line-numbers="|4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a>hw_damped_p <span class="ot">&lt;-</span> sth_cross_ped <span class="sc">|&gt;</span></span>
-<span id="cb19-2"><a></a>  <span class="fu">filter</span>(Date <span class="sc">&lt;=</span> <span class="st">"2016-07-31"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb19-3"><a></a>  <span class="fu">model</span>(</span>
-<span id="cb19-4"><a></a>    <span class="at">hw =</span> <span class="fu">ETS</span>(Count <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"M"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"Ad"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"M"</span>))</span>
-<span id="cb19-5"><a></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb19-6"><a></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"2 weeks"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb19-7"><a></a>  <span class="fu">autoplot</span>(sth_cross_ped <span class="sc">|&gt;</span> <span class="fu">filter</span>(Date <span class="sc">&lt;=</span> <span class="st">"2016-08-14"</span>)) <span class="sc">+</span></span>
-<span id="cb19-8"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Daily traffic: Southern Cross"</span>,</span>
-<span id="cb19-9"><a></a>       <span class="at">y=</span><span class="st">"Pedestrians ('000)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19" data-code-line-numbers="|4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a aria-label="1"></a>hw_damped_p <span class="ot">&lt;-</span> sth_cross_ped <span class="sc">|&gt;</span></span>
+<span id="cb19-2"><a aria-label="2"></a>  <span class="fu">filter</span>(Date <span class="sc">&lt;=</span> <span class="st">"2016-07-31"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb19-3"><a aria-label="3"></a>  <span class="fu">model</span>(</span>
+<span id="cb19-4"><a aria-label="4"></a>    <span class="at">hw =</span> <span class="fu">ETS</span>(Count <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"M"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"Ad"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"M"</span>))</span>
+<span id="cb19-5"><a aria-label="5"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb19-6"><a aria-label="6"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"2 weeks"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb19-7"><a aria-label="7"></a>  <span class="fu">autoplot</span>(sth_cross_ped <span class="sc">|&gt;</span> <span class="fu">filter</span>(Date <span class="sc">&lt;=</span> <span class="st">"2016-08-14"</span>)) <span class="sc">+</span></span>
+<span id="cb19-8"><a aria-label="8"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Daily traffic: Southern Cross"</span>,</span>
+<span id="cb19-9"><a aria-label="9"></a>       <span class="at">y=</span><span class="st">"Pedestrians ('000)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
 <div class="cell-output-display">
@@ -1453,20 +1456,20 @@ stl_ets_full_p <- aus_holidays |>
 <section id="example-forecasting-daily-pedestrian-traffic-continued" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Example: Forecasting daily pedestrian traffic (continued)</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20" data-code-line-numbers="10-11"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb20-1" class="hljs-ln-code"><a></a>ped_fit <span class="ot">&lt;-</span> pedestrian <span class="sc">|&gt;</span></span>
-<span id="cb20-2" class="hljs-ln-code"><a></a>  <span class="fu">filter</span>(</span>
-<span id="cb20-3" class="hljs-ln-code"><a></a>    Date <span class="sc">&gt;=</span> <span class="st">"2016-07-01"</span>,</span>
-<span id="cb20-4" class="hljs-ln-code"><a></a>    Sensor <span class="sc">!=</span> <span class="st">"Birrarung Marr"</span></span>
-<span id="cb20-5" class="hljs-ln-code"><a></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb20-6" class="hljs-ln-code"><a></a>  <span class="fu">index_by</span>(Date) <span class="sc">|&gt;</span></span>
-<span id="cb20-7" class="hljs-ln-code"><a></a>  <span class="fu">group_by_key</span>() <span class="sc">|&gt;</span></span>
-<span id="cb20-8" class="hljs-ln-code"><a></a>  <span class="fu">summarise</span>(<span class="at">Count =</span> <span class="fu">sum</span>(Count) <span class="sc">/</span> <span class="dv">1000</span>) <span class="sc">|&gt;</span></span>
-<span id="cb20-9" class="hljs-ln-code"><a></a>  <span class="fu">model</span>(</span>
-<span id="cb20-10" class="hljs-ln-code"><a></a>    <span class="at">ETS_auto =</span> <span class="fu">ETS</span>(Count),</span>
-<span id="cb20-11" class="hljs-ln-code"><a></a>    <span class="at">ets_with_trend =</span> <span class="fu">ETS</span>(Count <span class="sc">~</span> <span class="fu">trend</span>(<span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"Ad"</span>))),</span>
-<span id="cb20-12" class="hljs-ln-code"><a></a>  )</span>
-<span id="cb20-13" class="hljs-ln-code"><a></a></span>
-<span id="cb20-14" class="hljs-ln-code"><a></a>ped_fit</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20" data-code-line-numbers="10-11"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb20-1" class="hljs-ln-code"><a aria-label="1"></a>ped_fit <span class="ot">&lt;-</span> pedestrian <span class="sc">|&gt;</span></span>
+<span id="cb20-2" class="hljs-ln-code"><a aria-label="2"></a>  <span class="fu">filter</span>(</span>
+<span id="cb20-3" class="hljs-ln-code"><a aria-label="3"></a>    Date <span class="sc">&gt;=</span> <span class="st">"2016-07-01"</span>,</span>
+<span id="cb20-4" class="hljs-ln-code"><a aria-label="4"></a>    Sensor <span class="sc">!=</span> <span class="st">"Birrarung Marr"</span></span>
+<span id="cb20-5" class="hljs-ln-code"><a aria-label="5"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb20-6" class="hljs-ln-code"><a aria-label="6"></a>  <span class="fu">index_by</span>(Date) <span class="sc">|&gt;</span></span>
+<span id="cb20-7" class="hljs-ln-code"><a aria-label="7"></a>  <span class="fu">group_by_key</span>() <span class="sc">|&gt;</span></span>
+<span id="cb20-8" class="hljs-ln-code"><a aria-label="8"></a>  <span class="fu">summarise</span>(<span class="at">Count =</span> <span class="fu">sum</span>(Count) <span class="sc">/</span> <span class="dv">1000</span>) <span class="sc">|&gt;</span></span>
+<span id="cb20-9" class="hljs-ln-code"><a aria-label="9"></a>  <span class="fu">model</span>(</span>
+<span id="cb20-10" class="hljs-ln-code"><a aria-label="10"></a>    <span class="at">ETS_auto =</span> <span class="fu">ETS</span>(Count),</span>
+<span id="cb20-11" class="hljs-ln-code"><a aria-label="11"></a>    <span class="at">ets_with_trend =</span> <span class="fu">ETS</span>(Count <span class="sc">~</span> <span class="fu">trend</span>(<span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"Ad"</span>))),</span>
+<span id="cb20-12" class="hljs-ln-code"><a aria-label="12"></a>  )</span>
+<span id="cb20-13" class="hljs-ln-code"><a aria-label="13"></a></span>
+<span id="cb20-14" class="hljs-ln-code"><a aria-label="14"></a>ped_fit</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A mable: 3 x 3
 # Key:     Sensor [3]
@@ -1505,13 +1508,13 @@ holidays_train <- aus_holidays |>
   slice_head(n = nrow(aus_holidays) - h)   #<1>
 
 holidays_test <- aus_holidays |> 
-  slice_tail(n = h)                         #<2>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-11-1"><a href="#annotated-cell-11-1"></a>h <span class="ot">&lt;-</span> <span class="dv">8</span></span>
-<span id="annotated-cell-11-2"><a href="#annotated-cell-11-2"></a></span>
-<span id="annotated-cell-11-3"><a href="#annotated-cell-11-3"></a>holidays_train <span class="ot">&lt;-</span> aus_holidays <span class="sc">|&gt;</span> </span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-11" data-target-annotation="1">1</button><span id="annotated-cell-11-4" class="code-annotation-target"><a href="#annotated-cell-11-4"></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="fu">nrow</span>(aus_holidays) <span class="sc">-</span> h)</span>
-<span id="annotated-cell-11-5"><a href="#annotated-cell-11-5"></a></span>
-<span id="annotated-cell-11-6"><a href="#annotated-cell-11-6"></a>holidays_test <span class="ot">&lt;-</span> aus_holidays <span class="sc">|&gt;</span> </span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-11" data-target-annotation="2">2</button><span id="annotated-cell-11-7" class="code-annotation-target"><a href="#annotated-cell-11-7"></a>  <span class="fu">slice_tail</span>(<span class="at">n =</span> h)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+  slice_tail(n = h)                         #<2>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-11-1"><a href="#annotated-cell-11-1" aria-label="1"></a>h <span class="ot">&lt;-</span> <span class="dv">8</span></span>
+<span id="annotated-cell-11-2"><a href="#annotated-cell-11-2" aria-label="2"></a></span>
+<span id="annotated-cell-11-3"><a href="#annotated-cell-11-3" aria-label="3"></a>holidays_train <span class="ot">&lt;-</span> aus_holidays <span class="sc">|&gt;</span> </span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-11" data-target-annotation="1">1</button><span id="annotated-cell-11-4" class="code-annotation-target"><a href="#annotated-cell-11-4" aria-label="4"></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="fu">nrow</span>(aus_holidays) <span class="sc">-</span> h)</span>
+<span id="annotated-cell-11-5"><a href="#annotated-cell-11-5" aria-label="5"></a></span>
+<span id="annotated-cell-11-6"><a href="#annotated-cell-11-6" aria-label="6"></a>holidays_test <span class="ot">&lt;-</span> aus_holidays <span class="sc">|&gt;</span> </span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-11" data-target-annotation="2">2</button><span id="annotated-cell-11-7" class="code-annotation-target"><a href="#annotated-cell-11-7" aria-label="7"></a>  <span class="fu">slice_tail</span>(<span class="at">n =</span> h)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-11" data-target-annotation="1">1</dt>
@@ -1528,16 +1531,16 @@ holidays_test <- aus_holidays |>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a></a>train_test_split_plt_p <span class="ot">&lt;-</span> holidays_train <span class="sc">|&gt;</span></span>
-<span id="cb22-2"><a></a>  <span class="fu">autoplot</span>(Trips) <span class="sc">+</span></span>
-<span id="cb22-3"><a></a>  <span class="fu">autolayer</span>(holidays_test, Trips, <span class="at">colour =</span> <span class="st">"#C0392B"</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
-<span id="cb22-4"><a></a>  <span class="fu">labs</span>(</span>
-<span id="cb22-5"><a></a>    <span class="at">title =</span> <span class="st">"Australian holiday trips: train/test split"</span>,</span>
-<span id="cb22-6"><a></a>    <span class="at">subtitle =</span> glue<span class="sc">::</span><span class="fu">glue</span>(</span>
-<span id="cb22-7"><a></a>      <span class="st">"Training: {min(holidays_train$Quarter)} – {max(holidays_train$Quarter)}  |  Test: {min(holidays_test$Quarter)} – {max(holidays_test$Quarter)}"</span></span>
-<span id="cb22-8"><a></a>    ),</span>
-<span id="cb22-9"><a></a>    <span class="at">y =</span> <span class="st">"Overnight trips (millions)"</span></span>
-<span id="cb22-10"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a aria-label="1"></a>train_test_split_plt_p <span class="ot">&lt;-</span> holidays_train <span class="sc">|&gt;</span></span>
+<span id="cb22-2"><a aria-label="2"></a>  <span class="fu">autoplot</span>(Trips) <span class="sc">+</span></span>
+<span id="cb22-3"><a aria-label="3"></a>  <span class="fu">autolayer</span>(holidays_test, Trips, <span class="at">colour =</span> <span class="st">"#C0392B"</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb22-4"><a aria-label="4"></a>  <span class="fu">labs</span>(</span>
+<span id="cb22-5"><a aria-label="5"></a>    <span class="at">title =</span> <span class="st">"Australian holiday trips: train/test split"</span>,</span>
+<span id="cb22-6"><a aria-label="6"></a>    <span class="at">subtitle =</span> glue<span class="sc">::</span><span class="fu">glue</span>(</span>
+<span id="cb22-7"><a aria-label="7"></a>      <span class="st">"Training: {min(holidays_train$Quarter)} – {max(holidays_train$Quarter)}  |  Test: {min(holidays_test$Quarter)} – {max(holidays_test$Quarter)}"</span></span>
+<span id="cb22-8"><a aria-label="8"></a>    ),</span>
+<span id="cb22-9"><a aria-label="9"></a>    <span class="at">y =</span> <span class="st">"Overnight trips (millions)"</span></span>
+<span id="cb22-10"><a aria-label="10"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
@@ -1553,48 +1556,48 @@ holidays_test <- aus_holidays |>
 <section id="fitting-all-five-models" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Fitting all five models</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb23-1" class="hljs-ln-code"><a></a><span class="co"># Module 1 baseline spec (reused from Module 1)</span></span>
-<span id="cb23-2" class="hljs-ln-code"><a></a>baseline_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
-<span id="cb23-3" class="hljs-ln-code"><a></a>  <span class="fu">STL</span>(Trips <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="dv">7</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb23-4" class="hljs-ln-code"><a></a>  <span class="fu">RW</span>(season_adjust <span class="sc">~</span> <span class="fu">drift</span>())</span>
-<span id="cb23-5" class="hljs-ln-code"><a></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb23-1" class="hljs-ln-code"><a aria-label="1"></a><span class="co"># Module 1 baseline spec (reused from Module 1)</span></span>
+<span id="cb23-2" class="hljs-ln-code"><a aria-label="2"></a>baseline_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
+<span id="cb23-3" class="hljs-ln-code"><a aria-label="3"></a>  <span class="fu">STL</span>(Trips <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="dv">7</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb23-4" class="hljs-ln-code"><a aria-label="4"></a>  <span class="fu">RW</span>(season_adjust <span class="sc">~</span> <span class="fu">drift</span>())</span>
+<span id="cb23-5" class="hljs-ln-code"><a aria-label="5"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="fitting-all-five-models-1" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Fitting all five models</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24" data-code-line-numbers="7-11"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb24-1" class="hljs-ln-code"><a></a><span class="co"># Module 1 baseline spec (reused from Module 1)</span></span>
-<span id="cb24-2" class="hljs-ln-code"><a></a>baseline_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
-<span id="cb24-3" class="hljs-ln-code"><a></a>  <span class="fu">STL</span>(Trips <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="dv">7</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb24-4" class="hljs-ln-code"><a></a>  <span class="fu">RW</span>(season_adjust <span class="sc">~</span> <span class="fu">drift</span>())</span>
-<span id="cb24-5" class="hljs-ln-code"><a></a>)</span>
-<span id="cb24-6" class="hljs-ln-code"><a></a></span>
-<span id="cb24-7" class="hljs-ln-code"><a></a><span class="co"># STL + ETS specs (defined earlier in this document)</span></span>
-<span id="cb24-8" class="hljs-ln-code"><a></a>stl_ets_add_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
-<span id="cb24-9" class="hljs-ln-code"><a></a>  <span class="fu">STL</span>(Trips <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="dv">7</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb24-10" class="hljs-ln-code"><a></a>  <span class="fu">ETS</span>(season_adjust <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
-<span id="cb24-11" class="hljs-ln-code"><a></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24" data-code-line-numbers="7-11"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb24-1" class="hljs-ln-code"><a aria-label="1"></a><span class="co"># Module 1 baseline spec (reused from Module 1)</span></span>
+<span id="cb24-2" class="hljs-ln-code"><a aria-label="2"></a>baseline_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
+<span id="cb24-3" class="hljs-ln-code"><a aria-label="3"></a>  <span class="fu">STL</span>(Trips <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="dv">7</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb24-4" class="hljs-ln-code"><a aria-label="4"></a>  <span class="fu">RW</span>(season_adjust <span class="sc">~</span> <span class="fu">drift</span>())</span>
+<span id="cb24-5" class="hljs-ln-code"><a aria-label="5"></a>)</span>
+<span id="cb24-6" class="hljs-ln-code"><a aria-label="6"></a></span>
+<span id="cb24-7" class="hljs-ln-code"><a aria-label="7"></a><span class="co"># STL + ETS specs (defined earlier in this document)</span></span>
+<span id="cb24-8" class="hljs-ln-code"><a aria-label="8"></a>stl_ets_add_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
+<span id="cb24-9" class="hljs-ln-code"><a aria-label="9"></a>  <span class="fu">STL</span>(Trips <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="dv">7</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb24-10" class="hljs-ln-code"><a aria-label="10"></a>  <span class="fu">ETS</span>(season_adjust <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
+<span id="cb24-11" class="hljs-ln-code"><a aria-label="11"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="fitting-all-five-models-2" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Fitting all five models</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25" data-code-line-numbers="13-16"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb25-1" class="hljs-ln-code"><a></a><span class="co"># Module 1 baseline spec (reused from Module 1)</span></span>
-<span id="cb25-2" class="hljs-ln-code"><a></a>baseline_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
-<span id="cb25-3" class="hljs-ln-code"><a></a>  <span class="fu">STL</span>(Trips <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="dv">7</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb25-4" class="hljs-ln-code"><a></a>  <span class="fu">RW</span>(season_adjust <span class="sc">~</span> <span class="fu">drift</span>())</span>
-<span id="cb25-5" class="hljs-ln-code"><a></a>)</span>
-<span id="cb25-6" class="hljs-ln-code"><a></a></span>
-<span id="cb25-7" class="hljs-ln-code"><a></a><span class="co"># STL + ETS specs (defined earlier in this document)</span></span>
-<span id="cb25-8" class="hljs-ln-code"><a></a>stl_ets_add_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
-<span id="cb25-9" class="hljs-ln-code"><a></a>  <span class="fu">STL</span>(Trips <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="dv">7</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb25-10" class="hljs-ln-code"><a></a>  <span class="fu">ETS</span>(season_adjust <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
-<span id="cb25-11" class="hljs-ln-code"><a></a>)</span>
-<span id="cb25-12" class="hljs-ln-code"><a></a></span>
-<span id="cb25-13" class="hljs-ln-code"><a></a>stl_ets_mul_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
-<span id="cb25-14" class="hljs-ln-code"><a></a>  <span class="fu">STL</span>(Trips <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="dv">7</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb25-15" class="hljs-ln-code"><a></a>  <span class="fu">ETS</span>(season_adjust <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"M"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
-<span id="cb25-16" class="hljs-ln-code"><a></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25" data-code-line-numbers="13-16"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb25-1" class="hljs-ln-code"><a aria-label="1"></a><span class="co"># Module 1 baseline spec (reused from Module 1)</span></span>
+<span id="cb25-2" class="hljs-ln-code"><a aria-label="2"></a>baseline_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
+<span id="cb25-3" class="hljs-ln-code"><a aria-label="3"></a>  <span class="fu">STL</span>(Trips <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="dv">7</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb25-4" class="hljs-ln-code"><a aria-label="4"></a>  <span class="fu">RW</span>(season_adjust <span class="sc">~</span> <span class="fu">drift</span>())</span>
+<span id="cb25-5" class="hljs-ln-code"><a aria-label="5"></a>)</span>
+<span id="cb25-6" class="hljs-ln-code"><a aria-label="6"></a></span>
+<span id="cb25-7" class="hljs-ln-code"><a aria-label="7"></a><span class="co"># STL + ETS specs (defined earlier in this document)</span></span>
+<span id="cb25-8" class="hljs-ln-code"><a aria-label="8"></a>stl_ets_add_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
+<span id="cb25-9" class="hljs-ln-code"><a aria-label="9"></a>  <span class="fu">STL</span>(Trips <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="dv">7</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb25-10" class="hljs-ln-code"><a aria-label="10"></a>  <span class="fu">ETS</span>(season_adjust <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
+<span id="cb25-11" class="hljs-ln-code"><a aria-label="11"></a>)</span>
+<span id="cb25-12" class="hljs-ln-code"><a aria-label="12"></a></span>
+<span id="cb25-13" class="hljs-ln-code"><a aria-label="13"></a>stl_ets_mul_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
+<span id="cb25-14" class="hljs-ln-code"><a aria-label="14"></a>  <span class="fu">STL</span>(Trips <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="dv">7</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb25-15" class="hljs-ln-code"><a aria-label="15"></a>  <span class="fu">ETS</span>(season_adjust <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"M"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
+<span id="cb25-16" class="hljs-ln-code"><a aria-label="16"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="fitting-all-five-models-3" class="slide level2" data-auto-animate="true">
@@ -1626,33 +1629,33 @@ holidays_fit <- holidays_train |>
     hw_mul      = ETS(Trips ~ error(&quot;M&quot;) + trend(&quot;A&quot;) + season(&quot;M&quot;))         #<5>
   )
 
-holidays_fit"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="annotated-cell-13-1" class="hljs-ln-code"><a href="#annotated-cell-13-1"></a><span class="co"># Module 1 baseline spec (reused from Module 1)</span></span>
-<span id="annotated-cell-13-2" class="hljs-ln-code"><a href="#annotated-cell-13-2"></a>baseline_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
-<span id="annotated-cell-13-3" class="hljs-ln-code"><a href="#annotated-cell-13-3"></a>  <span class="fu">STL</span>(Trips <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="dv">7</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
-<span id="annotated-cell-13-4" class="hljs-ln-code"><a href="#annotated-cell-13-4"></a>  <span class="fu">RW</span>(season_adjust <span class="sc">~</span> <span class="fu">drift</span>())</span>
-<span id="annotated-cell-13-5" class="hljs-ln-code"><a href="#annotated-cell-13-5"></a>)</span>
-<span id="annotated-cell-13-6" class="hljs-ln-code"><a href="#annotated-cell-13-6"></a></span>
-<span id="annotated-cell-13-7" class="hljs-ln-code"><a href="#annotated-cell-13-7"></a><span class="co"># STL + ETS specs (defined earlier in this document)</span></span>
-<span id="annotated-cell-13-8" class="hljs-ln-code"><a href="#annotated-cell-13-8"></a>stl_ets_add_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
-<span id="annotated-cell-13-9" class="hljs-ln-code"><a href="#annotated-cell-13-9"></a>  <span class="fu">STL</span>(Trips <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="dv">7</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
-<span id="annotated-cell-13-10" class="hljs-ln-code"><a href="#annotated-cell-13-10"></a>  <span class="fu">ETS</span>(season_adjust <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
-<span id="annotated-cell-13-11" class="hljs-ln-code"><a href="#annotated-cell-13-11"></a>)</span>
-<span id="annotated-cell-13-12" class="hljs-ln-code"><a href="#annotated-cell-13-12"></a></span>
-<span id="annotated-cell-13-13" class="hljs-ln-code"><a href="#annotated-cell-13-13"></a>stl_ets_mul_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
-<span id="annotated-cell-13-14" class="hljs-ln-code"><a href="#annotated-cell-13-14"></a>  <span class="fu">STL</span>(Trips <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="dv">7</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
-<span id="annotated-cell-13-15" class="hljs-ln-code"><a href="#annotated-cell-13-15"></a>  <span class="fu">ETS</span>(season_adjust <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"M"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
-<span id="annotated-cell-13-16" class="hljs-ln-code"><a href="#annotated-cell-13-16"></a>)</span>
-<span id="annotated-cell-13-17" class="hljs-ln-code"><a href="#annotated-cell-13-17"></a></span>
-<span id="annotated-cell-13-18" class="hljs-ln-code"><a href="#annotated-cell-13-18"></a>holidays_fit <span class="ot">&lt;-</span> holidays_train <span class="sc">|&gt;</span> </span>
-<span id="annotated-cell-13-19" class="hljs-ln-code"><a href="#annotated-cell-13-19"></a>  <span class="fu">model</span>(</span>
-<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-13" data-target-annotation="1">1</button><span id="annotated-cell-13-20" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-13-20"></a>    <span class="at">baseline    =</span> baseline_spec,</span>
-<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-13" data-target-annotation="3">3</button><span id="annotated-cell-13-21" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-13-21"></a>    <span class="at">stl_ets_mul =</span> stl_ets_mul_spec,</span>
-<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-13" data-target-annotation="2">2</button><span id="annotated-cell-13-22" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-13-22"></a>    <span class="at">stl_ets_add =</span> stl_ets_add_spec,</span>
-<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-13" data-target-annotation="4">4</button><span id="annotated-cell-13-23" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-13-23"></a>    <span class="at">hw_add      =</span> <span class="fu">ETS</span>(Trips <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"A"</span>)),</span>
-<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-13" data-target-annotation="5">5</button><span id="annotated-cell-13-24" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-13-24"></a>    <span class="at">hw_mul      =</span> <span class="fu">ETS</span>(Trips <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"M"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"M"</span>))</span>
-<span id="annotated-cell-13-25" class="hljs-ln-code"><a href="#annotated-cell-13-25"></a>  )</span>
-<span id="annotated-cell-13-26" class="hljs-ln-code"><a href="#annotated-cell-13-26"></a></span>
-<span id="annotated-cell-13-27" class="hljs-ln-code"><a href="#annotated-cell-13-27"></a>holidays_fit</span><div class="code-annotation-gutter-bg hljs-ln-code"></div><div class="code-annotation-gutter hljs-ln-code"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+holidays_fit"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="annotated-cell-13-1" class="hljs-ln-code"><a href="#annotated-cell-13-1" aria-label="1"></a><span class="co"># Module 1 baseline spec (reused from Module 1)</span></span>
+<span id="annotated-cell-13-2" class="hljs-ln-code"><a href="#annotated-cell-13-2" aria-label="2"></a>baseline_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
+<span id="annotated-cell-13-3" class="hljs-ln-code"><a href="#annotated-cell-13-3" aria-label="3"></a>  <span class="fu">STL</span>(Trips <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="dv">7</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<span id="annotated-cell-13-4" class="hljs-ln-code"><a href="#annotated-cell-13-4" aria-label="4"></a>  <span class="fu">RW</span>(season_adjust <span class="sc">~</span> <span class="fu">drift</span>())</span>
+<span id="annotated-cell-13-5" class="hljs-ln-code"><a href="#annotated-cell-13-5" aria-label="5"></a>)</span>
+<span id="annotated-cell-13-6" class="hljs-ln-code"><a href="#annotated-cell-13-6" aria-label="6"></a></span>
+<span id="annotated-cell-13-7" class="hljs-ln-code"><a href="#annotated-cell-13-7" aria-label="7"></a><span class="co"># STL + ETS specs (defined earlier in this document)</span></span>
+<span id="annotated-cell-13-8" class="hljs-ln-code"><a href="#annotated-cell-13-8" aria-label="8"></a>stl_ets_add_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
+<span id="annotated-cell-13-9" class="hljs-ln-code"><a href="#annotated-cell-13-9" aria-label="9"></a>  <span class="fu">STL</span>(Trips <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="dv">7</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<span id="annotated-cell-13-10" class="hljs-ln-code"><a href="#annotated-cell-13-10" aria-label="10"></a>  <span class="fu">ETS</span>(season_adjust <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
+<span id="annotated-cell-13-11" class="hljs-ln-code"><a href="#annotated-cell-13-11" aria-label="11"></a>)</span>
+<span id="annotated-cell-13-12" class="hljs-ln-code"><a href="#annotated-cell-13-12" aria-label="12"></a></span>
+<span id="annotated-cell-13-13" class="hljs-ln-code"><a href="#annotated-cell-13-13" aria-label="13"></a>stl_ets_mul_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
+<span id="annotated-cell-13-14" class="hljs-ln-code"><a href="#annotated-cell-13-14" aria-label="14"></a>  <span class="fu">STL</span>(Trips <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="dv">7</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<span id="annotated-cell-13-15" class="hljs-ln-code"><a href="#annotated-cell-13-15" aria-label="15"></a>  <span class="fu">ETS</span>(season_adjust <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"M"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"N"</span>))</span>
+<span id="annotated-cell-13-16" class="hljs-ln-code"><a href="#annotated-cell-13-16" aria-label="16"></a>)</span>
+<span id="annotated-cell-13-17" class="hljs-ln-code"><a href="#annotated-cell-13-17" aria-label="17"></a></span>
+<span id="annotated-cell-13-18" class="hljs-ln-code"><a href="#annotated-cell-13-18" aria-label="18"></a>holidays_fit <span class="ot">&lt;-</span> holidays_train <span class="sc">|&gt;</span> </span>
+<span id="annotated-cell-13-19" class="hljs-ln-code"><a href="#annotated-cell-13-19" aria-label="19"></a>  <span class="fu">model</span>(</span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-13" data-target-annotation="1">1</button><span id="annotated-cell-13-20" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-13-20" aria-label="20"></a>    <span class="at">baseline    =</span> baseline_spec,</span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-13" data-target-annotation="3">3</button><span id="annotated-cell-13-21" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-13-21" aria-label="21"></a>    <span class="at">stl_ets_mul =</span> stl_ets_mul_spec,</span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-13" data-target-annotation="2">2</button><span id="annotated-cell-13-22" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-13-22" aria-label="22"></a>    <span class="at">stl_ets_add =</span> stl_ets_add_spec,</span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-13" data-target-annotation="4">4</button><span id="annotated-cell-13-23" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-13-23" aria-label="23"></a>    <span class="at">hw_add      =</span> <span class="fu">ETS</span>(Trips <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"A"</span>)),</span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-13" data-target-annotation="5">5</button><span id="annotated-cell-13-24" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-13-24" aria-label="24"></a>    <span class="at">hw_mul      =</span> <span class="fu">ETS</span>(Trips <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"M"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"M"</span>))</span>
+<span id="annotated-cell-13-25" class="hljs-ln-code"><a href="#annotated-cell-13-25" aria-label="25"></a>  )</span>
+<span id="annotated-cell-13-26" class="hljs-ln-code"><a href="#annotated-cell-13-26" aria-label="26"></a></span>
+<span id="annotated-cell-13-27" class="hljs-ln-code"><a href="#annotated-cell-13-27" aria-label="27"></a>holidays_fit</span><div class="code-annotation-gutter-bg hljs-ln-code"></div><div class="code-annotation-gutter hljs-ln-code"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-13" data-target-annotation="1">1</dt>
@@ -1691,19 +1694,19 @@ holidays_fit"><pre class="sourceCode numberSource r code-annotation-code number-
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a></a>holidays_fc <span class="ot">&lt;-</span> holidays_fit <span class="sc">|&gt;</span></span>
-<span id="cb27-2"><a></a>  <span class="fu">forecast</span>(<span class="at">h =</span> h)</span>
-<span id="cb27-3"><a></a></span>
-<span id="cb27-4"><a></a>all_models_fc_p <span class="ot">&lt;-</span> holidays_fc <span class="sc">|&gt;</span></span>
-<span id="cb27-5"><a></a>  <span class="fu">autoplot</span>(</span>
-<span id="cb27-6"><a></a>    aus_holidays <span class="sc">|&gt;</span> <span class="fu">filter_index</span>(<span class="st">"2012 Q1"</span> <span class="sc">~</span> .),</span>
-<span id="cb27-7"><a></a>    <span class="at">level =</span> <span class="cn">NULL</span></span>
-<span id="cb27-8"><a></a>  ) <span class="sc">+</span></span>
-<span id="cb27-9"><a></a>  <span class="fu">labs</span>(</span>
-<span id="cb27-10"><a></a>    <span class="at">title =</span> <span class="st">"ETS model comparison: 5 models, 8-quarter horizon"</span>,</span>
-<span id="cb27-11"><a></a>    <span class="at">y =</span> <span class="st">"Overnight trips (millions)"</span></span>
-<span id="cb27-12"><a></a>  ) <span class="sc">+</span></span>
-<span id="cb27-13"><a></a>  <span class="fu">guides</span>(<span class="at">colour =</span> <span class="fu">guide_legend</span>(<span class="at">title =</span> <span class="st">"Model"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a aria-label="1"></a>holidays_fc <span class="ot">&lt;-</span> holidays_fit <span class="sc">|&gt;</span></span>
+<span id="cb27-2"><a aria-label="2"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> h)</span>
+<span id="cb27-3"><a aria-label="3"></a></span>
+<span id="cb27-4"><a aria-label="4"></a>all_models_fc_p <span class="ot">&lt;-</span> holidays_fc <span class="sc">|&gt;</span></span>
+<span id="cb27-5"><a aria-label="5"></a>  <span class="fu">autoplot</span>(</span>
+<span id="cb27-6"><a aria-label="6"></a>    aus_holidays <span class="sc">|&gt;</span> <span class="fu">filter_index</span>(<span class="st">"2012 Q1"</span> <span class="sc">~</span> .),</span>
+<span id="cb27-7"><a aria-label="7"></a>    <span class="at">level =</span> <span class="cn">NULL</span></span>
+<span id="cb27-8"><a aria-label="8"></a>  ) <span class="sc">+</span></span>
+<span id="cb27-9"><a aria-label="9"></a>  <span class="fu">labs</span>(</span>
+<span id="cb27-10"><a aria-label="10"></a>    <span class="at">title =</span> <span class="st">"ETS model comparison: 5 models, 8-quarter horizon"</span>,</span>
+<span id="cb27-11"><a aria-label="11"></a>    <span class="at">y =</span> <span class="st">"Overnight trips (millions)"</span></span>
+<span id="cb27-12"><a aria-label="12"></a>  ) <span class="sc">+</span></span>
+<span id="cb27-13"><a aria-label="13"></a>  <span class="fu">guides</span>(<span class="at">colour =</span> <span class="fu">guide_legend</span>(<span class="at">title =</span> <span class="st">"Model"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
@@ -1724,12 +1727,12 @@ holidays_fit"><pre class="sourceCode numberSource r code-annotation-code number-
 
 holidays_accu |> 
   select(.model, RMSE, MAE, MAPE, RMSSE, MASE) |> 
-  arrange(RMSSE)"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-15-1"><a href="#annotated-cell-15-1"></a>holidays_accu <span class="ot">&lt;-</span> holidays_fc <span class="sc">|&gt;</span> </span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-15" data-target-annotation="1">1</button><span id="annotated-cell-15-2" class="code-annotation-target"><a href="#annotated-cell-15-2"></a>  <span class="fu">accuracy</span>(aus_holidays)</span>
-<span id="annotated-cell-15-3"><a href="#annotated-cell-15-3"></a></span>
-<span id="annotated-cell-15-4"><a href="#annotated-cell-15-4"></a>holidays_accu <span class="sc">|&gt;</span> </span>
-<span id="annotated-cell-15-5"><a href="#annotated-cell-15-5"></a>  <span class="fu">select</span>(.model, RMSE, MAE, MAPE, RMSSE, MASE) <span class="sc">|&gt;</span> </span>
-<span id="annotated-cell-15-6"><a href="#annotated-cell-15-6"></a>  <span class="fu">arrange</span>(RMSSE)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+  arrange(RMSSE)"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-15-1"><a href="#annotated-cell-15-1" aria-label="1"></a>holidays_accu <span class="ot">&lt;-</span> holidays_fc <span class="sc">|&gt;</span> </span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-15" data-target-annotation="1">1</button><span id="annotated-cell-15-2" class="code-annotation-target"><a href="#annotated-cell-15-2" aria-label="2"></a>  <span class="fu">accuracy</span>(aus_holidays)</span>
+<span id="annotated-cell-15-3"><a href="#annotated-cell-15-3" aria-label="3"></a></span>
+<span id="annotated-cell-15-4"><a href="#annotated-cell-15-4" aria-label="4"></a>holidays_accu <span class="sc">|&gt;</span> </span>
+<span id="annotated-cell-15-5"><a href="#annotated-cell-15-5" aria-label="5"></a>  <span class="fu">select</span>(.model, RMSE, MAE, MAPE, RMSSE, MASE) <span class="sc">|&gt;</span> </span>
+<span id="annotated-cell-15-6"><a href="#annotated-cell-15-6" aria-label="6"></a>  <span class="fu">arrange</span>(RMSSE)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-15" data-target-annotation="1">1</dt>

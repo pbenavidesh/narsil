@@ -9,11 +9,11 @@
 <script src="../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../../../../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-6d40f8af7092f34acea1908532066003.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-eec68b17241c1efd3eae2de50d816e3e.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.9.38">
+  <meta name="generator" content="quarto-1.10.18">
 
   <meta name="author" content="">
   <title>Time Series Forecasting – Hierarchical &amp; Grouped Forecasting</title>
@@ -26,10 +26,13 @@
     /* Default styles provided by pandoc.
     ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
     */
-    code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
     ul.task-list li input[type="checkbox"] {
@@ -279,23 +282,23 @@
 <section id="hierarchical-mezcal-sales" class="slide level2">
 <h2>Hierarchical: Mezcal Sales</h2>
 <div class="cell" data-reveal="true" data-layout-align="default">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource default number-lines code-with-copy"><code class="sourceCode default"><span id="cb1-1"><a></a>graph TD</span>
-<span id="cb1-2"><a></a>    MX["Mexico (Total)"]</span>
-<span id="cb1-3"><a></a>    OAX["Oaxaca"]</span>
-<span id="cb1-4"><a></a>    JAL["Jalisco"]</span>
-<span id="cb1-5"><a></a>    ETC["···"]</span>
-<span id="cb1-6"><a></a>    OJ["Oaxaca City"]</span>
-<span id="cb1-7"><a></a>    MH["Miahuatlán"]</span>
-<span id="cb1-8"><a></a>    GDL["Guadalajara"]</span>
-<span id="cb1-9"><a></a>    TQ["Tequila"]</span>
-<span id="cb1-10"><a></a></span>
-<span id="cb1-11"><a></a>    MX --&gt; OAX</span>
-<span id="cb1-12"><a></a>    MX --&gt; JAL</span>
-<span id="cb1-13"><a></a>    MX --&gt; ETC</span>
-<span id="cb1-14"><a></a>    OAX --&gt; OJ</span>
-<span id="cb1-15"><a></a>    OAX --&gt; MH</span>
-<span id="cb1-16"><a></a>    JAL --&gt; GDL</span>
-<span id="cb1-17"><a></a>    JAL --&gt; TQ</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource default number-lines code-with-copy"><code class="sourceCode default"><span id="cb1-1"><a aria-label="1"></a>graph TD</span>
+<span id="cb1-2"><a aria-label="2"></a>    MX["Mexico (Total)"]</span>
+<span id="cb1-3"><a aria-label="3"></a>    OAX["Oaxaca"]</span>
+<span id="cb1-4"><a aria-label="4"></a>    JAL["Jalisco"]</span>
+<span id="cb1-5"><a aria-label="5"></a>    ETC["···"]</span>
+<span id="cb1-6"><a aria-label="6"></a>    OJ["Oaxaca City"]</span>
+<span id="cb1-7"><a aria-label="7"></a>    MH["Miahuatlán"]</span>
+<span id="cb1-8"><a aria-label="8"></a>    GDL["Guadalajara"]</span>
+<span id="cb1-9"><a aria-label="9"></a>    TQ["Tequila"]</span>
+<span id="cb1-10"><a aria-label="10"></a></span>
+<span id="cb1-11"><a aria-label="11"></a>    MX --&gt; OAX</span>
+<span id="cb1-12"><a aria-label="12"></a>    MX --&gt; JAL</span>
+<span id="cb1-13"><a aria-label="13"></a>    MX --&gt; ETC</span>
+<span id="cb1-14"><a aria-label="14"></a>    OAX --&gt; OJ</span>
+<span id="cb1-15"><a aria-label="15"></a>    OAX --&gt; MH</span>
+<span id="cb1-16"><a aria-label="16"></a>    JAL --&gt; GDL</span>
+<span id="cb1-17"><a aria-label="17"></a>    JAL --&gt; TQ</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <p></p><figure class=""><p></p>
@@ -327,17 +330,17 @@
 <section id="grouped-spirits-sales-by-product-type" class="slide level2">
 <h2>Grouped: Spirits Sales — by Product Type</h2>
 <div class="cell" data-reveal="true" data-layout-align="default">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource default number-lines code-with-copy"><code class="sourceCode default"><span id="cb2-1"><a></a>graph LR</span>
-<span id="cb2-2"><a></a>    T["Total Sales"]</span>
-<span id="cb2-3"><a></a>    M["Mezcal"]</span>
-<span id="cb2-4"><a></a>    TQ["Tequila"]</span>
-<span id="cb2-5"><a></a>    B["Brandy"]</span>
-<span id="cb2-6"><a></a>    E["···"]</span>
-<span id="cb2-7"><a></a></span>
-<span id="cb2-8"><a></a>    T --&gt; M</span>
-<span id="cb2-9"><a></a>    T --&gt; TQ</span>
-<span id="cb2-10"><a></a>    T --&gt; B</span>
-<span id="cb2-11"><a></a>    T --&gt; E</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource default number-lines code-with-copy"><code class="sourceCode default"><span id="cb2-1"><a aria-label="1"></a>graph LR</span>
+<span id="cb2-2"><a aria-label="2"></a>    T["Total Sales"]</span>
+<span id="cb2-3"><a aria-label="3"></a>    M["Mezcal"]</span>
+<span id="cb2-4"><a aria-label="4"></a>    TQ["Tequila"]</span>
+<span id="cb2-5"><a aria-label="5"></a>    B["Brandy"]</span>
+<span id="cb2-6"><a aria-label="6"></a>    E["···"]</span>
+<span id="cb2-7"><a aria-label="7"></a></span>
+<span id="cb2-8"><a aria-label="8"></a>    T --&gt; M</span>
+<span id="cb2-9"><a aria-label="9"></a>    T --&gt; TQ</span>
+<span id="cb2-10"><a aria-label="10"></a>    T --&gt; B</span>
+<span id="cb2-11"><a aria-label="11"></a>    T --&gt; E</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <p></p><figure class=""><p></p>
@@ -363,15 +366,15 @@
 <section id="grouped-spirits-sales-by-distribution-channel" class="slide level2">
 <h2>Grouped: Spirits Sales — by Distribution Channel</h2>
 <div class="cell" data-reveal="true" data-layout-align="default">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource default number-lines code-with-copy"><code class="sourceCode default"><span id="cb3-1"><a></a>graph LR</span>
-<span id="cb3-2"><a></a>    T["Total Sales"]</span>
-<span id="cb3-3"><a></a>    R["Retail"]</span>
-<span id="cb3-4"><a></a>    BR["Bars &amp; Restaurants"]</span>
-<span id="cb3-5"><a></a>    EX["Exports"]</span>
-<span id="cb3-6"><a></a></span>
-<span id="cb3-7"><a></a>    T --&gt; R</span>
-<span id="cb3-8"><a></a>    T --&gt; BR</span>
-<span id="cb3-9"><a></a>    T --&gt; EX</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource default number-lines code-with-copy"><code class="sourceCode default"><span id="cb3-1"><a aria-label="1"></a>graph LR</span>
+<span id="cb3-2"><a aria-label="2"></a>    T["Total Sales"]</span>
+<span id="cb3-3"><a aria-label="3"></a>    R["Retail"]</span>
+<span id="cb3-4"><a aria-label="4"></a>    BR["Bars &amp; Restaurants"]</span>
+<span id="cb3-5"><a aria-label="5"></a>    EX["Exports"]</span>
+<span id="cb3-6"><a aria-label="6"></a></span>
+<span id="cb3-7"><a aria-label="7"></a>    T --&gt; R</span>
+<span id="cb3-8"><a aria-label="8"></a>    T --&gt; BR</span>
+<span id="cb3-9"><a aria-label="9"></a>    T --&gt; EX</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <p></p><figure class=""><p></p>
@@ -395,23 +398,23 @@
 <section id="mixed-alcohol-sales" class="slide level2">
 <h2>Mixed: Alcohol Sales</h2>
 <div class="cell" data-reveal="true" data-layout-align="default">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource default number-lines code-with-copy"><code class="sourceCode default"><span id="cb4-1"><a></a>graph TD</span>
-<span id="cb4-2"><a></a>    T["Mexico (Total)"]</span>
-<span id="cb4-3"><a></a>    OAX["Oaxaca"]</span>
-<span id="cb4-4"><a></a>    JAL["Jalisco"]</span>
-<span id="cb4-5"><a></a>    ETC["···"]</span>
-<span id="cb4-6"><a></a>    OJ["Oaxaca City × {Mezcal, Tequila, Brandy}"]</span>
-<span id="cb4-7"><a></a>    MH["Miahuatlán × {Mezcal, Tequila, Brandy}"]</span>
-<span id="cb4-8"><a></a>    GDL["Guadalajara × {Mezcal, Tequila, Brandy}"]</span>
-<span id="cb4-9"><a></a>    TQ_["Tequila × {Mezcal, Tequila, Brandy}"]</span>
-<span id="cb4-10"><a></a></span>
-<span id="cb4-11"><a></a>    T --&gt; OAX</span>
-<span id="cb4-12"><a></a>    T --&gt; JAL</span>
-<span id="cb4-13"><a></a>    T --&gt; ETC</span>
-<span id="cb4-14"><a></a>    OAX --&gt; OJ</span>
-<span id="cb4-15"><a></a>    OAX --&gt; MH</span>
-<span id="cb4-16"><a></a>    JAL --&gt; GDL</span>
-<span id="cb4-17"><a></a>    JAL --&gt; TQ_</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource default number-lines code-with-copy"><code class="sourceCode default"><span id="cb4-1"><a aria-label="1"></a>graph TD</span>
+<span id="cb4-2"><a aria-label="2"></a>    T["Mexico (Total)"]</span>
+<span id="cb4-3"><a aria-label="3"></a>    OAX["Oaxaca"]</span>
+<span id="cb4-4"><a aria-label="4"></a>    JAL["Jalisco"]</span>
+<span id="cb4-5"><a aria-label="5"></a>    ETC["···"]</span>
+<span id="cb4-6"><a aria-label="6"></a>    OJ["Oaxaca City × {Mezcal, Tequila, Brandy}"]</span>
+<span id="cb4-7"><a aria-label="7"></a>    MH["Miahuatlán × {Mezcal, Tequila, Brandy}"]</span>
+<span id="cb4-8"><a aria-label="8"></a>    GDL["Guadalajara × {Mezcal, Tequila, Brandy}"]</span>
+<span id="cb4-9"><a aria-label="9"></a>    TQ_["Tequila × {Mezcal, Tequila, Brandy}"]</span>
+<span id="cb4-10"><a aria-label="10"></a></span>
+<span id="cb4-11"><a aria-label="11"></a>    T --&gt; OAX</span>
+<span id="cb4-12"><a aria-label="12"></a>    T --&gt; JAL</span>
+<span id="cb4-13"><a aria-label="13"></a>    T --&gt; ETC</span>
+<span id="cb4-14"><a aria-label="14"></a>    OAX --&gt; OJ</span>
+<span id="cb4-15"><a aria-label="15"></a>    OAX --&gt; MH</span>
+<span id="cb4-16"><a aria-label="16"></a>    JAL --&gt; GDL</span>
+<span id="cb4-17"><a aria-label="17"></a>    JAL --&gt; TQ_</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <p></p><figure class=""><p></p>
@@ -451,7 +454,7 @@
 <div class="fragment">
 <p>The <code>tourism</code> dataset — quarterly domestic travel in Australia disaggregated by State, Region, and Purpose — is the canonical example in FPP3 Chapter 11.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>tourism</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a aria-label="1"></a>tourism</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -469,10 +472,10 @@
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-1" data-llms-code-original="tourism_hts <- tourism |>
   aggregate_key(State / Region, Trips = sum(Trips)) #<1>
 
-tourism_hts"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1"></a>tourism_hts <span class="ot">&lt;-</span> tourism <span class="sc">|&gt;</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1">1</button><span id="annotated-cell-1-2" class="code-annotation-target"><a href="#annotated-cell-1-2"></a>  <span class="fu">aggregate_key</span>(State <span class="sc">/</span> Region, <span class="at">Trips =</span> <span class="fu">sum</span>(Trips))</span>
-<span id="annotated-cell-1-3"><a href="#annotated-cell-1-3"></a></span>
-<span id="annotated-cell-1-4"><a href="#annotated-cell-1-4"></a>tourism_hts</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+tourism_hts"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1" aria-label="1"></a>tourism_hts <span class="ot">&lt;-</span> tourism <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1">1</button><span id="annotated-cell-1-2" class="code-annotation-target"><a href="#annotated-cell-1-2" aria-label="2"></a>  <span class="fu">aggregate_key</span>(State <span class="sc">/</span> Region, <span class="at">Trips =</span> <span class="fu">sum</span>(Trips))</span>
+<span id="annotated-cell-1-3"><a href="#annotated-cell-1-3" aria-label="3"></a></span>
+<span id="annotated-cell-1-4"><a href="#annotated-cell-1-4" aria-label="4"></a>tourism_hts</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-1" data-target-annotation="1">1</dt>
@@ -492,8 +495,8 @@ tourism_hts"><pre class="sourceCode numberSource r code-annotation-code number-l
 <div class="fragment">
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-14" data-llms-code-original="tourism_full <- tourism |>
-  aggregate_key(State / Region * Purpose, Trips = sum(Trips)) #<1>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-14-1"><a href="#annotated-cell-14-1"></a>tourism_full <span class="ot">&lt;-</span> tourism <span class="sc">|&gt;</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-14" data-target-annotation="1">1</button><span id="annotated-cell-14-2" class="code-annotation-target"><a href="#annotated-cell-14-2"></a>  <span class="fu">aggregate_key</span>(State <span class="sc">/</span> Region <span class="sc">*</span> Purpose, <span class="at">Trips =</span> <span class="fu">sum</span>(Trips))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+  aggregate_key(State / Region * Purpose, Trips = sum(Trips)) #<1>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-14-1"><a href="#annotated-cell-14-1" aria-label="1"></a>tourism_full <span class="ot">&lt;-</span> tourism <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-14" data-target-annotation="1">1</button><span id="annotated-cell-14-2" class="code-annotation-target"><a href="#annotated-cell-14-2" aria-label="2"></a>  <span class="fu">aggregate_key</span>(State <span class="sc">/</span> Region <span class="sc">*</span> Purpose, <span class="at">Trips =</span> <span class="fu">sum</span>(Trips))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-14" data-target-annotation="1">1</dt>
@@ -509,11 +512,11 @@ tourism_hts"><pre class="sourceCode numberSource r code-annotation-code number-l
 <h2>Visualizing Aggregated Series</h2>
 <p><code>autoplot()</code> on an aggregated <code>tsibble</code> works as usual. Use <code>filter()</code> with <code>is_aggregated()</code> to select a specific level.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>hts_state_plot_p <span class="ot">&lt;-</span> tourism_hts <span class="sc">|&gt;</span></span>
-<span id="cb6-2"><a></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is_aggregated</span>(State), <span class="fu">is_aggregated</span>(Region)) <span class="sc">|&gt;</span></span>
-<span id="cb6-3"><a></a>  <span class="fu">autoplot</span>(Trips) <span class="sc">+</span></span>
-<span id="cb6-4"><a></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> <span class="fu">as.character</span>(State), <span class="at">scales =</span> <span class="st">"free_y"</span>, <span class="at">ncol =</span> <span class="dv">4</span>) <span class="sc">+</span></span>
-<span id="cb6-5"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Domestic tourism trips by state"</span>, <span class="at">y =</span> <span class="st">"Trips ('000)"</span>, <span class="at">x =</span> <span class="cn">NULL</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a aria-label="1"></a>hts_state_plot_p <span class="ot">&lt;-</span> tourism_hts <span class="sc">|&gt;</span></span>
+<span id="cb6-2"><a aria-label="2"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is_aggregated</span>(State), <span class="fu">is_aggregated</span>(Region)) <span class="sc">|&gt;</span></span>
+<span id="cb6-3"><a aria-label="3"></a>  <span class="fu">autoplot</span>(Trips) <span class="sc">+</span></span>
+<span id="cb6-4"><a aria-label="4"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> <span class="fu">as.character</span>(State), <span class="at">scales =</span> <span class="st">"free_y"</span>, <span class="at">ncol =</span> <span class="dv">4</span>) <span class="sc">+</span></span>
+<span id="cb6-5"><a aria-label="5"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Domestic tourism trips by state"</span>, <span class="at">y =</span> <span class="st">"Trips ('000)"</span>, <span class="at">x =</span> <span class="cn">NULL</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
 <div class="cell-output-display">
@@ -529,9 +532,9 @@ tourism_hts"><pre class="sourceCode numberSource r code-annotation-code number-l
 <h2>Filtering with <code>is_aggregated()</code></h2>
 <p><code>is_aggregated()</code> returns <code>TRUE</code> for the synthetic aggregation rows created by <code>aggregate_key()</code>. Use it inside <code>filter()</code> to navigate any level of the hierarchy.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7" data-code-line-numbers="2|5|8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a><span class="co"># National total</span></span>
-<span id="cb7-2"><a></a>tourism_hts <span class="sc">|&gt;</span></span>
-<span id="cb7-3"><a></a>  <span class="fu">filter</span>(<span class="fu">is_aggregated</span>(State), <span class="fu">is_aggregated</span>(Region))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7" data-code-line-numbers="2|5|8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a aria-label="1"></a><span class="co"># National total</span></span>
+<span id="cb7-2"><a aria-label="2"></a>tourism_hts <span class="sc">|&gt;</span></span>
+<span id="cb7-3"><a aria-label="3"></a>  <span class="fu">filter</span>(<span class="fu">is_aggregated</span>(State), <span class="fu">is_aggregated</span>(Region))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -539,9 +542,9 @@ tourism_hts"><pre class="sourceCode numberSource r code-annotation-code number-l
   </script>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8" data-code-line-numbers="2|5|8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a><span class="co"># State-level aggregates</span></span>
-<span id="cb8-2"><a></a>tourism_hts <span class="sc">|&gt;</span></span>
-<span id="cb8-3"><a></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is_aggregated</span>(State), <span class="fu">is_aggregated</span>(Region))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8" data-code-line-numbers="2|5|8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a aria-label="1"></a><span class="co"># State-level aggregates</span></span>
+<span id="cb8-2"><a aria-label="2"></a>tourism_hts <span class="sc">|&gt;</span></span>
+<span id="cb8-3"><a aria-label="3"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is_aggregated</span>(State), <span class="fu">is_aggregated</span>(Region))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -549,9 +552,9 @@ tourism_hts"><pre class="sourceCode numberSource r code-annotation-code number-l
   </script>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9" data-code-line-numbers="2|5|8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a><span class="co"># Region level (most granular)</span></span>
-<span id="cb9-2"><a></a>tourism_hts <span class="sc">|&gt;</span></span>
-<span id="cb9-3"><a></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is_aggregated</span>(State), <span class="sc">!</span><span class="fu">is_aggregated</span>(Region))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9" data-code-line-numbers="2|5|8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a aria-label="1"></a><span class="co"># Region level (most granular)</span></span>
+<span id="cb9-2"><a aria-label="2"></a>tourism_hts <span class="sc">|&gt;</span></span>
+<span id="cb9-3"><a aria-label="3"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is_aggregated</span>(State), <span class="sc">!</span><span class="fu">is_aggregated</span>(Region))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -565,12 +568,12 @@ tourism_hts"><pre class="sourceCode numberSource r code-annotation-code number-l
 <h2>Mixed Structure: Hierarchy + Grouping</h2>
 <p>With <code>tourism_full</code>, the Purpose grouping is crossed with the State/Region hierarchy:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a>full_hts_plot_p <span class="ot">&lt;-</span> tourism_full <span class="sc">|&gt;</span></span>
-<span id="cb10-2"><a></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is_aggregated</span>(State), <span class="fu">is_aggregated</span>(Region), <span class="sc">!</span><span class="fu">is_aggregated</span>(Purpose)) <span class="sc">|&gt;</span></span>
-<span id="cb10-3"><a></a>  <span class="fu">autoplot</span>(Trips) <span class="sc">+</span></span>
-<span id="cb10-4"><a></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> <span class="fu">as.character</span>(Purpose), <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
-<span id="cb10-5"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Domestic tourism by state and purpose"</span>,</span>
-<span id="cb10-6"><a></a>       <span class="at">y =</span> <span class="st">"Trips ('000)"</span>, <span class="at">x =</span> <span class="cn">NULL</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a aria-label="1"></a>full_hts_plot_p <span class="ot">&lt;-</span> tourism_full <span class="sc">|&gt;</span></span>
+<span id="cb10-2"><a aria-label="2"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is_aggregated</span>(State), <span class="fu">is_aggregated</span>(Region), <span class="sc">!</span><span class="fu">is_aggregated</span>(Purpose)) <span class="sc">|&gt;</span></span>
+<span id="cb10-3"><a aria-label="3"></a>  <span class="fu">autoplot</span>(Trips) <span class="sc">+</span></span>
+<span id="cb10-4"><a aria-label="4"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> <span class="fu">as.character</span>(Purpose), <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
+<span id="cb10-5"><a aria-label="5"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Domestic tourism by state and purpose"</span>,</span>
+<span id="cb10-6"><a aria-label="6"></a>       <span class="at">y =</span> <span class="st">"Trips ('000)"</span>, <span class="at">x =</span> <span class="cn">NULL</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
 <div class="cell-output-display">
@@ -612,20 +615,20 @@ tourism_hts"><pre class="sourceCode numberSource r code-annotation-code number-l
 <p>Fitting a model independently to every series — including the aggregated ones — almost never produces coherent forecasts.</p>
 <div class="fragment">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>incoherent_fit <span class="ot">&lt;-</span> tourism_hts <span class="sc">|&gt;</span></span>
-<span id="cb11-2"><a></a>  <span class="fu">filter_index</span>(. <span class="sc">~</span> <span class="st">"2015 Q4"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb11-3"><a></a>  <span class="fu">model</span>(<span class="at">ets =</span> <span class="fu">ETS</span>(Trips))</span>
-<span id="cb11-4"><a></a></span>
-<span id="cb11-5"><a></a>incoherent_fit <span class="sc">|&gt;</span></span>
-<span id="cb11-6"><a></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">4</span>) <span class="sc">|&gt;</span></span>
-<span id="cb11-7"><a></a>  <span class="fu">filter</span>(Quarter <span class="sc">==</span> <span class="fu">yearquarter</span>(<span class="st">"2016 Q1"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb11-8"><a></a>  <span class="fu">filter</span>(</span>
-<span id="cb11-9"><a></a>    <span class="fu">is_aggregated</span>(State) <span class="sc">|</span></span>
-<span id="cb11-10"><a></a>    (<span class="sc">!</span><span class="fu">is_aggregated</span>(State) <span class="sc">&amp;</span> <span class="fu">is_aggregated</span>(Region))</span>
-<span id="cb11-11"><a></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb11-12"><a></a>  <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span></span>
-<span id="cb11-13"><a></a>  <span class="fu">select</span>(State, Region, .mean) <span class="sc">|&gt;</span></span>
-<span id="cb11-14"><a></a>  <span class="fu">mutate</span>(<span class="at">State =</span> <span class="fu">as.character</span>(State), <span class="at">Region =</span> <span class="fu">as.character</span>(Region))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a aria-label="1"></a>incoherent_fit <span class="ot">&lt;-</span> tourism_hts <span class="sc">|&gt;</span></span>
+<span id="cb11-2"><a aria-label="2"></a>  <span class="fu">filter_index</span>(. <span class="sc">~</span> <span class="st">"2015 Q4"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb11-3"><a aria-label="3"></a>  <span class="fu">model</span>(<span class="at">ets =</span> <span class="fu">ETS</span>(Trips))</span>
+<span id="cb11-4"><a aria-label="4"></a></span>
+<span id="cb11-5"><a aria-label="5"></a>incoherent_fit <span class="sc">|&gt;</span></span>
+<span id="cb11-6"><a aria-label="6"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">4</span>) <span class="sc">|&gt;</span></span>
+<span id="cb11-7"><a aria-label="7"></a>  <span class="fu">filter</span>(Quarter <span class="sc">==</span> <span class="fu">yearquarter</span>(<span class="st">"2016 Q1"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb11-8"><a aria-label="8"></a>  <span class="fu">filter</span>(</span>
+<span id="cb11-9"><a aria-label="9"></a>    <span class="fu">is_aggregated</span>(State) <span class="sc">|</span></span>
+<span id="cb11-10"><a aria-label="10"></a>    (<span class="sc">!</span><span class="fu">is_aggregated</span>(State) <span class="sc">&amp;</span> <span class="fu">is_aggregated</span>(Region))</span>
+<span id="cb11-11"><a aria-label="11"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb11-12"><a aria-label="12"></a>  <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span></span>
+<span id="cb11-13"><a aria-label="13"></a>  <span class="fu">select</span>(State, Region, .mean) <span class="sc">|&gt;</span></span>
+<span id="cb11-14"><a aria-label="14"></a>  <span class="fu">mutate</span>(<span class="at">State =</span> <span class="fu">as.character</span>(State), <span class="at">Region =</span> <span class="fu">as.character</span>(Region))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -656,10 +659,10 @@ tourism_hts"><pre class="sourceCode numberSource r code-annotation-code number-l
 <p>Forecast the most disaggregated series, then aggregate up.</p>
 <div class="fragment">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a>tourism_fit <span class="ot">&lt;-</span> tourism_train <span class="sc">|&gt;</span></span>
-<span id="cb12-2"><a></a>  <span class="fu">model</span>(<span class="at">ets =</span> <span class="fu">ETS</span>(Trips))</span>
-<span id="cb12-3"><a></a></span>
-<span id="cb12-4"><a></a>tourism_fit</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a aria-label="1"></a>tourism_fit <span class="ot">&lt;-</span> tourism_train <span class="sc">|&gt;</span></span>
+<span id="cb12-2"><a aria-label="2"></a>  <span class="fu">model</span>(<span class="at">ets =</span> <span class="fu">ETS</span>(Trips))</span>
+<span id="cb12-3"><a aria-label="3"></a></span>
+<span id="cb12-4"><a aria-label="4"></a>tourism_fit</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -679,15 +682,15 @@ reconcile_bu_p <- tourism_bu |>
   filter(is_aggregated(State)) |>
   autoplot(tourism_hts |> filter_index(&quot;2012 Q1&quot; ~ .)) +
   labs(title = &quot;Bottom-up coherent forecast: national total&quot;,
-       y = &quot;Trips ('000)&quot;, x = NULL)"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-20-1"><a href="#annotated-cell-20-1"></a>tourism_bu <span class="ot">&lt;-</span> tourism_fit <span class="sc">|&gt;</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-20" data-target-annotation="1">1</button><span id="annotated-cell-20-2" class="code-annotation-target"><a href="#annotated-cell-20-2"></a>  <span class="fu">reconcile</span>(<span class="at">bu =</span> <span class="fu">bottom_up</span>(ets))</span>
-<span id="annotated-cell-20-3"><a href="#annotated-cell-20-3"></a></span>
-<span id="annotated-cell-20-4"><a href="#annotated-cell-20-4"></a>reconcile_bu_p <span class="ot">&lt;-</span> tourism_bu <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-20-5"><a href="#annotated-cell-20-5"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"2 years"</span>) <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-20-6"><a href="#annotated-cell-20-6"></a>  <span class="fu">filter</span>(<span class="fu">is_aggregated</span>(State)) <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-20-7"><a href="#annotated-cell-20-7"></a>  <span class="fu">autoplot</span>(tourism_hts <span class="sc">|&gt;</span> <span class="fu">filter_index</span>(<span class="st">"2012 Q1"</span> <span class="sc">~</span> .)) <span class="sc">+</span></span>
-<span id="annotated-cell-20-8"><a href="#annotated-cell-20-8"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Bottom-up coherent forecast: national total"</span>,</span>
-<span id="annotated-cell-20-9"><a href="#annotated-cell-20-9"></a>       <span class="at">y =</span> <span class="st">"Trips ('000)"</span>, <span class="at">x =</span> <span class="cn">NULL</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+       y = &quot;Trips ('000)&quot;, x = NULL)"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-20-1"><a href="#annotated-cell-20-1" aria-label="1"></a>tourism_bu <span class="ot">&lt;-</span> tourism_fit <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-20" data-target-annotation="1">1</button><span id="annotated-cell-20-2" class="code-annotation-target"><a href="#annotated-cell-20-2" aria-label="2"></a>  <span class="fu">reconcile</span>(<span class="at">bu =</span> <span class="fu">bottom_up</span>(ets))</span>
+<span id="annotated-cell-20-3"><a href="#annotated-cell-20-3" aria-label="3"></a></span>
+<span id="annotated-cell-20-4"><a href="#annotated-cell-20-4" aria-label="4"></a>reconcile_bu_p <span class="ot">&lt;-</span> tourism_bu <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-20-5"><a href="#annotated-cell-20-5" aria-label="5"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"2 years"</span>) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-20-6"><a href="#annotated-cell-20-6" aria-label="6"></a>  <span class="fu">filter</span>(<span class="fu">is_aggregated</span>(State)) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-20-7"><a href="#annotated-cell-20-7" aria-label="7"></a>  <span class="fu">autoplot</span>(tourism_hts <span class="sc">|&gt;</span> <span class="fu">filter_index</span>(<span class="st">"2012 Q1"</span> <span class="sc">~</span> .)) <span class="sc">+</span></span>
+<span id="annotated-cell-20-8"><a href="#annotated-cell-20-8" aria-label="8"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Bottom-up coherent forecast: national total"</span>,</span>
+<span id="annotated-cell-20-9"><a href="#annotated-cell-20-9" aria-label="9"></a>       <span class="at">y =</span> <span class="st">"Trips ('000)"</span>, <span class="at">x =</span> <span class="cn">NULL</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-20" data-target-annotation="1">1</dt>
@@ -753,12 +756,12 @@ reconcile_bu_p <- tourism_bu |>
     td_ap = top_down(ets, method = &quot;average_proportions&quot;),    #<1>
     td_pa = top_down(ets, method = &quot;proportion_averages&quot;),    #<2>
     td_fp = top_down(ets, method = &quot;forecast_proportions&quot;)    #<3>
-  )"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-4-1"><a href="#annotated-cell-4-1"></a>tourism_td <span class="ot">&lt;-</span> tourism_fit <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-4-2"><a href="#annotated-cell-4-2"></a>  <span class="fu">reconcile</span>(</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="1">1</button><span id="annotated-cell-4-3" class="code-annotation-target"><a href="#annotated-cell-4-3"></a>    <span class="at">td_ap =</span> <span class="fu">top_down</span>(ets, <span class="at">method =</span> <span class="st">"average_proportions"</span>),</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="2">2</button><span id="annotated-cell-4-4" class="code-annotation-target"><a href="#annotated-cell-4-4"></a>    <span class="at">td_pa =</span> <span class="fu">top_down</span>(ets, <span class="at">method =</span> <span class="st">"proportion_averages"</span>),</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="3">3</button><span id="annotated-cell-4-5" class="code-annotation-target"><a href="#annotated-cell-4-5"></a>    <span class="at">td_fp =</span> <span class="fu">top_down</span>(ets, <span class="at">method =</span> <span class="st">"forecast_proportions"</span>)</span>
-<span id="annotated-cell-4-6"><a href="#annotated-cell-4-6"></a>  )</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+  )"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-4-1"><a href="#annotated-cell-4-1" aria-label="1"></a>tourism_td <span class="ot">&lt;-</span> tourism_fit <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-4-2"><a href="#annotated-cell-4-2" aria-label="2"></a>  <span class="fu">reconcile</span>(</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="1">1</button><span id="annotated-cell-4-3" class="code-annotation-target"><a href="#annotated-cell-4-3" aria-label="3"></a>    <span class="at">td_ap =</span> <span class="fu">top_down</span>(ets, <span class="at">method =</span> <span class="st">"average_proportions"</span>),</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="2">2</button><span id="annotated-cell-4-4" class="code-annotation-target"><a href="#annotated-cell-4-4" aria-label="4"></a>    <span class="at">td_pa =</span> <span class="fu">top_down</span>(ets, <span class="at">method =</span> <span class="st">"proportion_averages"</span>),</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="3">3</button><span id="annotated-cell-4-5" class="code-annotation-target"><a href="#annotated-cell-4-5" aria-label="5"></a>    <span class="at">td_fp =</span> <span class="fu">top_down</span>(ets, <span class="at">method =</span> <span class="st">"forecast_proportions"</span>)</span>
+<span id="annotated-cell-4-6"><a href="#annotated-cell-4-6" aria-label="6"></a>  )</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-4" data-target-annotation="1">1</dt>
@@ -812,10 +815,10 @@ reconcile_bu_p <- tourism_bu |>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-21" data-llms-code-original="tourism_mo <- tourism_fit |>
   reconcile(
     mo = middle_out(ets, split = 1) #<1>
-  )"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-21-1"><a href="#annotated-cell-21-1"></a>tourism_mo <span class="ot">&lt;-</span> tourism_fit <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-21-2"><a href="#annotated-cell-21-2"></a>  <span class="fu">reconcile</span>(</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-21" data-target-annotation="1">1</button><span id="annotated-cell-21-3" class="code-annotation-target"><a href="#annotated-cell-21-3"></a>    <span class="at">mo =</span> <span class="fu">middle_out</span>(ets, <span class="at">split =</span> <span class="dv">1</span>)</span>
-<span id="annotated-cell-21-4"><a href="#annotated-cell-21-4"></a>  )</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+  )"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-21-1"><a href="#annotated-cell-21-1" aria-label="1"></a>tourism_mo <span class="ot">&lt;-</span> tourism_fit <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-21-2"><a href="#annotated-cell-21-2" aria-label="2"></a>  <span class="fu">reconcile</span>(</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-21" data-target-annotation="1">1</button><span id="annotated-cell-21-3" class="code-annotation-target"><a href="#annotated-cell-21-3" aria-label="3"></a>    <span class="at">mo =</span> <span class="fu">middle_out</span>(ets, <span class="at">split =</span> <span class="dv">1</span>)</span>
+<span id="annotated-cell-21-4"><a href="#annotated-cell-21-4" aria-label="4"></a>  )</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-21" data-target-annotation="1">1</dt>
@@ -914,31 +917,31 @@ reconcile_bu_p <- tourism_bu |>
 <section id="the-full-pipeline" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">The Full Pipeline</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb13-1" class="hljs-ln-code"><a></a>data</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb13-1" class="hljs-ln-code"><a aria-label="1"></a>data</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="the-full-pipeline-1" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">The Full Pipeline</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb14-1" class="hljs-ln-code"><a></a>data <span class="sc">|&gt;</span></span>
-<span id="cb14-2" class="hljs-ln-code"><a></a>  <span class="fu">aggregate_key</span>(...)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb14-1" class="hljs-ln-code"><a aria-label="1"></a>data <span class="sc">|&gt;</span></span>
+<span id="cb14-2" class="hljs-ln-code"><a aria-label="2"></a>  <span class="fu">aggregate_key</span>(...)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="the-full-pipeline-2" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">The Full Pipeline</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb15-1" class="hljs-ln-code"><a></a>data <span class="sc">|&gt;</span></span>
-<span id="cb15-2" class="hljs-ln-code"><a></a>  <span class="fu">aggregate_key</span>(...) <span class="sc">|&gt;</span></span>
-<span id="cb15-3" class="hljs-ln-code"><a></a>  <span class="fu">model</span>(...)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb15-1" class="hljs-ln-code"><a aria-label="1"></a>data <span class="sc">|&gt;</span></span>
+<span id="cb15-2" class="hljs-ln-code"><a aria-label="2"></a>  <span class="fu">aggregate_key</span>(...) <span class="sc">|&gt;</span></span>
+<span id="cb15-3" class="hljs-ln-code"><a aria-label="3"></a>  <span class="fu">model</span>(...)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="the-full-pipeline-3" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">The Full Pipeline</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb16-1" class="hljs-ln-code"><a></a>data <span class="sc">|&gt;</span></span>
-<span id="cb16-2" class="hljs-ln-code"><a></a>  <span class="fu">aggregate_key</span>(...) <span class="sc">|&gt;</span></span>
-<span id="cb16-3" class="hljs-ln-code"><a></a>  <span class="fu">model</span>(...) <span class="sc">|&gt;</span></span>
-<span id="cb16-4" class="hljs-ln-code"><a></a>  <span class="fu">reconcile</span>(...)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb16-1" class="hljs-ln-code"><a aria-label="1"></a>data <span class="sc">|&gt;</span></span>
+<span id="cb16-2" class="hljs-ln-code"><a aria-label="2"></a>  <span class="fu">aggregate_key</span>(...) <span class="sc">|&gt;</span></span>
+<span id="cb16-3" class="hljs-ln-code"><a aria-label="3"></a>  <span class="fu">model</span>(...) <span class="sc">|&gt;</span></span>
+<span id="cb16-4" class="hljs-ln-code"><a aria-label="4"></a>  <span class="fu">reconcile</span>(...)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="the-full-pipeline-4" class="slide level2" data-auto-animate="true">
@@ -948,11 +951,11 @@ reconcile_bu_p <- tourism_bu |>
   aggregate_key(...) |> #<2>
   model(...) |>         #<3>
   reconcile(...) |>     #<4>
-  forecast(h = ...)     #<5>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-26" data-target-annotation="1">1</button><span id="annotated-cell-26-1" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-26-1"></a>data <span class="sc">|&gt;</span></span>
-<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-26" data-target-annotation="2">2</button><span id="annotated-cell-26-2" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-26-2"></a>  <span class="fu">aggregate_key</span>(...) <span class="sc">|&gt;</span></span>
-<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-26" data-target-annotation="3">3</button><span id="annotated-cell-26-3" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-26-3"></a>  <span class="fu">model</span>(...) <span class="sc">|&gt;</span></span>
-<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-26" data-target-annotation="4">4</button><span id="annotated-cell-26-4" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-26-4"></a>  <span class="fu">reconcile</span>(...) <span class="sc">|&gt;</span></span>
-<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-26" data-target-annotation="5">5</button><span id="annotated-cell-26-5" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-26-5"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> ...)</span><div class="code-annotation-gutter-bg hljs-ln-code"></div><div class="code-annotation-gutter hljs-ln-code"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+  forecast(h = ...)     #<5>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-26" data-target-annotation="1">1</button><span id="annotated-cell-26-1" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-26-1" aria-label="1"></a>data <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-26" data-target-annotation="2">2</button><span id="annotated-cell-26-2" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-26-2" aria-label="2"></a>  <span class="fu">aggregate_key</span>(...) <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-26" data-target-annotation="3">3</button><span id="annotated-cell-26-3" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-26-3" aria-label="3"></a>  <span class="fu">model</span>(...) <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-26" data-target-annotation="4">4</button><span id="annotated-cell-26-4" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-26-4" aria-label="4"></a>  <span class="fu">reconcile</span>(...) <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-26" data-target-annotation="5">5</button><span id="annotated-cell-26-5" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-26-5" aria-label="5"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> ...)</span><div class="code-annotation-gutter-bg hljs-ln-code"></div><div class="code-annotation-gutter hljs-ln-code"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-26" data-target-annotation="1">1</dt>
@@ -1120,42 +1123,42 @@ reconcile_bu_p <- tourism_bu |>
 <section id="tourism-all-methods" class="slide level2">
 <h2>Tourism: All Methods</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a>tourism_rec <span class="ot">&lt;-</span> tourism_fit <span class="sc">|&gt;</span></span>
-<span id="cb17-2"><a></a>  <span class="fu">reconcile</span>(</span>
-<span id="cb17-3"><a></a>    <span class="at">bu    =</span> <span class="fu">bottom_up</span>(ets),</span>
-<span id="cb17-4"><a></a>    <span class="at">td_ap =</span> <span class="fu">top_down</span>(ets, <span class="at">method =</span> <span class="st">"average_proportions"</span>),</span>
-<span id="cb17-5"><a></a>    <span class="at">td_pa =</span> <span class="fu">top_down</span>(ets, <span class="at">method =</span> <span class="st">"proportion_averages"</span>),</span>
-<span id="cb17-6"><a></a>    <span class="at">td_fp =</span> <span class="fu">top_down</span>(ets, <span class="at">method =</span> <span class="st">"forecast_proportions"</span>),</span>
-<span id="cb17-7"><a></a>    <span class="at">mo    =</span> <span class="fu">middle_out</span>(ets, <span class="at">split =</span> <span class="dv">1</span>),</span>
-<span id="cb17-8"><a></a>    <span class="at">wls   =</span> <span class="fu">min_trace</span>(ets, <span class="at">method =</span> <span class="st">"wls_struct"</span>),</span>
-<span id="cb17-9"><a></a>    <span class="at">mint  =</span> <span class="fu">min_trace</span>(ets, <span class="at">method =</span> <span class="st">"mint_shrink"</span>)</span>
-<span id="cb17-10"><a></a>  )</span>
-<span id="cb17-11"><a></a></span>
-<span id="cb17-12"><a></a>tourism_fc <span class="ot">&lt;-</span> tourism_rec <span class="sc">|&gt;</span></span>
-<span id="cb17-13"><a></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"2 years"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a aria-label="1"></a>tourism_rec <span class="ot">&lt;-</span> tourism_fit <span class="sc">|&gt;</span></span>
+<span id="cb17-2"><a aria-label="2"></a>  <span class="fu">reconcile</span>(</span>
+<span id="cb17-3"><a aria-label="3"></a>    <span class="at">bu    =</span> <span class="fu">bottom_up</span>(ets),</span>
+<span id="cb17-4"><a aria-label="4"></a>    <span class="at">td_ap =</span> <span class="fu">top_down</span>(ets, <span class="at">method =</span> <span class="st">"average_proportions"</span>),</span>
+<span id="cb17-5"><a aria-label="5"></a>    <span class="at">td_pa =</span> <span class="fu">top_down</span>(ets, <span class="at">method =</span> <span class="st">"proportion_averages"</span>),</span>
+<span id="cb17-6"><a aria-label="6"></a>    <span class="at">td_fp =</span> <span class="fu">top_down</span>(ets, <span class="at">method =</span> <span class="st">"forecast_proportions"</span>),</span>
+<span id="cb17-7"><a aria-label="7"></a>    <span class="at">mo    =</span> <span class="fu">middle_out</span>(ets, <span class="at">split =</span> <span class="dv">1</span>),</span>
+<span id="cb17-8"><a aria-label="8"></a>    <span class="at">wls   =</span> <span class="fu">min_trace</span>(ets, <span class="at">method =</span> <span class="st">"wls_struct"</span>),</span>
+<span id="cb17-9"><a aria-label="9"></a>    <span class="at">mint  =</span> <span class="fu">min_trace</span>(ets, <span class="at">method =</span> <span class="st">"mint_shrink"</span>)</span>
+<span id="cb17-10"><a aria-label="10"></a>  )</span>
+<span id="cb17-11"><a aria-label="11"></a></span>
+<span id="cb17-12"><a aria-label="12"></a>tourism_fc <span class="ot">&lt;-</span> tourism_rec <span class="sc">|&gt;</span></span>
+<span id="cb17-13"><a aria-label="13"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"2 years"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="accuracy-by-level" class="slide level2">
 <h2>Accuracy by Level</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a></a>accuracy_all_p <span class="ot">&lt;-</span> tourism_fc <span class="sc">|&gt;</span></span>
-<span id="cb18-2"><a></a>  <span class="fu">accuracy</span>(<span class="at">data =</span> tourism_hts, <span class="at">measures =</span> <span class="fu">list</span>(<span class="at">RMSSE =</span> RMSSE)) <span class="sc">|&gt;</span></span>
-<span id="cb18-3"><a></a>  <span class="fu">mutate</span>(</span>
-<span id="cb18-4"><a></a>    <span class="at">Level =</span> <span class="fu">case_when</span>(</span>
-<span id="cb18-5"><a></a>      <span class="fu">is_aggregated</span>(State)                           <span class="sc">~</span> <span class="st">"Total"</span>,</span>
-<span id="cb18-6"><a></a>      <span class="sc">!</span><span class="fu">is_aggregated</span>(State) <span class="sc">&amp;</span> <span class="fu">is_aggregated</span>(Region)  <span class="sc">~</span> <span class="st">"State"</span>,</span>
-<span id="cb18-7"><a></a>      <span class="cn">TRUE</span>                                           <span class="sc">~</span> <span class="st">"Region"</span></span>
-<span id="cb18-8"><a></a>    )</span>
-<span id="cb18-9"><a></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb18-10"><a></a>  <span class="fu">group_by</span>(.model, Level) <span class="sc">|&gt;</span></span>
-<span id="cb18-11"><a></a>  <span class="fu">summarise</span>(<span class="at">RMSSE =</span> <span class="fu">mean</span>(RMSSE, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb18-12"><a></a>  <span class="fu">mutate</span>(<span class="at">Level  =</span> <span class="fu">factor</span>(Level, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Total"</span>, <span class="st">"State"</span>, <span class="st">"Region"</span>)),</span>
-<span id="cb18-13"><a></a>         <span class="at">.model =</span> <span class="fu">fct_reorder</span>(.model, RMSSE)) <span class="sc">|&gt;</span></span>
-<span id="cb18-14"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> .model, <span class="at">y =</span> RMSSE, <span class="at">fill =</span> .model)) <span class="sc">+</span></span>
-<span id="cb18-15"><a></a>  <span class="fu">geom_col</span>(<span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
-<span id="cb18-16"><a></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> Level, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
-<span id="cb18-17"><a></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
-<span id="cb18-18"><a></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"Mean RMSSE"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a aria-label="1"></a>accuracy_all_p <span class="ot">&lt;-</span> tourism_fc <span class="sc">|&gt;</span></span>
+<span id="cb18-2"><a aria-label="2"></a>  <span class="fu">accuracy</span>(<span class="at">data =</span> tourism_hts, <span class="at">measures =</span> <span class="fu">list</span>(<span class="at">RMSSE =</span> RMSSE)) <span class="sc">|&gt;</span></span>
+<span id="cb18-3"><a aria-label="3"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb18-4"><a aria-label="4"></a>    <span class="at">Level =</span> <span class="fu">case_when</span>(</span>
+<span id="cb18-5"><a aria-label="5"></a>      <span class="fu">is_aggregated</span>(State)                           <span class="sc">~</span> <span class="st">"Total"</span>,</span>
+<span id="cb18-6"><a aria-label="6"></a>      <span class="sc">!</span><span class="fu">is_aggregated</span>(State) <span class="sc">&amp;</span> <span class="fu">is_aggregated</span>(Region)  <span class="sc">~</span> <span class="st">"State"</span>,</span>
+<span id="cb18-7"><a aria-label="7"></a>      <span class="cn">TRUE</span>                                           <span class="sc">~</span> <span class="st">"Region"</span></span>
+<span id="cb18-8"><a aria-label="8"></a>    )</span>
+<span id="cb18-9"><a aria-label="9"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb18-10"><a aria-label="10"></a>  <span class="fu">group_by</span>(.model, Level) <span class="sc">|&gt;</span></span>
+<span id="cb18-11"><a aria-label="11"></a>  <span class="fu">summarise</span>(<span class="at">RMSSE =</span> <span class="fu">mean</span>(RMSSE, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb18-12"><a aria-label="12"></a>  <span class="fu">mutate</span>(<span class="at">Level  =</span> <span class="fu">factor</span>(Level, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Total"</span>, <span class="st">"State"</span>, <span class="st">"Region"</span>)),</span>
+<span id="cb18-13"><a aria-label="13"></a>         <span class="at">.model =</span> <span class="fu">fct_reorder</span>(.model, RMSSE)) <span class="sc">|&gt;</span></span>
+<span id="cb18-14"><a aria-label="14"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> .model, <span class="at">y =</span> RMSSE, <span class="at">fill =</span> .model)) <span class="sc">+</span></span>
+<span id="cb18-15"><a aria-label="15"></a>  <span class="fu">geom_col</span>(<span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb18-16"><a aria-label="16"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> Level, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
+<span id="cb18-17"><a aria-label="17"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb18-18"><a aria-label="18"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"Mean RMSSE"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
 <div class="cell-output-display">
@@ -1197,12 +1200,12 @@ reconcile_bu_p <- tourism_bu |>
   aggregate_key(ATC1 / ATC2 * Concession,           #<2>
                 Cost = sum(Cost) / 1e6)
 
-pbs_hts"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-27-1"><a href="#annotated-cell-27-1"></a>pbs_hts <span class="ot">&lt;-</span> PBS <span class="sc">|&gt;</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-27" data-target-annotation="1">1</button><span id="annotated-cell-27-2" class="code-annotation-target"><a href="#annotated-cell-27-2"></a>  <span class="fu">filter</span>(ATC1 <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"C"</span>, <span class="st">"G"</span>, <span class="st">"N"</span>)) <span class="sc">|&gt;</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-27" data-target-annotation="2">2</button><span id="annotated-cell-27-3" class="code-annotation-target"><a href="#annotated-cell-27-3"></a>  <span class="fu">aggregate_key</span>(ATC1 <span class="sc">/</span> ATC2 <span class="sc">*</span> Concession,</span>
-<span id="annotated-cell-27-4"><a href="#annotated-cell-27-4"></a>                <span class="at">Cost =</span> <span class="fu">sum</span>(Cost) <span class="sc">/</span> <span class="fl">1e6</span>)</span>
-<span id="annotated-cell-27-5"><a href="#annotated-cell-27-5"></a></span>
-<span id="annotated-cell-27-6"><a href="#annotated-cell-27-6"></a>pbs_hts</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+pbs_hts"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-27-1"><a href="#annotated-cell-27-1" aria-label="1"></a>pbs_hts <span class="ot">&lt;-</span> PBS <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-27" data-target-annotation="1">1</button><span id="annotated-cell-27-2" class="code-annotation-target"><a href="#annotated-cell-27-2" aria-label="2"></a>  <span class="fu">filter</span>(ATC1 <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"C"</span>, <span class="st">"G"</span>, <span class="st">"N"</span>)) <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-27" data-target-annotation="2">2</button><span id="annotated-cell-27-3" class="code-annotation-target"><a href="#annotated-cell-27-3" aria-label="3"></a>  <span class="fu">aggregate_key</span>(ATC1 <span class="sc">/</span> ATC2 <span class="sc">*</span> Concession,</span>
+<span id="annotated-cell-27-4"><a href="#annotated-cell-27-4" aria-label="4"></a>                <span class="at">Cost =</span> <span class="fu">sum</span>(Cost) <span class="sc">/</span> <span class="fl">1e6</span>)</span>
+<span id="annotated-cell-27-5"><a href="#annotated-cell-27-5" aria-label="5"></a></span>
+<span id="annotated-cell-27-6"><a href="#annotated-cell-27-6" aria-label="6"></a>pbs_hts</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-27" data-target-annotation="1">1</dt>
@@ -1228,44 +1231,44 @@ pbs_hts"><pre class="sourceCode numberSource r code-annotation-code number-lines
 <section id="pbs-reconciliation" class="slide level2">
 <h2>PBS: Reconciliation</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a>pbs_fit <span class="ot">&lt;-</span> pbs_train <span class="sc">|&gt;</span></span>
-<span id="cb19-2"><a></a>  <span class="fu">model</span>(<span class="at">ets =</span> <span class="fu">ETS</span>(Cost))</span>
-<span id="cb19-3"><a></a></span>
-<span id="cb19-4"><a></a>pbs_rec <span class="ot">&lt;-</span> pbs_fit <span class="sc">|&gt;</span></span>
-<span id="cb19-5"><a></a>  <span class="fu">reconcile</span>(</span>
-<span id="cb19-6"><a></a>    <span class="at">bu   =</span> <span class="fu">bottom_up</span>(ets),</span>
-<span id="cb19-7"><a></a>    <span class="at">ols  =</span> <span class="fu">min_trace</span>(ets, <span class="at">method =</span> <span class="st">"ols"</span>),</span>
-<span id="cb19-8"><a></a>    <span class="at">wls  =</span> <span class="fu">min_trace</span>(ets, <span class="at">method =</span> <span class="st">"wls_struct"</span>)</span>
-<span id="cb19-9"><a></a>  )</span>
-<span id="cb19-10"><a></a></span>
-<span id="cb19-11"><a></a>pbs_fc <span class="ot">&lt;-</span> pbs_rec <span class="sc">|&gt;</span></span>
-<span id="cb19-12"><a></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"2 years"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a aria-label="1"></a>pbs_fit <span class="ot">&lt;-</span> pbs_train <span class="sc">|&gt;</span></span>
+<span id="cb19-2"><a aria-label="2"></a>  <span class="fu">model</span>(<span class="at">ets =</span> <span class="fu">ETS</span>(Cost))</span>
+<span id="cb19-3"><a aria-label="3"></a></span>
+<span id="cb19-4"><a aria-label="4"></a>pbs_rec <span class="ot">&lt;-</span> pbs_fit <span class="sc">|&gt;</span></span>
+<span id="cb19-5"><a aria-label="5"></a>  <span class="fu">reconcile</span>(</span>
+<span id="cb19-6"><a aria-label="6"></a>    <span class="at">bu   =</span> <span class="fu">bottom_up</span>(ets),</span>
+<span id="cb19-7"><a aria-label="7"></a>    <span class="at">ols  =</span> <span class="fu">min_trace</span>(ets, <span class="at">method =</span> <span class="st">"ols"</span>),</span>
+<span id="cb19-8"><a aria-label="8"></a>    <span class="at">wls  =</span> <span class="fu">min_trace</span>(ets, <span class="at">method =</span> <span class="st">"wls_struct"</span>)</span>
+<span id="cb19-9"><a aria-label="9"></a>  )</span>
+<span id="cb19-10"><a aria-label="10"></a></span>
+<span id="cb19-11"><a aria-label="11"></a>pbs_fc <span class="ot">&lt;-</span> pbs_rec <span class="sc">|&gt;</span></span>
+<span id="cb19-12"><a aria-label="12"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"2 years"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="pbs-accuracy" class="slide level2">
 <h2>PBS: Accuracy</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a></a>pbs_accuracy_p <span class="ot">&lt;-</span> pbs_fc <span class="sc">|&gt;</span></span>
-<span id="cb20-2"><a></a>  <span class="fu">accuracy</span>(<span class="at">data =</span> pbs_hts, <span class="at">measures =</span> <span class="fu">list</span>(<span class="at">RMSSE =</span> RMSSE)) <span class="sc">|&gt;</span></span>
-<span id="cb20-3"><a></a>  <span class="fu">mutate</span>(</span>
-<span id="cb20-4"><a></a>    <span class="at">Level =</span> <span class="fu">case_when</span>(</span>
-<span id="cb20-5"><a></a>      <span class="fu">is_aggregated</span>(ATC1)                                                     <span class="sc">~</span> <span class="st">"Total"</span>,</span>
-<span id="cb20-6"><a></a>      <span class="sc">!</span><span class="fu">is_aggregated</span>(ATC1) <span class="sc">&amp;</span> <span class="fu">is_aggregated</span>(ATC2) <span class="sc">&amp;</span> <span class="fu">is_aggregated</span>(Concession)  <span class="sc">~</span> <span class="st">"ATC1"</span>,</span>
-<span id="cb20-7"><a></a>      <span class="sc">!</span><span class="fu">is_aggregated</span>(ATC2) <span class="sc">&amp;</span> <span class="fu">is_aggregated</span>(Concession)                        <span class="sc">~</span> <span class="st">"ATC2"</span>,</span>
-<span id="cb20-8"><a></a>      <span class="cn">TRUE</span>                                                                     <span class="sc">~</span> <span class="st">"ATC2 × Concession"</span></span>
-<span id="cb20-9"><a></a>    )</span>
-<span id="cb20-10"><a></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb20-11"><a></a>  <span class="fu">group_by</span>(.model, Level) <span class="sc">|&gt;</span></span>
-<span id="cb20-12"><a></a>  <span class="fu">summarise</span>(<span class="at">RMSSE =</span> <span class="fu">mean</span>(RMSSE, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb20-13"><a></a>  <span class="fu">mutate</span>(</span>
-<span id="cb20-14"><a></a>    <span class="at">Level  =</span> <span class="fu">factor</span>(Level, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Total"</span>, <span class="st">"ATC1"</span>, <span class="st">"ATC2"</span>, <span class="st">"ATC2 × Concession"</span>)),</span>
-<span id="cb20-15"><a></a>    <span class="at">.model =</span> <span class="fu">fct_reorder</span>(.model, RMSSE)</span>
-<span id="cb20-16"><a></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb20-17"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> .model, <span class="at">y =</span> RMSSE, <span class="at">fill =</span> .model)) <span class="sc">+</span></span>
-<span id="cb20-18"><a></a>  <span class="fu">geom_col</span>(<span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
-<span id="cb20-19"><a></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> Level, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
-<span id="cb20-20"><a></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
-<span id="cb20-21"><a></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"Mean RMSSE"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a aria-label="1"></a>pbs_accuracy_p <span class="ot">&lt;-</span> pbs_fc <span class="sc">|&gt;</span></span>
+<span id="cb20-2"><a aria-label="2"></a>  <span class="fu">accuracy</span>(<span class="at">data =</span> pbs_hts, <span class="at">measures =</span> <span class="fu">list</span>(<span class="at">RMSSE =</span> RMSSE)) <span class="sc">|&gt;</span></span>
+<span id="cb20-3"><a aria-label="3"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb20-4"><a aria-label="4"></a>    <span class="at">Level =</span> <span class="fu">case_when</span>(</span>
+<span id="cb20-5"><a aria-label="5"></a>      <span class="fu">is_aggregated</span>(ATC1)                                                     <span class="sc">~</span> <span class="st">"Total"</span>,</span>
+<span id="cb20-6"><a aria-label="6"></a>      <span class="sc">!</span><span class="fu">is_aggregated</span>(ATC1) <span class="sc">&amp;</span> <span class="fu">is_aggregated</span>(ATC2) <span class="sc">&amp;</span> <span class="fu">is_aggregated</span>(Concession)  <span class="sc">~</span> <span class="st">"ATC1"</span>,</span>
+<span id="cb20-7"><a aria-label="7"></a>      <span class="sc">!</span><span class="fu">is_aggregated</span>(ATC2) <span class="sc">&amp;</span> <span class="fu">is_aggregated</span>(Concession)                        <span class="sc">~</span> <span class="st">"ATC2"</span>,</span>
+<span id="cb20-8"><a aria-label="8"></a>      <span class="cn">TRUE</span>                                                                     <span class="sc">~</span> <span class="st">"ATC2 × Concession"</span></span>
+<span id="cb20-9"><a aria-label="9"></a>    )</span>
+<span id="cb20-10"><a aria-label="10"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb20-11"><a aria-label="11"></a>  <span class="fu">group_by</span>(.model, Level) <span class="sc">|&gt;</span></span>
+<span id="cb20-12"><a aria-label="12"></a>  <span class="fu">summarise</span>(<span class="at">RMSSE =</span> <span class="fu">mean</span>(RMSSE, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb20-13"><a aria-label="13"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb20-14"><a aria-label="14"></a>    <span class="at">Level  =</span> <span class="fu">factor</span>(Level, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Total"</span>, <span class="st">"ATC1"</span>, <span class="st">"ATC2"</span>, <span class="st">"ATC2 × Concession"</span>)),</span>
+<span id="cb20-15"><a aria-label="15"></a>    <span class="at">.model =</span> <span class="fu">fct_reorder</span>(.model, RMSSE)</span>
+<span id="cb20-16"><a aria-label="16"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb20-17"><a aria-label="17"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> .model, <span class="at">y =</span> RMSSE, <span class="at">fill =</span> .model)) <span class="sc">+</span></span>
+<span id="cb20-18"><a aria-label="18"></a>  <span class="fu">geom_col</span>(<span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb20-19"><a aria-label="19"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> Level, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
+<span id="cb20-20"><a aria-label="20"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb20-21"><a aria-label="21"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"Mean RMSSE"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
 <div class="cell-output-display">

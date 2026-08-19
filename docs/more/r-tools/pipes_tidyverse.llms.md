@@ -10,7 +10,7 @@ Pablo Benavides-Herrera
 
 Modified
 
-July 9, 2026
+August 19, 2026
 
 This document is **optional**, but strongly recommended.
 
@@ -40,12 +40,12 @@ can be read as:
 
 > **TIP:**
 >
-> If you can read a pipeline out loud using “then” and it still makes sense,  
+> If you can read a pipeline out loud using “then” and it still makes sense,\
 > you are probably writing clear tidyverse code.
 
 > **NOTE:**
 >
-> For more on style, including guidance on pipes, see  
+> For more on style, including guidance on pipes, see\
 > [*R for Data Science (2e)* — **Workflow: code style (Pipes)**](https://r4ds.hadley.nz/workflow-style.html#sec-pipes).
 
 ------------------------------------------------------------------------
@@ -61,8 +61,8 @@ df_grouped <- group_by(df_transformed, id)
 df_summary <- summarise(df_grouped, mean_value = mean(log_value))
 ```
 
-- Explicit intermediate objects  
-- More typing  
+- Explicit intermediate objects\
+- More typing\
 - Easier to lose the “story” of the data
 
 ## With pipes
@@ -75,8 +75,8 @@ df |>
   summarise(mean_value = mean(log_value))
 ```
 
-- One clear data flow  
-- No temporary variables  
+- One clear data flow\
+- No temporary variables\
 - Easier to read, explain, and debug
 
 ------------------------------------------------------------------------
@@ -85,29 +85,29 @@ df |>
 
 A tidyverse pipeline usually follows this pattern:
 
-- start with a dataset  
-- filter rows  
-- create or transform variables  
-- group the data  
+- start with a dataset\
+- filter rows\
+- create or transform variables\
+- group the data\
 - summarise
 
 This is not a strict rule, but a very common and effective structure.
 
 > **NOTE:**
 >
-> Most tidyverse verbs return a **new tibble**.  
+> Most tidyverse verbs return a **new tibble**.\
 > The original data is never modified unless you explicitly reassign it.
 
 > **NOTE:**
 >
-> If you want a broader overview of how the pieces fit together, see  
+> If you want a broader overview of how the pieces fit together, see\
 > [*R for Data Science (2e)* — **Introduction**](https://r4ds.hadley.nz/intro.html).
 
 ------------------------------------------------------------------------
 
 ## 4 Pipes are not magic
 
-The pipe does **not** change what functions do.  
+The pipe does **not** change what functions do.\
 It only changes **how inputs are passed**.
 
 ### 4.1 Without pipes
@@ -137,7 +137,7 @@ df |>
 
 > **TIP:**
 >
-> If you can rewrite a pipeline as nested function calls,  
+> If you can rewrite a pipeline as nested function calls,\
 > then the pipeline is doing exactly what you think it is.
 
 ------------------------------------------------------------------------
@@ -155,22 +155,22 @@ No `$`, no indexing, no extra syntax.
 
 > **NOTE:**
 >
-> This works because tidyverse uses **data-masking**:  
+> This works because tidyverse uses **data-masking**:\
 > column names are looked up automatically inside the data.
 
 > **TIP:**
 >
 > You do not need to master these details for this course.
 >
-> If you are curious about what’s happening under the hood, see  
+> If you are curious about what’s happening under the hood, see\
 > [*R for Data Science (2e)* — **Functions**](https://r4ds.hadley.nz/functions.html).
 
 ------------------------------------------------------------------------
 
 ## 6 Why we avoid `$` in this course
 
-- It breaks the pipeline mental model  
-- It mixes different styles of R  
+- It breaks the pipeline mental model\
+- It mixes different styles of R\
 - It becomes confusing with grouped data
 
 For clarity and consistency, we will stick to tidyverse verbs and pipelines.
@@ -247,7 +247,7 @@ df |> filter(value > 0) |> group_by(id) |> summarise(mean_value = mean(value))
 
 > **NOTE:**
 >
-> For more examples of `filter()`, `mutate()`, `group_by()`, and `summarise()`, see  
+> For more examples of `filter()`, `mutate()`, `group_by()`, and `summarise()`, see\
 > [*R for Data Science (2e)* — **Data transformation**](https://r4ds.hadley.nz/data-transform.html).
 
 ------------------------------------------------------------------------
@@ -258,8 +258,8 @@ Pipes work best for **linear transformations**.
 
 They are less useful for:
 
-- complex branching logic  
-- deeply nested conditionals  
+- complex branching logic\
+- deeply nested conditionals\
 - non–data-centric code
 
 Even so, in this course we will often prefer pipelines for consistency.
@@ -275,11 +275,11 @@ df |>
 
 Throughout the course:
 
-- all data manipulation examples will use pipes  
-- tidyverse verbs will be preferred  
+- all data manipulation examples will use pipes\
+- tidyverse verbs will be preferred\
 - clarity will be valued over clever tricks
 
-If something feels confusing, read the pipeline **top to bottom**, step by step —  
+If something feels confusing, read the pipeline **top to bottom**, step by step —\
 using “then” as you go.
 
 ------------------------------------------------------------------------

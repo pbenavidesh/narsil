@@ -1,8 +1,8 @@
-# 4.2 Bootstrapping, Bagging & Model Combinations
+# Bootstrapping, Bagging & Model Combinations
 
 Modified
 
-July 9, 2026
+August 19, 2026
 
 Code
 
@@ -726,6 +726,6 @@ bind_rows(nsw_accu_std, nsw_accu_bag) |> arrange(RMSE)
 | **Bagging** | Series is short or volatile | Series is long and stable — marginal gain rarely justifies computation |
 | **No combination** | One model dominates clearly on the test set | — |
 
-**FPP3 references:** [§12.5 Bootstrapping and bagging](https://otexts.com/fpp3/bootstrap.html) · [§12.6 Forecast combinations](https://otexts.com/fpp3/combinations.html)
+**FPP3 references:** [§12.5 Bootstrapping and bagging](https://otexts.com/fpp3/bootstrap.html) · [§13.4 Forecast combinations](https://otexts.com/fpp3/combinations.html)
 
 Back to top

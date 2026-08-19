@@ -2,7 +2,7 @@
 
 Modified
 
-July 9, 2026
+August 19, 2026
 
 # What is a time series?
 

@@ -10,7 +10,7 @@ Pablo Benavides-Herrera
 
 Modified
 
-July 9, 2026
+August 19, 2026
 
 This document is **optional**, but strongly recommended.
 
@@ -70,7 +70,7 @@ Even more importantly,
 
 ## 3 Variance: how uncertain is a random variable?
 
-Expectation alone is not enough.  
+Expectation alone is not enough.\
 Two random variables may have the same mean but very different levels of uncertainty.
 
 The **variance** of X measures how much values fluctuate around their expectation:
@@ -101,7 +101,7 @@ For constants a and b,
 
 \operatorname{Var}(aX + b) = a^2 \operatorname{Var}(X).
 
-Adding a constant does **nothing** to variance.  
+Adding a constant does **nothing** to variance.\
 Scaling a variable scales variance **quadratically**.
 
 > **WARNING:**
@@ -112,7 +112,7 @@ Scaling a variable scales variance **quadratically**.
 
 ## 5 Covariance: measuring dependence
 
-Variance describes uncertainty of a single random variable.  
+Variance describes uncertainty of a single random variable.\
 **Covariance** describes how *two* random variables vary together.
 
 For random variables X and Y,

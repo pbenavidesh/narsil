@@ -2,7 +2,7 @@
 
 Modified
 
-July 9, 2026
+August 19, 2026
 
 Code
 
@@ -331,7 +331,7 @@ where d is the number of times we difference the series.
 >
 > (1-B)^d y_t = \sum\_{k=0}^{d} \binom{d}{k} (-1)^k y\_{t-k}
 >
-> For d=1: y_t - y\_{t-1} ✓  
+> For d=1: y_t - y\_{t-1} ✓\
 > For d=2: y_t - 2y\_{t-1} + y\_{t-2} ✓
 
 ### 2.5.4 Seasonal Differences
@@ -600,7 +600,7 @@ Combining differencing, AR terms, and MA terms into a single unified model — a
 > **NOTE:**
 >
 > - Stabilize **variance** → Box-Cox / log transformation ✓
-> - Stabilize the **mean** → differencing ✓  
+> - Stabilize the **mean** → differencing ✓\
 > - Detect **remaining correlation structure** → ACF and PACF ✓
 > - Understand the building blocks → AR and MA terms ✓
 >
@@ -612,4 +612,4 @@ Back to top
 
 [^1]: most commonly YoY (year-over-year), but remember there can be daily, weekly, or more seasonal patterns too.
 
-[^2]: [![](%22trinomio%20cuadrado%20perfecto.png%22)](%22trinomio%20cuadrado%20perfecto.png%22)
+[^2]: [![](trinomio-cuadrado-perfecto.png)](trinomio-cuadrado-perfecto.png)

@@ -14,7 +14,7 @@ It is intentionally built as a **working reference**:
 
 > **NOTE:**
 >
-> If you only follow one rule: **always compare against a baseline**.  
+> If you only follow one rule: **always compare against a baseline**.\
 > Fancy models without a baseline are just expensive opinions.
 
 ## Who it’s for
@@ -27,7 +27,7 @@ You’ll do best in this course if you can:
 
 > **IMPORTANT:**
 >
-> This course is not “click-and-run forecasting”.  
+> This course is not “click-and-run forecasting”.\
 > You will be expected to justify assumptions, diagnose models, and communicate tradeoffs.
 
 ## How to use the site
@@ -58,7 +58,7 @@ Mathematics is included when it adds clarity, not as decoration.
 
 > **TIP:**
 >
-> If you come from Python, you can still follow along.  
+> If you come from Python, you can still follow along.\
 > The mental model matters more than the syntax.
 
 ## Elendil TA (AI code assistant)
@@ -76,7 +76,7 @@ What not to do:
 
 > **WARNING:**
 >
-> If you can’t explain your model, you don’t own it.  
+> If you can’t explain your model, you don’t own it.\
 > Treat AI output as *draft code* that must be validated.
 
 ## Feedback, corrections, and reuse

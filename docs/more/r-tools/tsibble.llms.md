@@ -10,11 +10,11 @@ Pablo Benavides-Herrera
 
 Modified
 
-July 9, 2026
+August 19, 2026
 
 This document is **optional**, but strongly recommended.
 
-If tidyverse pipelines explain *how data flows*, **tsibble** explains *what kind of data you are working with*.  
+If tidyverse pipelines explain *how data flows*, **tsibble** explains *what kind of data you are working with*.\
 For time series, this distinction is essential.
 
 ------------------------------------------------------------------------
@@ -39,7 +39,7 @@ A `tsibble` is a tibble with extra rules.
 
 Conceptually:
 
-- a **tibble** is just rows and columns  
+- a **tibble** is just rows and columns\
 - a **tsibble** is:
   - a table of time-indexed observations
   - with an explicit time variable (**index**)
@@ -47,7 +47,7 @@ Conceptually:
 
 > **NOTE:**
 >
-> A tsibble is still a tibble.  
+> A tsibble is still a tibble.\
 > All tidyverse verbs work the same way.
 
 ------------------------------------------------------------------------
@@ -56,7 +56,7 @@ Conceptually:
 
 Every tsibble is defined by:
 
-- an **index** → the time variable  
+- an **index** → the time variable\
 - a **key** → what distinguishes one series from another
 
 ### 3.1 Index
@@ -75,9 +75,9 @@ The key answers:
 
 Examples:
 
-- a store  
-- a product  
-- a sensor  
+- a store\
+- a product\
+- a sensor\
 - a country
 
 A dataset can have: - no key (single series) - one key - multiple keys (hierarchical series)
@@ -98,7 +98,7 @@ data_ts <- data |>
 
 Reading this with the pipeline mental model:
 
-> take `data`, **then** declare that `date` is time,  
+> take `data`, **then** declare that `date` is time,\
 > **then** declare that `id` identifies each series.
 
 > **TIP:**
@@ -119,7 +119,7 @@ If something is wrong, **it fails early**.
 
 > **WARNING:**
 >
-> Errors at `as_tsibble()` time are a feature.  
+> Errors at `as_tsibble()` time are a feature.\
 > They prevent silent mistakes later in modeling and forecasting.
 
 ------------------------------------------------------------------------
@@ -245,10 +245,10 @@ If something breaks early, it usually means the data structure is wrong — not 
 
 > **NOTE:**
 >
-> - For the conceptual foundations of tidy data and tibbles, see  
+> - For the conceptual foundations of tidy data and tibbles, see\
 >   [*R for Data Science (2e)* — **Tibbles**](https://r4ds.hadley.nz/tibbles.html).
-> - For joins and keys, which strongly relate to tsibble keys, see  
->   [*R for Data Science (2e)* — **Joins**](https://r4ds.hadley.nz/joins.html). For the full tsibble framework and design philosophy, see the  
+> - For joins and keys, which strongly relate to tsibble keys, see\
+>   [*R for Data Science (2e)* — **Joins**](https://r4ds.hadley.nz/joins.html). For the full tsibble framework and design philosophy, see the\
 >   [*tsibble package documentation*](https://tsibble.tidyverts.org/).
 
 ------------------------------------------------------------------------
@@ -257,7 +257,7 @@ If something breaks early, it usually means the data structure is wrong — not 
 
 > **TIP:**
 >
-> If tidyverse pipelines describe **how data changes**,  
+> If tidyverse pipelines describe **how data changes**,\
 > tsibbles describe **what kind of time-based data you have**.
 
 Get the structure right, and the models will make sense.

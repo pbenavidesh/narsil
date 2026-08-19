@@ -9,11 +9,11 @@
 <script src="../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../../../../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-6d40f8af7092f34acea1908532066003.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-eec68b17241c1efd3eae2de50d816e3e.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.9.38">
+  <meta name="generator" content="quarto-1.10.18">
 
   <meta name="author" content="">
   <title>Time Series Forecasting – Model Diagnostics and Advanced Forecasting</title>
@@ -26,10 +26,13 @@
     /* Default styles provided by pandoc.
     ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
     */
-    code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
     ul.task-list li input[type="checkbox"] {
@@ -334,11 +337,11 @@
 <p><code>autoplot()</code> shows intervals visually. <code>hilo()</code> extracts the numeric bounds:</p>
 <div class="fragment">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>gas_fc <span class="sc">|&gt;</span></span>
-<span id="cb1-2"><a></a>  <span class="fu">filter</span>(.model <span class="sc">==</span> <span class="st">"snaive"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb1-3"><a></a>  <span class="fu">hilo</span>(<span class="at">level =</span> <span class="dv">95</span>) <span class="sc">|&gt;</span></span>
-<span id="cb1-4"><a></a>  <span class="fu">select</span>(Quarter, .mean, <span class="st">`</span><span class="at">95%</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
-<span id="cb1-5"><a></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">6</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a aria-label="1"></a>gas_fc <span class="sc">|&gt;</span></span>
+<span id="cb1-2"><a aria-label="2"></a>  <span class="fu">filter</span>(.model <span class="sc">==</span> <span class="st">"snaive"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-3"><a aria-label="3"></a>  <span class="fu">hilo</span>(<span class="at">level =</span> <span class="dv">95</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-4"><a aria-label="4"></a>  <span class="fu">select</span>(Quarter, .mean, <span class="st">`</span><span class="at">95%</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-5"><a aria-label="5"></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">6</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tsibble: 6 x 3 [1Q]
   Quarter .mean                  `95%`
@@ -360,17 +363,17 @@
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>gas_pi_raw_p <span class="ot">&lt;-</span> gas_fc <span class="sc">|&gt;</span></span>
-<span id="cb3-2"><a></a>  <span class="fu">filter</span>(.model <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"snaive"</span>, <span class="st">"drift"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb3-3"><a></a>  <span class="fu">autoplot</span>(</span>
-<span id="cb3-4"><a></a>    aus_production <span class="sc">|&gt;</span> <span class="fu">filter_index</span>(<span class="st">"2000 Q1"</span> <span class="sc">~</span> .),</span>
-<span id="cb3-5"><a></a>    <span class="at">level =</span> <span class="dv">95</span></span>
-<span id="cb3-6"><a></a>  ) <span class="sc">+</span></span>
-<span id="cb3-7"><a></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> .model, <span class="at">nrow =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb3-8"><a></a>  <span class="fu">labs</span>(</span>
-<span id="cb3-9"><a></a>    <span class="at">title =</span> <span class="st">"Gas — benchmark forecasts with 95% prediction intervals"</span>,</span>
-<span id="cb3-10"><a></a>    <span class="at">y =</span> <span class="st">"Petajoules"</span>, <span class="at">x =</span> <span class="cn">NULL</span></span>
-<span id="cb3-11"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a aria-label="1"></a>gas_pi_raw_p <span class="ot">&lt;-</span> gas_fc <span class="sc">|&gt;</span></span>
+<span id="cb3-2"><a aria-label="2"></a>  <span class="fu">filter</span>(.model <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"snaive"</span>, <span class="st">"drift"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb3-3"><a aria-label="3"></a>  <span class="fu">autoplot</span>(</span>
+<span id="cb3-4"><a aria-label="4"></a>    aus_production <span class="sc">|&gt;</span> <span class="fu">filter_index</span>(<span class="st">"2000 Q1"</span> <span class="sc">~</span> .),</span>
+<span id="cb3-5"><a aria-label="5"></a>    <span class="at">level =</span> <span class="dv">95</span></span>
+<span id="cb3-6"><a aria-label="6"></a>  ) <span class="sc">+</span></span>
+<span id="cb3-7"><a aria-label="7"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> .model, <span class="at">nrow =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb3-8"><a aria-label="8"></a>  <span class="fu">labs</span>(</span>
+<span id="cb3-9"><a aria-label="9"></a>    <span class="at">title =</span> <span class="st">"Gas — benchmark forecasts with 95% prediction intervals"</span>,</span>
+<span id="cb3-10"><a aria-label="10"></a>    <span class="at">y =</span> <span class="st">"Petajoules"</span>, <span class="at">x =</span> <span class="cn">NULL</span></span>
+<span id="cb3-11"><a aria-label="11"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
@@ -399,11 +402,11 @@
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a><span class="fu">theme_narsil</span>()</span>
-<span id="cb4-2"><a></a>gas_fit <span class="sc">|&gt;</span></span>
-<span id="cb4-3"><a></a>  <span class="fu">select</span>(snaive) <span class="sc">|&gt;</span></span>
-<span id="cb4-4"><a></a>  <span class="fu">gg_tsresiduals</span>() <span class="sc">+</span></span>
-<span id="cb4-5"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Gas — SNAIVE residuals"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a aria-label="1"></a><span class="fu">theme_narsil</span>()</span>
+<span id="cb4-2"><a aria-label="2"></a>gas_fit <span class="sc">|&gt;</span></span>
+<span id="cb4-3"><a aria-label="3"></a>  <span class="fu">select</span>(snaive) <span class="sc">|&gt;</span></span>
+<span id="cb4-4"><a aria-label="4"></a>  <span class="fu">gg_tsresiduals</span>() <span class="sc">+</span></span>
+<span id="cb4-5"><a aria-label="5"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Gas — SNAIVE residuals"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -425,11 +428,11 @@
   features(Gas, features = guerrero) |>  #<1>
   pull(lambda_guerrero)                  #<2>
 
-lambda"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1"></a>lambda <span class="ot">&lt;-</span> aus_production <span class="sc">|&gt;</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1">1</button><span id="annotated-cell-1-2" class="code-annotation-target"><a href="#annotated-cell-1-2"></a>  <span class="fu">features</span>(Gas, <span class="at">features =</span> guerrero) <span class="sc">|&gt;</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="2">2</button><span id="annotated-cell-1-3" class="code-annotation-target"><a href="#annotated-cell-1-3"></a>  <span class="fu">pull</span>(lambda_guerrero)</span>
-<span id="annotated-cell-1-4"><a href="#annotated-cell-1-4"></a></span>
-<span id="annotated-cell-1-5"><a href="#annotated-cell-1-5"></a>lambda</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+lambda"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1" aria-label="1"></a>lambda <span class="ot">&lt;-</span> aus_production <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1">1</button><span id="annotated-cell-1-2" class="code-annotation-target"><a href="#annotated-cell-1-2" aria-label="2"></a>  <span class="fu">features</span>(Gas, <span class="at">features =</span> guerrero) <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="2">2</button><span id="annotated-cell-1-3" class="code-annotation-target"><a href="#annotated-cell-1-3" aria-label="3"></a>  <span class="fu">pull</span>(lambda_guerrero)</span>
+<span id="annotated-cell-1-4"><a href="#annotated-cell-1-4" aria-label="4"></a></span>
+<span id="annotated-cell-1-5"><a href="#annotated-cell-1-5" aria-label="5"></a>lambda</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-1" data-target-annotation="1">1</dt>
@@ -456,11 +459,11 @@ lambda"><pre class="sourceCode numberSource r code-annotation-code number-lines 
   model(
     snaive_bc = SNAIVE(box_cox(Gas, lambda)),       #<1>
     drift_bc  = RW(box_cox(Gas, lambda) ~ drift())  #<2>
-  )" data-code-line-numbers="3,4"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-13-1"><a href="#annotated-cell-13-1"></a>gas_fit_bc <span class="ot">&lt;-</span> gas_train <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-13-2"><a href="#annotated-cell-13-2"></a>  <span class="fu">model</span>(</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-13" data-target-annotation="1">1</button><span id="annotated-cell-13-3" class="code-annotation-target"><a href="#annotated-cell-13-3"></a>    <span class="at">snaive_bc =</span> <span class="fu">SNAIVE</span>(<span class="fu">box_cox</span>(Gas, lambda)),</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-13" data-target-annotation="2">2</button><span id="annotated-cell-13-4" class="code-annotation-target"><a href="#annotated-cell-13-4"></a>    <span class="at">drift_bc  =</span> <span class="fu">RW</span>(<span class="fu">box_cox</span>(Gas, lambda) <span class="sc">~</span> <span class="fu">drift</span>())</span>
-<span id="annotated-cell-13-5"><a href="#annotated-cell-13-5"></a>  )</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+  )" data-code-line-numbers="3,4"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-13-1"><a href="#annotated-cell-13-1" aria-label="1"></a>gas_fit_bc <span class="ot">&lt;-</span> gas_train <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-13-2"><a href="#annotated-cell-13-2" aria-label="2"></a>  <span class="fu">model</span>(</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-13" data-target-annotation="1">1</button><span id="annotated-cell-13-3" class="code-annotation-target"><a href="#annotated-cell-13-3" aria-label="3"></a>    <span class="at">snaive_bc =</span> <span class="fu">SNAIVE</span>(<span class="fu">box_cox</span>(Gas, lambda)),</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-13" data-target-annotation="2">2</button><span id="annotated-cell-13-4" class="code-annotation-target"><a href="#annotated-cell-13-4" aria-label="4"></a>    <span class="at">drift_bc  =</span> <span class="fu">RW</span>(<span class="fu">box_cox</span>(Gas, lambda) <span class="sc">~</span> <span class="fu">drift</span>())</span>
+<span id="annotated-cell-13-5"><a href="#annotated-cell-13-5" aria-label="5"></a>  )</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-13" data-target-annotation="1">1</dt>
@@ -477,8 +480,8 @@ lambda"><pre class="sourceCode numberSource r code-annotation-code number-lines 
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>gas_fc_bc <span class="ot">&lt;-</span> gas_fit_bc <span class="sc">|&gt;</span></span>
-<span id="cb6-2"><a></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="fu">nrow</span>(gas_test))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a aria-label="1"></a>gas_fc_bc <span class="ot">&lt;-</span> gas_fit_bc <span class="sc">|&gt;</span></span>
+<span id="cb6-2"><a aria-label="2"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="fu">nrow</span>(gas_test))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </section>
@@ -519,15 +522,15 @@ lambda"><pre class="sourceCode numberSource r code-annotation-code number-lines 
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a><span class="fu">bind_rows</span>(</span>
-<span id="cb7-2"><a></a>  gas_fc <span class="sc">|&gt;</span></span>
-<span id="cb7-3"><a></a>    <span class="fu">filter</span>(.model <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"snaive"</span>, <span class="st">"drift"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb7-4"><a></a>    <span class="fu">accuracy</span>(aus_production),</span>
-<span id="cb7-5"><a></a>  gas_fc_bc <span class="sc">|&gt;</span></span>
-<span id="cb7-6"><a></a>    <span class="fu">accuracy</span>(aus_production)</span>
-<span id="cb7-7"><a></a>) <span class="sc">|&gt;</span></span>
-<span id="cb7-8"><a></a>  <span class="fu">select</span>(.model, RMSE, MAE, MAPE, MASE, RMSSE) <span class="sc">|&gt;</span></span>
-<span id="cb7-9"><a></a>  <span class="fu">arrange</span>(RMSSE)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a aria-label="1"></a><span class="fu">bind_rows</span>(</span>
+<span id="cb7-2"><a aria-label="2"></a>  gas_fc <span class="sc">|&gt;</span></span>
+<span id="cb7-3"><a aria-label="3"></a>    <span class="fu">filter</span>(.model <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"snaive"</span>, <span class="st">"drift"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb7-4"><a aria-label="4"></a>    <span class="fu">accuracy</span>(aus_production),</span>
+<span id="cb7-5"><a aria-label="5"></a>  gas_fc_bc <span class="sc">|&gt;</span></span>
+<span id="cb7-6"><a aria-label="6"></a>    <span class="fu">accuracy</span>(aus_production)</span>
+<span id="cb7-7"><a aria-label="7"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb7-8"><a aria-label="8"></a>  <span class="fu">select</span>(.model, RMSE, MAE, MAPE, MASE, RMSSE) <span class="sc">|&gt;</span></span>
+<span id="cb7-9"><a aria-label="9"></a>  <span class="fu">arrange</span>(RMSSE)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div data-pagedtable="false">
@@ -587,15 +590,15 @@ eggs_fit <- eggs_tsb |>
 
 eggs_fc <- eggs_fit |>
   forecast(h = 50) |>
-  mutate(.median = median(eggs))                    #<2>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-15-1"><a href="#annotated-cell-15-1"></a>eggs_tsb <span class="ot">&lt;-</span> prices <span class="sc">|&gt;</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-15" data-target-annotation="1">1</button><span id="annotated-cell-15-2" class="code-annotation-target"><a href="#annotated-cell-15-2"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(eggs))</span>
-<span id="annotated-cell-15-3"><a href="#annotated-cell-15-3"></a></span>
-<span id="annotated-cell-15-4"><a href="#annotated-cell-15-4"></a>eggs_fit <span class="ot">&lt;-</span> eggs_tsb <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-15-5"><a href="#annotated-cell-15-5"></a>  <span class="fu">model</span>(<span class="at">rw =</span> <span class="fu">RW</span>(<span class="fu">log</span>(eggs) <span class="sc">~</span> <span class="fu">drift</span>()))</span>
-<span id="annotated-cell-15-6"><a href="#annotated-cell-15-6"></a></span>
-<span id="annotated-cell-15-7"><a href="#annotated-cell-15-7"></a>eggs_fc <span class="ot">&lt;-</span> eggs_fit <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-15-8"><a href="#annotated-cell-15-8"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">50</span>) <span class="sc">|&gt;</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-15" data-target-annotation="2">2</button><span id="annotated-cell-15-9" class="code-annotation-target"><a href="#annotated-cell-15-9"></a>  <span class="fu">mutate</span>(<span class="at">.median =</span> <span class="fu">median</span>(eggs))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+  mutate(.median = median(eggs))                    #<2>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-15-1"><a href="#annotated-cell-15-1" aria-label="1"></a>eggs_tsb <span class="ot">&lt;-</span> prices <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-15" data-target-annotation="1">1</button><span id="annotated-cell-15-2" class="code-annotation-target"><a href="#annotated-cell-15-2" aria-label="2"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(eggs))</span>
+<span id="annotated-cell-15-3"><a href="#annotated-cell-15-3" aria-label="3"></a></span>
+<span id="annotated-cell-15-4"><a href="#annotated-cell-15-4" aria-label="4"></a>eggs_fit <span class="ot">&lt;-</span> eggs_tsb <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-15-5"><a href="#annotated-cell-15-5" aria-label="5"></a>  <span class="fu">model</span>(<span class="at">rw =</span> <span class="fu">RW</span>(<span class="fu">log</span>(eggs) <span class="sc">~</span> <span class="fu">drift</span>()))</span>
+<span id="annotated-cell-15-6"><a href="#annotated-cell-15-6" aria-label="6"></a></span>
+<span id="annotated-cell-15-7"><a href="#annotated-cell-15-7" aria-label="7"></a>eggs_fc <span class="ot">&lt;-</span> eggs_fit <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-15-8"><a href="#annotated-cell-15-8" aria-label="8"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">50</span>) <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-15" data-target-annotation="2">2</button><span id="annotated-cell-15-9" class="code-annotation-target"><a href="#annotated-cell-15-9" aria-label="9"></a>  <span class="fu">mutate</span>(<span class="at">.median =</span> <span class="fu">median</span>(eggs))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
@@ -615,19 +618,19 @@ eggs_fc <- eggs_fit |>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>eggs_plot_p <span class="ot">&lt;-</span> eggs_fc <span class="sc">|&gt;</span></span>
-<span id="cb8-2"><a></a>  <span class="fu">autoplot</span>(eggs_tsb, <span class="at">level =</span> <span class="dv">80</span>) <span class="sc">+</span></span>
-<span id="cb8-3"><a></a>  <span class="fu">geom_line</span>(</span>
-<span id="cb8-4"><a></a>    <span class="at">data =</span> eggs_fc,</span>
-<span id="cb8-5"><a></a>    <span class="fu">aes</span>(<span class="at">y =</span> .median),</span>
-<span id="cb8-6"><a></a>    <span class="at">linetype =</span> <span class="st">"dashed"</span></span>
-<span id="cb8-7"><a></a>  ) <span class="sc">+</span></span>
-<span id="cb8-8"><a></a>  <span class="fu">labs</span>(</span>
-<span id="cb8-9"><a></a>    <span class="at">title =</span> <span class="st">"Egg prices — Drift with log transformation"</span>,</span>
-<span id="cb8-10"><a></a>    <span class="at">subtitle =</span> <span class="st">"Solid line: mean (bias-adjusted)  ·  Dashed: median"</span>,</span>
-<span id="cb8-11"><a></a>    <span class="at">y =</span> <span class="st">"USD per dozen"</span>,</span>
-<span id="cb8-12"><a></a>    <span class="at">x =</span> <span class="cn">NULL</span></span>
-<span id="cb8-13"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a aria-label="1"></a>eggs_plot_p <span class="ot">&lt;-</span> eggs_fc <span class="sc">|&gt;</span></span>
+<span id="cb8-2"><a aria-label="2"></a>  <span class="fu">autoplot</span>(eggs_tsb, <span class="at">level =</span> <span class="dv">80</span>) <span class="sc">+</span></span>
+<span id="cb8-3"><a aria-label="3"></a>  <span class="fu">geom_line</span>(</span>
+<span id="cb8-4"><a aria-label="4"></a>    <span class="at">data =</span> eggs_fc,</span>
+<span id="cb8-5"><a aria-label="5"></a>    <span class="fu">aes</span>(<span class="at">y =</span> .median),</span>
+<span id="cb8-6"><a aria-label="6"></a>    <span class="at">linetype =</span> <span class="st">"dashed"</span></span>
+<span id="cb8-7"><a aria-label="7"></a>  ) <span class="sc">+</span></span>
+<span id="cb8-8"><a aria-label="8"></a>  <span class="fu">labs</span>(</span>
+<span id="cb8-9"><a aria-label="9"></a>    <span class="at">title =</span> <span class="st">"Egg prices — Drift with log transformation"</span>,</span>
+<span id="cb8-10"><a aria-label="10"></a>    <span class="at">subtitle =</span> <span class="st">"Solid line: mean (bias-adjusted)  ·  Dashed: median"</span>,</span>
+<span id="cb8-11"><a aria-label="11"></a>    <span class="at">y =</span> <span class="st">"USD per dozen"</span>,</span>
+<span id="cb8-12"><a aria-label="12"></a>    <span class="at">x =</span> <span class="cn">NULL</span></span>
+<span id="cb8-13"><a aria-label="13"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
@@ -683,12 +686,12 @@ eggs_fc <- eggs_fit |>
     h         = 30,
     bootstrap = TRUE,   #<1>
     times     = 1000    #<2>
-  )" data-code-line-numbers="|4,5"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-17-1"><a href="#annotated-cell-17-1"></a>google_fc_boot <span class="ot">&lt;-</span> google_fit <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-17-2"><a href="#annotated-cell-17-2"></a>  <span class="fu">forecast</span>(</span>
-<span id="annotated-cell-17-3"><a href="#annotated-cell-17-3"></a>    <span class="at">h         =</span> <span class="dv">30</span>,</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-17" data-target-annotation="1">1</button><span id="annotated-cell-17-4" class="code-annotation-target"><a href="#annotated-cell-17-4"></a>    <span class="at">bootstrap =</span> <span class="cn">TRUE</span>,</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-17" data-target-annotation="2">2</button><span id="annotated-cell-17-5" class="code-annotation-target"><a href="#annotated-cell-17-5"></a>    <span class="at">times     =</span> <span class="dv">1000</span></span>
-<span id="annotated-cell-17-6"><a href="#annotated-cell-17-6"></a>  )</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+  )" data-code-line-numbers="|4,5"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-17-1"><a href="#annotated-cell-17-1" aria-label="1"></a>google_fc_boot <span class="ot">&lt;-</span> google_fit <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-17-2"><a href="#annotated-cell-17-2" aria-label="2"></a>  <span class="fu">forecast</span>(</span>
+<span id="annotated-cell-17-3"><a href="#annotated-cell-17-3" aria-label="3"></a>    <span class="at">h         =</span> <span class="dv">30</span>,</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-17" data-target-annotation="1">1</button><span id="annotated-cell-17-4" class="code-annotation-target"><a href="#annotated-cell-17-4" aria-label="4"></a>    <span class="at">bootstrap =</span> <span class="cn">TRUE</span>,</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-17" data-target-annotation="2">2</button><span id="annotated-cell-17-5" class="code-annotation-target"><a href="#annotated-cell-17-5" aria-label="5"></a>    <span class="at">times     =</span> <span class="dv">1000</span></span>
+<span id="annotated-cell-17-6"><a href="#annotated-cell-17-6" aria-label="6"></a>  )</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-17" data-target-annotation="1">1</dt>
@@ -707,12 +710,12 @@ eggs_fc <- eggs_fit |>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a>google_bootstrap_plot_p <span class="ot">&lt;-</span> google_fc_boot <span class="sc">|&gt;</span></span>
-<span id="cb9-2"><a></a>  <span class="fu">autoplot</span>(google_2015, <span class="at">level =</span> <span class="dv">95</span>) <span class="sc">+</span></span>
-<span id="cb9-3"><a></a>  <span class="fu">labs</span>(</span>
-<span id="cb9-4"><a></a>    <span class="at">title =</span> <span class="st">"Google closing stock price — bootstrap 95% interval"</span>,</span>
-<span id="cb9-5"><a></a>    <span class="at">y =</span> <span class="st">"USD"</span>, <span class="at">x =</span> <span class="cn">NULL</span></span>
-<span id="cb9-6"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a aria-label="1"></a>google_bootstrap_plot_p <span class="ot">&lt;-</span> google_fc_boot <span class="sc">|&gt;</span></span>
+<span id="cb9-2"><a aria-label="2"></a>  <span class="fu">autoplot</span>(google_2015, <span class="at">level =</span> <span class="dv">95</span>) <span class="sc">+</span></span>
+<span id="cb9-3"><a aria-label="3"></a>  <span class="fu">labs</span>(</span>
+<span id="cb9-4"><a aria-label="4"></a>    <span class="at">title =</span> <span class="st">"Google closing stock price — bootstrap 95% interval"</span>,</span>
+<span id="cb9-5"><a aria-label="5"></a>    <span class="at">y =</span> <span class="st">"USD"</span>, <span class="at">x =</span> <span class="cn">NULL</span></span>
+<span id="cb9-6"><a aria-label="6"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
@@ -773,46 +776,46 @@ eggs_fc <- eggs_fit |>
 <section id="syntax" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Syntax</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb10-1" class="hljs-ln-code"><a></a>stl_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb10-1" class="hljs-ln-code"><a aria-label="1"></a>stl_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="syntax-1" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Syntax</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb11-1" class="hljs-ln-code"><a></a>stl_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
-<span id="cb11-2" class="hljs-ln-code"><a></a>  <span class="fu">STL</span>(Gas <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>(), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb11-3" class="hljs-ln-code"><a></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb11-1" class="hljs-ln-code"><a aria-label="1"></a>stl_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
+<span id="cb11-2" class="hljs-ln-code"><a aria-label="2"></a>  <span class="fu">STL</span>(Gas <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>(), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb11-3" class="hljs-ln-code"><a aria-label="3"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="syntax-2" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Syntax</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb12-1" class="hljs-ln-code"><a></a>stl_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
-<span id="cb12-2" class="hljs-ln-code"><a></a>  <span class="fu">STL</span>(Gas <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>(), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb12-3" class="hljs-ln-code"><a></a>  <span class="fu">SNAIVE</span>(season_year),</span>
-<span id="cb12-4" class="hljs-ln-code"><a></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb12-1" class="hljs-ln-code"><a aria-label="1"></a>stl_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
+<span id="cb12-2" class="hljs-ln-code"><a aria-label="2"></a>  <span class="fu">STL</span>(Gas <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>(), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb12-3" class="hljs-ln-code"><a aria-label="3"></a>  <span class="fu">SNAIVE</span>(season_year),</span>
+<span id="cb12-4" class="hljs-ln-code"><a aria-label="4"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="syntax-3" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Syntax</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb13-1" class="hljs-ln-code"><a></a>stl_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
-<span id="cb13-2" class="hljs-ln-code"><a></a>  <span class="fu">STL</span>(Gas <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>(), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb13-3" class="hljs-ln-code"><a></a>  <span class="fu">SNAIVE</span>(season_year),</span>
-<span id="cb13-4" class="hljs-ln-code"><a></a>  <span class="fu">RW</span>(season_adjust <span class="sc">~</span> <span class="fu">drift</span>())</span>
-<span id="cb13-5" class="hljs-ln-code"><a></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb13-1" class="hljs-ln-code"><a aria-label="1"></a>stl_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
+<span id="cb13-2" class="hljs-ln-code"><a aria-label="2"></a>  <span class="fu">STL</span>(Gas <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>(), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb13-3" class="hljs-ln-code"><a aria-label="3"></a>  <span class="fu">SNAIVE</span>(season_year),</span>
+<span id="cb13-4" class="hljs-ln-code"><a aria-label="4"></a>  <span class="fu">RW</span>(season_adjust <span class="sc">~</span> <span class="fu">drift</span>())</span>
+<span id="cb13-5" class="hljs-ln-code"><a aria-label="5"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="syntax-4" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Syntax</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb14-1" class="hljs-ln-code"><a></a>stl_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
-<span id="cb14-2" class="hljs-ln-code"><a></a>  <span class="fu">STL</span>(Gas <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>(), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb14-3" class="hljs-ln-code"><a></a>  <span class="fu">SNAIVE</span>(season_year),</span>
-<span id="cb14-4" class="hljs-ln-code"><a></a>  <span class="fu">RW</span>(season_adjust <span class="sc">~</span> <span class="fu">drift</span>())</span>
-<span id="cb14-5" class="hljs-ln-code"><a></a>)</span>
-<span id="cb14-6" class="hljs-ln-code"><a></a></span>
-<span id="cb14-7" class="hljs-ln-code"><a></a>gas_train <span class="sc">|&gt;</span> <span class="fu">model</span>(<span class="at">stl_snaive_drift =</span> stl_spec)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb14-1" class="hljs-ln-code"><a aria-label="1"></a>stl_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
+<span id="cb14-2" class="hljs-ln-code"><a aria-label="2"></a>  <span class="fu">STL</span>(Gas <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>(), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb14-3" class="hljs-ln-code"><a aria-label="3"></a>  <span class="fu">SNAIVE</span>(season_year),</span>
+<span id="cb14-4" class="hljs-ln-code"><a aria-label="4"></a>  <span class="fu">RW</span>(season_adjust <span class="sc">~</span> <span class="fu">drift</span>())</span>
+<span id="cb14-5" class="hljs-ln-code"><a aria-label="5"></a>)</span>
+<span id="cb14-6" class="hljs-ln-code"><a aria-label="6"></a></span>
+<span id="cb14-7" class="hljs-ln-code"><a aria-label="7"></a>gas_train <span class="sc">|&gt;</span> <span class="fu">model</span>(<span class="at">stl_snaive_drift =</span> stl_spec)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="syntax-6" class="slide level2" data-auto-animate="true">
@@ -825,14 +828,14 @@ eggs_fc <- eggs_fit |>
 )
 
 gas_fit_dcmp <- gas_train |>
-  model(stl_snaive_drift = stl_spec)              #<5>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-3" data-target-annotation="1">1</button><span id="annotated-cell-3-1" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-3-1"></a>stl_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
-<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-3" data-target-annotation="2">2</button><span id="annotated-cell-3-2" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-3-2"></a>  <span class="fu">STL</span>(Gas <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>(), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
-<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-3" data-target-annotation="3">3</button><span id="annotated-cell-3-3" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-3-3"></a>  <span class="fu">SNAIVE</span>(season_year),</span>
-<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-3" data-target-annotation="4">4</button><span id="annotated-cell-3-4" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-3-4"></a>  <span class="fu">RW</span>(season_adjust <span class="sc">~</span> <span class="fu">drift</span>())</span>
-<span id="annotated-cell-3-5" class="hljs-ln-code"><a href="#annotated-cell-3-5"></a>)</span>
-<span id="annotated-cell-3-6" class="hljs-ln-code"><a href="#annotated-cell-3-6"></a></span>
-<span id="annotated-cell-3-7" class="hljs-ln-code"><a href="#annotated-cell-3-7"></a>gas_fit_dcmp <span class="ot">&lt;-</span> gas_train <span class="sc">|&gt;</span></span>
-<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-3" data-target-annotation="5">5</button><span id="annotated-cell-3-8" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-3-8"></a>  <span class="fu">model</span>(<span class="at">stl_snaive_drift =</span> stl_spec)</span><div class="code-annotation-gutter-bg hljs-ln-code"></div><div class="code-annotation-gutter hljs-ln-code"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+  model(stl_snaive_drift = stl_spec)              #<5>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-3" data-target-annotation="1">1</button><span id="annotated-cell-3-1" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-3-1" aria-label="1"></a>stl_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-3" data-target-annotation="2">2</button><span id="annotated-cell-3-2" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-3-2" aria-label="2"></a>  <span class="fu">STL</span>(Gas <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>(), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-3" data-target-annotation="3">3</button><span id="annotated-cell-3-3" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-3-3" aria-label="3"></a>  <span class="fu">SNAIVE</span>(season_year),</span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-3" data-target-annotation="4">4</button><span id="annotated-cell-3-4" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-3-4" aria-label="4"></a>  <span class="fu">RW</span>(season_adjust <span class="sc">~</span> <span class="fu">drift</span>())</span>
+<span id="annotated-cell-3-5" class="hljs-ln-code"><a href="#annotated-cell-3-5" aria-label="5"></a>)</span>
+<span id="annotated-cell-3-6" class="hljs-ln-code"><a href="#annotated-cell-3-6" aria-label="6"></a></span>
+<span id="annotated-cell-3-7" class="hljs-ln-code"><a href="#annotated-cell-3-7" aria-label="7"></a>gas_fit_dcmp <span class="ot">&lt;-</span> gas_train <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-3" data-target-annotation="5">5</button><span id="annotated-cell-3-8" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-3-8" aria-label="8"></a>  <span class="fu">model</span>(<span class="at">stl_snaive_drift =</span> stl_spec)</span><div class="code-annotation-gutter-bg hljs-ln-code"></div><div class="code-annotation-gutter hljs-ln-code"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-3" data-target-annotation="1">1</dt>
@@ -862,13 +865,13 @@ gas_fit_dcmp <- gas_train |>
 <section id="with-a-transformation" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">With a transformation</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a>stl_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
-<span id="cb15-2"><a></a>  <span class="fu">STL</span>(Gas <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>(), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb15-3"><a></a>  <span class="fu">SNAIVE</span>(season_year),</span>
-<span id="cb15-4"><a></a>  <span class="fu">RW</span>(season_adjust <span class="sc">~</span> <span class="fu">drift</span>())</span>
-<span id="cb15-5"><a></a>)</span>
-<span id="cb15-6"><a></a></span>
-<span id="cb15-7"><a></a>gas_train <span class="sc">|&gt;</span> <span class="fu">model</span>(<span class="at">stl_snaive_drift =</span> stl_spec)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a aria-label="1"></a>stl_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
+<span id="cb15-2"><a aria-label="2"></a>  <span class="fu">STL</span>(Gas <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>(), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb15-3"><a aria-label="3"></a>  <span class="fu">SNAIVE</span>(season_year),</span>
+<span id="cb15-4"><a aria-label="4"></a>  <span class="fu">RW</span>(season_adjust <span class="sc">~</span> <span class="fu">drift</span>())</span>
+<span id="cb15-5"><a aria-label="5"></a>)</span>
+<span id="cb15-6"><a aria-label="6"></a></span>
+<span id="cb15-7"><a aria-label="7"></a>gas_train <span class="sc">|&gt;</span> <span class="fu">model</span>(<span class="at">stl_snaive_drift =</span> stl_spec)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Box-Cox goes inside the STL spec — declared once, inherited everywhere:</p>
 <div class="cell">
@@ -879,14 +882,14 @@ gas_fit_dcmp <- gas_train |>
 )
 
 gas_fit_dcmp_bc <- gas_train |>
-  model(stl_bc = stl_spec_bc)" data-code-line-numbers="2"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-4-1"><a href="#annotated-cell-4-1"></a>stl_spec_bc <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="1">1</button><span id="annotated-cell-4-2" class="code-annotation-target"><a href="#annotated-cell-4-2"></a>  <span class="fu">STL</span>(<span class="fu">box_cox</span>(Gas, lambda) <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>(), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
-<span id="annotated-cell-4-3"><a href="#annotated-cell-4-3"></a>  <span class="fu">SNAIVE</span>(season_year),</span>
-<span id="annotated-cell-4-4"><a href="#annotated-cell-4-4"></a>  <span class="fu">RW</span>(season_adjust <span class="sc">~</span> <span class="fu">drift</span>())</span>
-<span id="annotated-cell-4-5"><a href="#annotated-cell-4-5"></a>)</span>
-<span id="annotated-cell-4-6"><a href="#annotated-cell-4-6"></a></span>
-<span id="annotated-cell-4-7"><a href="#annotated-cell-4-7"></a>gas_fit_dcmp_bc <span class="ot">&lt;-</span> gas_train <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-4-8"><a href="#annotated-cell-4-8"></a>  <span class="fu">model</span>(<span class="at">stl_bc =</span> stl_spec_bc)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+  model(stl_bc = stl_spec_bc)" data-code-line-numbers="2"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-4-1"><a href="#annotated-cell-4-1" aria-label="1"></a>stl_spec_bc <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="1">1</button><span id="annotated-cell-4-2" class="code-annotation-target"><a href="#annotated-cell-4-2" aria-label="2"></a>  <span class="fu">STL</span>(<span class="fu">box_cox</span>(Gas, lambda) <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>(), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<span id="annotated-cell-4-3"><a href="#annotated-cell-4-3" aria-label="3"></a>  <span class="fu">SNAIVE</span>(season_year),</span>
+<span id="annotated-cell-4-4"><a href="#annotated-cell-4-4" aria-label="4"></a>  <span class="fu">RW</span>(season_adjust <span class="sc">~</span> <span class="fu">drift</span>())</span>
+<span id="annotated-cell-4-5"><a href="#annotated-cell-4-5" aria-label="5"></a>)</span>
+<span id="annotated-cell-4-6"><a href="#annotated-cell-4-6" aria-label="6"></a></span>
+<span id="annotated-cell-4-7"><a href="#annotated-cell-4-7" aria-label="7"></a>gas_fit_dcmp_bc <span class="ot">&lt;-</span> gas_train <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-4-8"><a href="#annotated-cell-4-8" aria-label="8"></a>  <span class="fu">model</span>(<span class="at">stl_bc =</span> stl_spec_bc)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-4" data-target-annotation="1">1</dt>
@@ -899,10 +902,10 @@ gas_fit_dcmp_bc <- gas_train |>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a>gas_fc_dcmp <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
-<span id="cb16-2"><a></a>  gas_fit_dcmp    <span class="sc">|&gt;</span> <span class="fu">forecast</span>(<span class="at">h =</span> <span class="fu">nrow</span>(gas_test)),</span>
-<span id="cb16-3"><a></a>  gas_fit_dcmp_bc <span class="sc">|&gt;</span> <span class="fu">forecast</span>(<span class="at">h =</span> <span class="fu">nrow</span>(gas_test))</span>
-<span id="cb16-4"><a></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a aria-label="1"></a>gas_fc_dcmp <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb16-2"><a aria-label="2"></a>  gas_fit_dcmp    <span class="sc">|&gt;</span> <span class="fu">forecast</span>(<span class="at">h =</span> <span class="fu">nrow</span>(gas_test)),</span>
+<span id="cb16-3"><a aria-label="3"></a>  gas_fit_dcmp_bc <span class="sc">|&gt;</span> <span class="fu">forecast</span>(<span class="at">h =</span> <span class="fu">nrow</span>(gas_test))</span>
+<span id="cb16-4"><a aria-label="4"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </section>
@@ -921,15 +924,15 @@ gas_fit_dcmp_bc <- gas_train |>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a>gas_accu <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
-<span id="cb17-2"><a></a>  gas_fc      <span class="sc">|&gt;</span> <span class="fu">filter</span>(.model <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"snaive"</span>, <span class="st">"drift"</span>)) <span class="sc">|&gt;</span> <span class="fu">accuracy</span>(aus_production),</span>
-<span id="cb17-3"><a></a>  gas_fc_bc   <span class="sc">|&gt;</span> <span class="fu">accuracy</span>(aus_production),</span>
-<span id="cb17-4"><a></a>  gas_fc_dcmp <span class="sc">|&gt;</span> <span class="fu">accuracy</span>(aus_production)</span>
-<span id="cb17-5"><a></a>) <span class="sc">|&gt;</span></span>
-<span id="cb17-6"><a></a>  <span class="fu">select</span>(.model, RMSE, MAE, MAPE, MASE, RMSSE) <span class="sc">|&gt;</span></span>
-<span id="cb17-7"><a></a>  <span class="fu">arrange</span>(RMSSE)</span>
-<span id="cb17-8"><a></a></span>
-<span id="cb17-9"><a></a>gas_accu</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a aria-label="1"></a>gas_accu <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb17-2"><a aria-label="2"></a>  gas_fc      <span class="sc">|&gt;</span> <span class="fu">filter</span>(.model <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"snaive"</span>, <span class="st">"drift"</span>)) <span class="sc">|&gt;</span> <span class="fu">accuracy</span>(aus_production),</span>
+<span id="cb17-3"><a aria-label="3"></a>  gas_fc_bc   <span class="sc">|&gt;</span> <span class="fu">accuracy</span>(aus_production),</span>
+<span id="cb17-4"><a aria-label="4"></a>  gas_fc_dcmp <span class="sc">|&gt;</span> <span class="fu">accuracy</span>(aus_production)</span>
+<span id="cb17-5"><a aria-label="5"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb17-6"><a aria-label="6"></a>  <span class="fu">select</span>(.model, RMSE, MAE, MAPE, MASE, RMSSE) <span class="sc">|&gt;</span></span>
+<span id="cb17-7"><a aria-label="7"></a>  <span class="fu">arrange</span>(RMSSE)</span>
+<span id="cb17-8"><a aria-label="8"></a></span>
+<span id="cb17-9"><a aria-label="9"></a>gas_accu</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div data-pagedtable="false">
@@ -980,19 +983,19 @@ gas_final_refit_p <- gas_final_fc |>
     title = &quot;Australian gas production — STL + Box-Cox forecast&quot;,
     subtitle = &quot;Refit on full data · 2-year horizon&quot;,
     y = &quot;Petajoules&quot;, x = NULL
-  )" data-code-line-numbers="1|4"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-7-1"><a href="#annotated-cell-7-1"></a>gas_final_fit <span class="ot">&lt;-</span> aus_production <span class="sc">|&gt;</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="1">1</button><span id="annotated-cell-7-2" class="code-annotation-target"><a href="#annotated-cell-7-2"></a>  <span class="fu">model</span>(<span class="at">stl_bc =</span> stl_spec_bc)</span>
-<span id="annotated-cell-7-3"><a href="#annotated-cell-7-3"></a></span>
-<span id="annotated-cell-7-4"><a href="#annotated-cell-7-4"></a>gas_final_fc <span class="ot">&lt;-</span> gas_final_fit <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-7-5"><a href="#annotated-cell-7-5"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"2 years"</span>)</span>
-<span id="annotated-cell-7-6"><a href="#annotated-cell-7-6"></a></span>
-<span id="annotated-cell-7-7"><a href="#annotated-cell-7-7"></a>gas_final_refit_p <span class="ot">&lt;-</span> gas_final_fc <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-7-8"><a href="#annotated-cell-7-8"></a>  <span class="fu">autoplot</span>(aus_production <span class="sc">|&gt;</span> <span class="fu">filter_index</span>(<span class="st">"2000 Q1"</span> <span class="sc">~</span> .)) <span class="sc">+</span></span>
-<span id="annotated-cell-7-9"><a href="#annotated-cell-7-9"></a>  <span class="fu">labs</span>(</span>
-<span id="annotated-cell-7-10"><a href="#annotated-cell-7-10"></a>    <span class="at">title =</span> <span class="st">"Australian gas production — STL + Box-Cox forecast"</span>,</span>
-<span id="annotated-cell-7-11"><a href="#annotated-cell-7-11"></a>    <span class="at">subtitle =</span> <span class="st">"Refit on full data · 2-year horizon"</span>,</span>
-<span id="annotated-cell-7-12"><a href="#annotated-cell-7-12"></a>    <span class="at">y =</span> <span class="st">"Petajoules"</span>, <span class="at">x =</span> <span class="cn">NULL</span></span>
-<span id="annotated-cell-7-13"><a href="#annotated-cell-7-13"></a>  )</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+  )" data-code-line-numbers="1|4"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-7-1"><a href="#annotated-cell-7-1" aria-label="1"></a>gas_final_fit <span class="ot">&lt;-</span> aus_production <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="1">1</button><span id="annotated-cell-7-2" class="code-annotation-target"><a href="#annotated-cell-7-2" aria-label="2"></a>  <span class="fu">model</span>(<span class="at">stl_bc =</span> stl_spec_bc)</span>
+<span id="annotated-cell-7-3"><a href="#annotated-cell-7-3" aria-label="3"></a></span>
+<span id="annotated-cell-7-4"><a href="#annotated-cell-7-4" aria-label="4"></a>gas_final_fc <span class="ot">&lt;-</span> gas_final_fit <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-7-5"><a href="#annotated-cell-7-5" aria-label="5"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"2 years"</span>)</span>
+<span id="annotated-cell-7-6"><a href="#annotated-cell-7-6" aria-label="6"></a></span>
+<span id="annotated-cell-7-7"><a href="#annotated-cell-7-7" aria-label="7"></a>gas_final_refit_p <span class="ot">&lt;-</span> gas_final_fc <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-7-8"><a href="#annotated-cell-7-8" aria-label="8"></a>  <span class="fu">autoplot</span>(aus_production <span class="sc">|&gt;</span> <span class="fu">filter_index</span>(<span class="st">"2000 Q1"</span> <span class="sc">~</span> .)) <span class="sc">+</span></span>
+<span id="annotated-cell-7-9"><a href="#annotated-cell-7-9" aria-label="9"></a>  <span class="fu">labs</span>(</span>
+<span id="annotated-cell-7-10"><a href="#annotated-cell-7-10" aria-label="10"></a>    <span class="at">title =</span> <span class="st">"Australian gas production — STL + Box-Cox forecast"</span>,</span>
+<span id="annotated-cell-7-11"><a href="#annotated-cell-7-11" aria-label="11"></a>    <span class="at">subtitle =</span> <span class="st">"Refit on full data · 2-year horizon"</span>,</span>
+<span id="annotated-cell-7-12"><a href="#annotated-cell-7-12" aria-label="12"></a>    <span class="at">y =</span> <span class="st">"Petajoules"</span>, <span class="at">x =</span> <span class="cn">NULL</span></span>
+<span id="annotated-cell-7-13"><a href="#annotated-cell-7-13" aria-label="13"></a>  )</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-7" data-target-annotation="1">1</dt>

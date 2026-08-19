@@ -1,8 +1,8 @@
-# Exponential smoothing
+# Exponential Smoothing
 
 Modified
 
-July 9, 2026
+August 19, 2026
 
 ## 0.1 Introduction
 

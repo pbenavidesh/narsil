@@ -10,11 +10,11 @@ Pablo Benavides-Herrera
 
 Modified
 
-July 9, 2026
+August 19, 2026
 
 This document is **optional**, but strongly recommended.
 
-In forecasting, we do not only analyze observed data.  
+In forecasting, we do not only analyze observed data.\
 We analyze **uncertainty about future values**.
 
 Random variables are the mathematical objects that allow us to make that uncertainty explicit, formal, and usable.
@@ -23,11 +23,11 @@ Random variables are the mathematical objects that allow us to make that uncerta
 
 Suppose you observe a time series:
 
-- daily sales  
-- hourly electricity demand  
+- daily sales\
+- hourly electricity demand\
 - monthly inflation
 
-At time t, the value is known.  
+At time t, the value is known.\
 At time t+1, it is **not**.
 
 That future value is not just “unknown” — it is **uncertain**.
@@ -36,7 +36,7 @@ A **random variable** is how we represent that uncertainty mathematically.
 
 > **TIP:**
 >
-> In forecasting, uncertainty is not a nuisance.  
+> In forecasting, uncertainty is not a nuisance.\
 > It is the *object of interest*.
 
 ## 2 What is a random variable?
@@ -57,7 +57,7 @@ which assigns a real number to each possible outcome of an uncertain process.
 
 > **NOTE:**
 >
-> You do **not** need to work explicitly with sample spaces or probability axioms in this course.  
+> You do **not** need to work explicitly with sample spaces or probability axioms in this course.\
 > The important point is that a random variable is a *mathematical representation of uncertainty*.
 
 ## 3 Discrete and continuous random variables
@@ -146,7 +146,7 @@ It is essential to distinguish between:
 
 > **TIP:**
 >
-> Uppercase letters denote random variables.  
+> Uppercase letters denote random variables.\
 > Lowercase letters denote observed values.
 >
 > This distinction will appear repeatedly throughout the course.
@@ -168,7 +168,7 @@ Whenever you reason about uncertainty, you are implicitly working with random va
 
 > **NOTE:**
 >
-> Point forecasts are summaries.  
+> Point forecasts are summaries.\
 > Distributions carry the full information.
 
 ## 7 What you do *not* need right now
@@ -208,7 +208,7 @@ If you remember only one idea, make it this:
 
 > **IMPORTANT:**
 >
-> In forecasting, future values are random variables,  
+> In forecasting, future values are random variables,\
 > and models describe their distributions — not certainties.
 
 Back to top

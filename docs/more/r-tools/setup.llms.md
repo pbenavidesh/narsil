@@ -1,0 +1,147 @@
+# Course Setup
+
+r-tools
+
+Install R and Positron, get your packages ready, and verify your environment before the first class.
+
+Published
+
+August 18, 2026
+
+Modified
+
+August 19, 2026
+
+Everything in this course runs on **R** inside **Positron**. This page gets you from a blank machine to a working environment.
+
+> **NOTE:**
+>
+> You do **not** need to install Quarto separately. Positron ships with the Quarto command line tool and the Quarto extension already included.
+
+## Step 1 — Install R
+
+Download R from [CRAN](https://cloud.r-project.org/) and install it with the default options.
+
+> **IMPORTANT:**
+>
+> Install a recent version of R. We use the native pipe `|>` throughout the course, which requires **R 4.1 or newer**. If you already have R installed and it predates that, update it now rather than halfway through the semester.
+
+## Step 2 — Install Positron
+
+Positron is a free, source-available editor built for data science. Download it from [positron.posit.co](https://positron.posit.co/) and follow the installer for your platform (Windows, macOS, or Linux).
+
+> **TIP:**
+>
+> All class demonstrations, screenshots, and support use Positron. You are free to use something else, but you will be on your own when something breaks.
+
+## Step 3 — Create your course folder
+
+Give the course its own folder. Positron’s new-project flow creates one for you, lets you pick which installed version of R to use, and opens an R console automatically.
+
+Keep your scripts, `.qmd` documents, and data in that folder. Once you are inside a project, use `here::here()` to build file paths instead of `setwd()` — it keeps your code working on any machine, including the one grading it.
+
+``` r
+library(here)
+
+datos <- read_csv(here("data", "ventas.csv"))
+```
+
+## Step 4 — Install the packages
+
+Open the R console (**View → Console**) and run this once. It will take several minutes.
+
+``` r
+if (!requireNamespace("pak", quietly = TRUE)) install.packages("pak")
+
+pak::pak(c(
+  # Core
+  "tidyverse", "fpp3", "here", "rmarkdown",
+  # Visualization
+  "plotly", "patchwork", "GGally", "ggtime",
+  # Data and examples
+  "tidyquant", "fma", "gapminder", "nycflights13",
+  # Modeling and diagnostics
+  "car",
+  # Utilities
+  "tictoc", "learnr"
+))
+```
+
+> **NOTE:**
+>
+> `pak::pak()` resolves dependencies in parallel, handles system-level requirements on Linux, and gives you error messages you can actually read when something fails. Once installed, you only need `library()` at the start of each session.
+
+> **TIP:**
+>
+> `fpp3` bundles `tsibble`, `fable`, `feasts`, and `tsibbledata`. `tidyverse` bundles `dplyr`, `ggplot2`, `lubridate`, and friends. You never need to install those individually.
+
+### Prophet comes later
+
+The `prophet` package is heavier than the rest and occasionally fails to build. We do not need it until **Module 3.4**, so install it separately when you get there:
+
+``` r
+pak::pak("fable.prophet")
+```
+
+## Step 5 — Verify your setup
+
+Create a new `.qmd` document (**File → New File → Quarto Document**), paste this into a code cell, and run it:
+
+``` r
+library(tidyverse)
+library(fpp3)
+
+tsibbledata::aus_production |>
+  filter(year(Quarter) >= 2005) |>
+  autoplot(Beer)
+```
+
+If a plot of Australian beer production appears in the Plots pane, you are ready.
+
+## Coming from RStudio
+
+Most of what you know transfers. These are the differences that matter:
+
+| RStudio | Positron |
+|----|----|
+| Environment pane | **Variables** pane |
+| Plots / Viewer panes | Same names, same idea |
+| `Ctrl/Cmd + Enter` to run a line | Identical |
+| **Knit** button | **Preview** button, or `Quarto: Preview` |
+| Open an `.Rproj` file | Open the project **folder** |
+| Full visual editor | Limited — use source mode |
+| — | **Command Palette** (`Ctrl/Cmd + Shift + P`) |
+
+> **WARNING:**
+>
+> Quarto’s visual editor has limited support in Positron. It works for writing prose, but running code from it and other language features are not supported. Write in **source mode** and preview the rendered output.
+
+> **TIP:**
+>
+> If you learn one new habit, make it this one. `Ctrl/Cmd + Shift + P` opens a search box for every command in the editor. Type what you want to do — `render`, `console`, `interpreter` — instead of hunting through menus.
+
+## Rendering Quarto documents
+
+Open any `.qmd` file and press **Preview** in the editor toolbar, or run `Quarto: Preview` from the Command Palette. The rendered document appears in the Viewer pane and updates as you save.
+
+Errors show up in the terminal output. Read the **first** error message, not the last one — everything after it is usually a consequence.
+
+## Troubleshooting
+
+> **CAUTION:**
+>
+> Open the Command Palette and search for the interpreter selection command. Choose the R installation you want. If none appear, R was not installed correctly or was installed after Positron — restart Positron first.
+
+> **CAUTION:**
+>
+> Quarto needs the `rmarkdown` package to execute R cells. Run `pak::pak("rmarkdown")` in the console and try again.
+
+> **CAUTION:**
+>
+> `pak` usually reports the missing system library by name. Install it with your package manager (`sudo apt install libcurl4-openssl-dev`, for example) and rerun the `pak::pak()` call.
+
+> **CAUTION:**
+>
+> Skip it for now — nothing before Module 3.4 depends on it. When you get there, make sure your R version is current and try `pak::pak("fable.prophet")` again. Bring the error message to class if it persists.
+
+Back to top

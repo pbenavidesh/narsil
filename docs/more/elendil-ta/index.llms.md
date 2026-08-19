@@ -10,7 +10,7 @@ Custom Claude skill for the Time Series Forecasting course at ITESO. Install it 
 
 Modified
 
-July 9, 2026
+August 19, 2026
 
 # What is Elendil TA?
 
@@ -99,19 +99,19 @@ You don’t need to invoke it explicitly — Claude will activate it automatical
 
 # FAQ
 
-**Does it work in Spanish?**  
+**Does it work in Spanish?**\
 Yes — it responds in whatever language you write in. Default is Spanish.
 
-**Does it work on the free plan?**  
+**Does it work on the free plan?**\
 Yes. Skills work on all Claude plans including free.
 
-**Will it solve my assignments for me?**  
+**Will it solve my assignments for me?**\
 It’s designed to guide you through problems, not hand you solutions. If you show up with “solve this”, it’ll ask you what you’ve tried. If you show up with broken code and a specific question, it’ll help you fix it.
 
-**What if there’s an update to the skill?**  
+**What if there’s an update to the skill?**\
 When the skill is updated during the semester, you’ll see a note here. You’ll need to re-download and re-upload the new version — the process takes about two minutes.
 
-**I found a bug / something isn’t working right**  
+**I found a bug / something isn’t working right**\
 Let your professor know. Skills improve with feedback.
 
 Back to top

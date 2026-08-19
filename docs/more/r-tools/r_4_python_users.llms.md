@@ -10,11 +10,11 @@ Pablo Benavides-Herrera
 
 Modified
 
-July 9, 2026
+August 19, 2026
 
 This document is **optional**, but highly recommended if you come from a Python background.
 
-The goal is **not** to teach R from scratch.  
+The goal is **not** to teach R from scratch.\
 The goal is to help you **translate mental models** from Python to R, so that the rest of the course feels natural instead of frustrating.
 
 > **NOTE:**
@@ -27,21 +27,21 @@ The goal is to help you **translate mental models** from Python to R, so that th
 
 If you come from Python, you are used to thinking in terms of:
 
-- step-by-step instructions  
-- objects that are modified in place  
-- explicit loops  
+- step-by-step instructions\
+- objects that are modified in place\
+- explicit loops\
 - “do this, then do that”
 
 R (especially the tidyverse) encourages a different way of thinking:
 
-- transformations instead of instructions  
-- immutable data objects  
-- pipelines instead of loops  
+- transformations instead of instructions\
+- immutable data objects\
+- pipelines instead of loops\
 - “what happens to the data as it flows”
 
 > **TIP:**
 >
-> In tidyverse code, try to read pipelines **out loud**.  
+> In tidyverse code, try to read pipelines **out loud**.\
 > If it sounds like a sentence describing the data, you are probably doing it right.
 
 ------------------------------------------------------------------------
@@ -76,7 +76,7 @@ df |>
 
 > **NOTE:**
 >
-> Think of `|>` as saying:  
+> Think of `|>` as saying:\
 > “take the result so far, **and then** apply the next transformation”.
 
 ------------------------------------------------------------------------
@@ -96,7 +96,7 @@ df |>
 
 > **TIP:**
 >
-> In R, columns are **vectors**, not mini-dataframes.  
+> In R, columns are **vectors**, not mini-dataframes.\
 > This is one of the biggest conceptual differences — and one of R’s strengths.
 
 ------------------------------------------------------------------------
@@ -129,7 +129,7 @@ df <- df |>
 
 > **WARNING:**
 >
-> If you forget to reassign in R, **nothing happens**.  
+> If you forget to reassign in R, **nothing happens**.\
 > This is the most common source of “why didn’t my code work?” for Python users.
 
 ------------------------------------------------------------------------
@@ -154,7 +154,7 @@ df |>
 
 > **TIP:**
 >
-> If you feel the urge to write a `for` loop in R, stop and ask:  
+> If you feel the urge to write a `for` loop in R, stop and ask:\
 > “Is this a vectorized operation?”
 >
 > In most cases, the answer is **yes**.
@@ -180,14 +180,14 @@ df |>
 
 > **NOTE:**
 >
-> Base R indexing exists, but in this course we will prefer tidyverse verbs  
+> Base R indexing exists, but in this course we will prefer tidyverse verbs\
 > because they are clearer and less error-prone.
 
 ------------------------------------------------------------------------
 
 ## 7 Equality, assignment, and naming
 
-- `<-` is the standard operator for assignment in this course  
+- `<-` is the standard operator for assignment in this course\
 - `=` is used **only** for function arguments
 - `==` is for comparison
 - Names are case-sensitive
@@ -195,7 +195,7 @@ df |>
 
 > **TIP:**
 >
-> Using `<-` consistently makes it easier to visually distinguish  
+> Using `<-` consistently makes it easier to visually distinguish\
 > **assignment** from **function arguments**, especially in longer pipelines.
 
 ------------------------------------------------------------------------

@@ -2,9 +2,9 @@
 
 Optional materials to support the course.
 
-These materials are **optional** and are not required to pass the course.
+Most of these materials are **optional** and are not required to pass the course. The exception is [Course Setup](../../docs/more/r-tools/setup.llms.md), which you need before the first class.
 
-They are meant to help you:
+The optional materials are meant to help you:
 
 - Refresh prerequisite concepts (statistics, probability, regression)
 - Work more comfortably in R and the tidyverse ecosystem
@@ -19,6 +19,14 @@ A refresher on correlation and statistical dependence, with an emphasis on why c
 Pablo Benavides-Herrera
 
 3 min
+
+### [Course Setup](../../docs/more/r-tools/setup.llms.md)
+
+Install R and Positron, get your packages ready, and verify your environment before the first class.
+
+Aug 18, 2026
+
+4 min
 
 ### [Elendil TA](../../docs/more/elendil-ta/index.llms.md)
 

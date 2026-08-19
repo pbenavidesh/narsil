@@ -9,11 +9,11 @@
 <script src="../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../../../../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-6d40f8af7092f34acea1908532066003.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-eec68b17241c1efd3eae2de50d816e3e.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.9.38">
+  <meta name="generator" content="quarto-1.10.18">
 
   <meta name="author" content="">
   <title>Time Series Forecasting – Time Series Decomposition</title>
@@ -26,10 +26,13 @@
     /* Default styles provided by pandoc.
     ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
     */
-    code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
     ul.task-list li input[type="checkbox"] {
@@ -485,8 +488,8 @@ w_t= \begin{cases}\log \left(y_t\right) &amp; \text { if } \lambda=0 \\ \left(\o
 <h2>How can we choose the value of <span class="math inline">\lambda</span>?</h2>
 <p>We can use the <code>guerrero</code> feature to choose an optimal lambda.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" data-code-line-numbers="|2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>aus_production <span class="sc">|&gt;</span> </span>
-<span id="cb1-2"><a></a>  <span class="fu">features</span>(Gas, <span class="at">features =</span> guerrero)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" data-code-line-numbers="|2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a aria-label="1"></a>aus_production <span class="sc">|&gt;</span> </span>
+<span id="cb1-2"><a aria-label="2"></a>  <span class="fu">features</span>(Gas, <span class="at">features =</span> guerrero)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 1
   lambda_guerrero
@@ -515,15 +518,15 @@ w_t= \begin{cases}\log \left(y_t\right) &amp; \text { if } \lambda=0 \\ \left(\o
 </div>
 <div id="tabset-2-2">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>google_month <span class="ot">&lt;-</span> google <span class="sc">|&gt;</span> </span>
-<span id="cb3-2"><a></a>  <span class="fu">index_by</span>(<span class="at">month =</span> <span class="fu">yearmonth</span>(date)) <span class="sc">|&gt;</span> </span>
-<span id="cb3-3"><a></a>  <span class="fu">summarise</span>(</span>
-<span id="cb3-4"><a></a>    <span class="at">trading_days =</span> <span class="fu">n</span>(),</span>
-<span id="cb3-5"><a></a>    <span class="at">monthly_volume =</span> <span class="fu">sum</span>(volume),</span>
-<span id="cb3-6"><a></a>    <span class="at">mean_volume =</span> <span class="fu">mean</span>(volume)</span>
-<span id="cb3-7"><a></a>  )</span>
-<span id="cb3-8"><a></a></span>
-<span id="cb3-9"><a></a>google_month</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a aria-label="1"></a>google_month <span class="ot">&lt;-</span> google <span class="sc">|&gt;</span> </span>
+<span id="cb3-2"><a aria-label="2"></a>  <span class="fu">index_by</span>(<span class="at">month =</span> <span class="fu">yearmonth</span>(date)) <span class="sc">|&gt;</span> </span>
+<span id="cb3-3"><a aria-label="3"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb3-4"><a aria-label="4"></a>    <span class="at">trading_days =</span> <span class="fu">n</span>(),</span>
+<span id="cb3-5"><a aria-label="5"></a>    <span class="at">monthly_volume =</span> <span class="fu">sum</span>(volume),</span>
+<span id="cb3-6"><a aria-label="6"></a>    <span class="at">mean_volume =</span> <span class="fu">mean</span>(volume)</span>
+<span id="cb3-7"><a aria-label="7"></a>  )</span>
+<span id="cb3-8"><a aria-label="8"></a></span>
+<span id="cb3-9"><a aria-label="9"></a>google_month</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -713,13 +716,13 @@ x_t = \frac{y_t}{z_t} * z_{2010}
 </div>
 <div id="tabset-4-2">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>aus_economy <span class="ot">&lt;-</span> global_economy <span class="sc">|&gt;</span></span>
-<span id="cb4-2"><a></a>  <span class="fu">filter</span>(Code <span class="sc">==</span> <span class="st">"AUS"</span>)</span>
-<span id="cb4-3"><a></a></span>
-<span id="cb4-4"><a></a></span>
-<span id="cb4-5"><a></a>print_retail <span class="ot">&lt;-</span> print_retail <span class="sc">|&gt;</span> </span>
-<span id="cb4-6"><a></a>  <span class="fu">left_join</span>(aus_economy, <span class="at">by =</span> <span class="st">"Year"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb4-7"><a></a>  <span class="fu">mutate</span>(<span class="at">Adjusted_turnover =</span> Turnover <span class="sc">/</span> CPI) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a aria-label="1"></a>aus_economy <span class="ot">&lt;-</span> global_economy <span class="sc">|&gt;</span></span>
+<span id="cb4-2"><a aria-label="2"></a>  <span class="fu">filter</span>(Code <span class="sc">==</span> <span class="st">"AUS"</span>)</span>
+<span id="cb4-3"><a aria-label="3"></a></span>
+<span id="cb4-4"><a aria-label="4"></a></span>
+<span id="cb4-5"><a aria-label="5"></a>print_retail <span class="ot">&lt;-</span> print_retail <span class="sc">|&gt;</span> </span>
+<span id="cb4-6"><a aria-label="6"></a>  <span class="fu">left_join</span>(aus_economy, <span class="at">by =</span> <span class="st">"Year"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-7"><a aria-label="7"></a>  <span class="fu">mutate</span>(<span class="at">Adjusted_turnover =</span> Turnover <span class="sc">/</span> CPI) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <div id="tabset-4-3">
@@ -869,7 +872,7 @@ y_t - S_t
 <section id="example-of-a-classical-decomposition" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Example of a classical decomposition</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb5-1" class="hljs-ln-code"><a></a>mexretail</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb5-1" class="hljs-ln-code"><a aria-label="1"></a>mexretail</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -882,26 +885,26 @@ y_t - S_t
 <section id="example-of-a-classical-decomposition-1" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Example of a classical decomposition</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb6-1" class="hljs-ln-code"><a></a>mexretail <span class="sc">|&gt;</span> </span>
-<span id="cb6-2" class="hljs-ln-code"><a></a>  <span class="fu">model</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb6-1" class="hljs-ln-code"><a aria-label="1"></a>mexretail <span class="sc">|&gt;</span> </span>
+<span id="cb6-2" class="hljs-ln-code"><a aria-label="2"></a>  <span class="fu">model</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="example-of-a-classical-decomposition-2" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Example of a classical decomposition</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb7-1" class="hljs-ln-code"><a></a>mexretail <span class="sc">|&gt;</span> </span>
-<span id="cb7-2" class="hljs-ln-code"><a></a>  <span class="fu">model</span>(</span>
-<span id="cb7-3" class="hljs-ln-code"><a></a>    <span class="at">classical =</span> <span class="fu">classical_decomposition</span>() </span>
-<span id="cb7-4" class="hljs-ln-code"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb7-1" class="hljs-ln-code"><a aria-label="1"></a>mexretail <span class="sc">|&gt;</span> </span>
+<span id="cb7-2" class="hljs-ln-code"><a aria-label="2"></a>  <span class="fu">model</span>(</span>
+<span id="cb7-3" class="hljs-ln-code"><a aria-label="3"></a>    <span class="at">classical =</span> <span class="fu">classical_decomposition</span>() </span>
+<span id="cb7-4" class="hljs-ln-code"><a aria-label="4"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="example-of-a-classical-decomposition-3" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Example of a classical decomposition</h2>
 <div class="cell" data-df-print="default">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb8-1" class="hljs-ln-code"><a></a>mexretail <span class="sc">|&gt;</span> </span>
-<span id="cb8-2" class="hljs-ln-code"><a></a>  <span class="fu">model</span>(</span>
-<span id="cb8-3" class="hljs-ln-code"><a></a>    <span class="at">classical =</span> <span class="fu">classical_decomposition</span>(y, <span class="at">type =</span> <span class="st">"additive"</span>) </span>
-<span id="cb8-4" class="hljs-ln-code"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb8-1" class="hljs-ln-code"><a aria-label="1"></a>mexretail <span class="sc">|&gt;</span> </span>
+<span id="cb8-2" class="hljs-ln-code"><a aria-label="2"></a>  <span class="fu">model</span>(</span>
+<span id="cb8-3" class="hljs-ln-code"><a aria-label="3"></a>    <span class="at">classical =</span> <span class="fu">classical_decomposition</span>(y, <span class="at">type =</span> <span class="st">"additive"</span>) </span>
+<span id="cb8-4" class="hljs-ln-code"><a aria-label="4"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -914,11 +917,11 @@ y_t - S_t
 <section id="example-of-a-classical-decomposition-4" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Example of a classical decomposition</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb9-1" class="hljs-ln-code"><a></a>mexretail <span class="sc">|&gt;</span> </span>
-<span id="cb9-2" class="hljs-ln-code"><a></a>  <span class="fu">model</span>(</span>
-<span id="cb9-3" class="hljs-ln-code"><a></a>    <span class="at">classical =</span> <span class="fu">classical_decomposition</span>(y, <span class="at">type =</span> <span class="st">"additive"</span>) </span>
-<span id="cb9-4" class="hljs-ln-code"><a></a>  ) <span class="sc">|&gt;</span> </span>
-<span id="cb9-5" class="hljs-ln-code"><a></a>  <span class="fu">components</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb9-1" class="hljs-ln-code"><a aria-label="1"></a>mexretail <span class="sc">|&gt;</span> </span>
+<span id="cb9-2" class="hljs-ln-code"><a aria-label="2"></a>  <span class="fu">model</span>(</span>
+<span id="cb9-3" class="hljs-ln-code"><a aria-label="3"></a>    <span class="at">classical =</span> <span class="fu">classical_decomposition</span>(y, <span class="at">type =</span> <span class="st">"additive"</span>) </span>
+<span id="cb9-4" class="hljs-ln-code"><a aria-label="4"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb9-5" class="hljs-ln-code"><a aria-label="5"></a>  <span class="fu">components</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -937,13 +940,13 @@ y_t - S_t
   ) |> 
   components()                                                # <4>
 
-mexretail_dcmp                                                # <5>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-2" data-target-annotation="1">1</button><span id="annotated-cell-2-1" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-2-1"></a>mexretail_dcmp <span class="ot">&lt;-</span> mexretail <span class="sc">|&gt;</span></span>
-<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-2" data-target-annotation="2">2</button><span id="annotated-cell-2-2" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-2-2"></a>  <span class="fu">model</span>(</span>
-<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-2" data-target-annotation="3">3</button><span id="annotated-cell-2-3" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-2-3"></a>    <span class="at">classical =</span> <span class="fu">classical_decomposition</span>(y, <span class="at">type =</span> <span class="st">"additive"</span>)</span>
-<span id="annotated-cell-2-4" class="hljs-ln-code"><a href="#annotated-cell-2-4"></a>  ) <span class="sc">|&gt;</span> </span>
-<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-2" data-target-annotation="4">4</button><span id="annotated-cell-2-5" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-2-5"></a>  <span class="fu">components</span>()</span>
-<span id="annotated-cell-2-6" class="hljs-ln-code"><a href="#annotated-cell-2-6"></a></span>
-<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-2" data-target-annotation="5">5</button><span id="annotated-cell-2-7" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-2-7"></a>mexretail_dcmp</span><div class="code-annotation-gutter-bg hljs-ln-code"></div><div class="code-annotation-gutter hljs-ln-code"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+mexretail_dcmp                                                # <5>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-2" data-target-annotation="1">1</button><span id="annotated-cell-2-1" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-2-1" aria-label="1"></a>mexretail_dcmp <span class="ot">&lt;-</span> mexretail <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-2" data-target-annotation="2">2</button><span id="annotated-cell-2-2" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-2-2" aria-label="2"></a>  <span class="fu">model</span>(</span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-2" data-target-annotation="3">3</button><span id="annotated-cell-2-3" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-2-3" aria-label="3"></a>    <span class="at">classical =</span> <span class="fu">classical_decomposition</span>(y, <span class="at">type =</span> <span class="st">"additive"</span>)</span>
+<span id="annotated-cell-2-4" class="hljs-ln-code"><a href="#annotated-cell-2-4" aria-label="4"></a>  ) <span class="sc">|&gt;</span> </span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-2" data-target-annotation="4">4</button><span id="annotated-cell-2-5" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-2-5" aria-label="5"></a>  <span class="fu">components</span>()</span>
+<span id="annotated-cell-2-6" class="hljs-ln-code"><a href="#annotated-cell-2-6" aria-label="6"></a></span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-2" data-target-annotation="5">5</button><span id="annotated-cell-2-7" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-2-7" aria-label="7"></a>mexretail_dcmp</span><div class="code-annotation-gutter-bg hljs-ln-code"></div><div class="code-annotation-gutter hljs-ln-code"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-2" data-target-annotation="1">1</dt>
@@ -980,8 +983,8 @@ mexretail_dcmp                                                # <5>"><pre class=
 <section id="example-of-a-classical-decomposition-7" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Example of a classical decomposition</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb10-1" class="hljs-ln-code"><a></a>mexretail_dcmp_p <span class="ot">&lt;-</span> mexretail_dcmp <span class="sc">|&gt;</span></span>
-<span id="cb10-2" class="hljs-ln-code"><a></a>  <span class="fu">autoplot</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb10-1" class="hljs-ln-code"><a aria-label="1"></a>mexretail_dcmp_p <span class="ot">&lt;-</span> mexretail_dcmp <span class="sc">|&gt;</span></span>
+<span id="cb10-2" class="hljs-ln-code"><a aria-label="2"></a>  <span class="fu">autoplot</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
 <div class="cell-output-display">
@@ -1071,28 +1074,28 @@ mexretail_dcmp                                                # <5>"><pre class=
 <section id="stl-in-r-using-fable" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">STL in R using <code>fable</code></h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb11-1" class="hljs-ln-code"><a></a>mexretail_stl <span class="ot">&lt;-</span> mexretail <span class="sc">|&gt;</span>                                </span>
-<span id="cb11-2" class="hljs-ln-code"><a></a>  <span class="fu">model</span>(                                                      </span>
-<span id="cb11-3" class="hljs-ln-code"><a></a>    <span class="at">stl =</span> <span class="fu">STL</span>(y)</span>
-<span id="cb11-4" class="hljs-ln-code"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb11-1" class="hljs-ln-code"><a aria-label="1"></a>mexretail_stl <span class="ot">&lt;-</span> mexretail <span class="sc">|&gt;</span>                                </span>
+<span id="cb11-2" class="hljs-ln-code"><a aria-label="2"></a>  <span class="fu">model</span>(                                                      </span>
+<span id="cb11-3" class="hljs-ln-code"><a aria-label="3"></a>    <span class="at">stl =</span> <span class="fu">STL</span>(y)</span>
+<span id="cb11-4" class="hljs-ln-code"><a aria-label="4"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="stl-in-r-using-fable-1" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">STL in R using <code>fable</code></h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb12-1" class="hljs-ln-code"><a></a>mexretail_stl <span class="ot">&lt;-</span> mexretail <span class="sc">|&gt;</span>                                </span>
-<span id="cb12-2" class="hljs-ln-code"><a></a>  <span class="fu">model</span>(                                                      </span>
-<span id="cb12-3" class="hljs-ln-code"><a></a>    <span class="at">stl =</span> <span class="fu">STL</span>(y <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="cn">NULL</span>))</span>
-<span id="cb12-4" class="hljs-ln-code"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb12-1" class="hljs-ln-code"><a aria-label="1"></a>mexretail_stl <span class="ot">&lt;-</span> mexretail <span class="sc">|&gt;</span>                                </span>
+<span id="cb12-2" class="hljs-ln-code"><a aria-label="2"></a>  <span class="fu">model</span>(                                                      </span>
+<span id="cb12-3" class="hljs-ln-code"><a aria-label="3"></a>    <span class="at">stl =</span> <span class="fu">STL</span>(y <span class="sc">~</span> <span class="fu">trend</span>(<span class="at">window =</span> <span class="cn">NULL</span>))</span>
+<span id="cb12-4" class="hljs-ln-code"><a aria-label="4"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="stl-in-r-using-fable-2" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">STL in R using <code>fable</code></h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb13-1" class="hljs-ln-code"><a></a>mexretail_stl <span class="ot">&lt;-</span> mexretail <span class="sc">|&gt;</span>                                </span>
-<span id="cb13-2" class="hljs-ln-code"><a></a>  <span class="fu">model</span>(                                                      </span>
-<span id="cb13-3" class="hljs-ln-code"><a></a>    <span class="at">stl =</span> <span class="fu">STL</span>(y <span class="sc">~</span> <span class="fu">trend</span>()) </span>
-<span id="cb13-4" class="hljs-ln-code"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb13-1" class="hljs-ln-code"><a aria-label="1"></a>mexretail_stl <span class="ot">&lt;-</span> mexretail <span class="sc">|&gt;</span>                                </span>
+<span id="cb13-2" class="hljs-ln-code"><a aria-label="2"></a>  <span class="fu">model</span>(                                                      </span>
+<span id="cb13-3" class="hljs-ln-code"><a aria-label="3"></a>    <span class="at">stl =</span> <span class="fu">STL</span>(y <span class="sc">~</span> <span class="fu">trend</span>()) </span>
+<span id="cb13-4" class="hljs-ln-code"><a aria-label="4"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="stl-in-r-using-fable-3" class="slide level2">
@@ -1119,15 +1122,15 @@ mexretail_dcmp                                                # <5>"><pre class=
               robust = TRUE)                 # <4> 
   ) |> 
   components() |> 
-  autoplot()"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-4-1"><a href="#annotated-cell-4-1"></a>stl_dcmp_p <span class="ot">&lt;-</span> mexretail <span class="sc">|&gt;</span>                                </span>
-<span id="annotated-cell-4-2"><a href="#annotated-cell-4-2"></a>  <span class="fu">model</span>(                                                      </span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="1">1</button><span id="annotated-cell-4-3" class="code-annotation-target"><a href="#annotated-cell-4-3"></a>    <span class="at">stl =</span> <span class="fu">STL</span>(y <span class="sc">~</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="2">2</button><span id="annotated-cell-4-4" class="code-annotation-target"><a href="#annotated-cell-4-4"></a>                <span class="fu">trend</span>(<span class="at">window =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="3">3</button><span id="annotated-cell-4-5" class="code-annotation-target"><a href="#annotated-cell-4-5"></a>                <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>),</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="4">4</button><span id="annotated-cell-4-6" class="code-annotation-target"><a href="#annotated-cell-4-6"></a>              <span class="at">robust =</span> <span class="cn">TRUE</span>)</span>
-<span id="annotated-cell-4-7"><a href="#annotated-cell-4-7"></a>  ) <span class="sc">|&gt;</span> </span>
-<span id="annotated-cell-4-8"><a href="#annotated-cell-4-8"></a>  <span class="fu">components</span>() <span class="sc">|&gt;</span> </span>
-<span id="annotated-cell-4-9"><a href="#annotated-cell-4-9"></a>  <span class="fu">autoplot</span>()</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+  autoplot()"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-4-1"><a href="#annotated-cell-4-1" aria-label="1"></a>stl_dcmp_p <span class="ot">&lt;-</span> mexretail <span class="sc">|&gt;</span>                                </span>
+<span id="annotated-cell-4-2"><a href="#annotated-cell-4-2" aria-label="2"></a>  <span class="fu">model</span>(                                                      </span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="1">1</button><span id="annotated-cell-4-3" class="code-annotation-target"><a href="#annotated-cell-4-3" aria-label="3"></a>    <span class="at">stl =</span> <span class="fu">STL</span>(y <span class="sc">~</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="2">2</button><span id="annotated-cell-4-4" class="code-annotation-target"><a href="#annotated-cell-4-4" aria-label="4"></a>                <span class="fu">trend</span>(<span class="at">window =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="3">3</button><span id="annotated-cell-4-5" class="code-annotation-target"><a href="#annotated-cell-4-5" aria-label="5"></a>                <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>),</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="4">4</button><span id="annotated-cell-4-6" class="code-annotation-target"><a href="#annotated-cell-4-6" aria-label="6"></a>              <span class="at">robust =</span> <span class="cn">TRUE</span>)</span>
+<span id="annotated-cell-4-7"><a href="#annotated-cell-4-7" aria-label="7"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="annotated-cell-4-8"><a href="#annotated-cell-4-8" aria-label="8"></a>  <span class="fu">components</span>() <span class="sc">|&gt;</span> </span>
+<span id="annotated-cell-4-9"><a href="#annotated-cell-4-9" aria-label="9"></a>  <span class="fu">autoplot</span>()</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-4" data-target-annotation="1">1</dt>

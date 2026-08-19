@@ -9,11 +9,11 @@
 <script src="../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../../../../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-6d40f8af7092f34acea1908532066003.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-eec68b17241c1efd3eae2de50d816e3e.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.9.38">
+  <meta name="generator" content="quarto-1.10.18">
 
   <meta name="author" content="">
   <title>Time Series Forecasting – Forecasting Foundations</title>
@@ -26,10 +26,13 @@
     /* Default styles provided by pandoc.
     ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
     */
-    code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
     ul.task-list li input[type="checkbox"] {
@@ -299,13 +302,13 @@ data_train <- data |>
   slice_head(n = nrow(data) - h)         #<2>
 
 data_test <- data |>
-  slice_tail(n = h)                      #<3>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1">1</button><span id="annotated-cell-2-1" class="code-annotation-target"><a href="#annotated-cell-2-1"></a>h <span class="ot">&lt;-</span> <span class="er">&lt;</span>horizon<span class="sc">&gt;</span></span>
-<span id="annotated-cell-2-2"><a href="#annotated-cell-2-2"></a></span>
-<span id="annotated-cell-2-3"><a href="#annotated-cell-2-3"></a>data_train <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="2">2</button><span id="annotated-cell-2-4" class="code-annotation-target"><a href="#annotated-cell-2-4"></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="fu">nrow</span>(data) <span class="sc">-</span> h)</span>
-<span id="annotated-cell-2-5"><a href="#annotated-cell-2-5"></a></span>
-<span id="annotated-cell-2-6"><a href="#annotated-cell-2-6"></a>data_test <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="3">3</button><span id="annotated-cell-2-7" class="code-annotation-target"><a href="#annotated-cell-2-7"></a>  <span class="fu">slice_tail</span>(<span class="at">n =</span> h)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+  slice_tail(n = h)                      #<3>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1">1</button><span id="annotated-cell-2-1" class="code-annotation-target"><a href="#annotated-cell-2-1" aria-label="1"></a>h <span class="ot">&lt;-</span> <span class="er">&lt;</span>horizon<span class="sc">&gt;</span></span>
+<span id="annotated-cell-2-2"><a href="#annotated-cell-2-2" aria-label="2"></a></span>
+<span id="annotated-cell-2-3"><a href="#annotated-cell-2-3" aria-label="3"></a>data_train <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="2">2</button><span id="annotated-cell-2-4" class="code-annotation-target"><a href="#annotated-cell-2-4" aria-label="4"></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="fu">nrow</span>(data) <span class="sc">-</span> h)</span>
+<span id="annotated-cell-2-5"><a href="#annotated-cell-2-5" aria-label="5"></a></span>
+<span id="annotated-cell-2-6"><a href="#annotated-cell-2-6" aria-label="6"></a>data_test <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="3">3</button><span id="annotated-cell-2-7" class="code-annotation-target"><a href="#annotated-cell-2-7" aria-label="7"></a>  <span class="fu">slice_tail</span>(<span class="at">n =</span> h)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-2" data-target-annotation="1">1</dt>
@@ -331,11 +334,11 @@ data_test <- data |>
   filter_index(. ~ &quot;end_date&quot;)           #<1>
 
 data_test <- data |>
-  filter_index(&quot;start_date&quot; ~ .)         #<2>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1"></a>data_train <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1">1</button><span id="annotated-cell-3-2" class="code-annotation-target"><a href="#annotated-cell-3-2"></a>  <span class="fu">filter_index</span>(. <span class="sc">~</span> <span class="st">"end_date"</span>)</span>
-<span id="annotated-cell-3-3"><a href="#annotated-cell-3-3"></a></span>
-<span id="annotated-cell-3-4"><a href="#annotated-cell-3-4"></a>data_test <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="2">2</button><span id="annotated-cell-3-5" class="code-annotation-target"><a href="#annotated-cell-3-5"></a>  <span class="fu">filter_index</span>(<span class="st">"start_date"</span> <span class="sc">~</span> .)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+  filter_index(&quot;start_date&quot; ~ .)         #<2>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1" aria-label="1"></a>data_train <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1">1</button><span id="annotated-cell-3-2" class="code-annotation-target"><a href="#annotated-cell-3-2" aria-label="2"></a>  <span class="fu">filter_index</span>(. <span class="sc">~</span> <span class="st">"end_date"</span>)</span>
+<span id="annotated-cell-3-3"><a href="#annotated-cell-3-3" aria-label="3"></a></span>
+<span id="annotated-cell-3-4"><a href="#annotated-cell-3-4" aria-label="4"></a>data_test <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="2">2</button><span id="annotated-cell-3-5" class="code-annotation-target"><a href="#annotated-cell-3-5" aria-label="5"></a>  <span class="fu">filter_index</span>(<span class="st">"start_date"</span> <span class="sc">~</span> .)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-3" data-target-annotation="1">1</dt>
@@ -360,11 +363,11 @@ data_test <- data |>
   model(
     model_1 = <model_spec>(<y>),                      #<1>
     model_2 = <model_spec>(<transformation>(<y>))     #<2>
-  )"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-4-1"><a href="#annotated-cell-4-1"></a>data_fit <span class="ot">&lt;-</span> data_train <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-4-2"><a href="#annotated-cell-4-2"></a>  <span class="fu">model</span>(</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="1">1</button><span id="annotated-cell-4-3" class="code-annotation-target"><a href="#annotated-cell-4-3"></a>    <span class="at">model_1 =</span> <span class="sc">&lt;</span>model_spec<span class="sc">&gt;</span>(<span class="sc">&lt;</span>y<span class="sc">&gt;</span>),</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="2">2</button><span id="annotated-cell-4-4" class="code-annotation-target"><a href="#annotated-cell-4-4"></a>    <span class="at">model_2 =</span> <span class="sc">&lt;</span>model_spec<span class="sc">&gt;</span>(<span class="sc">&lt;</span>transformation<span class="sc">&gt;</span>(<span class="sc">&lt;</span>y<span class="sc">&gt;</span>))</span>
-<span id="annotated-cell-4-5"><a href="#annotated-cell-4-5"></a>  )</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+  )"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-4-1"><a href="#annotated-cell-4-1" aria-label="1"></a>data_fit <span class="ot">&lt;-</span> data_train <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-4-2"><a href="#annotated-cell-4-2" aria-label="2"></a>  <span class="fu">model</span>(</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="1">1</button><span id="annotated-cell-4-3" class="code-annotation-target"><a href="#annotated-cell-4-3" aria-label="3"></a>    <span class="at">model_1 =</span> <span class="sc">&lt;</span>model_spec<span class="sc">&gt;</span>(<span class="sc">&lt;</span>y<span class="sc">&gt;</span>),</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="2">2</button><span id="annotated-cell-4-4" class="code-annotation-target"><a href="#annotated-cell-4-4" aria-label="4"></a>    <span class="at">model_2 =</span> <span class="sc">&lt;</span>model_spec<span class="sc">&gt;</span>(<span class="sc">&lt;</span>transformation<span class="sc">&gt;</span>(<span class="sc">&lt;</span>y<span class="sc">&gt;</span>))</span>
+<span id="annotated-cell-4-5"><a href="#annotated-cell-4-5" aria-label="5"></a>  )</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-4" data-target-annotation="1">1</dt>
@@ -392,8 +395,8 @@ data_test <- data |>
 <div class="fragment">
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-5" data-llms-code-original="data_fc <- data_fit |>
-  forecast(h = nrow(data_test))   #<1>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-5-1"><a href="#annotated-cell-5-1"></a>data_fc <span class="ot">&lt;-</span> data_fit <span class="sc">|&gt;</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-5" data-target-annotation="1">1</button><span id="annotated-cell-5-2" class="code-annotation-target"><a href="#annotated-cell-5-2"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="fu">nrow</span>(data_test))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+  forecast(h = nrow(data_test))   #<1>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-5-1"><a href="#annotated-cell-5-1" aria-label="1"></a>data_fc <span class="ot">&lt;-</span> data_fit <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-5" data-target-annotation="1">1</button><span id="annotated-cell-5-2" class="code-annotation-target"><a href="#annotated-cell-5-2" aria-label="2"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="fu">nrow</span>(data_test))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-5" data-target-annotation="1">1</dt>
@@ -411,8 +414,8 @@ data_test <- data |>
 <div class="fragment">
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-6" data-llms-code-original="data_fc |>
-  accuracy(data)    #<1>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-6-1"><a href="#annotated-cell-6-1"></a>data_fc <span class="sc">|&gt;</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="1">1</button><span id="annotated-cell-6-2" class="code-annotation-target"><a href="#annotated-cell-6-2"></a>  <span class="fu">accuracy</span>(data)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+  accuracy(data)    #<1>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-6-1"><a href="#annotated-cell-6-1" aria-label="1"></a>data_fc <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="1">1</button><span id="annotated-cell-6-2" class="code-annotation-target"><a href="#annotated-cell-6-2" aria-label="2"></a>  <span class="fu">accuracy</span>(data)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-6" data-target-annotation="1">1</dt>
@@ -426,11 +429,11 @@ data_test <- data |>
 <div class="fragment">
 <p>Once a model is selected, <strong>refit on all available data</strong> and forecast the desired future horizon:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>final_fit <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
-<span id="cb1-2"><a></a>  <span class="fu">model</span>(<span class="sc">&lt;</span>chosen_model<span class="sc">&gt;</span>(<span class="sc">&lt;</span>y<span class="sc">&gt;</span>))</span>
-<span id="cb1-3"><a></a></span>
-<span id="cb1-4"><a></a>final_fc <span class="ot">&lt;-</span> final_fit <span class="sc">|&gt;</span></span>
-<span id="cb1-5"><a></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="sc">&lt;</span>horizon<span class="sc">&gt;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a aria-label="1"></a>final_fit <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
+<span id="cb1-2"><a aria-label="2"></a>  <span class="fu">model</span>(<span class="sc">&lt;</span>chosen_model<span class="sc">&gt;</span>(<span class="sc">&lt;</span>y<span class="sc">&gt;</span>))</span>
+<span id="cb1-3"><a aria-label="3"></a></span>
+<span id="cb1-4"><a aria-label="4"></a>final_fc <span class="ot">&lt;-</span> final_fit <span class="sc">|&gt;</span></span>
+<span id="cb1-5"><a aria-label="5"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="sc">&lt;</span>horizon<span class="sc">&gt;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </section>
@@ -468,7 +471,7 @@ data_test <- data |>
 </ul>
 <div class="fragment">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a><span class="fu">MEAN</span>(y)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a aria-label="1"></a><span class="fu">MEAN</span>(y)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </div>
@@ -481,7 +484,7 @@ data_test <- data |>
 </ul>
 <div class="fragment">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="fu">NAIVE</span>(y)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a aria-label="1"></a><span class="fu">NAIVE</span>(y)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </div>
@@ -495,7 +498,7 @@ data_test <- data |>
 </ul>
 <div class="fragment">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a><span class="fu">SNAIVE</span>(y)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a aria-label="1"></a><span class="fu">SNAIVE</span>(y)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </div>
@@ -508,7 +511,7 @@ data_test <- data |>
 </ul>
 <div class="fragment">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a><span class="fu">RW</span>(y <span class="sc">~</span> <span class="fu">drift</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a aria-label="1"></a><span class="fu">RW</span>(y <span class="sc">~</span> <span class="fu">drift</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </div>
@@ -520,13 +523,13 @@ data_test <- data |>
 <p>In <code>fable</code>, all four benchmarks can be fitted simultaneously inside a single <code>model()</code> call:</p>
 <div class="fragment">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>data_fit <span class="ot">&lt;-</span> data_train <span class="sc">|&gt;</span></span>
-<span id="cb6-2"><a></a>  <span class="fu">model</span>(</span>
-<span id="cb6-3"><a></a>    <span class="at">mean   =</span> <span class="fu">MEAN</span>(y),</span>
-<span id="cb6-4"><a></a>    <span class="at">naive  =</span> <span class="fu">NAIVE</span>(y),</span>
-<span id="cb6-5"><a></a>    <span class="at">snaive =</span> <span class="fu">SNAIVE</span>(y),</span>
-<span id="cb6-6"><a></a>    <span class="at">drift  =</span> <span class="fu">RW</span>(y <span class="sc">~</span> <span class="fu">drift</span>())</span>
-<span id="cb6-7"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a aria-label="1"></a>data_fit <span class="ot">&lt;-</span> data_train <span class="sc">|&gt;</span></span>
+<span id="cb6-2"><a aria-label="2"></a>  <span class="fu">model</span>(</span>
+<span id="cb6-3"><a aria-label="3"></a>    <span class="at">mean   =</span> <span class="fu">MEAN</span>(y),</span>
+<span id="cb6-4"><a aria-label="4"></a>    <span class="at">naive  =</span> <span class="fu">NAIVE</span>(y),</span>
+<span id="cb6-5"><a aria-label="5"></a>    <span class="at">snaive =</span> <span class="fu">SNAIVE</span>(y),</span>
+<span id="cb6-6"><a aria-label="6"></a>    <span class="at">drift  =</span> <span class="fu">RW</span>(y <span class="sc">~</span> <span class="fu">drift</span>())</span>
+<span id="cb6-7"><a aria-label="7"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>The result is a <strong>model table</strong> (mable) — one row per series, one column per model.</p>
 </div>
@@ -548,21 +551,21 @@ data_test <- data |>
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a>h_hare <span class="ot">&lt;-</span> <span class="dv">15</span></span>
-<span id="cb7-2"><a></a></span>
-<span id="cb7-3"><a></a>hare_train <span class="ot">&lt;-</span> pelt <span class="sc">|&gt;</span></span>
-<span id="cb7-4"><a></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="fu">nrow</span>(pelt) <span class="sc">-</span> h_hare)</span>
-<span id="cb7-5"><a></a></span>
-<span id="cb7-6"><a></a>hare_fit <span class="ot">&lt;-</span> hare_train <span class="sc">|&gt;</span></span>
-<span id="cb7-7"><a></a>  <span class="fu">model</span>(</span>
-<span id="cb7-8"><a></a>    <span class="at">mean   =</span> <span class="fu">MEAN</span>(Hare),</span>
-<span id="cb7-9"><a></a>    <span class="at">naive  =</span> <span class="fu">NAIVE</span>(Hare),</span>
-<span id="cb7-10"><a></a>    <span class="at">snaive =</span> <span class="fu">SNAIVE</span>(Hare),</span>
-<span id="cb7-11"><a></a>    <span class="at">drift  =</span> <span class="fu">RW</span>(Hare <span class="sc">~</span> <span class="fu">drift</span>())</span>
-<span id="cb7-12"><a></a>  )</span>
-<span id="cb7-13"><a></a></span>
-<span id="cb7-14"><a></a>hare_fc <span class="ot">&lt;-</span> hare_fit <span class="sc">|&gt;</span></span>
-<span id="cb7-15"><a></a>  <span class="fu">forecast</span>(<span class="at">h =</span> h_hare)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a aria-label="1"></a>h_hare <span class="ot">&lt;-</span> <span class="dv">15</span></span>
+<span id="cb7-2"><a aria-label="2"></a></span>
+<span id="cb7-3"><a aria-label="3"></a>hare_train <span class="ot">&lt;-</span> pelt <span class="sc">|&gt;</span></span>
+<span id="cb7-4"><a aria-label="4"></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="fu">nrow</span>(pelt) <span class="sc">-</span> h_hare)</span>
+<span id="cb7-5"><a aria-label="5"></a></span>
+<span id="cb7-6"><a aria-label="6"></a>hare_fit <span class="ot">&lt;-</span> hare_train <span class="sc">|&gt;</span></span>
+<span id="cb7-7"><a aria-label="7"></a>  <span class="fu">model</span>(</span>
+<span id="cb7-8"><a aria-label="8"></a>    <span class="at">mean   =</span> <span class="fu">MEAN</span>(Hare),</span>
+<span id="cb7-9"><a aria-label="9"></a>    <span class="at">naive  =</span> <span class="fu">NAIVE</span>(Hare),</span>
+<span id="cb7-10"><a aria-label="10"></a>    <span class="at">snaive =</span> <span class="fu">SNAIVE</span>(Hare),</span>
+<span id="cb7-11"><a aria-label="11"></a>    <span class="at">drift  =</span> <span class="fu">RW</span>(Hare <span class="sc">~</span> <span class="fu">drift</span>())</span>
+<span id="cb7-12"><a aria-label="12"></a>  )</span>
+<span id="cb7-13"><a aria-label="13"></a></span>
+<span id="cb7-14"><a aria-label="14"></a>hare_fc <span class="ot">&lt;-</span> hare_fit <span class="sc">|&gt;</span></span>
+<span id="cb7-15"><a aria-label="15"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> h_hare)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
 <div class="cell-output-display">
@@ -588,25 +591,25 @@ data_test <- data |>
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>beer <span class="ot">&lt;-</span> aus_production <span class="sc">|&gt;</span></span>
-<span id="cb8-2"><a></a>  <span class="fu">filter</span>(<span class="fu">year</span>(Quarter) <span class="sc">&gt;=</span> <span class="dv">1992</span>) <span class="sc">|&gt;</span></span>
-<span id="cb8-3"><a></a>  <span class="fu">select</span>(Quarter, Beer)</span>
-<span id="cb8-4"><a></a></span>
-<span id="cb8-5"><a></a>h_beer <span class="ot">&lt;-</span> <span class="dv">4</span> <span class="sc">*</span> <span class="dv">4</span>  <span class="co"># 4 years of quarterly data</span></span>
-<span id="cb8-6"><a></a></span>
-<span id="cb8-7"><a></a>beer_train <span class="ot">&lt;-</span> beer <span class="sc">|&gt;</span></span>
-<span id="cb8-8"><a></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="fu">nrow</span>(beer) <span class="sc">-</span> h_beer)</span>
-<span id="cb8-9"><a></a></span>
-<span id="cb8-10"><a></a>beer_fit <span class="ot">&lt;-</span> beer_train <span class="sc">|&gt;</span></span>
-<span id="cb8-11"><a></a>  <span class="fu">model</span>(</span>
-<span id="cb8-12"><a></a>    <span class="at">mean   =</span> <span class="fu">MEAN</span>(Beer),</span>
-<span id="cb8-13"><a></a>    <span class="at">naive  =</span> <span class="fu">NAIVE</span>(Beer),</span>
-<span id="cb8-14"><a></a>    <span class="at">snaive =</span> <span class="fu">SNAIVE</span>(Beer),</span>
-<span id="cb8-15"><a></a>    <span class="at">drift  =</span> <span class="fu">RW</span>(Beer <span class="sc">~</span> <span class="fu">drift</span>())</span>
-<span id="cb8-16"><a></a>  )</span>
-<span id="cb8-17"><a></a></span>
-<span id="cb8-18"><a></a>beer_fc <span class="ot">&lt;-</span> beer_fit <span class="sc">|&gt;</span></span>
-<span id="cb8-19"><a></a>  <span class="fu">forecast</span>(<span class="at">h =</span> h_beer)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a aria-label="1"></a>beer <span class="ot">&lt;-</span> aus_production <span class="sc">|&gt;</span></span>
+<span id="cb8-2"><a aria-label="2"></a>  <span class="fu">filter</span>(<span class="fu">year</span>(Quarter) <span class="sc">&gt;=</span> <span class="dv">1992</span>) <span class="sc">|&gt;</span></span>
+<span id="cb8-3"><a aria-label="3"></a>  <span class="fu">select</span>(Quarter, Beer)</span>
+<span id="cb8-4"><a aria-label="4"></a></span>
+<span id="cb8-5"><a aria-label="5"></a>h_beer <span class="ot">&lt;-</span> <span class="dv">4</span> <span class="sc">*</span> <span class="dv">4</span>  <span class="co"># 4 years of quarterly data</span></span>
+<span id="cb8-6"><a aria-label="6"></a></span>
+<span id="cb8-7"><a aria-label="7"></a>beer_train <span class="ot">&lt;-</span> beer <span class="sc">|&gt;</span></span>
+<span id="cb8-8"><a aria-label="8"></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="fu">nrow</span>(beer) <span class="sc">-</span> h_beer)</span>
+<span id="cb8-9"><a aria-label="9"></a></span>
+<span id="cb8-10"><a aria-label="10"></a>beer_fit <span class="ot">&lt;-</span> beer_train <span class="sc">|&gt;</span></span>
+<span id="cb8-11"><a aria-label="11"></a>  <span class="fu">model</span>(</span>
+<span id="cb8-12"><a aria-label="12"></a>    <span class="at">mean   =</span> <span class="fu">MEAN</span>(Beer),</span>
+<span id="cb8-13"><a aria-label="13"></a>    <span class="at">naive  =</span> <span class="fu">NAIVE</span>(Beer),</span>
+<span id="cb8-14"><a aria-label="14"></a>    <span class="at">snaive =</span> <span class="fu">SNAIVE</span>(Beer),</span>
+<span id="cb8-15"><a aria-label="15"></a>    <span class="at">drift  =</span> <span class="fu">RW</span>(Beer <span class="sc">~</span> <span class="fu">drift</span>())</span>
+<span id="cb8-16"><a aria-label="16"></a>  )</span>
+<span id="cb8-17"><a aria-label="17"></a></span>
+<span id="cb8-18"><a aria-label="18"></a>beer_fc <span class="ot">&lt;-</span> beer_fit <span class="sc">|&gt;</span></span>
+<span id="cb8-19"><a aria-label="19"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> h_beer)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
 <div class="cell-output-display">
@@ -632,25 +635,25 @@ data_test <- data |>
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a>mexico <span class="ot">&lt;-</span> global_economy <span class="sc">|&gt;</span></span>
-<span id="cb9-2"><a></a>  <span class="fu">filter</span>(Country <span class="sc">==</span> <span class="st">"Mexico"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb9-3"><a></a>  <span class="fu">select</span>(Year, GDP)</span>
-<span id="cb9-4"><a></a></span>
-<span id="cb9-5"><a></a>h_mexico <span class="ot">&lt;-</span> <span class="dv">7</span></span>
-<span id="cb9-6"><a></a></span>
-<span id="cb9-7"><a></a>mexico_train <span class="ot">&lt;-</span> mexico <span class="sc">|&gt;</span></span>
-<span id="cb9-8"><a></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="fu">nrow</span>(mexico) <span class="sc">-</span> h_mexico)</span>
-<span id="cb9-9"><a></a></span>
-<span id="cb9-10"><a></a>mexico_fit <span class="ot">&lt;-</span> mexico_train <span class="sc">|&gt;</span></span>
-<span id="cb9-11"><a></a>  <span class="fu">model</span>(</span>
-<span id="cb9-12"><a></a>    <span class="at">mean   =</span> <span class="fu">MEAN</span>(GDP),</span>
-<span id="cb9-13"><a></a>    <span class="at">naive  =</span> <span class="fu">NAIVE</span>(GDP),</span>
-<span id="cb9-14"><a></a>    <span class="at">snaive =</span> <span class="fu">SNAIVE</span>(GDP),</span>
-<span id="cb9-15"><a></a>    <span class="at">drift  =</span> <span class="fu">RW</span>(GDP <span class="sc">~</span> <span class="fu">drift</span>())</span>
-<span id="cb9-16"><a></a>  )</span>
-<span id="cb9-17"><a></a></span>
-<span id="cb9-18"><a></a>mexico_fc <span class="ot">&lt;-</span> mexico_fit <span class="sc">|&gt;</span></span>
-<span id="cb9-19"><a></a>  <span class="fu">forecast</span>(<span class="at">h =</span> h_mexico)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a aria-label="1"></a>mexico <span class="ot">&lt;-</span> global_economy <span class="sc">|&gt;</span></span>
+<span id="cb9-2"><a aria-label="2"></a>  <span class="fu">filter</span>(Country <span class="sc">==</span> <span class="st">"Mexico"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb9-3"><a aria-label="3"></a>  <span class="fu">select</span>(Year, GDP)</span>
+<span id="cb9-4"><a aria-label="4"></a></span>
+<span id="cb9-5"><a aria-label="5"></a>h_mexico <span class="ot">&lt;-</span> <span class="dv">7</span></span>
+<span id="cb9-6"><a aria-label="6"></a></span>
+<span id="cb9-7"><a aria-label="7"></a>mexico_train <span class="ot">&lt;-</span> mexico <span class="sc">|&gt;</span></span>
+<span id="cb9-8"><a aria-label="8"></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="fu">nrow</span>(mexico) <span class="sc">-</span> h_mexico)</span>
+<span id="cb9-9"><a aria-label="9"></a></span>
+<span id="cb9-10"><a aria-label="10"></a>mexico_fit <span class="ot">&lt;-</span> mexico_train <span class="sc">|&gt;</span></span>
+<span id="cb9-11"><a aria-label="11"></a>  <span class="fu">model</span>(</span>
+<span id="cb9-12"><a aria-label="12"></a>    <span class="at">mean   =</span> <span class="fu">MEAN</span>(GDP),</span>
+<span id="cb9-13"><a aria-label="13"></a>    <span class="at">naive  =</span> <span class="fu">NAIVE</span>(GDP),</span>
+<span id="cb9-14"><a aria-label="14"></a>    <span class="at">snaive =</span> <span class="fu">SNAIVE</span>(GDP),</span>
+<span id="cb9-15"><a aria-label="15"></a>    <span class="at">drift  =</span> <span class="fu">RW</span>(GDP <span class="sc">~</span> <span class="fu">drift</span>())</span>
+<span id="cb9-16"><a aria-label="16"></a>  )</span>
+<span id="cb9-17"><a aria-label="17"></a></span>
+<span id="cb9-18"><a aria-label="18"></a>mexico_fc <span class="ot">&lt;-</span> mexico_fit <span class="sc">|&gt;</span></span>
+<span id="cb9-19"><a aria-label="19"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> h_mexico)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
 <div class="cell-output-display">
@@ -676,24 +679,24 @@ data_test <- data |>
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a>h_gas <span class="ot">&lt;-</span> <span class="dv">4</span> <span class="sc">*</span> <span class="dv">5</span>  <span class="co"># 5 years of quarterly data</span></span>
-<span id="cb10-2"><a></a></span>
-<span id="cb10-3"><a></a>gas_train <span class="ot">&lt;-</span> aus_production <span class="sc">|&gt;</span></span>
-<span id="cb10-4"><a></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="fu">nrow</span>(aus_production) <span class="sc">-</span> h_gas)</span>
-<span id="cb10-5"><a></a></span>
-<span id="cb10-6"><a></a>gas_test <span class="ot">&lt;-</span> aus_production <span class="sc">|&gt;</span></span>
-<span id="cb10-7"><a></a>  <span class="fu">slice_tail</span>(<span class="at">n =</span> h_gas)</span>
-<span id="cb10-8"><a></a></span>
-<span id="cb10-9"><a></a>gas_fit <span class="ot">&lt;-</span> gas_train <span class="sc">|&gt;</span></span>
-<span id="cb10-10"><a></a>  <span class="fu">model</span>(</span>
-<span id="cb10-11"><a></a>    <span class="at">mean   =</span> <span class="fu">MEAN</span>(Gas),</span>
-<span id="cb10-12"><a></a>    <span class="at">naive  =</span> <span class="fu">NAIVE</span>(Gas),</span>
-<span id="cb10-13"><a></a>    <span class="at">snaive =</span> <span class="fu">SNAIVE</span>(Gas),</span>
-<span id="cb10-14"><a></a>    <span class="at">drift  =</span> <span class="fu">RW</span>(Gas <span class="sc">~</span> <span class="fu">drift</span>())</span>
-<span id="cb10-15"><a></a>  )</span>
-<span id="cb10-16"><a></a></span>
-<span id="cb10-17"><a></a>gas_fc <span class="ot">&lt;-</span> gas_fit <span class="sc">|&gt;</span></span>
-<span id="cb10-18"><a></a>  <span class="fu">forecast</span>(<span class="at">h =</span> h_gas)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a aria-label="1"></a>h_gas <span class="ot">&lt;-</span> <span class="dv">4</span> <span class="sc">*</span> <span class="dv">5</span>  <span class="co"># 5 years of quarterly data</span></span>
+<span id="cb10-2"><a aria-label="2"></a></span>
+<span id="cb10-3"><a aria-label="3"></a>gas_train <span class="ot">&lt;-</span> aus_production <span class="sc">|&gt;</span></span>
+<span id="cb10-4"><a aria-label="4"></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="fu">nrow</span>(aus_production) <span class="sc">-</span> h_gas)</span>
+<span id="cb10-5"><a aria-label="5"></a></span>
+<span id="cb10-6"><a aria-label="6"></a>gas_test <span class="ot">&lt;-</span> aus_production <span class="sc">|&gt;</span></span>
+<span id="cb10-7"><a aria-label="7"></a>  <span class="fu">slice_tail</span>(<span class="at">n =</span> h_gas)</span>
+<span id="cb10-8"><a aria-label="8"></a></span>
+<span id="cb10-9"><a aria-label="9"></a>gas_fit <span class="ot">&lt;-</span> gas_train <span class="sc">|&gt;</span></span>
+<span id="cb10-10"><a aria-label="10"></a>  <span class="fu">model</span>(</span>
+<span id="cb10-11"><a aria-label="11"></a>    <span class="at">mean   =</span> <span class="fu">MEAN</span>(Gas),</span>
+<span id="cb10-12"><a aria-label="12"></a>    <span class="at">naive  =</span> <span class="fu">NAIVE</span>(Gas),</span>
+<span id="cb10-13"><a aria-label="13"></a>    <span class="at">snaive =</span> <span class="fu">SNAIVE</span>(Gas),</span>
+<span id="cb10-14"><a aria-label="14"></a>    <span class="at">drift  =</span> <span class="fu">RW</span>(Gas <span class="sc">~</span> <span class="fu">drift</span>())</span>
+<span id="cb10-15"><a aria-label="15"></a>  )</span>
+<span id="cb10-16"><a aria-label="16"></a></span>
+<span id="cb10-17"><a aria-label="17"></a>gas_fc <span class="ot">&lt;-</span> gas_fit <span class="sc">|&gt;</span></span>
+<span id="cb10-18"><a aria-label="18"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> h_gas)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
 <div class="cell-output-display">
@@ -738,8 +741,8 @@ data_test <- data |>
 <p>Extract both with <code>augment()</code>:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-17" data-llms-code-original="data_fit |>
-  augment()    #<1>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-17-1"><a href="#annotated-cell-17-1"></a>data_fit <span class="sc">|&gt;</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-17" data-target-annotation="1">1</button><span id="annotated-cell-17-2" class="code-annotation-target"><a href="#annotated-cell-17-2"></a>  <span class="fu">augment</span>()</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+  augment()    #<1>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-17-1"><a href="#annotated-cell-17-1" aria-label="1"></a>data_fit <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-17" data-target-annotation="1">1</button><span id="annotated-cell-17-2" class="code-annotation-target"><a href="#annotated-cell-17-2" aria-label="2"></a>  <span class="fu">augment</span>()</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-17" data-target-annotation="1">1</dt>
@@ -777,11 +780,11 @@ data_test <- data |>
 <div class="tab-content" data-group="series">
 <div id="tabset-3-1">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a><span class="fu">theme_narsil</span>()</span>
-<span id="cb11-2"><a></a>hare_fit <span class="sc">|&gt;</span></span>
-<span id="cb11-3"><a></a>  <span class="fu">select</span>(naive) <span class="sc">|&gt;</span></span>
-<span id="cb11-4"><a></a>  <span class="fu">gg_tsresiduals</span>() <span class="sc">+</span></span>
-<span id="cb11-5"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Hare — NAIVE residuals"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a aria-label="1"></a><span class="fu">theme_narsil</span>()</span>
+<span id="cb11-2"><a aria-label="2"></a>hare_fit <span class="sc">|&gt;</span></span>
+<span id="cb11-3"><a aria-label="3"></a>  <span class="fu">select</span>(naive) <span class="sc">|&gt;</span></span>
+<span id="cb11-4"><a aria-label="4"></a>  <span class="fu">gg_tsresiduals</span>() <span class="sc">+</span></span>
+<span id="cb11-5"><a aria-label="5"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Hare — NAIVE residuals"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure>
@@ -793,11 +796,11 @@ data_test <- data |>
 </div>
 <div id="tabset-3-2">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a><span class="fu">theme_narsil</span>()</span>
-<span id="cb12-2"><a></a>beer_fit <span class="sc">|&gt;</span></span>
-<span id="cb12-3"><a></a>  <span class="fu">select</span>(snaive) <span class="sc">|&gt;</span></span>
-<span id="cb12-4"><a></a>  <span class="fu">gg_tsresiduals</span>() <span class="sc">+</span></span>
-<span id="cb12-5"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Beer — SNAIVE residuals"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a aria-label="1"></a><span class="fu">theme_narsil</span>()</span>
+<span id="cb12-2"><a aria-label="2"></a>beer_fit <span class="sc">|&gt;</span></span>
+<span id="cb12-3"><a aria-label="3"></a>  <span class="fu">select</span>(snaive) <span class="sc">|&gt;</span></span>
+<span id="cb12-4"><a aria-label="4"></a>  <span class="fu">gg_tsresiduals</span>() <span class="sc">+</span></span>
+<span id="cb12-5"><a aria-label="5"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Beer — SNAIVE residuals"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure>
@@ -809,11 +812,11 @@ data_test <- data |>
 </div>
 <div id="tabset-3-3">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a><span class="fu">theme_narsil</span>()</span>
-<span id="cb13-2"><a></a>mexico_fit <span class="sc">|&gt;</span></span>
-<span id="cb13-3"><a></a>  <span class="fu">select</span>(drift) <span class="sc">|&gt;</span></span>
-<span id="cb13-4"><a></a>  <span class="fu">gg_tsresiduals</span>() <span class="sc">+</span></span>
-<span id="cb13-5"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Mexico GDP — Drift residuals"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a aria-label="1"></a><span class="fu">theme_narsil</span>()</span>
+<span id="cb13-2"><a aria-label="2"></a>mexico_fit <span class="sc">|&gt;</span></span>
+<span id="cb13-3"><a aria-label="3"></a>  <span class="fu">select</span>(drift) <span class="sc">|&gt;</span></span>
+<span id="cb13-4"><a aria-label="4"></a>  <span class="fu">gg_tsresiduals</span>() <span class="sc">+</span></span>
+<span id="cb13-5"><a aria-label="5"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Mexico GDP — Drift residuals"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure>
@@ -825,11 +828,11 @@ data_test <- data |>
 </div>
 <div id="tabset-3-4">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a><span class="fu">theme_narsil</span>()</span>
-<span id="cb14-2"><a></a>gas_fit <span class="sc">|&gt;</span></span>
-<span id="cb14-3"><a></a>  <span class="fu">select</span>(snaive) <span class="sc">|&gt;</span></span>
-<span id="cb14-4"><a></a>  <span class="fu">gg_tsresiduals</span>() <span class="sc">+</span></span>
-<span id="cb14-5"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Gas — SNAIVE residuals"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a aria-label="1"></a><span class="fu">theme_narsil</span>()</span>
+<span id="cb14-2"><a aria-label="2"></a>gas_fit <span class="sc">|&gt;</span></span>
+<span id="cb14-3"><a aria-label="3"></a>  <span class="fu">select</span>(snaive) <span class="sc">|&gt;</span></span>
+<span id="cb14-4"><a aria-label="4"></a>  <span class="fu">gg_tsresiduals</span>() <span class="sc">+</span></span>
+<span id="cb14-5"><a aria-label="5"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Gas — SNAIVE residuals"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure>
@@ -855,9 +858,9 @@ data_test <- data |>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-22" data-llms-code-original="data_fit |>
   augment() |>
-  features(.innov, ljung_box, lag = h, dof = K)   #<1>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-22-1"><a href="#annotated-cell-22-1"></a>data_fit <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-22-2"><a href="#annotated-cell-22-2"></a>  <span class="fu">augment</span>() <span class="sc">|&gt;</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-22" data-target-annotation="1">1</button><span id="annotated-cell-22-3" class="code-annotation-target"><a href="#annotated-cell-22-3"></a>  <span class="fu">features</span>(.innov, ljung_box, <span class="at">lag =</span> h, <span class="at">dof =</span> K)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+  features(.innov, ljung_box, lag = h, dof = K)   #<1>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-22-1"><a href="#annotated-cell-22-1" aria-label="1"></a>data_fit <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-22-2"><a href="#annotated-cell-22-2" aria-label="2"></a>  <span class="fu">augment</span>() <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-22" data-target-annotation="1">1</button><span id="annotated-cell-22-3" class="code-annotation-target"><a href="#annotated-cell-22-3" aria-label="3"></a>  <span class="fu">features</span>(.innov, ljung_box, <span class="at">lag =</span> h, <span class="at">dof =</span> K)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-22" data-target-annotation="1">1</dt>
@@ -874,10 +877,10 @@ data_test <- data |>
 <div class="tab-content" data-group="series">
 <div id="tabset-4-1">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a>hare_fit <span class="sc">|&gt;</span></span>
-<span id="cb15-2"><a></a>  <span class="fu">augment</span>() <span class="sc">|&gt;</span></span>
-<span id="cb15-3"><a></a>  <span class="fu">filter</span>(.model <span class="sc">==</span> <span class="st">"naive"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb15-4"><a></a>  <span class="fu">features</span>(.innov, ljung_box, <span class="at">lag =</span> <span class="dv">10</span>, <span class="at">dof =</span> <span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a aria-label="1"></a>hare_fit <span class="sc">|&gt;</span></span>
+<span id="cb15-2"><a aria-label="2"></a>  <span class="fu">augment</span>() <span class="sc">|&gt;</span></span>
+<span id="cb15-3"><a aria-label="3"></a>  <span class="fu">filter</span>(.model <span class="sc">==</span> <span class="st">"naive"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb15-4"><a aria-label="4"></a>  <span class="fu">features</span>(.innov, ljung_box, <span class="at">lag =</span> <span class="dv">10</span>, <span class="at">dof =</span> <span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -889,10 +892,10 @@ data_test <- data |>
 </div>
 <div id="tabset-4-2">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a>beer_fit <span class="sc">|&gt;</span></span>
-<span id="cb16-2"><a></a>  <span class="fu">augment</span>() <span class="sc">|&gt;</span></span>
-<span id="cb16-3"><a></a>  <span class="fu">filter</span>(.model <span class="sc">==</span> <span class="st">"snaive"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb16-4"><a></a>  <span class="fu">features</span>(.innov, ljung_box, <span class="at">lag =</span> <span class="dv">8</span>, <span class="at">dof =</span> <span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a aria-label="1"></a>beer_fit <span class="sc">|&gt;</span></span>
+<span id="cb16-2"><a aria-label="2"></a>  <span class="fu">augment</span>() <span class="sc">|&gt;</span></span>
+<span id="cb16-3"><a aria-label="3"></a>  <span class="fu">filter</span>(.model <span class="sc">==</span> <span class="st">"snaive"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb16-4"><a aria-label="4"></a>  <span class="fu">features</span>(.innov, ljung_box, <span class="at">lag =</span> <span class="dv">8</span>, <span class="at">dof =</span> <span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -904,10 +907,10 @@ data_test <- data |>
 </div>
 <div id="tabset-4-3">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a>mexico_fit <span class="sc">|&gt;</span></span>
-<span id="cb17-2"><a></a>  <span class="fu">augment</span>() <span class="sc">|&gt;</span></span>
-<span id="cb17-3"><a></a>  <span class="fu">filter</span>(.model <span class="sc">==</span> <span class="st">"drift"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb17-4"><a></a>  <span class="fu">features</span>(.innov, ljung_box, <span class="at">lag =</span> <span class="dv">10</span>, <span class="at">dof =</span> <span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a aria-label="1"></a>mexico_fit <span class="sc">|&gt;</span></span>
+<span id="cb17-2"><a aria-label="2"></a>  <span class="fu">augment</span>() <span class="sc">|&gt;</span></span>
+<span id="cb17-3"><a aria-label="3"></a>  <span class="fu">filter</span>(.model <span class="sc">==</span> <span class="st">"drift"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb17-4"><a aria-label="4"></a>  <span class="fu">features</span>(.innov, ljung_box, <span class="at">lag =</span> <span class="dv">10</span>, <span class="at">dof =</span> <span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -919,10 +922,10 @@ data_test <- data |>
 </div>
 <div id="tabset-4-4">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a></a>gas_fit <span class="sc">|&gt;</span></span>
-<span id="cb18-2"><a></a>  <span class="fu">augment</span>() <span class="sc">|&gt;</span></span>
-<span id="cb18-3"><a></a>  <span class="fu">filter</span>(.model <span class="sc">==</span> <span class="st">"snaive"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb18-4"><a></a>  <span class="fu">features</span>(.innov, ljung_box, <span class="at">lag =</span> <span class="dv">8</span>, <span class="at">dof =</span> <span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a aria-label="1"></a>gas_fit <span class="sc">|&gt;</span></span>
+<span id="cb18-2"><a aria-label="2"></a>  <span class="fu">augment</span>() <span class="sc">|&gt;</span></span>
+<span id="cb18-3"><a aria-label="3"></a>  <span class="fu">filter</span>(.model <span class="sc">==</span> <span class="st">"snaive"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb18-4"><a aria-label="4"></a>  <span class="fu">features</span>(.innov, ljung_box, <span class="at">lag =</span> <span class="dv">8</span>, <span class="at">dof =</span> <span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -999,8 +1002,8 @@ data_test <- data |>
 <h2>Computing accuracy</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-1" data-llms-code-original="data_fc |>
-  accuracy(data)    #<1>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1"></a>data_fc <span class="sc">|&gt;</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1">1</button><span id="annotated-cell-1-2" class="code-annotation-target"><a href="#annotated-cell-1-2"></a>  <span class="fu">accuracy</span>(data)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+  accuracy(data)    #<1>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1" aria-label="1"></a>data_fc <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1">1</button><span id="annotated-cell-1-2" class="code-annotation-target"><a href="#annotated-cell-1-2" aria-label="2"></a>  <span class="fu">accuracy</span>(data)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-1" data-target-annotation="1">1</dt>
@@ -1015,10 +1018,10 @@ data_test <- data |>
 <div class="tab-content" data-group="series">
 <div id="tabset-5-1">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a>hare_fc <span class="sc">|&gt;</span></span>
-<span id="cb19-2"><a></a>  <span class="fu">accuracy</span>(pelt) <span class="sc">|&gt;</span></span>
-<span id="cb19-3"><a></a>  <span class="fu">select</span>(.model, RMSE, MAE, MAPE, MASE, RMSSE) <span class="sc">|&gt;</span></span>
-<span id="cb19-4"><a></a>  <span class="fu">arrange</span>(RMSSE)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a aria-label="1"></a>hare_fc <span class="sc">|&gt;</span></span>
+<span id="cb19-2"><a aria-label="2"></a>  <span class="fu">accuracy</span>(pelt) <span class="sc">|&gt;</span></span>
+<span id="cb19-3"><a aria-label="3"></a>  <span class="fu">select</span>(.model, RMSE, MAE, MAPE, MASE, RMSSE) <span class="sc">|&gt;</span></span>
+<span id="cb19-4"><a aria-label="4"></a>  <span class="fu">arrange</span>(RMSSE)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -1030,10 +1033,10 @@ data_test <- data |>
 </div>
 <div id="tabset-5-2">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a></a>beer_fc <span class="sc">|&gt;</span></span>
-<span id="cb20-2"><a></a>  <span class="fu">accuracy</span>(beer) <span class="sc">|&gt;</span></span>
-<span id="cb20-3"><a></a>  <span class="fu">select</span>(.model, RMSE, MAE, MAPE, MASE, RMSSE) <span class="sc">|&gt;</span></span>
-<span id="cb20-4"><a></a>  <span class="fu">arrange</span>(RMSSE)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a aria-label="1"></a>beer_fc <span class="sc">|&gt;</span></span>
+<span id="cb20-2"><a aria-label="2"></a>  <span class="fu">accuracy</span>(beer) <span class="sc">|&gt;</span></span>
+<span id="cb20-3"><a aria-label="3"></a>  <span class="fu">select</span>(.model, RMSE, MAE, MAPE, MASE, RMSSE) <span class="sc">|&gt;</span></span>
+<span id="cb20-4"><a aria-label="4"></a>  <span class="fu">arrange</span>(RMSSE)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -1045,10 +1048,10 @@ data_test <- data |>
 </div>
 <div id="tabset-5-3">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a></a>mexico_fc <span class="sc">|&gt;</span></span>
-<span id="cb21-2"><a></a>  <span class="fu">accuracy</span>(mexico) <span class="sc">|&gt;</span></span>
-<span id="cb21-3"><a></a>  <span class="fu">select</span>(.model, RMSE, MAE, MAPE, MASE, RMSSE) <span class="sc">|&gt;</span></span>
-<span id="cb21-4"><a></a>  <span class="fu">arrange</span>(RMSSE)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a aria-label="1"></a>mexico_fc <span class="sc">|&gt;</span></span>
+<span id="cb21-2"><a aria-label="2"></a>  <span class="fu">accuracy</span>(mexico) <span class="sc">|&gt;</span></span>
+<span id="cb21-3"><a aria-label="3"></a>  <span class="fu">select</span>(.model, RMSE, MAE, MAPE, MASE, RMSSE) <span class="sc">|&gt;</span></span>
+<span id="cb21-4"><a aria-label="4"></a>  <span class="fu">arrange</span>(RMSSE)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -1060,10 +1063,10 @@ data_test <- data |>
 </div>
 <div id="tabset-5-4">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a></a>gas_fc <span class="sc">|&gt;</span></span>
-<span id="cb22-2"><a></a>  <span class="fu">accuracy</span>(aus_production) <span class="sc">|&gt;</span></span>
-<span id="cb22-3"><a></a>  <span class="fu">select</span>(.model, RMSE, MAE, MAPE, MASE, RMSSE) <span class="sc">|&gt;</span></span>
-<span id="cb22-4"><a></a>  <span class="fu">arrange</span>(RMSSE)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a aria-label="1"></a>gas_fc <span class="sc">|&gt;</span></span>
+<span id="cb22-2"><a aria-label="2"></a>  <span class="fu">accuracy</span>(aus_production) <span class="sc">|&gt;</span></span>
+<span id="cb22-3"><a aria-label="3"></a>  <span class="fu">select</span>(.model, RMSE, MAE, MAPE, MASE, RMSSE) <span class="sc">|&gt;</span></span>
+<span id="cb22-4"><a aria-label="4"></a>  <span class="fu">arrange</span>(RMSSE)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -1085,16 +1088,16 @@ data_test <- data |>
 <div class="tab-content" data-group="series">
 <div id="tabset-6-1">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a></a>hare_final_fit <span class="ot">&lt;-</span> pelt <span class="sc">|&gt;</span></span>
-<span id="cb23-2"><a></a>  <span class="fu">model</span>(<span class="at">naive =</span> <span class="fu">NAIVE</span>(Hare))</span>
-<span id="cb23-3"><a></a></span>
-<span id="cb23-4"><a></a>hare_final_fc <span class="ot">&lt;-</span> hare_final_fit <span class="sc">|&gt;</span></span>
-<span id="cb23-5"><a></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">15</span>)</span>
-<span id="cb23-6"><a></a></span>
-<span id="cb23-7"><a></a>hare_refit_p <span class="ot">&lt;-</span> hare_final_fc <span class="sc">|&gt;</span></span>
-<span id="cb23-8"><a></a>  <span class="fu">autoplot</span>(pelt) <span class="sc">+</span></span>
-<span id="cb23-9"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Hare pelts — NAIVE forecast (refit on full data)"</span>,</span>
-<span id="cb23-10"><a></a>       <span class="at">y =</span> <span class="st">"Number of pelts (thousands)"</span>, <span class="at">x =</span> <span class="cn">NULL</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a aria-label="1"></a>hare_final_fit <span class="ot">&lt;-</span> pelt <span class="sc">|&gt;</span></span>
+<span id="cb23-2"><a aria-label="2"></a>  <span class="fu">model</span>(<span class="at">naive =</span> <span class="fu">NAIVE</span>(Hare))</span>
+<span id="cb23-3"><a aria-label="3"></a></span>
+<span id="cb23-4"><a aria-label="4"></a>hare_final_fc <span class="ot">&lt;-</span> hare_final_fit <span class="sc">|&gt;</span></span>
+<span id="cb23-5"><a aria-label="5"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">15</span>)</span>
+<span id="cb23-6"><a aria-label="6"></a></span>
+<span id="cb23-7"><a aria-label="7"></a>hare_refit_p <span class="ot">&lt;-</span> hare_final_fc <span class="sc">|&gt;</span></span>
+<span id="cb23-8"><a aria-label="8"></a>  <span class="fu">autoplot</span>(pelt) <span class="sc">+</span></span>
+<span id="cb23-9"><a aria-label="9"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Hare pelts — NAIVE forecast (refit on full data)"</span>,</span>
+<span id="cb23-10"><a aria-label="10"></a>       <span class="at">y =</span> <span class="st">"Number of pelts (thousands)"</span>, <span class="at">x =</span> <span class="cn">NULL</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
 <div class="cell-output-display">
@@ -1108,16 +1111,16 @@ data_test <- data |>
 </div>
 <div id="tabset-6-2">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a></a>beer_final_fit <span class="ot">&lt;-</span> beer <span class="sc">|&gt;</span></span>
-<span id="cb24-2"><a></a>  <span class="fu">model</span>(<span class="at">snaive =</span> <span class="fu">SNAIVE</span>(Beer))</span>
-<span id="cb24-3"><a></a></span>
-<span id="cb24-4"><a></a>beer_final_fc <span class="ot">&lt;-</span> beer_final_fit <span class="sc">|&gt;</span></span>
-<span id="cb24-5"><a></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"2 years"</span>)</span>
-<span id="cb24-6"><a></a></span>
-<span id="cb24-7"><a></a>beer_refit_p <span class="ot">&lt;-</span> beer_final_fc <span class="sc">|&gt;</span></span>
-<span id="cb24-8"><a></a>  <span class="fu">autoplot</span>(beer) <span class="sc">+</span></span>
-<span id="cb24-9"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Beer production — SNAIVE forecast (refit on full data)"</span>,</span>
-<span id="cb24-10"><a></a>       <span class="at">y =</span> <span class="st">"Megalitres"</span>, <span class="at">x =</span> <span class="cn">NULL</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a aria-label="1"></a>beer_final_fit <span class="ot">&lt;-</span> beer <span class="sc">|&gt;</span></span>
+<span id="cb24-2"><a aria-label="2"></a>  <span class="fu">model</span>(<span class="at">snaive =</span> <span class="fu">SNAIVE</span>(Beer))</span>
+<span id="cb24-3"><a aria-label="3"></a></span>
+<span id="cb24-4"><a aria-label="4"></a>beer_final_fc <span class="ot">&lt;-</span> beer_final_fit <span class="sc">|&gt;</span></span>
+<span id="cb24-5"><a aria-label="5"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"2 years"</span>)</span>
+<span id="cb24-6"><a aria-label="6"></a></span>
+<span id="cb24-7"><a aria-label="7"></a>beer_refit_p <span class="ot">&lt;-</span> beer_final_fc <span class="sc">|&gt;</span></span>
+<span id="cb24-8"><a aria-label="8"></a>  <span class="fu">autoplot</span>(beer) <span class="sc">+</span></span>
+<span id="cb24-9"><a aria-label="9"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Beer production — SNAIVE forecast (refit on full data)"</span>,</span>
+<span id="cb24-10"><a aria-label="10"></a>       <span class="at">y =</span> <span class="st">"Megalitres"</span>, <span class="at">x =</span> <span class="cn">NULL</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
 <div class="cell-output-display">
@@ -1131,16 +1134,16 @@ data_test <- data |>
 </div>
 <div id="tabset-6-3">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a></a>mexico_final_fit <span class="ot">&lt;-</span> mexico <span class="sc">|&gt;</span></span>
-<span id="cb25-2"><a></a>  <span class="fu">model</span>(<span class="at">drift =</span> <span class="fu">RW</span>(GDP <span class="sc">~</span> <span class="fu">drift</span>()))</span>
-<span id="cb25-3"><a></a></span>
-<span id="cb25-4"><a></a>mexico_final_fc <span class="ot">&lt;-</span> mexico_final_fit <span class="sc">|&gt;</span></span>
-<span id="cb25-5"><a></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"5 years"</span>)</span>
-<span id="cb25-6"><a></a></span>
-<span id="cb25-7"><a></a>gdp_refit_p <span class="ot">&lt;-</span> mexico_final_fc <span class="sc">|&gt;</span></span>
-<span id="cb25-8"><a></a>  <span class="fu">autoplot</span>(mexico) <span class="sc">+</span></span>
-<span id="cb25-9"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Mexico GDP — Drift forecast (refit on full data)"</span>,</span>
-<span id="cb25-10"><a></a>       <span class="at">y =</span> <span class="st">"GDP (USD)"</span>, <span class="at">x =</span> <span class="cn">NULL</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a aria-label="1"></a>mexico_final_fit <span class="ot">&lt;-</span> mexico <span class="sc">|&gt;</span></span>
+<span id="cb25-2"><a aria-label="2"></a>  <span class="fu">model</span>(<span class="at">drift =</span> <span class="fu">RW</span>(GDP <span class="sc">~</span> <span class="fu">drift</span>()))</span>
+<span id="cb25-3"><a aria-label="3"></a></span>
+<span id="cb25-4"><a aria-label="4"></a>mexico_final_fc <span class="ot">&lt;-</span> mexico_final_fit <span class="sc">|&gt;</span></span>
+<span id="cb25-5"><a aria-label="5"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"5 years"</span>)</span>
+<span id="cb25-6"><a aria-label="6"></a></span>
+<span id="cb25-7"><a aria-label="7"></a>gdp_refit_p <span class="ot">&lt;-</span> mexico_final_fc <span class="sc">|&gt;</span></span>
+<span id="cb25-8"><a aria-label="8"></a>  <span class="fu">autoplot</span>(mexico) <span class="sc">+</span></span>
+<span id="cb25-9"><a aria-label="9"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Mexico GDP — Drift forecast (refit on full data)"</span>,</span>
+<span id="cb25-10"><a aria-label="10"></a>       <span class="at">y =</span> <span class="st">"GDP (USD)"</span>, <span class="at">x =</span> <span class="cn">NULL</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
 <div class="cell-output-display">

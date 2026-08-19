@@ -2,7 +2,17 @@
 
 Modified
 
-July 9, 2026
+August 19, 2026
+
+> **IMPORTANT:**
+>
+> `prophet` is not part of the initial course setup. If you have not installed it yet, run this once in the console:
+>
+> ``` r
+> pak::pak("fable.prophet")
+> ```
+>
+> See [Setup](../../../../docs/more/r-tools/setup.llms.md) if you run into trouble.
 
 Code
 

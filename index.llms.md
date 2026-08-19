@@ -1,102 +1,81 @@
+# Time Series Forecasting
+
 [![](images/narsil_cover.webp)](images/narsil_cover.webp)
 
-Welcome to the Time Series Forecasting course at ITESO. Here you will find all the materials and resources needed for the course.
+Course materials for **Time Series Forecasting** at ITESO. Everything you need to follow the course lives here: lessons, in-class exercises, and reference material.
 
-# 1 Time Series Forecasting with R
+Grades, deadlines, and submissions live in Canvas.
 
-Modern forecasting workflows using [**tidy data principles**](https://r4ds.hadley.nz/data-tidy.html#sec-tidy-data) with the **tidyverts** ecosystem.
+## How the course is built
 
-## 1.1 What you’ll learn
+This course is not a catalogue of forecasting methods. You build **one model** and improve it across four modules, and every new technique has to earn its place by beating what you already had.
 
-- Build tidy time series with [**tsibble**](https://tsibble.tidyverts.org) and modern data pipelines
-- Create forecasts with **ETS**, **ARIMA**, and regression-based models via [**fable**](https://fable.tidyverts.org/)
-- Engineer time features and diagnose models with [**feasts**](https://feasts.tidyverts.org/))
-- Evaluate with time-aware resampling and communicate uncertainty
-- Scale to multiple series and hierarchies when needed
+### Module 1 — Decomposition baseline
 
-> **TIP:**
->
-> Forecasting improves with *iteration*: start simple, validate honestly, and refine. Keep a tight loop of **fit → diagnose → evaluate → communicate**.
+Understand the series, split it into components, and produce your first honest forecast: `STL + SNAIVE + Drift`. Simple, interpretable, and hard to beat.
 
-## 1.2 Start here
+### Module 2 — ETS & ARIMA filters
+
+Replace the naive pieces with statistical filters. Same architecture, smarter trend-cycle: `STL + ETS` or `STL + ARIMA`.
+
+### Module 3 — Exogenous variables
+
+Your model starts to know what is happening outside the series: predictors, events, and regression with ARIMA errors.
+
+### Module 4 — Robustness and scale
+
+Real data is messy. Multiple seasonalities, outliers, bootstrapping, combinations, and forecasting hundreds of series at once.
+
+[Browse the modules →](docs/modules/index.llms.md)
+
+## Start here
 
 > **NOTE:**
 >
-> **New to the site?** Use the links below to jump in.
+> 1.  Work through [Setup](docs/more/r-tools/setup.llms.md) — install R and Positron, and get your packages ready.
+> 2.  Start with [Module 1.0 — Introduction](docs/modules/module_1/00_intro/intro.llms.md).
+> 3.  Practice with the [Exercises](docs/exercises/index.llms.md).
 
-- [Modules](docs/modules/index.llms.md)
-- [In-class exercises](docs/exercises/index.llms.md)
+## What you will learn
 
-------------------------------------------------------------------------
+- Build tidy time series with [tsibble](https://tsibble.tidyverts.org) and reproducible data pipelines
+- Decompose series into trend-cycle, seasonal, and remainder components
+- Fit and compare **benchmark**, **ETS**, **ARIMA**, **regression**, and **Prophet** models with [fable](https://fable.tidyverts.org/)
+- Diagnose models honestly: residual analysis, information criteria, and time-aware evaluation
+- Forecast at scale: multiple seasonalities, model combinations, and hierarchical structures
 
-## 1.3 Course map
-
-### 1.3.1 1. Foundations
-
-- tidy data + time indexes
-- `tsibble` keys, gaps, and intervals
-
-### 1.3.2 2. Patterns & features
-
-- seasonality, trend, decomposition
-- diagnostics and features (`feasts`)
-
-### 1.3.3 3. Core forecasting models
-
-- ETS + ARIMA
-- model comparison and selection
-
-### 1.3.4 4. Regression workflows
-
-- time features, events, and covariates
-- forecast reconciliation ideas
-
-### 1.3.5 5. Evaluation & communication
-
-- time series CV and backtesting
-- uncertainty, intervals, and narratives
-
-### 1.3.6 6. Multiple series
-
-- grouped models
-- hierarchies and reconciliation
-
-------------------------------------------------------------------------
-
-## 1.4 Quick setup check
-
-Run this once after installing packages to confirm your environment.
-
-Code
-
-``` r
-library(tidyverse)
-library(tsibble)
-library(fable)
-library(feasts)
-
-sessionInfo()
-```
+> **TIP:**
+>
+> Forecasting improves with *iteration*: start simple, validate honestly, refine. Keep a tight loop of **fit → diagnose → evaluate → communicate**.
 
 > **WARNING:**
 >
-> - **Data leakage**: don’t let future information sneak into features.
-> - **Random CV**: use **time-aware** resampling/backtesting.
-> - **Overfitting**: a more complex model isn’t automatically better.
+> - **Data leakage** — future information sneaking into your predictors.
+> - **Random cross-validation** — time series need time-aware resampling.
+> - **Complexity worship** — a more elaborate model is not automatically better. Sometimes the baseline wins, and that is a result, not a failure.
 
-------------------------------------------------------------------------
+## Tools we use
 
-## 1.5 Primary toolchain
+|  |  |
+|----|----|
+| **Language** | R, with the native pipe `\|>` |
+| **Editor** | [Positron](https://positron.posit.co/) — the IDE we use in class |
+| **Packages** | [tidyverse](https://www.tidyverse.org/) for wrangling, [fpp3](https://github.com/robjhyndman/fpp3-package) for the whole tidyverts stack (`tsibble`, `fable`, `feasts`) |
+| **Documents** | [Quarto](https://quarto.org/), bundled with Positron |
+| **Textbook** | [*Forecasting: Principles and Practice* (3rd ed.)](https://otexts.com/fpp3/) — free online |
 
-We’ll use a tidy workflow centered on:
+Installation instructions are in [Setup](docs/more/r-tools/setup.llms.md).
 
-- **tidyverse** for data wrangling
-- **tsibble** for time-aware tibbles
-- **fable** for modeling and forecasting
-- **feasts** for decomposition, features, and diagnostics
+## Using AI in this course
 
-Recommended reading: [*Forecasting: Principles and Practice*](https://otexts.com/fpp3/) (free online).
+AI assistants are part of this course by design. **Elendil TA** exists so you have course-aware help: it knows the syllabus, the notation, and the `fable` workflow we use.
 
-------------------------------------------------------------------------
+Use it to debug errors, understand a concept, or review your code. The line is simple:
+
+> **IMPORTANT:**
+>
+> You must be able to **explain, defend, and modify** anything you submit. If you cannot, it is not yours.
+
+Get Elendil TA as a [Claude Skill](docs/more/elendil-ta/index.llms.md) or as a [Custom GPT](https://chatgpt.com/g/g-68e6907c12a48191a07fb0888500a7fa-elendil-ta).
 
 Back to top

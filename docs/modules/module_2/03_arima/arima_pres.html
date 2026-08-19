@@ -9,11 +9,11 @@
 <script src="../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../../../../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-6d40f8af7092f34acea1908532066003.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../../../site_libs/quarto-html/quarto-syntax-highlighting-eec68b17241c1efd3eae2de50d816e3e.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.9.38">
+  <meta name="generator" content="quarto-1.10.18">
 
   <meta name="author" content="">
   <title>Time Series Forecasting – ARIMA Models</title>
@@ -26,10 +26,13 @@
     /* Default styles provided by pandoc.
     ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
     */
-    code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
     ul.task-list li input[type="checkbox"] {
@@ -441,16 +444,16 @@ y'_t = c + \phi_1 y'_{t-1} + \cdots + \phi_p y'_{t-p} + \theta_1 \varepsilon_{t-
 
 glance(us_change_fit) |>
   arrange(AICc) |>
-  select(.model, AIC, AICc, BIC)"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-15-1"><a href="#annotated-cell-15-1"></a>us_change_fit <span class="ot">&lt;-</span> us_change <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-15-2"><a href="#annotated-cell-15-2"></a>  <span class="fu">model</span>(</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-15" data-target-annotation="1">1</button><span id="annotated-cell-15-3" class="code-annotation-target"><a href="#annotated-cell-15-3"></a>    <span class="at">ar1 =</span> <span class="fu">ARIMA</span>(Consumption <span class="sc">~</span> <span class="fu">pdq</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>) <span class="sc">+</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)),</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-15" data-target-annotation="2">2</button><span id="annotated-cell-15-4" class="code-annotation-target"><a href="#annotated-cell-15-4"></a>    <span class="at">ar2 =</span> <span class="fu">ARIMA</span>(Consumption <span class="sc">~</span> <span class="fu">pdq</span>(<span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">0</span>) <span class="sc">+</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)),</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-15" data-target-annotation="3">3</button><span id="annotated-cell-15-5" class="code-annotation-target"><a href="#annotated-cell-15-5"></a>    <span class="at">ar3 =</span> <span class="fu">ARIMA</span>(Consumption <span class="sc">~</span> <span class="fu">pdq</span>(<span class="dv">3</span>, <span class="dv">0</span>, <span class="dv">0</span>) <span class="sc">+</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>))</span>
-<span id="annotated-cell-15-6"><a href="#annotated-cell-15-6"></a>  )</span>
-<span id="annotated-cell-15-7"><a href="#annotated-cell-15-7"></a></span>
-<span id="annotated-cell-15-8"><a href="#annotated-cell-15-8"></a><span class="fu">glance</span>(us_change_fit) <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-15-9"><a href="#annotated-cell-15-9"></a>  <span class="fu">arrange</span>(AICc) <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-15-10"><a href="#annotated-cell-15-10"></a>  <span class="fu">select</span>(.model, AIC, AICc, BIC)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+  select(.model, AIC, AICc, BIC)"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-15-1"><a href="#annotated-cell-15-1" aria-label="1"></a>us_change_fit <span class="ot">&lt;-</span> us_change <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-15-2"><a href="#annotated-cell-15-2" aria-label="2"></a>  <span class="fu">model</span>(</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-15" data-target-annotation="1">1</button><span id="annotated-cell-15-3" class="code-annotation-target"><a href="#annotated-cell-15-3" aria-label="3"></a>    <span class="at">ar1 =</span> <span class="fu">ARIMA</span>(Consumption <span class="sc">~</span> <span class="fu">pdq</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>) <span class="sc">+</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)),</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-15" data-target-annotation="2">2</button><span id="annotated-cell-15-4" class="code-annotation-target"><a href="#annotated-cell-15-4" aria-label="4"></a>    <span class="at">ar2 =</span> <span class="fu">ARIMA</span>(Consumption <span class="sc">~</span> <span class="fu">pdq</span>(<span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">0</span>) <span class="sc">+</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)),</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-15" data-target-annotation="3">3</button><span id="annotated-cell-15-5" class="code-annotation-target"><a href="#annotated-cell-15-5" aria-label="5"></a>    <span class="at">ar3 =</span> <span class="fu">ARIMA</span>(Consumption <span class="sc">~</span> <span class="fu">pdq</span>(<span class="dv">3</span>, <span class="dv">0</span>, <span class="dv">0</span>) <span class="sc">+</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>))</span>
+<span id="annotated-cell-15-6"><a href="#annotated-cell-15-6" aria-label="6"></a>  )</span>
+<span id="annotated-cell-15-7"><a href="#annotated-cell-15-7" aria-label="7"></a></span>
+<span id="annotated-cell-15-8"><a href="#annotated-cell-15-8" aria-label="8"></a><span class="fu">glance</span>(us_change_fit) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-15-9"><a href="#annotated-cell-15-9" aria-label="9"></a>  <span class="fu">arrange</span>(AICc) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-15-10"><a href="#annotated-cell-15-10" aria-label="10"></a>  <span class="fu">select</span>(.model, AIC, AICc, BIC)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-15" data-target-annotation="1">1</dt>
@@ -558,10 +561,10 @@ glance(us_change_fit) |>
 <h2>Residual Diagnostics</h2>
 <p>We have already used the Ljung-Box test to check residuals from benchmark models. When applying it to <strong>ARIMA models</strong>, there is one important adjustment: you must account for the degrees of freedom consumed by the estimated AR and MA parameters.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">theme_narsil</span>()</span>
-<span id="cb1-2"><a></a>us_change_fit <span class="sc">|&gt;</span></span>
-<span id="cb1-3"><a></a>  <span class="fu">select</span>(ar3) <span class="sc">|&gt;</span></span>
-<span id="cb1-4"><a></a>  <span class="fu">gg_tsresiduals</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a aria-label="1"></a><span class="fu">theme_narsil</span>()</span>
+<span id="cb1-2"><a aria-label="2"></a>us_change_fit <span class="sc">|&gt;</span></span>
+<span id="cb1-3"><a aria-label="3"></a>  <span class="fu">select</span>(ar3) <span class="sc">|&gt;</span></span>
+<span id="cb1-4"><a aria-label="4"></a>  <span class="fu">gg_tsresiduals</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure>
@@ -580,16 +583,16 @@ glance(us_change_fit) |>
                    select(ar3) |>
                    coefficients() |>
                    filter(str_detect(term, &quot;^ar|^ma&quot;)) |>
-                   nrow())"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1"></a>us_change_fit <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-2-2"><a href="#annotated-cell-2-2"></a>  <span class="fu">select</span>(ar3) <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-2-3"><a href="#annotated-cell-2-3"></a>  <span class="fu">augment</span>() <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-2-4"><a href="#annotated-cell-2-4"></a>  <span class="fu">features</span>(.innov, ljung_box,</span>
-<span id="annotated-cell-2-5"><a href="#annotated-cell-2-5"></a>           <span class="at">lag =</span> <span class="dv">10</span>,</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1">1</button><span id="annotated-cell-2-6" class="code-annotation-target"><a href="#annotated-cell-2-6"></a>           <span class="at">dof =</span> us_change_fit <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-2-7"><a href="#annotated-cell-2-7"></a>                   <span class="fu">select</span>(ar3) <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-2-8"><a href="#annotated-cell-2-8"></a>                   <span class="fu">coefficients</span>() <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-2-9"><a href="#annotated-cell-2-9"></a>                   <span class="fu">filter</span>(<span class="fu">str_detect</span>(term, <span class="st">"^ar|^ma"</span>)) <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-2-10"><a href="#annotated-cell-2-10"></a>                   <span class="fu">nrow</span>())</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+                   nrow())"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1" aria-label="1"></a>us_change_fit <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-2-2"><a href="#annotated-cell-2-2" aria-label="2"></a>  <span class="fu">select</span>(ar3) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-2-3"><a href="#annotated-cell-2-3" aria-label="3"></a>  <span class="fu">augment</span>() <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-2-4"><a href="#annotated-cell-2-4" aria-label="4"></a>  <span class="fu">features</span>(.innov, ljung_box,</span>
+<span id="annotated-cell-2-5"><a href="#annotated-cell-2-5" aria-label="5"></a>           <span class="at">lag =</span> <span class="dv">10</span>,</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1">1</button><span id="annotated-cell-2-6" class="code-annotation-target"><a href="#annotated-cell-2-6" aria-label="6"></a>           <span class="at">dof =</span> us_change_fit <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-2-7"><a href="#annotated-cell-2-7" aria-label="7"></a>                   <span class="fu">select</span>(ar3) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-2-8"><a href="#annotated-cell-2-8" aria-label="8"></a>                   <span class="fu">coefficients</span>() <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-2-9"><a href="#annotated-cell-2-9" aria-label="9"></a>                   <span class="fu">filter</span>(<span class="fu">str_detect</span>(term, <span class="st">"^ar|^ma"</span>)) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-2-10"><a href="#annotated-cell-2-10" aria-label="10"></a>                   <span class="fu">nrow</span>())</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-2" data-target-annotation="1">1</dt>
@@ -611,14 +614,14 @@ glance(us_change_fit) |>
 <h2>Forecasting</h2>
 <p>Once the model passes residual diagnostics, forecasting uses the same <code>forecast()</code> workflow as all other <code>fable</code> models:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a>us_change_forecast_p <span class="ot">&lt;-</span> us_change_fit <span class="sc">|&gt;</span></span>
-<span id="cb2-2"><a></a>  <span class="fu">select</span>(ar3) <span class="sc">|&gt;</span></span>
-<span id="cb2-3"><a></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">10</span>) <span class="sc">|&gt;</span></span>
-<span id="cb2-4"><a></a>  <span class="fu">autoplot</span>(us_change <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">year</span>(Quarter) <span class="sc">&gt;=</span> <span class="dv">2005</span>)) <span class="sc">+</span></span>
-<span id="cb2-5"><a></a>  <span class="fu">labs</span>(</span>
-<span id="cb2-6"><a></a>    <span class="at">title =</span> <span class="st">"US consumption — AR(3) forecast"</span>,</span>
-<span id="cb2-7"><a></a>    <span class="at">y =</span> <span class="st">"% change"</span></span>
-<span id="cb2-8"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a aria-label="1"></a>us_change_forecast_p <span class="ot">&lt;-</span> us_change_fit <span class="sc">|&gt;</span></span>
+<span id="cb2-2"><a aria-label="2"></a>  <span class="fu">select</span>(ar3) <span class="sc">|&gt;</span></span>
+<span id="cb2-3"><a aria-label="3"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">10</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-4"><a aria-label="4"></a>  <span class="fu">autoplot</span>(us_change <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">year</span>(Quarter) <span class="sc">&gt;=</span> <span class="dv">2005</span>)) <span class="sc">+</span></span>
+<span id="cb2-5"><a aria-label="5"></a>  <span class="fu">labs</span>(</span>
+<span id="cb2-6"><a aria-label="6"></a>    <span class="at">title =</span> <span class="st">"US consumption — AR(3) forecast"</span>,</span>
+<span id="cb2-7"><a aria-label="7"></a>    <span class="at">y =</span> <span class="st">"% change"</span></span>
+<span id="cb2-8"><a aria-label="8"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
 <div class="cell-output-display">
@@ -685,21 +688,21 @@ glance(us_change_fit) |>
 
 glance(us_change_fit) |>
   arrange(AICc) |>
-  select(.model, AIC, AICc, BIC)"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-16-1"><a href="#annotated-cell-16-1"></a>us_change_fit <span class="ot">&lt;-</span> us_change <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-16-2"><a href="#annotated-cell-16-2"></a>  <span class="fu">model</span>(</span>
-<span id="annotated-cell-16-3"><a href="#annotated-cell-16-3"></a>    <span class="at">ar1        =</span> <span class="fu">ARIMA</span>(Consumption <span class="sc">~</span> <span class="fu">pdq</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>) <span class="sc">+</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)),</span>
-<span id="annotated-cell-16-4"><a href="#annotated-cell-16-4"></a>    <span class="at">ar2        =</span> <span class="fu">ARIMA</span>(Consumption <span class="sc">~</span> <span class="fu">pdq</span>(<span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">0</span>) <span class="sc">+</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)),</span>
-<span id="annotated-cell-16-5"><a href="#annotated-cell-16-5"></a>    <span class="at">ar3        =</span> <span class="fu">ARIMA</span>(Consumption <span class="sc">~</span> <span class="fu">pdq</span>(<span class="dv">3</span>, <span class="dv">0</span>, <span class="dv">0</span>) <span class="sc">+</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)),</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-16" data-target-annotation="1">1</button><span id="annotated-cell-16-6" class="code-annotation-target"><a href="#annotated-cell-16-6"></a>    <span class="at">auto       =</span> <span class="fu">ARIMA</span>(Consumption <span class="sc">~</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)),</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-16" data-target-annotation="2">2</button><span id="annotated-cell-16-7" class="code-annotation-target"><a href="#annotated-cell-16-7"></a>    <span class="at">semi_auto  =</span> <span class="fu">ARIMA</span>(Consumption <span class="sc">~</span> <span class="fu">pdq</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="dv">0</span>, <span class="dv">0</span><span class="sc">:</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)),</span>
-<span id="annotated-cell-16-8"><a href="#annotated-cell-16-8"></a>    <span class="at">exhaustive =</span> <span class="fu">ARIMA</span>(Consumption <span class="sc">~</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>),</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-16" data-target-annotation="3">3</button><span id="annotated-cell-16-9" class="code-annotation-target"><a href="#annotated-cell-16-9"></a>                       <span class="at">stepwise      =</span> <span class="cn">FALSE</span>,</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-16" data-target-annotation="4">4</button><span id="annotated-cell-16-10" class="code-annotation-target"><a href="#annotated-cell-16-10"></a>                       <span class="at">approximation =</span> <span class="cn">FALSE</span>)</span>
-<span id="annotated-cell-16-11"><a href="#annotated-cell-16-11"></a>  )</span>
-<span id="annotated-cell-16-12"><a href="#annotated-cell-16-12"></a></span>
-<span id="annotated-cell-16-13"><a href="#annotated-cell-16-13"></a><span class="fu">glance</span>(us_change_fit) <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-16-14"><a href="#annotated-cell-16-14"></a>  <span class="fu">arrange</span>(AICc) <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-16-15"><a href="#annotated-cell-16-15"></a>  <span class="fu">select</span>(.model, AIC, AICc, BIC)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+  select(.model, AIC, AICc, BIC)"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-16-1"><a href="#annotated-cell-16-1" aria-label="1"></a>us_change_fit <span class="ot">&lt;-</span> us_change <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-16-2"><a href="#annotated-cell-16-2" aria-label="2"></a>  <span class="fu">model</span>(</span>
+<span id="annotated-cell-16-3"><a href="#annotated-cell-16-3" aria-label="3"></a>    <span class="at">ar1        =</span> <span class="fu">ARIMA</span>(Consumption <span class="sc">~</span> <span class="fu">pdq</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>) <span class="sc">+</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)),</span>
+<span id="annotated-cell-16-4"><a href="#annotated-cell-16-4" aria-label="4"></a>    <span class="at">ar2        =</span> <span class="fu">ARIMA</span>(Consumption <span class="sc">~</span> <span class="fu">pdq</span>(<span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">0</span>) <span class="sc">+</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)),</span>
+<span id="annotated-cell-16-5"><a href="#annotated-cell-16-5" aria-label="5"></a>    <span class="at">ar3        =</span> <span class="fu">ARIMA</span>(Consumption <span class="sc">~</span> <span class="fu">pdq</span>(<span class="dv">3</span>, <span class="dv">0</span>, <span class="dv">0</span>) <span class="sc">+</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)),</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-16" data-target-annotation="1">1</button><span id="annotated-cell-16-6" class="code-annotation-target"><a href="#annotated-cell-16-6" aria-label="6"></a>    <span class="at">auto       =</span> <span class="fu">ARIMA</span>(Consumption <span class="sc">~</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)),</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-16" data-target-annotation="2">2</button><span id="annotated-cell-16-7" class="code-annotation-target"><a href="#annotated-cell-16-7" aria-label="7"></a>    <span class="at">semi_auto  =</span> <span class="fu">ARIMA</span>(Consumption <span class="sc">~</span> <span class="fu">pdq</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="dv">0</span>, <span class="dv">0</span><span class="sc">:</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)),</span>
+<span id="annotated-cell-16-8"><a href="#annotated-cell-16-8" aria-label="8"></a>    <span class="at">exhaustive =</span> <span class="fu">ARIMA</span>(Consumption <span class="sc">~</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>),</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-16" data-target-annotation="3">3</button><span id="annotated-cell-16-9" class="code-annotation-target"><a href="#annotated-cell-16-9" aria-label="9"></a>                       <span class="at">stepwise      =</span> <span class="cn">FALSE</span>,</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-16" data-target-annotation="4">4</button><span id="annotated-cell-16-10" class="code-annotation-target"><a href="#annotated-cell-16-10" aria-label="10"></a>                       <span class="at">approximation =</span> <span class="cn">FALSE</span>)</span>
+<span id="annotated-cell-16-11"><a href="#annotated-cell-16-11" aria-label="11"></a>  )</span>
+<span id="annotated-cell-16-12"><a href="#annotated-cell-16-12" aria-label="12"></a></span>
+<span id="annotated-cell-16-13"><a href="#annotated-cell-16-13" aria-label="13"></a><span class="fu">glance</span>(us_change_fit) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-16-14"><a href="#annotated-cell-16-14" aria-label="14"></a>  <span class="fu">arrange</span>(AICc) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-16-15"><a href="#annotated-cell-16-15" aria-label="15"></a>  <span class="fu">select</span>(.model, AIC, AICc, BIC)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-16" data-target-annotation="1">1</dt>
@@ -778,9 +781,9 @@ glance(us_change_fit) |>
 <div class="callout-content">
 <p><code>stepwise = FALSE, approximation = FALSE</code> triggers a full search over all candidate models using exact likelihood. The difference in runtime can be dramatic:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>tictoc<span class="sc">::</span><span class="fu">tic</span>(<span class="st">"auto"</span>)</span>
-<span id="cb3-2"><a></a>us_change <span class="sc">|&gt;</span></span>
-<span id="cb3-3"><a></a>  <span class="fu">model</span>(<span class="fu">ARIMA</span>(Consumption <span class="sc">~</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a aria-label="1"></a>tictoc<span class="sc">::</span><span class="fu">tic</span>(<span class="st">"auto"</span>)</span>
+<span id="cb3-2"><a aria-label="2"></a>us_change <span class="sc">|&gt;</span></span>
+<span id="cb3-3"><a aria-label="3"></a>  <span class="fu">model</span>(<span class="fu">ARIMA</span>(Consumption <span class="sc">~</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -788,15 +791,15 @@ glance(us_change_fit) |>
   </script>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>tictoc<span class="sc">::</span><span class="fu">toc</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a aria-label="1"></a>tictoc<span class="sc">::</span><span class="fu">toc</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>auto: 0.09 sec elapsed</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>tictoc<span class="sc">::</span><span class="fu">tic</span>(<span class="st">"exhaustive"</span>)</span>
-<span id="cb6-2"><a></a>us_change <span class="sc">|&gt;</span></span>
-<span id="cb6-3"><a></a>  <span class="fu">model</span>(<span class="fu">ARIMA</span>(Consumption <span class="sc">~</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>),</span>
-<span id="cb6-4"><a></a>              <span class="at">stepwise      =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb6-5"><a></a>              <span class="at">approximation =</span> <span class="cn">FALSE</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a aria-label="1"></a>tictoc<span class="sc">::</span><span class="fu">tic</span>(<span class="st">"exhaustive"</span>)</span>
+<span id="cb6-2"><a aria-label="2"></a>us_change <span class="sc">|&gt;</span></span>
+<span id="cb6-3"><a aria-label="3"></a>  <span class="fu">model</span>(<span class="fu">ARIMA</span>(Consumption <span class="sc">~</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>),</span>
+<span id="cb6-4"><a aria-label="4"></a>              <span class="at">stepwise      =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb6-5"><a aria-label="5"></a>              <span class="at">approximation =</span> <span class="cn">FALSE</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -804,7 +807,7 @@ glance(us_change_fit) |>
   </script>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a>tictoc<span class="sc">::</span><span class="fu">toc</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a aria-label="1"></a>tictoc<span class="sc">::</span><span class="fu">toc</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>exhaustive: 0.58 sec elapsed</code></pre>
 </div>
@@ -834,17 +837,17 @@ glance(us_change_fit) |>
     )
   )
 
-report(mexretail_fit_stl_arima)"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-4-1"><a href="#annotated-cell-4-1"></a>mexretail_fit_stl_arima <span class="ot">&lt;-</span> mexretail <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-4-2"><a href="#annotated-cell-4-2"></a>  <span class="fu">model</span>(</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="1">1</button><span id="annotated-cell-4-3" class="code-annotation-target"><a href="#annotated-cell-4-3"></a>    <span class="at">stl_arima =</span> <span class="fu">decomposition_model</span>(</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="2">2</button><span id="annotated-cell-4-4" class="code-annotation-target"><a href="#annotated-cell-4-4"></a>      <span class="fu">STL</span>(<span class="fu">box_cox</span>(y, lambda) <span class="sc">~</span></span>
-<span id="annotated-cell-4-5"><a href="#annotated-cell-4-5"></a>            <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>),</span>
-<span id="annotated-cell-4-6"><a href="#annotated-cell-4-6"></a>          <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="3">3</button><span id="annotated-cell-4-7" class="code-annotation-target"><a href="#annotated-cell-4-7"></a>      <span class="fu">ARIMA</span>(season_adjust <span class="sc">~</span> <span class="fu">PDQ</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>))</span>
-<span id="annotated-cell-4-8"><a href="#annotated-cell-4-8"></a>    )</span>
-<span id="annotated-cell-4-9"><a href="#annotated-cell-4-9"></a>  )</span>
-<span id="annotated-cell-4-10"><a href="#annotated-cell-4-10"></a></span>
-<span id="annotated-cell-4-11"><a href="#annotated-cell-4-11"></a><span class="fu">report</span>(mexretail_fit_stl_arima)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+report(mexretail_fit_stl_arima)"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-4-1"><a href="#annotated-cell-4-1" aria-label="1"></a>mexretail_fit_stl_arima <span class="ot">&lt;-</span> mexretail <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-4-2"><a href="#annotated-cell-4-2" aria-label="2"></a>  <span class="fu">model</span>(</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="1">1</button><span id="annotated-cell-4-3" class="code-annotation-target"><a href="#annotated-cell-4-3" aria-label="3"></a>    <span class="at">stl_arima =</span> <span class="fu">decomposition_model</span>(</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="2">2</button><span id="annotated-cell-4-4" class="code-annotation-target"><a href="#annotated-cell-4-4" aria-label="4"></a>      <span class="fu">STL</span>(<span class="fu">box_cox</span>(y, lambda) <span class="sc">~</span></span>
+<span id="annotated-cell-4-5"><a href="#annotated-cell-4-5" aria-label="5"></a>            <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>),</span>
+<span id="annotated-cell-4-6"><a href="#annotated-cell-4-6" aria-label="6"></a>          <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="3">3</button><span id="annotated-cell-4-7" class="code-annotation-target"><a href="#annotated-cell-4-7" aria-label="7"></a>      <span class="fu">ARIMA</span>(season_adjust <span class="sc">~</span> <span class="fu">PDQ</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>))</span>
+<span id="annotated-cell-4-8"><a href="#annotated-cell-4-8" aria-label="8"></a>    )</span>
+<span id="annotated-cell-4-9"><a href="#annotated-cell-4-9" aria-label="9"></a>  )</span>
+<span id="annotated-cell-4-10"><a href="#annotated-cell-4-10" aria-label="10"></a></span>
+<span id="annotated-cell-4-11"><a href="#annotated-cell-4-11" aria-label="11"></a><span class="fu">report</span>(mexretail_fit_stl_arima)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-4" data-target-annotation="1">1</dt>
@@ -887,8 +890,8 @@ sigma^2: 0 </code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a><span class="fu">theme_narsil</span>()</span>
-<span id="cb10-2"><a></a>mexretail_fit_stl_arima <span class="sc">|&gt;</span> <span class="fu">gg_tsresiduals</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a aria-label="1"></a><span class="fu">theme_narsil</span>()</span>
+<span id="cb10-2"><a aria-label="2"></a>mexretail_fit_stl_arima <span class="sc">|&gt;</span> <span class="fu">gg_tsresiduals</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure>
@@ -898,13 +901,13 @@ sigma^2: 0 </code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>stl_arima_forecast_p <span class="ot">&lt;-</span> mexretail_fit_stl_arima <span class="sc">|&gt;</span></span>
-<span id="cb11-2"><a></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">24</span>) <span class="sc">|&gt;</span></span>
-<span id="cb11-3"><a></a>  <span class="fu">autoplot</span>(mexretail <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">year</span>(date) <span class="sc">&gt;=</span> <span class="dv">2015</span>)) <span class="sc">+</span></span>
-<span id="cb11-4"><a></a>  <span class="fu">labs</span>(</span>
-<span id="cb11-5"><a></a>    <span class="at">title =</span> <span class="st">"mexretail — STL + ARIMA forecast"</span>,</span>
-<span id="cb11-6"><a></a>    <span class="at">y =</span> <span class="st">"Index 2015=100"</span></span>
-<span id="cb11-7"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a aria-label="1"></a>stl_arima_forecast_p <span class="ot">&lt;-</span> mexretail_fit_stl_arima <span class="sc">|&gt;</span></span>
+<span id="cb11-2"><a aria-label="2"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">24</span>) <span class="sc">|&gt;</span></span>
+<span id="cb11-3"><a aria-label="3"></a>  <span class="fu">autoplot</span>(mexretail <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">year</span>(date) <span class="sc">&gt;=</span> <span class="dv">2015</span>)) <span class="sc">+</span></span>
+<span id="cb11-4"><a aria-label="4"></a>  <span class="fu">labs</span>(</span>
+<span id="cb11-5"><a aria-label="5"></a>    <span class="at">title =</span> <span class="st">"mexretail — STL + ARIMA forecast"</span>,</span>
+<span id="cb11-6"><a aria-label="6"></a>    <span class="at">y =</span> <span class="st">"Index 2015=100"</span></span>
+<span id="cb11-7"><a aria-label="7"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
 <div class="cell-output-display">
@@ -972,13 +975,13 @@ sigma^2: 0 </code></pre>
 <h2>SARIMA for <code>mexretail</code></h2>
 <p>The stationarity protocol for <code>mexretail</code> established that we need <span class="math inline">D = 1</span> and <span class="math inline">d = 1</span> applied to the Box-Cox-transformed series. Let’s inspect the ACF/PACF to choose <span class="math inline">p</span>, <span class="math inline">q</span>, <span class="math inline">P</span>, <span class="math inline">Q</span>:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a><span class="fu">theme_narsil</span>()</span>
-<span id="cb12-2"><a></a>mexretail <span class="sc">|&gt;</span></span>
-<span id="cb12-3"><a></a>  <span class="fu">gg_tsdisplay</span>(</span>
-<span id="cb12-4"><a></a>    <span class="fu">difference</span>(<span class="fu">box_cox</span>(y, lambda), <span class="dv">12</span>) <span class="sc">|&gt;</span> <span class="fu">difference</span>(<span class="dv">1</span>),</span>
-<span id="cb12-5"><a></a>    <span class="at">plot_type =</span> <span class="st">"partial"</span>,</span>
-<span id="cb12-6"><a></a>    <span class="at">lag_max   =</span> <span class="dv">48</span></span>
-<span id="cb12-7"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a aria-label="1"></a><span class="fu">theme_narsil</span>()</span>
+<span id="cb12-2"><a aria-label="2"></a>mexretail <span class="sc">|&gt;</span></span>
+<span id="cb12-3"><a aria-label="3"></a>  <span class="fu">gg_tsdisplay</span>(</span>
+<span id="cb12-4"><a aria-label="4"></a>    <span class="fu">difference</span>(<span class="fu">box_cox</span>(y, lambda), <span class="dv">12</span>) <span class="sc">|&gt;</span> <span class="fu">difference</span>(<span class="dv">1</span>),</span>
+<span id="cb12-5"><a aria-label="5"></a>    <span class="at">plot_type =</span> <span class="st">"partial"</span>,</span>
+<span id="cb12-6"><a aria-label="6"></a>    <span class="at">lag_max   =</span> <span class="dv">48</span></span>
+<span id="cb12-7"><a aria-label="7"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure>
@@ -1040,20 +1043,20 @@ sigma^2: 0 </code></pre>
 
 glance(mexretail_fit_sarima) |>
   arrange(AICc) |>
-  select(.model, AIC, AICc, BIC)"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-8-1"><a href="#annotated-cell-8-1"></a>mexretail_fit_sarima <span class="ot">&lt;-</span> mexretail <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-8-2"><a href="#annotated-cell-8-2"></a>  <span class="fu">model</span>(</span>
-<span id="annotated-cell-8-3"><a href="#annotated-cell-8-3"></a>    <span class="at">sarima_011_110 =</span> <span class="fu">ARIMA</span>(<span class="fu">box_cox</span>(y, lambda) <span class="sc">~</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-8" data-target-annotation="1">1</button><span id="annotated-cell-8-4" class="code-annotation-target"><a href="#annotated-cell-8-4"></a>                             <span class="fu">pdq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">+</span> <span class="fu">PDQ</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>)),</span>
-<span id="annotated-cell-8-5"><a href="#annotated-cell-8-5"></a>    <span class="at">sarima_011_011 =</span> <span class="fu">ARIMA</span>(<span class="fu">box_cox</span>(y, lambda) <span class="sc">~</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-8" data-target-annotation="2">2</button><span id="annotated-cell-8-6" class="code-annotation-target"><a href="#annotated-cell-8-6"></a>                             <span class="fu">pdq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">+</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>)),</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-8" data-target-annotation="3">3</button><span id="annotated-cell-8-7" class="code-annotation-target"><a href="#annotated-cell-8-7"></a>    <span class="at">sarima_auto    =</span> <span class="fu">ARIMA</span>(<span class="fu">box_cox</span>(y, lambda),</span>
-<span id="annotated-cell-8-8"><a href="#annotated-cell-8-8"></a>                           <span class="at">stepwise      =</span> <span class="cn">FALSE</span>,</span>
-<span id="annotated-cell-8-9"><a href="#annotated-cell-8-9"></a>                           <span class="at">approximation =</span> <span class="cn">FALSE</span>)</span>
-<span id="annotated-cell-8-10"><a href="#annotated-cell-8-10"></a>  )</span>
-<span id="annotated-cell-8-11"><a href="#annotated-cell-8-11"></a></span>
-<span id="annotated-cell-8-12"><a href="#annotated-cell-8-12"></a><span class="fu">glance</span>(mexretail_fit_sarima) <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-8-13"><a href="#annotated-cell-8-13"></a>  <span class="fu">arrange</span>(AICc) <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-8-14"><a href="#annotated-cell-8-14"></a>  <span class="fu">select</span>(.model, AIC, AICc, BIC)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+  select(.model, AIC, AICc, BIC)"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-8-1"><a href="#annotated-cell-8-1" aria-label="1"></a>mexretail_fit_sarima <span class="ot">&lt;-</span> mexretail <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-8-2"><a href="#annotated-cell-8-2" aria-label="2"></a>  <span class="fu">model</span>(</span>
+<span id="annotated-cell-8-3"><a href="#annotated-cell-8-3" aria-label="3"></a>    <span class="at">sarima_011_110 =</span> <span class="fu">ARIMA</span>(<span class="fu">box_cox</span>(y, lambda) <span class="sc">~</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-8" data-target-annotation="1">1</button><span id="annotated-cell-8-4" class="code-annotation-target"><a href="#annotated-cell-8-4" aria-label="4"></a>                             <span class="fu">pdq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">+</span> <span class="fu">PDQ</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>)),</span>
+<span id="annotated-cell-8-5"><a href="#annotated-cell-8-5" aria-label="5"></a>    <span class="at">sarima_011_011 =</span> <span class="fu">ARIMA</span>(<span class="fu">box_cox</span>(y, lambda) <span class="sc">~</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-8" data-target-annotation="2">2</button><span id="annotated-cell-8-6" class="code-annotation-target"><a href="#annotated-cell-8-6" aria-label="6"></a>                             <span class="fu">pdq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">+</span> <span class="fu">PDQ</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>)),</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-8" data-target-annotation="3">3</button><span id="annotated-cell-8-7" class="code-annotation-target"><a href="#annotated-cell-8-7" aria-label="7"></a>    <span class="at">sarima_auto    =</span> <span class="fu">ARIMA</span>(<span class="fu">box_cox</span>(y, lambda),</span>
+<span id="annotated-cell-8-8"><a href="#annotated-cell-8-8" aria-label="8"></a>                           <span class="at">stepwise      =</span> <span class="cn">FALSE</span>,</span>
+<span id="annotated-cell-8-9"><a href="#annotated-cell-8-9" aria-label="9"></a>                           <span class="at">approximation =</span> <span class="cn">FALSE</span>)</span>
+<span id="annotated-cell-8-10"><a href="#annotated-cell-8-10" aria-label="10"></a>  )</span>
+<span id="annotated-cell-8-11"><a href="#annotated-cell-8-11" aria-label="11"></a></span>
+<span id="annotated-cell-8-12"><a href="#annotated-cell-8-12" aria-label="12"></a><span class="fu">glance</span>(mexretail_fit_sarima) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-8-13"><a href="#annotated-cell-8-13" aria-label="13"></a>  <span class="fu">arrange</span>(AICc) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-8-14"><a href="#annotated-cell-8-14" aria-label="14"></a>  <span class="fu">select</span>(.model, AIC, AICc, BIC)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-8" data-target-annotation="1">1</dt>
@@ -1079,9 +1082,9 @@ glance(mexretail_fit_sarima) |>
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a>mexretail_fit_sarima <span class="sc">|&gt;</span></span>
-<span id="cb13-2"><a></a>  <span class="fu">select</span>(sarima_auto) <span class="sc">|&gt;</span></span>
-<span id="cb13-3"><a></a>  <span class="fu">report</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a aria-label="1"></a>mexretail_fit_sarima <span class="sc">|&gt;</span></span>
+<span id="cb13-2"><a aria-label="2"></a>  <span class="fu">select</span>(sarima_auto) <span class="sc">|&gt;</span></span>
+<span id="cb13-3"><a aria-label="3"></a>  <span class="fu">report</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Series: y 
 Model: ARIMA(3,0,1)(0,1,2)[12] w/ drift 
@@ -1097,10 +1100,10 @@ AIC=1774.62   AICc=1774.95   BIC=1807.22</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a><span class="fu">theme_narsil</span>()</span>
-<span id="cb15-2"><a></a>mexretail_fit_sarima <span class="sc">|&gt;</span></span>
-<span id="cb15-3"><a></a>  <span class="fu">select</span>(sarima_auto) <span class="sc">|&gt;</span></span>
-<span id="cb15-4"><a></a>  <span class="fu">gg_tsresiduals</span>(<span class="at">lag_max =</span> <span class="dv">48</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a aria-label="1"></a><span class="fu">theme_narsil</span>()</span>
+<span id="cb15-2"><a aria-label="2"></a>mexretail_fit_sarima <span class="sc">|&gt;</span></span>
+<span id="cb15-3"><a aria-label="3"></a>  <span class="fu">select</span>(sarima_auto) <span class="sc">|&gt;</span></span>
+<span id="cb15-4"><a aria-label="4"></a>  <span class="fu">gg_tsresiduals</span>(<span class="at">lag_max =</span> <span class="dv">48</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure>
@@ -1119,16 +1122,16 @@ AIC=1774.62   AICc=1774.95   BIC=1807.22</code></pre>
                    select(sarima_auto) |>
                    coefficients() |>
                    filter(str_detect(term, &quot;^ar|^ma|^sar|^sma&quot;)) |>
-                   nrow())"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-11-1"><a href="#annotated-cell-11-1"></a>mexretail_fit_sarima <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-11-2"><a href="#annotated-cell-11-2"></a>  <span class="fu">select</span>(sarima_auto) <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-11-3"><a href="#annotated-cell-11-3"></a>  <span class="fu">augment</span>() <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-11-4"><a href="#annotated-cell-11-4"></a>  <span class="fu">features</span>(.innov, ljung_box,</span>
-<span id="annotated-cell-11-5"><a href="#annotated-cell-11-5"></a>           <span class="at">lag =</span> <span class="dv">24</span>,</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-11" data-target-annotation="1">1</button><span id="annotated-cell-11-6" class="code-annotation-target"><a href="#annotated-cell-11-6"></a>           <span class="at">dof =</span> mexretail_fit_sarima <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-11-7"><a href="#annotated-cell-11-7"></a>                   <span class="fu">select</span>(sarima_auto) <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-11-8"><a href="#annotated-cell-11-8"></a>                   <span class="fu">coefficients</span>() <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-11-9"><a href="#annotated-cell-11-9"></a>                   <span class="fu">filter</span>(<span class="fu">str_detect</span>(term, <span class="st">"^ar|^ma|^sar|^sma"</span>)) <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-11-10"><a href="#annotated-cell-11-10"></a>                   <span class="fu">nrow</span>())</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+                   nrow())"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-11-1"><a href="#annotated-cell-11-1" aria-label="1"></a>mexretail_fit_sarima <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-11-2"><a href="#annotated-cell-11-2" aria-label="2"></a>  <span class="fu">select</span>(sarima_auto) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-11-3"><a href="#annotated-cell-11-3" aria-label="3"></a>  <span class="fu">augment</span>() <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-11-4"><a href="#annotated-cell-11-4" aria-label="4"></a>  <span class="fu">features</span>(.innov, ljung_box,</span>
+<span id="annotated-cell-11-5"><a href="#annotated-cell-11-5" aria-label="5"></a>           <span class="at">lag =</span> <span class="dv">24</span>,</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-11" data-target-annotation="1">1</button><span id="annotated-cell-11-6" class="code-annotation-target"><a href="#annotated-cell-11-6" aria-label="6"></a>           <span class="at">dof =</span> mexretail_fit_sarima <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-11-7"><a href="#annotated-cell-11-7" aria-label="7"></a>                   <span class="fu">select</span>(sarima_auto) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-11-8"><a href="#annotated-cell-11-8" aria-label="8"></a>                   <span class="fu">coefficients</span>() <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-11-9"><a href="#annotated-cell-11-9" aria-label="9"></a>                   <span class="fu">filter</span>(<span class="fu">str_detect</span>(term, <span class="st">"^ar|^ma|^sar|^sma"</span>)) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-11-10"><a href="#annotated-cell-11-10" aria-label="10"></a>                   <span class="fu">nrow</span>())</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-11" data-target-annotation="1">1</dt>
@@ -1155,30 +1158,30 @@ AIC=1774.62   AICc=1774.95   BIC=1807.22</code></pre>
 <h2>Comparing Both Strategies</h2>
 <p>Both approaches are valid for seasonal series. Let’s compare them on <code>mexretail</code> using a train/test split:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a>mexretail_train <span class="ot">&lt;-</span> mexretail <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">year</span>(date) <span class="sc">&lt;=</span> <span class="dv">2019</span>)</span>
-<span id="cb16-2"><a></a>mexretail_test  <span class="ot">&lt;-</span> mexretail <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">year</span>(date) <span class="sc">&gt;</span>  <span class="dv">2019</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a aria-label="1"></a>mexretail_train <span class="ot">&lt;-</span> mexretail <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">year</span>(date) <span class="sc">&lt;=</span> <span class="dv">2019</span>)</span>
+<span id="cb16-2"><a aria-label="2"></a>mexretail_test  <span class="ot">&lt;-</span> mexretail <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">year</span>(date) <span class="sc">&gt;</span>  <span class="dv">2019</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a>mexretail_fit <span class="ot">&lt;-</span> mexretail_train <span class="sc">|&gt;</span></span>
-<span id="cb17-2"><a></a>  <span class="fu">model</span>(</span>
-<span id="cb17-3"><a></a>    <span class="at">stl_arima =</span> <span class="fu">decomposition_model</span>(</span>
-<span id="cb17-4"><a></a>      <span class="fu">STL</span>(<span class="fu">box_cox</span>(y, lambda) <span class="sc">~</span></span>
-<span id="cb17-5"><a></a>            <span class="fu">trend</span>(<span class="at">window =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
-<span id="cb17-6"><a></a>            <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>),</span>
-<span id="cb17-7"><a></a>          <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb17-8"><a></a>      <span class="fu">ARIMA</span>(season_adjust)</span>
-<span id="cb17-9"><a></a>    ),</span>
-<span id="cb17-10"><a></a>    <span class="at">sarima =</span> <span class="fu">ARIMA</span>(<span class="fu">box_cox</span>(y, lambda),</span>
-<span id="cb17-11"><a></a>                   <span class="at">stepwise      =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb17-12"><a></a>                   <span class="at">approximation =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb17-13"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a aria-label="1"></a>mexretail_fit <span class="ot">&lt;-</span> mexretail_train <span class="sc">|&gt;</span></span>
+<span id="cb17-2"><a aria-label="2"></a>  <span class="fu">model</span>(</span>
+<span id="cb17-3"><a aria-label="3"></a>    <span class="at">stl_arima =</span> <span class="fu">decomposition_model</span>(</span>
+<span id="cb17-4"><a aria-label="4"></a>      <span class="fu">STL</span>(<span class="fu">box_cox</span>(y, lambda) <span class="sc">~</span></span>
+<span id="cb17-5"><a aria-label="5"></a>            <span class="fu">trend</span>(<span class="at">window =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb17-6"><a aria-label="6"></a>            <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>),</span>
+<span id="cb17-7"><a aria-label="7"></a>          <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb17-8"><a aria-label="8"></a>      <span class="fu">ARIMA</span>(season_adjust)</span>
+<span id="cb17-9"><a aria-label="9"></a>    ),</span>
+<span id="cb17-10"><a aria-label="10"></a>    <span class="at">sarima =</span> <span class="fu">ARIMA</span>(<span class="fu">box_cox</span>(y, lambda),</span>
+<span id="cb17-11"><a aria-label="11"></a>                   <span class="at">stepwise      =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb17-12"><a aria-label="12"></a>                   <span class="at">approximation =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb17-13"><a aria-label="13"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a></a>mexretail_fit <span class="sc">|&gt;</span></span>
-<span id="cb18-2"><a></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="fu">nrow</span>(mexretail_test)) <span class="sc">|&gt;</span></span>
-<span id="cb18-3"><a></a>  <span class="fu">accuracy</span>(mexretail) <span class="sc">|&gt;</span></span>
-<span id="cb18-4"><a></a>  <span class="fu">select</span>(.model, RMSE, MAE, MAPE, MASE) <span class="sc">|&gt;</span></span>
-<span id="cb18-5"><a></a>  <span class="fu">arrange</span>(RMSE)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a aria-label="1"></a>mexretail_fit <span class="sc">|&gt;</span></span>
+<span id="cb18-2"><a aria-label="2"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="fu">nrow</span>(mexretail_test)) <span class="sc">|&gt;</span></span>
+<span id="cb18-3"><a aria-label="3"></a>  <span class="fu">accuracy</span>(mexretail) <span class="sc">|&gt;</span></span>
+<span id="cb18-4"><a aria-label="4"></a>  <span class="fu">select</span>(.model, RMSE, MAE, MAPE, MASE) <span class="sc">|&gt;</span></span>
+<span id="cb18-5"><a aria-label="5"></a>  <span class="fu">arrange</span>(RMSE)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">

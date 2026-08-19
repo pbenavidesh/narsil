@@ -1,8 +1,8 @@
-# RStudio, R, and Time Series
+# R, tsibble, and Time Series
 
 Modified
 
-July 9, 2026
+August 19, 2026
 
 # 1 Packages
 

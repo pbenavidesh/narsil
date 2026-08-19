@@ -2,17 +2,17 @@
 
 Welcome to the **In-class exercises** section of the course. Here you will find exercises designed to reinforce the concepts covered in the modules.
 
-### [Pronósticos con métodos benchmark](../../docs/exercises/posts/26-02-11%20-%20fcst.llms.md)
-
-3 min
-
 ### [Module 1 Review](../../docs/exercises/posts/review_module1.llms.md)
 
 End-of-module integrative exercise covering the full Module 1 workflow: exploration, transformations, STL decomposition, benchmark forecasting, decomposition models, residual diagnostics, and forecast evaluation.
 
 15 min
 
-### [Clase 1 - R y series de tiempo](../../docs/exercises/posts/26-01-23%20-%20clase_1.llms.md)
+### [Pronósticos con métodos benchmark](../../docs/exercises/posts/26-02-11-fcst.llms.md)
+
+3 min
+
+### [Clase 1 - R y series de tiempo](../../docs/exercises/posts/26-01-23-clase-1.llms.md)
 
 1 min
 
@@ -32,7 +32,7 @@ Apr 20, 2026
 
 20 min
 
-### [Descomposición de series de tiempo](../../docs/exercises/posts/26-02-04%20-%20ts_dcmp.llms.md)
+### [Descomposición de series de tiempo](../../docs/exercises/posts/26-02-04-ts-dcmp.llms.md)
 
 Intro a la descomposición STL usando `fable`
 

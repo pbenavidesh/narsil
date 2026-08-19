@@ -2,7 +2,7 @@
 
 Modified
 
-July 9, 2026
+August 19, 2026
 
 Code
 
@@ -89,7 +89,7 @@ baseline_spec <- decomposition_model(        #<1>
 )
 ```
 
-1.  Module 1 baseline: STL + Drift + SNAIVE. Our benchmark — every model must beat this. See [The Forecasting Workflow](../../../../docs/modules/forecasting_workflow.llms.md).
+1.  Module 1 baseline: STL + Drift + SNAIVE. Our benchmark — every model must beat this. See [1.4 Model Diagnostics and Advanced Forecasting](../../../../docs/modules/module_1/04_model_diagnostics/model_diagnostics.llms.md).
 
 Code
 
