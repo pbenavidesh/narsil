@@ -2,18 +2,26 @@
 
 ## Progressive Narrative
 
-The course builds ONE forecasting approach across 16 weeks, adding complexity at
-each module. Every new method must justify itself by beating the previous baseline.
+The course builds ONE forecasting approach across 4 modules and 17 lessons, adding
+complexity at each module. Every new method must justify itself by beating the
+previous baseline.
+
+Lessons are identified by module and lesson number (1.0, 1.1, ... 4.4), matching the
+course site sidebar. Week numbers are deliberately omitted — they shift every term,
+the lesson structure does not.
 
 ---
 
-## Module 1: Foundation — Building Your First Forecast (Weeks 1–4)
-*"Getting data ready and establishing a baseline"* | FPP3 Ch. 2–5
+## Module 1: Forecasting models based on decomposition methods
+*"Getting data ready and establishing a baseline"* | FPP3 Ch. 2, 3, 5
 
-- Week 1: Time series basics — tsibble, visualization, patterns
-- Week 2: Data preparation — transformations, calendar adjustments
-- Week 3: STL decomposition — trend, season, remainder
-- Week 4: Benchmark forecasting — MEAN, NAIVE, SNAIVE, Drift, decomposition model
+- 1.0 Introduction — course overview, workflow, and expectations
+- 1.1 R, tsibble, and Time Series — packages, tsibble basics, visualization
+- 1.2 Time Series Decomposition — trend-cycle, season, remainder; STL
+- 1.3 Forecasting Foundations — transformations, train/test split, benchmark
+  methods (MEAN, NAIVE, SNAIVE, Drift), accuracy metrics
+- 1.4 Model Diagnostics and Advanced Forecasting — residual diagnostics,
+  Ljung-Box, and `decomposition_model()`
 
 **Module deliverable:**
 ```r
@@ -26,11 +34,14 @@ Key concepts introduced: train/test split, residual diagnostics, accuracy metric
 
 ---
 
-## Module 2: Smarter Filters — ETS and ARIMA (Weeks 5–8)
-*"Replacing naive methods with statistical filters"* | FPP3 Ch. 8–9
+## Module 2: Adding ETS and ARIMA filters
+*"Replacing naive methods with statistical filters"* | FPP3 Ch. 8, 9
 
-- Weeks 5–6: Exponential Smoothing (ETS) — error, trend, season components
-- Weeks 7–8: Stationarity, differencing, ARIMA identification and fitting
+- 2.1 Exponential Smoothing — error, trend, season components
+- 2.2 Stationarity & Differencing — unit roots, differencing, ACF/PACF
+- 2.3 ARIMA Models — identification, fitting, seasonal ARIMA
+- 2.4 Modular Forecasting: Mixing ETS and ARIMA — swapping components inside
+  the decomposition baseline
 
 **Module deliverable:**
 ```r
@@ -46,17 +57,18 @@ information criteria, seasonal ARIMA (P,D,Q)
 
 ---
 
-## Module 3: External Information — Regression (Weeks 9–12)
-*"Your model now knows what's happening in the world"* | FPP3 Ch. 7, 10
+## Module 3: Regression and exogenous variables
+*"Your model now knows what's happening in the world"* | FPP3 Ch. 7, 10, §12.2, Ch. 13
 
-- Weeks 9–10: Linear regression for time series (TSLM)
-  - `TSLM(y ~ trend() + season())` — uses seasonal **dummies**, not Fourier
-  - Adding external regressors
-- Weeks 11–12: Dynamic regression and harmonic regression
-  - Motivation: TSLM residuals show autocorrelation → need ARIMA errors
+- 3.1 Practical Issues — outliers, missing values, short series, forecast
+  constraints (FPP3 Ch. 13)
+- 3.2 Linear Regression Models — `TSLM(y ~ trend() + season())`, uses seasonal
+  **dummies**, not Fourier; adding external regressors
+- 3.3 Dynamic & Harmonic Regression — motivation: TSLM residuals show
+  autocorrelation → need ARIMA errors
   - `ARIMA(y ~ xreg + PDQ(0,0,0))` — regression with ARIMA errors
   - Harmonic regression: `ARIMA(y ~ fourier(K=k) + PDQ(0,0,0))`
-  - Prophet: `prophet(y ~ season("week") + season("year"))`
+- 3.4 Prophet — `prophet(y ~ season("week") + season("year"))` (FPP3 §12.2)
 
 **Critical distinction**: TSLM uses seasonal dummies; harmonic regression uses
 Fourier terms. This contrast is pedagogically important — don't conflate them.
@@ -66,18 +78,20 @@ distributed lag models, Fourier terms for complex seasonality
 
 ---
 
-## Module 4: Real-World Deployment (Weeks 13–16)
-*"Making models production-ready"* | FPP3 Ch. 12–13
+## Module 4: Forecasting at scale
+*"Making models production-ready"* | FPP3 §5.10, Ch. 11, §12.1, §12.5, §13.4
 
-- Week 13: Complex seasonality
+- 4.1 Complex Seasonality (FPP3 §12.1)
   - Multiple `season()` calls in STL for sub-daily data
   - Fourier + ARIMA errors for large/non-integer periods
-- Week 14: Practical issues
-  - Outliers, missing values, short series, forecast constraints
-- Week 15: Bootstrapping, bagging, forecast combinations
-  - `bootstrap_simulations()`, `generate()`, ensemble methods
-- Week 16: Hierarchical & grouped forecasting
-  - `reconcile()`, MinT, BU, TD approaches
+- 4.2 Bootstrapping, Bagging & Model Combinations (FPP3 §12.5, §13.4)
+  - `generate()`, bootstrapped prediction intervals, bagged forecasts,
+    ensemble methods
+- 4.3 Time Series Cross-Validation (FPP3 §5.10)
+  - `stretch_tsibble()`, rolling-origin evaluation, why random CV is wrong
+    for time series
+- 4.4 Hierarchical & Grouped Forecasting (FPP3 Ch. 11)
+  - `aggregate_key()`, `reconcile()`, MinT, BU, TD approaches
 
 ---
 
@@ -86,6 +100,7 @@ distributed lag models, Fourier terms for complex seasonality
 | Dataset | Package | Used for |
 |---|---|---|
 | `aus_retail` | tsibbledata | Module 1–2 examples |
+| `aus_production` | tsibbledata | Gas series — Module 1 diagnostics, in-class exercises |
 | `vic_elec` | tsibbledata | Complex seasonality (Module 4) |
 | `us_change` | fpp3 | Dynamic regression (Module 3) |
 | `insurance` | fpp3 | Lagged predictors |
