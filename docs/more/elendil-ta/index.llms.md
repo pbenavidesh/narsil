@@ -54,6 +54,8 @@ Click the button below to download the Elendil TA skill file:
 
 [⬇ Download Elendil TA](https://github.com/pbenavidesh/narsil/raw/main/_elendil-ta/elendil-ta.zip)
 
+Current version: **v1.1 — 2026-08-19**. If your installed copy is older, re-download it.
+
 > **TIP:**
 >
 > If the button opens a GitHub page instead of downloading directly:
