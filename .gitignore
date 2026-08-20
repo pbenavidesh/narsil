@@ -4,7 +4,14 @@
 *.docx
 *.pptx
 *_files/
-site_libs/
+/_site/site_libs/
+# _freeze/site_libs holds the htmlwidget libraries (plotly, crosstalk, ...)
+# that frozen documents need on CI, where nothing is re-executed. It must be
+# tracked. Quarto emits its own libraries at render time, so those are ignored.
+_freeze/site_libs/revealjs/
+_freeze/site_libs/clipboard/
+_freeze/site_libs/cookie-consent/
+_freeze/site_libs/quarto-listing/
 /.quarto/
 /_site/
 .Rprofile
