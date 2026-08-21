@@ -102,8 +102,7 @@ data_test <- data |>
 
 :::
 
-:::: {.content-visible unless-format="revealjs"}
-::: {.callout-note collapse="true"}
+::: {.callout-note}
 ## Why this order?
 
 In time series the training set must always contain the **earlier**
@@ -111,7 +110,6 @@ observations and the test set the **later** ones. We simulate the real-world
 scenario: use the past to forecast the future. Shuffling observations — as in
 cross-sectional machine learning — destroys the temporal structure.
 :::
-::::
 
 ::: {.content-hidden unless-format="revealjs"}
 ## Specify & estimate
@@ -727,8 +725,7 @@ The **residuals** $e_t$ are what the model leaves unexplained:
 
 $$e_t = y_t - \hat{y}_t$$
 
-:::: {.content-visible unless-format="revealjs"}
-::: {.callout-note collapse="true"}
+::: {.callout-note}
 ## Residuals vs. innovation residuals
 
 When a **transformation** is applied (e.g. `log(Gas)`), there are two types of residuals:
@@ -738,7 +735,6 @@ When a **transformation** is applied (e.g. `log(Gas)`), there are two types of r
 
 Residual diagnostics (white noise checks, Ljung-Box) should always be run on the **innovation residuals** — this is what `augment()` returns in `.innov`.
 :::
-::::
 
 ::: {.fragment}
 
@@ -1021,15 +1017,17 @@ Common error metrics
 
 :::
 
-:::: {.content-visible unless-format="revealjs"}
-::: {.callout-tip collapse="true"}
+::: {.content-hidden unless-format="revealjs"}
 ## Which metric to use?
+:::
+
+::: {.content-visible unless-format="revealjs"}
+### Which metric to use?
+:::
 
 - **RMSE / MAE**: useful when all series share the same units and scale. RMSE penalizes large errors more heavily.
 - **MAPE**: intuitive (percentage) but breaks down when actual values are near zero. Avoid for intermittent demand or series with zeros.
 - **MASE / RMSSE**: preferred for comparing across series with different scales or units. A MASE > 1 means the model is worse than the seasonal naïve benchmark.
-:::
-::::
 
 ::: {.content-hidden unless-format="revealjs"}
 ## Computing accuracy
