@@ -2,7 +2,7 @@
 
 Modified
 
-August 20, 2026
+August 21, 2026
 
 # 1 A tidy forecasting workflow
 

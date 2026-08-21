@@ -2,7 +2,7 @@
 
 Modified
 
-August 20, 2026
+August 21, 2026
 
 Code
 
@@ -144,20 +144,37 @@ where each of these is an academic paper\
 
 ------------------------------------------------------------------------
 
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The number of movies Dwayne Johnson appeared in and the second variable is Google searches for 'zombies'. The chart goes from 2004 to 2023, and the two variables track closely in value over that time.](spurious/correlation/image/5844_the-number-of-movies-dwayne-johnson-appeared-in_correlates-with_google-searches-for-zombies.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The number of movies Dwayne Johnson appeared in and the second variable is Google searches for 'zombies'.  The chart goes from 2004 to 2023, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/5844_the-number-of-movies-dwayne-johnson-appeared-in_correlates-with_google-searches-for-zombies_mobile.svg)\
-**View details about correlation \#5,844**](spurious/correlation/5844_the-number-of-movies-dwayne-johnson-appeared-in_correlates-with_google-searches-for-zombies)\
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Bachelor's degrees awarded in Engineering technologies and the second variable is The number of tire repairers and changers in Utah. The chart goes from 2012 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/1765_bachelors-degrees-awarded-in-engineering-technologies_correlates-with_the-number-of-tire-repairers-and-changers-in-utah.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Bachelor's degrees awarded in Engineering technologies and the second variable is The number of tire repairers and changers in Utah.  The chart goes from 2012 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1765_bachelors-degrees-awarded-in-engineering-technologies_correlates-with_the-number-of-tire-repairers-and-changers-in-utah_mobile.svg)\
+**View details about correlation \#1,765**](spurious/correlation/1765_bachelors-degrees-awarded-in-engineering-technologies_correlates-with_the-number-of-tire-repairers-and-changers-in-utah)\
 \
 
 ^(Show scatterplot)
 
-![](spurious/correlation/scatterplot/5844_the-number-of-movies-dwayne-johnson-appeared-in_correlates-with_google-searches-for-zombies_scatterplot.png)
+![](spurious/correlation/scatterplot/1765_bachelors-degrees-awarded-in-engineering-technologies_correlates-with_the-number-of-tire-repairers-and-changers-in-utah_scatterplot.png)
 
 \
 \
 
 *What else correlates?*\
-[The number of movies Dwayne Johnson appeared in](spurious/variable?id=26563) · [all films & actors](spurious/view-all-variables/films)\
-[Google searches for 'zombies'](spurious/variable?id=1380) · [all google searches](spurious/view-all-variables/google)\
+[Bachelor's degrees awarded in Engineering technologies](spurious/variable?id=1274) · [all education](spurious/view-all-variables/education)\
+[The number of tire repairers and changers in Utah](spurious/variable?id=15152) · [all cccupations](spurious/view-all-variables/occupations)\
+
+------------------------------------------------------------------------
+
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Butter consumption and the second variable is Ticket prices at North American movie theaters. The chart goes from 2001 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/1604_butter-consumption_correlates-with_ticket-prices-at-north-american-movie-theaters.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Butter consumption and the second variable is Ticket prices at North American movie theaters.  The chart goes from 2001 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1604_butter-consumption_correlates-with_ticket-prices-at-north-american-movie-theaters_mobile.svg)\
+**View details about correlation \#1,604**](spurious/correlation/1604_butter-consumption_correlates-with_ticket-prices-at-north-american-movie-theaters)\
+\
+
+^(Show scatterplot)
+
+![](spurious/correlation/scatterplot/1604_butter-consumption_correlates-with_ticket-prices-at-north-american-movie-theaters_scatterplot.png)
+
+\
+\
+
+*What else correlates?*\
+[Butter consumption](spurious/variable?id=557) · [all food](spurious/view-all-variables/farmingfood)\
+[Ticket prices at North American movie theaters](spurious/variable?id=41) · [all films & actors](spurious/view-all-variables/films)\
 
 ------------------------------------------------------------------------
 
@@ -413,23 +430,6 @@ where each of these is an academic paper\
 *What else correlates?*\
 [GMO use in corn grown in Kansas](spurious/variable?id=713) · [all food](spurious/view-all-variables/farmingfood)\
 [The number of postmasters in Kansas](spurious/variable?id=8120) · [all cccupations](spurious/view-all-variables/occupations)\
-
-------------------------------------------------------------------------
-
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Associates degrees awarded in Liberal arts and the second variable is Google searches for 'tummy ache'. The chart goes from 2011 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/1530_associates-degrees-awarded-in-liberal-arts_correlates-with_google-searches-for-tummy-ache.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Associates degrees awarded in Liberal arts and the second variable is Google searches for 'tummy ache'.  The chart goes from 2011 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1530_associates-degrees-awarded-in-liberal-arts_correlates-with_google-searches-for-tummy-ache_mobile.svg)\
-**View details about correlation \#1,530**](spurious/correlation/1530_associates-degrees-awarded-in-liberal-arts_correlates-with_google-searches-for-tummy-ache)\
-\
-
-^(Show scatterplot)
-
-![](spurious/correlation/scatterplot/1530_associates-degrees-awarded-in-liberal-arts_correlates-with_google-searches-for-tummy-ache_scatterplot.png)
-
-\
-\
-
-*What else correlates?*\
-[Associates degrees awarded in Liberal arts](spurious/variable?id=1242) · [all education](spurious/view-all-variables/education)\
-[Google searches for 'tummy ache'](spurious/variable?id=1345) · [all google searches](spurious/view-all-variables/google)\
 
 ------------------------------------------------------------------------
 
