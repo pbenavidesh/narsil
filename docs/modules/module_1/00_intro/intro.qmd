@@ -52,21 +52,12 @@ p <- gapminder::gapminder |>
   theme(legend.position = "none")
 ```
 
-:::{.content-visible unless-format="pdf"}
+
 
 ```{r}
 ggplotly(p)
 ```
 
-:::
-
-:::{.content-visible when-format="pdf"}
-
-```{r}
-p
-```
-
-:::
 
 :::{.notes}
 If we focus solely on the regular plot, we wouldn't have any time series. However, when we map each variable through time, we now have multiple time series: one for each country regarding life exp., GDP per capita, and population.
