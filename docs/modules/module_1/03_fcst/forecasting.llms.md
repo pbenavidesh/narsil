@@ -491,6 +491,8 @@ H_0: \text{residuals are white noise} \qquad H_1: \text{residuals are not white 
 
 A small p-value (typically \< 0.05) is evidence against white noise.
 
+If H_0, p-values, and the 0.05 threshold are unfamiliar — or if you have never been told what *failing* to reject actually licenses you to conclude — see [Statistical Significance](../../../../docs/more/significance.llms.md).
+
 Code
 
 ``` r
@@ -573,13 +575,13 @@ q_j = \frac{e_j}{\dfrac{1}{T-m}\displaystyle\sum\_{t=m+1}^{T}\|y_t - y\_{t-m}\|}
 
 Common error metrics {.caption-top .table tbl-colwidths="[22,12,38,28]"}
 
-> **TIP:**
->
-> - **RMSE / MAE**: useful when all series share the same units and scale. RMSE penalizes large errors more heavily.
-> - **MAPE**: intuitive (percentage) but breaks down when actual values are near zero. Avoid for intermittent demand or series with zeros.
-> - **MASE / RMSSE**: preferred for comparing across series with different scales or units. A MASE \> 1 means the model is worse than the seasonal naïve benchmark.
+### 3.0.8 Which metric to use?
 
-### 3.0.8 Computing accuracy
+- **RMSE / MAE**: useful when all series share the same units and scale. RMSE penalizes large errors more heavily.
+- **MAPE**: intuitive (percentage) but breaks down when actual values are near zero. Avoid for intermittent demand or series with zeros.
+- **MASE / RMSSE**: preferred for comparing across series with different scales or units. A MASE \> 1 means the model is worse than the seasonal naïve benchmark.
+
+### 3.0.9 Computing accuracy
 
 Code
 
@@ -634,7 +636,7 @@ gas_fc |>
   arrange(RMSSE)
 ```
 
-### 3.0.9 Refit and forecast
+### 3.0.10 Refit and forecast
 
 Once a model is selected based on the test set, **refit it on all available data** — the test set is no longer “future” at this point.
 
@@ -703,7 +705,7 @@ gdp_refit_p <- mexico_final_fc |>
 
 [![](forecasting_files/figure-html/gdp-refit-render-2.png)](forecasting_files/figure-html/gdp-refit-render-2.png)
 
-### 3.0.10 Communicate
+### 3.0.11 Communicate
 
 Forecasting is not finished when numbers are produced. Results must be communicated clearly and honestly.
 

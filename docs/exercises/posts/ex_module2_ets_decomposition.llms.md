@@ -32,6 +32,9 @@ Code
 library(tidyverse)
 library(fpp3)
 library(tidyquant)
+
+source(here::here("R/narsil_theme.R"))
+theme_set(theme_narsil())
 ```
 
 This notebook covers exponential smoothing (ETS) models applied to two real datasets. The first example uses a **non-seasonal** daily series — GLD ETF closing prices — to explore ETS models without a seasonal component. The second uses a **seasonal monthly** series of U.S. vehicle miles traveled to introduce `decomposition_model()` and compare multiple ETS specifications with and without a Box-Cox transformation.

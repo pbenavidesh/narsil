@@ -133,9 +133,9 @@ canadian_gas_slide |>
 | Good when… | Series is short, stable, no structural breaks, and you want to use all available data | Series is long, has structural changes, or compute is limited |
 | Main risk | Early folds are unstable (little training data) | Choosing `.size` poorly (too small → unstable; too large → doesn’t adapt) |
 
-[![](ts_cv_files/figure-revealjs/fold-diagram-render-1.png)](ts_cv_files/figure-revealjs/fold-diagram-render-1.png)
+[![](ts_cv_files/figure-html/fold-diagram-render-1.png)](ts_cv_files/figure-html/fold-diagram-render-1.png)
 
-[![](ts_cv_files/figure-revealjs/fold-diagram-render-2.png)](ts_cv_files/figure-revealjs/fold-diagram-render-2.png)
+[![](ts_cv_files/figure-html/fold-diagram-render-2.png)](ts_cv_files/figure-html/fold-diagram-render-2.png)
 
 On a toy 20-point index, four expanding folds train on 8, 11, 14, then 17 points before testing on the next 2; four sliding folds always train on exactly 8.
 

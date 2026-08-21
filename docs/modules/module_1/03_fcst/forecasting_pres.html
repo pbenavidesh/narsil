@@ -353,6 +353,19 @@ data_test <- data |>
 </div>
 </div>
 </div>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Why this order?</strong></p>
+</div>
+<div class="callout-content">
+<p>In time series the training set must always contain the <strong>earlier</strong> observations and the test set the <strong>later</strong> ones. We simulate the real-world scenario: use the past to forecast the future. Shuffling observations — as in cross-sectional machine learning — destroys the temporal structure.</p>
+</div>
+</div>
+</div>
 <aside></aside></section>
 <section id="specify-estimate" class="slide level2">
 <h2>Specify &amp; estimate</h2>
@@ -737,6 +750,24 @@ data_test <- data |>
 <p>The <strong>fitted values</strong> <span class="math inline">\hat{y}_t</span> are the one-step-ahead predictions the model makes for the training observations.</p>
 <p>The <strong>residuals</strong> <span class="math inline">e_t</span> are what the model leaves unexplained:</p>
 <p><span class="math display">e_t = y_t - \hat{y}_t</span></p>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Residuals vs.&nbsp;innovation residuals</strong></p>
+</div>
+<div class="callout-content">
+<p>When a <strong>transformation</strong> is applied (e.g.&nbsp;<code>log(Gas)</code>), there are two types of residuals:</p>
+<ul>
+<li class="fragment"><strong>Residuals</strong> <span class="math inline">e_t</span>: computed on the <strong>original</strong> scale after back-transforming the fitted values.</li>
+<li class="fragment"><strong>Innovation residuals</strong> <span class="math inline">\tilde{e}_t</span>: computed on the <strong>transformed</strong> scale.</li>
+</ul>
+<p>Residual diagnostics (white noise checks, Ljung-Box) should always be run on the <strong>innovation residuals</strong> — this is what <code>augment()</code> returns in <code>.innov</code>.</p>
+</div>
+</div>
+</div>
 <div class="fragment">
 <p>Extract both with <code>augment()</code>:</p>
 <div class="cell">
@@ -853,6 +884,7 @@ data_test <- data |>
 </div>
 <div class="fragment">
 <p>A small <span class="math inline">p</span>-value (typically <span class="math inline">&lt; 0.05</span>) is evidence against white noise.</p>
+<p>If <span class="math inline">H_0</span>, <span class="math inline">p</span>-values, and the 0.05 threshold are unfamiliar — or if you have never been told what <em>failing</em> to reject actually licenses you to conclude — see <a href="../../../../docs/more/significance.html">Statistical Significance</a>.</p>
 </div>
 <div class="fragment">
 <div class="cell">
@@ -997,6 +1029,14 @@ data_test <- data |>
 </tr>
 </tbody>
 </table>
+</section>
+<section id="which-metric-to-use" class="slide level2">
+<h2>Which metric to use?</h2>
+<ul>
+<li class="fragment"><strong>RMSE / MAE</strong>: useful when all series share the same units and scale. RMSE penalizes large errors more heavily.</li>
+<li class="fragment"><strong>MAPE</strong>: intuitive (percentage) but breaks down when actual values are near zero. Avoid for intermittent demand or series with zeros.</li>
+<li class="fragment"><strong>MASE / RMSSE</strong>: preferred for comparing across series with different scales or units. A MASE &gt; 1 means the model is worse than the seasonal naïve benchmark.</li>
+</ul>
 </section>
 <section id="computing-accuracy" class="slide level2">
 <h2>Computing accuracy</h2>

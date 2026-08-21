@@ -640,9 +640,10 @@ window.Quarto = {
   <li><a href="#portmanteau-tests-1" id="toc-portmanteau-tests-1" class="nav-link" data-scroll-target="#portmanteau-tests-1"><span class="header-section-number">3.0.5</span> Portmanteau tests</a></li>
   <li><a href="#forecast-accuracy-1" id="toc-forecast-accuracy-1" class="nav-link" data-scroll-target="#forecast-accuracy-1"><span class="header-section-number">3.0.6</span> Forecast accuracy</a></li>
   <li><a href="#error-metrics-1" id="toc-error-metrics-1" class="nav-link" data-scroll-target="#error-metrics-1"><span class="header-section-number">3.0.7</span> Error metrics</a></li>
-  <li><a href="#computing-accuracy-1" id="toc-computing-accuracy-1" class="nav-link" data-scroll-target="#computing-accuracy-1"><span class="header-section-number">3.0.8</span> Computing accuracy</a></li>
-  <li><a href="#refit-and-forecast-1" id="toc-refit-and-forecast-1" class="nav-link" data-scroll-target="#refit-and-forecast-1"><span class="header-section-number">3.0.9</span> Refit and forecast</a></li>
-  <li><a href="#communicate-1" id="toc-communicate-1" class="nav-link" data-scroll-target="#communicate-1"><span class="header-section-number">3.0.10</span> Communicate</a></li>
+  <li><a href="#which-metric-to-use-1" id="toc-which-metric-to-use-1" class="nav-link" data-scroll-target="#which-metric-to-use-1"><span class="header-section-number">3.0.8</span> Which metric to use?</a></li>
+  <li><a href="#computing-accuracy-1" id="toc-computing-accuracy-1" class="nav-link" data-scroll-target="#computing-accuracy-1"><span class="header-section-number">3.0.9</span> Computing accuracy</a></li>
+  <li><a href="#refit-and-forecast-1" id="toc-refit-and-forecast-1" class="nav-link" data-scroll-target="#refit-and-forecast-1"><span class="header-section-number">3.0.10</span> Refit and forecast</a></li>
+  <li><a href="#communicate-1" id="toc-communicate-1" class="nav-link" data-scroll-target="#communicate-1"><span class="header-section-number">3.0.11</span> Communicate</a></li>
   </ul></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/pbenavidesh/narsil/edit/main/docs/modules/module_1/03_fcst/forecasting.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/pbenavidesh/narsil/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div><div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="forecasting_pres.html"><i class="bi bi-file-slides"></i>RevealJS</a></li></ul></div><div class="quarto-other-links"><h2>Other Links</h2><ul><li><a href="https://otexts.com/fpp3/toolbox.html"><i class="bi bi-link-45deg"></i>FPP3 Chapter 5</a></li></ul></div></nav>
@@ -763,19 +764,16 @@ data_test <- data |>
 </div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
 <span class="screen-reader-only">Note</span>Why this order?
 </div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-1" class="callout-1-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>In time series the training set must always contain the <strong>earlier</strong> observations and the test set the <strong>later</strong> ones. We simulate the real-world scenario: use the past to forecast the future. Shuffling observations — as in cross-sectional machine learning — destroys the temporal structure.</p>
-</div>
 </div>
 </div>
 </section>
@@ -1289,16 +1287,14 @@ data_test <- data |>
 <p>The <strong>residuals</strong> <span class="math inline">e_t</span> are what the model leaves unexplained:</p>
 <p><span class="math display">e_t = y_t - \hat{y}_t</span></p>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
 <span class="screen-reader-only">Note</span>Residuals vs.&nbsp;innovation residuals
 </div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-5" class="callout-5-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>When a <strong>transformation</strong> is applied (e.g.&nbsp;<code>log(Gas)</code>), there are two types of residuals:</p>
 <ul>
@@ -1306,7 +1302,6 @@ data_test <- data |>
 <li><strong>Innovation residuals</strong> <span class="math inline">\tilde{e}_t</span>: computed on the <strong>transformed</strong> scale.</li>
 </ul>
 <p>Residual diagnostics (white noise checks, Ljung-Box) should always be run on the <strong>innovation residuals</strong> — this is what <code>augment()</code> returns in <code>.innov</code>.</p>
-</div>
 </div>
 </div>
 <div class="fragment">
@@ -1440,6 +1435,7 @@ data_test <- data |>
 </div>
 <div class="fragment">
 <p>A small <span class="math inline">p</span>-value (typically <span class="math inline">&lt; 0.05</span>) is evidence against white noise.</p>
+<p>If <span class="math inline">H_0</span>, <span class="math inline">p</span>-values, and the 0.05 threshold are unfamiliar — or if you have never been told what <em>failing</em> to reject actually licenses you to conclude — see <a href="../../../../docs/more/significance.html">Statistical Significance</a>.</p>
 </div>
 <div class="fragment">
 <div class="cell">
@@ -1601,29 +1597,17 @@ data_test <- data |>
 </tbody>
 </table>
 </div>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Which metric to use?
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-6" class="callout-6-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
+</section>
+<section id="which-metric-to-use-1" class="level3" data-number="3.0.8">
+<h3 data-number="3.0.8" class="anchored" data-anchor-id="which-metric-to-use-1"><span class="header-section-number">3.0.8</span> Which metric to use?</h3>
 <ul>
 <li><strong>RMSE / MAE</strong>: useful when all series share the same units and scale. RMSE penalizes large errors more heavily.</li>
 <li><strong>MAPE</strong>: intuitive (percentage) but breaks down when actual values are near zero. Avoid for intermittent demand or series with zeros.</li>
 <li><strong>MASE / RMSSE</strong>: preferred for comparing across series with different scales or units. A MASE &gt; 1 means the model is worse than the seasonal naïve benchmark.</li>
 </ul>
-</div>
-</div>
-</div>
 </section>
-<section id="computing-accuracy-1" class="level3" data-number="3.0.8">
-<h3 data-number="3.0.8" class="anchored" data-anchor-id="computing-accuracy-1"><span class="header-section-number">3.0.8</span> Computing accuracy</h3>
+<section id="computing-accuracy-1" class="level3" data-number="3.0.9">
+<h3 data-number="3.0.9" class="anchored" data-anchor-id="computing-accuracy-1"><span class="header-section-number">3.0.9</span> Computing accuracy</h3>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
@@ -1718,8 +1702,8 @@ data_test <- data |>
 </div>
 </div>
 </section>
-<section id="refit-and-forecast-1" class="level3" data-number="3.0.9">
-<h3 data-number="3.0.9" class="anchored" data-anchor-id="refit-and-forecast-1"><span class="header-section-number">3.0.9</span> Refit and forecast</h3>
+<section id="refit-and-forecast-1" class="level3" data-number="3.0.10">
+<h3 data-number="3.0.10" class="anchored" data-anchor-id="refit-and-forecast-1"><span class="header-section-number">3.0.10</span> Refit and forecast</h3>
 <p>Once a model is selected based on the test set, <strong>refit it on all available data</strong> — the test set is no longer “future” at this point.</p>
 <p>Using all observations generally improves parameter estimates and reflects how models are actually deployed.</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset" data-group="series">
@@ -1827,8 +1811,8 @@ data_test <- data |>
 </div>
 </div>
 </section>
-<section id="communicate-1" class="level3" data-number="3.0.10">
-<h3 data-number="3.0.10" class="anchored" data-anchor-id="communicate-1"><span class="header-section-number">3.0.10</span> Communicate</h3>
+<section id="communicate-1" class="level3" data-number="3.0.11">
+<h3 data-number="3.0.11" class="anchored" data-anchor-id="communicate-1"><span class="header-section-number">3.0.11</span> Communicate</h3>
 <p>Forecasting is not finished when numbers are produced. Results must be communicated clearly and honestly.</p>
 <p>Effective communication includes:</p>
 <ul>

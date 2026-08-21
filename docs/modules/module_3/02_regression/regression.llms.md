@@ -144,20 +144,37 @@ where each of these is an academic paper\
 
 ------------------------------------------------------------------------
 
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Bachelor's degrees awarded in Engineering technologies and the second variable is The number of tire repairers and changers in Utah. The chart goes from 2012 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/1765_bachelors-degrees-awarded-in-engineering-technologies_correlates-with_the-number-of-tire-repairers-and-changers-in-utah.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Bachelor's degrees awarded in Engineering technologies and the second variable is The number of tire repairers and changers in Utah.  The chart goes from 2012 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1765_bachelors-degrees-awarded-in-engineering-technologies_correlates-with_the-number-of-tire-repairers-and-changers-in-utah_mobile.svg)\
-**View details about correlation \#1,765**](spurious/correlation/1765_bachelors-degrees-awarded-in-engineering-technologies_correlates-with_the-number-of-tire-repairers-and-changers-in-utah)\
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the first name Stevie and the second variable is Amazon.com's stock price (AMZN). The chart goes from 2002 to 2022, and the two variables track closely in value over that time.](spurious/correlation/image/5883_popularity-of-the-first-name-stevie_correlates-with_amazoncoms-stock-price-amzn.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the first name Stevie and the second variable is Amazon.com's stock price (AMZN).  The chart goes from 2002 to 2022, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/5883_popularity-of-the-first-name-stevie_correlates-with_amazoncoms-stock-price-amzn_mobile.svg)\
+**View details about correlation \#5,883**](spurious/correlation/5883_popularity-of-the-first-name-stevie_correlates-with_amazoncoms-stock-price-amzn)\
 \
 
 ^(Show scatterplot)
 
-![](spurious/correlation/scatterplot/1765_bachelors-degrees-awarded-in-engineering-technologies_correlates-with_the-number-of-tire-repairers-and-changers-in-utah_scatterplot.png)
+![](spurious/correlation/scatterplot/5883_popularity-of-the-first-name-stevie_correlates-with_amazoncoms-stock-price-amzn_scatterplot.png)
 
 \
 \
 
 *What else correlates?*\
-[Bachelor's degrees awarded in Engineering technologies](spurious/variable?id=1274) · [all education](spurious/view-all-variables/education)\
-[The number of tire repairers and changers in Utah](spurious/variable?id=15152) · [all cccupations](spurious/view-all-variables/occupations)\
+[Popularity of the first name Stevie](spurious/variable?id=3190) · [all first names](spurious/view-all-variables/babynames)\
+[Amazon.com's stock price (AMZN)](spurious/variable?id=1543) · [all stocks](spurious/view-all-variables/stocks)\
+
+------------------------------------------------------------------------
+
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Bloomberg Money Stuff articles about insider trading and the second variable is Banco Bilbao Vizcaya Argentaria's stock price (BBVA). The chart goes from 2014 to 2023, and the two variables track closely in value over that time.](spurious/correlation/image/5892_bloomberg-money-stuff-articles-about-insider-trading_correlates-with_banco-bilbao-vizcaya-argentarias-stock-price-bbva.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Bloomberg Money Stuff articles about insider trading and the second variable is Banco Bilbao Vizcaya Argentaria's stock price (BBVA).  The chart goes from 2014 to 2023, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/5892_bloomberg-money-stuff-articles-about-insider-trading_correlates-with_banco-bilbao-vizcaya-argentarias-stock-price-bbva_mobile.svg)\
+**View details about correlation \#5,892**](spurious/correlation/5892_bloomberg-money-stuff-articles-about-insider-trading_correlates-with_banco-bilbao-vizcaya-argentarias-stock-price-bbva)\
+\
+
+^(Show scatterplot)
+
+![](spurious/correlation/scatterplot/5892_bloomberg-money-stuff-articles-about-insider-trading_correlates-with_banco-bilbao-vizcaya-argentarias-stock-price-bbva_scatterplot.png)
+
+\
+\
+
+*What else correlates?*\
+[Bloomberg Money Stuff articles about insider trading](spurious/variable?id=26734) · [all weird & wacky](spurious/view-all-variables/weirdwacky)\
+[Banco Bilbao Vizcaya Argentaria's stock price (BBVA)](spurious/variable?id=1752) · [all stocks](spurious/view-all-variables/stocks)\
 
 ------------------------------------------------------------------------
 
@@ -416,23 +433,6 @@ where each of these is an academic paper\
 
 ------------------------------------------------------------------------
 
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is GMO use in corn grown in Kansas and the second variable is The number of postmasters in Kansas. The chart goes from 2003 to 2022, and the two variables track closely in value over that time.](spurious/correlation/image/1744_gmo-use-in-corn-grown-in-kansas_correlates-with_the-number-of-postmasters-in-kansas.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is GMO use in corn grown in Kansas and the second variable is The number of postmasters in Kansas.  The chart goes from 2003 to 2022, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1744_gmo-use-in-corn-grown-in-kansas_correlates-with_the-number-of-postmasters-in-kansas_mobile.svg)\
-**View details about correlation \#1,744**](spurious/correlation/1744_gmo-use-in-corn-grown-in-kansas_correlates-with_the-number-of-postmasters-in-kansas)\
-\
-
-^(Show scatterplot)
-
-![](spurious/correlation/scatterplot/1744_gmo-use-in-corn-grown-in-kansas_correlates-with_the-number-of-postmasters-in-kansas_scatterplot.png)
-
-\
-\
-
-*What else correlates?*\
-[GMO use in corn grown in Kansas](spurious/variable?id=713) · [all food](spurious/view-all-variables/farmingfood)\
-[The number of postmasters in Kansas](spurious/variable?id=8120) · [all cccupations](spurious/view-all-variables/occupations)\
-
-------------------------------------------------------------------------
-
 [![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Per capita consumption of margarine and the second variable is The divorce rate in Maine. The chart goes from 2000 to 2009, and the two variables track closely in value over that time.](spurious/correlation/image/5920_per-capita-consumption-of-margarine_correlates-with_the-divorce-rate-in-maine.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Per capita consumption of margarine and the second variable is The divorce rate in Maine.  The chart goes from 2000 to 2009, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/5920_per-capita-consumption-of-margarine_correlates-with_the-divorce-rate-in-maine_mobile.svg)\
 **View details about correlation \#5,920**](spurious/correlation/5920_per-capita-consumption-of-margarine_correlates-with_the-divorce-rate-in-maine)\
 \
@@ -598,7 +598,7 @@ report(us_change_fit_simple)                           #<3>
 
 The output has two main parts:
 
-**Individual significance** — each coefficient has a t-test: H_0: \beta_i = 0 \qquad H_1: \beta_i \neq 0 The stars (`*`, `**`, `***`) indicate p \< 0.05, p \< 0.01, p \< 0.001.
+**Individual significance** — each coefficient has a t-test: H_0: \beta_i = 0 \qquad H_1: \beta_i \neq 0 The stars (`*`, `**`, `***`) indicate p \< 0.05, p \< 0.01, p \< 0.001. They rank how cleanly a coefficient separates from zero, not how large it is — see [Statistical Significance](../../../../docs/more/significance.llms.md).
 
 **Joint significance** — the F-test asks whether *any* predictor is useful: H_0: \beta_1 = \beta_2 = \cdots = \beta_k = 0 A significant F-test does not mean all individual coefficients are significant.
 

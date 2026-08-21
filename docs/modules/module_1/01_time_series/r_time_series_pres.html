@@ -267,7 +267,10 @@
 <section>
 <section id="packages" class="title-slide slide level1 center">
 <h1>Packages</h1>
-
+<!-- The pkg_tidyverse and pkg_fpp3 chunks are visible with message: true on
+     purpose: this lesson teaches package loading, and the .notes text explains
+     the attach/conflict messages the tidyverse prints on load. Do not hide
+     these chunks or set message: false — it would make that text false. -->
 </section>
 <section id="the-tidyverse" class="slide level2">
 <h2>The <code>tidyverse</code></h2>
@@ -285,8 +288,6 @@
 ✖ dplyr::lag()    masks stats::lag()
 ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a aria-label="1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"R/narsil_theme.R"</span>))</span>
-<span id="cb3-2"><a aria-label="2"></a><span class="fu">theme_set</span>(<span class="fu">theme_narsil</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <ul>
 <li class="fragment"><code>tidyverse</code> is a meta-package that loads the core packages of the <a href="https://tidyverse.org/">tidyverse</a>.</li>
@@ -333,7 +334,7 @@
 <section id="the-tidyverts" class="slide level2">
 <h2>The <code>tidyverts</code></h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a aria-label="1"></a><span class="fu">library</span>(fpp3)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a aria-label="1"></a><span class="fu">library</span>(fpp3)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>── Attaching packages ──────────────────────────────────────────── fpp3 1.0.3 ──</code></pre>
 </div>
@@ -394,9 +395,10 @@
 </section>
 <section id="tsibble-objects" class="slide level2">
 <h2><code>tsibble</code> objects</h2>
+<p>A <code>tsibble</code> is a <a href="https://tibble.tidyverse.org/index.html"><code>tibble</code></a> that also records which column measures time and which columns identify each series.</p>
 <p>Let’s take a look at tourism in Australia:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a aria-label="1"></a>tourism</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a aria-label="1"></a>tourism</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tsibble: 24,320 x 5 [1Q]
 # Key:       Region, State, Purpose [304]
@@ -416,7 +418,8 @@
 </div>
 </div>
 <aside class="notes">
-<p>A <code>tsibble</code> is a modified version of a <a href="https://tibble.tidyverse.org/index.html"><code>tibble</code></a> as to</p>
+<p>The <code>tsibble</code> has 24320 rows and 5 columns. It shows quarterly data<a href="#/footnotes" class="footnote-ref" id="fnref1" role="doc-noteref" data-footnote-href="#/fn1" onclick=""><sup>1</sup></a> on tourism across Australia.</p>
+<p>Because the time structure belongs to the object rather than to our code, the <code>tidyverts</code> functions never have to guess where time lives: <code>autoplot()</code>, <code>model()</code>, and <code>forecast()</code> all read it from the tsibble. It also makes the object checkable — a tsibble refuses to be created if the same series has two observations at the same time point.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -428,22 +431,53 @@
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
+<aside></aside></section>
+<section id="index-and-key" class="slide level2">
+<h2>Index and key</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a aria-label="1"></a><span class="fu">key_vars</span>(tourism)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-4" data-llms-code-original="index_var(tourism) # <1>
+key_vars(tourism)  # <2>
+key_data(tourism)  # <3>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="1">1</button><span id="annotated-cell-4-1" class="code-annotation-target"><a href="#annotated-cell-4-1" aria-label="1"></a><span class="fu">index_var</span>(tourism)</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="2">2</button><span id="annotated-cell-4-2" class="code-annotation-target"><a href="#annotated-cell-4-2" aria-label="2"></a><span class="fu">key_vars</span>(tourism)</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="3">3</button><span id="annotated-cell-4-3" class="code-annotation-target"><a href="#annotated-cell-4-3" aria-label="3"></a><span class="fu">key_data</span>(tourism)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-4" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-4" data-code-lines="1" data-code-annotation="1">The <strong>index</strong> is the column along which time moves forward.</span>
+</dd>
+<dt data-target-cell="annotated-cell-4" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-4" data-code-lines="2" data-code-annotation="2">The <strong>key</strong> is the set of columns that distinguish one series from another. A tsibble can have no key at all (a single series), one key column, or several.</span>
+</dd>
+<dt data-target-cell="annotated-cell-4" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-4" data-code-lines="3" data-code-annotation="3"><code>key_data()</code> lists every distinct combination of the key columns, along with the rows belonging to each.</span>
+</dd>
+</dl>
+</div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "Region"  "State"   "Purpose"</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a aria-label="1"></a><span class="fu">key_data</span>(tourism)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div data-pagedtable="false">
-  <script data-pagedtable-source="" type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Region"],"name":[1],"type":["chr"],"align":["left"]},{"label":["State"],"name":[2],"type":["chr"],"align":["left"]},{"label":["Purpose"],"name":[3],"type":["chr"],"align":["left"]},{"label":[".rows"],"name":[4],"type":["list<int>"],"align":["right"]}],"data":[{"1":"Adelaide","2":"South Australia","3":"Business","4":"<list<int>>","_rn_":"1"},{"1":"Adelaide","2":"South Australia","3":"Holiday","4":"<list<int>>","_rn_":"2"},{"1":"Adelaide","2":"South Australia","3":"Other","4":"<list<int>>","_rn_":"3"},{"1":"Adelaide","2":"South Australia","3":"Visiting","4":"<list<int>>","_rn_":"4"},{"1":"Adelaide Hills","2":"South Australia","3":"Business","4":"<list<int>>","_rn_":"5"},{"1":"Adelaide Hills","2":"South Australia","3":"Holiday","4":"<list<int>>","_rn_":"6"},{"1":"Adelaide Hills","2":"South Australia","3":"Other","4":"<list<int>>","_rn_":"7"},{"1":"Adelaide Hills","2":"South Australia","3":"Visiting","4":"<list<int>>","_rn_":"8"},{"1":"Alice Springs","2":"Northern Territory","3":"Business","4":"<list<int>>","_rn_":"9"},{"1":"Alice Springs","2":"Northern Territory","3":"Holiday","4":"<list<int>>","_rn_":"10"},{"1":"Alice Springs","2":"Northern Territory","3":"Other","4":"<list<int>>","_rn_":"11"},{"1":"Alice Springs","2":"Northern Territory","3":"Visiting","4":"<list<int>>","_rn_":"12"},{"1":"Australia's Coral Coast","2":"Western Australia","3":"Business","4":"<list<int>>","_rn_":"13"},{"1":"Australia's Coral Coast","2":"Western Australia","3":"Holiday","4":"<list<int>>","_rn_":"14"},{"1":"Australia's Coral Coast","2":"Western Australia","3":"Other","4":"<list<int>>","_rn_":"15"},{"1":"Australia's Coral Coast","2":"Western Australia","3":"Visiting","4":"<list<int>>","_rn_":"16"},{"1":"Australia's Golden Outback","2":"Western Australia","3":"Business","4":"<list<int>>","_rn_":"17"},{"1":"Australia's Golden Outback","2":"Western Australia","3":"Holiday","4":"<list<int>>","_rn_":"18"},{"1":"Australia's Golden Outback","2":"Western Australia","3":"Other","4":"<list<int>>","_rn_":"19"},{"1":"Australia's Golden Outback","2":"Western Australia","3":"Visiting","4":"<list<int>>","_rn_":"20"},{"1":"Australia's North West","2":"Western Australia","3":"Business","4":"<list<int>>","_rn_":"21"},{"1":"Australia's North West","2":"Western Australia","3":"Holiday","4":"<list<int>>","_rn_":"22"},{"1":"Australia's North West","2":"Western Australia","3":"Other","4":"<list<int>>","_rn_":"23"},{"1":"Australia's North West","2":"Western Australia","3":"Visiting","4":"<list<int>>","_rn_":"24"},{"1":"Australia's South West","2":"Western Australia","3":"Business","4":"<list<int>>","_rn_":"25"},{"1":"Australia's South West","2":"Western Australia","3":"Holiday","4":"<list<int>>","_rn_":"26"},{"1":"Australia's South West","2":"Western Australia","3":"Other","4":"<list<int>>","_rn_":"27"},{"1":"Australia's South West","2":"Western Australia","3":"Visiting","4":"<list<int>>","_rn_":"28"},{"1":"Ballarat","2":"Victoria","3":"Business","4":"<list<int>>","_rn_":"29"},{"1":"Ballarat","2":"Victoria","3":"Holiday","4":"<list<int>>","_rn_":"30"},{"1":"Ballarat","2":"Victoria","3":"Other","4":"<list<int>>","_rn_":"31"},{"1":"Ballarat","2":"Victoria","3":"Visiting","4":"<list<int>>","_rn_":"32"},{"1":"Barkly","2":"Northern Territory","3":"Business","4":"<list<int>>","_rn_":"33"},{"1":"Barkly","2":"Northern Territory","3":"Holiday","4":"<list<int>>","_rn_":"34"},{"1":"Barkly","2":"Northern Territory","3":"Other","4":"<list<int>>","_rn_":"35"},{"1":"Barkly","2":"Northern Territory","3":"Visiting","4":"<list<int>>","_rn_":"36"},{"1":"Barossa","2":"South Australia","3":"Business","4":"<list<int>>","_rn_":"37"},{"1":"Barossa","2":"South Australia","3":"Holiday","4":"<list<int>>","_rn_":"38"},{"1":"Barossa","2":"South Australia","3":"Other","4":"<list<int>>","_rn_":"39"},{"1":"Barossa","2":"South Australia","3":"Visiting","4":"<list<int>>","_rn_":"40"},{"1":"Bendigo Loddon","2":"Victoria","3":"Business","4":"<list<int>>","_rn_":"41"},{"1":"Bendigo Loddon","2":"Victoria","3":"Holiday","4":"<list<int>>","_rn_":"42"},{"1":"Bendigo Loddon","2":"Victoria","3":"Other","4":"<list<int>>","_rn_":"43"},{"1":"Bendigo Loddon","2":"Victoria","3":"Visiting","4":"<list<int>>","_rn_":"44"},{"1":"Blue Mountains","2":"New South Wales","3":"Business","4":"<list<int>>","_rn_":"45"},{"1":"Blue Mountains","2":"New South Wales","3":"Holiday","4":"<list<int>>","_rn_":"46"},{"1":"Blue Mountains","2":"New South Wales","3":"Other","4":"<list<int>>","_rn_":"47"},{"1":"Blue Mountains","2":"New South Wales","3":"Visiting","4":"<list<int>>","_rn_":"48"},{"1":"Brisbane","2":"Queensland","3":"Business","4":"<list<int>>","_rn_":"49"},{"1":"Brisbane","2":"Queensland","3":"Holiday","4":"<list<int>>","_rn_":"50"},{"1":"Brisbane","2":"Queensland","3":"Other","4":"<list<int>>","_rn_":"51"},{"1":"Brisbane","2":"Queensland","3":"Visiting","4":"<list<int>>","_rn_":"52"},{"1":"Bundaberg","2":"Queensland","3":"Business","4":"<list<int>>","_rn_":"53"},{"1":"Bundaberg","2":"Queensland","3":"Holiday","4":"<list<int>>","_rn_":"54"},{"1":"Bundaberg","2":"Queensland","3":"Other","4":"<list<int>>","_rn_":"55"},{"1":"Bundaberg","2":"Queensland","3":"Visiting","4":"<list<int>>","_rn_":"56"},{"1":"Canberra","2":"ACT","3":"Business","4":"<list<int>>","_rn_":"57"},{"1":"Canberra","2":"ACT","3":"Holiday","4":"<list<int>>","_rn_":"58"},{"1":"Canberra","2":"ACT","3":"Other","4":"<list<int>>","_rn_":"59"},{"1":"Canberra","2":"ACT","3":"Visiting","4":"<list<int>>","_rn_":"60"},{"1":"Capital Country","2":"New South Wales","3":"Business","4":"<list<int>>","_rn_":"61"},{"1":"Capital Country","2":"New South Wales","3":"Holiday","4":"<list<int>>","_rn_":"62"},{"1":"Capital Country","2":"New South Wales","3":"Other","4":"<list<int>>","_rn_":"63"},{"1":"Capital Country","2":"New South Wales","3":"Visiting","4":"<list<int>>","_rn_":"64"},{"1":"Central Coast","2":"New South Wales","3":"Business","4":"<list<int>>","_rn_":"65"},{"1":"Central Coast","2":"New South Wales","3":"Holiday","4":"<list<int>>","_rn_":"66"},{"1":"Central Coast","2":"New South Wales","3":"Other","4":"<list<int>>","_rn_":"67"},{"1":"Central Coast","2":"New South Wales","3":"Visiting","4":"<list<int>>","_rn_":"68"},{"1":"Central Highlands","2":"Victoria","3":"Business","4":"<list<int>>","_rn_":"69"},{"1":"Central Highlands","2":"Victoria","3":"Holiday","4":"<list<int>>","_rn_":"70"},{"1":"Central Highlands","2":"Victoria","3":"Other","4":"<list<int>>","_rn_":"71"},{"1":"Central Highlands","2":"Victoria","3":"Visiting","4":"<list<int>>","_rn_":"72"},{"1":"Central Murray","2":"Victoria","3":"Business","4":"<list<int>>","_rn_":"73"},{"1":"Central Murray","2":"Victoria","3":"Holiday","4":"<list<int>>","_rn_":"74"},{"1":"Central Murray","2":"Victoria","3":"Other","4":"<list<int>>","_rn_":"75"},{"1":"Central Murray","2":"Victoria","3":"Visiting","4":"<list<int>>","_rn_":"76"},{"1":"Central NSW","2":"New South Wales","3":"Business","4":"<list<int>>","_rn_":"77"},{"1":"Central NSW","2":"New South Wales","3":"Holiday","4":"<list<int>>","_rn_":"78"},{"1":"Central NSW","2":"New South Wales","3":"Other","4":"<list<int>>","_rn_":"79"},{"1":"Central NSW","2":"New South Wales","3":"Visiting","4":"<list<int>>","_rn_":"80"},{"1":"Central Queensland","2":"Queensland","3":"Business","4":"<list<int>>","_rn_":"81"},{"1":"Central Queensland","2":"Queensland","3":"Holiday","4":"<list<int>>","_rn_":"82"},{"1":"Central Queensland","2":"Queensland","3":"Other","4":"<list<int>>","_rn_":"83"},{"1":"Central Queensland","2":"Queensland","3":"Visiting","4":"<list<int>>","_rn_":"84"},{"1":"Clare Valley","2":"South Australia","3":"Business","4":"<list<int>>","_rn_":"85"},{"1":"Clare Valley","2":"South Australia","3":"Holiday","4":"<list<int>>","_rn_":"86"},{"1":"Clare Valley","2":"South Australia","3":"Other","4":"<list<int>>","_rn_":"87"},{"1":"Clare Valley","2":"South Australia","3":"Visiting","4":"<list<int>>","_rn_":"88"},{"1":"Darling Downs","2":"Queensland","3":"Business","4":"<list<int>>","_rn_":"89"},{"1":"Darling Downs","2":"Queensland","3":"Holiday","4":"<list<int>>","_rn_":"90"},{"1":"Darling Downs","2":"Queensland","3":"Other","4":"<list<int>>","_rn_":"91"},{"1":"Darling Downs","2":"Queensland","3":"Visiting","4":"<list<int>>","_rn_":"92"},{"1":"Darwin","2":"Northern Territory","3":"Business","4":"<list<int>>","_rn_":"93"},{"1":"Darwin","2":"Northern Territory","3":"Holiday","4":"<list<int>>","_rn_":"94"},{"1":"Darwin","2":"Northern Territory","3":"Other","4":"<list<int>>","_rn_":"95"},{"1":"Darwin","2":"Northern Territory","3":"Visiting","4":"<list<int>>","_rn_":"96"},{"1":"East Coast","2":"Tasmania","3":"Business","4":"<list<int>>","_rn_":"97"},{"1":"East Coast","2":"Tasmania","3":"Holiday","4":"<list<int>>","_rn_":"98"},{"1":"East Coast","2":"Tasmania","3":"Other","4":"<list<int>>","_rn_":"99"},{"1":"East Coast","2":"Tasmania","3":"Visiting","4":"<list<int>>","_rn_":"100"},{"1":"Experience Perth","2":"Western Australia","3":"Business","4":"<list<int>>","_rn_":"101"},{"1":"Experience Perth","2":"Western Australia","3":"Holiday","4":"<list<int>>","_rn_":"102"},{"1":"Experience Perth","2":"Western Australia","3":"Other","4":"<list<int>>","_rn_":"103"},{"1":"Experience Perth","2":"Western Australia","3":"Visiting","4":"<list<int>>","_rn_":"104"},{"1":"Eyre Peninsula","2":"South Australia","3":"Business","4":"<list<int>>","_rn_":"105"},{"1":"Eyre Peninsula","2":"South Australia","3":"Holiday","4":"<list<int>>","_rn_":"106"},{"1":"Eyre Peninsula","2":"South Australia","3":"Other","4":"<list<int>>","_rn_":"107"},{"1":"Eyre Peninsula","2":"South Australia","3":"Visiting","4":"<list<int>>","_rn_":"108"},{"1":"Fleurieu Peninsula","2":"South Australia","3":"Business","4":"<list<int>>","_rn_":"109"},{"1":"Fleurieu Peninsula","2":"South Australia","3":"Holiday","4":"<list<int>>","_rn_":"110"},{"1":"Fleurieu Peninsula","2":"South Australia","3":"Other","4":"<list<int>>","_rn_":"111"},{"1":"Fleurieu Peninsula","2":"South Australia","3":"Visiting","4":"<list<int>>","_rn_":"112"},{"1":"Flinders Ranges and Outback","2":"South Australia","3":"Business","4":"<list<int>>","_rn_":"113"},{"1":"Flinders Ranges and Outback","2":"South Australia","3":"Holiday","4":"<list<int>>","_rn_":"114"},{"1":"Flinders Ranges and Outback","2":"South Australia","3":"Other","4":"<list<int>>","_rn_":"115"},{"1":"Flinders Ranges and Outback","2":"South Australia","3":"Visiting","4":"<list<int>>","_rn_":"116"},{"1":"Fraser Coast","2":"Queensland","3":"Business","4":"<list<int>>","_rn_":"117"},{"1":"Fraser Coast","2":"Queensland","3":"Holiday","4":"<list<int>>","_rn_":"118"},{"1":"Fraser Coast","2":"Queensland","3":"Other","4":"<list<int>>","_rn_":"119"},{"1":"Fraser Coast","2":"Queensland","3":"Visiting","4":"<list<int>>","_rn_":"120"},{"1":"Geelong and the Bellarine","2":"Victoria","3":"Business","4":"<list<int>>","_rn_":"121"},{"1":"Geelong and the Bellarine","2":"Victoria","3":"Holiday","4":"<list<int>>","_rn_":"122"},{"1":"Geelong and the Bellarine","2":"Victoria","3":"Other","4":"<list<int>>","_rn_":"123"},{"1":"Geelong and the Bellarine","2":"Victoria","3":"Visiting","4":"<list<int>>","_rn_":"124"},{"1":"Gippsland","2":"Victoria","3":"Business","4":"<list<int>>","_rn_":"125"},{"1":"Gippsland","2":"Victoria","3":"Holiday","4":"<list<int>>","_rn_":"126"},{"1":"Gippsland","2":"Victoria","3":"Other","4":"<list<int>>","_rn_":"127"},{"1":"Gippsland","2":"Victoria","3":"Visiting","4":"<list<int>>","_rn_":"128"},{"1":"Gold Coast","2":"Queensland","3":"Business","4":"<list<int>>","_rn_":"129"},{"1":"Gold Coast","2":"Queensland","3":"Holiday","4":"<list<int>>","_rn_":"130"},{"1":"Gold Coast","2":"Queensland","3":"Other","4":"<list<int>>","_rn_":"131"},{"1":"Gold Coast","2":"Queensland","3":"Visiting","4":"<list<int>>","_rn_":"132"},{"1":"Goulburn","2":"Victoria","3":"Business","4":"<list<int>>","_rn_":"133"},{"1":"Goulburn","2":"Victoria","3":"Holiday","4":"<list<int>>","_rn_":"134"},{"1":"Goulburn","2":"Victoria","3":"Other","4":"<list<int>>","_rn_":"135"},{"1":"Goulburn","2":"Victoria","3":"Visiting","4":"<list<int>>","_rn_":"136"},{"1":"Great Ocean Road","2":"Victoria","3":"Business","4":"<list<int>>","_rn_":"137"},{"1":"Great Ocean Road","2":"Victoria","3":"Holiday","4":"<list<int>>","_rn_":"138"},{"1":"Great Ocean Road","2":"Victoria","3":"Other","4":"<list<int>>","_rn_":"139"},{"1":"Great Ocean Road","2":"Victoria","3":"Visiting","4":"<list<int>>","_rn_":"140"},{"1":"High Country","2":"Victoria","3":"Business","4":"<list<int>>","_rn_":"141"},{"1":"High Country","2":"Victoria","3":"Holiday","4":"<list<int>>","_rn_":"142"},{"1":"High Country","2":"Victoria","3":"Other","4":"<list<int>>","_rn_":"143"},{"1":"High Country","2":"Victoria","3":"Visiting","4":"<list<int>>","_rn_":"144"},{"1":"Hobart and the South","2":"Tasmania","3":"Business","4":"<list<int>>","_rn_":"145"},{"1":"Hobart and the South","2":"Tasmania","3":"Holiday","4":"<list<int>>","_rn_":"146"},{"1":"Hobart and the South","2":"Tasmania","3":"Other","4":"<list<int>>","_rn_":"147"},{"1":"Hobart and the South","2":"Tasmania","3":"Visiting","4":"<list<int>>","_rn_":"148"},{"1":"Hunter","2":"New South Wales","3":"Business","4":"<list<int>>","_rn_":"149"},{"1":"Hunter","2":"New South Wales","3":"Holiday","4":"<list<int>>","_rn_":"150"},{"1":"Hunter","2":"New South Wales","3":"Other","4":"<list<int>>","_rn_":"151"},{"1":"Hunter","2":"New South Wales","3":"Visiting","4":"<list<int>>","_rn_":"152"},{"1":"Kakadu Arnhem","2":"Northern Territory","3":"Business","4":"<list<int>>","_rn_":"153"},{"1":"Kakadu Arnhem","2":"Northern Territory","3":"Holiday","4":"<list<int>>","_rn_":"154"},{"1":"Kakadu Arnhem","2":"Northern Territory","3":"Other","4":"<list<int>>","_rn_":"155"},{"1":"Kakadu Arnhem","2":"Northern Territory","3":"Visiting","4":"<list<int>>","_rn_":"156"},{"1":"Kangaroo Island","2":"South Australia","3":"Business","4":"<list<int>>","_rn_":"157"},{"1":"Kangaroo Island","2":"South Australia","3":"Holiday","4":"<list<int>>","_rn_":"158"},{"1":"Kangaroo Island","2":"South Australia","3":"Other","4":"<list<int>>","_rn_":"159"},{"1":"Kangaroo Island","2":"South Australia","3":"Visiting","4":"<list<int>>","_rn_":"160"},{"1":"Katherine Daly","2":"Northern Territory","3":"Business","4":"<list<int>>","_rn_":"161"},{"1":"Katherine Daly","2":"Northern Territory","3":"Holiday","4":"<list<int>>","_rn_":"162"},{"1":"Katherine Daly","2":"Northern Territory","3":"Other","4":"<list<int>>","_rn_":"163"},{"1":"Katherine Daly","2":"Northern Territory","3":"Visiting","4":"<list<int>>","_rn_":"164"},{"1":"Lakes","2":"Victoria","3":"Business","4":"<list<int>>","_rn_":"165"},{"1":"Lakes","2":"Victoria","3":"Holiday","4":"<list<int>>","_rn_":"166"},{"1":"Lakes","2":"Victoria","3":"Other","4":"<list<int>>","_rn_":"167"},{"1":"Lakes","2":"Victoria","3":"Visiting","4":"<list<int>>","_rn_":"168"},{"1":"Lasseter","2":"Northern Territory","3":"Business","4":"<list<int>>","_rn_":"169"},{"1":"Lasseter","2":"Northern Territory","3":"Holiday","4":"<list<int>>","_rn_":"170"},{"1":"Lasseter","2":"Northern Territory","3":"Other","4":"<list<int>>","_rn_":"171"},{"1":"Lasseter","2":"Northern Territory","3":"Visiting","4":"<list<int>>","_rn_":"172"},{"1":"Launceston, Tamar and the North","2":"Tasmania","3":"Business","4":"<list<int>>","_rn_":"173"},{"1":"Launceston, Tamar and the North","2":"Tasmania","3":"Holiday","4":"<list<int>>","_rn_":"174"},{"1":"Launceston, Tamar and the North","2":"Tasmania","3":"Other","4":"<list<int>>","_rn_":"175"},{"1":"Launceston, Tamar and the North","2":"Tasmania","3":"Visiting","4":"<list<int>>","_rn_":"176"},{"1":"Limestone Coast","2":"South Australia","3":"Business","4":"<list<int>>","_rn_":"177"},{"1":"Limestone Coast","2":"South Australia","3":"Holiday","4":"<list<int>>","_rn_":"178"},{"1":"Limestone Coast","2":"South Australia","3":"Other","4":"<list<int>>","_rn_":"179"},{"1":"Limestone Coast","2":"South Australia","3":"Visiting","4":"<list<int>>","_rn_":"180"},{"1":"MacDonnell","2":"Northern Territory","3":"Business","4":"<list<int>>","_rn_":"181"},{"1":"MacDonnell","2":"Northern Territory","3":"Holiday","4":"<list<int>>","_rn_":"182"},{"1":"MacDonnell","2":"Northern Territory","3":"Other","4":"<list<int>>","_rn_":"183"},{"1":"MacDonnell","2":"Northern Territory","3":"Visiting","4":"<list<int>>","_rn_":"184"},{"1":"Macedon","2":"Victoria","3":"Business","4":"<list<int>>","_rn_":"185"},{"1":"Macedon","2":"Victoria","3":"Holiday","4":"<list<int>>","_rn_":"186"},{"1":"Macedon","2":"Victoria","3":"Other","4":"<list<int>>","_rn_":"187"},{"1":"Macedon","2":"Victoria","3":"Visiting","4":"<list<int>>","_rn_":"188"},{"1":"Mackay","2":"Queensland","3":"Business","4":"<list<int>>","_rn_":"189"},{"1":"Mackay","2":"Queensland","3":"Holiday","4":"<list<int>>","_rn_":"190"},{"1":"Mackay","2":"Queensland","3":"Other","4":"<list<int>>","_rn_":"191"},{"1":"Mackay","2":"Queensland","3":"Visiting","4":"<list<int>>","_rn_":"192"},{"1":"Mallee","2":"Victoria","3":"Business","4":"<list<int>>","_rn_":"193"},{"1":"Mallee","2":"Victoria","3":"Holiday","4":"<list<int>>","_rn_":"194"},{"1":"Mallee","2":"Victoria","3":"Other","4":"<list<int>>","_rn_":"195"},{"1":"Mallee","2":"Victoria","3":"Visiting","4":"<list<int>>","_rn_":"196"},{"1":"Melbourne","2":"Victoria","3":"Business","4":"<list<int>>","_rn_":"197"},{"1":"Melbourne","2":"Victoria","3":"Holiday","4":"<list<int>>","_rn_":"198"},{"1":"Melbourne","2":"Victoria","3":"Other","4":"<list<int>>","_rn_":"199"},{"1":"Melbourne","2":"Victoria","3":"Visiting","4":"<list<int>>","_rn_":"200"},{"1":"Melbourne East","2":"Victoria","3":"Business","4":"<list<int>>","_rn_":"201"},{"1":"Melbourne East","2":"Victoria","3":"Holiday","4":"<list<int>>","_rn_":"202"},{"1":"Melbourne East","2":"Victoria","3":"Other","4":"<list<int>>","_rn_":"203"},{"1":"Melbourne East","2":"Victoria","3":"Visiting","4":"<list<int>>","_rn_":"204"},{"1":"Murray East","2":"Victoria","3":"Business","4":"<list<int>>","_rn_":"205"},{"1":"Murray East","2":"Victoria","3":"Holiday","4":"<list<int>>","_rn_":"206"},{"1":"Murray East","2":"Victoria","3":"Other","4":"<list<int>>","_rn_":"207"},{"1":"Murray East","2":"Victoria","3":"Visiting","4":"<list<int>>","_rn_":"208"},{"1":"Murraylands","2":"South Australia","3":"Business","4":"<list<int>>","_rn_":"209"},{"1":"Murraylands","2":"South Australia","3":"Holiday","4":"<list<int>>","_rn_":"210"},{"1":"Murraylands","2":"South Australia","3":"Other","4":"<list<int>>","_rn_":"211"},{"1":"Murraylands","2":"South Australia","3":"Visiting","4":"<list<int>>","_rn_":"212"},{"1":"New England North West","2":"New South Wales","3":"Business","4":"<list<int>>","_rn_":"213"},{"1":"New England North West","2":"New South Wales","3":"Holiday","4":"<list<int>>","_rn_":"214"},{"1":"New England North West","2":"New South Wales","3":"Other","4":"<list<int>>","_rn_":"215"},{"1":"New England North West","2":"New South Wales","3":"Visiting","4":"<list<int>>","_rn_":"216"},{"1":"North Coast NSW","2":"New South Wales","3":"Business","4":"<list<int>>","_rn_":"217"},{"1":"North Coast NSW","2":"New South Wales","3":"Holiday","4":"<list<int>>","_rn_":"218"},{"1":"North Coast NSW","2":"New South Wales","3":"Other","4":"<list<int>>","_rn_":"219"},{"1":"North Coast NSW","2":"New South Wales","3":"Visiting","4":"<list<int>>","_rn_":"220"},{"1":"North West","2":"Tasmania","3":"Business","4":"<list<int>>","_rn_":"221"},{"1":"North West","2":"Tasmania","3":"Holiday","4":"<list<int>>","_rn_":"222"},{"1":"North West","2":"Tasmania","3":"Other","4":"<list<int>>","_rn_":"223"},{"1":"North West","2":"Tasmania","3":"Visiting","4":"<list<int>>","_rn_":"224"},{"1":"Northern","2":"Queensland","3":"Business","4":"<list<int>>","_rn_":"225"},{"1":"Northern","2":"Queensland","3":"Holiday","4":"<list<int>>","_rn_":"226"},{"1":"Northern","2":"Queensland","3":"Other","4":"<list<int>>","_rn_":"227"},{"1":"Northern","2":"Queensland","3":"Visiting","4":"<list<int>>","_rn_":"228"},{"1":"Outback","2":"Queensland","3":"Business","4":"<list<int>>","_rn_":"229"},{"1":"Outback","2":"Queensland","3":"Holiday","4":"<list<int>>","_rn_":"230"},{"1":"Outback","2":"Queensland","3":"Other","4":"<list<int>>","_rn_":"231"},{"1":"Outback","2":"Queensland","3":"Visiting","4":"<list<int>>","_rn_":"232"},{"1":"Outback NSW","2":"New South Wales","3":"Business","4":"<list<int>>","_rn_":"233"},{"1":"Outback NSW","2":"New South Wales","3":"Holiday","4":"<list<int>>","_rn_":"234"},{"1":"Outback NSW","2":"New South Wales","3":"Other","4":"<list<int>>","_rn_":"235"},{"1":"Outback NSW","2":"New South Wales","3":"Visiting","4":"<list<int>>","_rn_":"236"},{"1":"Peninsula","2":"Victoria","3":"Business","4":"<list<int>>","_rn_":"237"},{"1":"Peninsula","2":"Victoria","3":"Holiday","4":"<list<int>>","_rn_":"238"},{"1":"Peninsula","2":"Victoria","3":"Other","4":"<list<int>>","_rn_":"239"},{"1":"Peninsula","2":"Victoria","3":"Visiting","4":"<list<int>>","_rn_":"240"},{"1":"Phillip Island","2":"Victoria","3":"Business","4":"<list<int>>","_rn_":"241"},{"1":"Phillip Island","2":"Victoria","3":"Holiday","4":"<list<int>>","_rn_":"242"},{"1":"Phillip Island","2":"Victoria","3":"Other","4":"<list<int>>","_rn_":"243"},{"1":"Phillip Island","2":"Victoria","3":"Visiting","4":"<list<int>>","_rn_":"244"},{"1":"Riverina","2":"New South Wales","3":"Business","4":"<list<int>>","_rn_":"245"},{"1":"Riverina","2":"New South Wales","3":"Holiday","4":"<list<int>>","_rn_":"246"},{"1":"Riverina","2":"New South Wales","3":"Other","4":"<list<int>>","_rn_":"247"},{"1":"Riverina","2":"New South Wales","3":"Visiting","4":"<list<int>>","_rn_":"248"},{"1":"Riverland","2":"South Australia","3":"Business","4":"<list<int>>","_rn_":"249"},{"1":"Riverland","2":"South Australia","3":"Holiday","4":"<list<int>>","_rn_":"250"},{"1":"Riverland","2":"South Australia","3":"Other","4":"<list<int>>","_rn_":"251"},{"1":"Riverland","2":"South Australia","3":"Visiting","4":"<list<int>>","_rn_":"252"},{"1":"Snowy Mountains","2":"New South Wales","3":"Business","4":"<list<int>>","_rn_":"253"},{"1":"Snowy Mountains","2":"New South Wales","3":"Holiday","4":"<list<int>>","_rn_":"254"},{"1":"Snowy Mountains","2":"New South Wales","3":"Other","4":"<list<int>>","_rn_":"255"},{"1":"Snowy Mountains","2":"New South Wales","3":"Visiting","4":"<list<int>>","_rn_":"256"},{"1":"South Coast","2":"New South Wales","3":"Business","4":"<list<int>>","_rn_":"257"},{"1":"South Coast","2":"New South Wales","3":"Holiday","4":"<list<int>>","_rn_":"258"},{"1":"South Coast","2":"New South Wales","3":"Other","4":"<list<int>>","_rn_":"259"},{"1":"South Coast","2":"New South Wales","3":"Visiting","4":"<list<int>>","_rn_":"260"},{"1":"Spa Country","2":"Victoria","3":"Business","4":"<list<int>>","_rn_":"261"},{"1":"Spa Country","2":"Victoria","3":"Holiday","4":"<list<int>>","_rn_":"262"},{"1":"Spa Country","2":"Victoria","3":"Other","4":"<list<int>>","_rn_":"263"},{"1":"Spa Country","2":"Victoria","3":"Visiting","4":"<list<int>>","_rn_":"264"},{"1":"Sunshine Coast","2":"Queensland","3":"Business","4":"<list<int>>","_rn_":"265"},{"1":"Sunshine Coast","2":"Queensland","3":"Holiday","4":"<list<int>>","_rn_":"266"},{"1":"Sunshine Coast","2":"Queensland","3":"Other","4":"<list<int>>","_rn_":"267"},{"1":"Sunshine Coast","2":"Queensland","3":"Visiting","4":"<list<int>>","_rn_":"268"},{"1":"Sydney","2":"New South Wales","3":"Business","4":"<list<int>>","_rn_":"269"},{"1":"Sydney","2":"New South Wales","3":"Holiday","4":"<list<int>>","_rn_":"270"},{"1":"Sydney","2":"New South Wales","3":"Other","4":"<list<int>>","_rn_":"271"},{"1":"Sydney","2":"New South Wales","3":"Visiting","4":"<list<int>>","_rn_":"272"},{"1":"The Murray","2":"New South Wales","3":"Business","4":"<list<int>>","_rn_":"273"},{"1":"The Murray","2":"New South Wales","3":"Holiday","4":"<list<int>>","_rn_":"274"},{"1":"The Murray","2":"New South Wales","3":"Other","4":"<list<int>>","_rn_":"275"},{"1":"The Murray","2":"New South Wales","3":"Visiting","4":"<list<int>>","_rn_":"276"},{"1":"Tropical North Queensland","2":"Queensland","3":"Business","4":"<list<int>>","_rn_":"277"},{"1":"Tropical North Queensland","2":"Queensland","3":"Holiday","4":"<list<int>>","_rn_":"278"},{"1":"Tropical North Queensland","2":"Queensland","3":"Other","4":"<list<int>>","_rn_":"279"},{"1":"Tropical North Queensland","2":"Queensland","3":"Visiting","4":"<list<int>>","_rn_":"280"},{"1":"Upper Yarra","2":"Victoria","3":"Business","4":"<list<int>>","_rn_":"281"},{"1":"Upper Yarra","2":"Victoria","3":"Holiday","4":"<list<int>>","_rn_":"282"},{"1":"Upper Yarra","2":"Victoria","3":"Other","4":"<list<int>>","_rn_":"283"},{"1":"Upper Yarra","2":"Victoria","3":"Visiting","4":"<list<int>>","_rn_":"284"},{"1":"Western Grampians","2":"Victoria","3":"Business","4":"<list<int>>","_rn_":"285"},{"1":"Western Grampians","2":"Victoria","3":"Holiday","4":"<list<int>>","_rn_":"286"},{"1":"Western Grampians","2":"Victoria","3":"Other","4":"<list<int>>","_rn_":"287"},{"1":"Western Grampians","2":"Victoria","3":"Visiting","4":"<list<int>>","_rn_":"288"},{"1":"Whitsundays","2":"Queensland","3":"Business","4":"<list<int>>","_rn_":"289"},{"1":"Whitsundays","2":"Queensland","3":"Holiday","4":"<list<int>>","_rn_":"290"},{"1":"Whitsundays","2":"Queensland","3":"Other","4":"<list<int>>","_rn_":"291"},{"1":"Whitsundays","2":"Queensland","3":"Visiting","4":"<list<int>>","_rn_":"292"},{"1":"Wilderness West","2":"Tasmania","3":"Business","4":"<list<int>>","_rn_":"293"},{"1":"Wilderness West","2":"Tasmania","3":"Holiday","4":"<list<int>>","_rn_":"294"},{"1":"Wilderness West","2":"Tasmania","3":"Other","4":"<list<int>>","_rn_":"295"},{"1":"Wilderness West","2":"Tasmania","3":"Visiting","4":"<list<int>>","_rn_":"296"},{"1":"Wimmera","2":"Victoria","3":"Business","4":"<list<int>>","_rn_":"297"},{"1":"Wimmera","2":"Victoria","3":"Holiday","4":"<list<int>>","_rn_":"298"},{"1":"Wimmera","2":"Victoria","3":"Other","4":"<list<int>>","_rn_":"299"},{"1":"Wimmera","2":"Victoria","3":"Visiting","4":"<list<int>>","_rn_":"300"},{"1":"Yorke Peninsula","2":"South Australia","3":"Business","4":"<list<int>>","_rn_":"301"},{"1":"Yorke Peninsula","2":"South Australia","3":"Holiday","4":"<list<int>>","_rn_":"302"},{"1":"Yorke Peninsula","2":"South Australia","3":"Other","4":"<list<int>>","_rn_":"303"},{"1":"Yorke Peninsula","2":"South Australia","3":"Visiting","4":"<list<int>>","_rn_":"304"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
-</div>
+<pre><code>[1] "Quarter"
+[1] "Region"  "State"   "Purpose"
+# A tibble: 304 × 4
+   Region         State              Purpose        .rows
+ * &lt;chr&gt;          &lt;chr&gt;              &lt;chr&gt;    &lt;list&lt;int&gt;&gt;
+ 1 Adelaide       South Australia    Business        [80]
+ 2 Adelaide       South Australia    Holiday         [80]
+ 3 Adelaide       South Australia    Other           [80]
+ 4 Adelaide       South Australia    Visiting        [80]
+ 5 Adelaide Hills South Australia    Business        [80]
+ 6 Adelaide Hills South Australia    Holiday         [80]
+ 7 Adelaide Hills South Australia    Other           [80]
+ 8 Adelaide Hills South Australia    Visiting        [80]
+ 9 Alice Springs  Northern Territory Business        [80]
+10 Alice Springs  Northern Territory Holiday         [80]
+# ℹ 294 more rows</code></pre>
 </div>
 </div>
 <aside class="notes">
-<p>The <code>tsibble</code> has 24320 rows and 5 columns. It shows quarterly data<a href="#/footnotes" class="footnote-ref" id="fnref1" role="doc-noteref" data-footnote-href="#/fn1" onclick=""><sup>1</sup></a> on tourism across Australia. It’s divided by Region, State, and purspose of the trip<a href="#/footnotes" class="footnote-ref" id="fnref2" role="doc-noteref" data-footnote-href="#/fn2" onclick=""><sup>2</sup></a>. How many different states are there?</p>
+<p>Index and key together define what one observation is: one point on the index, for one combination of the key. That pair is what a tsibble keeps unique, and those two arguments are all you need in order to build one.</p>
+<p><code>tourism</code> is divided by Region, State, and purpose of the trip<a href="#/footnotes" class="footnote-ref" id="fnref2" role="doc-noteref" data-footnote-href="#/fn2" onclick=""><sup>2</sup></a>. How many different states are there?</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -459,7 +493,7 @@
 <section id="australian-states" class="slide level2">
 <h2>Australian States</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a aria-label="1"></a><span class="fu">distinct</span>(tourism, State)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a aria-label="1"></a><span class="fu">distinct</span>(tourism, State)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -472,7 +506,7 @@
 <section id="which-regions-are-located-in-tasmania" class="slide level2">
 <h2>Which regions are located in Tasmania?</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a aria-label="1"></a><span class="fu">distinct</span>(<span class="fu">filter</span>(tourism, State <span class="sc">==</span> <span class="st">"Tasmania"</span>),Region)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a aria-label="1"></a><span class="fu">distinct</span>(<span class="fu">filter</span>(tourism, State <span class="sc">==</span> <span class="st">"Tasmania"</span>),Region)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -481,6 +515,150 @@
 </div>
 </div>
 </div>
+</section>
+<section id="building-a-tsibble" class="slide level2">
+<h2>Building a tsibble</h2>
+<p>Most data does not arrive as a tsibble. <code>as_tsibble()</code> builds one from a data frame by naming the index and the key:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-7" data-llms-code-original="sales <- tibble(
+  month = yearmonth(c(&quot;2024 Jan&quot;, &quot;2024 Feb&quot;, &quot;2024 Mar&quot;,   # <1>
+                      &quot;2024 Jan&quot;, &quot;2024 Feb&quot;, &quot;2024 Apr&quot;)),
+  store = c(&quot;North&quot;, &quot;North&quot;, &quot;North&quot;, &quot;South&quot;, &quot;South&quot;, &quot;South&quot;),
+  units = c(120, 135, 128, 98, 105, 111)
+)
+
+sales"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-7-1"><a href="#annotated-cell-7-1" aria-label="1"></a>sales <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="1">1</button><span id="annotated-cell-7-2" class="code-annotation-target"><a href="#annotated-cell-7-2" aria-label="2"></a>  <span class="at">month =</span> <span class="fu">yearmonth</span>(<span class="fu">c</span>(<span class="st">"2024 Jan"</span>, <span class="st">"2024 Feb"</span>, <span class="st">"2024 Mar"</span>,</span>
+<span id="annotated-cell-7-3"><a href="#annotated-cell-7-3" aria-label="3"></a>                      <span class="st">"2024 Jan"</span>, <span class="st">"2024 Feb"</span>, <span class="st">"2024 Apr"</span>)),</span>
+<span id="annotated-cell-7-4"><a href="#annotated-cell-7-4" aria-label="4"></a>  <span class="at">store =</span> <span class="fu">c</span>(<span class="st">"North"</span>, <span class="st">"North"</span>, <span class="st">"North"</span>, <span class="st">"South"</span>, <span class="st">"South"</span>, <span class="st">"South"</span>),</span>
+<span id="annotated-cell-7-5"><a href="#annotated-cell-7-5" aria-label="5"></a>  <span class="at">units =</span> <span class="fu">c</span>(<span class="dv">120</span>, <span class="dv">135</span>, <span class="dv">128</span>, <span class="dv">98</span>, <span class="dv">105</span>, <span class="dv">111</span>)</span>
+<span id="annotated-cell-7-6"><a href="#annotated-cell-7-6" aria-label="6"></a>)</span>
+<span id="annotated-cell-7-7"><a href="#annotated-cell-7-7" aria-label="7"></a></span>
+<span id="annotated-cell-7-8"><a href="#annotated-cell-7-8" aria-label="8"></a>sales</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-7" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-7" data-code-lines="2" data-code-annotation="1"><code>yearmonth()</code> turns text into a monthly time class. The index has to be a time class; a plain number or a string will not do.</span>
+</dd>
+</dl>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 3
+      month store units
+      &lt;mth&gt; &lt;chr&gt; &lt;dbl&gt;
+1 2024 ene. North   120
+2 2024 feb. North   135
+3 2024 mar. North   128
+4 2024 ene. South    98
+5 2024 feb. South   105
+6 2024 abr. South   111</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-8" data-llms-code-original="sales_ts <- sales |>
+  as_tsibble(index = month, key = store) # <1>
+
+sales_ts"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-8-1"><a href="#annotated-cell-8-1" aria-label="1"></a>sales_ts <span class="ot">&lt;-</span> sales <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-8" data-target-annotation="1">1</button><span id="annotated-cell-8-2" class="code-annotation-target"><a href="#annotated-cell-8-2" aria-label="2"></a>  <span class="fu">as_tsibble</span>(<span class="at">index =</span> month, <span class="at">key =</span> store)</span>
+<span id="annotated-cell-8-3"><a href="#annotated-cell-8-3" aria-label="3"></a></span>
+<span id="annotated-cell-8-4"><a href="#annotated-cell-8-4" aria-label="4"></a>sales_ts</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-8" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-8" data-code-lines="2" data-code-annotation="1"><code>month</code> is the index and <code>store</code> is the key. The header now reports <code>[1M]</code> for the monthly interval and <code>store [2]</code> for the two series it found.</span>
+</dd>
+</dl>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tsibble: 6 x 3 [1M]
+# Key:       store [2]
+      month store units
+      &lt;mth&gt; &lt;chr&gt; &lt;dbl&gt;
+1 2024 ene. North   120
+2 2024 feb. North   135
+3 2024 mar. North   128
+4 2024 ene. South    98
+5 2024 feb. South   105
+6 2024 abr. South   111</code></pre>
+</div>
+</div>
+<aside class="notes">
+<p><code>as_tsibble()</code> declares structure rather than changing values: the numbers are untouched, but the object now knows what time is. It also checks the declaration and fails immediately if a key–index pair is duplicated or if the index cannot be ordered. Getting that error at construction time is far cheaper than discovering the problem after fitting a model.</p>
+<p>The interval <code>[1M]</code> is inferred, not declared. <code>tsibble</code> looks at the distances between consecutive index values and reports the finest regular interval that fits them.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="gaps-and-missing-values" class="slide level2">
+<h2>Gaps and missing values</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-9" data-llms-code-original="has_gaps(sales_ts) # <1>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-9" data-target-annotation="1">1</button><span id="annotated-cell-9-1" class="code-annotation-target"><a href="#annotated-cell-9-1" aria-label="1"></a><span class="fu">has_gaps</span>(sales_ts)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-9" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-9" data-code-lines="1" data-code-annotation="1"><code>South</code> jumps from February to April, so March is absent as a <em>row</em> rather than present with a missing value.</span>
+</dd>
+</dl>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 2
+  store .gaps
+  &lt;chr&gt; &lt;lgl&gt;
+1 North FALSE
+2 South TRUE </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-10" data-llms-code-original="sales_ts |>
+  fill_gaps() # <1>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-10-1"><a href="#annotated-cell-10-1" aria-label="1"></a>sales_ts <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-10" data-target-annotation="1">1</button><span id="annotated-cell-10-2" class="code-annotation-target"><a href="#annotated-cell-10-2" aria-label="2"></a>  <span class="fu">fill_gaps</span>()</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-10" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-10" data-code-lines="2" data-code-annotation="1"><code>fill_gaps()</code> inserts the missing row and marks <code>units</code> as <code>NA</code>, turning the implicit gap into an explicit missing value.</span>
+</dd>
+</dl>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tsibble: 7 x 3 [1M]
+# Key:       store [2]
+      month store units
+      &lt;mth&gt; &lt;chr&gt; &lt;dbl&gt;
+1 2024 ene. North   120
+2 2024 feb. North   135
+3 2024 mar. North   128
+4 2024 ene. South    98
+5 2024 feb. South   105
+6 2024 mar. South    NA
+7 2024 abr. South   111</code></pre>
+</div>
+</div>
+<aside class="notes">
+<p>A missing value is a row that exists with <code>NA</code> in it. A gap is a row that does not exist at all. The distinction matters because a series with an invisible hole in it will be read as if February were followed by April with nothing in between, so lags, seasonal periods, and differences all shift by one position from that point onward.</p>
+<p><code>fill_gaps()</code> is what makes the problem visible. Once the gap is an <code>NA</code>, you can decide what to do about it: interpolate it, drop the affected span, or leave it and let the model handle it.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="data-transformation-average-trips" class="slide level2 scrollable">
 <h2>Data Transformation: Average trips</h2>
@@ -496,9 +674,9 @@
 <h2 data-id="quarto-animate-title"></h2>
 <p>With traditional code, this would look something like:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb15-1" class="hljs-ln-code"><a aria-label="1"></a><span class="fu">summarise</span>(<span class="fu">group_by</span>(<span class="fu">as_tibble</span>(<span class="fu">filter</span>(tourism, State <span class="sc">==</span> <span class="st">"Tasmania"</span>, </span>
-<span id="cb15-2" class="hljs-ln-code"><a aria-label="2"></a>                                    Region <span class="sc">==</span> <span class="st">"East Coast"</span>)), Purpose),</span>
-<span id="cb15-3" class="hljs-ln-code"><a aria-label="3"></a>          <span class="at">mean_trips =</span> <span class="fu">mean</span>(Trips))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb16-1" class="hljs-ln-code"><a aria-label="1"></a><span class="fu">summarise</span>(<span class="fu">group_by</span>(<span class="fu">as_tibble</span>(<span class="fu">filter</span>(tourism, State <span class="sc">==</span> <span class="st">"Tasmania"</span>, </span>
+<span id="cb16-2" class="hljs-ln-code"><a aria-label="2"></a>                                    Region <span class="sc">==</span> <span class="st">"East Coast"</span>)), Purpose),</span>
+<span id="cb16-3" class="hljs-ln-code"><a aria-label="3"></a>          <span class="at">mean_trips =</span> <span class="fu">mean</span>(Trips))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <aside class="notes">
 <div class="callout callout-note callout-titled callout-style-default">
@@ -530,41 +708,30 @@
 <h2 data-id="quarto-animate-title"></h2>
 <p>Using the native pipe operator; <code>|&gt;</code>, we can improve the same code:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb16-1" class="hljs-ln-code"><a aria-label="1"></a>tourism <span class="sc">|&gt;</span>                          </span>
-<span id="cb16-2" class="hljs-ln-code"><a aria-label="2"></a>  <span class="fu">filter</span>() </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb17-1" class="hljs-ln-code"><a aria-label="1"></a>tourism <span class="sc">|&gt;</span>                          </span>
+<span id="cb17-2" class="hljs-ln-code"><a aria-label="2"></a>  <span class="fu">filter</span>() </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="section-2" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title"></h2>
 <p>Using the native pipe operator; <code>|&gt;</code>, we can improve the same code:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb17-1" class="hljs-ln-code"><a aria-label="1"></a>tourism <span class="sc">|&gt;</span>                          </span>
-<span id="cb17-2" class="hljs-ln-code"><a aria-label="2"></a>  <span class="fu">filter</span>(State <span class="sc">==</span> <span class="st">"Tasmania"</span>,       </span>
-<span id="cb17-3" class="hljs-ln-code"><a aria-label="3"></a>         Region <span class="sc">==</span> <span class="st">"East Coast"</span>) <span class="sc">|&gt;</span> </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb18-1" class="hljs-ln-code"><a aria-label="1"></a>tourism <span class="sc">|&gt;</span>                          </span>
+<span id="cb18-2" class="hljs-ln-code"><a aria-label="2"></a>  <span class="fu">filter</span>(State <span class="sc">==</span> <span class="st">"Tasmania"</span>,       </span>
+<span id="cb18-3" class="hljs-ln-code"><a aria-label="3"></a>         Region <span class="sc">==</span> <span class="st">"East Coast"</span>) <span class="sc">|&gt;</span> </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="section-3" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title"></h2>
 <p>Using the native pipe operator; <code>|&gt;</code>, we can improve the same code:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb18-1" class="hljs-ln-code"><a aria-label="1"></a>tourism <span class="sc">|&gt;</span>                          </span>
-<span id="cb18-2" class="hljs-ln-code"><a aria-label="2"></a>  <span class="fu">filter</span>(State <span class="sc">==</span> <span class="st">"Tasmania"</span>,       </span>
-<span id="cb18-3" class="hljs-ln-code"><a aria-label="3"></a>         Region <span class="sc">==</span> <span class="st">"East Coast"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb18-4" class="hljs-ln-code"><a aria-label="4"></a>  <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</section>
-<section id="section-4" class="slide level2" data-auto-animate="true">
-<h2 data-id="quarto-animate-title"></h2>
-<p>Using the native pipe operator; <code>|&gt;</code>, we can improve the same code:</p>
-<div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb19-1" class="hljs-ln-code"><a aria-label="1"></a>tourism <span class="sc">|&gt;</span>                          </span>
 <span id="cb19-2" class="hljs-ln-code"><a aria-label="2"></a>  <span class="fu">filter</span>(State <span class="sc">==</span> <span class="st">"Tasmania"</span>,       </span>
 <span id="cb19-3" class="hljs-ln-code"><a aria-label="3"></a>         Region <span class="sc">==</span> <span class="st">"East Coast"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb19-4" class="hljs-ln-code"><a aria-label="4"></a>  <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span>                    </span>
-<span id="cb19-5" class="hljs-ln-code"><a aria-label="5"></a>  <span class="fu">group_by</span>() </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb19-4" class="hljs-ln-code"><a aria-label="4"></a>  <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
-<section id="section-5" class="slide level2" data-auto-animate="true">
+<section id="section-4" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title"></h2>
 <p>Using the native pipe operator; <code>|&gt;</code>, we can improve the same code:</p>
 <div class="cell">
@@ -572,10 +739,10 @@
 <span id="cb20-2" class="hljs-ln-code"><a aria-label="2"></a>  <span class="fu">filter</span>(State <span class="sc">==</span> <span class="st">"Tasmania"</span>,       </span>
 <span id="cb20-3" class="hljs-ln-code"><a aria-label="3"></a>         Region <span class="sc">==</span> <span class="st">"East Coast"</span>) <span class="sc">|&gt;</span> </span>
 <span id="cb20-4" class="hljs-ln-code"><a aria-label="4"></a>  <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span>                    </span>
-<span id="cb20-5" class="hljs-ln-code"><a aria-label="5"></a>  <span class="fu">group_by</span>(Purpose) <span class="sc">|&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb20-5" class="hljs-ln-code"><a aria-label="5"></a>  <span class="fu">group_by</span>() </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
-<section id="section-6" class="slide level2" data-auto-animate="true">
+<section id="section-5" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title"></h2>
 <p>Using the native pipe operator; <code>|&gt;</code>, we can improve the same code:</p>
 <div class="cell">
@@ -583,11 +750,10 @@
 <span id="cb21-2" class="hljs-ln-code"><a aria-label="2"></a>  <span class="fu">filter</span>(State <span class="sc">==</span> <span class="st">"Tasmania"</span>,       </span>
 <span id="cb21-3" class="hljs-ln-code"><a aria-label="3"></a>         Region <span class="sc">==</span> <span class="st">"East Coast"</span>) <span class="sc">|&gt;</span> </span>
 <span id="cb21-4" class="hljs-ln-code"><a aria-label="4"></a>  <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span>                    </span>
-<span id="cb21-5" class="hljs-ln-code"><a aria-label="5"></a>  <span class="fu">group_by</span>(Purpose) <span class="sc">|&gt;</span>              </span>
-<span id="cb21-6" class="hljs-ln-code"><a aria-label="6"></a>  <span class="fu">summarise</span>(<span class="at">mean_trips =</span> )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb21-5" class="hljs-ln-code"><a aria-label="5"></a>  <span class="fu">group_by</span>(Purpose) <span class="sc">|&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
-<section id="section-7" class="slide level2" data-auto-animate="true">
+<section id="section-6" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title"></h2>
 <p>Using the native pipe operator; <code>|&gt;</code>, we can improve the same code:</p>
 <div class="cell">
@@ -596,45 +762,57 @@
 <span id="cb22-3" class="hljs-ln-code"><a aria-label="3"></a>         Region <span class="sc">==</span> <span class="st">"East Coast"</span>) <span class="sc">|&gt;</span> </span>
 <span id="cb22-4" class="hljs-ln-code"><a aria-label="4"></a>  <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span>                    </span>
 <span id="cb22-5" class="hljs-ln-code"><a aria-label="5"></a>  <span class="fu">group_by</span>(Purpose) <span class="sc">|&gt;</span>              </span>
-<span id="cb22-6" class="hljs-ln-code"><a aria-label="6"></a>  <span class="fu">summarise</span>(<span class="at">mean_trips =</span> <span class="fu">mean</span>(Trips))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb22-6" class="hljs-ln-code"><a aria-label="6"></a>  <span class="fu">summarise</span>(<span class="at">mean_trips =</span> )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="section-7" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title"></h2>
+<p>Using the native pipe operator; <code>|&gt;</code>, we can improve the same code:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb23-1" class="hljs-ln-code"><a aria-label="1"></a>tourism <span class="sc">|&gt;</span>                          </span>
+<span id="cb23-2" class="hljs-ln-code"><a aria-label="2"></a>  <span class="fu">filter</span>(State <span class="sc">==</span> <span class="st">"Tasmania"</span>,       </span>
+<span id="cb23-3" class="hljs-ln-code"><a aria-label="3"></a>         Region <span class="sc">==</span> <span class="st">"East Coast"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb23-4" class="hljs-ln-code"><a aria-label="4"></a>  <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span>                    </span>
+<span id="cb23-5" class="hljs-ln-code"><a aria-label="5"></a>  <span class="fu">group_by</span>(Purpose) <span class="sc">|&gt;</span>              </span>
+<span id="cb23-6" class="hljs-ln-code"><a aria-label="6"></a>  <span class="fu">summarise</span>(<span class="at">mean_trips =</span> <span class="fu">mean</span>(Trips))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="section-8" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title"></h2>
 <p>Using the native pipe operator; <code>|&gt;</code>, we can improve the same code:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-10" data-llms-code-original="tourism |>                            # <1>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-12" data-llms-code-original="tourism |>                            # <1>
   filter(State == &quot;Tasmania&quot;,         # <2>
          Region == &quot;East Coast&quot;) |>   # <2>
   as_tibble() |>                      # <3>
   group_by(Purpose) |>                # <4>
-  summarise(mean_trips = mean(Trips)) # <5>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-10" data-target-annotation="1">1</button><span id="annotated-cell-10-1" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-10-1" aria-label="1"></a>tourism <span class="sc">|&gt;</span></span>
-<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-10" data-target-annotation="2">2</button><span id="annotated-cell-10-2" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-10-2" aria-label="2"></a>  <span class="fu">filter</span>(State <span class="sc">==</span> <span class="st">"Tasmania"</span>,</span>
-<span id="annotated-cell-10-3" class="hljs-ln-code"><a href="#annotated-cell-10-3" aria-label="3"></a>         Region <span class="sc">==</span> <span class="st">"East Coast"</span>) <span class="sc">|&gt;</span></span>
-<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-10" data-target-annotation="3">3</button><span id="annotated-cell-10-4" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-10-4" aria-label="4"></a>  <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span></span>
-<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-10" data-target-annotation="4">4</button><span id="annotated-cell-10-5" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-10-5" aria-label="5"></a>  <span class="fu">group_by</span>(Purpose) <span class="sc">|&gt;</span></span>
-<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-10" data-target-annotation="5">5</button><span id="annotated-cell-10-6" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-10-6" aria-label="6"></a>  <span class="fu">summarise</span>(<span class="at">mean_trips =</span> <span class="fu">mean</span>(Trips))</span><div class="code-annotation-gutter-bg hljs-ln-code"></div><div class="code-annotation-gutter hljs-ln-code"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+  summarise(mean_trips = mean(Trips)) # <5>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-12" data-target-annotation="1">1</button><span id="annotated-cell-12-1" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-12-1" aria-label="1"></a>tourism <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-12" data-target-annotation="2">2</button><span id="annotated-cell-12-2" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-12-2" aria-label="2"></a>  <span class="fu">filter</span>(State <span class="sc">==</span> <span class="st">"Tasmania"</span>,</span>
+<span id="annotated-cell-12-3" class="hljs-ln-code"><a href="#annotated-cell-12-3" aria-label="3"></a>         Region <span class="sc">==</span> <span class="st">"East Coast"</span>) <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-12" data-target-annotation="3">3</button><span id="annotated-cell-12-4" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-12-4" aria-label="4"></a>  <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-12" data-target-annotation="4">4</button><span id="annotated-cell-12-5" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-12-5" aria-label="5"></a>  <span class="fu">group_by</span>(Purpose) <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-12" data-target-annotation="5">5</button><span id="annotated-cell-12-6" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-12-6" aria-label="6"></a>  <span class="fu">summarise</span>(<span class="at">mean_trips =</span> <span class="fu">mean</span>(Trips))</span><div class="code-annotation-gutter-bg hljs-ln-code"></div><div class="code-annotation-gutter hljs-ln-code"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-10" data-target-annotation="1">1</dt>
+<dt data-target-cell="annotated-cell-12" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-10" data-code-lines="1" data-code-annotation="1">Take the tsibble <code>tourism</code>, <em>then</em></span>
+<span data-code-cell="annotated-cell-12" data-code-lines="1" data-code-annotation="1">Take the tsibble <code>tourism</code>, <em>then</em></span>
 </dd>
-<dt data-target-cell="annotated-cell-10" data-target-annotation="2">2</dt>
+<dt data-target-cell="annotated-cell-12" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-cell="annotated-cell-10" data-code-lines="2,3" data-code-annotation="2">filter by State and Region, <em>then</em></span>
+<span data-code-cell="annotated-cell-12" data-code-lines="2,3" data-code-annotation="2">filter by State and Region, <em>then</em></span>
 </dd>
-<dt data-target-cell="annotated-cell-10" data-target-annotation="3">3</dt>
+<dt data-target-cell="annotated-cell-12" data-target-annotation="3">3</dt>
 <dd>
-<span data-code-cell="annotated-cell-10" data-code-lines="4" data-code-annotation="3">convert to a <code>tibble</code>, <em>then</em></span>
+<span data-code-cell="annotated-cell-12" data-code-lines="4" data-code-annotation="3">convert to a <code>tibble</code>, <em>then</em></span>
 </dd>
-<dt data-target-cell="annotated-cell-10" data-target-annotation="4">4</dt>
+<dt data-target-cell="annotated-cell-12" data-target-annotation="4">4</dt>
 <dd>
-<span data-code-cell="annotated-cell-10" data-code-lines="5" data-code-annotation="4">group the tibble by purpose, <em>then</em></span>
+<span data-code-cell="annotated-cell-12" data-code-lines="5" data-code-annotation="4">group the tibble by purpose, <em>then</em></span>
 </dd>
-<dt data-target-cell="annotated-cell-10" data-target-annotation="5">5</dt>
+<dt data-target-cell="annotated-cell-12" data-target-annotation="5">5</dt>
 <dd>
-<span data-code-cell="annotated-cell-10" data-code-lines="6" data-code-annotation="5">summarise by taking the mean trips</span>
+<span data-code-cell="annotated-cell-12" data-code-lines="6" data-code-annotation="5">summarise by taking the mean trips</span>
 </dd>
 </dl>
 </div>
@@ -681,7 +859,7 @@
 <section id="plotting-tourism-across-time" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Plotting tourism across time</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb23-1" class="hljs-ln-code"><a aria-label="1"></a>tourism</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb24-1" class="hljs-ln-code"><a aria-label="1"></a>tourism</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -694,9 +872,9 @@
 <section id="plotting-tourism-across-time-1" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Plotting tourism across time</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24" data-code-line-numbers="2-3"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb24-1" class="hljs-ln-code"><a aria-label="1"></a>tourism <span class="sc">|&gt;</span> </span>
-<span id="cb24-2" class="hljs-ln-code"><a aria-label="2"></a>  <span class="fu">filter</span>(State <span class="sc">==</span> <span class="st">"Tasmania"</span>,</span>
-<span id="cb24-3" class="hljs-ln-code"><a aria-label="3"></a>         Region <span class="sc">==</span> <span class="st">"East Coast"</span>)               </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25" data-code-line-numbers="2-3"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb25-1" class="hljs-ln-code"><a aria-label="1"></a>tourism <span class="sc">|&gt;</span> </span>
+<span id="cb25-2" class="hljs-ln-code"><a aria-label="2"></a>  <span class="fu">filter</span>(State <span class="sc">==</span> <span class="st">"Tasmania"</span>,</span>
+<span id="cb25-3" class="hljs-ln-code"><a aria-label="3"></a>         Region <span class="sc">==</span> <span class="st">"East Coast"</span>)               </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -709,10 +887,10 @@
 <section id="plotting-tourism-across-time-2" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Plotting tourism across time</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25" data-code-line-numbers="4"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb25-1" class="hljs-ln-code"><a aria-label="1"></a>tourism <span class="sc">|&gt;</span> </span>
-<span id="cb25-2" class="hljs-ln-code"><a aria-label="2"></a>  <span class="fu">filter</span>(State <span class="sc">==</span> <span class="st">"Tasmania"</span>,</span>
-<span id="cb25-3" class="hljs-ln-code"><a aria-label="3"></a>         Region <span class="sc">==</span> <span class="st">"East Coast"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb25-4" class="hljs-ln-code"><a aria-label="4"></a>  <span class="fu">autoplot</span>(Trips)                </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26" data-code-line-numbers="4"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb26-1" class="hljs-ln-code"><a aria-label="1"></a>tourism <span class="sc">|&gt;</span> </span>
+<span id="cb26-2" class="hljs-ln-code"><a aria-label="2"></a>  <span class="fu">filter</span>(State <span class="sc">==</span> <span class="st">"Tasmania"</span>,</span>
+<span id="cb26-3" class="hljs-ln-code"><a aria-label="3"></a>         Region <span class="sc">==</span> <span class="st">"East Coast"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb26-4" class="hljs-ln-code"><a aria-label="4"></a>  <span class="fu">autoplot</span>(Trips)                </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure>
@@ -725,11 +903,11 @@
 <section id="plotting-tourism-across-time-3" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Plotting tourism across time</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26" data-code-line-numbers="5"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb26-1" class="hljs-ln-code"><a aria-label="1"></a>tourism <span class="sc">|&gt;</span> </span>
-<span id="cb26-2" class="hljs-ln-code"><a aria-label="2"></a>  <span class="fu">filter</span>(State <span class="sc">==</span> <span class="st">"Tasmania"</span>,</span>
-<span id="cb26-3" class="hljs-ln-code"><a aria-label="3"></a>         Region <span class="sc">==</span> <span class="st">"East Coast"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb26-4" class="hljs-ln-code"><a aria-label="4"></a>  <span class="fu">autoplot</span>(Trips) <span class="sc">+</span></span>
-<span id="cb26-5" class="hljs-ln-code"><a aria-label="5"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(Purpose), <span class="at">scale =</span> <span class="st">"free_y"</span>)                </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27" data-code-line-numbers="5"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb27-1" class="hljs-ln-code"><a aria-label="1"></a>tourism <span class="sc">|&gt;</span> </span>
+<span id="cb27-2" class="hljs-ln-code"><a aria-label="2"></a>  <span class="fu">filter</span>(State <span class="sc">==</span> <span class="st">"Tasmania"</span>,</span>
+<span id="cb27-3" class="hljs-ln-code"><a aria-label="3"></a>         Region <span class="sc">==</span> <span class="st">"East Coast"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb27-4" class="hljs-ln-code"><a aria-label="4"></a>  <span class="fu">autoplot</span>(Trips) <span class="sc">+</span></span>
+<span id="cb27-5" class="hljs-ln-code"><a aria-label="5"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(Purpose), <span class="at">scale =</span> <span class="st">"free_y"</span>)                </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure>
@@ -742,30 +920,30 @@
 <section id="plotting-tourism-across-time-4" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Plotting tourism across time</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-11" data-llms-code-original="tourism_p <- tourism |>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-13" data-llms-code-original="tourism_p <- tourism |>
   filter(State == &quot;Tasmania&quot;,
          Region == &quot;East Coast&quot;) |>
   autoplot(Trips) +                             # <1>
   facet_wrap(vars(Purpose), scale = &quot;free_y&quot;) + # <2>
-  theme(legend.position = &quot;none&quot;)               # <3>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="annotated-cell-11-1" class="hljs-ln-code"><a href="#annotated-cell-11-1" aria-label="1"></a>tourism_p <span class="ot">&lt;-</span> tourism <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-11-2" class="hljs-ln-code"><a href="#annotated-cell-11-2" aria-label="2"></a>  <span class="fu">filter</span>(State <span class="sc">==</span> <span class="st">"Tasmania"</span>,</span>
-<span id="annotated-cell-11-3" class="hljs-ln-code"><a href="#annotated-cell-11-3" aria-label="3"></a>         Region <span class="sc">==</span> <span class="st">"East Coast"</span>) <span class="sc">|&gt;</span></span>
-<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-11" data-target-annotation="1">1</button><span id="annotated-cell-11-4" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-11-4" aria-label="4"></a>  <span class="fu">autoplot</span>(Trips) <span class="sc">+</span></span>
-<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-11" data-target-annotation="2">2</button><span id="annotated-cell-11-5" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-11-5" aria-label="5"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(Purpose), <span class="at">scale =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
-<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-11" data-target-annotation="3">3</button><span id="annotated-cell-11-6" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-11-6" aria-label="6"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span><div class="code-annotation-gutter-bg hljs-ln-code"></div><div class="code-annotation-gutter hljs-ln-code"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+  theme(legend.position = &quot;none&quot;)               # <3>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="annotated-cell-13-1" class="hljs-ln-code"><a href="#annotated-cell-13-1" aria-label="1"></a>tourism_p <span class="ot">&lt;-</span> tourism <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-13-2" class="hljs-ln-code"><a href="#annotated-cell-13-2" aria-label="2"></a>  <span class="fu">filter</span>(State <span class="sc">==</span> <span class="st">"Tasmania"</span>,</span>
+<span id="annotated-cell-13-3" class="hljs-ln-code"><a href="#annotated-cell-13-3" aria-label="3"></a>         Region <span class="sc">==</span> <span class="st">"East Coast"</span>) <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-13" data-target-annotation="1">1</button><span id="annotated-cell-13-4" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-13-4" aria-label="4"></a>  <span class="fu">autoplot</span>(Trips) <span class="sc">+</span></span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-13" data-target-annotation="2">2</button><span id="annotated-cell-13-5" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-13-5" aria-label="5"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(Purpose), <span class="at">scale =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-13" data-target-annotation="3">3</button><span id="annotated-cell-13-6" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-13-6" aria-label="6"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span><div class="code-annotation-gutter-bg hljs-ln-code"></div><div class="code-annotation-gutter hljs-ln-code"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-11" data-target-annotation="1">1</dt>
+<dt data-target-cell="annotated-cell-13" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-11" data-code-lines="4" data-code-annotation="1"><code>autoplot()</code> detects the data automatically and proposes a plot accordingly.</span>
+<span data-code-cell="annotated-cell-13" data-code-lines="4" data-code-annotation="1"><code>autoplot()</code> detects the data automatically and proposes a plot accordingly.</span>
 </dd>
-<dt data-target-cell="annotated-cell-11" data-target-annotation="2">2</dt>
+<dt data-target-cell="annotated-cell-13" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-cell="annotated-cell-11" data-code-lines="5" data-code-annotation="2"><code>facet_wrap()</code> Divides a plot into subplots (facets).</span>
+<span data-code-cell="annotated-cell-13" data-code-lines="5" data-code-annotation="2"><code>facet_wrap()</code> Divides a plot into subplots (facets).</span>
 </dd>
-<dt data-target-cell="annotated-cell-11" data-target-annotation="3">3</dt>
+<dt data-target-cell="annotated-cell-13" data-target-annotation="3">3</dt>
 <dd>
-<span data-code-cell="annotated-cell-11" data-code-lines="6" data-code-annotation="3">you can customize endless feautres using <code>theme()</code>. Here, we remove the legend, as it’s redudant.</span>
+<span data-code-cell="annotated-cell-13" data-code-lines="6" data-code-annotation="3">you can customize endless feautres using <code>theme()</code>. Here, we remove the legend, as it’s redudant.</span>
 </dd>
 </dl>
 </div>
@@ -785,8 +963,8 @@
 <div class="columns">
 <div class="column" style="width:50%;">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a aria-label="1"></a>gas_p <span class="ot">&lt;-</span> aus_production <span class="sc">|&gt;</span></span>
-<span id="cb27-2"><a aria-label="2"></a>  <span class="fu">autoplot</span>(Gas)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a aria-label="1"></a>gas_p <span class="ot">&lt;-</span> aus_production <span class="sc">|&gt;</span></span>
+<span id="cb28-2"><a aria-label="2"></a>  <span class="fu">autoplot</span>(Gas)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
 <div class="cell-output-display">
@@ -799,9 +977,9 @@
 </div>
 </div><div class="column" style="width:50%;">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28" data-code-line-numbers="2-3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a aria-label="1"></a>gas_points_p <span class="ot">&lt;-</span> aus_production <span class="sc">|&gt;</span></span>
-<span id="cb28-2"><a aria-label="2"></a>  <span class="fu">autoplot</span>(Gas) <span class="sc">+</span></span>
-<span id="cb28-3"><a aria-label="3"></a>  <span class="fu">geom_point</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29" data-code-line-numbers="2-3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a aria-label="1"></a>gas_points_p <span class="ot">&lt;-</span> aus_production <span class="sc">|&gt;</span></span>
+<span id="cb29-2"><a aria-label="2"></a>  <span class="fu">autoplot</span>(Gas) <span class="sc">+</span></span>
+<span id="cb29-3"><a aria-label="3"></a>  <span class="fu">geom_point</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
 <div class="cell-output-display">
@@ -830,8 +1008,8 @@
 <section id="seasonal-plots" class="slide level2">
 <h2>Seasonal Plots</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a aria-label="1"></a>gas_season_p <span class="ot">&lt;-</span> aus_production <span class="sc">|&gt;</span></span>
-<span id="cb29-2"><a aria-label="2"></a>  <span class="fu">gg_season</span>(Gas)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a aria-label="1"></a>gas_season_p <span class="ot">&lt;-</span> aus_production <span class="sc">|&gt;</span></span>
+<span id="cb30-2"><a aria-label="2"></a>  <span class="fu">gg_season</span>(Gas)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
 <div class="cell-output-display">
@@ -869,8 +1047,8 @@
 <section id="seasonal-subseries-plots" class="slide level2">
 <h2>Seasonal Subseries Plots</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a aria-label="1"></a>gas_subseries_p <span class="ot">&lt;-</span> aus_production <span class="sc">|&gt;</span></span>
-<span id="cb30-2"><a aria-label="2"></a>  <span class="fu">gg_subseries</span>(Gas)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a aria-label="1"></a>gas_subseries_p <span class="ot">&lt;-</span> aus_production <span class="sc">|&gt;</span></span>
+<span id="cb31-2"><a aria-label="2"></a>  <span class="fu">gg_subseries</span>(Gas)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
 <div class="cell-output-display">
@@ -898,9 +1076,9 @@
 <section id="gg_tsdisplay" class="slide level2">
 <h2><code>gg_tsdisplay()</code></h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a aria-label="1"></a><span class="fu">theme_narsil</span>()</span>
-<span id="cb31-2"><a aria-label="2"></a>aus_production <span class="sc">|&gt;</span></span>
-<span id="cb31-3"><a aria-label="3"></a>  <span class="fu">gg_tsdisplay</span>(Gas, <span class="at">plot_type =</span> <span class="st">"season"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a aria-label="1"></a><span class="fu">theme_narsil</span>()</span>
+<span id="cb32-2"><a aria-label="2"></a>aus_production <span class="sc">|&gt;</span></span>
+<span id="cb32-3"><a aria-label="3"></a>  <span class="fu">gg_tsdisplay</span>(Gas, <span class="at">plot_type =</span> <span class="st">"season"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure>
@@ -946,11 +1124,11 @@
 <section id="exporting-data-to-.csv" class="slide level2">
 <h2>Exporting data to .csv</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32" data-code-line-numbers="5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a aria-label="1"></a>tourism <span class="sc">|&gt;</span> </span>
-<span id="cb32-2"><a aria-label="2"></a>  <span class="fu">filter</span>(State <span class="sc">==</span> <span class="st">"Tasmania"</span>,</span>
-<span id="cb32-3"><a aria-label="3"></a>         Region <span class="sc">==</span> <span class="st">"East Coast"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb32-4"><a aria-label="4"></a>  <span class="fu">mutate</span>(<span class="at">Quarter =</span> <span class="fu">as.Date</span>(Quarter)) <span class="sc">|&gt;</span> </span>
-<span id="cb32-5"><a aria-label="5"></a>  <span class="fu">write_csv</span>(<span class="st">"./datos/tasmania.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33" data-code-line-numbers="5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a aria-label="1"></a>tourism <span class="sc">|&gt;</span> </span>
+<span id="cb33-2"><a aria-label="2"></a>  <span class="fu">filter</span>(State <span class="sc">==</span> <span class="st">"Tasmania"</span>,</span>
+<span id="cb33-3"><a aria-label="3"></a>         Region <span class="sc">==</span> <span class="st">"East Coast"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb33-4"><a aria-label="4"></a>  <span class="fu">mutate</span>(<span class="at">Quarter =</span> <span class="fu">as.Date</span>(Quarter)) <span class="sc">|&gt;</span> </span>
+<span id="cb33-5"><a aria-label="5"></a>  <span class="fu">write_csv</span>(<span class="st">"./datos/tasmania.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <aside class="notes">
 <p>You can export to .csv by providing a <code>tsibble</code> or <code>tibble</code> (or any other type of data frame), by calling <strong><code>write_csv()</code></strong>, and specifying the output file’s name.</p>
@@ -972,7 +1150,7 @@
 
 <ol>
 <li id="fn1"><p>shown besides the tsibble dimension as <code>[1Q]</code></p></li>
-<li id="fn2"><p>these are specified in the <code>key</code> argument. This tsibble contains </p></li>
+<li id="fn2"><p>these are specified in the <code>key</code> argument, and each distinct combination of them is one series. This tsibble contains 304 of them.</p></li>
 </ol>
 </section>
     </div>

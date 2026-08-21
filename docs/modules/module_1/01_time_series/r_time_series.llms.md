@@ -25,13 +25,6 @@ library(tidyverse)
     ✖ dplyr::lag()    masks stats::lag()
     ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
 
-Code
-
-``` r
-source(here::here("R/narsil_theme.R"))
-theme_set(theme_narsil())
-```
-
 - `tidyverse` is a meta-package that loads the core packages of the [tidyverse](https://tidyverse.org/).
 
 We will always load all the required packages a the beginning of the document. When loading the `tidyverse`, it shows which packages are being attached, as well as any conflicts with previously loaded packages.
@@ -85,6 +78,8 @@ The `tidyverts` packages are made to work seamlessly with the `tidyverse`.
 
 ## 2.1 `tsibble` objects
 
+A `tsibble` is a [`tibble`](https://tibble.tidyverse.org/index.html) that also records which column measures time and which columns identify each series.
+
 Let’s take a look at tourism in Australia:
 
 Code
@@ -109,25 +104,46 @@ tourism
     10 2000 Q2 Adelaide South Australia Business  169.
     # ℹ 24,310 more rows
 
-A `tsibble` is a modified version of a [`tibble`](https://tibble.tidyverse.org/index.html) as to
+The `tsibble` has 24320 rows and 5 columns. It shows quarterly data[^1] on tourism across Australia.
+
+Because the time structure belongs to the object rather than to our code, the `tidyverts` functions never have to guess where time lives: `autoplot()`, `model()`, and `forecast()` all read it from the tsibble. It also makes the object checkable — a tsibble refuses to be created if the same series has two observations at the same time point.
+
+## 2.2 Index and key
 
 Code
 
 ``` r
-key_vars(tourism)
+index_var(tourism) # <1>
+key_vars(tourism)  # <2>
+key_data(tourism)  # <3>
 ```
 
+1.  The **index** is the column along which time moves forward.
+2.  The **key** is the set of columns that distinguish one series from another. A tsibble can have no key at all (a single series), one key column, or several.
+3.  `key_data()` lists every distinct combination of the key columns, along with the rows belonging to each.
+
+    [1] "Quarter"
     [1] "Region"  "State"   "Purpose"
+    # A tibble: 304 × 4
+       Region         State              Purpose        .rows
+     * <chr>          <chr>              <chr>    <list<int>>
+     1 Adelaide       South Australia    Business        [80]
+     2 Adelaide       South Australia    Holiday         [80]
+     3 Adelaide       South Australia    Other           [80]
+     4 Adelaide       South Australia    Visiting        [80]
+     5 Adelaide Hills South Australia    Business        [80]
+     6 Adelaide Hills South Australia    Holiday         [80]
+     7 Adelaide Hills South Australia    Other           [80]
+     8 Adelaide Hills South Australia    Visiting        [80]
+     9 Alice Springs  Northern Territory Business        [80]
+    10 Alice Springs  Northern Territory Holiday         [80]
+    # ℹ 294 more rows
 
-Code
+Index and key together define what one observation is: one point on the index, for one combination of the key. That pair is what a tsibble keeps unique, and those two arguments are all you need in order to build one.
 
-``` r
-key_data(tourism)
-```
+`tourism` is divided by Region, State, and purpose of the trip[^2]. How many different states are there?
 
-The `tsibble` has 24320 rows and 5 columns. It shows quarterly data[^1] on tourism across Australia. It’s divided by Region, State, and purspose of the trip[^2]. How many different states are there?
-
-## 2.2 Australian States
+## 2.3 Australian States
 
 Code
 
@@ -135,7 +151,7 @@ Code
 distinct(tourism, State)
 ```
 
-## 2.3 Which regions are located in Tasmania?
+## 2.4 Which regions are located in Tasmania?
 
 Code
 
@@ -143,7 +159,103 @@ Code
 distinct(filter(tourism, State == "Tasmania"),Region)
 ```
 
-## 2.4 Data Transformation: Average trips
+## 2.5 Building a tsibble
+
+Most data does not arrive as a tsibble. `as_tsibble()` builds one from a data frame by naming the index and the key:
+
+Code
+
+``` r
+sales <- tibble(
+  month = yearmonth(c("2024 Jan", "2024 Feb", "2024 Mar",   # <1>
+                      "2024 Jan", "2024 Feb", "2024 Apr")),
+  store = c("North", "North", "North", "South", "South", "South"),
+  units = c(120, 135, 128, 98, 105, 111)
+)
+
+sales
+```
+
+1.  `yearmonth()` turns text into a monthly time class. The index has to be a time class; a plain number or a string will not do.
+
+    # A tibble: 6 × 3
+          month store units
+          <mth> <chr> <dbl>
+    1 2024 ene. North   120
+    2 2024 feb. North   135
+    3 2024 mar. North   128
+    4 2024 ene. South    98
+    5 2024 feb. South   105
+    6 2024 abr. South   111
+
+Code
+
+``` r
+sales_ts <- sales |>
+  as_tsibble(index = month, key = store) # <1>
+
+sales_ts
+```
+
+1.  `month` is the index and `store` is the key. The header now reports `[1M]` for the monthly interval and `store [2]` for the two series it found.
+
+    # A tsibble: 6 x 3 [1M]
+    # Key:       store [2]
+          month store units
+          <mth> <chr> <dbl>
+    1 2024 ene. North   120
+    2 2024 feb. North   135
+    3 2024 mar. North   128
+    4 2024 ene. South    98
+    5 2024 feb. South   105
+    6 2024 abr. South   111
+
+`as_tsibble()` declares structure rather than changing values: the numbers are untouched, but the object now knows what time is. It also checks the declaration and fails immediately if a key–index pair is duplicated or if the index cannot be ordered. Getting that error at construction time is far cheaper than discovering the problem after fitting a model.
+
+The interval `[1M]` is inferred, not declared. `tsibble` looks at the distances between consecutive index values and reports the finest regular interval that fits them.
+
+## 2.6 Gaps and missing values
+
+Code
+
+``` r
+has_gaps(sales_ts) # <1>
+```
+
+1.  `South` jumps from February to April, so March is absent as a *row* rather than present with a missing value.
+
+    # A tibble: 2 × 2
+      store .gaps
+      <chr> <lgl>
+    1 North FALSE
+    2 South TRUE 
+
+Code
+
+``` r
+sales_ts |>
+  fill_gaps() # <1>
+```
+
+1.  `fill_gaps()` inserts the missing row and marks `units` as `NA`, turning the implicit gap into an explicit missing value.
+
+    # A tsibble: 7 x 3 [1M]
+    # Key:       store [2]
+          month store units
+          <mth> <chr> <dbl>
+    1 2024 ene. North   120
+    2 2024 feb. North   135
+    3 2024 mar. North   128
+    4 2024 ene. South    98
+    5 2024 feb. South   105
+    6 2024 mar. South    NA
+    7 2024 abr. South   111
+
+A missing value is a row that exists with `NA` in it. A gap is a row that does not exist at all. The distinction matters because a series with an invisible hole in it will be read as if February were followed by April with nothing in between, so lags, seasonal periods, and differences all shift by one position from that point onward.
+
+`fill_gaps()` is what makes the problem visible. Once the gap is an `NA`, you can decide what to do about it: interpolate it, drop the affected span, or leave it and let the model handle it.
+
+## 2.7 Data Transformation: Average trips
 
 To get the average trips by purpose, we need to do the following:
 
@@ -152,7 +264,7 @@ To get the average trips by purpose, we need to do the following:
 3.  Group by purpose.
 4.  Summarise by getting the mean of the trips.
 
-## 2.5
+## 2.8
 
 With traditional code, this would look something like:
 
@@ -168,7 +280,7 @@ summarise(group_by(as_tibble(filter(tourism, State == "Tasmania",
 >
 > Note that this code must be read inside-out. This makes it harder to understand, and also harder to debug.
 
-## 2.6
+## 2.9
 
 Using the native pipe operator; `|>`, we can improve the same code:
 
@@ -324,4 +436,4 @@ Back to top
 
 [^1]: shown besides the tsibble dimension as `[1Q]`
 
-[^2]: these are specified in the `key` argument. This tsibble contains
+[^2]: these are specified in the `key` argument, and each distinct combination of them is one series. This tsibble contains 304 of them.

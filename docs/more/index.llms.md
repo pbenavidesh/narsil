@@ -82,6 +82,14 @@ Pablo Benavides-Herrera
 
 3 min
 
+### [Statistical Significance](../../docs/more/significance.llms.md)
+
+What a p-value is, what α commits you to, and what rejection means in each of the three hypothesis tests this course uses.
+
+Aug 21, 2026
+
+11 min
+
 ### [tsibble: thinking in keys and time](../../docs/more/r-tools/tsibble.llms.md)
 
 An introduction to tsibble and the core ideas of time, keys, and structure in tidyverts-based time series workflows.

@@ -57,7 +57,7 @@ pak::pak(c(
   # Core
   "tidyverse", "fpp3", "here", "rmarkdown",
   # Visualization
-  "plotly", "patchwork", "GGally", "ggtime",
+  "plotly", "patchwork", "GGally", "ggtime", "ggpubr",
   # Data and examples
   "tidyquant", "fma", "gapminder", "nycflights13",
   # Modeling and diagnostics

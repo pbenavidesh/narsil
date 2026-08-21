@@ -404,6 +404,8 @@ The test we will use is the **KPSS test** (Kwiatkowski-Phillips-Schmidt-Shin).
 > - **Small p-value** (\< 0.05): reject H_0 → the series needs differencing ✗
 >
 > You *want* a large p-value here.
+>
+> Because you want it, a large p-value on a short series deserves suspicion: a weak test fails to reject whether or not the series is stationary. See [power](../../../../docs/more/significance.llms.md#sec-power).
 
 ## 3.1 KPSS in R
 
