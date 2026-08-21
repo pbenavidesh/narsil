@@ -38,9 +38,7 @@ docs/
   more/
     r-tools/           # R packages, tidyverse workflows, cheatsheets
     stats/             # Statistical prerequisites and refreshers
-    quarto/            # Quarto tutorials and tips
-    tidyverse-applied/ # Tidyverse applied to other courses/domains
-    forecasting-plus/  # Course extensions (modeltime, etc.)
+    elendil-ta/        # The course AI teaching assistant — do not add files here
     index.qmd          # Listing page — do not modify
   exercises/
     module_1/
@@ -50,6 +48,17 @@ docs/
     class-notes/       # In-class notebooks (one per session, as needed)
     index.qmd          # Listing page — do not modify
 ```
+
+### Subdirectory rule
+
+**A subdirectory is not created until it holds three documents.** Below
+that threshold, files sit flat at the More root (`docs/more/name.qmd`).
+When a topic accumulates a third document, move all three into a new
+subfolder in one commit and fix the inbound links.
+
+Only the folders listed above exist. Do not write into a folder that is
+not there — place the file at the More root instead and say so in the
+output.
 
 ---
 
@@ -69,12 +78,19 @@ All files and R variables use `snake_case`.
 ## Categories
 
 ### More documents
-One category only, matching the subcategory folder:
+
+Every More document must carry **at least one** category — the listing
+page filters on them.
+
+For a document inside a subfolder, use the folder name. For a document
+at the More root, use the category that describes it.
 
 ```yaml
 categories:
-  - r-tools  # or: stats, quarto, tidyverse-applied, forecasting-plus
+  - r-tools  # or: stats, refreshers
 ```
+
+Valid category values: `r-tools`, `stats`, `refreshers`.
 
 ### Exercise documents
 Exactly two categories — type + module:
@@ -103,7 +119,7 @@ date-modified: last-modified
 format:
   html: default
 categories:
-  - [r-tools | stats | quarto | tidyverse-applied | forecasting-plus]
+  - [r-tools | stats | refreshers]
 draft: false
 ---
 ```
@@ -176,52 +192,59 @@ format:
 
 ## Standard setup chunk
 
-`message: false` and `warning: false` are set globally in `_quarto.yml`
-— do not repeat them in individual chunks.
+The repo convention is a **hidden `pkgs` chunk** plus, when there is
+something worth naming, a **visible `pkgs_special` chunk**. There is no
+`narsil-setup` chunk anywhere in the project.
 
-### More documents
+### The hidden `pkgs` chunk
 
-Two chunks. Load `fpp3` only if the document uses `tsibble`, `fable`,
-or `feasts`.
-
-```r
-#| label: setup
-
-library(tidyverse)
-# library(fpp3)  # add if working with time series data
-```
+Always `include: false`. It carries the routine `library()` calls —
+the ones every document loads and no student needs to be told about —
+together with the theme setup.
 
 ```r
-#| label: narsil-setup
+#| label: pkgs
+#| message: false
 #| include: false
-
-source(here::here("R/narsil_theme.R"))
-theme_set(theme_narsil())
-```
-
-### Exercise and class-notebook documents
-
-Two chunks. The first is visible to students (packages they need);
-the second is always `include: false`.
-
-```r
-#| label: setup
 
 library(tidyverse)
 library(fpp3)
-```
-
-```r
-#| label: narsil-setup
-#| include: false
 
 source(here::here("R/narsil_theme.R"))
 theme_set(theme_narsil())
 ```
 
-Add `tidyquant` and/or `plotly` to the visible chunk if used in
-student-visible code. If they are only needed inside `echo: false`
-render chunks, add them to `narsil-setup` instead.
+`fpp3` belongs here whenever the document touches `tsibble`, `fable`,
+or `feasts`. Add `patchwork` here too — it is infrastructure, not
+content. `message: false` is repeated on this chunk in every module
+file; keep it for consistency even though the global option covers it.
+
+### The visible `pkgs_special` chunk
+
+Only for packages worth naming to students: the ones they must install
+themselves, or whose presence explains something about the document.
+Each `library()` line carries a `#<N>` annotation saying why.
+
+```r
+#| label: pkgs_special
+#| message: false
+
+library(plotly)    #<1>
+library(tidyquant) #<2>
+```
+1. For interactive plots.
+2. For retrieving `mexretail` from FRED.
+
+Omit this chunk entirely when there is nothing special to name — do
+not pad it with `tidyverse` and `fpp3` just to have a visible chunk.
+
+In **module documents** (dual-format), wrap `pkgs_special` in
+`:::{.content-visible unless-format="revealjs"}` so the package list
+does not consume a slide. In **More and Exercise documents** there is
+no revealjs output, so no wrapper.
+
+Packages needed only inside `echo: false` render chunks go in `pkgs`,
+never in `pkgs_special`.
 
 > **Global narsil visibility rule**: No visible chunk (`echo: true`,
 > the default) anywhere on the narsil site may call narsil-specific
@@ -453,11 +476,52 @@ Use callouts strategically — not decoratively:
 - `callout-warning` — common pitfalls or errors to avoid
 - `callout-important` — key concepts the student must not miss
 
+A callout must carry content the surrounding prose does not. A callout
+that restates the paragraph above it in a coloured box is decoration.
+
+---
+
+## Prose standard
+
+`docs/more/r-tools/setup.qmd` is the reference: 199 lines, zero tics.
+Read it before writing.
+
+### Headers
+
+Every header names the content of its section. Do not use:
+
+- **Rhetorical-question headers** — "Why does this matter?", "What
+  problem does this solve?", "Why should you care?"
+- **"Why X matters" / "Why X exists" / "Understanding X"** — these are
+  AI tics and are rejected on sight.
+
+Write "How KPSS reads its p-value", not "Understanding the KPSS
+p-value". Write "What a hypothesis test asks", not "Why hypothesis
+testing matters".
+
+### Banned openers, closers, and constructions
+
+- The optional-but-recommended opener: "This document is **optional**,
+  but strongly recommended."
+- A "Where this shows up in the course" section.
+- A "What you do not need yet" section.
+- A "Takeaway" / "Key takeaway" / "Final takeaway" closer.
+- The antithesis pivot: "X is not Y — it is Z."
+- "The key insight is…", "At its core…", "Here's the thing:",
+  "Let's dive in."
+
+End the document on its last substantive section or its exercise. Do
+not summarise what the reader just read.
+
 ---
 
 ## Content guidelines by document type
 
-### `stats` documents
+### `stats` and `refreshers` documents
+
+Both categories use the same structure. `stats` covers prerequisites
+the course builds on directly; `refreshers` covers concepts the course
+*uses* without ever defining them.
 
 **Audience**: assume the student knows nothing about the topic,
 even if they theoretically should.
@@ -465,8 +529,11 @@ even if they theoretically should.
 **Structure**:
 1. **TL;DR / Quick Reference** — key formula or concept in 2-3 lines,
    at the very top. The student who just needs a reminder stops here.
-2. **Why does this matter?** — motivating example connecting the
-   concept to time series or forecasting.
+2. **A motivating section** — connect the concept to forecasting, using
+   a concrete case from the course. Head it with the actual content of
+   the section, not with a question about its importance. If the
+   section is about what a hypothesis test asks, the header says
+   "What a hypothesis test asks".
 3. **Explanation** — build intuition first, formalism second. Use
    plain language before introducing notation.
 4. **R implementation** — practical code with a real dataset and
@@ -478,12 +545,16 @@ even if they theoretically should.
 
 ### `quarto` documents
 
+> No `quarto/` folder exists yet. Until three such documents exist, a
+> Quarto document sits flat at the More root.
+
 **Audience**: assume no prior Quarto knowledge.
 
 **Structure**:
 1. **TL;DR / Quick Reference** — the syntax or option being covered,
    at the top.
-2. **What problem does this solve?** — why this feature exists.
+2. **The problem it solves** — headed by the problem itself, not by a
+   question about it.
 3. **Step-by-step walkthrough** — with code examples.
 4. **Link to official docs** — always include a reference to the
    relevant Quarto documentation page (https://quarto.org/docs/).
@@ -510,6 +581,9 @@ possibly coming from Python. Do not assume prior R knowledge.
 
 ### `tidyverse-applied` documents
 
+> No `tidyverse-applied/` folder exists yet. Same rule: flat at the
+> More root until there are three.
+
 **Audience**: assume the student is new to R and tidyverse,
 possibly coming from Python or base R. Do NOT force a connection
 to forecasting — these documents serve other courses and domains.
@@ -521,11 +595,15 @@ to forecasting — these documents serve other courses and domains.
    base R or legacy approach the student may have seen elsewhere.
 3. **Walkthrough** — practical code with a dataset relevant to
    the target domain. All code must follow tidyverse conventions.
-4. **Key takeaways** — what the student can now do differently.
+4. **What changes in practice** — what the student can now do
+   differently. Not a "Key takeaways" list.
 
 ---
 
 ### `forecasting-plus` documents
+
+> No `forecasting-plus/` folder exists yet. Same rule: flat at the
+> More root until there are three.
 
 **Audience**: assume the student has completed the relevant course
 module. These documents extend, not replace, core content.
@@ -617,6 +695,8 @@ how to apply it. All code must follow tidyverse conventions.
 1. Generate the complete `.qmd` file content in raw markdown
    using 4-backtick fences for easy copy-pasting.
 2. State the exact recommended file path:
-   - More: `docs/more/[subfolder]/[filename].qmd`
+   - More: `docs/more/[filename].qmd`, or
+     `docs/more/[subfolder]/[filename].qmd` only if that subfolder
+     already exists and already holds documents
    - Exercises: `docs/exercises/[folder]/[filename].qmd`
 3. No changes to `_quarto.yml` are needed.
