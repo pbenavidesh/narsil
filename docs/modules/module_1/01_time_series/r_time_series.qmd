@@ -8,6 +8,11 @@ format:
 
 # Packages
 
+<!-- The pkg_tidyverse and pkg_fpp3 chunks are visible with message: true on
+     purpose: this lesson teaches package loading, and the .notes text explains
+     the attach/conflict messages the tidyverse prints on load. Do not hide
+     these chunks or set message: false — it would make that text false. -->
+
 ## The `tidyverse`
 
 ```{r}
@@ -15,6 +20,12 @@ format:
 #| message: true
 
 library(tidyverse)
+```
+
+```{r}
+#| label: pkgs
+#| message: false
+#| include: false
 
 source(here::here("R/narsil_theme.R"))
 theme_set(theme_narsil())
