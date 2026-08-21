@@ -72,6 +72,8 @@ The `tidyverts` packages are made to work seamlessly with the `tidyverse`.
 
 ## `tsibble` objects
 
+A `tsibble` is a [`tibble`](https://tibble.tidyverse.org/index.html) that also records which column measures time and which columns identify each series.
+
 Let's take a look at tourism in Australia:
 
 ```{r}
@@ -82,19 +84,32 @@ tourism
 
 :::{.notes}
 
-A `tsibble` is a modified version of a [`tibble`](https://tibble.tidyverse.org/index.html) as to 
+The `tsibble` has `{r} nrow(tourism)` rows and `{r} ncol(tourism)` columns. It shows quarterly data^[shown besides the tsibble dimension as `[1Q]`] on tourism across Australia.
+
+Because the time structure belongs to the object rather than to our code, the `tidyverts` functions never have to guess where time lives: `autoplot()`, `model()`, and `forecast()` all read it from the tsibble. It also makes the object checkable — a tsibble refuses to be created if the same series has two observations at the same time point.
 
 :::
 
+## Index and key
+
 ```{r}
-key_vars(tourism)
-key_data(tourism)
+#| label: tourism_keys
+#| paged-print: false
+
+index_var(tourism) # <1>
+key_vars(tourism)  # <2>
+key_data(tourism)  # <3>
 ```
 
+1. The **index** is the column along which time moves forward.
+2. The **key** is the set of columns that distinguish one series from another. A tsibble can have no key at all (a single series), one key column, or several.
+3. `key_data()` lists every distinct combination of the key columns, along with the rows belonging to each.
 
 :::{.notes}
 
-The `tsibble` has `{r} nrow(tourism)` rows and `{r} ncol(tourism)` columns. It shows quarterly data^[shown besides the tsibble dimension as `[1Q]`] on tourism across Australia. It's divided by Region, State, and purspose of the trip^[these are specified in the `key` argument. This tsibble contains ]. How many different states are there?
+Index and key together define what one observation is: one point on the index, for one combination of the key. That pair is what a tsibble keeps unique, and those two arguments are all you need in order to build one.
+
+`tourism` is divided by Region, State, and purpose of the trip^[these are specified in the `key` argument, and each distinct combination of them is one series. This tsibble contains `{r} n_keys(tourism)` of them.]. How many different states are there?
 
 :::
 
@@ -113,6 +128,75 @@ distinct(tourism, State)
 
 distinct(filter(tourism, State == "Tasmania"),Region)
 ```
+
+## Building a tsibble
+
+Most data does not arrive as a tsibble. `as_tsibble()` builds one from a data frame by naming the index and the key:
+
+```{r}
+#| label: sales_raw
+#| paged-print: false
+
+sales <- tibble(
+  month = yearmonth(c("2024 Jan", "2024 Feb", "2024 Mar",   # <1>
+                      "2024 Jan", "2024 Feb", "2024 Apr")),
+  store = c("North", "North", "North", "South", "South", "South"),
+  units = c(120, 135, 128, 98, 105, 111)
+)
+
+sales
+```
+
+1. `yearmonth()` turns text into a monthly time class. The index has to be a time class; a plain number or a string will not do.
+
+```{r}
+#| label: sales_as_tsibble
+#| paged-print: false
+
+sales_ts <- sales |>
+  as_tsibble(index = month, key = store) # <1>
+
+sales_ts
+```
+
+1. `month` is the index and `store` is the key. The header now reports `[1M]` for the monthly interval and `store [2]` for the two series it found.
+
+:::{.notes}
+
+`as_tsibble()` declares structure rather than changing values: the numbers are untouched, but the object now knows what time is. It also checks the declaration and fails immediately if a key–index pair is duplicated or if the index cannot be ordered. Getting that error at construction time is far cheaper than discovering the problem after fitting a model.
+
+The interval `[1M]` is inferred, not declared. `tsibble` looks at the distances between consecutive index values and reports the finest regular interval that fits them.
+
+:::
+
+## Gaps and missing values
+
+```{r}
+#| label: sales_has_gaps
+#| paged-print: false
+
+has_gaps(sales_ts) # <1>
+```
+
+1. `South` jumps from February to April, so March is absent as a *row* rather than present with a missing value.
+
+```{r}
+#| label: sales_fill_gaps
+#| paged-print: false
+
+sales_ts |>
+  fill_gaps() # <1>
+```
+
+1. `fill_gaps()` inserts the missing row and marks `units` as `NA`, turning the implicit gap into an explicit missing value.
+
+:::{.notes}
+
+A missing value is a row that exists with `NA` in it. A gap is a row that does not exist at all. The distinction matters because a series with an invisible hole in it will be read as if February were followed by April with nothing in between, so lags, seasonal periods, and differences all shift by one position from that point onward.
+
+`fill_gaps()` is what makes the problem visible. Once the gap is an `NA`, you can decide what to do about it: interpolate it, drop the affected span, or leave it and let the model handle it.
+
+:::
 
 ## Data Transformation: Average trips
 
