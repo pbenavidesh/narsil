@@ -46,10 +46,23 @@ jobs:
         if: ${{ github.event.inputs.refresh_fred == 'true' }}
         run: Rscript scripts/invalidate_fred.R
 
-      - name: Render and Publish
+      # Render and publish are deliberately separate so the asset check can run
+      # in between. Publishing first and failing afterwards would leave a broken
+      # site up with a red badge -- the worst of both.
+      - name: Render site
+        run: quarto render
+
+      # Guards against assets that 404 on the published site while the page
+      # itself renders fine. That is how the plotly widgets stayed broken for
+      # about a year: the divs were present, only the JavaScript was missing.
+      - name: Check local asset links
+        run: python3 scripts/check_site_links.py _site
+
+      - name: Publish
         uses: quarto-dev/quarto-actions/publish@v2
         with:
           target: gh-pages
+          render: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
