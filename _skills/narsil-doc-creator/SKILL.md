@@ -142,9 +142,10 @@ draft: false
 ```
 
 When the document calls `tq_get()` or any live financial/FRED data
-source, add `params: fred-data: true`. Do **not** use `freeze: false`
-— the site uses `freeze: auto` globally and FRED document invalidation
-is controlled via `workflow_dispatch` in GitHub Actions:
+source, add `params: fred-data: true`. This is the current convention:
+the marker is what `scripts/invalidate_fred.R` greps for when it drops
+the document's `_freeze` cache, and invalidation is triggered via
+`workflow_dispatch` in GitHub Actions:
 
 ```yaml
 ---
@@ -162,6 +163,16 @@ categories:
 draft: false
 ---
 ```
+
+`freeze: false` is the **superseded** convention and must never be
+emitted. Freeze is inherited from `execute: freeze: auto` in
+`_quarto.yml` — no document should declare freeze at all.
+
+A document that loads `fable.prophet` must **not** carry
+`fred-data: true`, even if it calls `tq_get()`. `fable.prophet`,
+`prophet`, and the Stan stack are listed under `ignored.packages` in
+`renv/settings.json` and cannot be rebuilt on CI, so a FRED-triggered
+re-render of that document would fail.
 
 ### Module document (dual-format)
 
@@ -192,59 +203,80 @@ format:
 
 ## Standard setup chunk
 
-The repo convention is a **hidden `pkgs` chunk** plus, when there is
-something worth naming, a **visible `pkgs_special` chunk**. There is no
-`narsil-setup` chunk anywhere in the project.
+More and Exercise documents use a **two-chunk** setup: a **visible
+`setup` chunk** carrying the `library()` calls, and a **hidden
+`narsil-setup` chunk** carrying the theme.
 
-### The hidden `pkgs` chunk
+The setup chunk stays visible on purpose. A student who opens the
+document to run its chunks has to be able to see which packages to
+load first. Hiding the `library()` calls behind `include: false` is the
+failure mode this convention exists to prevent.
 
-Always `include: false`. It carries the routine `library()` calls —
-the ones every document loads and no student needs to be told about —
-together with the theme setup.
+### The visible `setup` chunk
 
 ```r
-#| label: pkgs
+#| label: setup
 #| message: false
-#| include: false
 
 library(tidyverse)
 library(fpp3)
+```
+
+`library()` calls only — no `source()`, no `theme_set()`.
+`#| message: false` and nothing else: do **not** add
+`#| include: false`, and do not add `#| warning: false` (it is set
+globally in `_quarto.yml`).
+
+`fpp3` belongs here whenever the document touches `tsibble`, `fable`,
+or `feasts`. A package the student must install themselves, or whose
+presence explains something about the document, gets a `#<N>`
+annotation saying why:
+
+```r
+#| label: setup
+#| message: false
+
+library(tidyverse)
+library(fpp3)
+library(tidyquant) #<1>
+```
+1. For retrieving `mexretail` from FRED.
+
+### The hidden `narsil-setup` chunk
+
+Carries the theme, and nothing but the theme:
+
+```r
+#| label: narsil-setup
+#| include: false
 
 source(here::here("R/narsil_theme.R"))
 theme_set(theme_narsil())
 ```
 
-`fpp3` belongs here whenever the document touches `tsibble`, `fable`,
-or `feasts`. Add `patchwork` here too — it is infrastructure, not
-content. `message: false` is repeated on this chunk in every module
-file; keep it for consistency even though the global option covers it.
+**Omit this chunk entirely when the document has no plots.** Sourcing
+the theme in a document that never draws anything is dead weight.
+`docs/more/significance.qmd` is the reference implementation of a
+plot-free document: a visible `setup` chunk and nothing after it.
 
-### The visible `pkgs_special` chunk
+Packages needed only inside `echo: false` render chunks still go in
+`setup` — there is no hidden package chunk in More and Exercise
+documents.
 
-Only for packages worth naming to students: the ones they must install
-themselves, or whose presence explains something about the document.
-Each `library()` line carries a `#<N>` annotation saying why.
+### Scope note — module lessons use a different convention
 
-```r
-#| label: pkgs_special
-#| message: false
+Module documents under `docs/modules/` do not follow the pattern above.
+They use a hidden `pkgs` chunk (`include: false`) carrying the routine
+`library()` calls *together with* the theme setup, plus a visible
+`pkgs_special` chunk carrying only the packages worth naming to
+students, each with a `#<N>` annotation. There, `pkgs_special` is
+wrapped in `:::{.content-visible unless-format="revealjs"}` so the
+package list does not consume a slide.
 
-library(plotly)    #<1>
-library(tidyquant) #<2>
-```
-1. For interactive plots.
-2. For retrieving `mexretail` from FRED.
-
-Omit this chunk entirely when there is nothing special to name — do
-not pad it with `tidyverse` and `fpp3` just to have a visible chunk.
-
-In **module documents** (dual-format), wrap `pkgs_special` in
-`:::{.content-visible unless-format="revealjs"}` so the package list
-does not consume a slide. In **More and Exercise documents** there is
-no revealjs output, so no wrapper.
-
-Packages needed only inside `echo: false` render chunks go in `pkgs`,
-never in `pkgs_special`.
+**This skill does not govern module documents.** The `pkgs` /
+`pkgs_special` pattern is recorded here only so you recognise it when
+reading module files for reference. It is not a target for anything
+this skill generates.
 
 > **Global narsil visibility rule**: No visible chunk (`echo: true`,
 > the default) anywhere on the narsil site may call narsil-specific
@@ -625,7 +657,7 @@ Mirrors what was done in class. Code-forward. All code must follow
 tidyverse conventions.
 
 **Structure**:
-- Setup chunk (hidden)
+- Setup chunk — visible `setup`, per [Standard setup chunk](#standard-setup-chunk)
 - Code sections matching the class flow, with numbered annotations
 - No solutions
 - 2-3 **Reflection questions** at the end — no answers provided.
