@@ -277,12 +277,111 @@
 <h1>Prediction intervals</h1>
 
 </section>
+<section id="why-are-these-intervals-so-different" class="slide level2">
+<h2>Why are these intervals so different?</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-1" data-llms-code-original="beer_pi_compare_p <- beer_fc |>
+  autoplot(beer, level = 95) +        #<1>
+  facet_wrap(~ .model, nrow = 1) +    #<2>
+  labs(
+    title = &quot;Beer — same series, two benchmark models, 95% prediction intervals&quot;,
+    y = &quot;Megalitres&quot;, x = NULL
+  )"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1" aria-label="1"></a>beer_pi_compare_p <span class="ot">&lt;-</span> beer_fc <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1">1</button><span id="annotated-cell-1-2" class="code-annotation-target"><a href="#annotated-cell-1-2" aria-label="2"></a>  <span class="fu">autoplot</span>(beer, <span class="at">level =</span> <span class="dv">95</span>) <span class="sc">+</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="2">2</button><span id="annotated-cell-1-3" class="code-annotation-target"><a href="#annotated-cell-1-3" aria-label="3"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> .model, <span class="at">nrow =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="annotated-cell-1-4"><a href="#annotated-cell-1-4" aria-label="4"></a>  <span class="fu">labs</span>(</span>
+<span id="annotated-cell-1-5"><a href="#annotated-cell-1-5" aria-label="5"></a>    <span class="at">title =</span> <span class="st">"Beer — same series, two benchmark models, 95% prediction intervals"</span>,</span>
+<span id="annotated-cell-1-6"><a href="#annotated-cell-1-6" aria-label="6"></a>    <span class="at">y =</span> <span class="st">"Megalitres"</span>, <span class="at">x =</span> <span class="cn">NULL</span></span>
+<span id="annotated-cell-1-7"><a href="#annotated-cell-1-7" aria-label="7"></a>  )</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-1" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-1" data-code-lines="2" data-code-annotation="1"><code>beer_fc</code> holds the forecasts of both models; <code>level = 95</code> draws only the 95% band.</span>
+</dd>
+<dt data-target-cell="annotated-cell-1" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-1" data-code-lines="3" data-code-annotation="2">One panel per model, side by side and sharing the y-axis, so the interval widths are directly comparable.</span>
+</dd>
+</dl>
+</div>
+</div>
+<div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="model_diagnostics_files/figure-html/beer-pi-compare-render-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img data-src="model_diagnostics_files/figure-html/beer-pi-compare-render-1.png" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p><strong>Same data. Same coverage level. Why is one interval several times wider than the other?</strong></p>
+</div>
+<aside class="notes">
+<p>Let students answer before advancing. Expected answer: the MEAN model fits badly, so its residuals are large.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-interval-width-comes-from-the-residuals" class="slide level2">
+<h2>The interval width comes from the residuals</h2>
+<p>The one-step residual standard deviation is</p>
+<p><span class="math display">\hat{\sigma} = \sqrt{\frac{1}{T-K-M}\sum_{t=1}^{T} e_t^2}</span></p>
+<p>where <span class="math inline">K</span> is the number of parameters estimated and <span class="math inline">M</span> the number of missing residuals at the start of the series (e.g.&nbsp;<span class="math inline">m</span> for SNAIVE).</p>
+<div class="fragment">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-9" data-llms-code-original="beer_fit |>
+  augment() |>                                     #<1>
+  as_tibble() |>
+  group_by(.model) |>
+  summarise(sigma_hat = sd(.innov, na.rm = TRUE))  #<2>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-9-1"><a href="#annotated-cell-9-1" aria-label="1"></a>beer_fit <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-9" data-target-annotation="1">1</button><span id="annotated-cell-9-2" class="code-annotation-target"><a href="#annotated-cell-9-2" aria-label="2"></a>  <span class="fu">augment</span>() <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-9-3"><a href="#annotated-cell-9-3" aria-label="3"></a>  <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-9-4"><a href="#annotated-cell-9-4" aria-label="4"></a>  <span class="fu">group_by</span>(.model) <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-9" data-target-annotation="2">2</button><span id="annotated-cell-9-5" class="code-annotation-target"><a href="#annotated-cell-9-5" aria-label="5"></a>  <span class="fu">summarise</span>(<span class="at">sigma_hat =</span> <span class="fu">sd</span>(.innov, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-9" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-9" data-code-lines="2" data-code-annotation="1"><code>augment()</code> returns fitted values and residuals for every model in the mable.</span>
+</dd>
+<dt data-target-cell="annotated-cell-9" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-9" data-code-lines="5" data-code-annotation="2">The standard deviation of the innovation residuals is the <span class="math inline">\hat\sigma</span> that every prediction interval is built on. <code>sd()</code> divides by <span class="math inline">T-1</span> rather than <span class="math inline">T-K-M</span>; the difference is negligible here, and <code>fable</code> uses the exact formula internally.</span>
+</dd>
+</dl>
+</div>
+<div class="cell-output-display">
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[".model"],"name":[1],"type":["chr"],"align":["left"]},{"label":["sigma_hat"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"mean","2":"44.29503"},{"1":"snaive","2":"17.41808"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p>Every formula on the next slides multiplies this single number by a horizon-dependent factor. A model that fits poorly produces wide intervals — the interval is honest about how little the model knows.</p>
+</div>
+</section>
 <section id="prediction-intervals-1" class="slide level2">
 <h2>Prediction intervals</h2>
 <p>A point forecast tells you <em>where</em> the series is expected to go. A <strong>prediction interval</strong> tells you <em>how confident</em> you should be.</p>
 <div class="fragment">
 <p><span class="math display">\hat{y}_{T+h|T} \pm c \cdot \hat{\sigma}_h</span></p>
-<p>where <span class="math inline">c</span> depends on the coverage level (1.96 for 95%) and <span class="math inline">\hat{\sigma}_h</span> is the estimated forecast standard deviation at horizon <span class="math inline">h</span>.</p>
+<p>where <span class="math inline">c</span> depends on the coverage level (1.96 for 95%) and <span class="math inline">\hat{\sigma}_h</span> is the estimated forecast standard deviation at horizon <span class="math inline">h</span>, built from the residual standard deviation <span class="math inline">\hat\sigma</span> we just computed.</p>
 </div>
 <div class="fragment">
 <div class="callout callout-important callout-titled callout-style-simple">
@@ -313,18 +412,22 @@
 </thead>
 <tbody>
 <tr class="odd">
+<td><span class="math inline">h = 1</span> (all methods)</td>
+<td><span class="math inline">\hat{\sigma}</span></td>
+</tr>
+<tr class="even">
 <td>NAIVE</td>
 <td><span class="math inline">\hat{\sigma}\sqrt{h}</span></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Drift</td>
 <td><span class="math inline">\hat{\sigma}\sqrt{h\left(1 + \frac{h}{T}\right)}</span></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>SNAIVE</td>
 <td><span class="math inline">\hat{\sigma}\sqrt{\lfloor(h-1)/m\rfloor + 1}</span></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>MEAN</td>
 <td><span class="math inline">\hat{\sigma}\sqrt{1 + 1/T}</span></td>
 </tr>
@@ -337,11 +440,27 @@
 <p><code>autoplot()</code> shows intervals visually. <code>hilo()</code> extracts the numeric bounds:</p>
 <div class="fragment">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a aria-label="1"></a>gas_fc <span class="sc">|&gt;</span></span>
-<span id="cb1-2"><a aria-label="2"></a>  <span class="fu">filter</span>(.model <span class="sc">==</span> <span class="st">"snaive"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb1-3"><a aria-label="3"></a>  <span class="fu">hilo</span>(<span class="at">level =</span> <span class="dv">95</span>) <span class="sc">|&gt;</span></span>
-<span id="cb1-4"><a aria-label="4"></a>  <span class="fu">select</span>(Quarter, .mean, <span class="st">`</span><span class="at">95%</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
-<span id="cb1-5"><a aria-label="5"></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">6</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-10" data-llms-code-original="gas_fc |>
+  filter(.model == &quot;snaive&quot;) |>
+  hilo(level = 95) |>                #<1>
+  select(Quarter, .mean, `95%`) |>   #<2>
+  slice_head(n = 6)" data-code-line-numbers="3"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-10-1"><a href="#annotated-cell-10-1" aria-label="1"></a>gas_fc <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-10-2"><a href="#annotated-cell-10-2" aria-label="2"></a>  <span class="fu">filter</span>(.model <span class="sc">==</span> <span class="st">"snaive"</span>) <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-10" data-target-annotation="1">1</button><span id="annotated-cell-10-3" class="code-annotation-target"><a href="#annotated-cell-10-3" aria-label="3"></a>  <span class="fu">hilo</span>(<span class="at">level =</span> <span class="dv">95</span>) <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-10" data-target-annotation="2">2</button><span id="annotated-cell-10-4" class="code-annotation-target"><a href="#annotated-cell-10-4" aria-label="4"></a>  <span class="fu">select</span>(Quarter, .mean, <span class="st">`</span><span class="at">95%</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-10-5"><a href="#annotated-cell-10-5" aria-label="5"></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">6</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-10" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-10" data-code-lines="3" data-code-annotation="1"><code>hilo()</code> converts each forecast distribution into a numeric interval at the requested level.</span>
+</dd>
+<dt data-target-cell="annotated-cell-10" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-10" data-code-lines="4" data-code-annotation="2">The interval lives in a new column named after the level; <code>.mean</code> is the point forecast.</span>
+</dd>
+</dl>
+</div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tsibble: 6 x 3 [1Q]
   Quarter .mean                  `95%`
@@ -363,32 +482,77 @@
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a aria-label="1"></a>gas_pi_raw_p <span class="ot">&lt;-</span> gas_fc <span class="sc">|&gt;</span></span>
-<span id="cb3-2"><a aria-label="2"></a>  <span class="fu">filter</span>(.model <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"snaive"</span>, <span class="st">"drift"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb3-3"><a aria-label="3"></a>  <span class="fu">autoplot</span>(</span>
-<span id="cb3-4"><a aria-label="4"></a>    aus_production <span class="sc">|&gt;</span> <span class="fu">filter_index</span>(<span class="st">"2000 Q1"</span> <span class="sc">~</span> .),</span>
-<span id="cb3-5"><a aria-label="5"></a>    <span class="at">level =</span> <span class="dv">95</span></span>
-<span id="cb3-6"><a aria-label="6"></a>  ) <span class="sc">+</span></span>
-<span id="cb3-7"><a aria-label="7"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> .model, <span class="at">nrow =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb3-8"><a aria-label="8"></a>  <span class="fu">labs</span>(</span>
-<span id="cb3-9"><a aria-label="9"></a>    <span class="at">title =</span> <span class="st">"Gas — benchmark forecasts with 95% prediction intervals"</span>,</span>
-<span id="cb3-10"><a aria-label="10"></a>    <span class="at">y =</span> <span class="st">"Petajoules"</span>, <span class="at">x =</span> <span class="cn">NULL</span></span>
-<span id="cb3-11"><a aria-label="11"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-12" data-llms-code-original="gas_pi_raw_p <- gas_fc |>
+  filter(.model %in% c(&quot;snaive&quot;, &quot;drift&quot;)) |>   #<1>
+  autoplot(
+    aus_production |> filter_index(&quot;2000 Q1&quot; ~ .),  #<2>
+    level = 95
+  ) +
+  facet_wrap(~ .model, nrow = 2) +                #<3>
+  labs(
+    title = &quot;Gas — benchmark forecasts with 95% prediction intervals&quot;,
+    y = &quot;Petajoules&quot;, x = NULL
+  )"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-12-1"><a href="#annotated-cell-12-1" aria-label="1"></a>gas_pi_raw_p <span class="ot">&lt;-</span> gas_fc <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-12" data-target-annotation="1">1</button><span id="annotated-cell-12-2" class="code-annotation-target"><a href="#annotated-cell-12-2" aria-label="2"></a>  <span class="fu">filter</span>(.model <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"snaive"</span>, <span class="st">"drift"</span>)) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-12-3"><a href="#annotated-cell-12-3" aria-label="3"></a>  <span class="fu">autoplot</span>(</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-12" data-target-annotation="2">2</button><span id="annotated-cell-12-4" class="code-annotation-target"><a href="#annotated-cell-12-4" aria-label="4"></a>    aus_production <span class="sc">|&gt;</span> <span class="fu">filter_index</span>(<span class="st">"2000 Q1"</span> <span class="sc">~</span> .),</span>
+<span id="annotated-cell-12-5"><a href="#annotated-cell-12-5" aria-label="5"></a>    <span class="at">level =</span> <span class="dv">95</span></span>
+<span id="annotated-cell-12-6"><a href="#annotated-cell-12-6" aria-label="6"></a>  ) <span class="sc">+</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-12" data-target-annotation="3">3</button><span id="annotated-cell-12-7" class="code-annotation-target"><a href="#annotated-cell-12-7" aria-label="7"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> .model, <span class="at">nrow =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="annotated-cell-12-8"><a href="#annotated-cell-12-8" aria-label="8"></a>  <span class="fu">labs</span>(</span>
+<span id="annotated-cell-12-9"><a href="#annotated-cell-12-9" aria-label="9"></a>    <span class="at">title =</span> <span class="st">"Gas — benchmark forecasts with 95% prediction intervals"</span>,</span>
+<span id="annotated-cell-12-10"><a href="#annotated-cell-12-10" aria-label="10"></a>    <span class="at">y =</span> <span class="st">"Petajoules"</span>, <span class="at">x =</span> <span class="cn">NULL</span></span>
+<span id="annotated-cell-12-11"><a href="#annotated-cell-12-11" aria-label="11"></a>  )</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-12" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-12" data-code-lines="2" data-code-annotation="1">Keep only the two benchmarks worth comparing here.</span>
+</dd>
+<dt data-target-cell="annotated-cell-12" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-12" data-code-lines="4" data-code-annotation="2">Passing the full series (not just the training set) draws the test observations so we can see them against the intervals. Zooming in from 2000 makes the intervals readable.</span>
+</dd>
+<dt data-target-cell="annotated-cell-12" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-12" data-code-lines="7" data-code-annotation="3">One panel per model, stacked so the two intervals share the time axis.</span>
+</dd>
+</dl>
+</div>
 </div>
 <div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
 <div class="cell-output-display">
 <div>
 <figure>
-<p><a href="model_diagnostics_files/figure-html/gas-pi-raw-render-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img data-src="model_diagnostics_files/figure-html/gas-pi-raw-render-1.png" width="672"></a></p>
+<p><a href="model_diagnostics_files/figure-html/gas-pi-raw-render-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img data-src="model_diagnostics_files/figure-html/gas-pi-raw-render-1.png" width="672"></a></p>
 </figure>
 </div>
 </div>
 </div>
 </div>
 <div class="fragment">
-<p>Both models produce intervals of <strong>constant width</strong> — they assume forecast variance stays the same across all periods. But the series shows growing variance: the swings in the 2000s are far larger than those in the 1970s. The intervals are miscalibrated.</p>
+<ul>
+<li class="fragment"><strong>SNAIVE:</strong> observed peaks fall <strong>outside</strong> the 95% interval — too narrow.</li>
+<li class="fragment"><strong>Why:</strong> one <span class="math inline">\hat\sigma</span> from all residuals, 1956–2005. Small early swings dilute the large recent ones.</li>
+<li class="fragment"><strong>Drift:</strong> wide, symmetric, blind to seasonality.</li>
+<li class="fragment">Neither can express variance that <strong>grows with the level</strong>. A transformation can.</li>
+</ul>
 </div>
+<aside class="notes">
+<p>Look at the SNAIVE panel: the observed peaks in the test set repeatedly fall <strong>outside</strong> the 95% interval. The interval is too narrow — and the reason is how <span class="math inline">\hat\sigma</span> was estimated. It is a single number computed from residuals across the whole training period (1956–2005), including decades when seasonal swings were a fraction of today’s. Averaging small early residuals with large recent ones <strong>understates current uncertainty</strong>. The Drift panel has the opposite problem: a wide, symmetric interval that ignores the seasonal pattern entirely.</p>
+<p>Neither model can express what the series clearly shows — variance that grows with the level. That is what a transformation fixes.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section></section>
 <section>
 <section id="forecasting-with-transformations" class="title-slide slide level1 center">
@@ -402,18 +566,418 @@
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a aria-label="1"></a><span class="fu">theme_narsil</span>()</span>
-<span id="cb4-2"><a aria-label="2"></a>gas_fit <span class="sc">|&gt;</span></span>
-<span id="cb4-3"><a aria-label="3"></a>  <span class="fu">select</span>(snaive) <span class="sc">|&gt;</span></span>
-<span id="cb4-4"><a aria-label="4"></a>  <span class="fu">gg_tsresiduals</span>() <span class="sc">+</span></span>
-<span id="cb4-5"><a aria-label="5"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Gas — SNAIVE residuals"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-13" data-llms-code-original="theme_narsil()                                #<1>
+gas_fit |>
+  select(snaive) |>                           #<2>
+  gg_tsresiduals() +
+  labs(title = &quot;Gas — SNAIVE residuals&quot;)"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-13" data-target-annotation="1">1</button><span id="annotated-cell-13-1" class="code-annotation-target"><a href="#annotated-cell-13-1" aria-label="1"></a><span class="fu">theme_narsil</span>()</span>
+<span id="annotated-cell-13-2"><a href="#annotated-cell-13-2" aria-label="2"></a>gas_fit <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-13" data-target-annotation="2">2</button><span id="annotated-cell-13-3" class="code-annotation-target"><a href="#annotated-cell-13-3" aria-label="3"></a>  <span class="fu">select</span>(snaive) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-13-4"><a href="#annotated-cell-13-4" aria-label="4"></a>  <span class="fu">gg_tsresiduals</span>() <span class="sc">+</span></span>
+<span id="annotated-cell-13-5"><a href="#annotated-cell-13-5" aria-label="5"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Gas — SNAIVE residuals"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-13" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-13" data-code-lines="1" data-code-annotation="1"><code>gg_tsresiduals()</code> cannot use the light/dark render pattern, so the theme is reset explicitly first.</span>
+</dd>
+<dt data-target-cell="annotated-cell-13" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-13" data-code-lines="3" data-code-annotation="2"><code>gg_tsresiduals()</code> works on a single model: select one column of the mable before calling it.</span>
+</dd>
+</dl>
+</div>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><a href="model_diagnostics_files/figure-html/gas-resid-reminder-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img data-src="model_diagnostics_files/figure-html/gas-resid-reminder-1.png" width="672"></a></p>
+<p><a href="model_diagnostics_files/figure-html/gas-resid-reminder-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img data-src="model_diagnostics_files/figure-html/gas-resid-reminder-1.png" width="672"></a></p>
 </figure>
 </div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;theme&gt; List of 144
+ $ line                            : &lt;ggplot2::element_line&gt;
+  ..@ colour       : chr "black"
+  ..@ linewidth    : num 0.545
+  ..@ linetype     : num 1
+  ..@ lineend      : chr "butt"
+  ..@ linejoin     : chr "round"
+  ..@ arrow        : logi FALSE
+  ..@ arrow.fill   : chr "black"
+  ..@ inherit.blank: logi TRUE
+ $ rect                            : &lt;ggplot2::element_rect&gt;
+  ..@ fill         : chr "white"
+  ..@ colour       : chr "black"
+  ..@ linewidth    : num 0.545
+  ..@ linetype     : num 1
+  ..@ linejoin     : chr "round"
+  ..@ inherit.blank: logi TRUE
+ $ text                            : &lt;ggplot2::element_text&gt;
+  ..@ family       : chr ""
+  ..@ face         : chr "plain"
+  ..@ italic       : chr NA
+  ..@ fontweight   : num NA
+  ..@ fontwidth    : num NA
+  ..@ colour       : chr "#2A2520"
+  ..@ size         : num 12
+  ..@ hjust        : num 0.5
+  ..@ vjust        : num 0.5
+  ..@ angle        : num 0
+  ..@ lineheight   : num 0.9
+  ..@ margin       : &lt;ggplot2::margin&gt; num [1:4] 0 0 0 0
+  ..@ debug        : logi FALSE
+  ..@ inherit.blank: logi FALSE
+ $ title                           : &lt;ggplot2::element_text&gt;
+  ..@ family       : NULL
+  ..@ face         : NULL
+  ..@ italic       : chr NA
+  ..@ fontweight   : num NA
+  ..@ fontwidth    : num NA
+  ..@ colour       : NULL
+  ..@ size         : NULL
+  ..@ hjust        : NULL
+  ..@ vjust        : NULL
+  ..@ angle        : NULL
+  ..@ lineheight   : NULL
+  ..@ margin       : NULL
+  ..@ debug        : NULL
+  ..@ inherit.blank: logi TRUE
+ $ point                           : &lt;ggplot2::element_point&gt;
+  ..@ colour       : chr "black"
+  ..@ shape        : num 19
+  ..@ size         : num 1.64
+  ..@ fill         : chr "white"
+  ..@ stroke       : num 0.545
+  ..@ inherit.blank: logi TRUE
+ $ polygon                         : &lt;ggplot2::element_polygon&gt;
+  ..@ fill         : chr "white"
+  ..@ colour       : chr "black"
+  ..@ linewidth    : num 0.545
+  ..@ linetype     : num 1
+  ..@ linejoin     : chr "round"
+  ..@ inherit.blank: logi TRUE
+ $ geom                            : &lt;ggplot2::element_geom&gt;
+  ..@ ink        : chr "black"
+  ..@ paper      : chr "white"
+  ..@ accent     : chr "#3366FF"
+  ..@ linewidth  : num 0.545
+  ..@ borderwidth: num 0.545
+  ..@ linetype   : int 1
+  ..@ bordertype : int 1
+  ..@ family     : chr ""
+  ..@ fontsize   : num 4.22
+  ..@ pointsize  : num 1.64
+  ..@ pointshape : num 19
+  ..@ colour     : NULL
+  ..@ fill       : NULL
+ $ spacing                         : 'simpleUnit' num 6points
+  ..- attr(*, "unit")= int 8
+ $ margins                         : &lt;ggplot2::margin&gt; num [1:4] 6 6 6 6
+ $ aspect.ratio                    : NULL
+ $ axis.title                      : &lt;ggplot2::element_text&gt;
+  ..@ family       : NULL
+  ..@ face         : NULL
+  ..@ italic       : chr NA
+  ..@ fontweight   : num NA
+  ..@ fontwidth    : num NA
+  ..@ colour       : chr "#2A2520"
+  ..@ size         : NULL
+  ..@ hjust        : NULL
+  ..@ vjust        : NULL
+  ..@ angle        : NULL
+  ..@ lineheight   : NULL
+  ..@ margin       : NULL
+  ..@ debug        : NULL
+  ..@ inherit.blank: logi FALSE
+ $ axis.title.x                    : &lt;ggplot2::element_text&gt;
+  ..@ family       : NULL
+  ..@ face         : NULL
+  ..@ italic       : chr NA
+  ..@ fontweight   : num NA
+  ..@ fontwidth    : num NA
+  ..@ colour       : NULL
+  ..@ size         : NULL
+  ..@ hjust        : NULL
+  ..@ vjust        : num 1
+  ..@ angle        : NULL
+  ..@ lineheight   : NULL
+  ..@ margin       : &lt;ggplot2::margin&gt; num [1:4] 3 0 0 0
+  ..@ debug        : NULL
+  ..@ inherit.blank: logi TRUE
+ $ axis.title.x.top                : &lt;ggplot2::element_text&gt;
+  ..@ family       : NULL
+  ..@ face         : NULL
+  ..@ italic       : chr NA
+  ..@ fontweight   : num NA
+  ..@ fontwidth    : num NA
+  ..@ colour       : NULL
+  ..@ size         : NULL
+  ..@ hjust        : NULL
+  ..@ vjust        : num 0
+  ..@ angle        : NULL
+  ..@ lineheight   : NULL
+  ..@ margin       : &lt;ggplot2::margin&gt; num [1:4] 0 0 3 0
+  ..@ debug        : NULL
+  ..@ inherit.blank: logi TRUE
+ $ axis.title.x.bottom             : NULL
+ $ axis.title.y                    : &lt;ggplot2::element_text&gt;
+  ..@ family       : NULL
+  ..@ face         : NULL
+  ..@ italic       : chr NA
+  ..@ fontweight   : num NA
+  ..@ fontwidth    : num NA
+  ..@ colour       : NULL
+  ..@ size         : NULL
+  ..@ hjust        : NULL
+  ..@ vjust        : num 1
+  ..@ angle        : num 90
+  ..@ lineheight   : NULL
+  ..@ margin       : &lt;ggplot2::margin&gt; num [1:4] 0 3 0 0
+  ..@ debug        : NULL
+  ..@ inherit.blank: logi TRUE
+ $ axis.title.y.left               : NULL
+ $ axis.title.y.right              : &lt;ggplot2::element_text&gt;
+  ..@ family       : NULL
+  ..@ face         : NULL
+  ..@ italic       : chr NA
+  ..@ fontweight   : num NA
+  ..@ fontwidth    : num NA
+  ..@ colour       : NULL
+  ..@ size         : NULL
+  ..@ hjust        : NULL
+  ..@ vjust        : num 1
+  ..@ angle        : num -90
+  ..@ lineheight   : NULL
+  ..@ margin       : &lt;ggplot2::margin&gt; num [1:4] 0 0 0 3
+  ..@ debug        : NULL
+  ..@ inherit.blank: logi TRUE
+ $ axis.text                       : &lt;ggplot2::element_text&gt;
+  ..@ family       : NULL
+  ..@ face         : NULL
+  ..@ italic       : chr NA
+  ..@ fontweight   : num NA
+  ..@ fontwidth    : num NA
+  ..@ colour       : chr "#2A2520"
+  ..@ size         : 'rel' num 0.8
+  ..@ hjust        : NULL
+  ..@ vjust        : NULL
+  ..@ angle        : NULL
+  ..@ lineheight   : NULL
+  ..@ margin       : NULL
+  ..@ debug        : NULL
+  ..@ inherit.blank: logi FALSE
+ $ axis.text.x                     : &lt;ggplot2::element_text&gt;
+  ..@ family       : NULL
+  ..@ face         : NULL
+  ..@ italic       : chr NA
+  ..@ fontweight   : num NA
+  ..@ fontwidth    : num NA
+  ..@ colour       : NULL
+  ..@ size         : NULL
+  ..@ hjust        : NULL
+  ..@ vjust        : num 1
+  ..@ angle        : NULL
+  ..@ lineheight   : NULL
+  ..@ margin       : &lt;ggplot2::margin&gt; num [1:4] 2.4 0 0 0
+  ..@ debug        : NULL
+  ..@ inherit.blank: logi TRUE
+ $ axis.text.x.top                 : &lt;ggplot2::element_text&gt;
+  ..@ family       : NULL
+  ..@ face         : NULL
+  ..@ italic       : chr NA
+  ..@ fontweight   : num NA
+  ..@ fontwidth    : num NA
+  ..@ colour       : NULL
+  ..@ size         : NULL
+  ..@ hjust        : NULL
+  ..@ vjust        : NULL
+  ..@ angle        : NULL
+  ..@ lineheight   : NULL
+  ..@ margin       : &lt;ggplot2::margin&gt; num [1:4] 0 0 5.4 0
+  ..@ debug        : NULL
+  ..@ inherit.blank: logi TRUE
+ $ axis.text.x.bottom              : &lt;ggplot2::element_text&gt;
+  ..@ family       : NULL
+  ..@ face         : NULL
+  ..@ italic       : chr NA
+  ..@ fontweight   : num NA
+  ..@ fontwidth    : num NA
+  ..@ colour       : NULL
+  ..@ size         : NULL
+  ..@ hjust        : NULL
+  ..@ vjust        : NULL
+  ..@ angle        : NULL
+  ..@ lineheight   : NULL
+  ..@ margin       : &lt;ggplot2::margin&gt; num [1:4] 5.4 0 0 0
+  ..@ debug        : NULL
+  ..@ inherit.blank: logi TRUE
+ $ axis.text.y                     : &lt;ggplot2::element_text&gt;
+  ..@ family       : NULL
+  ..@ face         : NULL
+  ..@ italic       : chr NA
+  ..@ fontweight   : num NA
+  ..@ fontwidth    : num NA
+  ..@ colour       : NULL
+  ..@ size         : NULL
+  ..@ hjust        : num 1
+  ..@ vjust        : NULL
+  ..@ angle        : NULL
+  ..@ lineheight   : NULL
+  ..@ margin       : &lt;ggplot2::margin&gt; num [1:4] 0 2.4 0 0
+  ..@ debug        : NULL
+  ..@ inherit.blank: logi TRUE
+ $ axis.text.y.left                : &lt;ggplot2::element_text&gt;
+  ..@ family       : NULL
+  ..@ face         : NULL
+  ..@ italic       : chr NA
+  ..@ fontweight   : num NA
+  ..@ fontwidth    : num NA
+  ..@ colour       : NULL
+  ..@ size         : NULL
+  ..@ hjust        : NULL
+  ..@ vjust        : NULL
+  ..@ angle        : NULL
+  ..@ lineheight   : NULL
+  ..@ margin       : &lt;ggplot2::margin&gt; num [1:4] 0 5.4 0 0
+  ..@ debug        : NULL
+  ..@ inherit.blank: logi TRUE
+ $ axis.text.y.right               : &lt;ggplot2::element_text&gt;
+  ..@ family       : NULL
+  ..@ face         : NULL
+  ..@ italic       : chr NA
+  ..@ fontweight   : num NA
+  ..@ fontwidth    : num NA
+  ..@ colour       : NULL
+  ..@ size         : NULL
+  ..@ hjust        : NULL
+  ..@ vjust        : NULL
+  ..@ angle        : NULL
+  ..@ lineheight   : NULL
+  ..@ margin       : &lt;ggplot2::margin&gt; num [1:4] 0 0 0 5.4
+  ..@ debug        : NULL
+  ..@ inherit.blank: logi TRUE
+ $ axis.text.theta                 : NULL
+ $ axis.text.r                     : &lt;ggplot2::element_text&gt;
+  ..@ family       : NULL
+  ..@ face         : NULL
+  ..@ italic       : chr NA
+  ..@ fontweight   : num NA
+  ..@ fontwidth    : num NA
+  ..@ colour       : NULL
+  ..@ size         : NULL
+  ..@ hjust        : num 0.5
+  ..@ vjust        : NULL
+  ..@ angle        : NULL
+  ..@ lineheight   : NULL
+  ..@ margin       : &lt;ggplot2::margin&gt; num [1:4] 0 2.4 0 2.4
+  ..@ debug        : NULL
+  ..@ inherit.blank: logi TRUE
+ $ axis.ticks                      : &lt;ggplot2::element_blank&gt;
+ $ axis.ticks.x                    : NULL
+ $ axis.ticks.x.top                : NULL
+ $ axis.ticks.x.bottom             : NULL
+ $ axis.ticks.y                    : NULL
+ $ axis.ticks.y.left               : NULL
+ $ axis.ticks.y.right              : NULL
+ $ axis.ticks.theta                : NULL
+ $ axis.ticks.r                    : NULL
+ $ axis.minor.ticks.x.top          : NULL
+ $ axis.minor.ticks.x.bottom       : NULL
+ $ axis.minor.ticks.y.left         : NULL
+ $ axis.minor.ticks.y.right        : NULL
+ $ axis.minor.ticks.theta          : NULL
+ $ axis.minor.ticks.r              : NULL
+ $ axis.ticks.length               : 'rel' num 0.5
+ $ axis.ticks.length.x             : NULL
+ $ axis.ticks.length.x.top         : NULL
+ $ axis.ticks.length.x.bottom      : NULL
+ $ axis.ticks.length.y             : NULL
+ $ axis.ticks.length.y.left        : NULL
+ $ axis.ticks.length.y.right       : NULL
+ $ axis.ticks.length.theta         : NULL
+ $ axis.ticks.length.r             : NULL
+ $ axis.minor.ticks.length         : 'rel' num 0.75
+ $ axis.minor.ticks.length.x       : NULL
+ $ axis.minor.ticks.length.x.top   : NULL
+ $ axis.minor.ticks.length.x.bottom: NULL
+ $ axis.minor.ticks.length.y       : NULL
+ $ axis.minor.ticks.length.y.left  : NULL
+ $ axis.minor.ticks.length.y.right : NULL
+ $ axis.minor.ticks.length.theta   : NULL
+ $ axis.minor.ticks.length.r       : NULL
+ $ axis.line                       : &lt;ggplot2::element_blank&gt;
+ $ axis.line.x                     : NULL
+ $ axis.line.x.top                 : NULL
+ $ axis.line.x.bottom              : NULL
+ $ axis.line.y                     : NULL
+ $ axis.line.y.left                : NULL
+ $ axis.line.y.right               : NULL
+ $ axis.line.theta                 : NULL
+ $ axis.line.r                     : NULL
+ $ legend.background               : &lt;ggplot2::element_blank&gt;
+ $ legend.margin                   : NULL
+ $ legend.spacing                  : 'rel' num 2
+ $ legend.spacing.x                : NULL
+ $ legend.spacing.y                : NULL
+ $ legend.key                      : &lt;ggplot2::element_blank&gt;
+ $ legend.key.size                 : 'simpleUnit' num 1.2lines
+  ..- attr(*, "unit")= int 3
+ $ legend.key.height               : NULL
+ $ legend.key.width                : NULL
+ $ legend.key.spacing              : NULL
+ $ legend.key.spacing.x            : NULL
+ $ legend.key.spacing.y            : NULL
+ $ legend.key.justification        : NULL
+ $ legend.frame                    : NULL
+ $ legend.ticks                    : NULL
+ $ legend.ticks.length             : 'rel' num 0.2
+ $ legend.axis.line                : NULL
+ $ legend.text                     : &lt;ggplot2::element_text&gt;
+  ..@ family       : NULL
+  ..@ face         : NULL
+  ..@ italic       : chr NA
+  ..@ fontweight   : num NA
+  ..@ fontwidth    : num NA
+  ..@ colour       : chr "#2A2520"
+  ..@ size         : 'rel' num 0.8
+  ..@ hjust        : NULL
+  ..@ vjust        : NULL
+  ..@ angle        : NULL
+  ..@ lineheight   : NULL
+  ..@ margin       : NULL
+  ..@ debug        : NULL
+  ..@ inherit.blank: logi FALSE
+ $ legend.text.position            : NULL
+ $ legend.title                    : &lt;ggplot2::element_text&gt;
+  ..@ family       : NULL
+  ..@ face         : chr "bold"
+  ..@ italic       : chr NA
+  ..@ fontweight   : num NA
+  ..@ fontwidth    : num NA
+  ..@ colour       : chr "#2A2520"
+  ..@ size         : NULL
+  ..@ hjust        : num 0
+  ..@ vjust        : NULL
+  ..@ angle        : NULL
+  ..@ lineheight   : NULL
+  ..@ margin       : NULL
+  ..@ debug        : NULL
+  ..@ inherit.blank: logi FALSE
+ $ legend.title.position           : NULL
+ $ legend.position                 : chr "right"
+ $ legend.position.inside          : NULL
+ $ legend.direction                : NULL
+ $ legend.byrow                    : NULL
+ $ legend.justification            : chr "center"
+ $ legend.justification.top        : NULL
+ $ legend.justification.bottom     : NULL
+ $ legend.justification.left       : NULL
+ $ legend.justification.right      : NULL
+ $ legend.justification.inside     : NULL
+  [list output truncated]
+ @ complete: logi TRUE
+ @ validate: logi TRUE</code></pre>
 </div>
 </div>
 </div>
@@ -424,24 +988,24 @@
 <section id="choosing-lambda" class="slide level2">
 <h2>Choosing <span class="math inline">\lambda</span></h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-1" data-llms-code-original="lambda <- aus_production |>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2" data-llms-code-original="lambda <- aus_production |>
   features(Gas, features = guerrero) |>  #<1>
   pull(lambda_guerrero)                  #<2>
 
-lambda"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1" aria-label="1"></a>lambda <span class="ot">&lt;-</span> aus_production <span class="sc">|&gt;</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1">1</button><span id="annotated-cell-1-2" class="code-annotation-target"><a href="#annotated-cell-1-2" aria-label="2"></a>  <span class="fu">features</span>(Gas, <span class="at">features =</span> guerrero) <span class="sc">|&gt;</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="2">2</button><span id="annotated-cell-1-3" class="code-annotation-target"><a href="#annotated-cell-1-3" aria-label="3"></a>  <span class="fu">pull</span>(lambda_guerrero)</span>
-<span id="annotated-cell-1-4"><a href="#annotated-cell-1-4" aria-label="4"></a></span>
-<span id="annotated-cell-1-5"><a href="#annotated-cell-1-5" aria-label="5"></a>lambda</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+lambda"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1" aria-label="1"></a>lambda <span class="ot">&lt;-</span> aus_production <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1">1</button><span id="annotated-cell-2-2" class="code-annotation-target"><a href="#annotated-cell-2-2" aria-label="2"></a>  <span class="fu">features</span>(Gas, <span class="at">features =</span> guerrero) <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="2">2</button><span id="annotated-cell-2-3" class="code-annotation-target"><a href="#annotated-cell-2-3" aria-label="3"></a>  <span class="fu">pull</span>(lambda_guerrero)</span>
+<span id="annotated-cell-2-4"><a href="#annotated-cell-2-4" aria-label="4"></a></span>
+<span id="annotated-cell-2-5"><a href="#annotated-cell-2-5" aria-label="5"></a>lambda</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-1" data-target-annotation="1">1</dt>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-1" data-code-lines="2" data-code-annotation="1"><code>guerrero</code> is a named feature function in <code>feasts</code> — pass it directly to <code>features()</code>.</span>
+<span data-code-cell="annotated-cell-2" data-code-lines="2" data-code-annotation="1"><code>guerrero</code> is a named feature function in <code>feasts</code> — pass it directly to <code>features()</code>.</span>
 </dd>
-<dt data-target-cell="annotated-cell-1" data-target-annotation="2">2</dt>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-cell="annotated-cell-1" data-code-lines="3" data-code-annotation="2">Extract the scalar value so it can be reused in model specs.</span>
+<span data-code-cell="annotated-cell-2" data-code-lines="3" data-code-annotation="2">Extract the scalar value so it can be reused in model specs.</span>
 </dd>
 </dl>
 </div>
@@ -455,24 +1019,24 @@ lambda"><pre class="sourceCode numberSource r code-annotation-code number-lines 
 <p>Wrap the response variable in <code>box_cox()</code> inside the model spec:</p>
 <div class="fragment">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-13" data-llms-code-original="gas_fit_bc <- gas_train |>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-16" data-llms-code-original="gas_fit_bc <- gas_train |>
   model(
     snaive_bc = SNAIVE(box_cox(Gas, lambda)),       #<1>
     drift_bc  = RW(box_cox(Gas, lambda) ~ drift())  #<2>
-  )" data-code-line-numbers="3,4"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-13-1"><a href="#annotated-cell-13-1" aria-label="1"></a>gas_fit_bc <span class="ot">&lt;-</span> gas_train <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-13-2"><a href="#annotated-cell-13-2" aria-label="2"></a>  <span class="fu">model</span>(</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-13" data-target-annotation="1">1</button><span id="annotated-cell-13-3" class="code-annotation-target"><a href="#annotated-cell-13-3" aria-label="3"></a>    <span class="at">snaive_bc =</span> <span class="fu">SNAIVE</span>(<span class="fu">box_cox</span>(Gas, lambda)),</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-13" data-target-annotation="2">2</button><span id="annotated-cell-13-4" class="code-annotation-target"><a href="#annotated-cell-13-4" aria-label="4"></a>    <span class="at">drift_bc  =</span> <span class="fu">RW</span>(<span class="fu">box_cox</span>(Gas, lambda) <span class="sc">~</span> <span class="fu">drift</span>())</span>
-<span id="annotated-cell-13-5"><a href="#annotated-cell-13-5" aria-label="5"></a>  )</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+  )" data-code-line-numbers="3,4"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-16-1"><a href="#annotated-cell-16-1" aria-label="1"></a>gas_fit_bc <span class="ot">&lt;-</span> gas_train <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-16-2"><a href="#annotated-cell-16-2" aria-label="2"></a>  <span class="fu">model</span>(</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-16" data-target-annotation="1">1</button><span id="annotated-cell-16-3" class="code-annotation-target"><a href="#annotated-cell-16-3" aria-label="3"></a>    <span class="at">snaive_bc =</span> <span class="fu">SNAIVE</span>(<span class="fu">box_cox</span>(Gas, lambda)),</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-16" data-target-annotation="2">2</button><span id="annotated-cell-16-4" class="code-annotation-target"><a href="#annotated-cell-16-4" aria-label="4"></a>    <span class="at">drift_bc  =</span> <span class="fu">RW</span>(<span class="fu">box_cox</span>(Gas, lambda) <span class="sc">~</span> <span class="fu">drift</span>())</span>
+<span id="annotated-cell-16-5"><a href="#annotated-cell-16-5" aria-label="5"></a>  )</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-13" data-target-annotation="1">1</dt>
+<dt data-target-cell="annotated-cell-16" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-13" data-code-lines="3" data-code-annotation="1">Box-Cox applied inside the spec — the model sees stabilized variance.</span>
+<span data-code-cell="annotated-cell-16" data-code-lines="3" data-code-annotation="1">Box-Cox applied inside the spec — the model sees stabilized variance.</span>
 </dd>
-<dt data-target-cell="annotated-cell-13" data-target-annotation="2">2</dt>
+<dt data-target-cell="annotated-cell-16" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-cell="annotated-cell-13" data-code-lines="4" data-code-annotation="2">Same transformation for Drift. Both use the same <code>lambda</code> estimated above.</span>
+<span data-code-cell="annotated-cell-16" data-code-lines="4" data-code-annotation="2">Same transformation for Drift. Both use the same <code>lambda</code> estimated above.</span>
 </dd>
 </dl>
 </div>
@@ -480,14 +1044,43 @@ lambda"><pre class="sourceCode numberSource r code-annotation-code number-lines 
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a aria-label="1"></a>gas_fc_bc <span class="ot">&lt;-</span> gas_fit_bc <span class="sc">|&gt;</span></span>
-<span id="cb6-2"><a aria-label="2"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="fu">nrow</span>(gas_test))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-17" data-llms-code-original="gas_fc_bc <- gas_fit_bc |>
+  forecast(h = nrow(gas_test))   #<1>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-17-1"><a href="#annotated-cell-17-1" aria-label="1"></a>gas_fc_bc <span class="ot">&lt;-</span> gas_fit_bc <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-17" data-target-annotation="1">1</button><span id="annotated-cell-17-2" class="code-annotation-target"><a href="#annotated-cell-17-2" aria-label="2"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="fu">nrow</span>(gas_test))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-17" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-17" data-code-lines="2" data-code-annotation="1">Same horizon as the untransformed benchmarks. Nothing about the transformation appears here — see the next slide for why.</span>
+</dd>
+</dl>
 </div>
+</div>
+</div>
+</section>
+<section id="back-to-the-original-scale" class="slide level2">
+<h2>Back to the original scale</h2>
+<p>We fitted the model to <span class="math inline">w_t = \text{box\_cox}(y_t, \lambda)</span>, so the forecasts and their intervals live in the transformed scale. To report them in the original units we apply the inverse transformation — the <strong>back-transformation</strong>:</p>
+<p><span class="math display">y_t = \begin{cases} \exp(w_t) &amp; \text{if } \lambda = 0 \\[6pt] \operatorname{sign}(\lambda w_t + 1)\,|\lambda w_t + 1|^{1/\lambda} &amp; \text{otherwise} \end{cases}</span></p>
+<div class="fragment">
+<div class="callout callout-note callout-style-simple">
+<div class="callout-body">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-content">
+<p><code>fable</code> does this for you. Because the transformation was declared inside the model formula, <code>forecast()</code> returns everything — point forecasts, intervals, the full distribution — already back-transformed. You never call <code>inv_box_cox()</code> yourself.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p>Back-transforming is not free, though. It does two things to the forecast distribution, and both matter.</p>
 </div>
 </section>
 <section id="intervals-before-and-after-transformation" class="slide level2">
 <h2>Intervals before and after transformation</h2>
-<p>The intervals are computed in the transformed scale and then back-transformed. Because <span class="math inline">e^x</span> is a convex function, the back-transformation stretches the upper tail more than the lower one — the resulting intervals in the original scale are <strong>asymmetric</strong>.</p>
+<p>The intervals are computed in the transformed scale and back-transformed with the inverse above. Because the inverse is a convex function, the back-transformation stretches the upper tail more than the lower one — the resulting intervals in the original scale are <strong>asymmetric</strong>.</p>
 <div class="panel-tabset">
 <ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">Without transformation</a></li><li><a href="#tabset-1-2">With Box-Cox</a></li></ul>
 <div class="tab-content">
@@ -496,7 +1089,7 @@ lambda"><pre class="sourceCode numberSource r code-annotation-code number-lines 
 <div class="cell-output-display">
 <div>
 <figure>
-<p><a href="model_diagnostics_files/figure-html/gas-pi-no-bc-render-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img data-src="model_diagnostics_files/figure-html/gas-pi-no-bc-render-1.png" width="672"></a></p>
+<p><a href="model_diagnostics_files/figure-html/gas-pi-no-bc-render-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img data-src="model_diagnostics_files/figure-html/gas-pi-no-bc-render-1.png" width="672"></a></p>
 </figure>
 </div>
 </div>
@@ -507,7 +1100,7 @@ lambda"><pre class="sourceCode numberSource r code-annotation-code number-lines 
 <div class="cell-output-display">
 <div>
 <figure>
-<p><a href="model_diagnostics_files/figure-html/gas-pi-bc-render-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img data-src="model_diagnostics_files/figure-html/gas-pi-bc-render-1.png" width="672"></a></p>
+<p><a href="model_diagnostics_files/figure-html/gas-pi-bc-render-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8"><img data-src="model_diagnostics_files/figure-html/gas-pi-bc-render-1.png" width="672"></a></p>
 </figure>
 </div>
 </div>
@@ -522,16 +1115,40 @@ lambda"><pre class="sourceCode numberSource r code-annotation-code number-lines 
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a aria-label="1"></a><span class="fu">bind_rows</span>(</span>
-<span id="cb7-2"><a aria-label="2"></a>  gas_fc <span class="sc">|&gt;</span></span>
-<span id="cb7-3"><a aria-label="3"></a>    <span class="fu">filter</span>(.model <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"snaive"</span>, <span class="st">"drift"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb7-4"><a aria-label="4"></a>    <span class="fu">accuracy</span>(aus_production),</span>
-<span id="cb7-5"><a aria-label="5"></a>  gas_fc_bc <span class="sc">|&gt;</span></span>
-<span id="cb7-6"><a aria-label="6"></a>    <span class="fu">accuracy</span>(aus_production)</span>
-<span id="cb7-7"><a aria-label="7"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb7-8"><a aria-label="8"></a>  <span class="fu">select</span>(.model, RMSE, MAE, MAPE, MASE, RMSSE) <span class="sc">|&gt;</span></span>
-<span id="cb7-9"><a aria-label="9"></a>  <span class="fu">arrange</span>(RMSSE)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3" data-llms-code-original="bind_rows(                                       #<1>
+  gas_fc |>
+    filter(.model %in% c(&quot;snaive&quot;, &quot;drift&quot;)) |>
+    accuracy(aus_production),                    #<2>
+  gas_fc_bc |>
+    accuracy(aus_production)
+) |>
+  select(.model, RMSE, MAE, MAPE, MASE, RMSSE) |>
+  arrange(RMSSE)                                 #<3>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1">1</button><span id="annotated-cell-3-1" class="code-annotation-target"><a href="#annotated-cell-3-1" aria-label="1"></a><span class="fu">bind_rows</span>(</span>
+<span id="annotated-cell-3-2"><a href="#annotated-cell-3-2" aria-label="2"></a>  gas_fc <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-3-3"><a href="#annotated-cell-3-3" aria-label="3"></a>    <span class="fu">filter</span>(.model <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"snaive"</span>, <span class="st">"drift"</span>)) <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="2">2</button><span id="annotated-cell-3-4" class="code-annotation-target"><a href="#annotated-cell-3-4" aria-label="4"></a>    <span class="fu">accuracy</span>(aus_production),</span>
+<span id="annotated-cell-3-5"><a href="#annotated-cell-3-5" aria-label="5"></a>  gas_fc_bc <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-3-6"><a href="#annotated-cell-3-6" aria-label="6"></a>    <span class="fu">accuracy</span>(aus_production)</span>
+<span id="annotated-cell-3-7"><a href="#annotated-cell-3-7" aria-label="7"></a>) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-3-8"><a href="#annotated-cell-3-8" aria-label="8"></a>  <span class="fu">select</span>(.model, RMSE, MAE, MAPE, MASE, RMSSE) <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="3">3</button><span id="annotated-cell-3-9" class="code-annotation-target"><a href="#annotated-cell-3-9" aria-label="9"></a>  <span class="fu">arrange</span>(RMSSE)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-3" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-3" data-code-lines="1" data-code-annotation="1">The two fables have different models, so stack their accuracy tables to compare them in one place.</span>
+</dd>
+<dt data-target-cell="annotated-cell-3" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-3" data-code-lines="4" data-code-annotation="2"><code>accuracy()</code> on a fable takes the <strong>full</strong> series and matches the test observations by index — never pass the test set alone.</span>
+</dd>
+<dt data-target-cell="annotated-cell-3" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-3" data-code-lines="9" data-code-annotation="3">Sort by the scaled error so the best model is at the top.</span>
+</dd>
+</dl>
+</div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -560,7 +1177,7 @@ lambda"><pre class="sourceCode numberSource r code-annotation-code number-lines 
 </section>
 <section id="mean-median-after-back-transformation" class="slide level2">
 <h2>Mean ≠ median after back-transformation</h2>
-<p>Back-transforming a forecast recovers the <strong>median</strong> of the forecast distribution in the original scale — not the mean.</p>
+<p>The second consequence of back-transforming: the point forecast you recover is the <strong>median</strong> of the forecast distribution in the original scale — not the mean. The back-transformation introduces a bias, and by default your forecasts follow the median.</p>
 <div class="fragment">
 <p>For a log transformation, if <span class="math inline">w_{T+h} \sim \mathcal{N}(\mu, \sigma_h^2)</span>, then in the original scale:</p>
 <p><span class="math display">\text{median}(\hat{y}_{T+h}) = e^{\mu} \qquad \text{mean}(\hat{y}_{T+h}) = e^{\mu + \sigma_h^2/2}</span></p>
@@ -568,12 +1185,51 @@ lambda"><pre class="sourceCode numberSource r code-annotation-code number-lines 
 <div class="fragment">
 <p>The median is invariant under monotone transformations — the 50th percentile in log scale maps exactly to the 50th percentile in the original scale. The mean is not: because <span class="math inline">e^x</span> is convex, Jensen’s inequality gives <span class="math inline">E[e^W] &gt; e^{E[W]}</span>, and the gap grows with <span class="math inline">\sigma_h^2</span>.</p>
 </div>
+<aside class="notes">
+<p>A monotone increasing function <span class="math inline">g</span> preserves order: if <span class="math inline">a &lt; b</span> then <span class="math inline">g(a) &lt; g(b)</span>. Percentiles are defined by order, so the value with 50% of the distribution below it in the <span class="math inline">w</span> scale maps to the value with 50% below it in the <span class="math inline">y</span> scale. Hence <span class="math inline">\text{median}(g(W)) = g(\text{median}(W))</span>. The same holds for every percentile, which is why the prediction interval bounds can be back-transformed directly.</p>
+<p>The mean is an average, not an order statistic. Averaging and then transforming is not the same as transforming and then averaging unless <span class="math inline">g</span> is linear. For convex <span class="math inline">g</span> — every Box-Cox inverse with <span class="math inline">\lambda &lt; 1</span>, including <span class="math inline">\exp</span> — Jensen’s inequality gives <span class="math inline">E[g(W)] \ge g(E[W])</span>, and the gap grows with the spread of <span class="math inline">W</span>. Since <span class="math inline">W</span> is symmetric (normal), its mean equals its median, so <span class="math inline">g(E[W]) = g(\text{median}(W)) = \text{median}(Y)</span>: the naive back-transform lands on the median and sits below the mean.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="the-general-box-cox-case" class="slide level2">
 <h2>The general Box-Cox case</h2>
 <p>For a general Box-Cox transformation, the bias-adjusted back-transformation is:</p>
 <p><span class="math display">y_t = \begin{cases} \exp(w_t)\left[1 + \dfrac{\sigma_h^2}{2}\right] &amp; \text{if } \lambda = 0 \\[10pt] (\lambda w_t + 1)^{1/\lambda}\left[1 + \dfrac{\sigma_h^2(1-\lambda)}{2(\lambda w_t+1)^{2}}\right] &amp; \text{otherwise} \end{cases}</span></p>
 <p><code>fable</code> applies this adjustment <strong>automatically by default</strong>.</p>
+<div class="fragment">
+<div class="callout callout-note callout-style-simple">
+<div class="callout-body">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-content">
+<p><strong>This is an approximation.</strong> The bracketed factor comes from a second-order Taylor expansion of the inverse transformation around <span class="math inline">w_t</span>. For the log case the exact mean of a lognormal is <span class="math inline">e^{\mu + \sigma_h^2/2}</span>, and <span class="math inline">e^{\sigma_h^2/2} \approx 1 + \sigma_h^2/2</span> when <span class="math inline">\sigma_h^2</span> is small — which is why the previous slide and this one agree to first order but not exactly. For the general Box-Cox case there is no closed form, so the approximation is what is used in practice.</p>
+</div>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>This is an approximation. The bracketed factor comes from a second-order Taylor expansion of the inverse transformation around <span class="math inline">w_t</span>. For the log case the exact mean of a lognormal is <span class="math inline">e^{\mu + \sigma_h^2/2}</span>, and <span class="math inline">e^{\sigma_h^2/2} \approx 1 + \sigma_h^2/2</span> when <span class="math inline">\sigma_h^2</span> is small — which is why the previous slide and this one agree to first order but not exactly. For the general Box-Cox case there is no closed form, so the approximation is what is used in practice.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="seeing-the-difference" class="slide level2">
 <h2>Seeing the difference</h2>
@@ -582,7 +1238,7 @@ lambda"><pre class="sourceCode numberSource r code-annotation-code number-lines 
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-15" data-llms-code-original="eggs_tsb <- prices |>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-18" data-llms-code-original="eggs_tsb <- prices |>
   filter(!is.na(eggs))                              #<1>
 
 eggs_fit <- eggs_tsb |>
@@ -590,25 +1246,25 @@ eggs_fit <- eggs_tsb |>
 
 eggs_fc <- eggs_fit |>
   forecast(h = 50) |>
-  mutate(.median = median(eggs))                    #<2>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-15-1"><a href="#annotated-cell-15-1" aria-label="1"></a>eggs_tsb <span class="ot">&lt;-</span> prices <span class="sc">|&gt;</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-15" data-target-annotation="1">1</button><span id="annotated-cell-15-2" class="code-annotation-target"><a href="#annotated-cell-15-2" aria-label="2"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(eggs))</span>
-<span id="annotated-cell-15-3"><a href="#annotated-cell-15-3" aria-label="3"></a></span>
-<span id="annotated-cell-15-4"><a href="#annotated-cell-15-4" aria-label="4"></a>eggs_fit <span class="ot">&lt;-</span> eggs_tsb <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-15-5"><a href="#annotated-cell-15-5" aria-label="5"></a>  <span class="fu">model</span>(<span class="at">rw =</span> <span class="fu">RW</span>(<span class="fu">log</span>(eggs) <span class="sc">~</span> <span class="fu">drift</span>()))</span>
-<span id="annotated-cell-15-6"><a href="#annotated-cell-15-6" aria-label="6"></a></span>
-<span id="annotated-cell-15-7"><a href="#annotated-cell-15-7" aria-label="7"></a>eggs_fc <span class="ot">&lt;-</span> eggs_fit <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-15-8"><a href="#annotated-cell-15-8" aria-label="8"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">50</span>) <span class="sc">|&gt;</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-15" data-target-annotation="2">2</button><span id="annotated-cell-15-9" class="code-annotation-target"><a href="#annotated-cell-15-9" aria-label="9"></a>  <span class="fu">mutate</span>(<span class="at">.median =</span> <span class="fu">median</span>(eggs))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+  mutate(.median = median(eggs))                    #<2>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-18-1"><a href="#annotated-cell-18-1" aria-label="1"></a>eggs_tsb <span class="ot">&lt;-</span> prices <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-18" data-target-annotation="1">1</button><span id="annotated-cell-18-2" class="code-annotation-target"><a href="#annotated-cell-18-2" aria-label="2"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(eggs))</span>
+<span id="annotated-cell-18-3"><a href="#annotated-cell-18-3" aria-label="3"></a></span>
+<span id="annotated-cell-18-4"><a href="#annotated-cell-18-4" aria-label="4"></a>eggs_fit <span class="ot">&lt;-</span> eggs_tsb <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-18-5"><a href="#annotated-cell-18-5" aria-label="5"></a>  <span class="fu">model</span>(<span class="at">rw =</span> <span class="fu">RW</span>(<span class="fu">log</span>(eggs) <span class="sc">~</span> <span class="fu">drift</span>()))</span>
+<span id="annotated-cell-18-6"><a href="#annotated-cell-18-6" aria-label="6"></a></span>
+<span id="annotated-cell-18-7"><a href="#annotated-cell-18-7" aria-label="7"></a>eggs_fc <span class="ot">&lt;-</span> eggs_fit <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-18-8"><a href="#annotated-cell-18-8" aria-label="8"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">50</span>) <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-18" data-target-annotation="2">2</button><span id="annotated-cell-18-9" class="code-annotation-target"><a href="#annotated-cell-18-9" aria-label="9"></a>  <span class="fu">mutate</span>(<span class="at">.median =</span> <span class="fu">median</span>(eggs))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-15" data-target-annotation="1">1</dt>
+<dt data-target-cell="annotated-cell-18" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-15" data-code-lines="2" data-code-annotation="1"><code>prices</code> is a native <code>fpp3</code> dataset. Removing <code>NA</code>s before fitting avoids gaps in the series.</span>
+<span data-code-cell="annotated-cell-18" data-code-lines="2" data-code-annotation="1"><code>prices</code> is a native <code>fpp3</code> dataset. Removing <code>NA</code>s before fitting avoids gaps in the series.</span>
 </dd>
-<dt data-target-cell="annotated-cell-15" data-target-annotation="2">2</dt>
+<dt data-target-cell="annotated-cell-18" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-cell="annotated-cell-15" data-code-lines="9" data-code-annotation="2"><code>median()</code> extracts the distributional median from each forecast distribution — different from <code>.mean</code>, which already contains the bias-adjusted mean.</span>
+<span data-code-cell="annotated-cell-18" data-code-lines="9" data-code-annotation="2"><code>median()</code> extracts the distributional median from each forecast distribution — different from <code>.mean</code>, which already contains the bias-adjusted mean.</span>
 </dd>
 </dl>
 </div>
@@ -618,26 +1274,50 @@ eggs_fc <- eggs_fit |>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a aria-label="1"></a>eggs_plot_p <span class="ot">&lt;-</span> eggs_fc <span class="sc">|&gt;</span></span>
-<span id="cb8-2"><a aria-label="2"></a>  <span class="fu">autoplot</span>(eggs_tsb, <span class="at">level =</span> <span class="dv">80</span>) <span class="sc">+</span></span>
-<span id="cb8-3"><a aria-label="3"></a>  <span class="fu">geom_line</span>(</span>
-<span id="cb8-4"><a aria-label="4"></a>    <span class="at">data =</span> eggs_fc,</span>
-<span id="cb8-5"><a aria-label="5"></a>    <span class="fu">aes</span>(<span class="at">y =</span> .median),</span>
-<span id="cb8-6"><a aria-label="6"></a>    <span class="at">linetype =</span> <span class="st">"dashed"</span></span>
-<span id="cb8-7"><a aria-label="7"></a>  ) <span class="sc">+</span></span>
-<span id="cb8-8"><a aria-label="8"></a>  <span class="fu">labs</span>(</span>
-<span id="cb8-9"><a aria-label="9"></a>    <span class="at">title =</span> <span class="st">"Egg prices — Drift with log transformation"</span>,</span>
-<span id="cb8-10"><a aria-label="10"></a>    <span class="at">subtitle =</span> <span class="st">"Solid line: mean (bias-adjusted)  ·  Dashed: median"</span>,</span>
-<span id="cb8-11"><a aria-label="11"></a>    <span class="at">y =</span> <span class="st">"USD per dozen"</span>,</span>
-<span id="cb8-12"><a aria-label="12"></a>    <span class="at">x =</span> <span class="cn">NULL</span></span>
-<span id="cb8-13"><a aria-label="13"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-19" data-llms-code-original="eggs_plot_p <- eggs_fc |>
+  autoplot(eggs_tsb, level = 80) +   #<1>
+  geom_line(
+    data = eggs_fc,
+    aes(y = .median),                #<2>
+    linetype = &quot;dashed&quot;
+  ) +
+  labs(
+    title = &quot;Egg prices — Drift with log transformation&quot;,
+    subtitle = &quot;Solid line: mean (bias-adjusted)  ·  Dashed: median&quot;,
+    y = &quot;USD per dozen&quot;,
+    x = NULL
+  )"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-19-1"><a href="#annotated-cell-19-1" aria-label="1"></a>eggs_plot_p <span class="ot">&lt;-</span> eggs_fc <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-19" data-target-annotation="1">1</button><span id="annotated-cell-19-2" class="code-annotation-target"><a href="#annotated-cell-19-2" aria-label="2"></a>  <span class="fu">autoplot</span>(eggs_tsb, <span class="at">level =</span> <span class="dv">80</span>) <span class="sc">+</span></span>
+<span id="annotated-cell-19-3"><a href="#annotated-cell-19-3" aria-label="3"></a>  <span class="fu">geom_line</span>(</span>
+<span id="annotated-cell-19-4"><a href="#annotated-cell-19-4" aria-label="4"></a>    <span class="at">data =</span> eggs_fc,</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-19" data-target-annotation="2">2</button><span id="annotated-cell-19-5" class="code-annotation-target"><a href="#annotated-cell-19-5" aria-label="5"></a>    <span class="fu">aes</span>(<span class="at">y =</span> .median),</span>
+<span id="annotated-cell-19-6"><a href="#annotated-cell-19-6" aria-label="6"></a>    <span class="at">linetype =</span> <span class="st">"dashed"</span></span>
+<span id="annotated-cell-19-7"><a href="#annotated-cell-19-7" aria-label="7"></a>  ) <span class="sc">+</span></span>
+<span id="annotated-cell-19-8"><a href="#annotated-cell-19-8" aria-label="8"></a>  <span class="fu">labs</span>(</span>
+<span id="annotated-cell-19-9"><a href="#annotated-cell-19-9" aria-label="9"></a>    <span class="at">title =</span> <span class="st">"Egg prices — Drift with log transformation"</span>,</span>
+<span id="annotated-cell-19-10"><a href="#annotated-cell-19-10" aria-label="10"></a>    <span class="at">subtitle =</span> <span class="st">"Solid line: mean (bias-adjusted)  ·  Dashed: median"</span>,</span>
+<span id="annotated-cell-19-11"><a href="#annotated-cell-19-11" aria-label="11"></a>    <span class="at">y =</span> <span class="st">"USD per dozen"</span>,</span>
+<span id="annotated-cell-19-12"><a href="#annotated-cell-19-12" aria-label="12"></a>    <span class="at">x =</span> <span class="cn">NULL</span></span>
+<span id="annotated-cell-19-13"><a href="#annotated-cell-19-13" aria-label="13"></a>  )</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-19" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-19" data-code-lines="2" data-code-annotation="1"><code>autoplot()</code> draws the bias-adjusted <code>.mean</code> as the point forecast, with an 80% interval.</span>
+</dd>
+<dt data-target-cell="annotated-cell-19" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-19" data-code-lines="5" data-code-annotation="2">Overlay the <code>.median</code> column computed above as a dashed line so the gap is visible.</span>
+</dd>
+</dl>
+</div>
 </div>
 <div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
 <div class="cell-output-display">
 <div>
 <figure>
-<p><a href="model_diagnostics_files/figure-html/eggs-plot-render-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8"><img data-src="model_diagnostics_files/figure-html/eggs-plot-render-1.png" width="672"></a></p>
+<p><a href="model_diagnostics_files/figure-html/eggs-plot-render-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10"><img data-src="model_diagnostics_files/figure-html/eggs-plot-render-1.png" width="672"></a></p>
 </figure>
 </div>
 </div>
@@ -653,11 +1333,39 @@ eggs_fc <- eggs_fit |>
 <h2>When normality fails</h2>
 <p>All the prediction intervals above assume that forecast errors are <strong>normally distributed</strong>. When residuals are skewed or heavy-tailed, this assumption breaks down and the intervals are poorly calibrated.</p>
 <div class="fragment">
+<p><strong>Bootstrapping</strong> means resampling <strong>with replacement</strong> from the observed data and treating the empirical distribution as a stand-in for the unknown true distribution.</p>
+<aside class="notes">
+<p>Here the observed data we resample are the model’s historical residuals: if the model is correctly specified they are approximately independent draws from the error distribution, whatever shape it has.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+<div class="fragment">
 <p>The key observation is that we can always write:</p>
 <p><span class="math display">y_t = \hat{y}_{t|t-1} + e_t</span></p>
 <p>so a future observation can be simulated as:</p>
 <p><span class="math display">y_{T+1} = \hat{y}_{T+1|T} + e_{T+1}</span></p>
-<p>Since the errors are uncorrelated, we can substitute <span class="math inline">e_{T+1}</span> with a <strong>randomly resampled</strong> historical residual. Repeating this for <span class="math inline">y_{T+2}, y_{T+3}, \ldots</span> gives one possible future path. Do it thousands of times and you have a full distribution of futures — no normality required.</p>
+<p>Since the errors are uncorrelated, we can substitute <span class="math inline">e_{T+1}</span> with a <strong>randomly resampled (with replacement)</strong> historical residual. Repeating this for <span class="math inline">y_{T+2}, y_{T+3}, \ldots</span> gives one possible future path. Do it thousands of times and you have a full distribution of futures — no normality required.</p>
+</div>
+<div class="fragment">
+<div class="callout callout-tip callout-style-simple">
+<div class="callout-body">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-content">
+<p>The word <em>bootstrap</em> will return in Module 4 with a different object being resampled: there we bootstrap <strong>entire series</strong> (via STL and the remainder component) to build bagged forecasts. Here we bootstrap <strong>residuals</strong> to build prediction intervals. Same idea, different target.</p>
+</div>
+</div>
+</div>
 </div>
 </section>
 <section id="many-possible-futures" class="slide level2" data-auto-animate="true" data-background-color="black" data-background-image="../00_intro/dr_strange_math.jpg">
@@ -665,12 +1373,54 @@ eggs_fc <- eggs_fit |>
 </section>
 <section id="many-possible-futures-1" class="slide level2" data-auto-animate="true" data-background-color="black" data-background-image="../00_intro/dr_strange_math.jpg" data-background-opacity="0.3">
 <h2 data-id="quarto-animate-title">Many possible futures</h2>
-<p>Here are five possible futures for Google’s closing price, each built by resampling historical residuals step by step:</p>
+</section>
+<section id="many-possible-futures-2" class="slide level2" data-auto-animate="true" data-background-color="black" data-background-image="../00_intro/dr_strange_math.jpg" data-background-opacity="0.3">
+<h2 data-id="quarto-animate-title">Many possible futures</h2>
+<p>Five possible futures, each built by resampling a historical residual at every step:</p>
 <div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
 <div class="cell-output-display">
 <div>
 <figure>
-<p><a href="model_diagnostics_files/figure-html/google-sim-plot-render-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10"><img data-src="model_diagnostics_files/figure-html/google-sim-plot-render-1.png" width="672"></a></p>
+<p><a href="model_diagnostics_files/figure-html/google-sim-5-render-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-12"><img data-src="model_diagnostics_files/figure-html/google-sim-5-render-1.png" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="many-possible-futures-3" class="slide level2" data-auto-animate="true" data-background-color="black" data-background-image="../00_intro/dr_strange_math.jpg" data-background-opacity="0.3">
+<h2 data-id="quarto-animate-title">Many possible futures</h2>
+<p>Fifty.</p>
+<div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="model_diagnostics_files/figure-html/google-sim-50-render-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-14"><img data-src="model_diagnostics_files/figure-html/google-sim-50-render-1.png" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="many-possible-futures-4" class="slide level2" data-auto-animate="true" data-background-color="black" data-background-image="../00_intro/dr_strange_math.jpg" data-background-opacity="0.3">
+<h2 data-id="quarto-animate-title">Many possible futures</h2>
+<p>Five hundred. A distribution is taking shape.</p>
+<div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="model_diagnostics_files/figure-html/google-sim-500-render-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-16"><img data-src="model_diagnostics_files/figure-html/google-sim-500-render-1.png" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="many-possible-futures-5" class="slide level2" data-auto-animate="true" data-background-color="black" data-background-image="../00_intro/dr_strange_math.jpg" data-background-opacity="0.3">
+<h2 data-id="quarto-animate-title">Many possible futures</h2>
+<p>Take the 2.5th and 97.5th percentiles at each horizon and you have the bootstrap prediction interval.</p>
+<div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><a href="model_diagnostics_files/figure-html/google-sim-pi-render-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-18"><img data-src="model_diagnostics_files/figure-html/google-sim-pi-render-1.png" width="672"></a></p>
 </figure>
 </div>
 </div>
@@ -678,29 +1428,35 @@ eggs_fc <- eggs_fit |>
 </section>
 <section id="from-paths-to-intervals" class="slide level2">
 <h2>From paths to intervals</h2>
-<p>Running this thousands of times and taking percentiles of the simulated paths gives the <strong>bootstrap prediction interval</strong>. <code>forecast()</code> does this in one step:</p>
+<p>Running this hundreds or thousands of times and taking percentiles of the simulated paths gives the <strong>bootstrap prediction interval</strong>. <code>forecast()</code> does this in one step:</p>
 <div class="fragment">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-17" data-llms-code-original="google_fc_boot <- google_fit |>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-20" data-llms-code-original="google_fc_boot <- google_fit |>
   forecast(
     h         = 30,
     bootstrap = TRUE,   #<1>
-    times     = 1000    #<2>
-  )" data-code-line-numbers="|4,5"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-17-1"><a href="#annotated-cell-17-1" aria-label="1"></a>google_fc_boot <span class="ot">&lt;-</span> google_fit <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-17-2"><a href="#annotated-cell-17-2" aria-label="2"></a>  <span class="fu">forecast</span>(</span>
-<span id="annotated-cell-17-3"><a href="#annotated-cell-17-3" aria-label="3"></a>    <span class="at">h         =</span> <span class="dv">30</span>,</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-17" data-target-annotation="1">1</button><span id="annotated-cell-17-4" class="code-annotation-target"><a href="#annotated-cell-17-4" aria-label="4"></a>    <span class="at">bootstrap =</span> <span class="cn">TRUE</span>,</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-17" data-target-annotation="2">2</button><span id="annotated-cell-17-5" class="code-annotation-target"><a href="#annotated-cell-17-5" aria-label="5"></a>    <span class="at">times     =</span> <span class="dv">1000</span></span>
-<span id="annotated-cell-17-6"><a href="#annotated-cell-17-6" aria-label="6"></a>  )</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+    times     = 500,    #<2>
+    seed      = 123     #<3>
+  )" data-code-line-numbers="|4,5|6"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-20-1"><a href="#annotated-cell-20-1" aria-label="1"></a>google_fc_boot <span class="ot">&lt;-</span> google_fit <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-20-2"><a href="#annotated-cell-20-2" aria-label="2"></a>  <span class="fu">forecast</span>(</span>
+<span id="annotated-cell-20-3"><a href="#annotated-cell-20-3" aria-label="3"></a>    <span class="at">h         =</span> <span class="dv">30</span>,</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-20" data-target-annotation="1">1</button><span id="annotated-cell-20-4" class="code-annotation-target"><a href="#annotated-cell-20-4" aria-label="4"></a>    <span class="at">bootstrap =</span> <span class="cn">TRUE</span>,</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-20" data-target-annotation="2">2</button><span id="annotated-cell-20-5" class="code-annotation-target"><a href="#annotated-cell-20-5" aria-label="5"></a>    <span class="at">times     =</span> <span class="dv">500</span>,</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-20" data-target-annotation="3">3</button><span id="annotated-cell-20-6" class="code-annotation-target"><a href="#annotated-cell-20-6" aria-label="6"></a>    <span class="at">seed      =</span> <span class="dv">123</span></span>
+<span id="annotated-cell-20-7"><a href="#annotated-cell-20-7" aria-label="7"></a>  )</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-17" data-target-annotation="1">1</dt>
+<dt data-target-cell="annotated-cell-20" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-17" data-code-lines="4" data-code-annotation="1"><code>bootstrap = TRUE</code> switches from the analytical normal interval to the resampling-based one.</span>
+<span data-code-cell="annotated-cell-20" data-code-lines="4" data-code-annotation="1"><code>bootstrap = TRUE</code> switches from the analytical normal interval to the resampling-based one.</span>
 </dd>
-<dt data-target-cell="annotated-cell-17" data-target-annotation="2">2</dt>
+<dt data-target-cell="annotated-cell-20" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-cell="annotated-cell-17" data-code-lines="5" data-code-annotation="2">Number of simulated paths — more gives smoother intervals at higher computational cost.</span>
+<span data-code-cell="annotated-cell-20" data-code-lines="5" data-code-annotation="2">Number of simulated paths — 500 here, matching the paths drawn on the previous slides. More gives smoother intervals at higher computational cost.</span>
+</dd>
+<dt data-target-cell="annotated-cell-20" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-20" data-code-lines="6" data-code-annotation="3">Fixed seed so the interval is reproducible across renders.</span>
 </dd>
 </dl>
 </div>
@@ -710,19 +1466,32 @@ eggs_fc <- eggs_fit |>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a aria-label="1"></a>google_bootstrap_plot_p <span class="ot">&lt;-</span> google_fc_boot <span class="sc">|&gt;</span></span>
-<span id="cb9-2"><a aria-label="2"></a>  <span class="fu">autoplot</span>(google_2015, <span class="at">level =</span> <span class="dv">95</span>) <span class="sc">+</span></span>
-<span id="cb9-3"><a aria-label="3"></a>  <span class="fu">labs</span>(</span>
-<span id="cb9-4"><a aria-label="4"></a>    <span class="at">title =</span> <span class="st">"Google closing stock price — bootstrap 95% interval"</span>,</span>
-<span id="cb9-5"><a aria-label="5"></a>    <span class="at">y =</span> <span class="st">"USD"</span>, <span class="at">x =</span> <span class="cn">NULL</span></span>
-<span id="cb9-6"><a aria-label="6"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-21" data-llms-code-original="google_bootstrap_plot_p <- google_fc_boot |>
+  autoplot(google_2015, level = 95) +   #<1>
+  labs(
+    title = &quot;Google closing stock price — bootstrap 95% interval&quot;,
+    y = &quot;USD&quot;, x = NULL
+  )"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-21-1"><a href="#annotated-cell-21-1" aria-label="1"></a>google_bootstrap_plot_p <span class="ot">&lt;-</span> google_fc_boot <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-21" data-target-annotation="1">1</button><span id="annotated-cell-21-2" class="code-annotation-target"><a href="#annotated-cell-21-2" aria-label="2"></a>  <span class="fu">autoplot</span>(google_2015, <span class="at">level =</span> <span class="dv">95</span>) <span class="sc">+</span></span>
+<span id="annotated-cell-21-3"><a href="#annotated-cell-21-3" aria-label="3"></a>  <span class="fu">labs</span>(</span>
+<span id="annotated-cell-21-4"><a href="#annotated-cell-21-4" aria-label="4"></a>    <span class="at">title =</span> <span class="st">"Google closing stock price — bootstrap 95% interval"</span>,</span>
+<span id="annotated-cell-21-5"><a href="#annotated-cell-21-5" aria-label="5"></a>    <span class="at">y =</span> <span class="st">"USD"</span>, <span class="at">x =</span> <span class="cn">NULL</span></span>
+<span id="annotated-cell-21-6"><a href="#annotated-cell-21-6" aria-label="6"></a>  )</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-21" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-21" data-code-lines="2" data-code-annotation="1">A bootstrap fable plots exactly like a normal one — <code>autoplot()</code> reads the interval from the sample distribution instead of a normal formula.</span>
+</dd>
+</dl>
+</div>
 </div>
 <div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
 <div class="cell-output-display">
 <div>
 <figure>
-<p><a href="model_diagnostics_files/figure-html/google-bootstrap-plot-render-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-12"><img data-src="model_diagnostics_files/figure-html/google-bootstrap-plot-render-1.png" width="672"></a></p>
+<p><a href="model_diagnostics_files/figure-html/google-bootstrap-plot-render-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-20"><img data-src="model_diagnostics_files/figure-html/google-bootstrap-plot-render-1.png" width="672"></a></p>
 </figure>
 </div>
 </div>
@@ -753,12 +1522,57 @@ eggs_fc <- eggs_fit |>
 <h2>The idea</h2>
 <p>STL (covered in <a href="../../../../docs/modules/module_1/02_ts_dcmp/ts_dcmp.html">1.2</a>) decomposes a series into trend-cycle, seasonal, and remainder components. The benchmarks (covered in <a href="../../../../docs/modules/module_1/03_fcst/forecasting.html">1.3</a>) each handle one aspect of the series well.</p>
 <div class="fragment">
-<p><code>decomposition_model()</code> combines them into a pipeline:</p>
+<p>The additive STL decomposition is</p>
+<p><span class="math display">y_t = T_t + S_t + R_t</span></p>
+</div>
+<div class="fragment">
+<p>For forecasting we regroup it. Everything that is not seasonal goes into one term:</p>
+<p><span class="math display">y_t = S_t + A_t, \qquad A_t = T_t + R_t</span></p>
+<p><span class="math inline">A_t</span> is the <strong>seasonally adjusted</strong> series. We now have two components, and we forecast each one with its own model:</p>
+<p><span class="math display">\hat{y}_{T+h|T} = \hat{S}_{T+h|T} + \hat{A}_{T+h|T}</span></p>
+</div>
+<div class="fragment">
+<p><code>decomposition_model()</code> turns this into a pipeline:</p>
 <ol type="1">
-<li class="fragment">Apply STL to separate the components</li>
-<li class="fragment">Forecast the <strong>seasonally adjusted series</strong> with one model</li>
-<li class="fragment">Re-seasonalize: add the seasonal component forecast back</li>
+<li class="fragment">Apply STL to split <span class="math inline">y_t</span> into <span class="math inline">S_t</span> and <span class="math inline">A_t</span></li>
+<li class="fragment">Forecast the <strong>seasonal component</strong> <span class="math inline">S_t</span> — by default with SNAIVE, which just repeats the last seasonal cycle</li>
+<li class="fragment">Forecast the <strong>seasonally adjusted series</strong> <span class="math inline">A_t</span> with a model of your choice (here: Drift)</li>
+<li class="fragment">Add the two forecasts back together</li>
 </ol>
+</div>
+<div class="fragment">
+<table class="caption-top">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Component</th>
+<th>Notation</th>
+<th><code>fable</code> column</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Series</td>
+<td><span class="math inline">y_t</span></td>
+<td>the response variable (<code>Gas</code>)</td>
+</tr>
+<tr class="even">
+<td>Seasonal</td>
+<td><span class="math inline">S_t</span></td>
+<td><code>season_year</code>, <code>season_week</code>, <code>season_day</code>, … — one per seasonal period detected by STL</td>
+</tr>
+<tr class="odd">
+<td>Seasonally adjusted</td>
+<td><span class="math inline">A_t</span></td>
+<td><code>season_adjust</code></td>
+</tr>
+</tbody>
+</table>
+<p>The seasonal column is named after its period. Quarterly and monthly data give <code>season_year</code>; daily data can give <code>season_week</code> and <code>season_year</code> at the same time — we return to that in Module 4.</p>
 </div>
 <div class="fragment">
 <div class="callout callout-note callout-style-simple">
@@ -776,125 +1590,144 @@ eggs_fc <- eggs_fit |>
 <section id="syntax" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Syntax</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb10-1" class="hljs-ln-code"><a aria-label="1"></a>stl_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb4-1" class="hljs-ln-code"><a aria-label="1"></a>stl_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="syntax-1" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Syntax</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb11-1" class="hljs-ln-code"><a aria-label="1"></a>stl_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
-<span id="cb11-2" class="hljs-ln-code"><a aria-label="2"></a>  <span class="fu">STL</span>(Gas <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>(), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb11-3" class="hljs-ln-code"><a aria-label="3"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb5-1" class="hljs-ln-code"><a aria-label="1"></a>stl_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
+<span id="cb5-2" class="hljs-ln-code"><a aria-label="2"></a>  <span class="fu">STL</span>(Gas <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>(), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb5-3" class="hljs-ln-code"><a aria-label="3"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="syntax-2" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Syntax</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb12-1" class="hljs-ln-code"><a aria-label="1"></a>stl_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
-<span id="cb12-2" class="hljs-ln-code"><a aria-label="2"></a>  <span class="fu">STL</span>(Gas <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>(), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb12-3" class="hljs-ln-code"><a aria-label="3"></a>  <span class="fu">SNAIVE</span>(season_year),</span>
-<span id="cb12-4" class="hljs-ln-code"><a aria-label="4"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb6-1" class="hljs-ln-code"><a aria-label="1"></a>stl_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
+<span id="cb6-2" class="hljs-ln-code"><a aria-label="2"></a>  <span class="fu">STL</span>(Gas <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>(), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb6-3" class="hljs-ln-code"><a aria-label="3"></a>  <span class="fu">SNAIVE</span>(season_year),</span>
+<span id="cb6-4" class="hljs-ln-code"><a aria-label="4"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="syntax-3" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Syntax</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb13-1" class="hljs-ln-code"><a aria-label="1"></a>stl_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
-<span id="cb13-2" class="hljs-ln-code"><a aria-label="2"></a>  <span class="fu">STL</span>(Gas <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>(), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb13-3" class="hljs-ln-code"><a aria-label="3"></a>  <span class="fu">SNAIVE</span>(season_year),</span>
-<span id="cb13-4" class="hljs-ln-code"><a aria-label="4"></a>  <span class="fu">RW</span>(season_adjust <span class="sc">~</span> <span class="fu">drift</span>())</span>
-<span id="cb13-5" class="hljs-ln-code"><a aria-label="5"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb7-1" class="hljs-ln-code"><a aria-label="1"></a>stl_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
+<span id="cb7-2" class="hljs-ln-code"><a aria-label="2"></a>  <span class="fu">STL</span>(Gas <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>(), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb7-3" class="hljs-ln-code"><a aria-label="3"></a>  <span class="fu">SNAIVE</span>(season_year),</span>
+<span id="cb7-4" class="hljs-ln-code"><a aria-label="4"></a>  <span class="fu">RW</span>(season_adjust <span class="sc">~</span> <span class="fu">drift</span>())</span>
+<span id="cb7-5" class="hljs-ln-code"><a aria-label="5"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="syntax-4" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Syntax</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb14-1" class="hljs-ln-code"><a aria-label="1"></a>stl_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
-<span id="cb14-2" class="hljs-ln-code"><a aria-label="2"></a>  <span class="fu">STL</span>(Gas <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>(), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb14-3" class="hljs-ln-code"><a aria-label="3"></a>  <span class="fu">SNAIVE</span>(season_year),</span>
-<span id="cb14-4" class="hljs-ln-code"><a aria-label="4"></a>  <span class="fu">RW</span>(season_adjust <span class="sc">~</span> <span class="fu">drift</span>())</span>
-<span id="cb14-5" class="hljs-ln-code"><a aria-label="5"></a>)</span>
-<span id="cb14-6" class="hljs-ln-code"><a aria-label="6"></a></span>
-<span id="cb14-7" class="hljs-ln-code"><a aria-label="7"></a>gas_train <span class="sc">|&gt;</span> <span class="fu">model</span>(<span class="at">stl_snaive_drift =</span> stl_spec)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode r hljs"><span id="cb8-1" class="hljs-ln-code"><a aria-label="1"></a>stl_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
+<span id="cb8-2" class="hljs-ln-code"><a aria-label="2"></a>  <span class="fu">STL</span>(Gas <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>(), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb8-3" class="hljs-ln-code"><a aria-label="3"></a>  <span class="fu">SNAIVE</span>(season_year),</span>
+<span id="cb8-4" class="hljs-ln-code"><a aria-label="4"></a>  <span class="fu">RW</span>(season_adjust <span class="sc">~</span> <span class="fu">drift</span>())</span>
+<span id="cb8-5" class="hljs-ln-code"><a aria-label="5"></a>)</span>
+<span id="cb8-6" class="hljs-ln-code"><a aria-label="6"></a></span>
+<span id="cb8-7" class="hljs-ln-code"><a aria-label="7"></a>gas_train <span class="sc">|&gt;</span> <span class="fu">model</span>(<span class="at">stl_snaive_drift =</span> stl_spec)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="syntax-6" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">Syntax</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3" data-llms-code-original="stl_spec <- decomposition_model(                  #<1>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-4" data-llms-code-original="stl_spec <- decomposition_model(                  #<1>
   STL(Gas ~ trend() + season(), robust = TRUE),   #<2>
   SNAIVE(season_year),                            #<3>
   RW(season_adjust ~ drift())                     #<4>
 )
 
 gas_fit_dcmp <- gas_train |>
-  model(stl_snaive_drift = stl_spec)              #<5>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-3" data-target-annotation="1">1</button><span id="annotated-cell-3-1" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-3-1" aria-label="1"></a>stl_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
-<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-3" data-target-annotation="2">2</button><span id="annotated-cell-3-2" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-3-2" aria-label="2"></a>  <span class="fu">STL</span>(Gas <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>(), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
-<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-3" data-target-annotation="3">3</button><span id="annotated-cell-3-3" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-3-3" aria-label="3"></a>  <span class="fu">SNAIVE</span>(season_year),</span>
-<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-3" data-target-annotation="4">4</button><span id="annotated-cell-3-4" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-3-4" aria-label="4"></a>  <span class="fu">RW</span>(season_adjust <span class="sc">~</span> <span class="fu">drift</span>())</span>
-<span id="annotated-cell-3-5" class="hljs-ln-code"><a href="#annotated-cell-3-5" aria-label="5"></a>)</span>
-<span id="annotated-cell-3-6" class="hljs-ln-code"><a href="#annotated-cell-3-6" aria-label="6"></a></span>
-<span id="annotated-cell-3-7" class="hljs-ln-code"><a href="#annotated-cell-3-7" aria-label="7"></a>gas_fit_dcmp <span class="ot">&lt;-</span> gas_train <span class="sc">|&gt;</span></span>
-<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-3" data-target-annotation="5">5</button><span id="annotated-cell-3-8" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-3-8" aria-label="8"></a>  <span class="fu">model</span>(<span class="at">stl_snaive_drift =</span> stl_spec)</span><div class="code-annotation-gutter-bg hljs-ln-code"></div><div class="code-annotation-gutter hljs-ln-code"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+  model(stl_snaive_drift = stl_spec)              #<5>"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated" data-id="quarto-animate-code"><code class="sourceCode r hljs"><button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-4" data-target-annotation="1">1</button><span id="annotated-cell-4-1" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-4-1" aria-label="1"></a>stl_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-4" data-target-annotation="2">2</button><span id="annotated-cell-4-2" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-4-2" aria-label="2"></a>  <span class="fu">STL</span>(Gas <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>(), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-4" data-target-annotation="3">3</button><span id="annotated-cell-4-3" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-4-3" aria-label="3"></a>  <span class="fu">SNAIVE</span>(season_year),</span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-4" data-target-annotation="4">4</button><span id="annotated-cell-4-4" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-4-4" aria-label="4"></a>  <span class="fu">RW</span>(season_adjust <span class="sc">~</span> <span class="fu">drift</span>())</span>
+<span id="annotated-cell-4-5" class="hljs-ln-code"><a href="#annotated-cell-4-5" aria-label="5"></a>)</span>
+<span id="annotated-cell-4-6" class="hljs-ln-code"><a href="#annotated-cell-4-6" aria-label="6"></a></span>
+<span id="annotated-cell-4-7" class="hljs-ln-code"><a href="#annotated-cell-4-7" aria-label="7"></a>gas_fit_dcmp <span class="ot">&lt;-</span> gas_train <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor hljs-ln-code" data-target-cell="annotated-cell-4" data-target-annotation="5">5</button><span id="annotated-cell-4-8" class="code-annotation-target hljs-ln-code"><a href="#annotated-cell-4-8" aria-label="8"></a>  <span class="fu">model</span>(<span class="at">stl_snaive_drift =</span> stl_spec)</span><div class="code-annotation-gutter-bg hljs-ln-code"></div><div class="code-annotation-gutter hljs-ln-code"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-3" data-target-annotation="1">1</dt>
+<dt data-target-cell="annotated-cell-4" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-3" data-code-lines="1" data-code-annotation="1"><code>decomposition_model()</code> wraps a decomposition method and one or more component models into a single reusable spec.</span>
+<span data-code-cell="annotated-cell-4" data-code-lines="1" data-code-annotation="1"><code>decomposition_model()</code> wraps a decomposition method and one or more component models into a single reusable spec.</span>
 </dd>
-<dt data-target-cell="annotated-cell-3" data-target-annotation="2">2</dt>
+<dt data-target-cell="annotated-cell-4" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-cell="annotated-cell-3" data-code-lines="2" data-code-annotation="2">STL decomposition — same syntax as in 1.2.</span>
+<span data-code-cell="annotated-cell-4" data-code-lines="2" data-code-annotation="2">STL decomposition — same syntax as in 1.2.</span>
 </dd>
-<dt data-target-cell="annotated-cell-3" data-target-annotation="3">3</dt>
+<dt data-target-cell="annotated-cell-4" data-target-annotation="3">3</dt>
 <dd>
-<span data-code-cell="annotated-cell-3" data-code-lines="3" data-code-annotation="3">SNAIVE on <code>season_year</code> handles the seasonal component extracted by STL.</span>
+<span data-code-cell="annotated-cell-4" data-code-lines="3" data-code-annotation="3">SNAIVE on <code>season_year</code> forecasts <span class="math inline">S_t</span>. This line is optional — see the callout below.</span>
 </dd>
-<dt data-target-cell="annotated-cell-3" data-target-annotation="4">4</dt>
+<dt data-target-cell="annotated-cell-4" data-target-annotation="4">4</dt>
 <dd>
-<span data-code-cell="annotated-cell-3" data-code-lines="4" data-code-annotation="4">Drift on <code>season_adjust</code> handles the seasonally adjusted series. <code>fable</code> reconstructs the final forecast by adding the two component forecasts.</span>
+<span data-code-cell="annotated-cell-4" data-code-lines="4" data-code-annotation="4">Drift on <code>season_adjust</code> handles the seasonally adjusted series. <code>fable</code> reconstructs the final forecast by adding the two component forecasts.</span>
 </dd>
-<dt data-target-cell="annotated-cell-3" data-target-annotation="5">5</dt>
+<dt data-target-cell="annotated-cell-4" data-target-annotation="5">5</dt>
 <dd>
-<span data-code-cell="annotated-cell-3" data-code-lines="8" data-code-annotation="5">We still need to put the decomposition model inside a <code>mable</code> with the <code>model()</code> function.</span>
+<span data-code-cell="annotated-cell-4" data-code-lines="8" data-code-annotation="5">We still need to put the decomposition model inside a <code>mable</code> with the <code>model()</code> function.</span>
 </dd>
 </dl>
+</div>
+</div>
+</section>
+<section id="what-if-i-omit-the-seasonal-model" class="slide level2">
+<h2>What if I omit the seasonal model?</h2>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Do I have to specify the seasonal model?</strong></p>
+</div>
+<div class="callout-content">
+<p>No.&nbsp;If you leave out the model for a seasonal component, <code>decomposition_model()</code> forecasts it with <code>SNAIVE()</code> automatically. The documentation puts it this way: all non-seasonal components must be specified, and any unspecified seasonal components are forecast using seasonal naive. Writing <code>SNAIVE(season_year)</code> explicitly, as we do here, changes nothing in the result — it just makes visible that the seasonal part is being modelled too, and shows where you would plug in a different model for it.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a aria-label="1"></a><span class="fu">decomposition_model</span>(<span class="fu">STL</span>(Gas <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>(), <span class="at">robust =</span> <span class="cn">TRUE</span>), <span class="fu">RW</span>(season_adjust <span class="sc">~</span> <span class="fu">drift</span>()))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
 </div>
 </div>
 </section>
 <section id="with-a-transformation" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">With a transformation</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a aria-label="1"></a>stl_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
-<span id="cb15-2"><a aria-label="2"></a>  <span class="fu">STL</span>(Gas <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>(), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb15-3"><a aria-label="3"></a>  <span class="fu">SNAIVE</span>(season_year),</span>
-<span id="cb15-4"><a aria-label="4"></a>  <span class="fu">RW</span>(season_adjust <span class="sc">~</span> <span class="fu">drift</span>())</span>
-<span id="cb15-5"><a aria-label="5"></a>)</span>
-<span id="cb15-6"><a aria-label="6"></a></span>
-<span id="cb15-7"><a aria-label="7"></a>gas_train <span class="sc">|&gt;</span> <span class="fu">model</span>(<span class="at">stl_snaive_drift =</span> stl_spec)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a aria-label="1"></a>stl_spec <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
+<span id="cb10-2"><a aria-label="2"></a>  <span class="fu">STL</span>(Gas <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>(), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb10-3"><a aria-label="3"></a>  <span class="fu">SNAIVE</span>(season_year),</span>
+<span id="cb10-4"><a aria-label="4"></a>  <span class="fu">RW</span>(season_adjust <span class="sc">~</span> <span class="fu">drift</span>())</span>
+<span id="cb10-5"><a aria-label="5"></a>)</span>
+<span id="cb10-6"><a aria-label="6"></a></span>
+<span id="cb10-7"><a aria-label="7"></a>gas_train <span class="sc">|&gt;</span> <span class="fu">model</span>(<span class="at">stl_snaive_drift =</span> stl_spec)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Box-Cox goes inside the STL spec — declared once, inherited everywhere:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-4" data-llms-code-original="stl_spec_bc <- decomposition_model(
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-5" data-llms-code-original="stl_spec_bc <- decomposition_model(
   STL(box_cox(Gas, lambda) ~ trend() + season(), robust = TRUE), #<1>
   SNAIVE(season_year),
   RW(season_adjust ~ drift())
 )
 
 gas_fit_dcmp_bc <- gas_train |>
-  model(stl_bc = stl_spec_bc)" data-code-line-numbers="2"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-4-1"><a href="#annotated-cell-4-1" aria-label="1"></a>stl_spec_bc <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="1">1</button><span id="annotated-cell-4-2" class="code-annotation-target"><a href="#annotated-cell-4-2" aria-label="2"></a>  <span class="fu">STL</span>(<span class="fu">box_cox</span>(Gas, lambda) <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>(), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
-<span id="annotated-cell-4-3"><a href="#annotated-cell-4-3" aria-label="3"></a>  <span class="fu">SNAIVE</span>(season_year),</span>
-<span id="annotated-cell-4-4"><a href="#annotated-cell-4-4" aria-label="4"></a>  <span class="fu">RW</span>(season_adjust <span class="sc">~</span> <span class="fu">drift</span>())</span>
-<span id="annotated-cell-4-5"><a href="#annotated-cell-4-5" aria-label="5"></a>)</span>
-<span id="annotated-cell-4-6"><a href="#annotated-cell-4-6" aria-label="6"></a></span>
-<span id="annotated-cell-4-7"><a href="#annotated-cell-4-7" aria-label="7"></a>gas_fit_dcmp_bc <span class="ot">&lt;-</span> gas_train <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-4-8"><a href="#annotated-cell-4-8" aria-label="8"></a>  <span class="fu">model</span>(<span class="at">stl_bc =</span> stl_spec_bc)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+  model(stl_bc = stl_spec_bc)" data-code-line-numbers="2"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-5-1"><a href="#annotated-cell-5-1" aria-label="1"></a>stl_spec_bc <span class="ot">&lt;-</span> <span class="fu">decomposition_model</span>(</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-5" data-target-annotation="1">1</button><span id="annotated-cell-5-2" class="code-annotation-target"><a href="#annotated-cell-5-2" aria-label="2"></a>  <span class="fu">STL</span>(<span class="fu">box_cox</span>(Gas, lambda) <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>(), <span class="at">robust =</span> <span class="cn">TRUE</span>),</span>
+<span id="annotated-cell-5-3"><a href="#annotated-cell-5-3" aria-label="3"></a>  <span class="fu">SNAIVE</span>(season_year),</span>
+<span id="annotated-cell-5-4"><a href="#annotated-cell-5-4" aria-label="4"></a>  <span class="fu">RW</span>(season_adjust <span class="sc">~</span> <span class="fu">drift</span>())</span>
+<span id="annotated-cell-5-5"><a href="#annotated-cell-5-5" aria-label="5"></a>)</span>
+<span id="annotated-cell-5-6"><a href="#annotated-cell-5-6" aria-label="6"></a></span>
+<span id="annotated-cell-5-7"><a href="#annotated-cell-5-7" aria-label="7"></a>gas_fit_dcmp_bc <span class="ot">&lt;-</span> gas_train <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-5-8"><a href="#annotated-cell-5-8" aria-label="8"></a>  <span class="fu">model</span>(<span class="at">stl_bc =</span> stl_spec_bc)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-4" data-target-annotation="1">1</dt>
+<dt data-target-cell="annotated-cell-5" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-4" data-code-lines="2" data-code-annotation="1">The only difference from <code>stl_spec</code> is <code>box_cox()</code> in the STL call. All component models and the final back-transformation inherit it automatically.</span>
+<span data-code-cell="annotated-cell-5" data-code-lines="2" data-code-annotation="1">The only difference from <code>stl_spec</code> is <code>box_cox()</code> in the STL call. All component models and the final back-transformation inherit it automatically.</span>
 </dd>
 </dl>
 </div>
@@ -902,11 +1735,26 @@ gas_fit_dcmp_bc <- gas_train |>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a aria-label="1"></a>gas_fc_dcmp <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
-<span id="cb16-2"><a aria-label="2"></a>  gas_fit_dcmp    <span class="sc">|&gt;</span> <span class="fu">forecast</span>(<span class="at">h =</span> <span class="fu">nrow</span>(gas_test)),</span>
-<span id="cb16-3"><a aria-label="3"></a>  gas_fit_dcmp_bc <span class="sc">|&gt;</span> <span class="fu">forecast</span>(<span class="at">h =</span> <span class="fu">nrow</span>(gas_test))</span>
-<span id="cb16-4"><a aria-label="4"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-6" data-llms-code-original="gas_fc_dcmp <- bind_rows(                          #<1>
+  gas_fit_dcmp    |> forecast(h = nrow(gas_test)),
+  gas_fit_dcmp_bc |> forecast(h = nrow(gas_test))  #<2>
+)"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="1">1</button><span id="annotated-cell-6-1" class="code-annotation-target"><a href="#annotated-cell-6-1" aria-label="1"></a>gas_fc_dcmp <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="annotated-cell-6-2"><a href="#annotated-cell-6-2" aria-label="2"></a>  gas_fit_dcmp    <span class="sc">|&gt;</span> <span class="fu">forecast</span>(<span class="at">h =</span> <span class="fu">nrow</span>(gas_test)),</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="2">2</button><span id="annotated-cell-6-3" class="code-annotation-target"><a href="#annotated-cell-6-3" aria-label="3"></a>  gas_fit_dcmp_bc <span class="sc">|&gt;</span> <span class="fu">forecast</span>(<span class="at">h =</span> <span class="fu">nrow</span>(gas_test))</span>
+<span id="annotated-cell-6-4"><a href="#annotated-cell-6-4" aria-label="4"></a>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-6" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-6" data-code-lines="1" data-code-annotation="1">The two decomposition models live in separate mables, so forecast each and stack the fables.</span>
+</dd>
+<dt data-target-cell="annotated-cell-6" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-6" data-code-lines="3" data-code-annotation="2">Same horizon as every other model in this document, so the accuracy tables are comparable.</span>
+</dd>
+</dl>
+</div>
 </div>
 </section>
 <section id="final-comparison" class="slide level2">
@@ -914,8 +1762,8 @@ gas_fit_dcmp_bc <- gas_train |>
 <p>All models side by side:</p>
 <div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
 <div class="cell-output-display">
-<div id="htmlwidget-142554f3dc3f498db3ac" style="width:100%;height:325px;" class="plotly html-widget"></div>
-<script type="application/json" data-for="htmlwidget-142554f3dc3f498db3ac">{"x":{"data":[{"x":["2006-01-01","2006-04-01","2006-07-01","2006-10-01","2007-01-01","2007-04-01","2007-07-01","2007-10-01","2008-01-01","2008-04-01","2008-07-01","2008-10-01","2009-01-01","2009-04-01","2009-07-01","2009-10-01","2010-01-01","2010-04-01"],"y":[180.87939698492463,181.75879396984925,182.63819095477388,183.5175879396985,184.39698492462313,185.27638190954775,186.15577889447235,187.03517587939697,187.9145728643216,188.79396984924622,189.67336683417085,190.55276381909547,191.4321608040201,192.31155778894473,193.19095477386935,194.07035175879398,194.9497487437186,195.82914572864323],"text":["Quarter: 2006 Q1<br />interaction(format(.model), sep = \"/\"): drift           <br />Gas: 180.8794<br />.model: drift","Quarter: 2006 Q2<br />interaction(format(.model), sep = \"/\"): drift           <br />Gas: 181.7588<br />.model: drift","Quarter: 2006 Q3<br />interaction(format(.model), sep = \"/\"): drift           <br />Gas: 182.6382<br />.model: drift","Quarter: 2006 Q4<br />interaction(format(.model), sep = \"/\"): drift           <br />Gas: 183.5176<br />.model: drift","Quarter: 2007 Q1<br />interaction(format(.model), sep = \"/\"): drift           <br />Gas: 184.3970<br />.model: drift","Quarter: 2007 Q2<br />interaction(format(.model), sep = \"/\"): drift           <br />Gas: 185.2764<br />.model: drift","Quarter: 2007 Q3<br />interaction(format(.model), sep = \"/\"): drift           <br />Gas: 186.1558<br />.model: drift","Quarter: 2007 Q4<br />interaction(format(.model), sep = \"/\"): drift           <br />Gas: 187.0352<br />.model: drift","Quarter: 2008 Q1<br />interaction(format(.model), sep = \"/\"): drift           <br />Gas: 187.9146<br />.model: drift","Quarter: 2008 Q2<br />interaction(format(.model), sep = \"/\"): drift           <br />Gas: 188.7940<br />.model: drift","Quarter: 2008 Q3<br />interaction(format(.model), sep = \"/\"): drift           <br />Gas: 189.6734<br />.model: drift","Quarter: 2008 Q4<br />interaction(format(.model), sep = \"/\"): drift           <br />Gas: 190.5528<br />.model: drift","Quarter: 2009 Q1<br />interaction(format(.model), sep = \"/\"): drift           <br />Gas: 191.4322<br />.model: drift","Quarter: 2009 Q2<br />interaction(format(.model), sep = \"/\"): drift           <br />Gas: 192.3116<br />.model: drift","Quarter: 2009 Q3<br />interaction(format(.model), sep = \"/\"): drift           <br />Gas: 193.1910<br />.model: drift","Quarter: 2009 Q4<br />interaction(format(.model), sep = \"/\"): drift           <br />Gas: 194.0704<br />.model: drift","Quarter: 2010 Q1<br />interaction(format(.model), sep = \"/\"): drift           <br />Gas: 194.9497<br />.model: drift","Quarter: 2010 Q2<br />interaction(format(.model), sep = \"/\"): drift           <br />Gas: 195.8291<br />.model: drift"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(248,118,109,1)","dash":"solid"},"hoveron":"points","name":"drift","legendgroup":"drift","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":["2006-01-01","2006-04-01","2006-07-01","2006-10-01","2007-01-01","2007-04-01","2007-07-01","2007-10-01","2008-01-01","2008-04-01","2008-07-01","2008-10-01","2009-01-01","2009-04-01","2009-07-01","2009-10-01","2010-01-01","2010-04-01"],"y":[184.7881091970437,189.68209785172255,194.68385753043839,199.79530696460213,205.01839235820563,210.35508770712929,215.80739510261003,221.37734506734475,227.06699685541793,232.87843878592176,238.81378858296179,244.87519367468832,251.06483155898727,257.38491010126984,263.83766791443554,270.4253746691877,277.15033144046811,284.01487107846646],"text":["Quarter: 2006 Q1<br />interaction(format(.model), sep = \"/\"): drift_bc        <br />Gas: 184.7881<br />.model: drift_bc","Quarter: 2006 Q2<br />interaction(format(.model), sep = \"/\"): drift_bc        <br />Gas: 189.6821<br />.model: drift_bc","Quarter: 2006 Q3<br />interaction(format(.model), sep = \"/\"): drift_bc        <br />Gas: 194.6839<br />.model: drift_bc","Quarter: 2006 Q4<br />interaction(format(.model), sep = \"/\"): drift_bc        <br />Gas: 199.7953<br />.model: drift_bc","Quarter: 2007 Q1<br />interaction(format(.model), sep = \"/\"): drift_bc        <br />Gas: 205.0184<br />.model: drift_bc","Quarter: 2007 Q2<br />interaction(format(.model), sep = \"/\"): drift_bc        <br />Gas: 210.3551<br />.model: drift_bc","Quarter: 2007 Q3<br />interaction(format(.model), sep = \"/\"): drift_bc        <br />Gas: 215.8074<br />.model: drift_bc","Quarter: 2007 Q4<br />interaction(format(.model), sep = \"/\"): drift_bc        <br />Gas: 221.3773<br />.model: drift_bc","Quarter: 2008 Q1<br />interaction(format(.model), sep = \"/\"): drift_bc        <br />Gas: 227.0670<br />.model: drift_bc","Quarter: 2008 Q2<br />interaction(format(.model), sep = \"/\"): drift_bc        <br />Gas: 232.8784<br />.model: drift_bc","Quarter: 2008 Q3<br />interaction(format(.model), sep = \"/\"): drift_bc        <br />Gas: 238.8138<br />.model: drift_bc","Quarter: 2008 Q4<br />interaction(format(.model), sep = \"/\"): drift_bc        <br />Gas: 244.8752<br />.model: drift_bc","Quarter: 2009 Q1<br />interaction(format(.model), sep = \"/\"): drift_bc        <br />Gas: 251.0648<br />.model: drift_bc","Quarter: 2009 Q2<br />interaction(format(.model), sep = \"/\"): drift_bc        <br />Gas: 257.3849<br />.model: drift_bc","Quarter: 2009 Q3<br />interaction(format(.model), sep = \"/\"): drift_bc        <br />Gas: 263.8377<br />.model: drift_bc","Quarter: 2009 Q4<br />interaction(format(.model), sep = \"/\"): drift_bc        <br />Gas: 270.4254<br />.model: drift_bc","Quarter: 2010 Q1<br />interaction(format(.model), sep = \"/\"): drift_bc        <br />Gas: 277.1503<br />.model: drift_bc","Quarter: 2010 Q2<br />interaction(format(.model), sep = \"/\"): drift_bc        <br />Gas: 284.0149<br />.model: drift_bc"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(183,159,0,1)","dash":"solid"},"hoveron":"points","name":"drift_bc","legendgroup":"drift_bc","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":["2006-01-01","2006-04-01","2006-07-01","2006-10-01","2007-01-01","2007-04-01","2007-07-01","2007-10-01","2008-01-01","2008-04-01","2008-07-01","2008-10-01","2009-01-01","2009-04-01","2009-07-01","2009-10-01","2010-01-01","2010-04-01"],"y":[170,206,221,180,170,206,221,180,170,206,221,180,170,206,221,180,170,206],"text":["Quarter: 2006 Q1<br />interaction(format(.model), sep = \"/\"): snaive          <br />Gas: 170.0000<br />.model: snaive","Quarter: 2006 Q2<br />interaction(format(.model), sep = \"/\"): snaive          <br />Gas: 206.0000<br />.model: snaive","Quarter: 2006 Q3<br />interaction(format(.model), sep = \"/\"): snaive          <br />Gas: 221.0000<br />.model: snaive","Quarter: 2006 Q4<br />interaction(format(.model), sep = \"/\"): snaive          <br />Gas: 180.0000<br />.model: snaive","Quarter: 2007 Q1<br />interaction(format(.model), sep = \"/\"): snaive          <br />Gas: 170.0000<br />.model: snaive","Quarter: 2007 Q2<br />interaction(format(.model), sep = \"/\"): snaive          <br />Gas: 206.0000<br />.model: snaive","Quarter: 2007 Q3<br />interaction(format(.model), sep = \"/\"): snaive          <br />Gas: 221.0000<br />.model: snaive","Quarter: 2007 Q4<br />interaction(format(.model), sep = \"/\"): snaive          <br />Gas: 180.0000<br />.model: snaive","Quarter: 2008 Q1<br />interaction(format(.model), sep = \"/\"): snaive          <br />Gas: 170.0000<br />.model: snaive","Quarter: 2008 Q2<br />interaction(format(.model), sep = \"/\"): snaive          <br />Gas: 206.0000<br />.model: snaive","Quarter: 2008 Q3<br />interaction(format(.model), sep = \"/\"): snaive          <br />Gas: 221.0000<br />.model: snaive","Quarter: 2008 Q4<br />interaction(format(.model), sep = \"/\"): snaive          <br />Gas: 180.0000<br />.model: snaive","Quarter: 2009 Q1<br />interaction(format(.model), sep = \"/\"): snaive          <br />Gas: 170.0000<br />.model: snaive","Quarter: 2009 Q2<br />interaction(format(.model), sep = \"/\"): snaive          <br />Gas: 206.0000<br />.model: snaive","Quarter: 2009 Q3<br />interaction(format(.model), sep = \"/\"): snaive          <br />Gas: 221.0000<br />.model: snaive","Quarter: 2009 Q4<br />interaction(format(.model), sep = \"/\"): snaive          <br />Gas: 180.0000<br />.model: snaive","Quarter: 2010 Q1<br />interaction(format(.model), sep = \"/\"): snaive          <br />Gas: 170.0000<br />.model: snaive","Quarter: 2010 Q2<br />interaction(format(.model), sep = \"/\"): snaive          <br />Gas: 206.0000<br />.model: snaive"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(0,186,56,1)","dash":"solid"},"hoveron":"points","name":"snaive","legendgroup":"snaive","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":["2006-01-01","2006-04-01","2006-07-01","2006-10-01","2007-01-01","2007-04-01","2007-07-01","2007-10-01","2008-01-01","2008-04-01","2008-07-01","2008-10-01","2009-01-01","2009-04-01","2009-07-01","2009-10-01","2010-01-01","2010-04-01"],"y":[170.92258804684056,207.07190096022731,222.13238388922906,180.96470425224732,171.84517609368115,208.14380192045451,223.26476777845807,181.92940850449457,172.76776414052171,209.21570288068173,224.39715166768704,182.89411275674186,173.69035218736227,210.28760384090896,225.52953555691604,183.85881700898915,174.61294023420285,211.35950480113615],"text":["Quarter: 2006 Q1<br />interaction(format(.model), sep = \"/\"): snaive_bc       <br />Gas: 170.9226<br />.model: snaive_bc","Quarter: 2006 Q2<br />interaction(format(.model), sep = \"/\"): snaive_bc       <br />Gas: 207.0719<br />.model: snaive_bc","Quarter: 2006 Q3<br />interaction(format(.model), sep = \"/\"): snaive_bc       <br />Gas: 222.1324<br />.model: snaive_bc","Quarter: 2006 Q4<br />interaction(format(.model), sep = \"/\"): snaive_bc       <br />Gas: 180.9647<br />.model: snaive_bc","Quarter: 2007 Q1<br />interaction(format(.model), sep = \"/\"): snaive_bc       <br />Gas: 171.8452<br />.model: snaive_bc","Quarter: 2007 Q2<br />interaction(format(.model), sep = \"/\"): snaive_bc       <br />Gas: 208.1438<br />.model: snaive_bc","Quarter: 2007 Q3<br />interaction(format(.model), sep = \"/\"): snaive_bc       <br />Gas: 223.2648<br />.model: snaive_bc","Quarter: 2007 Q4<br />interaction(format(.model), sep = \"/\"): snaive_bc       <br />Gas: 181.9294<br />.model: snaive_bc","Quarter: 2008 Q1<br />interaction(format(.model), sep = \"/\"): snaive_bc       <br />Gas: 172.7678<br />.model: snaive_bc","Quarter: 2008 Q2<br />interaction(format(.model), sep = \"/\"): snaive_bc       <br />Gas: 209.2157<br />.model: snaive_bc","Quarter: 2008 Q3<br />interaction(format(.model), sep = \"/\"): snaive_bc       <br />Gas: 224.3972<br />.model: snaive_bc","Quarter: 2008 Q4<br />interaction(format(.model), sep = \"/\"): snaive_bc       <br />Gas: 182.8941<br />.model: snaive_bc","Quarter: 2009 Q1<br />interaction(format(.model), sep = \"/\"): snaive_bc       <br />Gas: 173.6904<br />.model: snaive_bc","Quarter: 2009 Q2<br />interaction(format(.model), sep = \"/\"): snaive_bc       <br />Gas: 210.2876<br />.model: snaive_bc","Quarter: 2009 Q3<br />interaction(format(.model), sep = \"/\"): snaive_bc       <br />Gas: 225.5295<br />.model: snaive_bc","Quarter: 2009 Q4<br />interaction(format(.model), sep = \"/\"): snaive_bc       <br />Gas: 183.8588<br />.model: snaive_bc","Quarter: 2010 Q1<br />interaction(format(.model), sep = \"/\"): snaive_bc       <br />Gas: 174.6129<br />.model: snaive_bc","Quarter: 2010 Q2<br />interaction(format(.model), sep = \"/\"): snaive_bc       <br />Gas: 211.3595<br />.model: snaive_bc"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(0,191,196,1)","dash":"solid"},"hoveron":"points","name":"snaive_bc","legendgroup":"snaive_bc","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":["2006-01-01","2006-04-01","2006-07-01","2006-10-01","2007-01-01","2007-04-01","2007-07-01","2007-10-01","2008-01-01","2008-04-01","2008-07-01","2008-10-01","2009-01-01","2009-04-01","2009-07-01","2009-10-01","2010-01-01","2010-04-01"],"y":[167.44759201810089,208.9128639722268,229.07063664617047,191.25913873176711,178.01557460360041,221.76290829512646,243.01364182327458,203.15536855733288,189.18650949643455,235.32795567985906,257.72449868306086,215.72064287687857,200.99102878537698,249.6433220265688,273.24070580525034,228.98830071417365,213.46097958863467,264.7457915893213],"text":["Quarter: 2006 Q1<br />interaction(format(.model), sep = \"/\"): stl_bc          <br />Gas: 167.4476<br />.model: stl_bc","Quarter: 2006 Q2<br />interaction(format(.model), sep = \"/\"): stl_bc          <br />Gas: 208.9129<br />.model: stl_bc","Quarter: 2006 Q3<br />interaction(format(.model), sep = \"/\"): stl_bc          <br />Gas: 229.0706<br />.model: stl_bc","Quarter: 2006 Q4<br />interaction(format(.model), sep = \"/\"): stl_bc          <br />Gas: 191.2591<br />.model: stl_bc","Quarter: 2007 Q1<br />interaction(format(.model), sep = \"/\"): stl_bc          <br />Gas: 178.0156<br />.model: stl_bc","Quarter: 2007 Q2<br />interaction(format(.model), sep = \"/\"): stl_bc          <br />Gas: 221.7629<br />.model: stl_bc","Quarter: 2007 Q3<br />interaction(format(.model), sep = \"/\"): stl_bc          <br />Gas: 243.0136<br />.model: stl_bc","Quarter: 2007 Q4<br />interaction(format(.model), sep = \"/\"): stl_bc          <br />Gas: 203.1554<br />.model: stl_bc","Quarter: 2008 Q1<br />interaction(format(.model), sep = \"/\"): stl_bc          <br />Gas: 189.1865<br />.model: stl_bc","Quarter: 2008 Q2<br />interaction(format(.model), sep = \"/\"): stl_bc          <br />Gas: 235.3280<br />.model: stl_bc","Quarter: 2008 Q3<br />interaction(format(.model), sep = \"/\"): stl_bc          <br />Gas: 257.7245<br />.model: stl_bc","Quarter: 2008 Q4<br />interaction(format(.model), sep = \"/\"): stl_bc          <br />Gas: 215.7206<br />.model: stl_bc","Quarter: 2009 Q1<br />interaction(format(.model), sep = \"/\"): stl_bc          <br />Gas: 200.9910<br />.model: stl_bc","Quarter: 2009 Q2<br />interaction(format(.model), sep = \"/\"): stl_bc          <br />Gas: 249.6433<br />.model: stl_bc","Quarter: 2009 Q3<br />interaction(format(.model), sep = \"/\"): stl_bc          <br />Gas: 273.2407<br />.model: stl_bc","Quarter: 2009 Q4<br />interaction(format(.model), sep = \"/\"): stl_bc          <br />Gas: 228.9883<br />.model: stl_bc","Quarter: 2010 Q1<br />interaction(format(.model), sep = \"/\"): stl_bc          <br />Gas: 213.4610<br />.model: stl_bc","Quarter: 2010 Q2<br />interaction(format(.model), sep = \"/\"): stl_bc          <br />Gas: 264.7458<br />.model: stl_bc"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(97,156,255,1)","dash":"solid"},"hoveron":"points","name":"stl_bc","legendgroup":"stl_bc","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":["2006-01-01","2006-04-01","2006-07-01","2006-10-01","2007-01-01","2007-04-01","2007-07-01","2007-10-01","2008-01-01","2008-04-01","2008-07-01","2008-10-01","2009-01-01","2009-04-01","2009-07-01","2009-10-01","2010-01-01","2010-04-01"],"y":[168.56707687001867,201.832556299727,216.83017063645502,183.70327853797866,172.27035540799733,205.53583483770569,220.53344917443368,187.40655707595732,175.97363394597599,209.23911337568433,224.23672771241235,191.10983561393599,179.67691248395462,212.94239191366302,227.94000625039101,194.81311415191465,183.38019102193329,216.64567045164165],"text":["Quarter: 2006 Q1<br />interaction(format(.model), sep = \"/\"): stl_snaive_drift<br />Gas: 168.5671<br />.model: stl_snaive_drift","Quarter: 2006 Q2<br />interaction(format(.model), sep = \"/\"): stl_snaive_drift<br />Gas: 201.8326<br />.model: stl_snaive_drift","Quarter: 2006 Q3<br />interaction(format(.model), sep = \"/\"): stl_snaive_drift<br />Gas: 216.8302<br />.model: stl_snaive_drift","Quarter: 2006 Q4<br />interaction(format(.model), sep = \"/\"): stl_snaive_drift<br />Gas: 183.7033<br />.model: stl_snaive_drift","Quarter: 2007 Q1<br />interaction(format(.model), sep = \"/\"): stl_snaive_drift<br />Gas: 172.2704<br />.model: stl_snaive_drift","Quarter: 2007 Q2<br />interaction(format(.model), sep = \"/\"): stl_snaive_drift<br />Gas: 205.5358<br />.model: stl_snaive_drift","Quarter: 2007 Q3<br />interaction(format(.model), sep = \"/\"): stl_snaive_drift<br />Gas: 220.5334<br />.model: stl_snaive_drift","Quarter: 2007 Q4<br />interaction(format(.model), sep = \"/\"): stl_snaive_drift<br />Gas: 187.4066<br />.model: stl_snaive_drift","Quarter: 2008 Q1<br />interaction(format(.model), sep = \"/\"): stl_snaive_drift<br />Gas: 175.9736<br />.model: stl_snaive_drift","Quarter: 2008 Q2<br />interaction(format(.model), sep = \"/\"): stl_snaive_drift<br />Gas: 209.2391<br />.model: stl_snaive_drift","Quarter: 2008 Q3<br />interaction(format(.model), sep = \"/\"): stl_snaive_drift<br />Gas: 224.2367<br />.model: stl_snaive_drift","Quarter: 2008 Q4<br />interaction(format(.model), sep = \"/\"): stl_snaive_drift<br />Gas: 191.1098<br />.model: stl_snaive_drift","Quarter: 2009 Q1<br />interaction(format(.model), sep = \"/\"): stl_snaive_drift<br />Gas: 179.6769<br />.model: stl_snaive_drift","Quarter: 2009 Q2<br />interaction(format(.model), sep = \"/\"): stl_snaive_drift<br />Gas: 212.9424<br />.model: stl_snaive_drift","Quarter: 2009 Q3<br />interaction(format(.model), sep = \"/\"): stl_snaive_drift<br />Gas: 227.9400<br />.model: stl_snaive_drift","Quarter: 2009 Q4<br />interaction(format(.model), sep = \"/\"): stl_snaive_drift<br />Gas: 194.8131<br />.model: stl_snaive_drift","Quarter: 2010 Q1<br />interaction(format(.model), sep = \"/\"): stl_snaive_drift<br />Gas: 183.3802<br />.model: stl_snaive_drift","Quarter: 2010 Q2<br />interaction(format(.model), sep = \"/\"): stl_snaive_drift<br />Gas: 216.6457<br />.model: stl_snaive_drift"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(245,100,227,1)","dash":"solid"},"hoveron":"points","name":"stl_snaive_drift","legendgroup":"stl_snaive_drift","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":["2000-01-01","2000-04-01","2000-07-01","2000-10-01","2001-01-01","2001-04-01","2001-07-01","2001-10-01","2002-01-01","2002-04-01","2002-07-01","2002-10-01","2003-01-01","2003-04-01","2003-07-01","2003-10-01","2004-01-01","2004-04-01","2004-07-01","2004-10-01","2005-01-01","2005-04-01","2005-07-01","2005-10-01","2006-01-01","2006-04-01","2006-07-01","2006-10-01","2007-01-01","2007-04-01","2007-07-01","2007-10-01","2008-01-01","2008-04-01","2008-07-01","2008-10-01","2009-01-01","2009-04-01","2009-07-01","2009-10-01","2010-01-01","2010-04-01"],"y":[164,199,213,173,177,205,218,185,166,204,228,186,172,204,232,188,173,215,227,190,170,206,221,180,171,224,233,192,187,234,245,205,194,229,249,203,196,238,252,210,205,236],"text":["Quarter: 2000 Q1<br />Gas: 164","Quarter: 2000 Q2<br />Gas: 199","Quarter: 2000 Q3<br />Gas: 213","Quarter: 2000 Q4<br />Gas: 173","Quarter: 2001 Q1<br />Gas: 177","Quarter: 2001 Q2<br />Gas: 205","Quarter: 2001 Q3<br />Gas: 218","Quarter: 2001 Q4<br />Gas: 185","Quarter: 2002 Q1<br />Gas: 166","Quarter: 2002 Q2<br />Gas: 204","Quarter: 2002 Q3<br />Gas: 228","Quarter: 2002 Q4<br />Gas: 186","Quarter: 2003 Q1<br />Gas: 172","Quarter: 2003 Q2<br />Gas: 204","Quarter: 2003 Q3<br />Gas: 232","Quarter: 2003 Q4<br />Gas: 188","Quarter: 2004 Q1<br />Gas: 173","Quarter: 2004 Q2<br />Gas: 215","Quarter: 2004 Q3<br />Gas: 227","Quarter: 2004 Q4<br />Gas: 190","Quarter: 2005 Q1<br />Gas: 170","Quarter: 2005 Q2<br />Gas: 206","Quarter: 2005 Q3<br />Gas: 221","Quarter: 2005 Q4<br />Gas: 180","Quarter: 2006 Q1<br />Gas: 171","Quarter: 2006 Q2<br />Gas: 224","Quarter: 2006 Q3<br />Gas: 233","Quarter: 2006 Q4<br />Gas: 192","Quarter: 2007 Q1<br />Gas: 187","Quarter: 2007 Q2<br />Gas: 234","Quarter: 2007 Q3<br />Gas: 245","Quarter: 2007 Q4<br />Gas: 205","Quarter: 2008 Q1<br />Gas: 194","Quarter: 2008 Q2<br />Gas: 229","Quarter: 2008 Q3<br />Gas: 249","Quarter: 2008 Q4<br />Gas: 203","Quarter: 2009 Q1<br />Gas: 196","Quarter: 2009 Q2<br />Gas: 238","Quarter: 2009 Q3<br />Gas: 252","Quarter: 2009 Q4<br />Gas: 210","Quarter: 2010 Q1<br />Gas: 205","Quarter: 2010 Q2<br />Gas: 236"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(42,37,32,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":43.098381070983812,"r":7.9701120797011216,"b":24.707347447073481,"l":47.023661270236623},"plot_bgcolor":"#E8ECF2","paper_bgcolor":"#F4F6F9","font":{"color":"#2A2520","family":"","size":15.940224159402243},"title":{"text":"<b> Gas — all Module 1 models <\/b>","font":{"color":"rgba(42,37,32,1)","family":"","size":19.128268991282692},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"date","autorange":true,"range":["1999-06-27","2010-10-05"],"tickmode":"auto","ticktext":["2000 Q1","2005 Q1","2010 Q1"],"tickvals":[10957,12784,14610],"categoryorder":"array","categoryarray":["2000 Q1","2005 Q1","2010 Q1"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.9850560398505608,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"#2A2520","family":"","size":12.7521793275218},"tickangle":-0,"showline":false,"linecolor":"#D5D0C6","linewidth":0,"showgrid":true,"gridcolor":"#D5D0C6","gridwidth":0.53134080531340822,"zeroline":false,"anchor":"y","title":{"text":"","font":{"color":"rgba(42,37,32,1)","family":"","size":15.940224159402243}},"hoverformat":".2f","zerolinecolor":"#D5D0C6"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":true,"range":[157.99925644607669,290.01561463238977],"tickmode":"auto","ticktext":["200","250"],"tickvals":[200,250],"categoryorder":"array","categoryarray":["200","250"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.9850560398505608,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"#2A2520","family":"","size":12.7521793275218},"tickangle":-0,"showline":false,"linecolor":"#D5D0C6","linewidth":0,"showgrid":true,"gridcolor":"#D5D0C6","gridwidth":0.53134080531340822,"zeroline":false,"anchor":"x","title":{"text":"Petajoules","font":{"color":"rgba(42,37,32,1)","family":"","size":15.940224159402243}},"hoverformat":".2f","zerolinecolor":"#D5D0C6"},"shapes":[],"showlegend":true,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"#2A2520","family":"","size":12.7521793275218},"title":{"text":".model","font":{"color":"rgba(42,37,32,1)","family":"","size":15.940224159402243}}},"hovermode":"closest","width":800,"height":400,"barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"c0b065924ad9":{"x":{},"y":{},"colour":{},"type":"scatter"},"c0b0b6c642d":{"x":{},"y":{}}},"cur_data":"c0b065924ad9","visdat":{"c0b065924ad9":["function (y) ","x"],"c0b0b6c642d":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-01b7cf27727b209941c8" style="width:100%;height:325px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-01b7cf27727b209941c8">{"x":{"data":[{"x":["2006-01-01","2006-04-01","2006-07-01","2006-10-01","2007-01-01","2007-04-01","2007-07-01","2007-10-01","2008-01-01","2008-04-01","2008-07-01","2008-10-01","2009-01-01","2009-04-01","2009-07-01","2009-10-01","2010-01-01","2010-04-01"],"y":[180.87939698492463,181.75879396984925,182.63819095477388,183.5175879396985,184.39698492462313,185.27638190954775,186.15577889447235,187.03517587939697,187.9145728643216,188.79396984924622,189.67336683417085,190.55276381909547,191.4321608040201,192.31155778894473,193.19095477386935,194.07035175879398,194.9497487437186,195.82914572864323],"text":["Quarter: 2006 Q1<br />interaction(format(.model), sep = \"/\"): drift           <br />Gas: 180.8794<br />.model: drift","Quarter: 2006 Q2<br />interaction(format(.model), sep = \"/\"): drift           <br />Gas: 181.7588<br />.model: drift","Quarter: 2006 Q3<br />interaction(format(.model), sep = \"/\"): drift           <br />Gas: 182.6382<br />.model: drift","Quarter: 2006 Q4<br />interaction(format(.model), sep = \"/\"): drift           <br />Gas: 183.5176<br />.model: drift","Quarter: 2007 Q1<br />interaction(format(.model), sep = \"/\"): drift           <br />Gas: 184.3970<br />.model: drift","Quarter: 2007 Q2<br />interaction(format(.model), sep = \"/\"): drift           <br />Gas: 185.2764<br />.model: drift","Quarter: 2007 Q3<br />interaction(format(.model), sep = \"/\"): drift           <br />Gas: 186.1558<br />.model: drift","Quarter: 2007 Q4<br />interaction(format(.model), sep = \"/\"): drift           <br />Gas: 187.0352<br />.model: drift","Quarter: 2008 Q1<br />interaction(format(.model), sep = \"/\"): drift           <br />Gas: 187.9146<br />.model: drift","Quarter: 2008 Q2<br />interaction(format(.model), sep = \"/\"): drift           <br />Gas: 188.7940<br />.model: drift","Quarter: 2008 Q3<br />interaction(format(.model), sep = \"/\"): drift           <br />Gas: 189.6734<br />.model: drift","Quarter: 2008 Q4<br />interaction(format(.model), sep = \"/\"): drift           <br />Gas: 190.5528<br />.model: drift","Quarter: 2009 Q1<br />interaction(format(.model), sep = \"/\"): drift           <br />Gas: 191.4322<br />.model: drift","Quarter: 2009 Q2<br />interaction(format(.model), sep = \"/\"): drift           <br />Gas: 192.3116<br />.model: drift","Quarter: 2009 Q3<br />interaction(format(.model), sep = \"/\"): drift           <br />Gas: 193.1910<br />.model: drift","Quarter: 2009 Q4<br />interaction(format(.model), sep = \"/\"): drift           <br />Gas: 194.0704<br />.model: drift","Quarter: 2010 Q1<br />interaction(format(.model), sep = \"/\"): drift           <br />Gas: 194.9497<br />.model: drift","Quarter: 2010 Q2<br />interaction(format(.model), sep = \"/\"): drift           <br />Gas: 195.8291<br />.model: drift"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(248,118,109,1)","dash":"solid"},"hoveron":"points","name":"drift","legendgroup":"drift","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":["2006-01-01","2006-04-01","2006-07-01","2006-10-01","2007-01-01","2007-04-01","2007-07-01","2007-10-01","2008-01-01","2008-04-01","2008-07-01","2008-10-01","2009-01-01","2009-04-01","2009-07-01","2009-10-01","2010-01-01","2010-04-01"],"y":[184.7881091970437,189.68209785172255,194.68385753043839,199.79530696460213,205.01839235820563,210.35508770712929,215.80739510261003,221.37734506734475,227.06699685541793,232.87843878592176,238.81378858296179,244.87519367468832,251.06483155898727,257.38491010126984,263.83766791443554,270.4253746691877,277.15033144046811,284.01487107846646],"text":["Quarter: 2006 Q1<br />interaction(format(.model), sep = \"/\"): drift_bc        <br />Gas: 184.7881<br />.model: drift_bc","Quarter: 2006 Q2<br />interaction(format(.model), sep = \"/\"): drift_bc        <br />Gas: 189.6821<br />.model: drift_bc","Quarter: 2006 Q3<br />interaction(format(.model), sep = \"/\"): drift_bc        <br />Gas: 194.6839<br />.model: drift_bc","Quarter: 2006 Q4<br />interaction(format(.model), sep = \"/\"): drift_bc        <br />Gas: 199.7953<br />.model: drift_bc","Quarter: 2007 Q1<br />interaction(format(.model), sep = \"/\"): drift_bc        <br />Gas: 205.0184<br />.model: drift_bc","Quarter: 2007 Q2<br />interaction(format(.model), sep = \"/\"): drift_bc        <br />Gas: 210.3551<br />.model: drift_bc","Quarter: 2007 Q3<br />interaction(format(.model), sep = \"/\"): drift_bc        <br />Gas: 215.8074<br />.model: drift_bc","Quarter: 2007 Q4<br />interaction(format(.model), sep = \"/\"): drift_bc        <br />Gas: 221.3773<br />.model: drift_bc","Quarter: 2008 Q1<br />interaction(format(.model), sep = \"/\"): drift_bc        <br />Gas: 227.0670<br />.model: drift_bc","Quarter: 2008 Q2<br />interaction(format(.model), sep = \"/\"): drift_bc        <br />Gas: 232.8784<br />.model: drift_bc","Quarter: 2008 Q3<br />interaction(format(.model), sep = \"/\"): drift_bc        <br />Gas: 238.8138<br />.model: drift_bc","Quarter: 2008 Q4<br />interaction(format(.model), sep = \"/\"): drift_bc        <br />Gas: 244.8752<br />.model: drift_bc","Quarter: 2009 Q1<br />interaction(format(.model), sep = \"/\"): drift_bc        <br />Gas: 251.0648<br />.model: drift_bc","Quarter: 2009 Q2<br />interaction(format(.model), sep = \"/\"): drift_bc        <br />Gas: 257.3849<br />.model: drift_bc","Quarter: 2009 Q3<br />interaction(format(.model), sep = \"/\"): drift_bc        <br />Gas: 263.8377<br />.model: drift_bc","Quarter: 2009 Q4<br />interaction(format(.model), sep = \"/\"): drift_bc        <br />Gas: 270.4254<br />.model: drift_bc","Quarter: 2010 Q1<br />interaction(format(.model), sep = \"/\"): drift_bc        <br />Gas: 277.1503<br />.model: drift_bc","Quarter: 2010 Q2<br />interaction(format(.model), sep = \"/\"): drift_bc        <br />Gas: 284.0149<br />.model: drift_bc"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(183,159,0,1)","dash":"solid"},"hoveron":"points","name":"drift_bc","legendgroup":"drift_bc","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":["2006-01-01","2006-04-01","2006-07-01","2006-10-01","2007-01-01","2007-04-01","2007-07-01","2007-10-01","2008-01-01","2008-04-01","2008-07-01","2008-10-01","2009-01-01","2009-04-01","2009-07-01","2009-10-01","2010-01-01","2010-04-01"],"y":[170,206,221,180,170,206,221,180,170,206,221,180,170,206,221,180,170,206],"text":["Quarter: 2006 Q1<br />interaction(format(.model), sep = \"/\"): snaive          <br />Gas: 170.0000<br />.model: snaive","Quarter: 2006 Q2<br />interaction(format(.model), sep = \"/\"): snaive          <br />Gas: 206.0000<br />.model: snaive","Quarter: 2006 Q3<br />interaction(format(.model), sep = \"/\"): snaive          <br />Gas: 221.0000<br />.model: snaive","Quarter: 2006 Q4<br />interaction(format(.model), sep = \"/\"): snaive          <br />Gas: 180.0000<br />.model: snaive","Quarter: 2007 Q1<br />interaction(format(.model), sep = \"/\"): snaive          <br />Gas: 170.0000<br />.model: snaive","Quarter: 2007 Q2<br />interaction(format(.model), sep = \"/\"): snaive          <br />Gas: 206.0000<br />.model: snaive","Quarter: 2007 Q3<br />interaction(format(.model), sep = \"/\"): snaive          <br />Gas: 221.0000<br />.model: snaive","Quarter: 2007 Q4<br />interaction(format(.model), sep = \"/\"): snaive          <br />Gas: 180.0000<br />.model: snaive","Quarter: 2008 Q1<br />interaction(format(.model), sep = \"/\"): snaive          <br />Gas: 170.0000<br />.model: snaive","Quarter: 2008 Q2<br />interaction(format(.model), sep = \"/\"): snaive          <br />Gas: 206.0000<br />.model: snaive","Quarter: 2008 Q3<br />interaction(format(.model), sep = \"/\"): snaive          <br />Gas: 221.0000<br />.model: snaive","Quarter: 2008 Q4<br />interaction(format(.model), sep = \"/\"): snaive          <br />Gas: 180.0000<br />.model: snaive","Quarter: 2009 Q1<br />interaction(format(.model), sep = \"/\"): snaive          <br />Gas: 170.0000<br />.model: snaive","Quarter: 2009 Q2<br />interaction(format(.model), sep = \"/\"): snaive          <br />Gas: 206.0000<br />.model: snaive","Quarter: 2009 Q3<br />interaction(format(.model), sep = \"/\"): snaive          <br />Gas: 221.0000<br />.model: snaive","Quarter: 2009 Q4<br />interaction(format(.model), sep = \"/\"): snaive          <br />Gas: 180.0000<br />.model: snaive","Quarter: 2010 Q1<br />interaction(format(.model), sep = \"/\"): snaive          <br />Gas: 170.0000<br />.model: snaive","Quarter: 2010 Q2<br />interaction(format(.model), sep = \"/\"): snaive          <br />Gas: 206.0000<br />.model: snaive"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(0,186,56,1)","dash":"solid"},"hoveron":"points","name":"snaive","legendgroup":"snaive","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":["2006-01-01","2006-04-01","2006-07-01","2006-10-01","2007-01-01","2007-04-01","2007-07-01","2007-10-01","2008-01-01","2008-04-01","2008-07-01","2008-10-01","2009-01-01","2009-04-01","2009-07-01","2009-10-01","2010-01-01","2010-04-01"],"y":[170.92258804684056,207.07190096022731,222.13238388922906,180.96470425224732,171.84517609368115,208.14380192045451,223.26476777845807,181.92940850449457,172.76776414052171,209.21570288068173,224.39715166768704,182.89411275674186,173.69035218736227,210.28760384090896,225.52953555691604,183.85881700898915,174.61294023420285,211.35950480113615],"text":["Quarter: 2006 Q1<br />interaction(format(.model), sep = \"/\"): snaive_bc       <br />Gas: 170.9226<br />.model: snaive_bc","Quarter: 2006 Q2<br />interaction(format(.model), sep = \"/\"): snaive_bc       <br />Gas: 207.0719<br />.model: snaive_bc","Quarter: 2006 Q3<br />interaction(format(.model), sep = \"/\"): snaive_bc       <br />Gas: 222.1324<br />.model: snaive_bc","Quarter: 2006 Q4<br />interaction(format(.model), sep = \"/\"): snaive_bc       <br />Gas: 180.9647<br />.model: snaive_bc","Quarter: 2007 Q1<br />interaction(format(.model), sep = \"/\"): snaive_bc       <br />Gas: 171.8452<br />.model: snaive_bc","Quarter: 2007 Q2<br />interaction(format(.model), sep = \"/\"): snaive_bc       <br />Gas: 208.1438<br />.model: snaive_bc","Quarter: 2007 Q3<br />interaction(format(.model), sep = \"/\"): snaive_bc       <br />Gas: 223.2648<br />.model: snaive_bc","Quarter: 2007 Q4<br />interaction(format(.model), sep = \"/\"): snaive_bc       <br />Gas: 181.9294<br />.model: snaive_bc","Quarter: 2008 Q1<br />interaction(format(.model), sep = \"/\"): snaive_bc       <br />Gas: 172.7678<br />.model: snaive_bc","Quarter: 2008 Q2<br />interaction(format(.model), sep = \"/\"): snaive_bc       <br />Gas: 209.2157<br />.model: snaive_bc","Quarter: 2008 Q3<br />interaction(format(.model), sep = \"/\"): snaive_bc       <br />Gas: 224.3972<br />.model: snaive_bc","Quarter: 2008 Q4<br />interaction(format(.model), sep = \"/\"): snaive_bc       <br />Gas: 182.8941<br />.model: snaive_bc","Quarter: 2009 Q1<br />interaction(format(.model), sep = \"/\"): snaive_bc       <br />Gas: 173.6904<br />.model: snaive_bc","Quarter: 2009 Q2<br />interaction(format(.model), sep = \"/\"): snaive_bc       <br />Gas: 210.2876<br />.model: snaive_bc","Quarter: 2009 Q3<br />interaction(format(.model), sep = \"/\"): snaive_bc       <br />Gas: 225.5295<br />.model: snaive_bc","Quarter: 2009 Q4<br />interaction(format(.model), sep = \"/\"): snaive_bc       <br />Gas: 183.8588<br />.model: snaive_bc","Quarter: 2010 Q1<br />interaction(format(.model), sep = \"/\"): snaive_bc       <br />Gas: 174.6129<br />.model: snaive_bc","Quarter: 2010 Q2<br />interaction(format(.model), sep = \"/\"): snaive_bc       <br />Gas: 211.3595<br />.model: snaive_bc"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(0,191,196,1)","dash":"solid"},"hoveron":"points","name":"snaive_bc","legendgroup":"snaive_bc","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":["2006-01-01","2006-04-01","2006-07-01","2006-10-01","2007-01-01","2007-04-01","2007-07-01","2007-10-01","2008-01-01","2008-04-01","2008-07-01","2008-10-01","2009-01-01","2009-04-01","2009-07-01","2009-10-01","2010-01-01","2010-04-01"],"y":[167.44759201810089,208.9128639722268,229.07063664617047,191.25913873176711,178.01557460360041,221.76290829512646,243.01364182327458,203.15536855733288,189.18650949643455,235.32795567985906,257.72449868306086,215.72064287687857,200.99102878537698,249.6433220265688,273.24070580525034,228.98830071417365,213.46097958863467,264.7457915893213],"text":["Quarter: 2006 Q1<br />interaction(format(.model), sep = \"/\"): stl_bc          <br />Gas: 167.4476<br />.model: stl_bc","Quarter: 2006 Q2<br />interaction(format(.model), sep = \"/\"): stl_bc          <br />Gas: 208.9129<br />.model: stl_bc","Quarter: 2006 Q3<br />interaction(format(.model), sep = \"/\"): stl_bc          <br />Gas: 229.0706<br />.model: stl_bc","Quarter: 2006 Q4<br />interaction(format(.model), sep = \"/\"): stl_bc          <br />Gas: 191.2591<br />.model: stl_bc","Quarter: 2007 Q1<br />interaction(format(.model), sep = \"/\"): stl_bc          <br />Gas: 178.0156<br />.model: stl_bc","Quarter: 2007 Q2<br />interaction(format(.model), sep = \"/\"): stl_bc          <br />Gas: 221.7629<br />.model: stl_bc","Quarter: 2007 Q3<br />interaction(format(.model), sep = \"/\"): stl_bc          <br />Gas: 243.0136<br />.model: stl_bc","Quarter: 2007 Q4<br />interaction(format(.model), sep = \"/\"): stl_bc          <br />Gas: 203.1554<br />.model: stl_bc","Quarter: 2008 Q1<br />interaction(format(.model), sep = \"/\"): stl_bc          <br />Gas: 189.1865<br />.model: stl_bc","Quarter: 2008 Q2<br />interaction(format(.model), sep = \"/\"): stl_bc          <br />Gas: 235.3280<br />.model: stl_bc","Quarter: 2008 Q3<br />interaction(format(.model), sep = \"/\"): stl_bc          <br />Gas: 257.7245<br />.model: stl_bc","Quarter: 2008 Q4<br />interaction(format(.model), sep = \"/\"): stl_bc          <br />Gas: 215.7206<br />.model: stl_bc","Quarter: 2009 Q1<br />interaction(format(.model), sep = \"/\"): stl_bc          <br />Gas: 200.9910<br />.model: stl_bc","Quarter: 2009 Q2<br />interaction(format(.model), sep = \"/\"): stl_bc          <br />Gas: 249.6433<br />.model: stl_bc","Quarter: 2009 Q3<br />interaction(format(.model), sep = \"/\"): stl_bc          <br />Gas: 273.2407<br />.model: stl_bc","Quarter: 2009 Q4<br />interaction(format(.model), sep = \"/\"): stl_bc          <br />Gas: 228.9883<br />.model: stl_bc","Quarter: 2010 Q1<br />interaction(format(.model), sep = \"/\"): stl_bc          <br />Gas: 213.4610<br />.model: stl_bc","Quarter: 2010 Q2<br />interaction(format(.model), sep = \"/\"): stl_bc          <br />Gas: 264.7458<br />.model: stl_bc"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(97,156,255,1)","dash":"solid"},"hoveron":"points","name":"stl_bc","legendgroup":"stl_bc","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":["2006-01-01","2006-04-01","2006-07-01","2006-10-01","2007-01-01","2007-04-01","2007-07-01","2007-10-01","2008-01-01","2008-04-01","2008-07-01","2008-10-01","2009-01-01","2009-04-01","2009-07-01","2009-10-01","2010-01-01","2010-04-01"],"y":[168.56707687001867,201.832556299727,216.83017063645502,183.70327853797866,172.27035540799733,205.53583483770569,220.53344917443368,187.40655707595732,175.97363394597599,209.23911337568433,224.23672771241235,191.10983561393599,179.67691248395462,212.94239191366302,227.94000625039101,194.81311415191465,183.38019102193329,216.64567045164165],"text":["Quarter: 2006 Q1<br />interaction(format(.model), sep = \"/\"): stl_snaive_drift<br />Gas: 168.5671<br />.model: stl_snaive_drift","Quarter: 2006 Q2<br />interaction(format(.model), sep = \"/\"): stl_snaive_drift<br />Gas: 201.8326<br />.model: stl_snaive_drift","Quarter: 2006 Q3<br />interaction(format(.model), sep = \"/\"): stl_snaive_drift<br />Gas: 216.8302<br />.model: stl_snaive_drift","Quarter: 2006 Q4<br />interaction(format(.model), sep = \"/\"): stl_snaive_drift<br />Gas: 183.7033<br />.model: stl_snaive_drift","Quarter: 2007 Q1<br />interaction(format(.model), sep = \"/\"): stl_snaive_drift<br />Gas: 172.2704<br />.model: stl_snaive_drift","Quarter: 2007 Q2<br />interaction(format(.model), sep = \"/\"): stl_snaive_drift<br />Gas: 205.5358<br />.model: stl_snaive_drift","Quarter: 2007 Q3<br />interaction(format(.model), sep = \"/\"): stl_snaive_drift<br />Gas: 220.5334<br />.model: stl_snaive_drift","Quarter: 2007 Q4<br />interaction(format(.model), sep = \"/\"): stl_snaive_drift<br />Gas: 187.4066<br />.model: stl_snaive_drift","Quarter: 2008 Q1<br />interaction(format(.model), sep = \"/\"): stl_snaive_drift<br />Gas: 175.9736<br />.model: stl_snaive_drift","Quarter: 2008 Q2<br />interaction(format(.model), sep = \"/\"): stl_snaive_drift<br />Gas: 209.2391<br />.model: stl_snaive_drift","Quarter: 2008 Q3<br />interaction(format(.model), sep = \"/\"): stl_snaive_drift<br />Gas: 224.2367<br />.model: stl_snaive_drift","Quarter: 2008 Q4<br />interaction(format(.model), sep = \"/\"): stl_snaive_drift<br />Gas: 191.1098<br />.model: stl_snaive_drift","Quarter: 2009 Q1<br />interaction(format(.model), sep = \"/\"): stl_snaive_drift<br />Gas: 179.6769<br />.model: stl_snaive_drift","Quarter: 2009 Q2<br />interaction(format(.model), sep = \"/\"): stl_snaive_drift<br />Gas: 212.9424<br />.model: stl_snaive_drift","Quarter: 2009 Q3<br />interaction(format(.model), sep = \"/\"): stl_snaive_drift<br />Gas: 227.9400<br />.model: stl_snaive_drift","Quarter: 2009 Q4<br />interaction(format(.model), sep = \"/\"): stl_snaive_drift<br />Gas: 194.8131<br />.model: stl_snaive_drift","Quarter: 2010 Q1<br />interaction(format(.model), sep = \"/\"): stl_snaive_drift<br />Gas: 183.3802<br />.model: stl_snaive_drift","Quarter: 2010 Q2<br />interaction(format(.model), sep = \"/\"): stl_snaive_drift<br />Gas: 216.6457<br />.model: stl_snaive_drift"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(245,100,227,1)","dash":"solid"},"hoveron":"points","name":"stl_snaive_drift","legendgroup":"stl_snaive_drift","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":["2000-01-01","2000-04-01","2000-07-01","2000-10-01","2001-01-01","2001-04-01","2001-07-01","2001-10-01","2002-01-01","2002-04-01","2002-07-01","2002-10-01","2003-01-01","2003-04-01","2003-07-01","2003-10-01","2004-01-01","2004-04-01","2004-07-01","2004-10-01","2005-01-01","2005-04-01","2005-07-01","2005-10-01","2006-01-01","2006-04-01","2006-07-01","2006-10-01","2007-01-01","2007-04-01","2007-07-01","2007-10-01","2008-01-01","2008-04-01","2008-07-01","2008-10-01","2009-01-01","2009-04-01","2009-07-01","2009-10-01","2010-01-01","2010-04-01"],"y":[164,199,213,173,177,205,218,185,166,204,228,186,172,204,232,188,173,215,227,190,170,206,221,180,171,224,233,192,187,234,245,205,194,229,249,203,196,238,252,210,205,236],"text":["Quarter: 2000 Q1<br />Gas: 164","Quarter: 2000 Q2<br />Gas: 199","Quarter: 2000 Q3<br />Gas: 213","Quarter: 2000 Q4<br />Gas: 173","Quarter: 2001 Q1<br />Gas: 177","Quarter: 2001 Q2<br />Gas: 205","Quarter: 2001 Q3<br />Gas: 218","Quarter: 2001 Q4<br />Gas: 185","Quarter: 2002 Q1<br />Gas: 166","Quarter: 2002 Q2<br />Gas: 204","Quarter: 2002 Q3<br />Gas: 228","Quarter: 2002 Q4<br />Gas: 186","Quarter: 2003 Q1<br />Gas: 172","Quarter: 2003 Q2<br />Gas: 204","Quarter: 2003 Q3<br />Gas: 232","Quarter: 2003 Q4<br />Gas: 188","Quarter: 2004 Q1<br />Gas: 173","Quarter: 2004 Q2<br />Gas: 215","Quarter: 2004 Q3<br />Gas: 227","Quarter: 2004 Q4<br />Gas: 190","Quarter: 2005 Q1<br />Gas: 170","Quarter: 2005 Q2<br />Gas: 206","Quarter: 2005 Q3<br />Gas: 221","Quarter: 2005 Q4<br />Gas: 180","Quarter: 2006 Q1<br />Gas: 171","Quarter: 2006 Q2<br />Gas: 224","Quarter: 2006 Q3<br />Gas: 233","Quarter: 2006 Q4<br />Gas: 192","Quarter: 2007 Q1<br />Gas: 187","Quarter: 2007 Q2<br />Gas: 234","Quarter: 2007 Q3<br />Gas: 245","Quarter: 2007 Q4<br />Gas: 205","Quarter: 2008 Q1<br />Gas: 194","Quarter: 2008 Q2<br />Gas: 229","Quarter: 2008 Q3<br />Gas: 249","Quarter: 2008 Q4<br />Gas: 203","Quarter: 2009 Q1<br />Gas: 196","Quarter: 2009 Q2<br />Gas: 238","Quarter: 2009 Q3<br />Gas: 252","Quarter: 2009 Q4<br />Gas: 210","Quarter: 2010 Q1<br />Gas: 205","Quarter: 2010 Q2<br />Gas: 236"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(42,37,32,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":43.098381070983812,"r":7.9701120797011216,"b":24.707347447073481,"l":47.023661270236623},"plot_bgcolor":"#E8ECF2","paper_bgcolor":"#F4F6F9","font":{"color":"#2A2520","family":"","size":15.940224159402243},"title":{"text":"<b> Gas — all Module 1 models <\/b>","font":{"color":"rgba(42,37,32,1)","family":"","size":19.128268991282692},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"date","autorange":true,"range":["1999-06-27","2010-10-05"],"tickmode":"auto","ticktext":["2000 Q1","2005 Q1","2010 Q1"],"tickvals":[10957,12784,14610],"categoryorder":"array","categoryarray":["2000 Q1","2005 Q1","2010 Q1"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.9850560398505608,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"#2A2520","family":"","size":12.7521793275218},"tickangle":-0,"showline":false,"linecolor":"#D5D0C6","linewidth":0,"showgrid":true,"gridcolor":"#D5D0C6","gridwidth":0.53134080531340822,"zeroline":false,"anchor":"y","title":{"text":"","font":{"color":"rgba(42,37,32,1)","family":"","size":15.940224159402243}},"hoverformat":".2f","zerolinecolor":"#D5D0C6"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":true,"range":[157.99925644607669,290.01561463238977],"tickmode":"auto","ticktext":["200","250"],"tickvals":[200,250],"categoryorder":"array","categoryarray":["200","250"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.9850560398505608,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"#2A2520","family":"","size":12.7521793275218},"tickangle":-0,"showline":false,"linecolor":"#D5D0C6","linewidth":0,"showgrid":true,"gridcolor":"#D5D0C6","gridwidth":0.53134080531340822,"zeroline":false,"anchor":"x","title":{"text":"Petajoules","font":{"color":"rgba(42,37,32,1)","family":"","size":15.940224159402243}},"hoverformat":".2f","zerolinecolor":"#D5D0C6"},"shapes":[],"showlegend":true,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"#2A2520","family":"","size":12.7521793275218},"title":{"text":".model","font":{"color":"rgba(42,37,32,1)","family":"","size":15.940224159402243}}},"hovermode":"closest","width":800,"height":400,"barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"6ab445967dda":{"x":{},"y":{},"colour":{},"type":"scatter"},"6ab44b35649d":{"x":{},"y":{}}},"cur_data":"6ab445967dda","visdat":{"6ab445967dda":["function (y) ","x"],"6ab44b35649d":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </section>
@@ -924,16 +1772,36 @@ gas_fit_dcmp_bc <- gas_train |>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a aria-label="1"></a>gas_accu <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
-<span id="cb17-2"><a aria-label="2"></a>  gas_fc      <span class="sc">|&gt;</span> <span class="fu">filter</span>(.model <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"snaive"</span>, <span class="st">"drift"</span>)) <span class="sc">|&gt;</span> <span class="fu">accuracy</span>(aus_production),</span>
-<span id="cb17-3"><a aria-label="3"></a>  gas_fc_bc   <span class="sc">|&gt;</span> <span class="fu">accuracy</span>(aus_production),</span>
-<span id="cb17-4"><a aria-label="4"></a>  gas_fc_dcmp <span class="sc">|&gt;</span> <span class="fu">accuracy</span>(aus_production)</span>
-<span id="cb17-5"><a aria-label="5"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb17-6"><a aria-label="6"></a>  <span class="fu">select</span>(.model, RMSE, MAE, MAPE, MASE, RMSSE) <span class="sc">|&gt;</span></span>
-<span id="cb17-7"><a aria-label="7"></a>  <span class="fu">arrange</span>(RMSSE)</span>
-<span id="cb17-8"><a aria-label="8"></a></span>
-<span id="cb17-9"><a aria-label="9"></a>gas_accu</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-7" data-llms-code-original="gas_accu <- bind_rows(
+  gas_fc      |> filter(.model %in% c(&quot;snaive&quot;, &quot;drift&quot;)) |> accuracy(aus_production),
+  gas_fc_bc   |> accuracy(aus_production),
+  gas_fc_dcmp |> accuracy(aus_production)      #<1>
+) |>
+  select(.model, RMSE, MAE, MAPE, MASE, RMSSE) |>
+  arrange(RMSSE)                               #<2>
+
+gas_accu"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-7-1"><a href="#annotated-cell-7-1" aria-label="1"></a>gas_accu <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="annotated-cell-7-2"><a href="#annotated-cell-7-2" aria-label="2"></a>  gas_fc      <span class="sc">|&gt;</span> <span class="fu">filter</span>(.model <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"snaive"</span>, <span class="st">"drift"</span>)) <span class="sc">|&gt;</span> <span class="fu">accuracy</span>(aus_production),</span>
+<span id="annotated-cell-7-3"><a href="#annotated-cell-7-3" aria-label="3"></a>  gas_fc_bc   <span class="sc">|&gt;</span> <span class="fu">accuracy</span>(aus_production),</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="1">1</button><span id="annotated-cell-7-4" class="code-annotation-target"><a href="#annotated-cell-7-4" aria-label="4"></a>  gas_fc_dcmp <span class="sc">|&gt;</span> <span class="fu">accuracy</span>(aus_production)</span>
+<span id="annotated-cell-7-5"><a href="#annotated-cell-7-5" aria-label="5"></a>) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-7-6"><a href="#annotated-cell-7-6" aria-label="6"></a>  <span class="fu">select</span>(.model, RMSE, MAE, MAPE, MASE, RMSSE) <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="2">2</button><span id="annotated-cell-7-7" class="code-annotation-target"><a href="#annotated-cell-7-7" aria-label="7"></a>  <span class="fu">arrange</span>(RMSSE)</span>
+<span id="annotated-cell-7-8"><a href="#annotated-cell-7-8" aria-label="8"></a></span>
+<span id="annotated-cell-7-9"><a href="#annotated-cell-7-9" aria-label="9"></a>gas_accu</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-7" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-7" data-code-lines="4" data-code-annotation="1">All six Module 1 models, evaluated on the same test set with the full series passed to <code>accuracy()</code>.</span>
+</dd>
+<dt data-target-cell="annotated-cell-7" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-7" data-code-lines="7" data-code-annotation="2">Sorted by RMSSE: the first row is the baseline every later model has to beat.</span>
+</dd>
+</dl>
+</div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -965,13 +1833,13 @@ gas_fit_dcmp_bc <- gas_train |>
 <div class="cell-output-display">
 <div>
 <figure>
-<p><a href="model_diagnostics_files/figure-html/gas-final-refit-render-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-14"><img data-src="model_diagnostics_files/figure-html/gas-final-refit-render-1.png" width="672"></a></p>
+<p><a href="model_diagnostics_files/figure-html/gas-final-refit-render-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-22"><img data-src="model_diagnostics_files/figure-html/gas-final-refit-render-1.png" width="672"></a></p>
 </figure>
 </div>
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-7" data-llms-code-original="gas_final_fit <- aus_production |>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-8" data-llms-code-original="gas_final_fit <- aus_production |>
   model(stl_bc = stl_spec_bc)   #<1>
 
 gas_final_fc <- gas_final_fit |>
@@ -983,24 +1851,24 @@ gas_final_refit_p <- gas_final_fc |>
     title = &quot;Australian gas production — STL + Box-Cox forecast&quot;,
     subtitle = &quot;Refit on full data · 2-year horizon&quot;,
     y = &quot;Petajoules&quot;, x = NULL
-  )" data-code-line-numbers="1|4"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-7-1"><a href="#annotated-cell-7-1" aria-label="1"></a>gas_final_fit <span class="ot">&lt;-</span> aus_production <span class="sc">|&gt;</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="1">1</button><span id="annotated-cell-7-2" class="code-annotation-target"><a href="#annotated-cell-7-2" aria-label="2"></a>  <span class="fu">model</span>(<span class="at">stl_bc =</span> stl_spec_bc)</span>
-<span id="annotated-cell-7-3"><a href="#annotated-cell-7-3" aria-label="3"></a></span>
-<span id="annotated-cell-7-4"><a href="#annotated-cell-7-4" aria-label="4"></a>gas_final_fc <span class="ot">&lt;-</span> gas_final_fit <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-7-5"><a href="#annotated-cell-7-5" aria-label="5"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"2 years"</span>)</span>
-<span id="annotated-cell-7-6"><a href="#annotated-cell-7-6" aria-label="6"></a></span>
-<span id="annotated-cell-7-7"><a href="#annotated-cell-7-7" aria-label="7"></a>gas_final_refit_p <span class="ot">&lt;-</span> gas_final_fc <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-7-8"><a href="#annotated-cell-7-8" aria-label="8"></a>  <span class="fu">autoplot</span>(aus_production <span class="sc">|&gt;</span> <span class="fu">filter_index</span>(<span class="st">"2000 Q1"</span> <span class="sc">~</span> .)) <span class="sc">+</span></span>
-<span id="annotated-cell-7-9"><a href="#annotated-cell-7-9" aria-label="9"></a>  <span class="fu">labs</span>(</span>
-<span id="annotated-cell-7-10"><a href="#annotated-cell-7-10" aria-label="10"></a>    <span class="at">title =</span> <span class="st">"Australian gas production — STL + Box-Cox forecast"</span>,</span>
-<span id="annotated-cell-7-11"><a href="#annotated-cell-7-11" aria-label="11"></a>    <span class="at">subtitle =</span> <span class="st">"Refit on full data · 2-year horizon"</span>,</span>
-<span id="annotated-cell-7-12"><a href="#annotated-cell-7-12" aria-label="12"></a>    <span class="at">y =</span> <span class="st">"Petajoules"</span>, <span class="at">x =</span> <span class="cn">NULL</span></span>
-<span id="annotated-cell-7-13"><a href="#annotated-cell-7-13" aria-label="13"></a>  )</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+  )" data-code-line-numbers="1|4"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-8-1"><a href="#annotated-cell-8-1" aria-label="1"></a>gas_final_fit <span class="ot">&lt;-</span> aus_production <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-8" data-target-annotation="1">1</button><span id="annotated-cell-8-2" class="code-annotation-target"><a href="#annotated-cell-8-2" aria-label="2"></a>  <span class="fu">model</span>(<span class="at">stl_bc =</span> stl_spec_bc)</span>
+<span id="annotated-cell-8-3"><a href="#annotated-cell-8-3" aria-label="3"></a></span>
+<span id="annotated-cell-8-4"><a href="#annotated-cell-8-4" aria-label="4"></a>gas_final_fc <span class="ot">&lt;-</span> gas_final_fit <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-8-5"><a href="#annotated-cell-8-5" aria-label="5"></a>  <span class="fu">forecast</span>(<span class="at">h =</span> <span class="st">"2 years"</span>)</span>
+<span id="annotated-cell-8-6"><a href="#annotated-cell-8-6" aria-label="6"></a></span>
+<span id="annotated-cell-8-7"><a href="#annotated-cell-8-7" aria-label="7"></a>gas_final_refit_p <span class="ot">&lt;-</span> gas_final_fc <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-8-8"><a href="#annotated-cell-8-8" aria-label="8"></a>  <span class="fu">autoplot</span>(aus_production <span class="sc">|&gt;</span> <span class="fu">filter_index</span>(<span class="st">"2000 Q1"</span> <span class="sc">~</span> .)) <span class="sc">+</span></span>
+<span id="annotated-cell-8-9"><a href="#annotated-cell-8-9" aria-label="9"></a>  <span class="fu">labs</span>(</span>
+<span id="annotated-cell-8-10"><a href="#annotated-cell-8-10" aria-label="10"></a>    <span class="at">title =</span> <span class="st">"Australian gas production — STL + Box-Cox forecast"</span>,</span>
+<span id="annotated-cell-8-11"><a href="#annotated-cell-8-11" aria-label="11"></a>    <span class="at">subtitle =</span> <span class="st">"Refit on full data · 2-year horizon"</span>,</span>
+<span id="annotated-cell-8-12"><a href="#annotated-cell-8-12" aria-label="12"></a>    <span class="at">y =</span> <span class="st">"Petajoules"</span>, <span class="at">x =</span> <span class="cn">NULL</span></span>
+<span id="annotated-cell-8-13"><a href="#annotated-cell-8-13" aria-label="13"></a>  )</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-7" data-target-annotation="1">1</dt>
+<dt data-target-cell="annotated-cell-8" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-7" data-code-lines="2" data-code-annotation="1">Same spec, full data — no need to rewrite the model definition.</span>
+<span data-code-cell="annotated-cell-8" data-code-lines="2" data-code-annotation="1">Same spec, full data — no need to rewrite the model definition.</span>
 </dd>
 </dl>
 </div>
