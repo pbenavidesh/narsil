@@ -34,11 +34,112 @@ gas_fit <- gas_train |>
 gas_fc <- gas_fit |>
   forecast(h = nrow(gas_test))
 
+beer <- aus_production |>
+  filter(year(Quarter) >= 1992) |>
+  select(Quarter, Beer)
+
+h_beer <- 4 * 4
+
+beer_train <- beer |>
+  slice_head(n = nrow(beer) - h_beer)
+
+beer_fit <- beer_train |>
+  model(
+    mean   = MEAN(Beer),
+    snaive = SNAIVE(Beer)
+  )
+
+beer_fc <- beer_fit |>
+  forecast(h = h_beer)
+
 source(here::here("R/narsil_theme.R"))
 theme_set(theme_narsil())
 ```
 
 # Prediction intervals
+
+::: {.content-hidden unless-format="revealjs"}
+## Why are these intervals so different?
+:::
+
+::: {.content-visible unless-format="revealjs"}
+### Why are these intervals so different?
+:::
+
+```{r}
+#| label: beer-pi-compare
+#| code-fold: true
+#| output: false
+
+beer_pi_compare_p <- beer_fc |>
+  autoplot(beer, level = 95) +        #<1>
+  facet_wrap(~ .model, nrow = 1) +    #<2>
+  labs(
+    title = "Beer — same series, two benchmark models, 95% prediction intervals",
+    y = "Megalitres", x = NULL
+  )
+```
+
+1. `beer_fc` holds the forecasts of both models; `level = 95` draws only the 95% band.
+2. One panel per model, side by side and sharing the y-axis, so the interval widths are directly comparable.
+
+```{r}
+#| label: beer-pi-compare-render
+#| renderings: [light, dark]
+#| echo: false
+
+beer_pi_compare_p + theme_narsil()
+beer_pi_compare_p + theme_narsil_dark()
+```
+
+::: {.fragment}
+
+**Same data. Same coverage level. Why is one interval several times wider than the other?**
+
+:::
+
+::: {.content-hidden unless-format="revealjs"}
+::: {.notes}
+Let students answer before advancing. Expected answer: the MEAN model fits badly, so its residuals are large.
+:::
+:::
+
+::: {.content-hidden unless-format="revealjs"}
+## The interval width comes from the residuals
+:::
+
+::: {.content-visible unless-format="revealjs"}
+### The interval width comes from the residuals
+:::
+
+The one-step residual standard deviation is
+
+$$\hat{\sigma} = \sqrt{\frac{1}{T-K-M}\sum_{t=1}^{T} e_t^2}$$
+
+where $K$ is the number of parameters estimated and $M$ the number of missing residuals at the start of the series (e.g. $m$ for SNAIVE).
+
+::: {.fragment}
+
+```{r}
+#| label: beer-sigma
+
+beer_fit |>
+  augment() |>                                     #<1>
+  as_tibble() |>
+  group_by(.model) |>
+  summarise(sigma_hat = sd(.innov, na.rm = TRUE))  #<2>
+```
+
+1. `augment()` returns fitted values and residuals for every model in the mable.
+2. The standard deviation of the innovation residuals is the $\hat\sigma$ that every prediction interval is built on. `sd()` divides by $T-1$ rather than $T-K-M$; the difference is negligible here, and `fable` uses the exact formula internally.
+
+:::
+
+::: {.fragment}
+
+Every formula on the next slides multiplies this single number by a horizon-dependent factor. A model that fits poorly produces wide intervals — the interval is honest about how little the model knows.
+
+:::
 
 ::: {.content-hidden unless-format="revealjs"}
 ## Prediction intervals
@@ -51,7 +152,7 @@ A **prediction interval** tells you *how confident* you should be.
 
 $$\hat{y}_{T+h|T} \pm c \cdot \hat{\sigma}_h$$
 
-where $c$ depends on the coverage level (1.96 for 95%) and $\hat{\sigma}_h$ is the estimated forecast standard deviation at horizon $h$.
+where $c$ depends on the coverage level (1.96 for 95%) and $\hat{\sigma}_h$ is the estimated forecast standard deviation at horizon $h$, built from the residual standard deviation $\hat\sigma$ we just computed.
 
 :::
 
@@ -80,6 +181,7 @@ For the benchmark methods:
 
 | Method | $\hat{\sigma}_h$ |
 |--------|-----------------|
+| $h = 1$ (all methods) | $\hat{\sigma}$ |
 | NAIVE  | $\hat{\sigma}\sqrt{h}$ |
 | Drift  | $\hat{\sigma}\sqrt{h\left(1 + \frac{h}{T}\right)}$ |
 | SNAIVE | $\hat{\sigma}\sqrt{\lfloor(h-1)/m\rfloor + 1}$ |
@@ -106,10 +208,13 @@ The Mean interval barely widens; NAIVE and Drift intervals widen continuously.
 
 gas_fc |>
   filter(.model == "snaive") |>
-  hilo(level = 95) |>
-  select(Quarter, .mean, `95%`) |>
+  hilo(level = 95) |>                #<1>
+  select(Quarter, .mean, `95%`) |>   #<2>
   slice_head(n = 6)
 ```
+
+1. `hilo()` converts each forecast distribution into a numeric interval at the requested level.
+2. The interval lives in a new column named after the level; `.mean` is the point forecast.
 
 :::
 
@@ -131,17 +236,21 @@ Look at what SNAIVE and Drift produce for Gas:
 #| output: false
 
 gas_pi_raw_p <- gas_fc |>
-  filter(.model %in% c("snaive", "drift")) |>
+  filter(.model %in% c("snaive", "drift")) |>   #<1>
   autoplot(
-    aus_production |> filter_index("2000 Q1" ~ .),
+    aus_production |> filter_index("2000 Q1" ~ .),  #<2>
     level = 95
   ) +
-  facet_wrap(~ .model, nrow = 2) +
+  facet_wrap(~ .model, nrow = 2) +                #<3>
   labs(
     title = "Gas — benchmark forecasts with 95% prediction intervals",
     y = "Petajoules", x = NULL
   )
 ```
+
+1. Keep only the two benchmarks worth comparing here.
+2. Passing the full series (not just the training set) draws the test observations so we can see them against the intervals. Zooming in from 2000 makes the intervals readable.
+3. One panel per model, stacked so the two intervals share the time axis.
 
 ```{r}
 #| label: gas-pi-raw-render
@@ -154,9 +263,30 @@ gas_pi_raw_p + theme_narsil_dark()
 
 :::
 
+::: {.content-visible unless-format="revealjs"}
+
+Look at the SNAIVE panel: the observed peaks in the test set repeatedly fall **outside** the 95% interval. The interval is too narrow — and the reason is how $\hat\sigma$ was estimated. It is a single number computed from residuals across the whole training period (1956–2005), including decades when seasonal swings were a fraction of today's. Averaging small early residuals with large recent ones **understates current uncertainty**. The Drift panel has the opposite problem: a wide, symmetric interval that ignores the seasonal pattern entirely.
+
+Neither model can express what the series clearly shows — variance that grows with the level. That is what a transformation fixes.
+
+:::
+
+::: {.content-hidden unless-format="revealjs"}
+
 ::: {.fragment}
 
-Both models produce intervals of **constant width** — they assume forecast variance stays the same across all periods. But the series shows growing variance: the swings in the 2000s are far larger than those in the 1970s. The intervals are miscalibrated.
+- **SNAIVE:** observed peaks fall **outside** the 95% interval — too narrow.
+- **Why:** one $\hat\sigma$ from all residuals, 1956–2005. Small early swings dilute the large recent ones.
+- **Drift:** wide, symmetric, blind to seasonality.
+- Neither can express variance that **grows with the level**. A transformation can.
+
+:::
+
+::: {.notes}
+Look at the SNAIVE panel: the observed peaks in the test set repeatedly fall **outside** the 95% interval. The interval is too narrow — and the reason is how $\hat\sigma$ was estimated. It is a single number computed from residuals across the whole training period (1956–2005), including decades when seasonal swings were a fraction of today's. Averaging small early residuals with large recent ones **understates current uncertainty**. The Drift panel has the opposite problem: a wide, symmetric interval that ignores the seasonal pattern entirely.
+
+Neither model can express what the series clearly shows — variance that grows with the level. That is what a transformation fixes.
+:::
 
 :::
 
@@ -179,12 +309,15 @@ From the residual diagnostics we ran in [1.3](../03_fcst/forecasting.qmd), SNAIV
 #| code-fold: true
 #| results: hide
 
-theme_narsil()
+theme_narsil()                                #<1>
 gas_fit |>
-  select(snaive) |>
+  select(snaive) |>                           #<2>
   gg_tsresiduals() +
   labs(title = "Gas — SNAIVE residuals")
 ```
+
+1. `gg_tsresiduals()` cannot use the light/dark render pattern, so the theme is reset explicitly first.
+2. `gg_tsresiduals()` works on a single model: select one column of the mable before calling it.
 
 :::
 
@@ -249,8 +382,36 @@ gas_fit_bc <- gas_train |>
 #| label: gas-fc-bc
 
 gas_fc_bc <- gas_fit_bc |>
-  forecast(h = nrow(gas_test))
+  forecast(h = nrow(gas_test))   #<1>
 ```
+
+1. Same horizon as the untransformed benchmarks. Nothing about the transformation appears here — see the next slide for why.
+
+:::
+
+::: {.content-hidden unless-format="revealjs"}
+## Back to the original scale
+:::
+
+::: {.content-visible unless-format="revealjs"}
+### Back to the original scale
+:::
+
+We fitted the model to $w_t = \text{box\_cox}(y_t, \lambda)$, so the forecasts and their intervals live in the transformed scale. To report them in the original units we apply the inverse transformation — the **back-transformation**:
+
+$$y_t = \begin{cases} \exp(w_t) & \text{if } \lambda = 0 \\[6pt] \operatorname{sign}(\lambda w_t + 1)\,|\lambda w_t + 1|^{1/\lambda} & \text{otherwise} \end{cases}$$
+
+::: {.fragment}
+
+::: {.callout-note appearance="simple"}
+`fable` does this for you. Because the transformation was declared inside the model formula, `forecast()` returns everything — point forecasts, intervals, the full distribution — already back-transformed. You never call `inv_box_cox()` yourself.
+:::
+
+:::
+
+::: {.fragment}
+
+Back-transforming is not free, though. It does two things to the forecast distribution, and both matter.
 
 :::
 
@@ -262,37 +423,19 @@ gas_fc_bc <- gas_fit_bc |>
 ### Intervals before and after
 :::
 
-The intervals are computed in the transformed scale and then back-transformed. Because $e^x$ is a convex function, the back-transformation stretches the upper tail more than the lower one — the resulting intervals in the original scale are **asymmetric**.
+The intervals are computed in the transformed scale and back-transformed with the inverse above. Because the inverse is a convex function, the back-transformation stretches the upper tail more than the lower one — the resulting intervals in the original scale are **asymmetric**.
 
 ::: {.panel-tabset}
 
 ## Without transformation
 
 ```{r}
-#| label: gas-pi-no-bc
-#| echo: false
-#| output: false
-
-gas_pi_no_bc_p <- gas_fc |>
-  filter(.model %in% c("snaive", "drift")) |>
-  autoplot(
-    aus_production |> filter_index("2000 Q1" ~ .),
-    level = 95
-  ) +
-  facet_wrap(~ .model, nrow = 2) +
-  labs(
-    title = "Gas — no transformation",
-    y = "Petajoules", x = NULL
-  )
-```
-
-```{r}
 #| label: gas-pi-no-bc-render
 #| renderings: [light, dark]
 #| echo: false
 
-gas_pi_no_bc_p + theme_narsil()
-gas_pi_no_bc_p + theme_narsil_dark()
+gas_pi_raw_p + theme_narsil()
+gas_pi_raw_p + theme_narsil_dark()
 ```
 
 ## With Box-Cox
@@ -339,16 +482,20 @@ Does the transformation improve forecast accuracy?
 #| label: gas-accuracy-bc
 #| code-fold: true
 
-bind_rows(
+bind_rows(                                       #<1>
   gas_fc |>
     filter(.model %in% c("snaive", "drift")) |>
-    accuracy(aus_production),
+    accuracy(aus_production),                    #<2>
   gas_fc_bc |>
     accuracy(aus_production)
 ) |>
   select(.model, RMSE, MAE, MAPE, MASE, RMSSE) |>
-  arrange(RMSSE)
+  arrange(RMSSE)                                 #<3>
 ```
+
+1. The two fables have different models, so stack their accuracy tables to compare them in one place.
+2. `accuracy()` on a fable takes the **full** series and matches the test observations by index — never pass the test set alone.
+3. Sort by the scaled error so the best model is at the top.
 
 ::: {.fragment}
 
@@ -369,7 +516,7 @@ MASE and RMSSE are computed in the **original scale** regardless of the transfor
 ### Mean ≠ median after back-transformation
 :::
 
-Back-transforming a forecast recovers the **median** of the forecast distribution in the original scale — not the mean.
+The second consequence of back-transforming: the point forecast you recover is the **median** of the forecast distribution in the original scale — not the mean. The back-transformation introduces a bias, and by default your forecasts follow the median.
 
 ::: {.fragment}
 
@@ -385,6 +532,24 @@ The median is invariant under monotone transformations — the 50th percentile i
 
 :::
 
+::: {.content-visible unless-format="revealjs"}
+::: {.callout-note collapse="true"}
+## Why the median survives and the mean does not
+
+A monotone increasing function $g$ preserves order: if $a < b$ then $g(a) < g(b)$. Percentiles are defined by order, so the value with 50% of the distribution below it in the $w$ scale maps to the value with 50% below it in the $y$ scale. Hence $\text{median}(g(W)) = g(\text{median}(W))$. The same holds for every percentile, which is why the prediction interval bounds can be back-transformed directly.
+
+The mean is an average, not an order statistic. Averaging and then transforming is not the same as transforming and then averaging unless $g$ is linear. For convex $g$ — every Box-Cox inverse with $\lambda < 1$, including $\exp$ — Jensen's inequality gives $E[g(W)] \ge g(E[W])$, and the gap grows with the spread of $W$. Since $W$ is symmetric (normal), its mean equals its median, so $g(E[W]) = g(\text{median}(W)) = \text{median}(Y)$: the naive back-transform lands on the median and sits below the mean.
+:::
+:::
+
+::: {.content-hidden unless-format="revealjs"}
+::: {.notes}
+A monotone increasing function $g$ preserves order: if $a < b$ then $g(a) < g(b)$. Percentiles are defined by order, so the value with 50% of the distribution below it in the $w$ scale maps to the value with 50% below it in the $y$ scale. Hence $\text{median}(g(W)) = g(\text{median}(W))$. The same holds for every percentile, which is why the prediction interval bounds can be back-transformed directly.
+
+The mean is an average, not an order statistic. Averaging and then transforming is not the same as transforming and then averaging unless $g$ is linear. For convex $g$ — every Box-Cox inverse with $\lambda < 1$, including $\exp$ — Jensen's inequality gives $E[g(W)] \ge g(E[W])$, and the gap grows with the spread of $W$. Since $W$ is symmetric (normal), its mean equals its median, so $g(E[W]) = g(\text{median}(W)) = \text{median}(Y)$: the naive back-transform lands on the median and sits below the mean.
+:::
+:::
+
 ::: {.content-hidden unless-format="revealjs"}
 ## The general Box-Cox case
 :::
@@ -398,6 +563,20 @@ For a general Box-Cox transformation, the bias-adjusted back-transformation is:
 $$y_t = \begin{cases} \exp(w_t)\left[1 + \dfrac{\sigma_h^2}{2}\right] & \text{if } \lambda = 0 \\[10pt] (\lambda w_t + 1)^{1/\lambda}\left[1 + \dfrac{\sigma_h^2(1-\lambda)}{2(\lambda w_t+1)^{2}}\right] & \text{otherwise} \end{cases}$$
 
 `fable` applies this adjustment **automatically by default**.
+
+::: {.fragment}
+
+::: {.callout-note appearance="simple"}
+**This is an approximation.** The bracketed factor comes from a second-order Taylor expansion of the inverse transformation around $w_t$. For the log case the exact mean of a lognormal is $e^{\mu + \sigma_h^2/2}$, and $e^{\sigma_h^2/2} \approx 1 + \sigma_h^2/2$ when $\sigma_h^2$ is small — which is why the previous slide and this one agree to first order but not exactly. For the general Box-Cox case there is no closed form, so the approximation is what is used in practice.
+:::
+
+:::
+
+::: {.content-hidden unless-format="revealjs"}
+::: {.notes}
+This is an approximation. The bracketed factor comes from a second-order Taylor expansion of the inverse transformation around $w_t$. For the log case the exact mean of a lognormal is $e^{\mu + \sigma_h^2/2}$, and $e^{\sigma_h^2/2} \approx 1 + \sigma_h^2/2$ when $\sigma_h^2$ is small — which is why the previous slide and this one agree to first order but not exactly. For the general Box-Cox case there is no closed form, so the approximation is what is used in practice.
+:::
+:::
 
 ::: {.content-hidden unless-format="revealjs"}
 ## Seeing the difference
@@ -439,10 +618,10 @@ eggs_fc <- eggs_fit |>
 #| output: false
 
 eggs_plot_p <- eggs_fc |>
-  autoplot(eggs_tsb, level = 80) +
+  autoplot(eggs_tsb, level = 80) +   #<1>
   geom_line(
     data = eggs_fc,
-    aes(y = .median),
+    aes(y = .median),                #<2>
     linetype = "dashed"
   ) +
   labs(
@@ -452,6 +631,9 @@ eggs_plot_p <- eggs_fc |>
     x = NULL
   )
 ```
+
+1. `autoplot()` draws the bias-adjusted `.mean` as the point forecast, with an 80% interval.
+2. Overlay the `.median` column computed above as a dashed line so the gap is visible.
 
 ```{r}
 #| label: eggs-plot-render
@@ -489,6 +671,22 @@ All the prediction intervals above assume that forecast errors are **normally di
 
 ::: {.fragment}
 
+**Bootstrapping** means resampling **with replacement** from the observed data and treating the empirical distribution as a stand-in for the unknown true distribution.
+
+::: {.content-visible unless-format="revealjs"}
+Here the observed data we resample are the model's historical residuals: if the model is correctly specified they are approximately independent draws from the error distribution, whatever shape it has.
+:::
+
+::: {.content-hidden unless-format="revealjs"}
+::: {.notes}
+Here the observed data we resample are the model's historical residuals: if the model is correctly specified they are approximately independent draws from the error distribution, whatever shape it has.
+:::
+:::
+
+:::
+
+::: {.fragment}
+
 The key observation is that we can always write:
 
 $$y_t = \hat{y}_{t|t-1} + e_t$$
@@ -497,7 +695,15 @@ so a future observation can be simulated as:
 
 $$y_{T+1} = \hat{y}_{T+1|T} + e_{T+1}$$
 
-Since the errors are uncorrelated, we can substitute $e_{T+1}$ with a **randomly resampled** historical residual. Repeating this for $y_{T+2}, y_{T+3}, \ldots$ gives one possible future path. Do it thousands of times and you have a full distribution of futures — no normality required.
+Since the errors are uncorrelated, we can substitute $e_{T+1}$ with a **randomly resampled (with replacement)** historical residual. Repeating this for $y_{T+2}, y_{T+3}, \ldots$ gives one possible future path. Do it thousands of times and you have a full distribution of futures — no normality required.
+
+:::
+
+::: {.fragment}
+
+::: {.callout-tip appearance="simple"}
+The word *bootstrap* will return in Module 4 with a different object being resampled: there we bootstrap **entire series** (via STL and the remainder component) to build bagged forecasts. Here we bootstrap **residuals** to build prediction intervals. Same idea, different target.
+:::
 
 :::
 
@@ -509,55 +715,213 @@ Since the errors are uncorrelated, we can substitute $e_{T+1}$ with a **randomly
 ## Many possible futures {auto-animate=true background-color="black" background-image="../00_intro/dr_strange_math.jpg" background-opacity="0.3"}
 :::
 
-::: {.content-visible unless-format="revealjs"}
-### Many possible futures
-:::
-
-Here are five possible futures for Google's closing price, each built by resampling historical residuals step by step:
-
 ```{r}
 #| label: google-generate
 #| include: false
 
-google_2015 <- gafa_stock |> 
-  filter(Symbol == "GOOG") |> 
-  mutate(day = row_number()) |> 
-  update_tsibble(index = day, regular = TRUE) |> 
+google_2015 <- gafa_stock |>
+  filter(Symbol == "GOOG") |>
+  mutate(day = row_number()) |>
+  update_tsibble(index = day, regular = TRUE) |>
   filter(year(Date) == 2015)
 
 google_fit <- google_2015 |>
   model(NAIVE(Close))
 
 google_sim <- google_fit |>
-  generate(h = 30, times = 5, bootstrap = TRUE, seed = 123)
+  generate(h = 30, times = 500, bootstrap = TRUE, seed = 123)
+
+# .rep is a character column in fabletools, so filter on character labels.
+# All three objects come from the same generate() call: the first 5 paths
+# are identical across the 5 / 50 / 500 plots.
+google_sim_5  <- google_sim |> filter(.rep %in% as.character(1:5))
+google_sim_50 <- google_sim |> filter(.rep %in% as.character(1:50))
 ```
 
 ```{r}
-#| label: google-sim-plot
-#| echo: false
-#| output: false
+#| label: google-fc-boot-hidden
+#| include: false
 
-google_sim_plot_p <- google_2015 |>
-  ggplot(aes(x = day)) +
-  geom_line(aes(y = Close)) +
-  geom_line(
-    data  = google_sim,
-    aes(y = .sim, color = as.factor(.rep))
-  ) +
-  labs(
-    title = "Google closing stock price — 5 simulated futures",
-    y = "USD", x = NULL, color = "Path"
-  )
+# Computed here so the interval can be drawn on top of the simulated paths.
+# The visible teaching chunk on the "From paths to intervals" slide re-runs it.
+set.seed(123)
+google_fc_boot <- google_fit |>
+  forecast(h = 30, bootstrap = TRUE, times = 500)
 ```
 
 ```{r}
-#| label: google-sim-plot-render
+#| label: google-plot-futures
+#| include: false
+
+anduin <- narsil_pal("light")$palette[1]  # Gondor primary blue
+
+plot_futures <- function(sim, title, alpha = 1, colour_by_rep = TRUE, legend = TRUE) {
+  p <- google_2015 |>
+    ggplot(aes(x = day)) +
+    geom_line(aes(y = Close))
+  if (colour_by_rep) {
+    p <- p + geom_line(data = sim, aes(y = .sim, colour = as.factor(.rep)), alpha = alpha)
+  } else {
+    p <- p + geom_line(data = sim, aes(y = .sim, group = .rep), alpha = alpha, colour = anduin)
+  }
+  p + labs(title = title, y = "USD", x = NULL, colour = "Path") +
+    theme(legend.position = if (legend) "bottom" else "none")
+}
+
+google_sim_5_p <- plot_futures(
+  google_sim_5, "Google closing price — 5 simulated futures"
+)
+
+google_sim_50_p <- plot_futures(
+  google_sim_50, "Google closing price — 50 simulated futures",
+  alpha = 0.6, legend = FALSE
+)
+
+google_sim_500_p <- plot_futures(
+  google_sim, "Google closing price — 500 simulated futures",
+  alpha = 0.15, colour_by_rep = FALSE, legend = FALSE
+)
+
+google_pi95 <- google_fc_boot |>
+  hilo(level = 95) |>
+  unpack_hilo(`95%`) |>
+  as_tibble()
+
+google_sim_pi_p <- plot_futures(
+  google_sim, "Google closing price — 500 futures and the 95% bootstrap interval",
+  alpha = 0.15, colour_by_rep = FALSE, legend = FALSE
+) +
+  geom_line(data = google_pi95, aes(y = `95%_lower`), linetype = "dashed", linewidth = 0.9) +
+  geom_line(data = google_pi95, aes(y = `95%_upper`), linetype = "dashed", linewidth = 0.9) +
+  geom_line(data = google_pi95, aes(y = .mean), linewidth = 0.9)
+```
+
+::: {.content-hidden unless-format="revealjs"}
+## Many possible futures {auto-animate=true background-color="black" background-image="../00_intro/dr_strange_math.jpg" background-opacity="0.3"}
+
+Five possible futures, each built by resampling a historical residual at every step:
+
+```{r}
+#| label: google-sim-5-render
 #| renderings: [light, dark]
 #| echo: false
 
-google_sim_plot_p + theme_narsil() + theme(legend.position = "bottom")
-google_sim_plot_p + theme_narsil_dark() + theme(legend.position = "bottom")
+google_sim_5_p + theme_narsil() + theme(legend.position = "bottom")
+google_sim_5_p + theme_narsil_dark() + theme(legend.position = "bottom")
 ```
+
+:::
+
+::: {.content-hidden unless-format="revealjs"}
+## Many possible futures {auto-animate=true background-color="black" background-image="../00_intro/dr_strange_math.jpg" background-opacity="0.3"}
+
+Fifty.
+
+```{r}
+#| label: google-sim-50-render
+#| renderings: [light, dark]
+#| echo: false
+
+google_sim_50_p + theme_narsil() + theme(legend.position = "none")
+google_sim_50_p + theme_narsil_dark() + theme(legend.position = "none")
+```
+
+:::
+
+::: {.content-hidden unless-format="revealjs"}
+## Many possible futures {auto-animate=true background-color="black" background-image="../00_intro/dr_strange_math.jpg" background-opacity="0.3"}
+
+Five hundred. A distribution is taking shape.
+
+```{r}
+#| label: google-sim-500-render
+#| renderings: [light, dark]
+#| echo: false
+
+google_sim_500_p + theme_narsil() + theme(legend.position = "none")
+google_sim_500_p + theme_narsil_dark() + theme(legend.position = "none")
+```
+
+:::
+
+::: {.content-hidden unless-format="revealjs"}
+## Many possible futures {auto-animate=true background-color="black" background-image="../00_intro/dr_strange_math.jpg" background-opacity="0.3"}
+
+Take the 2.5th and 97.5th percentiles at each horizon and you have the bootstrap prediction interval.
+
+```{r}
+#| label: google-sim-pi-render
+#| renderings: [light, dark]
+#| echo: false
+
+google_sim_pi_p + theme_narsil() + theme(legend.position = "none")
+google_sim_pi_p + theme_narsil_dark() + theme(legend.position = "none")
+```
+
+:::
+
+::: {.content-visible unless-format="revealjs"}
+### Many possible futures
+
+Each path is built by resampling a historical residual at every step. Flip through the tabs to watch a distribution emerge from individual paths.
+
+::: {.panel-tabset}
+
+## 5 paths
+
+Five possible futures for Google's closing price.
+
+```{r}
+#| label: google-sim-5-html-render
+#| renderings: [light, dark]
+#| echo: false
+
+google_sim_5_p + theme_narsil() + theme(legend.position = "bottom")
+google_sim_5_p + theme_narsil_dark() + theme(legend.position = "bottom")
+```
+
+## 50 paths
+
+Fifty paths. The first five are the same as in the previous tab.
+
+```{r}
+#| label: google-sim-50-html-render
+#| renderings: [light, dark]
+#| echo: false
+
+google_sim_50_p + theme_narsil() + theme(legend.position = "none")
+google_sim_50_p + theme_narsil_dark() + theme(legend.position = "none")
+```
+
+## 500 paths
+
+Five hundred paths. A distribution is taking shape.
+
+```{r}
+#| label: google-sim-500-html-render
+#| renderings: [light, dark]
+#| echo: false
+
+google_sim_500_p + theme_narsil() + theme(legend.position = "none")
+google_sim_500_p + theme_narsil_dark() + theme(legend.position = "none")
+```
+
+## 500 paths + interval
+
+Take the 2.5th and 97.5th percentiles at each horizon and you have the bootstrap prediction interval (dashed) around the bootstrap mean (solid).
+
+```{r}
+#| label: google-sim-pi-html-render
+#| renderings: [light, dark]
+#| echo: false
+
+google_sim_pi_p + theme_narsil() + theme(legend.position = "none")
+google_sim_pi_p + theme_narsil_dark() + theme(legend.position = "none")
+```
+
+:::
+
+:::
 
 ::: {.content-hidden unless-format="revealjs"}
 ## From paths to intervals
@@ -567,24 +931,26 @@ google_sim_plot_p + theme_narsil_dark() + theme(legend.position = "bottom")
 ### From paths to intervals
 :::
 
-Running this thousands of times and taking percentiles of the simulated paths gives the **bootstrap prediction interval**. `forecast()` does this in one step:
+Running this hundreds or thousands of times and taking percentiles of the simulated paths gives the **bootstrap prediction interval**. `forecast()` does this in one step:
 
 ::: {.fragment}
 
 ```{r}
 #| label: google-bootstrap
-#| code-line-numbers: "|4,5"
+#| code-line-numbers: "|4,5|6"
 
 google_fc_boot <- google_fit |>
   forecast(
     h         = 30,
     bootstrap = TRUE,   #<1>
-    times     = 1000    #<2>
+    times     = 500,    #<2>
+    seed      = 123     #<3>
   )
 ```
 
 1. `bootstrap = TRUE` switches from the analytical normal interval to the resampling-based one.
-2. Number of simulated paths — more gives smoother intervals at higher computational cost.
+2. Number of simulated paths — 500 here, matching the paths drawn on the previous slides. More gives smoother intervals at higher computational cost.
+3. Fixed seed so the interval is reproducible across renders.
 
 :::
 
@@ -596,12 +962,14 @@ google_fc_boot <- google_fit |>
 #| output: false
 
 google_bootstrap_plot_p <- google_fc_boot |>
-  autoplot(google_2015, level = 95) +
+  autoplot(google_2015, level = 95) +   #<1>
   labs(
     title = "Google closing stock price — bootstrap 95% interval",
     y = "USD", x = NULL
   )
 ```
+
+1. A bootstrap fable plots exactly like a normal one — `autoplot()` reads the interval from the sample distribution instead of a normal formula.
 
 ```{r}
 #| label: google-bootstrap-plot-render
@@ -638,11 +1006,44 @@ STL (covered in [1.2](../02_ts_dcmp/ts_dcmp.qmd)) decomposes a series into trend
 
 ::: {.fragment}
 
-`decomposition_model()` combines them into a pipeline:
+The additive STL decomposition is
 
-1. Apply STL to separate the components
-2. Forecast the **seasonally adjusted series** with one model
-3. Re-seasonalize: add the seasonal component forecast back
+$$y_t = T_t + S_t + R_t$$
+
+:::
+
+::: {.fragment}
+
+For forecasting we regroup it. Everything that is not seasonal goes into one term:
+
+$$y_t = S_t + A_t, \qquad A_t = T_t + R_t$$
+
+$A_t$ is the **seasonally adjusted** series. We now have two components, and we forecast each one with its own model:
+
+$$\hat{y}_{T+h|T} = \hat{S}_{T+h|T} + \hat{A}_{T+h|T}$$
+
+:::
+
+::: {.fragment}
+
+`decomposition_model()` turns this into a pipeline:
+
+1. Apply STL to split $y_t$ into $S_t$ and $A_t$
+2. Forecast the **seasonal component** $S_t$ — by default with SNAIVE, which just repeats the last seasonal cycle
+3. Forecast the **seasonally adjusted series** $A_t$ with a model of your choice (here: Drift)
+4. Add the two forecasts back together
+
+:::
+
+::: {.fragment}
+
+| Component | Notation | `fable` column |
+|---|---|---|
+| Series | $y_t$ | the response variable (`Gas`) |
+| Seasonal | $S_t$ | `season_year`, `season_week`, `season_day`, … — one per seasonal period detected by STL |
+| Seasonally adjusted | $A_t$ | `season_adjust` |
+
+The seasonal column is named after its period. Quarterly and monthly data give `season_year`; daily data can give `season_week` and `season_year` at the same time — we return to that in Module 4.
 
 :::
 
@@ -743,9 +1144,26 @@ gas_fit_dcmp <- gas_train |>
 
 1. `decomposition_model()` wraps a decomposition method and one or more component models into a single reusable spec.
 2. STL decomposition — same syntax as in 1.2.
-3. SNAIVE on `season_year` handles the seasonal component extracted by STL.
+3. SNAIVE on `season_year` forecasts $S_t$. This line is optional — see the callout below.
 4. Drift on `season_adjust` handles the seasonally adjusted series. `fable` reconstructs the final forecast by adding the two component forecasts.
 5. We still need to put the decomposition model inside a `mable` with the `model()` function.
+
+::: {.content-hidden unless-format="revealjs"}
+## What if I omit the seasonal model?
+:::
+
+::: {.callout-note collapse="true"}
+## Do I have to specify the seasonal model?
+
+No. If you leave out the model for a seasonal component, `decomposition_model()` forecasts it with `SNAIVE()` automatically. The documentation puts it this way: all non-seasonal components must be specified, and any unspecified seasonal components are forecast using seasonal naive. Writing `SNAIVE(season_year)` explicitly, as we do here, changes nothing in the result — it just makes visible that the seasonal part is being modelled too, and shows where you would plug in a different model for it.
+
+```{r}
+#| label: dcmp-no-snaive
+#| eval: false
+
+decomposition_model(STL(Gas ~ trend() + season(), robust = TRUE), RW(season_adjust ~ drift()))
+```
+:::
 
 ::: {.content-hidden unless-format="revealjs"}
 
@@ -793,11 +1211,14 @@ gas_fit_dcmp_bc <- gas_train |>
 #| label: dcmp-fc-both
 #| code-fold: true
 
-gas_fc_dcmp <- bind_rows(
+gas_fc_dcmp <- bind_rows(                          #<1>
   gas_fit_dcmp    |> forecast(h = nrow(gas_test)),
-  gas_fit_dcmp_bc |> forecast(h = nrow(gas_test))
+  gas_fit_dcmp_bc |> forecast(h = nrow(gas_test))  #<2>
 )
 ```
+
+1. The two decomposition models live in separate mables, so forecast each and stack the fables.
+2. Same horizon as every other model in this document, so the accuracy tables are comparable.
 
 ::: {.content-hidden unless-format="revealjs"}
 ## Final comparison
@@ -853,13 +1274,16 @@ plotly::ggplotly(gas_final_comparison_p + theme_narsil_dark(), dynamicTicks = TR
 gas_accu <- bind_rows(
   gas_fc      |> filter(.model %in% c("snaive", "drift")) |> accuracy(aus_production),
   gas_fc_bc   |> accuracy(aus_production),
-  gas_fc_dcmp |> accuracy(aus_production)
+  gas_fc_dcmp |> accuracy(aus_production)      #<1>
 ) |>
   select(.model, RMSE, MAE, MAPE, MASE, RMSSE) |>
-  arrange(RMSSE)
+  arrange(RMSSE)                               #<2>
 
 gas_accu
 ```
+
+1. All six Module 1 models, evaluated on the same test set with the full series passed to `accuracy()`.
+2. Sorted by RMSSE: the first row is the baseline every later model has to beat.
 
 ::: {.fragment}
 
