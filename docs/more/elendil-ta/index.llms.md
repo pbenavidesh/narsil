@@ -10,7 +10,7 @@ Custom Claude skill for the Time Series Forecasting course at ITESO. Install it 
 
 Modified
 
-September 7, 2026
+September 18, 2026
 
 # What is Elendil TA?
 

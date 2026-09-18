@@ -2,7 +2,7 @@
 
 Modified
 
-September 7, 2026
+September 18, 2026
 
 Code
 
@@ -144,20 +144,156 @@ where each of these is an academic paper\
 
 ------------------------------------------------------------------------
 
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Google searches for 'batman' and the second variable is The number of security guards in Oklahoma. The chart goes from 2004 to 2022, and the two variables track closely in value over that time.](spurious/correlation/image/5227_google-searches-for-batman_correlates-with_the-number-of-security-guards-in-oklahoma.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Google searches for 'batman' and the second variable is The number of security guards in Oklahoma.  The chart goes from 2004 to 2022, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/5227_google-searches-for-batman_correlates-with_the-number-of-security-guards-in-oklahoma_mobile.svg)\
-**View details about correlation \#5,227**](spurious/correlation/5227_google-searches-for-batman_correlates-with_the-number-of-security-guards-in-oklahoma)\
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Bachelor's degrees awarded in Psychology and the second variable is The number of groundskeepers in Utah. The chart goes from 2012 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/1781_bachelors-degrees-awarded-in-psychology_correlates-with_the-number-of-groundskeepers-in-utah.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Bachelor's degrees awarded in Psychology and the second variable is The number of groundskeepers in Utah.  The chart goes from 2012 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1781_bachelors-degrees-awarded-in-psychology_correlates-with_the-number-of-groundskeepers-in-utah_mobile.svg)\
+**View details about correlation \#1,781**](spurious/correlation/1781_bachelors-degrees-awarded-in-psychology_correlates-with_the-number-of-groundskeepers-in-utah)\
 \
 
 ^(Show scatterplot)
 
-![](spurious/correlation/scatterplot/5227_google-searches-for-batman_correlates-with_the-number-of-security-guards-in-oklahoma_scatterplot.png)
+![](spurious/correlation/scatterplot/1781_bachelors-degrees-awarded-in-psychology_correlates-with_the-number-of-groundskeepers-in-utah_scatterplot.png)
 
 \
 \
 
 *What else correlates?*\
-[Google searches for 'batman'](spurious/variable?id=1508) · [all google searches](spurious/view-all-variables/google)\
-[The number of security guards in Oklahoma](spurious/variable?id=13149) · [all cccupations](spurious/view-all-variables/occupations)\
+[Bachelor's degrees awarded in Psychology](spurious/variable?id=1290) · [all education](spurious/view-all-variables/education)\
+[The number of groundskeepers in Utah](spurious/variable?id=15091) · [all cccupations](spurious/view-all-variables/occupations)\
+
+------------------------------------------------------------------------
+
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Number of public school students in 9th grade and the second variable is Bank of America's stock price (BAC). The chart goes from 2002 to 2022, and the two variables track closely in value over that time.](spurious/correlation/image/1828_number-of-public-school-students-in-9th-grade_correlates-with_bank-of-americas-stock-price.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Number of public school students in 9th grade and the second variable is Bank of America's stock price (BAC).  The chart goes from 2002 to 2022, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1828_number-of-public-school-students-in-9th-grade_correlates-with_bank-of-americas-stock-price_mobile.svg)\
+**View details about correlation \#1,828**](spurious/correlation/1828_number-of-public-school-students-in-9th-grade_correlates-with_bank-of-americas-stock-price)\
+\
+
+^(Show scatterplot)
+
+![](spurious/correlation/scatterplot/1828_number-of-public-school-students-in-9th-grade_correlates-with_bank-of-americas-stock-price_scatterplot.png)
+
+\
+\
+
+*What else correlates?*\
+[Number of public school students in 9th grade](spurious/variable?id=1307) · [all education](spurious/view-all-variables/education)\
+[Bank of America's stock price (BAC)](spurious/variable?id=1570) · [all stocks](spurious/view-all-variables/stocks)\
+
+------------------------------------------------------------------------
+
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Searches for 'never gonna give you up' and the second variable is Google searches for 'who is elon musk'. The chart goes from 2006 to 2023, and the two variables track closely in value over that time.](spurious/correlation/image/4986_popularity-of-the-never-gonna-give-you-up-meme_correlates-with_google-searches-for-who-is-elon-musk.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Searches for 'never gonna give you up' and the second variable is Google searches for 'who is elon musk'.  The chart goes from 2006 to 2023, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/4986_popularity-of-the-never-gonna-give-you-up-meme_correlates-with_google-searches-for-who-is-elon-musk_mobile.svg)\
+**View details about correlation \#4,986**](spurious/correlation/4986_popularity-of-the-never-gonna-give-you-up-meme_correlates-with_google-searches-for-who-is-elon-musk)\
+\
+
+^(Show scatterplot)
+
+![](spurious/correlation/scatterplot/4986_popularity-of-the-never-gonna-give-you-up-meme_correlates-with_google-searches-for-who-is-elon-musk_scatterplot.png)
+
+\
+\
+
+*What else correlates?*\
+[Searches for 'never gonna give you up'](spurious/variable?id=25160) · [all memes](spurious/view-all-variables/memes)\
+[Google searches for 'who is elon musk'](spurious/variable?id=1487) · [all google searches](spurious/view-all-variables/google)\
+
+------------------------------------------------------------------------
+
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The number of physicists in California and the second variable is Michael Schumacher's Formula One Ranking. The chart goes from 2003 to 2012, and the two variables track closely in value over that time.](spurious/correlation/image/3705_the-number-of-physicists-in-california_correlates-with_michael-schumachers-formula-one-ranking.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The number of physicists in California and the second variable is Michael Schumacher's Formula One Ranking.  The chart goes from 2003 to 2012, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/3705_the-number-of-physicists-in-california_correlates-with_michael-schumachers-formula-one-ranking_mobile.svg)\
+**View details about correlation \#3,705**](spurious/correlation/3705_the-number-of-physicists-in-california_correlates-with_michael-schumachers-formula-one-ranking)\
+\
+
+^(Show scatterplot)
+
+![](spurious/correlation/scatterplot/3705_the-number-of-physicists-in-california_correlates-with_michael-schumachers-formula-one-ranking_scatterplot.png)
+
+\
+\
+
+*What else correlates?*\
+[The number of physicists in California](spurious/variable?id=5367) · [all cccupations](spurious/view-all-variables/occupations)\
+[Michael Schumacher's Formula One Ranking](spurious/variable?id=104) · [all weird & wacky](spurious/view-all-variables/weirdwacky)\
+
+------------------------------------------------------------------------
+
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The distance between Uranus and the moon and the second variable is Electricity generation in Japan. The chart goes from 1980 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/2730_the-distance-between-uranus-and-the-moon_correlates-with_electricity-generation-in-japan.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The distance between Uranus and the moon and the second variable is Electricity generation in Japan.  The chart goes from 1980 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/2730_the-distance-between-uranus-and-the-moon_correlates-with_electricity-generation-in-japan_mobile.svg)\
+**View details about correlation \#2,730**](spurious/correlation/2730_the-distance-between-uranus-and-the-moon_correlates-with_electricity-generation-in-japan)\
+\
+
+^(Show scatterplot)
+
+![](spurious/correlation/scatterplot/2730_the-distance-between-uranus-and-the-moon_correlates-with_electricity-generation-in-japan_scatterplot.png)
+
+\
+\
+
+*What else correlates?*\
+[The distance between Uranus and the moon](spurious/variable?id=1963) · [all planets](spurious/view-all-variables/planets)\
+[Electricity generation in Japan](spurious/variable?id=23755) · [all energy](spurious/view-all-variables/energy)\
+
+------------------------------------------------------------------------
+
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Associates degrees awarded in History and the second variable is Centene's stock price (CNC). The chart goes from 2011 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/2709_associates-degrees-awarded-in-history_correlates-with_centenes-stock-price.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Associates degrees awarded in History and the second variable is Centene's stock price (CNC).  The chart goes from 2011 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/2709_associates-degrees-awarded-in-history_correlates-with_centenes-stock-price_mobile.svg)\
+**View details about correlation \#2,709**](spurious/correlation/2709_associates-degrees-awarded-in-history_correlates-with_centenes-stock-price)\
+\
+
+^(Show scatterplot)
+
+![](spurious/correlation/scatterplot/2709_associates-degrees-awarded-in-history_correlates-with_centenes-stock-price_scatterplot.png)
+
+\
+\
+
+*What else correlates?*\
+[Associates degrees awarded in History](spurious/variable?id=1257) · [all education](spurious/view-all-variables/education)\
+[Centene's stock price (CNC)](spurious/variable?id=1802) · [all stocks](spurious/view-all-variables/stocks)\
+
+------------------------------------------------------------------------
+
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The number of mobile heavy equipment mechanics in Maine and the second variable is Customer satisfaction with Verizon. The chart goes from 2004 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/1149_the-number-of-mobile-heavy-equipment-mechanics-in-maine_correlates-with_customer-satisfaction-with-verizon.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The number of mobile heavy equipment mechanics in Maine and the second variable is Customer satisfaction with Verizon.  The chart goes from 2004 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1149_the-number-of-mobile-heavy-equipment-mechanics-in-maine_correlates-with_customer-satisfaction-with-verizon_mobile.svg)\
+**View details about correlation \#1,149**](spurious/correlation/1149_the-number-of-mobile-heavy-equipment-mechanics-in-maine_correlates-with_customer-satisfaction-with-verizon)\
+\
+
+^(Show scatterplot)
+
+![](spurious/correlation/scatterplot/1149_the-number-of-mobile-heavy-equipment-mechanics-in-maine_correlates-with_customer-satisfaction-with-verizon_scatterplot.png)
+
+\
+\
+
+*What else correlates?*\
+[The number of mobile heavy equipment mechanics in Maine](spurious/variable?id=9018) · [all cccupations](spurious/view-all-variables/occupations)\
+[Customer satisfaction with Verizon](spurious/variable?id=19882) · [all weird & wacky](spurious/view-all-variables/weirdwacky)\
+
+------------------------------------------------------------------------
+
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The number of movies Will Smith appeared in and the second variable is Electricity generation in Kosovo. The chart goes from 2008 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/5860_the-number-of-movies-will-smith-appeared-in_correlates-with_electricity-generation-in-kosovo.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The number of movies Will Smith appeared in and the second variable is Electricity generation in Kosovo.  The chart goes from 2008 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/5860_the-number-of-movies-will-smith-appeared-in_correlates-with_electricity-generation-in-kosovo_mobile.svg)\
+**View details about correlation \#5,860**](spurious/correlation/5860_the-number-of-movies-will-smith-appeared-in_correlates-with_electricity-generation-in-kosovo)\
+\
+
+^(Show scatterplot)
+
+![](spurious/correlation/scatterplot/5860_the-number-of-movies-will-smith-appeared-in_correlates-with_electricity-generation-in-kosovo_scatterplot.png)
+
+\
+\
+
+*What else correlates?*\
+[The number of movies Will Smith appeared in](spurious/variable?id=26625) · [all films & actors](spurious/view-all-variables/films)\
+[Electricity generation in Kosovo](spurious/variable?id=23773) · [all energy](spurious/view-all-variables/energy)\
+
+------------------------------------------------------------------------
+
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is UFO sightings in Utah and the second variable is Patents granted in the US. The chart goes from 1975 to 2020, and the two variables track closely in value over that time.](spurious/correlation/image/1116_ufo-sightings-in-utah_correlates-with_patents-granted-in-the-us.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is UFO sightings in Utah and the second variable is Patents granted in the US.  The chart goes from 1975 to 2020, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1116_ufo-sightings-in-utah_correlates-with_patents-granted-in-the-us_mobile.svg)\
+**View details about correlation \#1,116**](spurious/correlation/1116_ufo-sightings-in-utah_correlates-with_patents-granted-in-the-us)\
+\
+
+^(Show scatterplot)
+
+![](spurious/correlation/scatterplot/1116_ufo-sightings-in-utah_correlates-with_patents-granted-in-the-us_scatterplot.png)
+
+\
+\
+
+*What else correlates?*\
+[UFO sightings in Utah](spurious/variable?id=1176) · [all random state specific](spurious/view-all-variables/statespecific)\
+[Patents granted in the US](spurious/variable?id=848) · [all weird & wacky](spurious/view-all-variables/weirdwacky)\
 
 ------------------------------------------------------------------------
 
@@ -260,142 +396,6 @@ where each of these is an academic paper\
 *What else correlates?*\
 [Popularity of the first name Camden](spurious/variable?id=3330) · [all first names](spurious/view-all-variables/babynames)\
 [UFO sightings in Florida](spurious/variable?id=1149) · [all random state specific](spurious/view-all-variables/statespecific)\
-
-------------------------------------------------------------------------
-
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Master's degrees awarded in Parks & Recreation and the second variable is Alphabet's stock price (GOOGL). The chart goes from 2012 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/2298_masters-degrees-awarded-in-parks--recreation_correlates-with_alphabets-stock-price.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Master's degrees awarded in Parks & Recreation and the second variable is Alphabet's stock price (GOOGL).  The chart goes from 2012 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/2298_masters-degrees-awarded-in-parks--recreation_correlates-with_alphabets-stock-price_mobile.svg)\
-**View details about correlation \#2,298**](spurious/correlation/2298_masters-degrees-awarded-in-parks--recreation_correlates-with_alphabets-stock-price)\
-\
-
-^(Show scatterplot)
-
-![](spurious/correlation/scatterplot/2298_masters-degrees-awarded-in-parks--recreation_correlates-with_alphabets-stock-price_scatterplot.png)
-
-\
-\
-
-*What else correlates?*\
-[Master's degrees awarded in Parks & Recreation](spurious/variable?id=1333) · [all education](spurious/view-all-variables/education)\
-[Alphabet's stock price (GOOGL)](spurious/variable?id=1542) · [all stocks](spurious/view-all-variables/stocks)\
-
-------------------------------------------------------------------------
-
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Kerosene used in El Salvador and the second variable is Google searches for 'attacked by a squirrel'. The chart goes from 2004 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/1069_kerosene-used-in-el-salvador_correlates-with_google-searches-for-attacked-by-a-squirrel.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Kerosene used in El Salvador and the second variable is Google searches for 'attacked by a squirrel'.  The chart goes from 2004 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1069_kerosene-used-in-el-salvador_correlates-with_google-searches-for-attacked-by-a-squirrel_mobile.svg)\
-**View details about correlation \#1,069**](spurious/correlation/1069_kerosene-used-in-el-salvador_correlates-with_google-searches-for-attacked-by-a-squirrel)\
-\
-
-^(Show scatterplot)
-
-![](spurious/correlation/scatterplot/1069_kerosene-used-in-el-salvador_correlates-with_google-searches-for-attacked-by-a-squirrel_scatterplot.png)
-
-\
-\
-
-*What else correlates?*\
-[Kerosene used in El Salvador](spurious/variable?id=24380) · [all energy](spurious/view-all-variables/energy)\
-[Google searches for 'attacked by a squirrel'](spurious/variable?id=1354) · [all google searches](spurious/view-all-variables/google)\
-
-------------------------------------------------------------------------
-
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The number of movies Nicolas Cage appeared in and the second variable is The number of transportation security screeners in North Dakota. The chart goes from 2012 to 2022, and the two variables track closely in value over that time.](spurious/correlation/image/5837_the-number-of-movies-nicolas-cage-appeared-in_correlates-with_the-number-of-transportation-security-screeners-in-north-dakota.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The number of movies Nicolas Cage appeared in and the second variable is The number of transportation security screeners in North Dakota.  The chart goes from 2012 to 2022, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/5837_the-number-of-movies-nicolas-cage-appeared-in_correlates-with_the-number-of-transportation-security-screeners-in-north-dakota_mobile.svg)\
-**View details about correlation \#5,837**](spurious/correlation/5837_the-number-of-movies-nicolas-cage-appeared-in_correlates-with_the-number-of-transportation-security-screeners-in-north-dakota)\
-\
-
-^(Show scatterplot)
-
-![](spurious/correlation/scatterplot/5837_the-number-of-movies-nicolas-cage-appeared-in_correlates-with_the-number-of-transportation-security-screeners-in-north-dakota_scatterplot.png)
-
-\
-\
-
-*What else correlates?*\
-[The number of movies Nicolas Cage appeared in](spurious/variable?id=26630) · [all films & actors](spurious/view-all-variables/films)\
-[The number of transportation security screeners in North Dakota](spurious/variable?id=19382) · [all cccupations](spurious/view-all-variables/occupations)\
-
-------------------------------------------------------------------------
-
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Google searches for 'im not even mad' and the second variable is Popularity of the 'whip nae nae' meme. The chart goes from 2015 to 2023, and the two variables track closely in value over that time.](spurious/correlation/image/5952_google-searches-for-im-not-even-mad_correlates-with_popularity-of-the-whip-nae-nae-meme.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Google searches for 'im not even mad' and the second variable is Popularity of the 'whip nae nae' meme.  The chart goes from 2015 to 2023, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/5952_google-searches-for-im-not-even-mad_correlates-with_popularity-of-the-whip-nae-nae-meme_mobile.svg)\
-**View details about correlation \#5,952**](spurious/correlation/5952_google-searches-for-im-not-even-mad_correlates-with_popularity-of-the-whip-nae-nae-meme)\
-\
-
-^(Show scatterplot)
-
-![](spurious/correlation/scatterplot/5952_google-searches-for-im-not-even-mad_correlates-with_popularity-of-the-whip-nae-nae-meme_scatterplot.png)
-
-\
-\
-
-*What else correlates?*\
-[Google searches for 'im not even mad'](spurious/variable?id=1383) · [all google searches](spurious/view-all-variables/google)\
-[Popularity of the 'whip nae nae' meme](spurious/variable?id=25122) · [all memes](spurious/view-all-variables/memes)\
-
-------------------------------------------------------------------------
-
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the first name Harmony and the second variable is Associates degrees awarded in Agriculture and natural resources. The chart goes from 2011 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/2129_popularity-of-the-first-name-harmony_correlates-with_associates-degrees-awarded-in-agriculture-and-natural-resources.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the first name Harmony and the second variable is Associates degrees awarded in Agriculture and natural resources.  The chart goes from 2011 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/2129_popularity-of-the-first-name-harmony_correlates-with_associates-degrees-awarded-in-agriculture-and-natural-resources_mobile.svg)\
-**View details about correlation \#2,129**](spurious/correlation/2129_popularity-of-the-first-name-harmony_correlates-with_associates-degrees-awarded-in-agriculture-and-natural-resources)\
-\
-
-^(Show scatterplot)
-
-![](spurious/correlation/scatterplot/2129_popularity-of-the-first-name-harmony_correlates-with_associates-degrees-awarded-in-agriculture-and-natural-resources_scatterplot.png)
-
-\
-\
-
-*What else correlates?*\
-[Popularity of the first name Harmony](spurious/variable?id=3818) · [all first names](spurious/view-all-variables/babynames)\
-[Associates degrees awarded in Agriculture and natural resources](spurious/variable?id=1206) · [all education](spurious/view-all-variables/education)\
-
-------------------------------------------------------------------------
-
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Bloomberg Money Stuff articles about insider trading and the second variable is Banco Bilbao Vizcaya Argentaria's stock price (BBVA). The chart goes from 2014 to 2023, and the two variables track closely in value over that time.](spurious/correlation/image/5892_bloomberg-money-stuff-articles-about-insider-trading_correlates-with_banco-bilbao-vizcaya-argentarias-stock-price-bbva.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Bloomberg Money Stuff articles about insider trading and the second variable is Banco Bilbao Vizcaya Argentaria's stock price (BBVA).  The chart goes from 2014 to 2023, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/5892_bloomberg-money-stuff-articles-about-insider-trading_correlates-with_banco-bilbao-vizcaya-argentarias-stock-price-bbva_mobile.svg)\
-**View details about correlation \#5,892**](spurious/correlation/5892_bloomberg-money-stuff-articles-about-insider-trading_correlates-with_banco-bilbao-vizcaya-argentarias-stock-price-bbva)\
-\
-
-^(Show scatterplot)
-
-![](spurious/correlation/scatterplot/5892_bloomberg-money-stuff-articles-about-insider-trading_correlates-with_banco-bilbao-vizcaya-argentarias-stock-price-bbva_scatterplot.png)
-
-\
-\
-
-*What else correlates?*\
-[Bloomberg Money Stuff articles about insider trading](spurious/variable?id=26734) · [all weird & wacky](spurious/view-all-variables/weirdwacky)\
-[Banco Bilbao Vizcaya Argentaria's stock price (BBVA)](spurious/variable?id=1752) · [all stocks](spurious/view-all-variables/stocks)\
-
-------------------------------------------------------------------------
-
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Butter consumption and the second variable is Ticket prices at North American movie theaters. The chart goes from 2001 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/1604_butter-consumption_correlates-with_ticket-prices-at-north-american-movie-theaters.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Butter consumption and the second variable is Ticket prices at North American movie theaters.  The chart goes from 2001 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1604_butter-consumption_correlates-with_ticket-prices-at-north-american-movie-theaters_mobile.svg)\
-**View details about correlation \#1,604**](spurious/correlation/1604_butter-consumption_correlates-with_ticket-prices-at-north-american-movie-theaters)\
-\
-
-^(Show scatterplot)
-
-![](spurious/correlation/scatterplot/1604_butter-consumption_correlates-with_ticket-prices-at-north-american-movie-theaters_scatterplot.png)
-
-\
-\
-
-*What else correlates?*\
-[Butter consumption](spurious/variable?id=557) · [all food](spurious/view-all-variables/farmingfood)\
-[Ticket prices at North American movie theaters](spurious/variable?id=41) · [all films & actors](spurious/view-all-variables/films)\
-
-------------------------------------------------------------------------
-
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the 'like a boss' meme and the second variable is Google searches for 'how to cut own hair'. The chart goes from 2006 to 2023, and the two variables track closely in value over that time.](spurious/correlation/image/4994_popularity-of-the-like-a-boss-meme_correlates-with_google-searches-for-how-to-cut-own-hair.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the 'like a boss' meme and the second variable is Google searches for 'how to cut own hair'.  The chart goes from 2006 to 2023, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/4994_popularity-of-the-like-a-boss-meme_correlates-with_google-searches-for-how-to-cut-own-hair_mobile.svg)\
-**View details about correlation \#4,994**](spurious/correlation/4994_popularity-of-the-like-a-boss-meme_correlates-with_google-searches-for-how-to-cut-own-hair)\
-\
-
-^(Show scatterplot)
-
-![](spurious/correlation/scatterplot/4994_popularity-of-the-like-a-boss-meme_correlates-with_google-searches-for-how-to-cut-own-hair_scatterplot.png)
-
-\
-\
-
-*What else correlates?*\
-[Popularity of the 'like a boss' meme](spurious/variable?id=25142) · [all memes](spurious/view-all-variables/memes)\
-[Google searches for 'how to cut own hair'](spurious/variable?id=1389) · [all google searches](spurious/view-all-variables/google)\
 
 ------------------------------------------------------------------------
 

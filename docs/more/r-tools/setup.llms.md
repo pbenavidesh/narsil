@@ -10,7 +10,7 @@ August 18, 2026
 
 Modified
 
-September 7, 2026
+September 18, 2026
 
 Everything in this course runs on **R** inside **Positron**. This page gets you from a blank machine to a working environment.
 

@@ -2,7 +2,7 @@
 
 Modified
 
-September 7, 2026
+September 18, 2026
 
 ## 0.1 Introduction
 
