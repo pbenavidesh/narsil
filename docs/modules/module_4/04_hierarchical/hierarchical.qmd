@@ -5,13 +5,16 @@ format:
     other-links:
       - text: FPP3 Chapter 11
         href: https://otexts.com/fpp3/hierarchical.html
+      - text: "Wickramasuriya, Athanasopoulos & Hyndman (2019), JASA"
+        href: https://doi.org/10.1080/01621459.2018.1448825
+      - text: "Schäfer & Strimmer (2005): shrinkage covariance"
+        href: https://doi.org/10.2202/1544-6115.1175
   revealjs:
     output-file: hierarchical_pres.html
 ---
 
 ```{r}
 #| label: pkgs
-#| message: false
 #| include: false
 
 library(tidyverse)
@@ -25,35 +28,12 @@ theme_set(theme_narsil())
 
 ```{r}
 #| label: pkgs_special
-#| message: false
 
 library(plotly) #<1>
 ```
-1. For interactive plots in the HTML version.
+1. For the interactive 3D geometry plot.
 
 :::
-
-```{r}
-#| label: data-setup
-#| include: false
-#| message: false
-
-tourism_hts <- tourism |>
-  aggregate_key(State / Region, Trips = sum(Trips))
-
-tourism_full <- tourism |>
-  aggregate_key(State / Region * Purpose, Trips = sum(Trips))
-
-tourism_train <- tourism_hts |>
-  filter_index(. ~ "2015 Q4")
-
-pbs_hts <- PBS |>
-  filter(ATC1 %in% c("A", "C", "G", "N")) |>
-  aggregate_key(ATC1 / ATC2 * Concession, Cost = sum(Cost) / 1e6)
-
-pbs_train <- pbs_hts |>
-  filter_index(. ~ "2006 Jun")
-```
 
 # Forecast Structures
 
@@ -67,199 +47,379 @@ Real-world data rarely comes as a single series. Sales, tourism demand, energy c
 
 :::{.fragment}
 
-Three structures to understand before forecasting them properly.
+Three structures to understand before forecasting them properly: **hierarchical**, **grouped**, and **mixed**.
 
 :::
+
+## A Simulated Sales Dataset
+
+To see the three structures on data small enough to draw, we simulate eight years of monthly sales of a beverage distributor in Mexico: 2 states × 2 cities, 3 products, and 2 sales channels.
+
+```{r}
+#| label: sim-sales
+
+set.seed(2026)
+
+# Calendar: 96 months, plus a national shock shared by every series.
+# The shared AR(1) shock is what makes all series positively correlated.
+months <- tibble(month = yearmonth("2018 Jan") + 0:95) |>
+  mutate(
+    t = row_number() - 1,                        # 0, 1, ..., 95
+    month_num = (t %% 12) + 1,                   # 1 = Jan, ..., 12 = Dec
+    national_shock = as.numeric(arima.sim(list(ar = 0.6), n = 96, sd = 0.04))
+  )
+
+geography <- tribble(
+  ~state,       ~city,         ~city_size,
+  "Jalisco",    "Guadalajara", 1.0,
+  "Jalisco",    "Zapopan",     0.7,
+  "Nuevo León", "Monterrey",   1.1,
+  "Nuevo León", "San Pedro",   0.5
+)
+
+products <- tribble(
+  ~product,       ~base_level, ~peak_month,       # seasonal peak differs by product
+  "Café",         100,         12,                # winter drink
+  "Agua mineral",  80,          6,                # summer drink
+  "Chocolate",     50,         12
+)
+
+channels <- tribble(
+  ~channel, ~share, ~growth, ~season_amp,         # Online: smaller, faster growth,
+  "Online", 0.35,   0.012,   0.30,                # stronger seasonality
+  "Tienda", 0.65,   0.002,   0.15
+)
+
+# A city-level AR(1) shock: series in the same city move together.
+city_shocks <- expand_grid(city = geography$city, t = 0:95) |>
+  mutate(city_shock = as.numeric(arima.sim(list(ar = 0.5), n = n(), sd = 0.03)),
+         .by = city)
+
+sales_mx <- geography |>
+  cross_join(products) |>
+  cross_join(channels) |>
+  cross_join(months) |>
+  left_join(city_shocks, by = c("city", "t")) |>
+  mutate(
+    trend  = exp(growth * t),                                          # exponential growth
+    season = 1 + season_amp * cos(2 * pi * (month_num - peak_month) / 12),
+    noise  = exp(national_shock + city_shock + rnorm(n(), sd = 0.06)), # correlated + idiosyncratic
+    sales  = city_size * base_level * share * trend * season * noise
+  ) |>
+  select(month, state, city, product, channel, sales) |>
+  as_tsibble(index = month, key = c(state, city, product, channel))
+
+sales_mx
+```
 
 ---
 
-:::{.content-hidden unless-format="revealjs"}
+```{r}
+#| label: sim-sales-plot
+#| output: false
 
-## Hierarchical: Mezcal Sales
-
-```{mermaid}
-graph TD
-    MX["Mexico (Total)"]
-    OAX["Oaxaca"]
-    JAL["Jalisco"]
-    ETC["···"]
-    OJ["Oaxaca City"]
-    MH["Miahuatlán"]
-    GDL["Guadalajara"]
-    TQ["Tequila"]
-
-    MX --> OAX
-    MX --> JAL
-    MX --> ETC
-    OAX --> OJ
-    OAX --> MH
-    JAL --> GDL
-    JAL --> TQ
+sim_sales_p <- sales_mx |>
+  as_tibble() |>
+  summarise(sales = sum(sales), .by = c(month, product, channel)) |>
+  ggplot(aes(x = month, y = sales, colour = channel)) +
+  geom_line() +
+  facet_wrap(~ product, scales = "free_y") +
+  labs(title = "Simulated sales by product and channel",
+       subtitle = "Different seasonal peaks by product, different growth by channel",
+       x = NULL, y = "Sales", colour = "Channel")
 ```
 
-:::
+```{r}
+#| label: sim-sales-plot-render
+#| renderings: [light, dark]
+#| echo: false
 
-:::{.content-visible unless-format="revealjs"}
+sim_sales_p + scale_narsil() + theme(legend.position = "bottom")
+sim_sales_p + scale_narsil_dark() + theme(legend.position = "bottom")
+```
 
-### Hierarchical: Mezcal Sales
+## Hierarchical Structures {#sec-hier-structure}
 
 In a **hierarchical** structure, every series at a lower level belongs to exactly one series at the level above. The structure is a unique tree.
 
 ```{mermaid}
+%%| echo: false
 graph TD
-    MX["Mexico (Total)"]
-    OAX["Oaxaca"]
+    MX["México (Total)"]
+    N["Norte"]
+    C["Centro"]
+    S["Sur"]
+    NL["Nuevo León"]
+    CHH["Chihuahua"]
     JAL["Jalisco"]
-    ETC["···"]
-    OJ["Oaxaca City"]
-    MH["Miahuatlán"]
+    OAX["Oaxaca"]
+    YUC["Yucatán"]
+    MTY["Monterrey"]
+    SP["San Pedro"]
+    JRZ["Cd. Juárez"]
     GDL["Guadalajara"]
-    TQ["Tequila"]
+    ZAP["Zapopan"]
+    OAXC["Oaxaca de Juárez"]
+    MID["Mérida"]
+    VAL["Valladolid"]
 
-    MX --> OAX
-    MX --> JAL
-    MX --> ETC
-    OAX --> OJ
-    OAX --> MH
+    MX --> N
+    MX --> C
+    MX --> S
+    N --> NL
+    N --> CHH
+    C --> JAL
+    S --> OAX
+    S --> YUC
+    NL --> MTY
+    NL --> SP
+    CHH --> JRZ
     JAL --> GDL
-    JAL --> TQ
+    JAL --> ZAP
+    OAX --> OAXC
+    YUC --> MID
+    YUC --> VAL
 ```
+
+:::{.fragment}
+
+| Level | Total | Region | State | City | **All series** |
+|:--|:-:|:-:|:-:|:-:|:-:|
+| Series | 1 | 3 | 5 | 8 | **17** |
+
+Only the 8 cities are observed directly (the **bottom level**); the other 9 series are sums of them.
 
 :::
 
----
+## Hierarchies in R: `/` Means "Nested In"
 
-:::{.content-hidden unless-format="revealjs"}
+Our simulated data keeps two branches of that tree: Jalisco (Guadalajara, Zapopan) and Nuevo León (Monterrey, San Pedro).
 
-## Grouped: Spirits Sales — by Product Type
+```{r}
+#| label: sim-hts
 
-```{mermaid}
-graph LR
-    T["Total Sales"]
-    M["Mezcal"]
-    TQ["Tequila"]
-    B["Brandy"]
-    E["···"]
+sales_hts <- sales_mx |>
+  aggregate_key(state / city, sales = sum(sales)) #<1>
 
-    T --> M
-    T --> TQ
-    T --> B
-    T --> E
+sales_hts |>
+  as_tibble() |>
+  distinct(state, city) #<2>
 ```
+1. `state / city` means *city is nested within state*. The sums over products and channels, the state totals, and the national total are computed and appended automatically.
+2. The keys of the result: one total, 2 states, 4 cities — $1 + 2 + 4 = 7$ series. Aggregated levels are marked `<aggregated>`.
 
-## Grouped: Spirits Sales — by Distribution Channel
+## Grouped Structures {#sec-grouped-structure}
 
-```{mermaid}
-graph LR
-    T["Total Sales"]
-    R["Retail"]
-    BR["Bars & Restaurants"]
-    EX["Exports"]
+In a **grouped** structure, the same series can be disaggregated by more than one attribute, and neither attribute nests inside the other. Sales can be split first by product and then by channel, or first by channel and then by product:
 
-    T --> R
-    T --> BR
-    T --> EX
-```
+:::: {.columns}
 
-:::
+::: {.column width="50%"}
 
-:::{.content-visible unless-format="revealjs"}
-
-### Grouped: Spirits Sales
-
-In a **grouped** structure, the same set of series can be disaggregated by more than one attribute, none of which nests inside the other.
-
-::: {.panel-tabset}
-
-## By Product Type
+**Tree A**: Total → Product → Product × Channel
 
 ```{mermaid}
-graph LR
-    T["Total Sales"]
-    M["Mezcal"]
-    TQ["Tequila"]
-    B["Brandy"]
-    E["···"]
-
-    T --> M
-    T --> TQ
-    T --> B
-    T --> E
-```
-
-## By Distribution Channel
-
-```{mermaid}
-graph LR
-    T["Total Sales"]
-    R["Retail"]
-    BR["Bars & Restaurants"]
-    EX["Exports"]
-
-    T --> R
-    T --> BR
-    T --> EX
-```
-
-:::
-
-Both diagrams represent the **same total sales**. A bottle of mezcal sold in retail is simultaneously in the "Mezcal" group and the "Retail" group. There is no single unique tree.
-
-:::
-
----
-
-:::{.content-hidden unless-format="revealjs"}
-
-## Mixed: Alcohol Sales
-
-```{mermaid}
+%%| echo: false
 graph TD
-    T["Mexico (Total)"]
-    OAX["Oaxaca"]
-    JAL["Jalisco"]
-    ETC["···"]
-    OJ["Oaxaca City × {Mezcal, Tequila, Brandy}"]
-    MH["Miahuatlán × {Mezcal, Tequila, Brandy}"]
-    GDL["Guadalajara × {Mezcal, Tequila, Brandy}"]
-    TQ_["Tequila × {Mezcal, Tequila, Brandy}"]
+    T["Total"]
+    CA["Café"]
+    AG["Agua mineral"]
+    CH["Chocolate"]
+    CAO["Café · Online"]
+    CAT["Café · Tienda"]
+    AGO["Agua · Online"]
+    AGT["Agua · Tienda"]
+    CHO["Choc. · Online"]
+    CHT["Choc. · Tienda"]
 
-    T --> OAX
-    T --> JAL
-    T --> ETC
-    OAX --> OJ
-    OAX --> MH
-    JAL --> GDL
-    JAL --> TQ_
+    T --> CA
+    T --> AG
+    T --> CH
+    CA --> CAO
+    CA --> CAT
+    AG --> AGO
+    AG --> AGT
+    CH --> CHO
+    CH --> CHT
 ```
 
 :::
 
-:::{.content-visible unless-format="revealjs"}
+::: {.column width="50%"}
 
-### Mixed: Alcohol Sales
-
-A **mixed** structure combines a geographic hierarchy (Mexico → State → City) with a grouping attribute (Product type). The most granular series live at the intersection of the hierarchy path and the grouping value.
+**Tree B**: Total → Channel → Channel × Product
 
 ```{mermaid}
+%%| echo: false
 graph TD
-    T["Mexico (Total)"]
-    OAX["Oaxaca"]
-    JAL["Jalisco"]
-    ETC["···"]
-    OJ["Oaxaca City × {Mezcal, Tequila, Brandy}"]
-    MH["Miahuatlán × {Mezcal, Tequila, Brandy}"]
-    GDL["Guadalajara × {Mezcal, Tequila, Brandy}"]
-    TQ_["Tequila × {Mezcal, Tequila, Brandy}"]
+    T["Total"]
+    ON["Online"]
+    TI["Tienda"]
+    CAO["Café · Online"]
+    AGO["Agua · Online"]
+    CHO["Choc. · Online"]
+    CAT["Café · Tienda"]
+    AGT["Agua · Tienda"]
+    CHT["Choc. · Tienda"]
 
-    T --> OAX
-    T --> JAL
-    T --> ETC
-    OAX --> OJ
-    OAX --> MH
-    JAL --> GDL
-    JAL --> TQ_
+    T --> ON
+    T --> TI
+    ON --> CAO
+    ON --> AGO
+    ON --> CHO
+    TI --> CAT
+    TI --> AGT
+    TI --> CHT
 ```
+
+:::
+
+::::
+
+:::{.fragment}
+
+Both trees share the **same total** and the **same bottom level**; only the middle level differs.
+
+:::
+
+## Grouped = Two Trees Merged
+
+Merging both trees gives a graph in which every bottom series has **two parents**: its product and its channel. That is why a grouped structure is not a hierarchy — there is no single tree.
+
+```{mermaid}
+%%| echo: false
+graph TD
+    T["Total"]
+    CA["Café"]
+    AG["Agua mineral"]
+    CH["Chocolate"]
+    ON["Online"]
+    TI["Tienda"]
+    CAO["Café · Online"]
+    CAT["Café · Tienda"]
+    AGO["Agua · Online"]
+    AGT["Agua · Tienda"]
+    CHO["Choc. · Online"]
+    CHT["Choc. · Tienda"]
+
+    T --> CA
+    T --> AG
+    T --> CH
+    T --> ON
+    T --> TI
+    CA --> CAO
+    CA --> CAT
+    AG --> AGO
+    AG --> AGT
+    CH --> CHO
+    CH --> CHT
+    ON --> CAO
+    ON --> AGO
+    ON --> CHO
+    TI --> CAT
+    TI --> AGT
+    TI --> CHT
+
+    classDef btm fill:#E69F00,stroke:#2A2520,color:#000
+    class CAO,CAT,AGO,AGT,CHO,CHT btm
+```
+
+## Grouped Structures in R: `*` Means "Crossed With"
+
+```{r}
+#| label: sim-grouped
+
+sales_grp <- sales_mx |>
+  aggregate_key(product * channel, sales = sum(sales)) #<1>
+
+sales_grp |>
+  as_tibble() |>
+  distinct(product, channel) #<2>
+```
+1. `product * channel` crosses the two attributes: every product total, every channel total, every product × channel combination, and the grand total.
+2. Rows with exactly one `<aggregated>` key are the two middle levels — tree A's product totals and tree B's channel totals.
+
+:::{.fragment}
+
+With $|P| = 3$ products and $|C| = 2$ channels, each attribute is either aggregated or takes one of its values:
+
+$$(1 + |P|)(1 + |C|) = (1 + 3)(1 + 2) = 12 \text{ series}$$
+
+:::
+
+## Mixed Structures {#sec-mixed-structure}
+
+A **mixed** structure combines both: the **hierarchical part** from [Hierarchical Structures](#sec-hier-structure) (state / city) × the **grouped part** from [Grouped Structures](#sec-grouped-structure) (product). The diagram shows the Jalisco branch; Nuevo León follows the same pattern.
+
+```{mermaid}
+%%| echo: false
+graph TD
+    T["Total"]
+    JAL["Jalisco"]
+    GDL["Guadalajara"]
+    ZAP["Zapopan"]
+    CA["Café"]
+    AG["Agua mineral"]
+    CH["Chocolate"]
+    JCA["Jalisco · Café"]
+    JAG["Jalisco · Agua"]
+    JCH["Jalisco · Choc."]
+    GCA["GDL · Café"]
+    GAG["GDL · Agua"]
+    GCH["GDL · Choc."]
+    ZCA["ZAP · Café"]
+    ZAG["ZAP · Agua"]
+    ZCH["ZAP · Choc."]
+
+    T --> JAL
+    T --> CA
+    T --> AG
+    T --> CH
+    JAL --> GDL
+    JAL --> ZAP
+    JAL --> JCA
+    JAL --> JAG
+    JAL --> JCH
+    CA --> JCA
+    AG --> JAG
+    CH --> JCH
+    GDL --> GCA
+    GDL --> GAG
+    GDL --> GCH
+    ZAP --> ZCA
+    ZAP --> ZAG
+    ZAP --> ZCH
+    JCA --> GCA
+    JCA --> ZCA
+    JAG --> GAG
+    JAG --> ZAG
+    JCH --> GCH
+    JCH --> ZCH
+
+    classDef btm fill:#E69F00,stroke:#2A2520,color:#000
+    class GCA,GAG,GCH,ZCA,ZAG,ZCH btm
+```
+
+## Mixed Structures in R
+
+```{r}
+#| label: sim-mixed
+
+sales_mixed <- sales_mx |>
+  aggregate_key((state / city) * product, sales = sum(sales)) #<1>
+
+sales_mixed |>
+  as_tibble() |>
+  distinct(state, city, product) #<2>
+```
+1. The hierarchy `state / city` in parentheses, crossed with `product`.
+2. Every geographic node (total, state, or city) appears once with `product` aggregated and once per product.
+
+:::{.fragment}
+
+The geographic part contributes $1 + |S| + |Ci|$ nodes, the grouped part $1 + |P|$:
+
+$$(1 + |S| + |Ci|)(1 + |P|) = (1 + 2 + 4)(1 + 3) = 28 \text{ series}$$
 
 :::
 
@@ -271,11 +431,7 @@ graph TD
 
 :::
 
-The `fpp3` ecosystem (specifically `fabletools`) provides `aggregate_key()` to define hierarchical and grouped structures directly on a `tsibble`.
-
-:::{.fragment}
-
-The `tourism` dataset — quarterly domestic travel in Australia disaggregated by State, Region, and Purpose — is the canonical example in FPP3 Chapter 11.
+For the modeling sections we switch to real data: `tourism` — quarterly domestic overnight trips in Australia by State, Region, and Purpose — the canonical example in FPP3 Chapter 11.
 
 ```{r}
 #| label: tourism-glimpse
@@ -283,66 +439,24 @@ The `tourism` dataset — quarterly domestic travel in Australia disaggregated b
 tourism
 ```
 
-:::
-
----
-
-:::{.content-hidden unless-format="revealjs"}
-
-## `aggregate_key()`: Defining the Structure
-
-:::
-
-:::{.content-visible unless-format="revealjs"}
-
-## `aggregate_key()`: Defining the Structure
-
-:::
-
-A pure hierarchy uses `/` to denote nesting. A grouped or mixed structure uses `*` to cross attributes.
+## `aggregate_key()` on `tourism`
 
 ```{r}
 #| label: aggregate-key-hts
-#| message: false
 
 tourism_hts <- tourism |>
   aggregate_key(State / Region, Trips = sum(Trips)) #<1>
 
 tourism_hts
 ```
-1. `State / Region` means *Region is nested within State*. All aggregations — State totals and the national total — are computed and appended automatically.
-
-:::{.fragment}
-
-```{r}
-#| label: aggregate-key-full
-
-tourism_full <- tourism |>
-  aggregate_key(State / Region * Purpose, Trips = sum(Trips)) #<1>
-```
-1. `* Purpose` crosses the hierarchy with the Purpose grouping. The result includes every combination of (State, Region, Purpose) plus all marginal and total aggregations.
-
-:::
-
----
-
-:::{.content-hidden unless-format="revealjs"}
+1. Region nested within State, summing over Purpose: $1 + 8 + 76 = 85$ series.
 
 ## Visualizing Aggregated Series
-
-:::
-
-:::{.content-visible unless-format="revealjs"}
-
-## Visualizing Aggregated Series
-
-:::
 
 `autoplot()` on an aggregated `tsibble` works as usual. Use `filter()` with `is_aggregated()` to select a specific level.
 
 ```{r}
 #| label: hts-state-plot
-#| message: false
 #| code-line-numbers: "2"
 #| fig-cap: "Quarterly domestic trips by Australian state."
 #| output: false
@@ -363,19 +477,7 @@ hts_state_plot_p + theme_narsil() + theme(legend.position = "none")
 hts_state_plot_p + theme_narsil_dark() + theme(legend.position = "none")
 ```
 
----
-
-:::{.content-hidden unless-format="revealjs"}
-
 ## Filtering with `is_aggregated()`
-
-:::
-
-:::{.content-visible unless-format="revealjs"}
-
-## Filtering with `is_aggregated()`
-
-:::
 
 `is_aggregated()` returns `TRUE` for the synthetic aggregation rows created by `aggregate_key()`. Use it inside `filter()` to navigate any level of the hierarchy.
 
@@ -421,6 +523,7 @@ tourism_hts |>
 
 ```{r}
 #| label: is-aggregated-slides
+#| eval: false
 #| code-line-numbers: "2|5|8"
 
 # National total
@@ -438,47 +541,7 @@ tourism_hts |>
 
 :::
 
----
-
-:::{.content-hidden unless-format="revealjs"}
-
-## Mixed Structure: Hierarchy + Grouping
-
-:::
-
-:::{.content-visible unless-format="revealjs"}
-
-## Mixed Structure: Hierarchy + Grouping
-
-:::
-
-With `tourism_full`, the Purpose grouping is crossed with the State/Region hierarchy:
-
-```{r}
-#| label: full-hts-plot
-#| message: false
-#| code-line-numbers: "2"
-#| fig-cap: "State-level trips split by purpose of travel."
-#| output: false
-
-full_hts_plot_p <- tourism_full |>
-  filter(!is_aggregated(State), is_aggregated(Region), !is_aggregated(Purpose)) |>
-  autoplot(Trips) +
-  facet_wrap(~ as.character(Purpose), scales = "free_y") +
-  labs(title = "Domestic tourism by state and purpose",
-       y = "Trips ('000)", x = NULL)
-```
-
-```{r}
-#| label: full-hts-plot-render
-#| renderings: [light, dark]
-#| echo: false
-
-full_hts_plot_p + theme_narsil() + theme(legend.position = "none")
-full_hts_plot_p + theme_narsil_dark() + theme(legend.position = "none")
-```
-
-# Coherent Forecasts
+# Coherent Forecasts {#sec-coherent}
 
 :::{.content-hidden unless-format="revealjs"}
 
@@ -501,49 +564,71 @@ If $\hat{y}_{NSW}$ and $\hat{y}_{VIC}$ are state-level forecasts, then the natio
 
 :::
 
----
-
-:::{.content-hidden unless-format="revealjs"}
-
 ## Independent Forecasts Break Coherence
 
-:::
-
-:::{.content-visible unless-format="revealjs"}
-
-## Independent Forecasts Break Coherence
-
-:::
-
-Fitting a model independently to every series — including the aggregated ones — almost never produces coherent forecasts.
-
-:::{.fragment}
+Fitting a model independently to every series — including the aggregated ones — almost never produces coherent forecasts. These independent forecasts are called **base forecasts**.
 
 ```{r}
-#| label: incoherence-demo
-#| message: false
+#| label: fit-base
 
-incoherent_fit <- tourism_hts |>
-  filter_index(. ~ "2015 Q4") |>
-  model(ets = ETS(Trips))
+tourism_train <- tourism_hts |>
+  filter_index(. ~ "2015 Q4")
 
-incoherent_fit |>
-  forecast(h = 4) |>
-  filter(Quarter == yearquarter("2016 Q1")) |>
-  filter(
-    is_aggregated(State) |
-    (!is_aggregated(State) & is_aggregated(Region))
-  ) |>
+tourism_fit <- tourism_train |>
+  model(base = ETS(Trips)) #<1>
+
+tourism_base_fc <- tourism_fit |>
+  forecast(h = "2 years")
+```
+1. One ETS model per series: 85 models, each chosen independently by AICc.
+
+---
+
+```{r}
+#| label: incoherence-plot
+#| output: false
+
+incoherence <- tourism_base_fc |>
   as_tibble() |>
-  select(State, Region, .mean) |>
-  mutate(State = as.character(State), Region = as.character(Region))
+  mutate(source = case_when(
+    is_aggregated(State)   ~ "total_fc",       # base forecast of the total
+    !is_aggregated(Region) ~ "bottom_fc"       # base forecasts of the 76 regions
+  )) |>
+  filter(!is.na(source)) |>
+  summarise(Trips = sum(.mean), .by = c(Quarter, source)) |>
+  pivot_wider(names_from = source, values_from = Trips)
+
+incoherence_p <- ggplot(incoherence, aes(x = Quarter)) +
+  geom_line(data = tourism_hts |>
+              filter(is_aggregated(State)) |>
+              filter_index("2010 Q1" ~ .),
+            aes(y = Trips)) +
+  geom_ribbon(aes(ymin = pmin(total_fc, bottom_fc),
+                  ymax = pmax(total_fc, bottom_fc)), alpha = 0.3) +
+  geom_line(aes(y = total_fc, colour = "Base forecast of the total"),
+            linewidth = 1) +
+  geom_line(aes(y = bottom_fc, colour = "Sum of the 76 regional base forecasts"),
+            linewidth = 1) +
+  annotate("label", x = yearquarter("2017 Q1"),
+           y = mean(c(incoherence$total_fc[5], incoherence$bottom_fc[5])),
+           label = "incoherence gap", size = 3.5) +
+  labs(title = "Base forecasts don't add up",
+       subtitle = "Australian domestic trips: national total",
+       x = NULL, y = "Trips ('000)", colour = NULL)
 ```
 
-:::
+```{r}
+#| label: incoherence-plot-render
+#| renderings: [light, dark]
+#| echo: false
+
+incoherence_p + scale_narsil() + theme(legend.position = "bottom")
+incoherence_p + scale_narsil_dark() + theme(legend.position = "bottom")
+```
 
 :::{.fragment}
 
-The national ETS forecast will not equal the sum of the state ETS forecasts. This is the incoherence problem that reconciliation methods solve.
+Two forecasts of the same quantity, and they disagree. Which one should the national planning team use? This is the incoherence problem that the rest of the document solves.
 
 :::
 
@@ -559,251 +644,334 @@ Single-level approaches fix the coherence problem by choosing **one level as the
 
 :::{.fragment}
 
-All three methods share the same interface: `reconcile()` takes the fitted mable and wraps the base model with a reconciliation strategy.
+All three share the same interface: `reconcile()` takes the fitted mable and wraps the base model with a reconciliation strategy. We look at each with the same template: which level is forecast, and what happens to the **total** and to one **bottom series** (Melbourne).
 
 :::
+
+```{r}
+#| label: reconcile-single
+
+tourism_single_fc <- tourism_fit |>
+  reconcile(
+    bu = bottom_up(base),               #<1>
+    td = top_down(base),                #<2>
+    mo = middle_out(base, split = 1)    #<3>
+  ) |>
+  forecast(h = "2 years")
+```
+1. Bottom-up from the 76 regions.
+2. Top-down from the national total (default: `method = "forecast_proportions"`).
+3. Middle-out from the state level (`split = 1` = one level below the total).
 
 ---
 
-:::{.content-hidden unless-format="revealjs"}
-
-## Bottom-Up
-
-:::
-
-:::{.content-visible unless-format="revealjs"}
-
-## Bottom-Up
-
-:::
-
-Forecast the most disaggregated series, then aggregate up.
-
-:::{.fragment}
+The plotting helper below is used, unchanged, for all three methods.
 
 ```{r}
-#| label: fit-base
-#| message: false
+#| label: plot-helper
 
-tourism_fit <- tourism_train |>
-  model(ets = ETS(Trips))
+plot_base_vs_rec <- function(fc, method, bottom = "Melbourne") {
+  pick <- \(x) x |>
+    filter(is_aggregated(State) | Region == bottom) |>
+    as_tibble() |>
+    mutate(series = if_else(is_aggregated(State), "Total (Australia)",
+                            paste(bottom, "(bottom level)")),
+           series = fct_relevel(series, "Total (Australia)"))
 
-tourism_fit
+  history <- tourism_hts |>
+    filter_index("2012 Q1" ~ .) |>
+    pick()
+
+  fc_tbl <- fc |>
+    filter(.model %in% c("base", method)) |>
+    pick() |>
+    mutate(`95%` = hilo(Trips, 95),
+           .model = factor(.model, levels = c("base", method))) |>
+    unpack_hilo("95%")
+
+  ggplot(fc_tbl, aes(x = Quarter)) +
+    geom_line(data = history, aes(y = Trips)) +
+    geom_ribbon(aes(ymin = `95%_lower`, ymax = `95%_upper`, fill = .model),
+                alpha = 0.2) +
+    geom_line(aes(y = .mean, colour = .model), linewidth = 0.9) +
+    facet_wrap(~ series, scales = "free_y") +
+    labs(x = NULL, y = "Trips ('000)", colour = "Forecast", fill = "Forecast")
+}
+```
+
+## Bottom-Up
+
+:::: {.columns}
+
+::: {.column width="40%"}
+
+```{mermaid}
+%%| echo: false
+graph TD
+    TOT["Total"]
+    NSW["NSW"]
+    VIC["VIC"]
+    ETC["···"]
+    SYD["Sydney"]
+    MEL["Melbourne"]
+    GEE["Geelong"]
+
+    TOT ~~~ NSW
+    TOT ~~~ VIC
+    TOT ~~~ ETC
+    NSW ~~~ SYD
+    VIC ~~~ MEL
+    VIC ~~~ GEE
+    SYD --> NSW
+    MEL --> VIC
+    GEE --> VIC
+    NSW --> TOT
+    VIC --> TOT
+    ETC --> TOT
+
+    classDef fc fill:#E69F00,stroke:#2A2520,color:#000
+    class SYD,MEL,GEE fc
 ```
 
 :::
 
-:::{.fragment}
+::: {.column width="60%"}
+
+- Forecast only the **bottom level** (highlighted).
+- Every aggregate is the **sum** of its bottom-level forecasts (arrows point up).
+- Bottom-level forecasts are left untouched.
+
+:::
+
+::::
+
+---
 
 ```{r}
-#| label: reconcile-bu
-#| message: false
+#| label: bu-plot
 #| output: false
 
-tourism_bu <- tourism_fit |>
-  reconcile(bu = bottom_up(ets)) #<1>
-
-reconcile_bu_p <- tourism_bu |>
-  forecast(h = "2 years") |>
-  filter(is_aggregated(State)) |>
-  autoplot(tourism_hts |> filter_index("2012 Q1" ~ .)) +
-  labs(title = "Bottom-up coherent forecast: national total",
-       y = "Trips ('000)", x = NULL)
+bu_p <- plot_base_vs_rec(tourism_single_fc, "bu") +
+  labs(title = "Bottom-up: base vs. reconciled")
 ```
-1. `bottom_up(ets)` takes the Region-level ETS forecasts as given and sums up. The national and state ETS forecasts are replaced by aggregations of the Region forecasts.
 
 ```{r}
-#| label: reconcile-bu-render
+#| label: bu-plot-render
 #| renderings: [light, dark]
 #| echo: false
 
-reconcile_bu_p + scale_narsil()
-reconcile_bu_p + scale_narsil_dark()
+bu_p + scale_narsil() + scale_fill_narsil() + theme(legend.position = "bottom")
+bu_p + scale_narsil_dark() + scale_fill_narsil(dark = TRUE) + theme(legend.position = "bottom")
 ```
-
-:::
-
-:::{.content-visible unless-format="revealjs"}
-
-At the Region level, BU coherent forecasts are identical to the original ETS forecasts — nothing changes there.
-
-:::
-
----
-
-:::{.content-hidden unless-format="revealjs"}
-
-## Bottom-Up: Pros and Cons
-
-:::
-
-:::{.content-visible unless-format="revealjs"}
-
-### Pros and Cons: Bottom-Up
-
-:::
-
-| | |
-|:--|:--|
-| ✅ | Captures disaggregate dynamics. Best when bottom-level series have strong patterns. |
-| ✅ | No need to forecast aggregate totals. |
-| ❌ | Aggregate-level models are never used — wasteful if the total is well-behaved. |
-| ❌ | Bottom-level series can be noisy; aggregating noisy forecasts amplifies errors. |
-
----
-
-:::{.content-hidden unless-format="revealjs"}
-
-## Top-Down: Three Methods
-
-:::
-
-:::{.content-visible unless-format="revealjs"}
-
-## Top-Down: Three Methods
-
-:::
-
-Forecast the top level (total), then **disaggregate** using historical proportions.
-
-Three variants differ in how the proportions $p_j$ are estimated:
-
-:::{.incremental}
-
-1. **Average historical proportions**: $p_j = \frac{1}{T}\sum_{t=1}^{T} \frac{y_{j,t}}{y_{\text{Total},t}}$ — time-average of per-period ratios.
-
-2. **Proportions of historical averages**: $p_j = \frac{\bar{y}_j}{\bar{y}_{\text{Total}}}$ — ratio of long-run averages. Less sensitive to periods with small totals than Method 1.
-
-3. **Forecast proportions**: $p_j$ computed from base forecasts at each level, not from history — adapts to structural changes.
-
-:::
-
----
-
-:::{.content-hidden unless-format="revealjs"}
-
-## Top-Down in `reconcile()`
-
-:::
-
-:::{.content-visible unless-format="revealjs"}
-
-### Top-Down in `reconcile()`
-
-:::
-
-```{r}
-#| label: reconcile-td
-#| message: false
-
-tourism_td <- tourism_fit |>
-  reconcile(
-    td_ap = top_down(ets, method = "average_proportions"),    #<1>
-    td_pa = top_down(ets, method = "proportion_averages"),    #<2>
-    td_fp = top_down(ets, method = "forecast_proportions")    #<3>
-  )
-```
-1. Average of $y_{j,t}/y_{Total,t}$ over time.
-2. $\bar{y}_j / \bar{y}_{Total}$ — ratio of long-run averages.
-3. Forward-looking: proportions come from base forecasts rather than history.
-
----
-
-:::{.content-hidden unless-format="revealjs"}
-
-## Top-Down: Pros and Cons
-
-:::
-
-:::{.content-visible unless-format="revealjs"}
-
-### Pros and Cons: Top-Down
-
-:::
-
-| | |
-|:--|:--|
-| ✅ | Aggregate model benefits from richer data. |
-| ✅ | Simple to implement and explain to stakeholders. |
-| ❌ | Historical proportions may not reflect future changes in mix. |
-| ❌ | Bottom-level disaggregations lose any local dynamic not visible in the total. |
-
----
-
-:::{.content-hidden unless-format="revealjs"}
-
-## Middle-Out
-
-:::
-
-:::{.content-visible unless-format="revealjs"}
-
-## Middle-Out
-
-:::
-
-Choose a **middle level** as the anchor: aggregate upward (bottom-up logic), disaggregate downward (top-down logic).
 
 :::{.fragment}
 
-```{r}
-#| label: reconcile-mo
-#| message: false
+The Melbourne panel shows a single line: bottom-up does not change the bottom level. The total, however, moves to the sum of the 76 regional forecasts.
 
-tourism_mo <- tourism_fit |>
+:::
+
+```{r}
+#| label: bu-sd
+#| include: false
+
+bu_sd <- tourism_single_fc |>
+  filter(is_aggregated(State), .model %in% c("base", "bu"),
+         Quarter == yearquarter("2016 Q1")) |>
+  as_tibble() |>
+  transmute(.model, sd = sqrt(distributional::variance(Trips)))
+
+sd_base <- bu_sd |> filter(.model == "base") |> pull(sd)
+sd_bu   <- bu_sd |> filter(.model == "bu") |> pull(sd)
+```
+
+:::{.callout-warning}
+## Why is the bottom-up interval for the total so narrow?
+
+For 2016 Q1, the base ETS forecast of the total has a standard deviation of `r round(sd_base)` thousand trips; the bottom-up forecast has `r round(sd_bu)`.
+
+For `bottom_up()`, `fabletools` treats every **covariance** between regions as zero, so the variance of the total is just the sum of the regional variances. Regional errors are positively correlated, so the true variance is larger: the bottom-up interval for the total is **too optimistic**. Several `min_trace()` methods share this problem — see [Weighting = Estimating $W_h$](#weighting-estimating-w_h).
+:::
+
+## Top-Down
+
+:::: {.columns}
+
+::: {.column width="40%"}
+
+```{mermaid}
+%%| echo: false
+graph TD
+    TOT["Total"]
+    NSW["NSW"]
+    VIC["VIC"]
+    ETC["···"]
+    SYD["Sydney"]
+    MEL["Melbourne"]
+    GEE["Geelong"]
+
+    TOT --> NSW
+    TOT --> VIC
+    TOT --> ETC
+    NSW --> SYD
+    VIC --> MEL
+    VIC --> GEE
+
+    classDef fc fill:#E69F00,stroke:#2A2520,color:#000
+    class TOT fc
+```
+
+:::
+
+::: {.column width="60%"}
+
+- Forecast only the **total** (highlighted).
+- **Disaggregate** it with proportions $p_j$ (arrows point down).
+- Three ways to estimate $p_j$:
+
+1. **Average historical proportions**: $p_j = \frac{1}{T}\sum_{t=1}^{T} \frac{y_{j,t}}{y_{\text{Total},t}}$
+2. **Proportions of historical averages**: $p_j = \bar{y}_j / \bar{y}_{\text{Total}}$
+3. **Forecast proportions** (default): $p_j$ from the base forecasts of each level, so they can change over the horizon.
+
+:::
+
+::::
+
+```{r}
+#| label: reconcile-td-variants
+#| eval: false
+
+tourism_fit |>
   reconcile(
-    mo = middle_out(ets, split = 1) #<1>
+    td_ap = top_down(base, method = "average_proportions"),
+    td_pa = top_down(base, method = "proportion_averages"),
+    td_fp = top_down(base, method = "forecast_proportions")
   )
 ```
-1. `split = 1` anchors on the level immediately below the total (State). State forecasts are taken as given; the national total aggregates up, and Region forecasts disaggregate down proportionally.
-
-:::
 
 ---
 
-:::{.content-hidden unless-format="revealjs"}
+```{r}
+#| label: td-plot
+#| output: false
 
-## Middle-Out: Pros and Cons
+td_p <- plot_base_vs_rec(tourism_single_fc, "td") +
+  labs(title = "Top-down: base vs. reconciled")
+```
+
+```{r}
+#| label: td-plot-render
+#| renderings: [light, dark]
+#| echo: false
+
+td_p + scale_narsil() + scale_fill_narsil() + theme(legend.position = "bottom")
+td_p + scale_narsil_dark() + scale_fill_narsil(dark = TRUE) + theme(legend.position = "bottom")
+```
+
+:::{.fragment}
+
+The mirror image of bottom-up: the total is untouched, and Melbourne is now a share of the national forecast. Any local dynamic that the total does not see is lost.
 
 :::
 
-:::{.content-visible unless-format="revealjs"}
+## Middle-Out
 
-### Pros and Cons: Middle-Out
+:::: {.columns}
+
+::: {.column width="40%"}
+
+```{mermaid}
+%%| echo: false
+graph TD
+    TOT["Total"]
+    NSW["NSW"]
+    VIC["VIC"]
+    ETC["···"]
+    SYD["Sydney"]
+    MEL["Melbourne"]
+    GEE["Geelong"]
+
+    TOT ~~~ NSW
+    TOT ~~~ VIC
+    TOT ~~~ ETC
+    NSW --> TOT
+    VIC --> TOT
+    ETC --> TOT
+    NSW --> SYD
+    VIC --> MEL
+    VIC --> GEE
+
+    classDef fc fill:#E69F00,stroke:#2A2520,color:#000
+    class NSW,VIC,ETC fc
+```
 
 :::
 
-| | |
-|:--|:--|
-| ✅ | Middle level often has the richest signal: less noisy than the bottom, less aggregated than the top. |
-| ✅ | Good compromise when the top-level series is hard to forecast. |
-| ❌ | Choice of middle level is subjective and problem-dependent. |
-| ❌ | Disaggregation below the middle level inherits the limitations of top-down proportions. |
+::: {.column width="60%"}
+
+- Forecast one **middle level** (here: states, `split = 1`).
+- **Sum up** to the total (bottom-up logic above).
+- **Split down** to regions with forecast proportions (top-down logic below).
+
+:::
+
+::::
 
 ---
 
-:::{.content-hidden unless-format="revealjs"}
+```{r}
+#| label: mo-plot
+#| output: false
+
+mo_p <- plot_base_vs_rec(tourism_single_fc, "mo") +
+  labs(title = "Middle-out: base vs. reconciled")
+```
+
+```{r}
+#| label: mo-plot-render
+#| renderings: [light, dark]
+#| echo: false
+
+mo_p + scale_narsil() + scale_fill_narsil() + theme(legend.position = "bottom")
+mo_p + scale_narsil_dark() + scale_fill_narsil(dark = TRUE) + theme(legend.position = "bottom")
+```
+
+:::{.fragment}
+
+Both panels change: the total becomes the sum of the state forecasts, and Melbourne becomes a share of the Victoria forecast.
+
+:::
 
 ## Comparing Single-Level Approaches
 
-:::
-
-:::{.content-visible unless-format="revealjs"}
-
-### Comparing Single-Level Approaches
-
-:::
-
-| Method | Truth source | What changes? | Best when... |
+| | **Bottom-up** | **Top-down** | **Middle-out** |
 |:--|:--|:--|:--|
-| Bottom-Up | Bottom level | Top levels re-aggregated | Bottom series are informative and relatively clean |
-| Top-Down | Top level | Bottom levels re-proportioned | Top-level dynamics dominate, bottom is too noisy |
-| Middle-Out | Middle level | Top aggregated, bottom disaggregated | Middle level has the strongest signal |
+| **Information used** | Bottom-level base forecasts only | Total base forecast + proportions | One middle level + proportions below it |
+| **Preserves bottom-level detail** | Yes — bottom forecasts unchanged | No — bottom series inherit the total's dynamics | Down to the middle level only |
+| **Works with grouped / mixed structures** | Yes | No — `forecast()` aborts | No — `forecast()` aborts |
+| **Typical failure mode** | Noisy bottom series add up to a poor total; aggregate intervals too narrow | Proportions drift; local dynamics lost | Arbitrary choice of level; inherits both failure modes |
+| **When to use** | Bottom series are clean and informative | Bottom series are too noisy or sparse | One level is the natural planning level |
+
+:::{.callout-note collapse="true"}
+## Why top-down and middle-out don't work on grouped structures
+
+With a grouped or mixed structure there is no single path from the total to the bottom level — each bottom series has more than one parent — so "split the total by proportions" is not uniquely defined. `fabletools` checks this when forecasting. `reconcile()` itself succeeds, but `forecast()` stops with:
+
+```
+Top down reconciliation requires strictly hierarchical structures.
+Middle out reconciliation requires strictly hierarchical structures.
+```
+
+We verified this on `sales_grp` (`product * channel`) and on `sales_mixed` (`(state / city) * product`). `bottom_up()` and `min_trace()` work on all three structures.
+:::
+
+:::{.fragment}
 
 :::{.callout-important appearance="simple"}
 ## The shared limitation
 
-All three methods treat one level as infallible and discard information from all others. No forecast level is truly noise-free — and that is exactly the gap that reconciliation methods fill.
+All three methods trust one level completely and throw away the base forecasts of every other level. No level is noise-free. **What if we used *all* levels at once?** That is forecast reconciliation.
+
+:::
 
 :::
 
@@ -890,234 +1058,795 @@ data |>                  #<1>
 
 :::
 
-# Forecast Reconciliation
+# Forecast Reconciliation {#sec-reconciliation}
+
+```{r}
+#| label: toy-calc
+#| include: false
+
+# Toy hierarchy: Total = A + B. Every number in the toy table and in the
+# matrix view is computed here; nothing is hardcoded.
+toy_S <- matrix(c(1, 1,
+                  1, 0,
+                  0, 1), ncol = 2, byrow = TRUE,
+                dimnames = list(c("Total", "A", "B"), c("A", "B")))
+toy_y   <- c(Total = 100, A = 50, B = 40)
+toy_gap <- toy_y[["Total"]] - toy_y[["A"]] - toy_y[["B"]]
+
+# MinT / GLS mapping matrix for a given W
+toy_G_from_W <- function(W) {
+  solve(t(toy_S) %*% solve(W) %*% toy_S) %*% t(toy_S) %*% solve(W)
+}
+
+toy_W <- list(
+  ols  = diag(3),
+  wls  = diag(c(4, 1, 1)),
+  mint = matrix(c(4, 0,   0,
+                  0, 1,   0.8,
+                  0, 0.8, 1), ncol = 3, byrow = TRUE)
+)
+
+toy_G <- c(
+  list(
+    bu = cbind(0, diag(2)),                                    # keep A and B
+    td = cbind(toy_y[c("A", "B")] / sum(toy_y[c("A", "B")]),   # split the total
+               0, 0)                                           # by base proportions
+  ),
+  map(toy_W, toy_G_from_W)
+)
+
+toy_rec <- map(toy_G, \(G) drop(toy_S %*% G %*% toy_y))
+toy_SG  <- map(toy_G, \(G) toy_S %*% G)
+
+# Check the G matrices written out in "The matrix view"
+stopifnot(
+  all.equal(unname(toy_G$bu),  rbind(c(0, 1, 0), c(0, 0, 1))),
+  all.equal(unname(toy_G$ols), rbind(c(1, 2, -1), c(1, -1, 2)) / 3),
+  all.equal(unname(toy_G$wls), rbind(c(1, 5, -1), c(1, -1, 5)) / 6),
+  all.equal(unname(toy_SG$ols[1, ]), c(2, 1, 1) / 3),
+  all.equal(unname(toy_SG$wls[1, ]), c(1, 2, 2) / 3),
+  # Unbiasedness: GS = I for every method except top-down
+  map_lgl(toy_G[c("bu", "ols", "wls", "mint")],
+          \(G) isTRUE(all.equal(unname(G %*% toy_S), diag(2))))
+)
+
+toy_tbl <- tibble(
+  method = c("Bottom-up", "Top-down (base proportions)", "OLS, W = I",
+             "WLS, W = diag(4, 1, 1)", "MinT, var(4, 1, 1), cov(A, B) = 0.8"),
+  rule   = c("Total absorbs the whole gap",
+             "Parts absorb the whole gap",
+             "Split equally",
+             "Noisiest forecast gets corrected most",
+             "If A and B err together, their sum is less trustworthy"),
+  key    = c("bu", "td", "ols", "wls", "mint")
+) |>
+  mutate(rec = toy_rec[key])
+
+toy_table_html <- function(fragments = FALSE) {
+  num <- \(x) sprintf("%.1f", x)
+  row <- \(cells, cls = "") {
+    paste0("<tr", if (nzchar(cls)) paste0(' class="', cls, '"'), ">",
+           paste0(c(paste0("<td>", cells[1:2], "</td>"),
+                    paste0('<td style="text-align:right">', cells[3:5], "</td>")),
+                  collapse = ""),
+           "</tr>")
+  }
+  body <- c(
+    row(c("<em>Base (incoherent)</em>", paste("A + B falls short by", num(toy_gap)),
+          num(toy_y))),
+    map_chr(seq_len(nrow(toy_tbl)), \(i) {
+      row(c(toy_tbl$method[i], toy_tbl$rule[i], num(toy_tbl$rec[[i]])),
+          cls = if (fragments) "fragment" else "")
+    })
+  )
+  cat("```{=html}\n",
+      '<table class="table toy-table">\n<thead><tr><th>Method</th><th>Rule</th>',
+      '<th style="text-align:right">Total</th><th style="text-align:right">A</th>',
+      '<th style="text-align:right">B</th></tr></thead>\n<tbody>\n',
+      paste(body, collapse = "\n"),
+      "\n</tbody></table>\n```\n", sep = "")
+}
+```
+
+## The Incoherence
 
 :::{.content-hidden unless-format="revealjs"}
 
-##
+```{r}
+#| label: incoherence-recall-render
+#| renderings: [light, dark]
+#| echo: false
+
+incoherence_p + scale_narsil() + theme(legend.position = "bottom")
+incoherence_p + scale_narsil_dark() + theme(legend.position = "bottom")
+```
 
 :::
 
-Single-level approaches all share the same flaw: they assume one level's forecasts are perfect and correct all others accordingly. In practice, every level has forecast errors.
+:::{.content-visible unless-format="revealjs"}
 
-:::{.fragment}
-
-**MinT** (Minimum Trace reconciliation) adjusts **all levels simultaneously**, using the statistical structure of forecast errors to find the best coherent set.
+Recall the [incoherence gap](#sec-coherent): the base forecast of the national total and the sum of the 76 regional base forecasts disagree. Single-level approaches close the gap by declaring one level right. **Reconciliation** lets every level move.
 
 :::
 
 :::{.fragment}
 
 :::{.callout-important appearance="simple"}
-## The key difference
+## Every method answers the same question
 
-| Method | Who changes? |
-|:--|:--|
-| Bottom-Up | Top levels only |
-| Top-Down / Middle-Out | Bottom levels only |
-| **MinT** | **Every level — including the bottom** |
-
-MinT borrows information across levels: a reliable national forecast pulls state forecasts toward proportional shares of the total. A well-forecasted state informs both the national aggregate and its sub-regions.
+**How do we distribute the incoherence?**
 
 :::
 
 :::
 
----
+## A Tiny Example
 
-:::{.content-hidden unless-format="revealjs"}
+One total and two bottom series: $\text{Total} = A + B$. Our base forecasts are
 
-## The MinT Estimator
-
-:::
-
-:::{.content-visible unless-format="revealjs"}
-
-## The MinT Estimator
-
-:::
-
-All reconciliation methods can be written as a linear transformation of the base forecasts:
-
-$$\tilde{\mathbf{y}}_h = \mathbf{S}(\mathbf{S}'\mathbf{W}_h^{-1}\mathbf{S})^{-1}\mathbf{S}'\mathbf{W}_h^{-1}\hat{\mathbf{y}}_h$$
+| | Total | A | B |
+|:--|--:|--:|--:|
+| Base forecast | `r toy_y[["Total"]]` | `r toy_y[["A"]]` | `r toy_y[["B"]]` |
 
 :::{.fragment}
 
-where:
-
-- $\hat{\mathbf{y}}_h$ — base forecasts at horizon $h$, stacked for all levels
-- $\mathbf{S}$ — **summing matrix**: encodes the hierarchy. Entry $(i,j) = 1$ if bottom series $j$ feeds into aggregate series $i$.
-- $\mathbf{W}_h$ — covariance matrix of $h$-step-ahead forecast errors across all levels
-- $\tilde{\mathbf{y}}_h$ — the reconciled, coherent forecasts
+But $A + B = `r toy_y[["A"]] + toy_y[["B"]]`$. The **gap** is `r toy_gap`. **Who absorbs it?**
 
 :::
 
-:::{.fragment}
+:::{.incremental}
 
-The different `min_trace()` methods correspond to different estimators of $\mathbf{W}_h$.
-
-:::
-
-:::{.content-visible unless-format="revealjs"}
-
-:::{.callout-note collapse="true"}
-## The $\mathbf{S}$ matrix
-
-For a three-series hierarchy (Total → A, B):
-
-$$\mathbf{S} = \begin{pmatrix} 1 & 1 \\ 1 & 0 \\ 0 & 1 \end{pmatrix}$$
-
-Row 1 (Total) = A + B. Row 2 (A) = A only. Row 3 (B) = B only. The solution $\mathbf{P} = (\mathbf{S}'\mathbf{W}_h^{-1}\mathbf{S})^{-1}\mathbf{S}'\mathbf{W}_h^{-1}$ is the GLS estimator projected back through $\mathbf{S}$. Single-level approaches are special cases where $\mathbf{W}_h$ assigns infinite weight to one level.
+- The total comes down to `r toy_y[["A"]] + toy_y[["B"]]`?
+- A and B go up until they sum to `r toy_y[["Total"]]`?
+- Everyone moves a little? Then who moves most?
 
 :::
 
-:::
-
----
-
-:::{.content-hidden unless-format="revealjs"}
-
-## Weighting the Reconciliation
-
-:::
-
-:::{.content-visible unless-format="revealjs"}
-
-### Weighting the Reconciliation
-
-:::
-
-:::{.callout-note collapse="true"}
-## OLS vs. WLS
-
-**OLS** minimizes squared errors treating all series equally — it ignores the fact that some series are more reliably forecast than others.
-
-**WLS** assigns each series a weight inversely proportional to its forecast uncertainty. Series with smaller errors contribute more to the reconciled estimate. In the MinT framework, weights come from the diagonal of $\mathbf{W}_h$: higher variance → lower weight.
-
-If the national total is much easier to forecast than any individual region, WLS pulls regional forecasts toward proportions of the reliable national forecast. OLS ignores this entirely.
-
-:::
-
----
-
-:::{.content-hidden unless-format="revealjs"}
-
-## Methods in `min_trace()`
-
-:::
-
-:::{.content-visible unless-format="revealjs"}
-
-## Methods in `min_trace()`
-
-:::
-
-| Method | `method = ` | $\mathbf{W}_h$ estimator | Notes |
-|:--|:--|:--|:--|
-| OLS | `"ols"` | $\mathbf{I}$ | Equal weights. Baseline. |
-| WLS structural | `"wls_struct"` | $\text{diag}($ series count $)$ | Weights from tree structure only — no data needed. |
-| WLS variance | `"wls_var"` | $\text{diag}(\hat{\sigma}^2_j)$ | Weights from in-sample residual variances. |
-| MinT sample | `"mint_sample"` | Full sample covariance | Captures correlations. Unstable with many series. |
-| **MinT shrink** | **`"mint_shrink"`** | **Regularized covariance** | **Recommended. Robust to limited data.** |
-
-:::{.fragment}
-
-`"mint_shrink"` applies a Ledoit-Wolf shrinkage estimator — regularizing toward a diagonal to avoid overfitting when the number of series is large relative to the number of observations.
-
-:::
-
----
-
-:::{.content-hidden unless-format="revealjs"}
-
-## Tourism: All Methods
-
-:::
-
-:::{.content-visible unless-format="revealjs"}
-
-## Tourism: All Methods
-
-:::
+## Different Answers
 
 ```{r}
-#| label: reconcile-all
-#| message: false
-#| cache: true
+#| label: toy-table
+#| echo: false
+#| output: asis
 
-tourism_rec <- tourism_fit |>
-  reconcile(
-    bu    = bottom_up(ets),
-    td_ap = top_down(ets, method = "average_proportions"),
-    td_pa = top_down(ets, method = "proportion_averages"),
-    td_fp = top_down(ets, method = "forecast_proportions"),
-    mo    = middle_out(ets, split = 1),
-    wls   = min_trace(ets, method = "wls_struct"),
-    mint  = min_trace(ets, method = "mint_shrink")
-  )
-
-tourism_fc <- tourism_rec |>
-  forecast(h = "2 years")
+toy_table_html(fragments = identical(knitr::pandoc_to(), "revealjs"))
 ```
 
----
+:::{.fragment}
+
+Every row is coherent ($A + B = \text{Total}$) and closes the same gap of `r toy_gap`. The methods differ **only in who absorbs it**.
+
+:::
 
 :::{.content-hidden unless-format="revealjs"}
 
-## Accuracy by Level
+*The matrix algebra behind each row: [backup slides](#backup-the-matrix-view) at the end, or "The matrix view" in the HTML notes.*
 
 :::
 
 :::{.content-visible unless-format="revealjs"}
 
-### Accuracy by Level
+:::{.callout-note collapse="true"}
+## The matrix view (following FPP3)
+
+**1. The summing matrix.** Stack every series in $\mathbf y_t$ and the bottom-level series in $\mathbf b_t$. For the toy example,
+
+$$\underbrace{\begin{bmatrix} y_{T,t}\\ y_{A,t}\\ y_{B,t}\end{bmatrix}}_{\mathbf y_t} = \underbrace{\begin{bmatrix}1&1\\1&0\\0&1\end{bmatrix}}_{S}\underbrace{\begin{bmatrix}y_{A,t}\\ y_{B,t}\end{bmatrix}}_{\mathbf b_t}$$
+
+$S$ says how every series is built from the bottom level. In general $S$ is $n \times m$: $n$ series, $m$ of them at the bottom. For tourism, $n = 85$ and $m = 76$.
+
+**2. The mapping matrix $G$.** Every linear method takes all $n$ base forecasts $\hat{\mathbf y}_h$ and returns $m$ bottom-level forecasts, $\tilde{\mathbf b}_h = G\hat{\mathbf y}_h$. For the toy example (columns: Total, A, B):
+
+$$G_{BU} = \begin{bmatrix}0&1&0\\0&0&1\end{bmatrix}, \qquad G_{OLS} = \tfrac13\begin{bmatrix}1&2&-1\\1&-1&2\end{bmatrix}, \qquad G_{WLS} = \tfrac16\begin{bmatrix}1&5&-1\\1&-1&5\end{bmatrix}$$
+
+Bottom-up ignores the total. OLS uses it: for example,
+
+$$\tilde b_A^{OLS} = \frac{`r toy_y[["Total"]]` + 2\cdot `r toy_y[["A"]]` - `r toy_y[["B"]]`}{3} = `r sprintf("%.1f", toy_rec$ols[["A"]])`.$$
+
+**3. Putting it together.** Coherent forecasts are rebuilt from the bottom level with $S$:
+
+$$\tilde{\mathbf y}_h = S\,G\,\hat{\mathbf y}_h$$
+
+The first row of $SG$ is the **recipe for the reconciled total**:
+
+| Method | First row of $SG$ | Reconciled total |
+|:--|:--|--:|
+| Bottom-up | $[0,\ 1,\ 1]$ | $0 \cdot 100 + 50 + 40 = `r sprintf("%.1f", toy_rec$bu[["Total"]])`$ |
+| OLS | $[\tfrac23,\ \tfrac13,\ \tfrac13]$ | `r sprintf("%.1f", toy_rec$ols[["Total"]])` |
+| WLS | $[\tfrac13,\ \tfrac23,\ \tfrac23]$ | `r sprintf("%.1f", toy_rec$wls[["Total"]])` |
+
+Its first entry is the **weight on the base forecast of the total**, the quantity plotted for tourism in @fig-weight-total.
+
+**4. The general solution (MinT).** Let $W_h = \operatorname{Var}(\mathbf y_{T+h} - \hat{\mathbf y}_h)$ be the covariance matrix of the base forecast errors. MinT (*minimum trace*; Wickramasuriya, Athanasopoulos & Hyndman, 2019) picks the $G$ that minimizes the sum of the reconciled error variances of **all** series,
+
+$$\min_G \operatorname{tr}\!\left(\operatorname{Var}[\mathbf y_{T+h} - \tilde{\mathbf y}_h]\right) \quad \text{subject to} \quad GS = I_m,$$
+
+where $GS = I_m$ guarantees that unbiased base forecasts give unbiased reconciled forecasts (top-down violates it). The solution is
+
+$$G = (S'W_h^{-1}S)^{-1}S'W_h^{-1}.$$
+
+Every row of the toy table with a $W$ is this formula: **OLS** uses $W_h = I$, **WLS** a diagonal $W_h$, and **MinT** a full $W_h$ with covariances.
 
 :::
 
-```{r}
-#| label: accuracy-all
-#| message: false
-#| fig-cap: "Mean RMSSE by reconciliation method and aggregation level."
-#| output: false
+:::{.callout-note collapse="true"}
+## Quick refresher: from OLS to GLS
 
-accuracy_all_p <- tourism_fc |>
-  accuracy(data = tourism_hts, measures = list(RMSSE = RMSSE)) |>
-  mutate(
-    Level = case_when(
-      is_aggregated(State)                           ~ "Total",
-      !is_aggregated(State) & is_aggregated(Region)  ~ "State",
-      TRUE                                           ~ "Region"
-    )
+With TSLM we estimated $\boldsymbol\beta$ by OLS, $\hat{\boldsymbol\beta} = (X'X)^{-1}X'\mathbf y$, which is the best linear unbiased estimator when the errors are uncorrelated with equal variance, $\operatorname{Var}(\boldsymbol\varepsilon) = \sigma^2 I$.
+
+When $\operatorname{Var}(\boldsymbol\varepsilon) = \Sigma$ is not proportional to $I$ — some observations are noisier, or errors are correlated — OLS is still unbiased but no longer efficient. **Generalized least squares** reweights the data:
+
+$$\hat{\boldsymbol\beta}_{GLS} = (X'\Sigma^{-1}X)^{-1}X'\Sigma^{-1}\mathbf y$$
+
+Noisy observations get less weight; correlated observations count less because they partly repeat the same information. **WLS** is the special case where $\Sigma$ is diagonal. Equivalently, GLS is OLS after "whitening" the data with $\Sigma^{-1/2}$.
+
+In reconciliation: $\mathbf y \to \hat{\mathbf y}_h$, $X \to S$, $\boldsymbol\beta \to$ bottom-level forecasts, $\Sigma \to W_h$. Treat the base forecasts as noisy observations of the true bottom-level values, $\hat{\mathbf y}_h = S\boldsymbol\beta_h + \boldsymbol\varepsilon_h$: then $G\hat{\mathbf y}_h$ is exactly the GLS estimate of $\boldsymbol\beta_h$.
+:::
+
+### The geometry of reconciliation
+
+Coherent forecasts $(\text{Total}, A, B)$ satisfy $\text{Total} = A + B$: they lie on a **plane** in $\mathbb R^3$ spanned by the columns of $S$. Every method in the table **projects** the incoherent base forecast onto that plane; they only differ in the direction.
+
+```{r}
+#| label: geometry-plot
+#| echo: false
+
+geometry_plot <- function(dark = FALSE) {
+  pal <- narsil_pal(if (dark) "dark" else "light")
+  pts <- tibble(
+    key  = c("base", toy_tbl$key),
+    name = c("Base (incoherent)", toy_tbl$method),
+    vals = c(list(toy_y), toy_tbl$rec)
   ) |>
-  group_by(.model, Level) |>
-  summarise(RMSSE = mean(RMSSE, na.rm = TRUE), .groups = "drop") |>
-  mutate(Level  = factor(Level, levels = c("Total", "State", "Region")),
-         .model = fct_reorder(.model, RMSSE)) |>
-  ggplot(aes(x = .model, y = RMSSE, fill = .model)) +
-  geom_col(show.legend = FALSE) +
-  facet_wrap(~ Level, scales = "free_y") +
-  coord_flip() +
-  labs(x = NULL, y = "Mean RMSSE")
+    mutate(Total = map_dbl(vals, "Total"),
+           A     = map_dbl(vals, "A"),
+           B     = map_dbl(vals, "B"),
+           col   = pal$palette[1:6])
+  grid_a <- c(46, 58)
+  grid_b <- c(36, 48)
+  axis_style <- list(gridcolor = pal$grid, zerolinecolor = pal$grid,
+                     color = pal$fg, backgroundcolor = pal$bg_panel,
+                     showbackground = TRUE)
+
+  p <- plot_ly() |>
+    add_surface(x = grid_a, y = grid_b, z = t(outer(grid_a, grid_b, "+")),
+                opacity = 0.3, showscale = FALSE, name = "Coherent plane",
+                colorscale = list(c(0, 1), c(pal$grid, pal$grid)),
+                hoverinfo = "skip")
+  for (i in 2:nrow(pts)) {
+    p <- p |>
+      add_trace(type = "scatter3d", mode = "lines",
+                x = pts$A[c(1, i)], y = pts$B[c(1, i)], z = pts$Total[c(1, i)],
+                line = list(color = pts$col[i], width = 5, dash = "dash"),
+                showlegend = FALSE, hoverinfo = "skip")
+  }
+  p |>
+    add_trace(type = "scatter3d", mode = "markers", data = pts,
+              x = ~A, y = ~B, z = ~Total, color = ~name,
+              colors = setNames(pts$col, pts$name),
+              marker = list(size = 5),
+              text = ~sprintf("%s<br>Total = %.1f, A = %.1f, B = %.1f",
+                              name, Total, A, B),
+              hoverinfo = "text") |>
+    layout(
+      height = 600,
+      paper_bgcolor = pal$bg,
+      font = list(color = pal$fg),
+      legend = list(orientation = "h", x = 0, y = 1.12,
+                    font = list(color = pal$fg)),
+      margin = list(l = 0, r = 0, t = 10, b = 0),
+      scene = list(
+        xaxis = c(list(title = "A"), axis_style),
+        yaxis = c(list(title = "B"), axis_style),
+        zaxis = c(list(title = "Total"), axis_style),
+        camera = list(eye = list(x = 1.6, y = -1.6, z = 0.6)),
+        aspectmode = "cube"
+      )
+    )
+}
 ```
 
 ```{r}
-#| label: accuracy-all-render
+#| label: geometry-plot-render
 #| renderings: [light, dark]
 #| echo: false
 
-accuracy_all_p + scale_narsil() + scale_fill_narsil()
-accuracy_all_p + scale_narsil_dark() + scale_fill_narsil(dark = TRUE)
+geometry_plot()
+geometry_plot(dark = TRUE)
+```
+
+Rotate the plot: bottom-up drops straight down in the Total direction, top-down moves only within $A$ and $B$, the OLS segment is perpendicular to the plane, and the WLS and MinT segments lean so that the noisy total absorbs most of the adjustment. **Choosing $W_h$ chooses the direction of projection.**
+
+:::
+
+## Who Decides the Weights?
+
+:::{.content-hidden unless-format="revealjs"}
+
+For real data we don't pick $W$ by hand: `min_trace()` estimates it.
+
+| `method =` | Who gets corrected most? |
+|:--|:--|
+| `"ols"` | Nobody in particular: treat all series equally |
+| `"wls_struct"` | Series that aggregate many bottom series |
+| `"wls_var"` (**default**) | Series whose base model was noisiest in-sample |
+| `"mint_shrink"` | Same as `wls_var`, plus correlations, regularized |
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+For real data we don't pick $W$ by hand. Once $S$ is fixed by the structure, **the only unknown left is $W_h$**, and the `min_trace()` methods are different estimates of it, ordered from estimating nothing to estimating everything:
+
+| `method =` | Plain-language rule | $W_h \propto$ | Needs residuals | Aggregate intervals |
+|:--|:--|:--|:-:|:--|
+| `"ols"` | Treat all series equally | $I$ | No | Too narrow[^cov] |
+| `"wls_struct"` | Weight by the number of bottom series aggregated | $\operatorname{diag}(S\mathbf 1)$ | No | Too narrow[^cov] |
+| `"wls_var"` (**default**) | Weight by in-sample noise | $\operatorname{diag}(\hat W_1)$ | Yes | Too narrow[^cov] |
+| `"mint_cov"` | Noise + correlations, unregularized; needs $T \gg n$ | $\hat W_1$ (sample) | Yes | Use estimated correlations |
+| `"mint_shrink"` | Noise + correlations, regularized | $\lambda D + (1-\lambda)\hat W_1$ | Yes | Use estimated correlations |
+
+[^cov]: `fabletools` computes each reconciled variance as $\operatorname{diag}(S G\, W_h\, G' S')$, building $W_h$ from each series' own forecast variances and the **correlations** implied by the method's $W$. For a diagonal $W$ (`"ols"`, `"wls_struct"`, `"wls_var"`, and also `bottom_up()`), all covariances are set to zero. When the base forecast errors are positively correlated, the intervals of aggregate series come out too narrow.
+
+$\hat W_1$ is estimated from the **one-step in-sample residuals** of the base models. All methods assume $W_h = k_h W_1$ for some constant $k_h$, which cancels in $G$: the same $G$ is used at every horizon.
+
+```{r}
+#| label: shrink-numbers
+#| include: false
+
+tourism_res <- tourism_fit |>
+  residuals(type = "response") |>
+  as_tibble() |>
+  mutate(series = paste(State, Region)) |>
+  select(series, Quarter, .resid) |>
+  pivot_wider(names_from = series, values_from = .resid) |>
+  select(-Quarter) |>
+  as.matrix()
+
+n_series <- ncol(tourism_res)
+n_obs    <- nrow(tourism_res)
+n_params <- n_series * (n_series + 1) / 2
+cov_rank <- qr(cov(tourism_res))$rank
+
+# Shrinkage intensity exactly as fabletools computes it for "mint_shrink"
+W1     <- crossprod(tourism_res) / n_obs
+xs     <- scale(tourism_res, center = FALSE, scale = sqrt(diag(W1)))
+v      <- (1 / (n_obs * (n_obs - 1))) * (crossprod(xs^2) - crossprod(xs)^2 / n_obs)
+diag(v) <- 0
+r2     <- cov2cor(W1)^2
+diag(r2) <- 0
+lambda_hat <- min(max(sum(v) / sum(r2), 0), 1)
+```
+
+:::{.callout-note collapse="true"}
+## Why `mint_cov` fails here, and how `mint_shrink` fixes it
+
+For the tourism hierarchy: $n =$ `r n_series` series and $T =$ `r n_obs` training quarters.
+
+- A full covariance matrix has $n(n+1)/2 =$ **`r format(n_params, big.mark = ",")`** parameters, estimated from `r n_obs` residual vectors.
+- The sample covariance has rank at most $T - 1 =$ `r n_obs - 1` $< n$ (computed rank: `r cov_rank`). It is **singular**, so $\hat W_1^{-1}$ does not exist.
+
+```{r}
+#| label: mint-cov-fails
+
+# The full error trace is suppressed for readability: print only the message
+# of the underlying error (dplyr wraps it in an "In argument: ..." layer).
+tryCatch(
+  tourism_fit |>
+    reconcile(mint_cov = min_trace(base, method = "mint_cov")) |>
+    forecast(h = 1),
+  error = \(e) {
+    while (!is.null(e$parent)) e <- e$parent
+    cat(conditionMessage(e))
+  }
+)
+```
+
+`"mint_shrink"` pulls the sample covariance toward its diagonal:
+
+$$\hat W_1^{*} = \lambda D + (1 - \lambda)\hat W_1, \qquad D = \operatorname{diag}(\hat W_1)$$
+
+- $\lambda = 1$ → $D$: no correlations, i.e. `"wls_var"`.
+- $\lambda = 0$ → $\hat W_1$: full sample covariance, i.e. `"mint_cov"`.
+- `"mint_shrink"` **interpolates** between them, and any $\lambda > 0$ makes the matrix invertible.
+
+$\lambda$ is estimated from the data (Schäfer & Strimmer, 2005; a Ledoit–Wolf-type estimator, as used by Wickramasuriya et al., 2019):
+
+$$\hat\lambda = \frac{\sum_{i \ne j}\widehat{\operatorname{Var}}(\hat r_{ij})}{\sum_{i \ne j}\hat r_{ij}^2}$$
+
+where $\hat r_{ij}$ are the residual correlations. Noisy correlations (large variance) or weak correlations (small $\hat r_{ij}^2$) → more shrinkage. For the tourism base models, $\hat\lambda =$ **`r round(lambda_hat, 2)`**.
+
+This is **regularization**, like ridge regression: trade a little bias for much less estimation variance.
+:::
+
+:::
+
+## In Code
+
+:::{.content-hidden unless-format="revealjs"}
+
+Compare every method over **5 rolling origins**, forecasting 4 quarters ahead each time. Per fold:
+
+```{r}
+#| label: reconcile-slide
+#| eval: false
+#| code-line-numbers: "6-14"
+
+reconcile_fold <- function(fold) {
+  fold |>
+    update_tsibble(key = c(State, Region)) |>
+    select(-.id) |>
+    model(base = ETS(Trips)) |>
+    reconcile(
+      bu          = bottom_up(base),
+      td          = top_down(base),
+      mo          = middle_out(base, split = 1),
+      ols         = min_trace(base, method = "ols"),
+      wls_struct  = min_trace(base, method = "wls_struct"),
+      wls_var     = min_trace(base, method = "wls_var"),
+      mint_shrink = min_trace(base, method = "mint_shrink")
+    ) |>
+    forecast(h = 4) |>
+    as_tibble()
+}
+```
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+A single train/test split can crown a different winner depending on where it falls — the lesson of [Time Series Cross-Validation](../03_cv/ts_cv.qmd#rolling-origin-evaluation). We compare methods over **5 rolling origins**, forecasting 4 quarters ahead each time.
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+```{r}
+#| label: cv-folds
+
+tourism_cv <- tourism_hts |>
+  filter_index(. ~ "2016 Q4") |>                       #<1>
+  stretch_tsibble(.init = 64, .step = 3, .id = ".id")  #<2>
+```
+1. The last origin must leave 4 quarters of test data before the end of the data (2017 Q4).
+2. Training sets end in 2013 Q4, 2014 Q3, 2015 Q2, 2016 Q1, and 2016 Q4.
+
+```{r}
+#| label: cv-fit
+#| cache: true
+
+reconcile_fold <- function(fold) {
+  fold |>
+    update_tsibble(key = c(State, Region)) |>    #<1>
+    select(-.id) |>
+    model(base = ETS(Trips)) |>
+    reconcile(
+      bu          = bottom_up(base),
+      td          = top_down(base),
+      mo          = middle_out(base, split = 1),
+      ols         = min_trace(base, method = "ols"),
+      wls_struct  = min_trace(base, method = "wls_struct"),
+      wls_var     = min_trace(base, method = "wls_var"),
+      mint_shrink = min_trace(base, method = "mint_shrink")
+    ) |>
+    forecast(h = 4) |>
+    as_tibble()
+}
+
+tourism_cv_fc <- tourism_cv |>
+  group_split(.id) |>                                                  #<2>
+  map(\(fold) reconcile_fold(fold) |> mutate(.id = fold$.id[1])) |>
+  list_rbind() |>
+  as_fable(index = Quarter, key = c(State, Region, .model, .id),       #<3>
+           distribution = Trips, response = "Trips")
+```
+1. Drop `.id` from the key. Otherwise `reconcile()` would treat the folds as one big hierarchy: `top_down()` and `middle_out()` would abort, and `min_trace()` would estimate covariances *between folds*.
+2. Fit, reconcile, and forecast each fold separately.
+3. Stack the folds back into one fable, with `.id` as a key.
+
+MASE and RMSSE are scaled, so they can be averaged across series of very different sizes. We average **within each level**: a pooled RMSE would be dominated by the national total, whose errors are hundreds of times larger than a region's.
+
+```{r}
+#| label: cv-accuracy
+
+tourism_cv_accu <- tourism_cv_fc |>
+  accuracy(tourism_hts,                                   #<1>
+           measures = list(MASE = MASE, RMSSE = RMSSE),
+           by = c(".model", "State", "Region", ".id"))    #<2>
+
+tourism_cv_level <- tourism_cv_accu |>
+  mutate(level = case_when(
+    is_aggregated(State)  ~ "Total",
+    is_aggregated(Region) ~ "State",
+    .default = "Region"
+  )) |>
+  summarise(MASE = mean(MASE), RMSSE = mean(RMSSE), .by = c(level, .model))
+
+tourism_cv_level |>
+  pivot_wider(names_from = level, values_from = c(MASE, RMSSE)) |>
+  arrange(MASE_Total)
+```
+1. Pass the **full** tsibble: MASE and RMSSE need the training data for their scaling, and the actual values for the test periods.
+2. One accuracy value per series and origin; the averages are taken over series within a level and over origins.
+
+```{r}
+#| label: cv-heatmap
+#| output: false
+
+cv_rank <- tourism_cv_level |>
+  select(level, .model, MASE) |>
+  bind_rows(
+    tourism_cv_level |>
+      summarise(MASE = mean(MASE), .by = .model) |>
+      mutate(level = "Mean across levels")
+  ) |>
+  mutate(rank = min_rank(MASE), .by = level)
+
+cv_model_order <- cv_rank |>
+  filter(level == "Mean across levels") |>
+  arrange(MASE) |>
+  pull(.model)
+
+cv_heatmap_p <- cv_rank |>
+  mutate(
+    level  = factor(level, levels = rev(c("Total", "State", "Region",
+                                          "Mean across levels"))),
+    .model = factor(.model, levels = cv_model_order)
+  ) |>
+  ggplot(aes(x = .model, y = level, fill = rank)) +
+  geom_tile(colour = "white", linewidth = 1) +
+  geom_text(aes(label = paste0(rank, "\n", round(MASE, 2))),
+            colour = "white", fontface = "bold", size = 3.5) +
+  labs(title = "Rank of each method by level (1 = best)",
+       subtitle = "Label: rank and MASE, averaged over series and 5 origins",
+       x = NULL, y = NULL, fill = "Rank")
+```
+
+:::
+
+## Results
+
+```{r}
+#| label: cv-heatmap-render
+#| renderings: [light, dark]
+#| echo: false
+
+cv_heatmap_p + scale_narsil() +
+  scale_fill_gradient(low = narsil_pal()$palette[3], high = narsil_pal()$palette[4]) +
+  theme(panel.grid = element_blank())
+cv_heatmap_p + scale_narsil_dark() +
+  scale_fill_gradient(low = narsil_pal("dark")$palette[8], high = narsil_pal("dark")$palette[7]) +
+  theme(panel.grid = element_blank())
 ```
 
 :::{.fragment}
 
-:::{.callout-tip appearance="simple"}
-## Reading the chart
-
-Single-level methods tend to perform best at their "home" level (BU at Region, TD at Total) and worse elsewhere. MinT shrink typically does well across all levels because it does not privilege any single level.
+`td` and `ols` rank best on average; `bu`, `wls_var` and `mint_shrink` rank worst. The "optimal" method is not the winner here. Why?
 
 :::
 
+## Why `td` and `ols` Won: Trusting the Wrong Level
+
+```{r}
+#| label: weight-total-calc
+#| include: false
+
+# Rebuild, for the last training fold, the same S and W that min_trace()
+# builds internally (fabletools 0.6.x, forecast.lst_mint_mdl), and read off
+# the weight each method gives the base forecast of the total when it builds
+# the reconciled total: the (total, total) entry of S G.
+last_fit <- tourism_cv |>
+  filter(.id == max(.id)) |>
+  update_tsibble(key = c(State, Region)) |>
+  select(-.id) |>
+  model(base = ETS(Trips))
+
+last_kd  <- key_data(last_fit)
+last_agg <- fabletools:::build_key_data_smat(last_kd)
+last_S   <- matrix(0, nrow = length(last_agg$agg), ncol = max(unlist(last_agg$agg)))
+last_S[cbind(rep(seq_along(last_agg$agg), lengths(last_agg$agg)),
+             unlist(last_agg$agg))] <- 1
+
+last_res <- map(last_fit$base, \(m) residuals(m, type = "response")[[2]]) |>
+  do.call(what = cbind)
+n_res <- nrow(last_res)
+covm  <- crossprod(last_res) / n_res
+
+shrink_W <- local({
+  tar <- diag(diag(covm))
+  xs  <- scale(last_res, center = FALSE, scale = sqrt(diag(covm)))
+  v   <- (1 / (n_res * (n_res - 1))) * (crossprod(xs^2) - crossprod(xs)^2 / n_res)
+  diag(v) <- 0
+  d   <- (cov2cor(covm) - diag(nrow(covm)))^2
+  lam <- max(min(sum(v) / sum(d), 1), 0)
+  lam * tar + (1 - lam) * covm
+})
+
+last_W <- list(
+  ols         = diag(nrow(covm)),
+  wls_struct  = diag(lengths(last_agg$agg)),
+  wls_var     = diag(diag(covm)),
+  mint_shrink = shrink_W
+)
+last_SG <- map(last_W, \(W) {
+  R <- t(last_S) %*% solve(W)
+  last_S %*% solve(R %*% last_S) %*% R
+})
+
+i_total <- which(is_aggregated(last_kd$State))
+
+# Check: our S G reproduces fabletools' reconciled point forecasts
+last_check <- last_fit |>
+  reconcile(mint_shrink = min_trace(base, method = "mint_shrink")) |>
+  forecast(h = 1) |>
+  as_tibble() |>
+  select(State, Region, .model, .mean) |>
+  pivot_wider(names_from = .model, values_from = .mean)
+last_check <- last_kd |>
+  select(State, Region) |>
+  left_join(last_check, by = c("State", "Region"))
+stopifnot(isTRUE(all.equal(drop(last_SG$mint_shrink %*% last_check$base),
+                           last_check$mint_shrink)))
+
+weight_total <- tibble(
+  .model = c("bu", "td", "mo", names(last_SG)),
+  weight = c(0, 1, 0, map_dbl(last_SG, \(SG) SG[i_total, i_total]))
+) |>
+  left_join(cv_rank |>
+              filter(level == "Mean across levels") |>
+              select(.model, MASE),
+            by = ".model") |>
+  mutate(type = if_else(.model == "mo",
+                        "Exception: rebuilds the total from the states",
+                        "Total built from the total and/or the regions"))
+
+# Out-of-sample errors from the 5-origin CV. One convention throughout the
+# document: error = forecast - actual, and bias of a level = error of the
+# SUMMED forecasts of that level relative to the actual national total, in %
+# (positive = over-forecast).
+cv_err <- tourism_cv_fc |>
+  as_tibble() |>
+  select(State, Region, Quarter, .model, .id, .mean) |>
+  left_join(tourism_hts |> as_tibble() |> rename(actual = Trips),
+            by = c("State", "Region", "Quarter")) |>
+  mutate(error = .mean - actual,
+         level = case_when(
+           is_aggregated(State)  ~ "Total",
+           is_aggregated(Region) ~ "State",
+           .default = "Region"
+         ))
+
+cv_bias <- cv_err |>
+  filter(.model == "base") |>
+  summarise(bias_pct = 100 * sum(error) / sum(actual), .by = level) |>
+  deframe()
+
+cv_rmse_region <- cv_err |>
+  filter(level == "Region") |>
+  summarise(RMSE = sqrt(mean(error^2)), .by = .model) |>
+  deframe()
+
+fmt1 <- \(x) sprintf("%.1f", x)
+```
+
+:::{.content-visible unless-format="revealjs"}
+
+```{r}
+#| label: weight-total
+#| output: false
+
+weight_total_p <- weight_total |>
+  ggplot(aes(x = weight, y = MASE, colour = type)) +
+  geom_point(size = 3) +
+  geom_text(aes(label = .model), vjust = -1, show.legend = FALSE) +
+  scale_x_continuous(labels = scales::label_percent(), limits = c(-0.05, 1.05)) +
+  scale_y_continuous(expand = expansion(mult = 0.15)) +
+  labs(title = "The more a method trusted the base total, the better it did",
+       x = "Weight on the base forecast of the total",
+       y = "Mean MASE across levels", colour = NULL)
+```
+
+:::
+
+::: {#fig-weight-total}
+
+```{r}
+#| label: weight-total-render
+#| renderings: [light, dark]
+#| echo: false
+
+weight_total_p + scale_narsil() + theme(legend.position = "bottom")
+weight_total_p + scale_narsil_dark() + theme(legend.position = "bottom")
+```
+
+Weight each method puts on the base forecast of the national total when it builds the reconciled total (the total's own entry in $SG$), against mean MASE across levels over the 5 origins. Weights come from a single fold (training ending 2016 Q4); they vary slightly across folds.
+
+:::
+
+:::{.fragment}
+
+Same mechanism as the toy WLS row: the series with the largest $W$ absorbs most of the correction. In-sample, the national total's base model looked noisiest, so `wls_var` and `mint_shrink` let the regions overrule it. **Out of sample, the total was the most reliable forecast.** All base forecasts under-forecast, the bottom level most: the base total missed by `r fmt1(cv_bias[["Total"]])`%, the summed states by `r fmt1(cv_bias[["State"]])`%, and the summed regions by `r fmt1(cv_bias[["Region"]])`%.^[Bias convention used throughout: error = forecast − actual, summed over the series of a level (and over horizons and origins), as a percentage of the actual national total. Positive = over-forecast.]
+
+:::
+
+:::{.fragment}
+
+Even at the region level, `td` (RMSE `r fmt1(cv_rmse_region[["td"]])`) beat the regional base forecasts (RMSE `r fmt1(cv_rmse_region[["base"]])`): **splitting the national forecast beat forecasting each region directly.**
+
+:::
+
+:::{.content-visible unless-format="revealjs"}
+
+:::{.callout-note collapse="true"}
+## Sensitivity check: 8 origins instead of 5
+
+```{r}
+#| label: sensitivity
+#| echo: false
+
+# Precomputed by _sensitivity_cv.R (8 origins x 85 ETS fits, too slow to render)
+sens <- read_rds(here::here("docs/modules/module_4/04_hierarchical/hierarchical_sensitivity.rds"))
+
+sens_rank <- sens$accuracy |>
+  summarise(MASE = mean(MASE), .by = c(.id, origin, .model)) |>
+  mutate(rank = min_rank(MASE), .by = .id)
+
+sens_avg <- sens$accuracy |>
+  summarise(MASE = mean(MASE), .by = c(.id, .model)) |>
+  summarise(MASE = mean(MASE), .by = .model) |>
+  mutate(rank = min_rank(MASE)) |>
+  arrange(rank)
+
+sens_rank |>
+  select(origin, .model, rank) |>
+  pivot_wider(names_from = .model, values_from = rank) |>
+  left_join(sens$bias |> select(-.id), by = "origin") |>
+  mutate(origin = format(origin)) |>
+  bind_rows(sens_avg |>
+              select(.model, rank) |>
+              pivot_wider(names_from = .model, values_from = rank) |>
+              mutate(origin = "Average (8 origins)")) |>
+  select(origin,
+         `Base total (%)`    = total_base_bias_pct,
+         `Sum of regions (%)` = regions_sum_bias_pct,
+         all_of(sens_avg$.model)) |>
+  mutate(across(ends_with("(%)"), \(x) if_else(is.na(x), "", sprintf("%.1f", x)))) |>
+  knitr::kable(align = "r")
+
+# Origins where bottom-up beats top-down, and whether they are exactly the
+# origins where the summed regional forecasts were closer to the actual total
+sens_reversed <- sens_rank |>
+  select(origin, .model, rank) |>
+  pivot_wider(names_from = .model, values_from = rank) |>
+  filter(bu < td) |>
+  pull(origin)
+sens_regions_closer <- sens$bias |>
+  filter(abs(regions_sum_bias_pct) < abs(total_base_bias_pct)) |>
+  pull(origin)
+if (!setequal(sens_reversed, sens_regions_closer)) {
+  warning("Sensitivity note: the origins where bu beats td no longer coincide ",
+          "with the origins where the summed regions were closer to the actual ",
+          "total. Review the text of the sensitivity note.")
+}
+```
+
+We repeated the comparison with **8 origins** (training ending `r format(min(sens$bias$origin))` to `r format(max(sens$bias$origin))`, every 5 quarters, $h = 4$). Entries are the rank of each method by MASE averaged across levels (1 = best); columns are ordered by the average rank. The two error columns use the same convention as above (error = forecast − actual, as a percentage of the actual national total; positive = over-forecast) for two forecasts of the national total: the base forecast of the total, and the sum of the 76 regional base forecasts (what `bu` uses).
+
+The average ordering matches the 5-origin CV. The order reverses at `r length(sens_reversed)` origins (`r paste(format(sens_reversed), collapse = " and ")`). This is not new evidence but the **same mechanism as @fig-weight-total, seen origin by origin**: a method wins when it trusts the level whose base forecast turns out more accurate. At those origins the summed regional forecasts came closer to the actual total than the base forecast of the total, so `bu` won; at the others it was the reverse, so `td` won. The sign of the error does not decide it (at `r format(setdiff(sens$bias$origin[sens$bias$total_base_bias_pct > 0], sens_reversed))` both over-forecast, but the regions missed by more). And the $W$ estimates cannot know in advance which level will be more accurate: they only see in-sample one-step residuals.
+:::
+
+:::
+
+## What the Cross-Validation Tells Us {.smaller}
+
+:::{.callout-important}
+## What the cross-validation tells us
+
+- **No method wins at every level or at every origin.** On average, `td` and `ols` rank best and `bu`, `wls_var` and `mint_shrink` worst. At origins where the summed regional forecasts were closer to the actual total than the base forecast of the total, the order reverses.
+- **The ranking tracks how much each method trusts the base forecast of the total** (@fig-weight-total). Middle-out is the exception: it rebuilds the total from the state forecasts, not from the regions.
+- **Why?** Base forecasts at every level were biased in the same direction, and the bottom-level ones more so in relative terms. *Aggregation cancels noise, not bias*: summing same-sign errors adds them up.
+- **MinT is optimal in trace only if the base forecasts are unbiased and $W_h$ is known.** Its $W$ is estimated from in-sample one-step residuals, which measure variance, not out-of-sample bias, so it cannot see this problem.
+- **Takeaway:** check the bias of your base forecasts *by level* before reconciling. Reconciliation redistributes errors; it does not remove a shared bias. Fix the base models first.
 :::
 
 # Mixed Structure in Practice: PBS
@@ -1140,6 +1869,9 @@ pbs_hts <- PBS |>
   aggregate_key(ATC1 / ATC2 * Concession,           #<2>
                 Cost = sum(Cost) / 1e6)
 
+pbs_train <- pbs_hts |>
+  filter_index(. ~ "2006 Jun")
+
 pbs_hts
 ```
 1. Restrict to four ATC1 categories to keep the example manageable.
@@ -1147,23 +1879,12 @@ pbs_hts
 
 :::
 
----
-
-:::{.content-hidden unless-format="revealjs"}
-
 ## PBS: Reconciliation
 
-:::
-
-:::{.content-visible unless-format="revealjs"}
-
-### PBS: Reconciliation
-
-:::
+Because this is a mixed structure, `top_down()` and `middle_out()` are not available; we compare bottom-up with two reconciliation methods.
 
 ```{r}
 #| label: pbs-fit-reconcile
-#| message: false
 #| cache: true
 
 pbs_fit <- pbs_train |>
@@ -1180,40 +1901,31 @@ pbs_fc <- pbs_rec |>
   forecast(h = "2 years")
 ```
 
----
-
-:::{.content-hidden unless-format="revealjs"}
-
 ## PBS: Accuracy
-
-:::
-
-:::{.content-visible unless-format="revealjs"}
-
-### PBS: Accuracy
-
-:::
 
 ```{r}
 #| label: pbs-accuracy
-#| message: false
-#| fig-cap: "Mean RMSSE for the PBS mixed hierarchy by method and aggregation level."
+#| fig-cap: "Mean RMSSE for the PBS mixed hierarchy by method and aggregation level (single train/test split)."
 #| output: false
 
 pbs_accuracy_p <- pbs_fc |>
   accuracy(data = pbs_hts, measures = list(RMSSE = RMSSE)) |>
   mutate(
     Level = case_when(
-      is_aggregated(ATC1)                                                     ~ "Total",
-      !is_aggregated(ATC1) & is_aggregated(ATC2) & is_aggregated(Concession)  ~ "ATC1",
-      !is_aggregated(ATC2) & is_aggregated(Concession)                        ~ "ATC2",
-      TRUE                                                                     ~ "ATC2 × Concession"
+      is_aggregated(ATC1) & is_aggregated(Concession) ~ "Total",
+      is_aggregated(ATC1)                             ~ "Concession",
+      is_aggregated(ATC2) & is_aggregated(Concession) ~ "ATC1",
+      is_aggregated(ATC2)                             ~ "ATC1 × Concession",
+      is_aggregated(Concession)                       ~ "ATC2",
+      .default = "ATC2 × Concession"
     )
   ) |>
   group_by(.model, Level) |>
   summarise(RMSSE = mean(RMSSE, na.rm = TRUE), .groups = "drop") |>
   mutate(
-    Level  = factor(Level, levels = c("Total", "ATC1", "ATC2", "ATC2 × Concession")),
+    Level  = factor(Level, levels = c("Total", "Concession", "ATC1",
+                                      "ATC1 × Concession", "ATC2",
+                                      "ATC2 × Concession")),
     .model = fct_reorder(.model, RMSSE)
   ) |>
   ggplot(aes(x = .model, y = RMSSE, fill = .model)) +
@@ -1242,22 +1954,78 @@ pbs_accuracy_p + scale_narsil_dark() + scale_fill_narsil(dark = TRUE)
 
 | Topic | Key takeaway |
 |:--|:--|
-| **Structures** | Hierarchical nests; grouped crosses; mixed combines both. |
-| **`aggregate_key()`** | Defines the structure and computes all aggregations automatically. |
-| **Coherence** | Forecasts that don't add up create operational inconsistencies. |
-| **Bottom-Up** | Safe default when bottom-level series are informative. |
-| **Top-Down** | Three variants; forecast proportions is usually preferable. |
-| **Middle-Out** | Useful when the middle level has the strongest signal. |
-| **MinT** | Adjusts all levels jointly. `mint_shrink` is the recommended default. |
+| **Structures** | Hierarchical nests (`/`); grouped crosses (`*`) — two trees sharing total and bottom; mixed combines both. |
+| **Coherence** | Independent base forecasts don't add up; the gap is real and visible. |
+| **Single-level** | BU, TD, MO trust one level. TD and MO only work for strictly hierarchical structures. |
+| **Linear reconciliation** | Every method is $\tilde{\mathbf y}_h = SG\hat{\mathbf y}_h$; unbiasedness needs $GS = I$. |
+| **MinT** | GLS projection: $G = (S'W_h^{-1}S)^{-1}S'W_h^{-1}$, optimal in trace if base forecasts are unbiased. |
+| **`min_trace()` methods** | Different estimates of $W_h$; `mint_shrink` regularizes when $n$ is large relative to $T$. |
+| **Evaluation** | Compare by level with rolling-origin CV; no method dominates every level. |
 
 :::{.fragment}
 
 :::{.callout-tip appearance="simple"}
 ## Where to start
 
-1. Use `bottom_up()` as your baseline.
-2. Fit `min_trace(method = "mint_shrink")` alongside it.
-3. Compare with `accuracy()` faceted by aggregation level.
+1. Fit base models at every level and check them for bias.
+2. Reconcile with `bottom_up()`, `min_trace(method = "ols")`, and `min_trace(method = "mint_shrink")` (plus `top_down()` for strict hierarchies).
+3. Compare with rolling-origin CV, using scaled errors **by level**.
+
+:::
+
+:::
+
+:::{.content-visible when-format="revealjs"}
+
+# Backup: the matrix view
+
+## The Summing Matrix $S$
+
+Stack every series in $\mathbf y_t$ and the bottom-level series in $\mathbf b_t$. For the toy example ($\text{Total} = A + B$):
+
+$$\underbrace{\begin{bmatrix} y_{T,t}\ y_{A,t}\ y_{B,t}\end{bmatrix}}_{\mathbf y_t} = \underbrace{\begin{bmatrix}1&1\1&0\0&1\end{bmatrix}}_{S}\underbrace{\begin{bmatrix}y_{A,t}\ y_{B,t}\end{bmatrix}}_{\mathbf b_t}$$
+
+$S$ says how every series is built from the bottom level. In general $S$ is $n \times m$; for tourism, $n = 85$ and $m = 76$.
+
+## The Mapping Matrix $G$
+
+$G$ ($m \times n$) takes all base forecasts and returns bottom-level forecasts, $\tilde{\mathbf b}_h = G\hat{\mathbf y}_h$ (columns: Total, A, B):
+
+$$G_{BU} = \begin{bmatrix}0&1&0\0&0&1\end{bmatrix}, \quad G_{OLS} = \tfrac13\begin{bmatrix}1&2&-1\1&-1&2\end{bmatrix}, \quad G_{WLS} = \tfrac16\begin{bmatrix}1&5&-1\1&-1&5\end{bmatrix}$$
+
+$$\tilde b_A^{OLS} = \frac{`r toy_y[["Total"]]` + 2\cdot `r toy_y[["A"]]` - `r toy_y[["B"]]`}{3} = `r sprintf("%.1f", toy_rec$ols[["A"]])`$$
+
+:::{.fragment}
+
+First row of $SG$ = **recipe for the reconciled total**; its first entry is the weight on the base total (@fig-weight-total):
+
+| Method | First row of $SG$ | Reconciled total |
+|:--|:--|--:|
+| Bottom-up | $[0,\ 1,\ 1]$ | `r sprintf("%.1f", toy_rec$bu[["Total"]])` |
+| OLS | $[\tfrac23,\ \tfrac13,\ \tfrac13]$ | `r sprintf("%.1f", toy_rec$ols[["Total"]])` |
+| WLS | $[\tfrac13,\ \tfrac23,\ \tfrac23]$ | `r sprintf("%.1f", toy_rec$wls[["Total"]])` |
+
+:::
+
+## The General Solution: MinT
+
+Every linear method rebuilds coherent forecasts from the bottom level:
+
+$$\tilde{\mathbf y}_h = S\,G\,\hat{\mathbf y}_h$$
+
+:::{.fragment}
+
+MinT picks $G$ to minimize the total reconciled error variance, keeping unbiased forecasts unbiased:
+
+$$\min_G \operatorname{tr}\!\left(\operatorname{Var}[\mathbf y_{T+h} - \tilde{\mathbf y}_h]\right) \quad \text{s.t.} \quad GS = I_m \qquad\Longrightarrow\qquad G = (S'W_h^{-1}S)^{-1}S'W_h^{-1}$$
+
+:::
+
+:::{.fragment}
+
+- **OLS**: $W_h = I$
+- **WLS**: diagonal $W_h$
+- **MinT**: full $W_h$ (with covariances)
 
 :::
 
