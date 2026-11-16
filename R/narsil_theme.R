@@ -130,6 +130,55 @@ scale_narsil_dark <- function(...) {
   list(theme_narsil_dark(), scale_colour_narsil(dark = TRUE, ...))
 }
 
+# Paged tables for tidyverts objects ------------------------------------------
+# With `df-print: paged`, rmarkdown's paged_table_html() turns every list-like
+# column into its pillar type summary. tidyverts columns are vctrs records or
+# lists, so the site showed the literal text "<chr*>" instead of aggregate_key()
+# keys, "<lst_mdl>" instead of model names, and "<dist>" instead of forecast
+# distributions.
+#
+# These knit_print methods format such columns as text *before* handing the
+# table to rmarkdown's own data.frame printer, so the paged look is unchanged.
+# No HTML escaping is needed: pagedtable.js inserts cells with
+# createTextNode(), so "<aggregated>" displays verbatim.
+#
+# Pass-through (identical to rmarkdown's default) when the chunk sets
+# `paged.print: false`, when output is not HTML, or when the table has no
+# columns that need formatting.
+
+.narsil_needs_format <- function(col) {
+  is.list(col) && !is.data.frame(col) && !identical(class(col), "list") &&
+    !inherits(col, "vctrs_list_of")
+}
+
+# Formatted columns show as <chr> in the paged header; the cell text matches
+# what the console prints (e.g. "<aggregated>", "<ETS(A,N,A)>", "N(701, 7651)").
+.narsil_paged_prep <- function(x) {
+  df <- tibble::as_tibble(x)
+  fmt <- vapply(df, .narsil_needs_format, logical(1))
+  df[fmt] <- lapply(df[fmt], function(col) trimws(gsub("\\s+", " ", format(col))))
+  as.data.frame(df)
+}
+
+.narsil_knit_print_paged <- function(x, ...) {
+  if (isFALSE(knitr::opts_current$get("paged.print")) ||
+      !knitr::is_html_output() ||
+      !any(vapply(x, .narsil_needs_format, logical(1)))) {
+    return(NextMethod())
+  }
+  knitr::knit_print(.narsil_paged_prep(x), ...)
+}
+
+# tbl_df also covers plain tibbles that carry agg_vec keys, e.g. the output of
+# accuracy() or as_tibble() on a fable.
+if (requireNamespace("knitr", quietly = TRUE)) {
+  for (.cls in c("tbl_ts", "fbl_ts", "mdl_df", "tbl_df")) {
+    registerS3method("knit_print", .cls, .narsil_knit_print_paged,
+                     envir = asNamespace("knitr"))
+  }
+  rm(.cls)
+}
+
 # plotly styling --------------------------------------------------------------
 gg_to_plotly_narsil <- function(p, dark = FALSE) {
   pal <- .narsil_pal[[if (dark) "dark" else "light"]]
