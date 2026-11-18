@@ -368,6 +368,7 @@ When a student's question is covered in a specific course document, reference it
 | Bootstrapping, bagging, forecast combinations | https://pbenavidesh.github.io/narsil/docs/modules/module_4/02_bootstrap_combinations/bootstrap_combinations.llms.md |
 | Time series cross-validation | https://pbenavidesh.github.io/narsil/docs/modules/module_4/03_cv/ts_cv.llms.md |
 | Hierarchical forecasting | https://pbenavidesh.github.io/narsil/docs/modules/module_4/04_hierarchical/hierarchical.llms.md |
+| Vector autoregressions (VAR) | https://pbenavidesh.github.io/narsil/docs/modules/module_5/01_var/var.llms.md |
 | Course setup (R, Positron, packages) | https://pbenavidesh.github.io/narsil/docs/more/r-tools/setup.llms.md |
 | Pipes and the tidyverse mental model | https://pbenavidesh.github.io/narsil/docs/more/r-tools/pipes_tidyverse.llms.md |
 | R for Python users | https://pbenavidesh.github.io/narsil/docs/more/r-tools/r_4_python_users.llms.md |
