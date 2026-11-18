@@ -10,7 +10,7 @@ Pablo Benavides-Herrera
 
 Modified
 
-September 18, 2026
+November 18, 2026
 
 This document is **optional**, but strongly recommended.
 
@@ -27,8 +27,8 @@ Suppose you observe a time series:
 - hourly electricity demand\
 - monthly inflation
 
-At time t, the value is known.\
-At time t+1, it is **not**.
+At time $t$, the value is known.\
+At time $t+1$, it is **not**.
 
 That future value is not just “unknown” — it is **uncertain**.
 
@@ -51,7 +51,7 @@ In forecasting, it typically represents:
 
 Formally, a random variable is a function
 
-X : \Omega \rightarrow \mathbb{R},
+$$X : \Omega \rightarrow \mathbb{R},$$
 
 which assigns a real number to each possible outcome of an uncertain process.
 
@@ -76,11 +76,11 @@ Examples:
 
 Uncertainty is described by a **probability mass function** (PMF):
 
-p(x) = \mathbb{P}(X = x),
+$$p(x) = \mathbb{P}(X = x),$$
 
 with the properties
 
-p(x) \ge 0, \qquad \sum_x p(x) = 1.
+$$p(x) \ge 0, \qquad \sum_x p(x) = 1.$$
 
 ------------------------------------------------------------------------
 
@@ -94,21 +94,21 @@ Examples:
 - temperature,
 - forecast errors.
 
-Uncertainty is described by a **probability density function** (PDF) f(x), satisfying
+Uncertainty is described by a **probability density function** (PDF) $f(x)$, satisfying
 
-\int\_{-\infty}^{\infty} f(x)\\dx = 1.
+$$\int_{-\infty}^{\infty} f(x)\,dx = 1.$$
 
 Probabilities are assigned to **intervals**, not points:
 
-\mathbb{P}(a \le X \le b) = \int_a^b f(x)\\dx.
+$$\mathbb{P}(a \le X \le b) = \int_a^b f(x)\,dx.$$
 
 > **WARNING:**
 >
 > For continuous random variables,
 >
-> \mathbb{P}(X = x) = 0
+> $$\mathbb{P}(X = x) = 0$$
 >
-> for any single value x.
+> for any single value $x$.
 >
 > This is not a technicality — it is a core conceptual distinction.
 
@@ -137,12 +137,12 @@ In forecasting, distributions are assumptions — useful, but always assumptions
 
 In time series analysis, we typically work with a sequence of random variables
 
-\\Y_t\\\_{t=1}^T.
+$$\{Y_t\}_{t=1}^T.$$
 
 It is essential to distinguish between:
 
-- Y_t: the random variable,
-- y_t: its observed realization.
+- $Y_t$: the random variable,
+- $y_t$: its observed realization.
 
 > **TIP:**
 >

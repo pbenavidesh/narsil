@@ -2,7 +2,7 @@
 
 Modified
 
-September 18, 2026
+November 18, 2026
 
 Code
 
@@ -184,11 +184,11 @@ The second series was produced directly from the first. Can you figure out how?
 
 ## 2.1 First Differences
 
-The **first difference** of a series y_t is:
+The **first difference** of a series $y_t$ is:
 
-y'\_t = y_t - y\_{t-1}
+$$y'_t = y_t - y_{t-1}$$
 
-- The differenced series has T - 1 observations.
+- The differenced series has $T - 1$ observations.
 - First differences represent the *change* from one period to the next.
 - If the original series has a linear trend, the differences will fluctuate around a constant mean.
 
@@ -209,9 +209,13 @@ google_tsdisplay_p <- google_2015 |>
 
 Sometimes the first-differenced series is still non-stationary. We can **difference again**:
 
-\begin{align\*} y''\_t &= y'\_t - y'\_{t-1} \\ &= (y_t-y\_{t-1}) - (y\_{t-1} - y\_{t-2}) \\ &= y_t - 2y\_{t-1} + y\_{t-2} \end{align\*}
+$$\begin{align*}
+y''_t &= y'_t - y'_{t-1} \\
+      &= (y_t-y_{t-1}) - (y_{t-1} - y_{t-2}) \\
+      &= y_t - 2y_{t-1} + y_{t-2}
+\end{align*}$$
 
-- Second differences have T - 2 observations.
+- Second differences have $T - 2$ observations.
 - They represent the *change in the changes* — acceleration rather than velocity.
 - **Economic and business series almost never require more than two differences.**
 
@@ -236,12 +240,12 @@ google_second_diff_p <- google_2015 |>
 
 If the series has seasonality, we take a **seasonal difference** — the change relative to the same period in the previous cycle:
 
-y'\_t = y_t - y\_{t-m}
+$$y'_t = y_t - y_{t-m}$$
 
-where m is the seasonal period (m = 12 for monthly data, m = 4 for quarterly, …).
+where $m$ is the seasonal period ($m = 12$ for monthly data, $m = 4$ for quarterly, …).
 
 - Seasonal differences represent *season-over-season change*[^1] at each point.
-- Also called **lag-m differences**.
+- Also called **lag-**$m$ differences.
 - After seasonal differencing, any remaining non-seasonal trend can be removed with a first difference.
 
 [![](stationarity_files/figure-html/pbs-setup-render-1.png)](stationarity_files/figure-html/pbs-setup-render-1.png)
@@ -255,7 +259,7 @@ h02_sdiff_p <- h02 |>
   autoplot(difference(log(Cost), lag = 12)) #<1>
 ```
 
-1.  The argument `lag = 12` tells `difference()` to compute the seasonal difference with a lag of 12 periods (i.e. y_t - y\_{t-12}). If no `lag` is specified, it defaults to 1 (the first difference).
+1.  The argument `lag = 12` tells `difference()` to compute the seasonal difference with a lag of 12 periods (i.e. $y_t - y_{t-12}$). If no `lag` is specified, it defaults to 1 (the first difference).
 
 [![](stationarity_files/figure-html/h02-sdiff-render-1.png)](stationarity_files/figure-html/h02-sdiff-render-1.png)
 
@@ -267,11 +271,17 @@ When a series needs both seasonal and regular differencing, does it matter which
 
 Applying **seasonal first, then regular**:
 
-\begin{align\*} (y_t - y\_{t-m})' &= (y_t - y\_{t-m}) - (y\_{t-1} - y\_{t-m-1}) \\ &= y_t - y\_{t-1} - y\_{t-m} + y\_{t-m-1} \end{align\*}
+$$\begin{align*}
+(y_t - y_{t-m})' &= (y_t - y_{t-m}) - (y_{t-1} - y_{t-m-1}) \\
+                 &= y_t - y_{t-1} - y_{t-m} + y_{t-m-1}
+\end{align*}$$
 
 Applying **regular first, then seasonal**:
 
-\begin{align\*} (y_t - y\_{t-1})' &= (y_t - y\_{t-1}) - (y\_{t-m} - y\_{t-m-1}) \\ &= y_t - y\_{t-1} - y\_{t-m} + y\_{t-m-1} \end{align\*}
+$$\begin{align*}
+(y_t - y_{t-1})' &= (y_t - y_{t-1}) - (y_{t-m} - y_{t-m-1}) \\
+                 &= y_t - y_{t-1} - y_{t-m} + y_{t-m-1}
+\end{align*}$$
 
 Both routes lead to the same result.
 
@@ -281,84 +291,84 @@ Both routes lead to the same result.
 
 ## 2.5 Backshift Notation
 
-The **backshift operator** B provides a compact way to write differencing operations — and, as we will see next class, to write out full model equations cleanly.
+The **backshift operator** $B$ provides a compact way to write differencing operations — and, as we will see next class, to write out full model equations cleanly.
 
 It is defined simply as:
 
-By_t = y\_{t-1} ; B(By_t) = B^2 y_t = y\_{t-2}
+$$By_t = y_{t-1} ; B(By_t) = B^2 y_t = y_{t-2}$$
 
-That is, applying B to a series shifts it back one period.
+That is, applying $B$ to a series shifts it back one period.
 
 ### 2.5.1 First Differences
 
 Recall the first difference:
 
-y'\_t = y_t - y\_{t-1}
+$$y'_t = y_t - y_{t-1}$$
 
-We can rewrite y\_{t-1} = By_t, so:
+We can rewrite $y_{t-1} = By_t$, so:
 
-y'\_t = y_t - By_t = (1 - B)y_t
+$$y'_t = y_t - By_t = (1 - B)y_t$$
 
 ### 2.5.2 Second Differences
 
 Recall:
 
-y''\_t = y_t - 2y\_{t-1} + y\_{t-2}
+$$y''_t = y_t - 2y_{t-1} + y_{t-2}$$
 
 Using the backshift operator turns to:
 
-y''\_t = y_t - 2By_t + B^2 y_t = (1 - 2B + B^2)y_t
+$$y''_t = y_t - 2By_t + B^2 y_t = (1 - 2B + B^2)y_t$$
 
 which gives a **perfect square trinomial**[^2]
 
-y''\_t = (1-B)^2 y_t
+$$y''_t = (1-B)^2 y_t$$
 
-### 2.5.3 General d-level Differences
+### 2.5.3 General $d$-level Differences
 
 The pattern generalizes naturally:
 
-(1 - B)^d y_t
+$$(1 - B)^d y_t$$
 
-where d is the number of times we difference the series.
+where $d$ is the number of times we difference the series.
 
 > **TIP:**
 >
-> For a general order d, the binomial theorem gives:
+> For a general order $d$, the binomial theorem gives:
 >
-> (1-B)^d = \sum\_{k=0}^{d} \binom{d}{k} (-B)^k = \sum\_{k=0}^{d} \binom{d}{k} (-1)^k B^k
+> $$(1-B)^d = \sum_{k=0}^{d} \binom{d}{k} (-B)^k = \sum_{k=0}^{d} \binom{d}{k} (-1)^k B^k$$
 >
 > So:
 >
-> (1-B)^d y_t = \sum\_{k=0}^{d} \binom{d}{k} (-1)^k y\_{t-k}
+> $$(1-B)^d y_t = \sum_{k=0}^{d} \binom{d}{k} (-1)^k y_{t-k}$$
 >
-> For d=1: y_t - y\_{t-1} ✓\
-> For d=2: y_t - 2y\_{t-1} + y\_{t-2} ✓
+> For $d=1$: $y_t - y_{t-1}$ ✓\
+> For $d=2$: $y_t - 2y_{t-1} + y_{t-2}$ ✓
 
 ### 2.5.4 Seasonal Differences
 
-A seasonal difference shifts back m periods:
+A seasonal difference shifts back $m$ periods:
 
-y_t - y\_{t-m} = y_t - B^m y_t = (1 - B^m)y_t
+$$y_t - y_{t-m} = y_t - B^m y_t = (1 - B^m)y_t$$
 
 And when both are needed — as with `mexretail` — the two operators simply multiply:
 
-(1-B)(1-B^m)y_t
+$$(1-B)(1-B^m)y_t$$
 
 which is exactly the expression we expanded by hand in the previous section.
 
-| Operation           | Backshift form          |
-|:--------------------|:------------------------|
-| First difference    | (1 - B)\\y_t            |
-| Second difference   | (1 - B)^2\\y_t          |
-| d-th difference     | (1 - B)^d\\y_t          |
-| Seasonal difference | (1 - B^m)\\y_t          |
-| Both together       | (1 - B)^d(1 - B^m)\\y_t |
+| Operation           | Backshift form            |
+|:--------------------|:--------------------------|
+| First difference    | $(1 - B)\,y_t$            |
+| Second difference   | $(1 - B)^2\,y_t$          |
+| $d$-th difference   | $(1 - B)^d\,y_t$          |
+| Seasonal difference | $(1 - B^m)\,y_t$          |
+| Both together       | $(1 - B)^d(1 - B^m)\,y_t$ |
 
 > **TIP:**
 >
 > Using backshift notation, it becomes trivial to see that the order doesn’t matter. Both orderings produce the same expression, since multiplication is commutative:
 >
-> (1-B)(1-B^m)y_t = (1-B^m)(1-B)y_t
+> $$(1-B)(1-B^m)y_t = (1-B^m)(1-B)y_t$$
 >
 > No algebra needed.
 
@@ -388,20 +398,20 @@ The test we will use is the **KPSS test** (Kwiatkowski-Phillips-Schmidt-Shin).
 
 > **NOTE:**
 >
-> The KPSS test works by regressing y_t on a constant (or a constant + trend), computing the residuals e_t, and then building their cumulative sums S_t = \sum\_{i=1}^{t} e_i. The test statistic is:
+> The KPSS test works by regressing $y_t$ on a constant (or a constant + trend), computing the residuals $e_t$, and then building their cumulative sums $S_t = \sum_{i=1}^{t} e_i$. The test statistic is:
 >
-> \text{KPSS} = \frac{1}{T^2} \sum\_{t=1}^{T} \frac{S_t^2}{\hat{\sigma}^2}
+> $$\text{KPSS} = \frac{1}{T^2} \sum_{t=1}^{T} \frac{S_t^2}{\hat{\sigma}^2}$$
 >
-> where \hat{\sigma}^2 is a long-run variance estimate that corrects for autocorrelation in the residuals.
+> where $\hat{\sigma}^2$ is a long-run variance estimate that corrects for autocorrelation in the residuals.
 >
-> The intuition: if the series is stationary, the residuals e_t fluctuate around zero and their cumulative sums S_t stay bounded. If the series has a unit root (non-stationary), the cumulative sums drift away from zero — making the statistic large and leading to rejection of H_0.
+> The intuition: if the series is stationary, the residuals $e_t$ fluctuate around zero and their cumulative sums $S_t$ stay bounded. If the series has a unit root (non-stationary), the cumulative sums drift away from zero — making the statistic large and leading to rejection of $H_0$.
 
 > **IMPORTANT:**
 >
-> H_0: \text{the series IS stationary} H_1: \text{the series is NOT stationary}
+> $$H_0: \text{the series IS stationary}$$ $$H_1: \text{the series is NOT stationary}$$
 >
-> - **Large p-value** (\> 0.05): fail to reject H_0 → the series is stationary ✓
-> - **Small p-value** (\< 0.05): reject H_0 → the series needs differencing ✗
+> - **Large p-value** ($> 0.05$): fail to reject $H_0$ → the series is stationary ✓
+> - **Small p-value** ($< 0.05$): reject $H_0$ → the series needs differencing ✗
 >
 > You *want* a large p-value here.
 >
@@ -451,9 +461,9 @@ We have already encountered the **ACF** when diagnosing residuals from our bench
 
 ## 4.1 Autocorrelation Function (ACF)
 
-The **ACF** measures the correlation between a series and its own past values at each lag k:
+The **ACF** measures the correlation between a series and its own past values at each lag $k$:
 
-r_k = \text{Corr}(y_t,\\ y\_{t-k})
+$$r_k = \text{Corr}(y_t,\, y_{t-k})$$
 
 > **NOTE:**
 >
@@ -496,14 +506,14 @@ r_k = \text{Corr}(y_t,\\ y\_{t-k})
 
 ## 4.3 Partial Autocorrelation Function (PACF)
 
-The ACF at lag k captures both the *direct* relationship between y_t and y\_{t-k} and the *indirect* relationship mediated through intermediate lags. The **PACF** isolates only the direct part.
+The ACF at lag $k$ captures both the *direct* relationship between $y_t$ and $y_{t-k}$ and the *indirect* relationship mediated through intermediate lags. The **PACF** isolates only the direct part.
 
 > **TIP:**
 >
-> - **ACF at lag k**: simple correlation between y_t and y\_{t-k}.
-> - **PACF at lag k**: the coefficient on y\_{t-k} in a regression of y_t on y\_{t-1}, y\_{t-2}, \ldots, y\_{t-k}.
+> - **ACF at lag** $k$: simple correlation between $y_t$ and $y_{t-k}$.
+> - **PACF at lag** $k$: the coefficient on $y_{t-k}$ in a regression of $y_t$ on $y_{t-1}, y_{t-2}, \ldots, y_{t-k}$.
 >
-> The PACF asks: *once I already know the effect of all closer lags, does lag k add any new information?*
+> The PACF asks: *once I already know the effect of all closer lags, does lag* $k$ add any new information?
 
 ## 4.4 ACF and PACF Together
 
@@ -525,15 +535,15 @@ mexretail |>
 
 # 5 AR and MA Models
 
-## 5.1 Autoregressive Models — AR(p)
+## 5.1 Autoregressive Models — AR($p$)
 
-An **autoregressive model** of order p forecasts y_t as a weighted sum of its own **past values**:
+An **autoregressive model** of order $p$ forecasts $y_t$ as a weighted sum of its own **past values**:
 
-y_t = c + \phi_1 y\_{t-1} + \phi_2 y\_{t-2} + \cdots + \phi_p y\_{t-p} + \varepsilon_t
+$$y_t = c + \phi_1 y_{t-1} + \phi_2 y_{t-2} + \cdots + \phi_p y_{t-p} + \varepsilon_t$$
 
 - Structurally identical to multiple linear regression — except the predictors are *lagged values of the series itself*.
-- p is the number of past values used.
-- \varepsilon_t is white noise.
+- $p$ is the number of past values used.
+- $\varepsilon_t$ is white noise.
 
 Code
 
@@ -559,22 +569,22 @@ ar2_examples_p <- ar2_sim |> autoplot(value) +
 
 > **NOTE:**
 >
-> - **PACF** cuts off sharply after lag p — this is how you read the order.
+> - **PACF** cuts off sharply after lag $p$ — this is how you read the order.
 > - **ACF** decays exponentially or sinusoidal.
 
 [![](stationarity_files/figure-html/ar-acf-pacf-render-1.png)](stationarity_files/figure-html/ar-acf-pacf-render-1.png)
 
 [![](stationarity_files/figure-html/ar-acf-pacf-render-2.png)](stationarity_files/figure-html/ar-acf-pacf-render-2.png)
 
-## 5.2 Moving Average Models — MA(q)
+## 5.2 Moving Average Models — MA($q$)
 
-A **moving average model** of order q forecasts y_t as a weighted sum of **past forecast errors**:
+A **moving average model** of order $q$ forecasts $y_t$ as a weighted sum of **past forecast errors**:
 
-y_t = c + \varepsilon_t + \theta_1 \varepsilon\_{t-1} + \theta_2 \varepsilon\_{t-2} + \cdots + \theta_q \varepsilon\_{t-q}
+$$y_t = c + \varepsilon_t + \theta_1 \varepsilon_{t-1} + \theta_2 \varepsilon_{t-2} + \cdots + \theta_q \varepsilon_{t-q}$$
 
 - The predictors are *past errors*, not past values of the series.
-- q is the number of past errors used.
-- \varepsilon_t is white noise.
+- $q$ is the number of past errors used.
+- $\varepsilon_t$ is white noise.
 
 > **WARNING:**
 >
@@ -582,7 +592,7 @@ y_t = c + \varepsilon_t + \theta_1 \varepsilon\_{t-1} + \theta_2 \varepsilon\_{t
 
 > **NOTE:**
 >
-> - **ACF** cuts off sharply after lag q — the mirror image of the AR signature.
+> - **ACF** cuts off sharply after lag $q$ — the mirror image of the AR signature.
 > - **PACF** decays exponentially or sinusoidal.
 
 [![](stationarity_files/figure-html/ma-acf-pacf-render-1.png)](stationarity_files/figure-html/ma-acf-pacf-render-1.png)

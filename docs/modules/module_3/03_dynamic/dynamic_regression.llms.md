@@ -2,7 +2,7 @@
 
 Modified
 
-September 18, 2026
+November 18, 2026
 
 Code
 
@@ -14,9 +14,9 @@ library(plotly) #<1>
 
 In the [previous session](../../../../docs/modules/module_3/02_regression/regression.llms.md), we built a multiple regression model for US consumption:
 
-y\_{t,\text{Cons.}} = \beta_0 + \beta_1 x\_{t,\text{Inc.}} + \beta_2 x\_{t,\text{Prod.}} + \beta_3 x\_{t,\text{Sav.}} + \beta_4 x\_{t,\text{Unemp.}} + \varepsilon_t
+$$y_{t,\text{Cons.}} = \beta_0 + \beta_1 x_{t,\text{Inc.}} + \beta_2 x_{t,\text{Prod.}} + \beta_3 x_{t,\text{Sav.}} + \beta_4 x_{t,\text{Unemp.}} + \varepsilon_t$$
 
-The model improved substantially over the simple version — \bar{R}^2 went from ~0.15 to ~0.75, and the residuals looked much closer to white noise.
+The model improved substantially over the simple version — $\bar{R}^2$ went from ~0.15 to ~0.75, and the residuals looked much closer to white noise.
 
 But “much closer” is not the same as “white noise.” Let’s check:
 
@@ -32,11 +32,11 @@ The p-value is not zero, but in practice with real data there is nearly always *
 
 > **WARNING:**
 >
-> If \varepsilon_t is autocorrelated, OLS is still unbiased — but standard errors are wrong, confidence intervals are wrong, and **prediction intervals are wrong**. The model is leaving structure on the table that could be captured.
+> If $\varepsilon_t$ is autocorrelated, OLS is still unbiased — but standard errors are wrong, confidence intervals are wrong, and **prediction intervals are wrong**. The model is leaving structure on the table that could be captured.
 
-The culprit is the **white noise assumption** on \varepsilon_t:
+The culprit is the **white noise assumption** on $\varepsilon_t$:
 
-\varepsilon_t \overset{\text{iid}}{\sim} N(0, \sigma^2)
+$$\varepsilon_t \overset{\text{iid}}{\sim} N(0, \sigma^2)$$
 
 What if instead of forcing this, we *modeled* whatever autocorrelation remains?
 
@@ -44,8 +44,8 @@ What if instead of forcing this, we *modeled* whatever autocorrelation remains?
 >
 > | Model | Error term |
 > |:---|:---|
-> | TSLM | \varepsilon_t \overset{\text{iid}}{\sim} N(0,\sigma^2) — must be white noise |
-> | **Dynamic regression** | \eta_t \sim \text{ARIMA}(p,d,q) — **can be autocorrelated** |
+> | TSLM | $\varepsilon_t \overset{\text{iid}}{\sim} N(0,\sigma^2)$ — must be white noise |
+> | **Dynamic regression** | $\eta_t \sim \text{ARIMA}(p,d,q)$ — **can be autocorrelated** |
 >
 > Same predictors. Same regression structure. One assumption relaxed.
 
@@ -53,26 +53,26 @@ What if instead of forcing this, we *modeled* whatever autocorrelation remains?
 
 ## 1.1 The Model
 
-The dynamic regression model replaces the white noise error \varepsilon_t with \eta_t, which is allowed to follow an ARIMA process:
+The dynamic regression model replaces the white noise error $\varepsilon_t$ with $\eta_t$, which is allowed to follow an ARIMA process:
 
-y_t = \beta_0 + \beta_1 x\_{1,t} + \cdots + \beta_k x\_{k,t} + \eta_t
+$$y_t = \beta_0 + \beta_1 x_{1,t} + \cdots + \beta_k x_{k,t} + \eta_t$$
 
-\eta_t \sim \text{ARIMA}(p, d, q)(P, D, Q)\_m
+$$\eta_t \sim \text{ARIMA}(p, d, q)(P, D, Q)_m$$
 
 The model still has white noise — it just lives one level deeper. There are now **two distinct error terms**:
 
 > **NOTE:**
 >
-> - \eta_t — the **regression error**: how far y_t is from the regression surface. Still autocorrelated, now modeled explicitly.
-> - \varepsilon_t — the **ARIMA innovation**: the white noise that drives \eta_t. This is the only truly random component.
+> - $\eta_t$ — the **regression error**: how far $y_t$ is from the regression surface. Still autocorrelated, now modeled explicitly.
+> - $\varepsilon_t$ — the **ARIMA innovation**: the white noise that drives $\eta_t$. This is the only truly random component.
 >
-> We diagnose the model using \hat{\varepsilon}\_t, not \hat{\eta}\_t.
+> We diagnose the model using $\hat{\varepsilon}_t$, not $\hat{\eta}_t$.
 
 ### 1.1.1 Stationarity: Models in Levels vs. in Differences
 
 > **WARNING:**
 >
-> Dynamic regression requires that both y_t and all predictors x\_{k,t} are stationary. Check each variable with unit root tests before fitting.
+> Dynamic regression requires that both $y_t$ and all predictors $x_{k,t}$ are stationary. Check each variable with unit root tests before fitting.
 
 When differencing is needed, there are two natural cases:
 
@@ -122,7 +122,7 @@ us_change_fit_dyn |>
 ```
 
 1.  Our previous model — kept here for direct comparison.
-2.  Same predictors, same formula structure. `ARIMA()` selects the error order automatically via AIC\_c.
+2.  Same predictors, same formula structure. `ARIMA()` selects the error order automatically via AIC$_c$.
 
     Series: Consumption 
     Model: LM w/ ARIMA(0,1,2) errors 
@@ -161,8 +161,8 @@ us_two_residuals_p <- bind_rows(
   labs(y = NULL, x = NULL)
 ```
 
-1.  `type = "regression"` → \hat{\eta}\_t: the regression residuals. These still have autocorrelation structure, now captured by the ARIMA component.
-2.  `type = "innovation"` → \hat{\varepsilon}\_t: what should be white noise. This is what we diagnose.
+1.  `type = "regression"` → $\hat{\eta}_t$: the regression residuals. These still have autocorrelation structure, now captured by the ARIMA component.
+2.  `type = "innovation"` → $\hat{\varepsilon}_t$: what should be white noise. This is what we diagnose.
 
 ### 1.2.3 Residual Diagnostics
 
@@ -319,7 +319,7 @@ Two patterns are immediately clear:
 
 This gives us the model:
 
-y_t = \beta_0 + \beta_1 T_t + \beta_2 T_t^2 + \beta_3 D\_{\text{day type}} + \eta_t, \quad \eta_t \sim \text{ARIMA}
+$$y_t = \beta_0 + \beta_1 T_t + \beta_2 T_t^2 + \beta_3 D_{\text{day type}} + \eta_t, \quad \eta_t \sim \text{ARIMA}$$
 
 ### 1.4.2 Fitting the Model
 
@@ -359,7 +359,7 @@ report(vic_elec_fit)
 > - **Binary** — `Day_Type == "Weekday"`: distinguishes working days from non-working days (weekends + holidays collapsed together). Simpler, fewer parameters, often sufficient.
 > - **Two dummies** — `Day_Type == "Weekday"` and `Day_Type == "Weekend"` (holidays as baseline): allows weekends and holidays to have different demand profiles. Useful if your data shows a meaningful difference between the two.
 >
-> Neither is universally better — let residual diagnostics and AIC\_c guide the choice.
+> Neither is universally better — let residual diagnostics and AIC$_c$ guide the choice.
 
 ### 1.4.3 Diagnostics & Scenario Forecast
 
@@ -430,18 +430,18 @@ vic_elec_future_hw <- new_data(vic_elec_daily, 14) |>
 
 ## 1.5 Lagged Predictors
 
-So far we have assumed that the predictor x_t affects y_t **at the same point in time**. But many real-world relationships have a **delay**: the cause happens now, the effect shows up later.
+So far we have assumed that the predictor $x_t$ affects $y_t$ **at the same point in time**. But many real-world relationships have a **delay**: the cause happens now, the effect shows up later.
 
-- **Advertising** spend in month t drives sales in months t, t+1, t+2, … as the message reaches new customers gradually.
+- **Advertising** spend in month $t$ drives sales in months $t$, $t+1$, $t+2$, … as the message reaches new customers gradually.
 - **Interest rate** changes take months to affect housing starts or consumer credit.
 - **Rainfall** in January affects agricultural output in March or April.
-- **Hiring** a new employee today affects productivity in weeks t+4, t+5, … after onboarding.
+- **Hiring** a new employee today affects productivity in weeks $t+4$, $t+5$, … after onboarding.
 
-Models that include x_t at multiple lags are called **distributed lag models**:
+Models that include $x_t$ at multiple lags are called **distributed lag models**:
 
-y_t = \beta_0 + \delta_0 x_t + \delta_1 x\_{t-1} + \delta_2 x\_{t-2} + \cdots + \delta_k x\_{t-k} + \eta_t
+$$y_t = \beta_0 + \delta_0 x_t + \delta_1 x_{t-1} + \delta_2 x_{t-2} + \cdots + \delta_k x_{t-k} + \eta_t$$
 
-Each \delta_j captures the effect of x that occurs j periods after the predictor.
+Each $\delta_j$ captures the effect of $x$ that occurs $j$ periods after the predictor.
 
 ### 1.5.1 Example: Advertising and Sales
 
@@ -474,8 +474,8 @@ glance(insurance_fit) |>
 ```
 
 1.  `pdq(d = 0)` fixes the differencing order to zero — both series are stationary.
-2.  `lag(TVadverts)` is x\_{t-1}: advertising from the previous month.
-3.  `lag(TVadverts, 2)` is x\_{t-2}: advertising from two months ago.
+2.  `lag(TVadverts)` is $x_{t-1}$: advertising from the previous month.
+3.  `lag(TVadverts, 2)` is $x_{t-2}$: advertising from two months ago.
 
 ### 1.5.3 Best Model & Interpretation
 
@@ -500,15 +500,15 @@ insurance_fit |>
 
 > **NOTE:**
 >
-> The coefficient on `TVadverts` (\delta_0) is the **immediate effect**: one unit increase in advertising this month increases quotes by \delta_0 units *this* month.
+> The coefficient on `TVadverts` ($\delta_0$) is the **immediate effect**: one unit increase in advertising this month increases quotes by $\delta_0$ units *this* month.
 >
-> The coefficient on `lag(TVadverts)` (\delta_1) is the **one-period carry-over**: the additional effect that arrives one month later.
+> The coefficient on `lag(TVadverts)` ($\delta_1$) is the **one-period carry-over**: the additional effect that arrives one month later.
 >
-> Together, the **total effect** of a sustained 1-unit increase in advertising is \delta_0 + \delta_1 + \cdots — the sum of all lag coefficients.
+> Together, the **total effect** of a sustained 1-unit increase in advertising is $\delta_0 + \delta_1 + \cdots$ — the sum of all lag coefficients.
 
 ### 1.5.4 Forecasting with Lagged Predictors
 
-When forecasting, you need future values of x_t *and* the most recent observed values of x to fill in the lags:
+When forecasting, you need future values of $x_t$ *and* the most recent observed values of $x$ to fill in the lags:
 
 [![](dynamic_regression_files/figure-html/insurance-forecast-render-1.png)](dynamic_regression_files/figure-html/insurance-forecast-render-1.png)
 
@@ -535,66 +535,66 @@ insurance_forecast_p <- insurance_fit |>
 >
 > | Situation | Prefer |
 > |:---|:---|
-> | Effect is immediate (prices, temperature) | Current x_t |
-> | Effect has a known delay (advertising, policy) | x_t + lags |
-> | Delay length is unknown | Fit models with 0, 1, 2, … lags and compare with AIC\_c |
+> | Effect is immediate (prices, temperature) | Current $x_t$ |
+> | Effect has a known delay (advertising, policy) | $x_t$ + lags |
+> | Delay length is unknown | Fit models with 0, 1, 2, … lags and compare with AIC$_c$ |
 > | Predictor is hard to forecast | Lags are known at forecast time — a practical advantage |
 >
-> The last point is important: if x_t is hard to forecast, using x\_{t-k} instead means the predictor is already observed when you need to make the forecast. Lags can turn an ex-ante problem into an ex-post one.
+> The last point is important: if $x_t$ is hard to forecast, using $x_{t-k}$ instead means the predictor is already observed when you need to make the forecast. Lags can turn an ex-ante problem into an ex-post one.
 
 # 2 Harmonic Regression
 
 ## 2.1 When Seasonal Dummies Aren’t Enough
 
-The electricity demand example above used **daily** data. Demand has an obvious **annual** seasonal pattern (m = 365). If we wanted to capture it with dummy variables, we would need 364 of them.
+The electricity demand example above used **daily** data. Demand has an obvious **annual** seasonal pattern ($m = 365$). If we wanted to capture it with dummy variables, we would need 364 of them.
 
 That is impractical. The same problem appears with:
 
 | Data frequency            | Seasonal period |
 |:--------------------------|:---------------:|
-| Daily (annual cycle)      |     m = 365     |
-| Weekly                    |     m = 52      |
-| Half-hourly (daily cycle) |     m = 48      |
+| Daily (annual cycle)      |    $m = 365$    |
+| Weekly                    |    $m = 52$     |
+| Half-hourly (daily cycle) |    $m = 48$     |
 
 > **TIP:**
 >
-> We first saw Fourier terms mentioned as a footnote in `regression.qmd` — they were promised as the solution for large m. This is where we deliver on that promise.
+> We first saw Fourier terms mentioned as a footnote in `regression.qmd` — they were promised as the solution for large $m$. This is where we deliver on that promise.
 
 ### 2.1.1 Fourier Terms
 
 Any periodic pattern can be approximated by a sum of sine and cosine waves:
 
-S_K(t) = \sum\_{k=1}^{K} \left\[ a_k \cos\\\left(\frac{2\pi k t}{m}\right) + b_k \sin\\\left(\frac{2\pi k t}{m}\right) \right\]
+$$S_K(t) = \sum_{k=1}^{K} \left[ a_k \cos\!\left(\frac{2\pi k t}{m}\right) + b_k \sin\!\left(\frac{2\pi k t}{m}\right) \right]$$
 
-- m — seasonal period
-- K — number of Fourier pairs (controls flexibility)
+- $m$ — seasonal period
+- $K$ — number of Fourier pairs (controls flexibility)
 
 > **IMPORTANT:**
 >
-> - **Small K** → smooth, slowly-varying seasonal pattern
-> - **Large K** → complex, flexible seasonal pattern (but more parameters)
-> - **K = m/2** → identical to using m - 1 seasonal dummies
+> - **Small** $K$ → smooth, slowly-varying seasonal pattern
+> - **Large** $K$ → complex, flexible seasonal pattern (but more parameters)
+> - $K = m/2$ → identical to using $m - 1$ seasonal dummies
 >
-> Choose K by minimizing AIC\_c.
+> Choose $K$ by minimizing AIC$_c$.
 
 ### 2.1.2 Advantages and Limitations
 
 **Advantages over seasonal dummies:**
 
-- Works for **any** m, no matter how large
+- Works for **any** $m$, no matter how large
 - Handles **multiple seasonalities** simultaneously
-- Smooth patterns with small K → fewer parameters
+- Smooth patterns with small $K$ → fewer parameters
 - Short-run dynamics handled by ARIMA errors
 
 **Limitations:**
 
 - Seasonal pattern assumed **fixed** over time
-- Requires choosing K
-- Less intuitive than dummies for small m
+- Requires choosing $K$
+- Less intuitive than dummies for small $m$
 
 ## 2.2 Example: Australian Café Spending
 
-Monthly retail turnover for cafés and restaurants in Australia (2004–2018). A clean example of a monthly series with strong, stable seasonality — ideal for comparing values of K:
+Monthly retail turnover for cafés and restaurants in Australia (2004–2018). A clean example of a monthly series with strong, stable seasonality — ideal for comparing values of $K$:
 
 Code
 
@@ -632,7 +632,7 @@ glance(cafe_fit) |>
 ```
 
 1.  `PDQ(0,0,0)` suppresses seasonal ARIMA terms — Fourier handles the seasonality entirely.
-2.  For monthly data (m = 12), K = 6 is exactly equivalent to using 11 seasonal dummies.
+2.  For monthly data ($m = 12$), $K = 6$ is exactly equivalent to using 11 seasonal dummies.
 
 ### 2.2.2 Comparing Forecasts Across K
 
@@ -643,18 +643,18 @@ glance(cafe_fit) |>
 > **NOTE:**
 >
 > - **K = 1–2**: Very smooth, nearly sinusoidal — misses the multi-peak retail calendar
-> - **K = 3–4**: Usually the AIC\_c winner; captures the main features of Australian retail seasonality
+> - **K = 3–4**: Usually the AIC$_c$ winner; captures the main features of Australian retail seasonality
 > - **K = 6**: Reproduces seasonal dummies exactly — can overfit the historical pattern
 
 ## 2.3 What Comes Next?
 
-The café example had one seasonal period (m = 12, monthly). But what if a series has **more than one**?
+The café example had one seasonal period ($m = 12$, monthly). But what if a series has **more than one**?
 
 Consider electricity demand measured every **30 minutes**:
 
 > **NOTE:**
 >
-> How would you model this series with the tools you have now? What would happen if you tried `season()` dummies? What about Fourier terms — how many `period` arguments would you need, and how would you choose K for each one?
+> How would you model this series with the tools you have now? What would happen if you tried `season()` dummies? What about Fourier terms — how many `period` arguments would you need, and how would you choose $K$ for each one?
 >
 > We will answer these questions in **Module 4.1: Complex Seasonality**.
 
@@ -664,21 +664,21 @@ Consider electricity demand measured every **30 minutes**:
 
 - The TSLM from Session 3.2 had one remaining weakness: **autocorrelated residuals**. Dynamic regression fixes this by letting the error term follow an ARIMA process instead of assuming white noise.
 
-- The model has two error terms: regression errors \eta_t (modeled by ARIMA) and innovations \varepsilon_t (white noise). **Diagnose using \hat{\varepsilon}\_t** — the innovations, not the regression residuals.
+- The model has two error terms: regression errors $\eta_t$ (modeled by ARIMA) and innovations $\varepsilon_t$ (white noise). **Diagnose using** $\hat{\varepsilon}_t$ — the innovations, not the regression residuals.
 
 - When differencing is needed, a **model in differences** applies it to all variables simultaneously. When no differencing is needed, the model is fitted **in levels**. Stochastic trends are handled by differencing; deterministic trends by `trend()`.
 
 - Forecasting still requires **future values of the predictors** — the same ex-ante / ex-post / scenario strategies from Session 3.2 apply. **Lagged predictors** are a practical advantage when the predictor is hard to forecast: the lag is already observed at forecast time.
 
-- **Harmonic regression** extends the framework to large or multiple seasonal periods using Fourier terms. Choose K by minimizing AIC\_c.
+- **Harmonic regression** extends the framework to large or multiple seasonal periods using Fourier terms. Choose $K$ by minimizing AIC$_c$.
 
 > **TIP:**
 >
 > | Session | Model | What was added |
 > |:---|:---|:---|
 > | 3.1 | Practical issues | Transformations, outliers, cross-validation |
-> | 3.2 | TSLM | External predictors; \varepsilon_t white noise (required) |
-> | **3.3** | **ARIMA(y ~ x)** | **Same predictors; \eta_t \sim ARIMA (relaxed)** |
+> | 3.2 | TSLM | External predictors; $\varepsilon_t$ white noise (required) |
+> | **3.3** | **ARIMA(y ~ x)** | **Same predictors;** $\eta_t \sim$ ARIMA (relaxed) |
 > | 3.4 | Prophet | Automatic changepoints, complex seasonality |
 
 Back to top

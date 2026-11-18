@@ -2,19 +2,19 @@
 
 Welcome to the **In-class exercises** section of the course. Here you will find exercises designed to reinforce the concepts covered in the modules.
 
-### [Pronósticos con métodos benchmark](../../docs/exercises/posts/26-02-11-fcst.llms.md)
-
-3 min
-
-### [Clase 1 - R y series de tiempo](../../docs/exercises/posts/26-01-23-clase-1.llms.md)
-
-1 min
-
 ### [Module 1 Review](../../docs/exercises/posts/review_module1.llms.md)
 
 End-of-module integrative exercise covering the full Module 1 workflow: exploration, transformations, STL decomposition, benchmark forecasting, decomposition models, residual diagnostics, and forecast evaluation.
 
 15 min
+
+### [Clase 1 - R y series de tiempo](../../docs/exercises/posts/26-01-23-clase-1.llms.md)
+
+1 min
+
+### [Pronósticos con métodos benchmark](../../docs/exercises/posts/26-02-11-fcst.llms.md)
+
+3 min
 
 ### [ETS and Decomposition Forecasting](../../docs/exercises/posts/ex_module2_ets_decomposition.llms.md)
 

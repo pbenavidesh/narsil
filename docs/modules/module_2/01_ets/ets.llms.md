@@ -2,7 +2,7 @@
 
 Modified
 
-September 18, 2026
+November 18, 2026
 
 ## 0.1 Introduction
 
@@ -51,37 +51,40 @@ This module introduces **Exponential Smoothing (ETS)** models — a smarter way 
 
   - In the *mean* method, all observations are weighted equally (all have the same importance), while in the *naïve* method, only the most recent observation is used for forecasting. (we ignore all previous observations).
 
-- The smoothing parameter \alpha controls the rate of decrease:
+- The smoothing parameter $\alpha$ controls the rate of decrease:
 
-  - when \alpha is close to 1, the method behaves like the naïve method, giving more weight to recent observations;
-  - when \alpha is close to 0, it behaves like the mean method, giving more equal weight to all observations.
+  - when $\alpha$ is close to 1, the method behaves like the naïve method, giving more weight to recent observations;
+  - when $\alpha$ is close to 0, it behaves like the mean method, giving more equal weight to all observations.
 
-\hat{y}\_{T+1 \| T}= \alpha y\_{T} + \alpha(1-\alpha) y\_{T-1} + \alpha(1-\alpha)^{2} y\_{T-2} + \ldots
+$$\hat{y}_{T+1 | T}= \alpha y_{T} + \alpha(1-\alpha) y_{T-1} + \alpha(1-\alpha)^{2} y_{T-2}  + \ldots$$
 
-where 0\leq \alpha \leq1 is the smoothing parameter.
+where $0\leq \alpha \leq1$ is the smoothing parameter.
 
-|          | \alpha = 0.2 | \alpha = 0.4 | \alpha = 0.6 | \alpha = 0.8 |
-|----------|:------------:|:------------:|:------------:|:------------:|
-| y_t      |    0.2000    |    0.4000    |    0.6000    |    0.8000    |
-| y\_{t-1} |    0.1600    |    0.2400    |    0.2400    |    0.1600    |
-| y\_{t-2} |    0.1280    |    0.1440    |    0.0960    |    0.0320    |
-| y\_{t-3} |    0.1024    |    0.0864    |    0.0384    |    0.0064    |
-| y\_{t-4} |    0.0819    |    0.0518    |    0.0154    |    0.0013    |
-| y\_{t-5} |    0.0655    |    0.0311    |    0.0061    |    0.0003    |
+|           | $\alpha = 0.2$ | $\alpha = 0.4$ | $\alpha = 0.6$ | $\alpha = 0.8$ |
+|-----------|:--------------:|:--------------:|:--------------:|:--------------:|
+| $y_t$     |     0.2000     |     0.4000     |     0.6000     |     0.8000     |
+| $y_{t-1}$ |     0.1600     |     0.2400     |     0.2400     |     0.1600     |
+| $y_{t-2}$ |     0.1280     |     0.1440     |     0.0960     |     0.0320     |
+| $y_{t-3}$ |     0.1024     |     0.0864     |     0.0384     |     0.0064     |
+| $y_{t-4}$ |     0.0819     |     0.0518     |     0.0154     |     0.0013     |
+| $y_{t-5}$ |     0.0655     |     0.0311     |     0.0061     |     0.0003     |
 
-Table 1: Weights for different values of \alpha
+Table 1: Weights for different values of $\alpha$
 
-- \alpha can be thought of as the *memory* of the time series: The smaller the value of \alpha, the longer the memory (i.e., the more past observations are taken into account).
+- $\alpha$ can be thought of as the *memory* of the time series: The smaller the value of $\alpha$, the longer the memory (i.e., the more past observations are taken into account).
 
-- Conversely, a larger value of \alpha means a shorter memory, with more emphasis on recent observations. See [Table 1](#tbl-ets_alpha_weights) for some examples.
+- Conversely, a larger value of $\alpha$ means a shorter memory, with more emphasis on recent observations. See [Table 1](#tbl-ets_alpha_weights) for some examples.
 
 # 1 Exponential smoothing methods
 
 ## 1.1 Simple exponential smoothing (SES)
 
-\begin{aligned} \text{Forecast equation} \quad & \hat{y}\_{t+h\|t} = \ell_t \\ \text{Smoothing equation} \quad & \ell_t = \alpha y_t + (1-\alpha)\ell\_{t-1} \end{aligned}
+$$\begin{aligned}
+\text{Forecast equation} \quad & \hat{y}_{t+h|t} = \ell_t \\
+\text{Smoothing equation} \quad & \ell_t = \alpha y_t + (1-\alpha)\ell_{t-1}
+\end{aligned}$$
 
-where \ell_t is the level at time t.
+where $\ell_t$ is the level at time $t$.
 
 > **NOTE:**
 >
@@ -116,7 +119,7 @@ alg_fc <- alg_fit |>
   forecast(h = 5)
 ```
 
-1.  We specify `trend("N")` and `season("N")` to indicate that we want a simple exponential smoothing (SES) model, which assumes no trend and no seasonality. The model will estimate the smoothing parameter \alpha automatically.
+1.  We specify `trend("N")` and `season("N")` to indicate that we want a simple exponential smoothing (SES) model, which assumes no trend and no seasonality. The model will estimate the smoothing parameter $\alpha$ automatically.
 
 > **TIP:**
 >
@@ -132,7 +135,7 @@ alg_fc <- alg_fit |>
 >   report()        #<1>
 > ```
 >
-> 1.  The `report()` function allows us to see a model’s report (the time series modeled, the model used, the estimated parameters, and more). It needs a 1 \times 1 dimension `mable`[^1].
+> 1.  The `report()` function allows us to see a model’s report (the time series modeled, the model used, the estimated parameters, and more). It needs a $1 \times 1$ dimension `mable`[^1].
 >
 >     Series: Exports 
 >     Model: ETS(A,N,N) 
@@ -162,11 +165,15 @@ Comparing the SES and Naive forecasts:
 
 ### 1.2.1 Holt’s linear trend
 
-We can extend SES models to allow our forecasts to include trend in the data. We need to add a new smoothing parameter \beta^\*, and its corresponding smoothing equation:
+We can extend SES models to allow our forecasts to include trend in the data. We need to add a new smoothing parameter $\beta^*$, and its corresponding smoothing equation:
 
-\begin{aligned} \text{Forecast equation} \quad & \hat{y}\_{t+h\|t} = \ell_t + hb_t \\ \text{Level equation} \quad & \ell_t = \alpha y_t + (1-\alpha)\ell\_{t-1}\\ \text{Trend equation} \quad & b_t = \beta^\*(\ell_t - \ell\_{t-1}) + (1-\beta^\*)b\_{t-1} \end{aligned}
+$$\begin{aligned}
+\text{Forecast equation} \quad & \hat{y}_{t+h|t} = \ell_t + hb_t \\
+\text{Level equation} \quad & \ell_t = \alpha y_t + (1-\alpha)\ell_{t-1}\\
+\text{Trend equation} \quad & b_t = \beta^*(\ell_t - \ell_{t-1}) + (1-\beta^*)b_{t-1}
+\end{aligned}$$
 
-where b_t is the growth (or slope) at time t.
+where $b_t$ is the growth (or slope) at time $t$.
 
 > **TIP:**
 >
@@ -209,7 +216,7 @@ bra_fc <- bra_fit |>
   forecast(h = 15)
 ```
 
-1.  We specify `trend("A")` to indicate that we want a linear trend. The model will estimate the smoothing parameters \alpha and \beta^\* automatically.
+1.  We specify `trend("A")` to indicate that we want a linear trend. The model will estimate the smoothing parameters $\alpha$ and $\beta^*$ automatically.
 
     Series: Pop 
     Model: ETS(A,A,N) 
@@ -243,16 +250,20 @@ holt_full_plt_p <- bra_fc |>
 
 - Holt’s linear trend method assume that the trend will continue indefinitely at the same rate. However, in many real-world scenarios, this assumption may not hold true. This methods tend to overestimate (*or underestimate*) long-term forecasts when the trend is strong.
 
-- We can include a damping parameter \phi, which reduces the trend over time.
+- We can include a damping parameter $\phi$, which reduces the trend over time.
 
-\begin{aligned} \text{Forecast equation} \quad & \hat{y}\_{t+h\|t} = \ell_t + (\phi + \phi^2 + \ldots + \phi^h) b_t \\ \text{Level equation} \quad & \ell_t = \alpha y_t + (1 - \alpha) (\ell\_{t-1} + \phi b\_{t-1}) \\ \text{Trend equation} \quad & b_t = \beta^\*(\ell_t-\ell\_{t-1}) + (1-\beta^\*)\phi b\_{t-1} \end{aligned}
+$$\begin{aligned}
+\text{Forecast equation} \quad & \hat{y}_{t+h|t} = \ell_t +  (\phi + \phi^2 + \ldots + \phi^h) b_t \\
+\text{Level equation} \quad & \ell_t = \alpha y_t + (1 - \alpha) (\ell_{t-1} + \phi b_{t-1}) \\
+\text{Trend equation} \quad & b_t = \beta^*(\ell_t-\ell_{t-1}) + (1-\beta^*)\phi b_{t-1}
+\end{aligned}$$
 
-where 0 \< \phi \< 1[^2] is the damping parameter.
+where $0 < \phi < 1$[^2] is the damping parameter.
 
 > **CAUTION:**
 >
-> - If \phi = 1, the model reduces to Holt’s linear trend method, meaning the trend continues indefinitely at the same rate.
-> - If \phi = 0, the trend component is completely eliminated, and the model behaves like simple exponential smoothing (SES), where forecasts are based solely on the level component without any trend influence.
+> - If $\phi = 1$, the model reduces to Holt’s linear trend method, meaning the trend continues indefinitely at the same rate.
+> - If $\phi = 0$, the trend component is completely eliminated, and the model behaves like simple exponential smoothing (SES), where forecasts are based solely on the level component without any trend influence.
 
 #### Example: Forecasting Brazil’s population (continued)
 
@@ -275,7 +286,7 @@ damped_full_p <- bra_economy |>
   guides(colour = guide_legend(title = "Forecast"))
 ```
 
-1.  We specify `trend("Ad")` to indicate that we want a damped trend, and `phi = 0.9` sets the damping parameter to 0.9. We could also let the model estimate \phi automatically by omitting the `phi` argument.
+1.  We specify `trend("Ad")` to indicate that we want a damped trend, and `phi = 0.9` sets the damping parameter to 0.9. We could also let the model estimate $\phi$ automatically by omitting the `phi` argument.
 
 ## 1.3 Handling seasonality: two strategies
 
@@ -351,13 +362,23 @@ Instead of decomposing first, Holt-Winters extends ETS to model level, trend, an
 
 #### 1.3.2.1 HW — Additive
 
-\begin{aligned} \text{Forecast equation} \quad & \hat{y}\_{t+h\|t} = \ell_t + hb_t + s\_{t+h-m(k+1)} \\ \text{Level equation} \quad & \ell_t = \alpha (y_t - s\_{t-m}) + (1 - \alpha) (\ell\_{t-1} + b\_{t-1}) \\ \text{Trend equation} \quad & b_t = \beta^\*(\ell_t-\ell\_{t-1}) + (1-\beta^\*) b\_{t-1} \\ \text{Seasonal equation} \quad & s_t = \gamma(y_t - \ell\_{t-1} - b\_{t-1}) + (1-\gamma)s\_{t-m} \end{aligned}
+$$\begin{aligned}
+\text{Forecast equation} \quad & \hat{y}_{t+h|t} = \ell_t + hb_t + s_{t+h-m(k+1)} \\
+\text{Level equation} \quad & \ell_t = \alpha (y_t - s_{t-m}) + (1 - \alpha) (\ell_{t-1} + b_{t-1}) \\
+\text{Trend equation} \quad & b_t = \beta^*(\ell_t-\ell_{t-1}) + (1-\beta^*) b_{t-1} \\
+\text{Seasonal equation} \quad & s_t = \gamma(y_t - \ell_{t-1} - b_{t-1}) + (1-\gamma)s_{t-m}
+\end{aligned}$$
 
-where s_t is the seasonal component at time t, m is the period of the seasonality[^3], and k = \lfloor (h-1)/m \rfloor.
+where $s_t$ is the seasonal component at time $t$, $m$ is the period of the seasonality[^3], and $k = \lfloor (h-1)/m \rfloor$.
 
 #### 1.3.2.2 HW — Multiplicative
 
-\begin{aligned} \text{Forecast equation} \quad & \hat{y}\_{t+h\|t} = (\ell_t + hb_t) s\_{t+h-m(k+1)} \\ \text{Level equation} \quad & \ell_t = \alpha \frac{y_t}{s\_{t-m}} + (1 - \alpha)(\ell\_{t-1} + b\_{t-1}) \\ \text{Trend equation} \quad & b_t = \beta^\*(\ell_t-\ell\_{t-1}) + (1-\beta^\*) b\_{t-1} \\ \text{Seasonal equation} \quad & s_t = \gamma \frac{y_t}{\ell\_{t-1} + b\_{t-1}} + (1-\gamma)s\_{t-m} \end{aligned}
+$$\begin{aligned}
+\text{Forecast equation} \quad & \hat{y}_{t+h|t} = (\ell_t + hb_t) s_{t+h-m(k+1)} \\
+\text{Level equation} \quad & \ell_t = \alpha \frac{y_t}{s_{t-m}} + (1 - \alpha)(\ell_{t-1} + b_{t-1}) \\
+\text{Trend equation} \quad & b_t = \beta^*(\ell_t-\ell_{t-1}) + (1-\beta^*) b_{t-1} \\
+\text{Seasonal equation} \quad & s_t = \gamma \frac{y_t}{\ell_{t-1} + b_{t-1}} + (1-\gamma)s_{t-m}
+\end{aligned}$$
 
 > **TIP:**
 >
@@ -411,11 +432,16 @@ hw_full_plt_p <- aus_fit_hw |>
 
 #### 1.3.2.3 Holt-Winters’ damped method
 
-- Similar to Holt’s linear trend method, we can also include a damping parameter \phi in the Holt-Winters method to reduce the trend over time.
+- Similar to Holt’s linear trend method, we can also include a damping parameter $\phi$ in the Holt-Winters method to reduce the trend over time.
   - This can be done on both additive or multiplicative seasonal models.
 - A configuration that has proven to be robust and accurate in practice is to use a multiplicative seasonal component with a damped trend.
 
-\begin{aligned} \text{Forecast equation} \quad & \hat{y}\_{t+h\|t} = \[\ell_t +(\phi + \phi^2 + \ldots + \phi^h)b_t\] s\_{t+h-m(k+1)} \\ \text{Level equation} \quad & \ell_t = \alpha \frac{y_t}{s\_{t-m}} + (1 - \alpha)(\ell\_{t-1} + b\_{t-1}) \\ \text{Trend equation} \quad & b_t = \beta^\*(\ell_t-\ell\_{t-1}) + (1-\beta^\*) \phi b\_{t-1} \\ \text{Seasonal equation} \quad & s_t = \gamma \frac{y_t}{\ell\_{t-1} + \phi b\_{t-1}} + (1-\gamma)s\_{t-m} \end{aligned}
+$$\begin{aligned}
+\text{Forecast equation} \quad & \hat{y}_{t+h|t} = [\ell_t +(\phi + \phi^2 + \ldots + \phi^h)b_t] s_{t+h-m(k+1)} \\
+\text{Level equation} \quad & \ell_t = \alpha \frac{y_t}{s_{t-m}} + (1 - \alpha)(\ell_{t-1} + b_{t-1}) \\
+\text{Trend equation} \quad & b_t = \beta^*(\ell_t-\ell_{t-1}) + (1-\beta^*) \phi b_{t-1} \\
+\text{Seasonal equation} \quad & s_t = \gamma \frac{y_t}{\ell_{t-1} + \phi b_{t-1}} + (1-\gamma)s_{t-m}
+\end{aligned}$$
 
 #### Example: Forecasting daily pedestrian traffic
 
@@ -638,22 +664,22 @@ A few questions worth discussing after looking at the accuracy table:
 
 ## 3.1 The lineup of exponential smoothing methods
 
-| Trend component           | N (None) | A (Additive) | M (Multiplicative) |
-|:--------------------------|:--------:|:------------:|:------------------:|
-| N **(None)**              |  (N,N),  |    (N,A)     |       (N,M)        |
-| A **(Additive)**          |  (A,N),  |    (A,A)     |       (A,M)        |
-| A_d **(Additive damped)** | (A_d,N), |   (A_d, A)   |      (A_d,M)       |
+| Trend component             |  N (None)  | A (Additive) | M (Multiplicative) |
+|:----------------------------|:----------:|:------------:|:------------------:|
+| $N$ **(None)**              |  $(N,N)$,  |   $(N,A)$    |      $(N,M)$       |
+| $A$ **(Additive)**          |  $(A,N)$,  |   $(A,A)$    |      $(A,M)$       |
+| $A_d$ **(Additive damped)** | $(A_d,N)$, |  $(A_d, A)$  |     $(A_d,M)$      |
 
 Table 2: ETS component combinations (trend × seasonal)
 
-| Notation |               Method               |
-|:--------:|:----------------------------------:|
-|  (N,N)   | Simple Exponential Smoothing (SES) |
-|  (A,N)   |        Holt’s Linear Trend         |
-| (A_d,N)  |       Additive damped Trend        |
-|  (A,A)   |       Holt-Winters’ Additive       |
-|  (A,M)   |    Holt-Winters’ Multiplicative    |
-| (A_d,M)  |        Holt-Winters’ damped        |
+| Notation  |               Method               |
+|:---------:|:----------------------------------:|
+|  $(N,N)$  | Simple Exponential Smoothing (SES) |
+|  $(A,N)$  |        Holt’s Linear Trend         |
+| $(A_d,N)$ |       Additive damped Trend        |
+|  $(A,A)$  |       Holt-Winters’ Additive       |
+|  $(A,M)$  |    Holt-Winters’ Multiplicative    |
+| $(A_d,M)$ |        Holt-Winters’ damped        |
 
 Table 3: Names of some popular ETS models
 
@@ -670,6 +696,6 @@ Back to top
 
 [^1]: (i.e., a `mable` containing only one model and one time series.)
 
-[^2]: In practice, we restrict 0.8 \leq \phi \leq 0.98 because the damping effect would be too great for smaller values than 0.8 and almost non distinguishable from a linear trend for greater values than 0.98.
+[^2]: In practice, we restrict $0.8 \leq \phi \leq 0.98$ because the damping effect would be too great for smaller values than 0.8 and almost non distinguishable from a linear trend for greater values than 0.98.
 
-[^3]: e.g., m=4 for quarterly data, m=12 for monthly data, …
+[^3]: e.g., $m=4$ for quarterly data, $m=12$ for monthly data, …

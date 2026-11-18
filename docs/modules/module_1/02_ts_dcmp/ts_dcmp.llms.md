@@ -2,7 +2,7 @@
 
 Modified
 
-September 18, 2026
+November 18, 2026
 
 Code
 
@@ -75,17 +75,17 @@ Transformations are used to stabilize the variance of a time series, making it e
 
 ## 2.2 Box-Cox transformations
 
-w_t= \begin{cases}\log \left(y_t\right) & \text { if } \lambda=0 \\ \left(\operatorname{sign}\left(y_t\right)\left\|y_t\right\|^\lambda-1\right) / \lambda & \text { otherwise }\end{cases}
+$$w_t= \begin{cases}\log \left(y_t\right) & \text { if } \lambda=0 \\ \left(\operatorname{sign}\left(y_t\right)\left|y_t\right|^\lambda-1\right) / \lambda & \text { otherwise }\end{cases}$$
 
 In a Box-Cox transformation, the log is always a natural logarithm. The other case is just a power transformation with scaling.
 
-*What happens when \lambda = 1?*
+*What happens when* $\lambda = 1$?
 
 > **TIP:**
 >
-> You should choose a value of \lambda that makes the size of the seasonal variation the same throughout the series.
+> You should choose a value of $\lambda$ that makes the size of the seasonal variation the same throughout the series.
 
-### 2.2.1 How can we choose the value of \lambda?
+### 2.2.1 How can we choose the value of $\lambda$?
 
 We can use the `guerrero` feature to choose an optimal lambda.
 
@@ -154,7 +154,7 @@ The population sizes of these countries are very different.
 
 **Revenue** vs **Revenue per store**
 
-- Total revenue \uparrow can be “just more stores”
+- Total revenue $\uparrow$ can be “just more stores”
 - Per-store revenue reveals **dilution** vs **true performance**
 - **Normalize by:** \# stores
 
@@ -162,14 +162,14 @@ The population sizes of these countries are very different.
 
 **Sales** vs **Sales per active customer**
 
-- Sales \uparrow can hide weaker **customer value**
+- Sales $\uparrow$ can hide weaker **customer value**
 - Per-customer series tracks **ARPA / LTV direction** (signal, not hype) -**Normalize by:** active customers
 
 ### 3.2.4 Operational load
 
 **Support tickets** vs **Tickets per customer / contract**
 
-- Tickets \uparrow may be scale, not worse quality
+- Tickets $\uparrow$ may be scale, not worse quality
 - Tickets per customer exposes **product/service degradation** -**Normalize by:** customers or contracts
 
 > **TIP:**
@@ -184,14 +184,14 @@ The population sizes of these countries are very different.
 
 ### 3.3.1 Inflation adjustment formula
 
-x_t = \frac{y_t}{z_t} \* z\_{2010}
+$$x_t = \frac{y_t}{z_t} * z_{2010}$$
 
 where:
 
-- y_t is the original value at time t (nominal value).
-- z_t is the price index at time t (e.g., INPC).
-- z\_{2010} is the price index in the base year (2010 in this case).
-- x_t is the inflation-adjusted value at time t (real value).
+- $y_t$ is the original value at time $t$ (nominal value).
+- $z_t$ is the price index at time $t$ (e.g., INPC).
+- $z_{2010}$ is the price index in the base year (2010 in this case).
+- $x_t$ is the inflation-adjusted value at time $t$ (real value).
 
 ### 3.3.2 Inflation adjustment - example
 
@@ -232,11 +232,11 @@ In general, there are two types of decompositions:
 
 ### 4.1.1 Additive decomposition
 
-y_t = T_t + S_t + R_t
+$$y_t = T_t + S_t + R_t$$
 
 ### 4.1.2 Multiplicative decomposition
 
-y_t = T_t \times S_t \times R_t \\
+$$y_t = T_t \times S_t \times R_t \\$$
 
 - *Which one should you use?*
 
@@ -246,11 +246,11 @@ y_t = T_t \times S_t \times R_t \\
 
 A multiplicative decomposition is equivalent to an additive decomposition of the log-transformed series:
 
-y_t = T_t \times S_t \times R_t
+$$y_t = T_t \times S_t \times R_t$$
 
 is equivalent to
 
-\log(y_t) = \log(T_t) + \log(S_t) + \log(R_t)
+$$\log(y_t) = \log(T_t) + \log(S_t) + \log(R_t)$$
 
 ## 4.2 Seasonally adjusted series
 
@@ -261,8 +261,8 @@ Seasonally adjusted series can be useful for:
 - Identifying and analyzing the trend-cycle component without the influence of seasonal fluctuations.
 - Making comparisons across different time periods without seasonal effects.
 
-- For an additive decomposition, the seasonally adjusted series is given by: y_t - S_t
-- For a multiplicative decomposition, the seasonally adjusted series is given by: \frac{y_t}{S_t}
+- For an additive decomposition, the seasonally adjusted series is given by: $$y_t - S_t$$
+- For a multiplicative decomposition, the seasonally adjusted series is given by: $$\frac{y_t}{S_t}$$
 
 ## 4.3 Classical decomposition
 
@@ -270,11 +270,11 @@ The classical decomposition is a simple method for decomposing time series data.
 
 1.  The **trend-cycle** component is estimated using a moving average.
 
-An m order moving average is given by:
+An $m$ order moving average is given by:
 
-\hat{T}\_{t}=\frac{1}{m} \sum\_{j=-k}^{k} y\_{t+j}
+$$\hat{T}_{t}=\frac{1}{m} \sum_{j=-k}^{k} y_{t+j}$$
 
-where k = (m-1)/2[^3].
+where $k = (m-1)/2$[^3].
 
 2.  Then, the **seasonal component** is estimated by averaging the detrended values for each season.
 3.  Finally, the **remainder component** is obtained by subtracting the trend-cycle and seasonal components from the original series.
@@ -366,7 +366,7 @@ stl_dcmp_p <- mexretail |>
 
 > **TIP:**
 >
-> In R, we use “\sim” instead of “=” in formula specification, i.e., y \sim mx + b.
+> In R, we use “$\sim$” instead of “$=$” in formula specification, i.e., $y \sim mx + b$.
 
 Back to top
 

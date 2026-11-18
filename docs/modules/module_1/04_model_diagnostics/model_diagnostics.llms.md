@@ -2,7 +2,7 @@
 
 Modified
 
-September 18, 2026
+November 18, 2026
 
 # 1 Prediction intervals
 
@@ -33,9 +33,9 @@ beer_pi_compare_p <- beer_fc |>
 
 The one-step residual standard deviation is
 
-\hat{\sigma} = \sqrt{\frac{1}{T-K-M}\sum\_{t=1}^{T} e_t^2}
+$$\hat{\sigma} = \sqrt{\frac{1}{T-K-M}\sum_{t=1}^{T} e_t^2}$$
 
-where K is the number of parameters estimated and M the number of missing residuals at the start of the series (e.g. m for SNAIVE).
+where $K$ is the number of parameters estimated and $M$ the number of missing residuals at the start of the series (e.g. $m$ for SNAIVE).
 
 Code
 
@@ -48,15 +48,15 @@ beer_fit |>
 ```
 
 1.  `augment()` returns fitted values and residuals for every model in the mable.
-2.  The standard deviation of the innovation residuals is the \hat\sigma that every prediction interval is built on. `sd()` divides by T-1 rather than T-K-M; the difference is negligible here, and `fable` uses the exact formula internally.
+2.  The standard deviation of the innovation residuals is the $\hat\sigma$ that every prediction interval is built on. `sd()` divides by $T-1$ rather than $T-K-M$; the difference is negligible here, and `fable` uses the exact formula internally.
 
 Every formula on the next slides multiplies this single number by a horizon-dependent factor. A model that fits poorly produces wide intervals — the interval is honest about how little the model knows.
 
 A point forecast tells you *where* the series is expected to go. A **prediction interval** tells you *how confident* you should be.
 
-\hat{y}\_{T+h\|T} \pm c \cdot \hat{\sigma}\_h
+$$\hat{y}_{T+h|T} \pm c \cdot \hat{\sigma}_h$$
 
-where c depends on the coverage level (1.96 for 95%) and \hat{\sigma}\_h is the estimated forecast standard deviation at horizon h, built from the residual standard deviation \hat\sigma we just computed.
+where $c$ depends on the coverage level (1.96 for 95%) and $\hat{\sigma}_h$ is the estimated forecast standard deviation at horizon $h$, built from the residual standard deviation $\hat\sigma$ we just computed.
 
 > **IMPORTANT:**
 >
@@ -64,17 +64,17 @@ where c depends on the coverage level (1.96 for 95%) and \hat{\sigma}\_h is the 
 
 ### 1.0.3 One-step vs. multi-step
 
-\hat{\sigma}\_h grows with the horizon h — errors accumulate as we forecast further ahead.
+$\hat{\sigma}_h$ grows with the horizon $h$ — errors accumulate as we forecast further ahead.
 
 For the benchmark methods:
 
-| Method              | \hat{\sigma}\_h                                  |
-|---------------------|--------------------------------------------------|
-| h = 1 (all methods) | \hat{\sigma}                                     |
-| NAIVE               | \hat{\sigma}\sqrt{h}                             |
-| Drift               | \hat{\sigma}\sqrt{h\left(1 + \frac{h}{T}\right)} |
-| SNAIVE              | \hat{\sigma}\sqrt{\lfloor(h-1)/m\rfloor + 1}     |
-| MEAN                | \hat{\sigma}\sqrt{1 + 1/T}                       |
+| Method                | $\hat{\sigma}_h$                                   |
+|-----------------------|----------------------------------------------------|
+| $h = 1$ (all methods) | $\hat{\sigma}$                                     |
+| NAIVE                 | $\hat{\sigma}\sqrt{h}$                             |
+| Drift                 | $\hat{\sigma}\sqrt{h\left(1 + \frac{h}{T}\right)}$ |
+| SNAIVE                | $\hat{\sigma}\sqrt{\lfloor(h-1)/m\rfloor + 1}$     |
+| MEAN                  | $\hat{\sigma}\sqrt{1 + 1/T}$                       |
 
 The Mean interval barely widens; NAIVE and Drift intervals widen continuously.
 
@@ -133,7 +133,7 @@ gas_pi_raw_p <- gas_fc |>
 
 [![](model_diagnostics_files/figure-html/gas-pi-raw-render-2.png)](model_diagnostics_files/figure-html/gas-pi-raw-render-2.png)
 
-Look at the SNAIVE panel: the observed peaks in the test set repeatedly fall **outside** the 95% interval. The interval is too narrow — and the reason is how \hat\sigma was estimated. It is a single number computed from residuals across the whole training period (1956–2005), including decades when seasonal swings were a fraction of today’s. Averaging small early residuals with large recent ones **understates current uncertainty**. The Drift panel has the opposite problem: a wide, symmetric interval that ignores the seasonal pattern entirely.
+Look at the SNAIVE panel: the observed peaks in the test set repeatedly fall **outside** the 95% interval. The interval is too narrow — and the reason is how $\hat\sigma$ was estimated. It is a single number computed from residuals across the whole training period (1956–2005), including decades when seasonal swings were a fraction of today’s. Averaging small early residuals with large recent ones **understates current uncertainty**. The Drift panel has the opposite problem: a wide, symmetric interval that ignores the seasonal pattern entirely.
 
 Neither model can express what the series clearly shows — variance that grows with the level. That is what a transformation fixes.
 
@@ -543,7 +543,7 @@ gas_fit |>
 
 As we saw in [1.2](../../../../docs/modules/module_1/02_ts_dcmp/ts_dcmp.llms.md), a Box-Cox transformation stabilizes the variance. Applied here, the model fits in the transformed scale and `fable` back-transforms the forecasts automatically.
 
-### 2.0.2 Choosing \lambda
+### 2.0.2 Choosing $\lambda$
 
 Code
 
@@ -588,9 +588,9 @@ gas_fc_bc <- gas_fit_bc |>
 
 ### 2.0.4 Back to the original scale
 
-We fitted the model to w_t = \text{box\\cox}(y_t, \lambda), so the forecasts and their intervals live in the transformed scale. To report them in the original units we apply the inverse transformation — the **back-transformation**:
+We fitted the model to $w_t = \text{box\_cox}(y_t, \lambda)$, so the forecasts and their intervals live in the transformed scale. To report them in the original units we apply the inverse transformation — the **back-transformation**:
 
-y_t = \begin{cases} \exp(w_t) & \text{if } \lambda = 0 \\\[6pt\] \operatorname{sign}(\lambda w_t + 1)\\\|\lambda w_t + 1\|^{1/\lambda} & \text{otherwise} \end{cases}
+$$y_t = \begin{cases} \exp(w_t) & \text{if } \lambda = 0 \\[6pt] \operatorname{sign}(\lambda w_t + 1)\,|\lambda w_t + 1|^{1/\lambda} & \text{otherwise} \end{cases}$$
 
 > **NOTE:**
 >
@@ -646,33 +646,33 @@ bind_rows(                                       #<1>
 
 The second consequence of back-transforming: the point forecast you recover is the **median** of the forecast distribution in the original scale — not the mean. The back-transformation introduces a bias, and by default your forecasts follow the median.
 
-For a log transformation, if w\_{T+h} \sim \mathcal{N}(\mu, \sigma_h^2), then in the original scale:
+For a log transformation, if $w_{T+h} \sim \mathcal{N}(\mu, \sigma_h^2)$, then in the original scale:
 
-\text{median}(\hat{y}\_{T+h}) = e^{\mu} \qquad \text{mean}(\hat{y}\_{T+h}) = e^{\mu + \sigma_h^2/2}
+$$\text{median}(\hat{y}_{T+h}) = e^{\mu} \qquad \text{mean}(\hat{y}_{T+h}) = e^{\mu + \sigma_h^2/2}$$
 
-The median is invariant under monotone transformations — the 50th percentile in log scale maps exactly to the 50th percentile in the original scale. The mean is not: because e^x is convex, Jensen’s inequality gives E\[e^W\] \> e^{E\[W\]}, and the gap grows with \sigma_h^2.
+The median is invariant under monotone transformations — the 50th percentile in log scale maps exactly to the 50th percentile in the original scale. The mean is not: because $e^x$ is convex, Jensen’s inequality gives $E[e^W] > e^{E[W]}$, and the gap grows with $\sigma_h^2$.
 
 > **NOTE:**
 >
-> A monotone increasing function g preserves order: if a \< b then g(a) \< g(b). Percentiles are defined by order, so the value with 50% of the distribution below it in the w scale maps to the value with 50% below it in the y scale. Hence \text{median}(g(W)) = g(\text{median}(W)). The same holds for every percentile, which is why the prediction interval bounds can be back-transformed directly.
+> A monotone increasing function $g$ preserves order: if $a < b$ then $g(a) < g(b)$. Percentiles are defined by order, so the value with 50% of the distribution below it in the $w$ scale maps to the value with 50% below it in the $y$ scale. Hence $\text{median}(g(W)) = g(\text{median}(W))$. The same holds for every percentile, which is why the prediction interval bounds can be back-transformed directly.
 >
-> The mean is an average, not an order statistic. Averaging and then transforming is not the same as transforming and then averaging unless g is linear. For convex g — every Box-Cox inverse with \lambda \< 1, including \exp — Jensen’s inequality gives E\[g(W)\] \ge g(E\[W\]), and the gap grows with the spread of W. Since W is symmetric (normal), its mean equals its median, so g(E\[W\]) = g(\text{median}(W)) = \text{median}(Y): the naive back-transform lands on the median and sits below the mean.
+> The mean is an average, not an order statistic. Averaging and then transforming is not the same as transforming and then averaging unless $g$ is linear. For convex $g$ — every Box-Cox inverse with $\lambda < 1$, including $\exp$ — Jensen’s inequality gives $E[g(W)] \ge g(E[W])$, and the gap grows with the spread of $W$. Since $W$ is symmetric (normal), its mean equals its median, so $g(E[W]) = g(\text{median}(W)) = \text{median}(Y)$: the naive back-transform lands on the median and sits below the mean.
 
 ### 3.0.2 The general Box-Cox case
 
 For a general Box-Cox transformation, the bias-adjusted back-transformation is:
 
-y_t = \begin{cases} \exp(w_t)\left\[1 + \dfrac{\sigma_h^2}{2}\right\] & \text{if } \lambda = 0 \\\[10pt\] (\lambda w_t + 1)^{1/\lambda}\left\[1 + \dfrac{\sigma_h^2(1-\lambda)}{2(\lambda w_t+1)^{2}}\right\] & \text{otherwise} \end{cases}
+$$y_t = \begin{cases} \exp(w_t)\left[1 + \dfrac{\sigma_h^2}{2}\right] & \text{if } \lambda = 0 \\[10pt] (\lambda w_t + 1)^{1/\lambda}\left[1 + \dfrac{\sigma_h^2(1-\lambda)}{2(\lambda w_t+1)^{2}}\right] & \text{otherwise} \end{cases}$$
 
 `fable` applies this adjustment **automatically by default**.
 
 > **NOTE:**
 >
-> **This is an approximation.** The bracketed factor comes from a second-order Taylor expansion of the inverse transformation around w_t. For the log case the exact mean of a lognormal is e^{\mu + \sigma_h^2/2}, and e^{\sigma_h^2/2} \approx 1 + \sigma_h^2/2 when \sigma_h^2 is small — which is why the previous slide and this one agree to first order but not exactly. For the general Box-Cox case there is no closed form, so the approximation is what is used in practice.
+> **This is an approximation.** The bracketed factor comes from a second-order Taylor expansion of the inverse transformation around $w_t$. For the log case the exact mean of a lognormal is $e^{\mu + \sigma_h^2/2}$, and $e^{\sigma_h^2/2} \approx 1 + \sigma_h^2/2$ when $\sigma_h^2$ is small — which is why the previous slide and this one agree to first order but not exactly. For the general Box-Cox case there is no closed form, so the approximation is what is used in practice.
 
 ### 3.0.3 Seeing the difference
 
-The `eggs` series from `prices` makes the difference visible — it is short and noisy, so \sigma_h^2 grows quickly and the gap between mean and median becomes noticeable:
+The `eggs` series from `prices` makes the difference visible — it is short and noisy, so $\sigma_h^2$ grows quickly and the gap between mean and median becomes noticeable:
 
 Code
 
@@ -732,13 +732,13 @@ Here the observed data we resample are the model’s historical residuals: if th
 
 The key observation is that we can always write:
 
-y_t = \hat{y}\_{t\|t-1} + e_t
+$$y_t = \hat{y}_{t|t-1} + e_t$$
 
 so a future observation can be simulated as:
 
-y\_{T+1} = \hat{y}\_{T+1\|T} + e\_{T+1}
+$$y_{T+1} = \hat{y}_{T+1|T} + e_{T+1}$$
 
-Since the errors are uncorrelated, we can substitute e\_{T+1} with a **randomly resampled (with replacement)** historical residual. Repeating this for y\_{T+2}, y\_{T+3}, \ldots gives one possible future path. Do it thousands of times and you have a full distribution of futures — no normality required.
+Since the errors are uncorrelated, we can substitute $e_{T+1}$ with a **randomly resampled (with replacement)** historical residual. Repeating this for $y_{T+2}, y_{T+3}, \ldots$ gives one possible future path. Do it thousands of times and you have a full distribution of futures — no normality required.
 
 > **TIP:**
 >
@@ -829,28 +829,28 @@ STL (covered in [1.2](../../../../docs/modules/module_1/02_ts_dcmp/ts_dcmp.llms.
 
 The additive STL decomposition is
 
-y_t = T_t + S_t + R_t
+$$y_t = T_t + S_t + R_t$$
 
 For forecasting we regroup it. Everything that is not seasonal goes into one term:
 
-y_t = S_t + A_t, \qquad A_t = T_t + R_t
+$$y_t = S_t + A_t, \qquad A_t = T_t + R_t$$
 
-A_t is the **seasonally adjusted** series. We now have two components, and we forecast each one with its own model:
+$A_t$ is the **seasonally adjusted** series. We now have two components, and we forecast each one with its own model:
 
-\hat{y}\_{T+h\|T} = \hat{S}\_{T+h\|T} + \hat{A}\_{T+h\|T}
+$$\hat{y}_{T+h|T} = \hat{S}_{T+h|T} + \hat{A}_{T+h|T}$$
 
 `decomposition_model()` turns this into a pipeline:
 
-1.  Apply STL to split y_t into S_t and A_t
-2.  Forecast the **seasonal component** S_t — by default with SNAIVE, which just repeats the last seasonal cycle
-3.  Forecast the **seasonally adjusted series** A_t with a model of your choice (here: Drift)
+1.  Apply STL to split $y_t$ into $S_t$ and $A_t$
+2.  Forecast the **seasonal component** $S_t$ — by default with SNAIVE, which just repeats the last seasonal cycle
+3.  Forecast the **seasonally adjusted series** $A_t$ with a model of your choice (here: Drift)
 4.  Add the two forecasts back together
 
 | Component | Notation | `fable` column |
 |----|----|----|
-| Series | y_t | the response variable (`Gas`) |
-| Seasonal | S_t | `season_year`, `season_week`, `season_day`, … — one per seasonal period detected by STL |
-| Seasonally adjusted | A_t | `season_adjust` |
+| Series | $y_t$ | the response variable (`Gas`) |
+| Seasonal | $S_t$ | `season_year`, `season_week`, `season_day`, … — one per seasonal period detected by STL |
+| Seasonally adjusted | $A_t$ | `season_adjust` |
 
 The seasonal column is named after its period. Quarterly and monthly data give `season_year`; daily data can give `season_week` and `season_year` at the same time — we return to that in Module 4.
 
@@ -877,7 +877,7 @@ gas_fit_dcmp <- gas_train |>
 
 1.  `decomposition_model()` wraps a decomposition method and one or more component models into a single reusable spec.
 2.  STL decomposition — same syntax as in 1.2.
-3.  SNAIVE on `season_year` forecasts S_t. This line is optional — see the callout below.
+3.  SNAIVE on `season_year` forecasts $S_t$. This line is optional — see the callout below.
 4.  Drift on `season_adjust` handles the seasonally adjusted series. `fable` reconstructs the final forecast by adding the two component forecasts.
 5.  We still need to put the decomposition model inside a `mable` with the `model()` function.
 

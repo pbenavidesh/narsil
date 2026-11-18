@@ -20,7 +20,7 @@ End-of-module integrative exercise covering the full Module 1 workflow: explorat
 
 Modified
 
-September 18, 2026
+November 18, 2026
 
 ## 1 Context
 
@@ -134,7 +134,7 @@ Based on your visual inspection in Part a, decide whether this series requires a
 >
 > **Justification**
 >
-> The time plot in Part a clearly shows that the seasonal amplitude grows with the level of the series — variance is proportional to the level. This is the standard condition that motivates a variance-stabilizing transformation. A logarithm (\lambda = 0) is often sufficient for this type of multiplicative pattern and has the advantage of being interpretable (changes become percentage changes). Box-Cox with an estimated \lambda is a more flexible alternative that may provide a better stabilization if the relationship is not exactly multiplicative.
+> The time plot in Part a clearly shows that the seasonal amplitude grows with the level of the series — variance is proportional to the level. This is the standard condition that motivates a variance-stabilizing transformation. A logarithm ($\lambda = 0$) is often sufficient for this type of multiplicative pattern and has the advantage of being interpretable (changes become percentage changes). Box-Cox with an estimated $\lambda$ is a more flexible alternative that may provide a better stabilization if the relationship is not exactly multiplicative.
 >
 > Both choices are defensible. The solution below uses Box-Cox with Guerrero’s method, which is the most principled data-driven approach.
 >
@@ -166,7 +166,7 @@ Based on your visual inspection in Part a, decide whether this series requires a
 >
 > The transformed series shows substantially more stable variance across the full observation period — the seasonal swings are now roughly constant in magnitude regardless of the level, which is what the transformation is designed to achieve. The trend and seasonal structure remain visible, as expected.
 >
-> **Note on the logarithm alternative**: A log transformation (\lambda = 0) would also be reasonable here and produces a very similar result. The Guerrero estimate is close to zero, which means the two approaches are nearly equivalent for this series. Either is acceptable as long as the choice is justified visually.
+> **Note on the logarithm alternative**: A log transformation ($\lambda = 0$) would also be reasonable here and produces a very similar result. The Guerrero estimate is close to zero, which means the two approaches are nearly equivalent for this series. Either is acceptable as long as the choice is justified visually.
 
 ------------------------------------------------------------------------
 

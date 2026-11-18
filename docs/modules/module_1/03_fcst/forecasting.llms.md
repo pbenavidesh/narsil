@@ -2,7 +2,7 @@
 
 Modified
 
-September 18, 2026
+November 18, 2026
 
 # 1 A tidy forecasting workflow
 
@@ -23,7 +23,7 @@ Everything we have done so far — visualizing patterns, decomposing components 
 Before fitting any model, split the series into a **training set** and a **test set**[^1].
 
 - The test set length should match the intended **forecast horizon**.
-- A common rule: hold out the last 20–30% of observations, or the last h periods where h is the forecast horizon.
+- A common rule: hold out the last 20–30% of observations, or the last $h$ periods where $h$ is the forecast horizon.
 
 **Option 1 — programmatic split:**
 
@@ -139,7 +139,7 @@ They are simple, transparent, and surprisingly hard to beat.
 
 ## Mean
 
-\hat{y}\_{T+h\|T} = \bar{y}
+$$\hat{y}_{T+h|T} = \bar{y}$$
 
 - Forecasts the **historical average** for all future periods.
 - Assumes no trend, no seasonality — the series fluctuates around a fixed level.
@@ -153,7 +153,7 @@ MEAN(y)
 
 ## Naïve
 
-\hat{y}\_{T+h\|T} = y_T
+$$\hat{y}_{T+h|T} = y_T$$
 
 - Forecasts the **last observed value** for all future periods.
 - Assumes the most recent past is the best predictor.
@@ -167,9 +167,9 @@ NAIVE(y)
 
 ## Seasonal Naïve
 
-\hat{y}\_{T+h\|T} = y\_{T+h-m}
+$$\hat{y}_{T+h|T} = y_{T+h-m}$$
 
-where m is the seasonal period.
+where $m$ is the seasonal period.
 
 - Forecasts using the **last observed value from the same season**.
 - Captures seasonality with no trend modeling.
@@ -183,7 +183,7 @@ SNAIVE(y)
 
 ## Drift
 
-\hat{y}\_{T+h\|T} = y_T + h \cdot \frac{y_T - y_1}{T - 1}
+$$\hat{y}_{T+h|T} = y_T + h \cdot \frac{y_T - y_1}{T - 1}$$
 
 - Extrapolates a **linear trend** from the first to the last observation.
 - Equivalent to a random walk with drift.
@@ -377,18 +377,18 @@ Evaluation has two layers:
 
 ### 3.0.1 Fitted values and residuals
 
-The **fitted values** \hat{y}\_t are the one-step-ahead predictions the model makes for the training observations.
+The **fitted values** $\hat{y}_t$ are the one-step-ahead predictions the model makes for the training observations.
 
-The **residuals** e_t are what the model leaves unexplained:
+The **residuals** $e_t$ are what the model leaves unexplained:
 
-e_t = y_t - \hat{y}\_t
+$$e_t = y_t - \hat{y}_t$$
 
 > **NOTE:**
 >
 > When a **transformation** is applied (e.g. `log(Gas)`), there are two types of residuals:
 >
-> - **Residuals** e_t: computed on the **original** scale after back-transforming the fitted values.
-> - **Innovation residuals** \tilde{e}\_t: computed on the **transformed** scale.
+> - **Residuals** $e_t$: computed on the **original** scale after back-transforming the fitted values.
+> - **Innovation residuals** $\tilde{e}_t$: computed on the **transformed** scale.
 >
 > Residual diagnostics (white noise checks, Ljung-Box) should always be run on the **innovation residuals** — this is what `augment()` returns in `.innov`.
 
@@ -487,11 +487,11 @@ gas_fit |>
 
 The ACF plot gives a visual impression, but we also want a formal test. The **Ljung-Box test** checks whether any group of autocorrelations is significantly different from zero.
 
-H_0: \text{residuals are white noise} \qquad H_1: \text{residuals are not white noise}
+$$H_0: \text{residuals are white noise} \qquad H_1: \text{residuals are not white noise}$$
 
-A small p-value (typically \< 0.05) is evidence against white noise.
+A small $p$-value (typically $< 0.05$) is evidence against white noise.
 
-If H_0, p-values, and the 0.05 threshold are unfamiliar — or if you have never been told what *failing* to reject actually licenses you to conclude — see [Statistical Significance](../../../../docs/more/significance.llms.md).
+If $H_0$, $p$-values, and the 0.05 threshold are unfamiliar — or if you have never been told what *failing* to reject actually licenses you to conclude — see [Statistical Significance](../../../../docs/more/significance.llms.md).
 
 Code
 
@@ -501,7 +501,7 @@ data_fit |>
   features(.innov, ljung_box, lag = h, dof = K)   #<1>
 ```
 
-1.  `lag` is typically set to 10 for non-seasonal data and 2m for seasonal data (m = seasonal period). `dof` is the number of estimated parameters (0 for all benchmark methods).
+1.  `lag` is typically set to 10 for non-seasonal data and $2m$ for seasonal data ($m$ = seasonal period). `dof` is the number of estimated parameters (0 for all benchmark methods).
 
 ## Hare
 
@@ -553,25 +553,25 @@ Residual diagnostics tell us about the **training fit**. Forecast accuracy tells
 
 Forecast errors on the test set:
 
-e\_{T+h} = y\_{T+h} - \hat{y}\_{T+h\|T}
+$$e_{T+h} = y_{T+h} - \hat{y}_{T+h|T}$$
 
 From these errors we compute **percentage errors**:
 
-p_t = \frac{e\_{T+h}}{y\_{T+h}} \times 100
+$$p_t = \frac{e_{T+h}}{y_{T+h}} \times 100$$
 
 and **scaled errors** — for seasonal series[^4]:
 
-q_j = \frac{e_j}{\dfrac{1}{T-m}\displaystyle\sum\_{t=m+1}^{T}\|y_t - y\_{t-m}\|}
+$$q_j = \frac{e_j}{\dfrac{1}{T-m}\displaystyle\sum_{t=m+1}^{T}|y_t - y_{t-m}|}$$
 
 ### 3.0.7 Error metrics
 
 | **Scale** | **Metric** | **Description** | **Formula** |
 |----|----|----|----|
-| Scale-dependent | RMSE | Root Mean Squared Error | \sqrt{\text{mean}(e_t^2)} |
-|  | MAE | Mean Absolute Error | \text{mean}(\|e_t\|) |
-| Scale-independent | MAPE | Mean Absolute Percentage Error | \text{mean}(\|p_t\|) |
-|  | MASE | Mean Absolute Scaled Error | \text{mean}(\|q_t\|) |
-|  | RMSSE | Root Mean Squared Scaled Error | \sqrt{\text{mean}(q_t^2)} |
+| Scale-dependent | RMSE | Root Mean Squared Error | $\sqrt{\text{mean}(e_t^2)}$ |
+|  | MAE | Mean Absolute Error | $\text{mean}(|e_t|)$ |
+| Scale-independent | MAPE | Mean Absolute Percentage Error | $\text{mean}(|p_t|)$ |
+|  | MASE | Mean Absolute Scaled Error | $\text{mean}(|q_t|)$ |
+|  | RMSSE | Root Mean Squared Scaled Error | $\sqrt{\text{mean}(q_t^2)}$ |
 
 Common error metrics {.caption-top .table tbl-colwidths="[22,12,38,28]"}
 
@@ -728,4 +728,4 @@ Back to top
 
 [^3]: Store forecasts in a `*_fc` object.
 
-[^4]: For non-seasonal series replace m with 1 and sum from t = 2. Scaled errors use the in-sample naïve or seasonal naïve error as the denominator, making MASE and RMSSE scale-free and comparable across series.
+[^4]: For non-seasonal series replace $m$ with 1 and sum from $t = 2$. Scaled errors use the in-sample naïve or seasonal naïve error as the denominator, making MASE and RMSSE scale-free and comparable across series.

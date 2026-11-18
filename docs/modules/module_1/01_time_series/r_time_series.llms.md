@@ -2,7 +2,7 @@
 
 Modified
 
-September 18, 2026
+November 18, 2026
 
 # 1 Packages
 
@@ -355,7 +355,7 @@ gas_points_p <- aus_production |>
 
 [![](r_time_series_files/figure-html/time_plot_2_render-2.png)](r_time_series_files/figure-html/time_plot_2_render-2.png)
 
-These are the most basic type of plots. We have the time variable in the x-axis, and our forecast variable in the y-axis. Time plots should be line plots, and can include or not points.
+These are the most basic type of plots. We have the time variable in the $x$-axis, and our forecast variable in the $y$-axis. Time plots should be line plots, and can include or not points.
 
 ## 3.3 Seasonal Plots
 

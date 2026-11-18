@@ -24,6 +24,8 @@ Your model starts to know what is happening outside the series: predictors, even
 
 Real data is messy. Multiple seasonalities, outliers, bootstrapping, combinations, and forecasting hundreds of series at once.
 
+A complementary **Module 5** goes beyond the core arc with multivariate and nonlinear models, starting with vector autoregressions (VAR).
+
 [Browse the modules →](docs/modules/index.llms.md)
 
 ## Start here

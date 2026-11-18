@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.10.18">
+<meta name="generator" content="quarto-1.11.9">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -44,18 +44,19 @@ ul.task-list li input[type="checkbox"] {
 <link href="../../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/scrollable-regions/scrollable-regions.js" type="module"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-eec68b17241c1efd3eae2de50d816e3e.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-25dec783d6e1d11f8e0bba9e4fbb47f4.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-eec68b17241c1efd3eae2de50d816e3e.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-c2b08e7e9e4d0725d7c99c9a799ba6e7.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-b64bf133a05c9b35a1c1b0604a81005c.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-c2b08e7e9e4d0725d7c99c9a799ba6e7.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-6e8d6bca4c9b730be0e1699f2e89e85d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-8c6d584fb7c37c3acd5077e1e876a219.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../../site_libs/bootstrap/bootstrap-6e8d6bca4c9b730be0e1699f2e89e85d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-ba0445cc688767c92eab30f3f579416c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-f6404729b7b5c6d0379574b5843c0a36.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-ba0445cc688767c92eab30f3f579416c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -105,12 +106,6 @@ ul.task-list li input[type="checkbox"] {
       window['quarto-listing-loaded']();
     }
   });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
   </script>
 <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-BRNYXN29K7"></script>
 
@@ -194,7 +189,7 @@ window.Quarto = {
 <meta name="twitter:card" content="summary">
 </head>
 
-<body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+<body class="nav-fixed quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">Skip to main content</a><script id="quarto-html-before-body" type="application/javascript">
     const toggleBodyColorMode = (bsSheetEl) => {
       const mode = bsSheetEl.getAttribute("data-mode");
       const bodyEl = window.document.querySelector("body");
@@ -217,6 +212,7 @@ window.Quarto = {
       for (let i=0; i < toggles.length; i++) {
         const toggle = toggles[i];
         if (toggle) {
+          toggle.setAttribute("aria-checked", alternate ? "true" : "false");
           if (alternate) {
             toggle.classList.add("alternate");
           } else {
@@ -246,13 +242,19 @@ window.Quarto = {
       manageTransitions('#quarto-margin-sidebar .nav-link', true);
       // Switch the toggles
       setColorSchemeToggle(alternate)
-      // Hack to workaround the fact that safari doesn't
-      // properly recolor the scrollbar when toggling (#1455)
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455).
+    // Not run on load: stylesheets are set before first paint there, and
+    // scrolling would undo the scroll to a URL fragment (#14973).
+    // The one pixel nudge keeps the reader where they were.
+    const refreshSafariScrollbar = () => {
       if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
         manageTransitions("body", false);
-        window.scrollTo(0, 1);
+        const scrollY = window.scrollY;
+        window.scrollTo(0, scrollY > 0 ? scrollY - 1 : 1);
         setTimeout(() => {
-          window.scrollTo(0, 0);
+          window.scrollTo(0, scrollY);
           manageTransitions("body", true);
         }, 40);
       }
@@ -346,6 +348,7 @@ window.Quarto = {
       // Read the current dark / light value
       let toAlternate = !hasAlternateSentinel();
       toggleColorMode(toAlternate);
+      refreshSafariScrollbar();
       setStyleSentinel(toAlternate);
       toggleGiscusIfUsed(toAlternate, darkModeDefault);
       window.dispatchEvent(new Event('resize'));
@@ -360,7 +363,7 @@ window.Quarto = {
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark" aria-label="Site">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../../index.html" class="navbar-brand navbar-brand-logo">
@@ -371,8 +374,7 @@ window.Quarto = {
     <span class="navbar-title">Time Series Forecasting</span>
     </a>
   </div>
-            <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
@@ -420,13 +422,14 @@ window.Quarto = {
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools tools-wide">
     <a href="https://github.com/pbenavidesh/narsil" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-github"></i></a>
-  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+  <button type="button" role="switch" aria-checked="false" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode" aria-label="Toggle dark mode"><i class="bi"></i></button>
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
   <i class="bi"></i>
   </div>
 </a>
 </div>
+            <div id="quarto-search" class="" title="Search"></div>
       </div> <!-- /container-fluid -->
     </nav>
   <div id="quarto-announcement" data-announcement-id="c3ea80d6de2bba97e886d34031327e60" class="alert alert-primary hidden"><i class="bi bi-megaphone quarto-announcement-icon"></i><div class="quarto-announcement-content">
@@ -441,7 +444,7 @@ window.Quarto = {
         
     <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(7)</span></div><div class="category" data-category="bW9kdWxlLTE=">module-1 <span class="quarto-category-count">(1)</span></div><div class="category" data-category="bW9kdWxlLTI=">module-2 <span class="quarto-category-count">(2)</span></div><div class="category" data-category="bW9kdWxlLTM=">module-3 <span class="quarto-category-count">(1)</span></div><div class="category" data-category="bW9kdWxlLXJldmlldw==">module-review <span class="quarto-category-count">(3)</span></div><div class="category" data-category="dG9waWMtZXhlcmNpc2U=">topic-exercise <span class="quarto-category-count">(2)</span></div></div></div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content" id="quarto-document-content" tabindex="-1">
 
 
 <header id="title-block-header" class="quarto-title-block default">
@@ -495,55 +498,15 @@ window.Quarto = {
     </div>
 </div>
 <div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-listing-file-modified-sort="1789757132860" data-listing-reading-time-sort="3" data-listing-word-count-sort="557">
-<div class="thumbnail"><a href="../../docs/exercises/posts/26-02-11-fcst.html" class="no-external">
-
-<p class="card-img-top"><img loading='lazy' src="posts/26-02-11-fcst_files/figure-html/plot-gas-1.png"  class="thumbnail-image card-img"/></p>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../../docs/exercises/posts/26-02-11-fcst.html" class="no-external">Pronósticos con métodos benchmark</a>
-</h3>
-<div class="delink listing-description"><a href="../../docs/exercises/posts/26-02-11-fcst.html" class="no-external">
-Vamos a hacer pronósticos a 3 años, por lo que necesitamos dejar los últimos 3 años como el conjunto de test.
-</a></div>
-</div>
-<div class="metadata">
-<a href="../../docs/exercises/posts/26-02-11-fcst.html" class="no-external">
-<div class="listing-reading-time">3 min</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="1" data-listing-file-modified-sort="1789757132860" data-listing-reading-time-sort="1" data-listing-word-count-sort="76">
-<div class="thumbnail"><a href="../../docs/exercises/posts/26-01-23-clase-1.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../../docs/exercises/posts/26-01-23-clase-1.html" class="no-external">Clase 1 - R y series de tiempo</a>
-</h3>
-<div class="delink listing-description"><a href="../../docs/exercises/posts/26-01-23-clase-1.html" class="no-external">
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see https://quarto.org.
-</a></div>
-</div>
-<div class="metadata">
-<a href="../../docs/exercises/posts/26-01-23-clase-1.html" class="no-external">
-<div class="listing-reading-time">1 min</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="2" data-categories="bW9kdWxlLXJldmlldyUyQ21vZHVsZS0x" data-listing-file-modified-sort="1789757132860" data-listing-reading-time-sort="15" data-listing-word-count-sort="2841">
-<div class="thumbnail"><a href="../../docs/exercises/posts/review_module1.html" class="no-external">
+<div class="quarto-post image-right" data-index="0" data-categories="bW9kdWxlLXJldmlldyUyQ21vZHVsZS0x" data-listing-file-modified-sort="1795010823348" data-listing-reading-time-sort="15" data-listing-word-count-sort="2841">
+<div class="thumbnail"><a href="../../docs/exercises/posts/review_module1.html" class="no-external-icon">
 
 <p class="card-img-top"><img loading='lazy' src="posts/review_module1_files/figure-html/a-plot-1.png"  class="thumbnail-image card-img"/></p>
 
 </a></div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="../../docs/exercises/posts/review_module1.html" class="no-external">Module 1 Review</a>
+<a href="../../docs/exercises/posts/review_module1.html" class="no-external-icon">Module 1 Review</a>
 </h3>
 <div class="listing-categories">
 
@@ -552,25 +515,71 @@ Quarto enables you to weave together content and executable code into a finished
 <div class="listing-category" onclick="window.quartoListingCategory('bW9kdWxlLTE='); return false;">module-1</div>
 
 </div>
-<div class="delink listing-description"><a href="../../docs/exercises/posts/review_module1.html" class="no-external">
+<div class="listing-description">
+<a href="../../docs/exercises/posts/review_module1.html" class="no-external-icon">
 <p>End-of-module integrative exercise covering the full Module 1 workflow: exploration, transformations, STL decomposition, benchmark forecasting, decomposition models, residual diagnostics, and forecast evaluation.</p>
-</a></div>
+</a>
+</div>
 </div>
 <div class="metadata">
-<a href="../../docs/exercises/posts/review_module1.html" class="no-external">
+<a href="../../docs/exercises/posts/review_module1.html" class="no-external-icon">
 <div class="listing-reading-time">15 min</div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="3" data-categories="dG9waWMtZXhlcmNpc2UlMkNtb2R1bGUtMg==" data-listing-date-sort="1780963200000" data-listing-file-modified-sort="1789757132860" data-listing-date-modified-sort="1789757132000" data-listing-reading-time-sort="10" data-listing-word-count-sort="1949">
-<div class="thumbnail"><a href="../../docs/exercises/posts/ex_module2_ets_decomposition.html" class="no-external">
+<div class="quarto-post image-right" data-index="1" data-listing-file-modified-sort="1795010823348" data-listing-reading-time-sort="1" data-listing-word-count-sort="76">
+<div class="thumbnail"><a href="../../docs/exercises/posts/26-01-23-clase-1.html" class="no-external-icon" aria-hidden="true" tabindex="-1">
+
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../../docs/exercises/posts/26-01-23-clase-1.html" class="no-external-icon">Clase 1 - R y series de tiempo</a>
+</h3>
+<div class="listing-description">
+<a href="../../docs/exercises/posts/26-01-23-clase-1.html" class="no-external-icon">
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see https://quarto.org.
+</a>
+</div>
+</div>
+<div class="metadata">
+<a href="../../docs/exercises/posts/26-01-23-clase-1.html" class="no-external-icon">
+<div class="listing-reading-time">1 min</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="2" data-listing-file-modified-sort="1795010823348" data-listing-reading-time-sort="3" data-listing-word-count-sort="557">
+<div class="thumbnail"><a href="../../docs/exercises/posts/26-02-11-fcst.html" class="no-external-icon">
+
+<p class="card-img-top"><img loading='lazy' src="posts/26-02-11-fcst_files/figure-html/plot-gas-1.png"  class="thumbnail-image card-img"/></p>
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../../docs/exercises/posts/26-02-11-fcst.html" class="no-external-icon">Pronósticos con métodos benchmark</a>
+</h3>
+<div class="listing-description">
+<a href="../../docs/exercises/posts/26-02-11-fcst.html" class="no-external-icon">
+Vamos a hacer pronósticos a 3 años, por lo que necesitamos dejar los últimos 3 años como el conjunto de test.
+</a>
+</div>
+</div>
+<div class="metadata">
+<a href="../../docs/exercises/posts/26-02-11-fcst.html" class="no-external-icon">
+<div class="listing-reading-time">3 min</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="3" data-categories="dG9waWMtZXhlcmNpc2UlMkNtb2R1bGUtMg==" data-listing-date-sort="1780963200000" data-listing-file-modified-sort="1795010823348" data-listing-date-modified-sort="1795010823000" data-listing-reading-time-sort="10" data-listing-word-count-sort="1949">
+<div class="thumbnail"><a href="../../docs/exercises/posts/ex_module2_ets_decomposition.html" class="no-external-icon">
 
 <p class="card-img-top"><img loading='lazy' src="posts/ex_module2_ets_decomposition_files/figure-html/gold-plot-1.png"  class="thumbnail-image card-img"/></p>
 
 </a></div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="../../docs/exercises/posts/ex_module2_ets_decomposition.html" class="no-external">ETS and Decomposition Forecasting</a>
+<a href="../../docs/exercises/posts/ex_module2_ets_decomposition.html" class="no-external-icon">ETS and Decomposition Forecasting</a>
 </h3>
 <div class="listing-categories">
 
@@ -579,12 +588,14 @@ Quarto enables you to weave together content and executable code into a finished
 <div class="listing-category" onclick="window.quartoListingCategory('bW9kdWxlLTI='); return false;">module-2</div>
 
 </div>
-<div class="delink listing-description"><a href="../../docs/exercises/posts/ex_module2_ets_decomposition.html" class="no-external">
+<div class="listing-description">
+<a href="../../docs/exercises/posts/ex_module2_ets_decomposition.html" class="no-external-icon">
 <p>Apply and compare exponential smoothing models on non-seasonal and seasonal series, including manual ETS specifications, Box-Cox transformation, and modular decomposition forecasting with decomposition_model().</p>
-</a></div>
+</a>
+</div>
 </div>
 <div class="metadata">
-<a href="../../docs/exercises/posts/ex_module2_ets_decomposition.html" class="no-external">
+<a href="../../docs/exercises/posts/ex_module2_ets_decomposition.html" class="no-external-icon">
 <div class="listing-date">
 Jun 9, 2026
 </div>
@@ -592,15 +603,15 @@ Jun 9, 2026
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="4" data-categories="bW9kdWxlLXJldmlldyUyQ21vZHVsZS0z" data-listing-date-sort="1776643200000" data-listing-file-modified-sort="1789757132860" data-listing-date-modified-sort="1789757132000" data-listing-reading-time-sort="20" data-listing-word-count-sort="3865">
-<div class="thumbnail"><a href="../../docs/exercises/posts/review_module3.html" class="no-external">
+<div class="quarto-post image-right" data-index="4" data-categories="bW9kdWxlLXJldmlldyUyQ21vZHVsZS0z" data-listing-date-sort="1776643200000" data-listing-file-modified-sort="1795010823348" data-listing-date-modified-sort="1795010823000" data-listing-reading-time-sort="20" data-listing-word-count-sort="3865">
+<div class="thumbnail"><a href="../../docs/exercises/posts/review_module3.html" class="no-external-icon">
 
 <p class="card-img-top"><img loading='lazy' src="posts/review_module3_files/figure-html/nsw-data-1.png"  class="thumbnail-image card-img"/></p>
 
 </a></div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="../../docs/exercises/posts/review_module3.html" class="no-external">Module 3 Review: Regression and Exogenous Variables</a>
+<a href="../../docs/exercises/posts/review_module3.html" class="no-external-icon">Module 3 Review: Regression and Exogenous Variables</a>
 </h3>
 <div class="listing-categories">
 
@@ -609,12 +620,14 @@ Jun 9, 2026
 <div class="listing-category" onclick="window.quartoListingCategory('bW9kdWxlLTM='); return false;">module-3</div>
 
 </div>
-<div class="delink listing-description"><a href="../../docs/exercises/posts/review_module3.html" class="no-external">
+<div class="listing-description">
+<a href="../../docs/exercises/posts/review_module3.html" class="no-external-icon">
 <p>An integrative review of practical issues, TSLM, dynamic regression, harmonic regression, and Prophet applied to Australian tourist accommodation data.</p>
-</a></div>
+</a>
+</div>
 </div>
 <div class="metadata">
-<a href="../../docs/exercises/posts/review_module3.html" class="no-external">
+<a href="../../docs/exercises/posts/review_module3.html" class="no-external-icon">
 <div class="listing-date">
 Apr 20, 2026
 </div>
@@ -622,22 +635,24 @@ Apr 20, 2026
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="5" data-listing-date-sort="1770163200000" data-listing-file-modified-sort="1789757132860" data-listing-date-modified-sort="1789757132000" data-listing-reading-time-sort="2" data-listing-word-count-sort="287">
-<div class="thumbnail"><a href="../../docs/exercises/posts/26-02-04-ts-dcmp.html" class="no-external">
+<div class="quarto-post image-right" data-index="5" data-listing-date-sort="1770163200000" data-listing-file-modified-sort="1795010823348" data-listing-date-modified-sort="1795010823000" data-listing-reading-time-sort="2" data-listing-word-count-sort="287">
+<div class="thumbnail"><a href="../../docs/exercises/posts/26-02-04-ts-dcmp.html" class="no-external-icon">
 
 <p class="card-img-top"><img loading='lazy' src="posts/26-02-04-ts-dcmp_files/figure-html/unnamed-chunk-7-1.png"  class="thumbnail-image card-img"/></p>
 
 </a></div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="../../docs/exercises/posts/26-02-04-ts-dcmp.html" class="no-external">Descomposición de series de tiempo</a>
+<a href="../../docs/exercises/posts/26-02-04-ts-dcmp.html" class="no-external-icon">Descomposición de series de tiempo</a>
 </h3>
-<div class="delink listing-description"><a href="../../docs/exercises/posts/26-02-04-ts-dcmp.html" class="no-external">
+<div class="listing-description">
+<a href="../../docs/exercises/posts/26-02-04-ts-dcmp.html" class="no-external-icon">
 <p>Intro a la descomposición STL usando <code>fable</code></p>
-</a></div>
+</a>
+</div>
 </div>
 <div class="metadata">
-<a href="../../docs/exercises/posts/26-02-04-ts-dcmp.html" class="no-external">
+<a href="../../docs/exercises/posts/26-02-04-ts-dcmp.html" class="no-external-icon">
 <div class="listing-date">
 Feb 4, 2026
 </div>
@@ -648,15 +663,15 @@ Pablo Benavides Herrera
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="6" data-categories="dG9waWMtZXhlcmNpc2UlMkNtb2R1bGUtcmV2aWV3JTJDbW9kdWxlLTI=" data-listing-date-sort="1750118400000" data-listing-file-modified-sort="1789757132860" data-listing-date-modified-sort="1789757132000" data-listing-reading-time-sort="6" data-listing-word-count-sort="1024">
-<div class="thumbnail"><a href="../../docs/exercises/posts/ex_module2_full_review.html" class="no-external">
+<div class="quarto-post image-right" data-index="6" data-categories="dG9waWMtZXhlcmNpc2UlMkNtb2R1bGUtcmV2aWV3JTJDbW9kdWxlLTI=" data-listing-date-sort="1750118400000" data-listing-file-modified-sort="1795010823348" data-listing-date-modified-sort="1795010823000" data-listing-reading-time-sort="6" data-listing-word-count-sort="1024">
+<div class="thumbnail"><a href="../../docs/exercises/posts/ex_module2_full_review.html" class="no-external-icon">
 
 <p class="card-img-top"><img loading='lazy' src="posts/ex_module2_full_review_files/figure-html/season-render-1.png"  class="thumbnail-image card-img"/></p>
 
 </a></div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="../../docs/exercises/posts/ex_module2_full_review.html" class="no-external">Module 2 Review: Full Forecasting Pipeline</a>
+<a href="../../docs/exercises/posts/ex_module2_full_review.html" class="no-external-icon">Module 2 Review: Full Forecasting Pipeline</a>
 </h3>
 <div class="listing-categories">
 
@@ -667,12 +682,14 @@ Pablo Benavides Herrera
 <div class="listing-category" onclick="window.quartoListingCategory('bW9kdWxlLTI='); return false;">module-2</div>
 
 </div>
-<div class="delink listing-description"><a href="../../docs/exercises/posts/ex_module2_full_review.html" class="no-external">
+<div class="listing-description">
+<a href="../../docs/exercises/posts/ex_module2_full_review.html" class="no-external-icon">
 <p>End-of-module exercise covering the complete Module 2 toolkit — baseline, ETS, ARIMA/SARIMA, and mixed decomposition models — applied to Mexico’s unemployment rate.</p>
-</a></div>
+</a>
+</div>
 </div>
 <div class="metadata">
-<a href="../../docs/exercises/posts/ex_module2_full_review.html" class="no-external">
+<a href="../../docs/exercises/posts/ex_module2_full_review.html" class="no-external-icon">
 <div class="listing-date">
 Jun 17, 2025
 </div>
@@ -687,15 +704,50 @@ Jun 17, 2025
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right
     if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
-      const a = window.document.createElement('a');
-      a.classList.add('top-right');
-      a.classList.add('quarto-color-scheme-toggle');
-      a.href = "";
-      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const toggle = window.document.createElement('button');
+      toggle.type = "button";
+      toggle.setAttribute("role", "switch");
+      toggle.setAttribute("aria-checked", "false");
+      toggle.classList.add('top-right');
+      toggle.classList.add('quarto-color-scheme-toggle');
+      toggle.setAttribute("aria-label", "Toggle dark mode");
+      toggle.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
       const i = window.document.createElement("i");
       i.classList.add('bi');
-      a.appendChild(i);
-      window.document.body.appendChild(a);
+      toggle.appendChild(i);
+      // Put the toggle in a landmark of its own, so that landmark navigation
+      // can reach it.
+      //
+      // The container is always a fresh direct child of body, and the toggle is
+      // never moved into page furniture that the theme or the author controls.
+      // The toggle is positioned against the page, so any ancestor that
+      // establishes a containing block captures it: a positioned element or a
+      // grid for position: absolute, and transform, filter, will-change or
+      // contain for position: fixed. A direct child of body has none of these
+      // to inherit, and the shift when one appears is silent and visual.
+      //
+      // ARIA says a document should have at most one banner, and axe reports a
+      // duplicate whether or not the banners carry distinct labels. So use a
+      // header when the page has no banner yet, and a named region otherwise.
+      //
+      // A header is a banner wherever it sits, unless it is inside sectioning
+      // content, so this cannot just look at the children of body: a custom
+      // page layout wraps the title block header in a plain div. An explicit
+      // role="banner" always counts.
+      const sectioning = 'article, aside, main, nav, section, [role="article"], [role="complementary"], [role="main"], [role="navigation"], [role="region"]';
+      const hasBanner = Array.from(
+        window.document.querySelectorAll('header:not([role]), [role="banner"]')
+      ).some(function(el) {
+        return el.hasAttribute("role") || el.closest(sectioning) === null;
+      });
+      const container = window.document.createElement(hasBanner ? "div" : "header");
+      if (hasBanner) {
+        container.setAttribute("role", "region");
+        container.setAttribute("aria-label", "Toggle dark mode");
+      }
+      container.classList.add('quarto-color-scheme-toggle-container');
+      container.appendChild(toggle);
+      window.document.body.appendChild(container);
     }
     setColorSchemeToggle(hasAlternateSentinel())
     const icon = "";
@@ -770,11 +822,30 @@ Jun 17, 2025
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
         var filterRegex = new RegExp('/' + window.location.host + '/');
+      const newWindowLabel = "(opens in a new tab)";
+      const newWindowNoteId = "quarto-ext-newwindow-label";
+      // Links reference one hidden label through aria-describedby, so the
+      // announcement never changes their accessible name.
+      var describeNewWindow = (link) => {
+        if (!window.document.getElementById(newWindowNoteId)) {
+          var newWindowNote = window.document.createElement("span");
+          newWindowNote.id = newWindowNoteId;
+          newWindowNote.hidden = true;
+          newWindowNote.textContent = newWindowLabel;
+          window.document.body.appendChild(newWindowNote);
+        }
+        var describedBy = (link.getAttribute("aria-describedby") || "").split(/\s+/).filter(Boolean);
+        if (!describedBy.includes(newWindowNoteId)) {
+          describedBy.push(newWindowNoteId);
+          link.setAttribute("aria-describedby", describedBy.join(" "));
+        }
+      }
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
       // Inspect non-navigation links and adorn them if external
-     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      window.quartoDecorateExternalLinks = function (root) {
+     var links = (root || window.document).querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
       for (var i=0; i<links.length; i++) {
         const link = links[i];
         if (!isInternal(link.href)) {
@@ -788,8 +859,70 @@ Jun 17, 2025
             if (link.getAttribute("rel") === null) {
               link.setAttribute("rel", "noopener");
             }
+            describeNewWindow(link);
+          if (!link.classList.contains('no-external-icon')) {
+          }
         }
       }
+      };
+      window.quartoDecorateExternalLinks(window.document);
+    // Esc closes the popup (WCAG 1.4.13) and focus leaving both trigger and
+    // popup closes it (WCAG 2.4.11); tippy handles neither for interactive popups.
+    const hideOnEscAndFocusOut = {
+      name: 'hideOnEscAndFocusOut',
+      defaultValue: true,
+      fn(instance) {
+        const dismiss = () => {
+          // A show scheduled by the trigger delay would otherwise reopen it
+          instance.clearDelayTimeouts();
+          instance.hide();
+        };
+        const onKeyDown = (event) => {
+          if (event.key !== 'Escape') {
+            return;
+          }
+          // Keep Esc from also reaching page handlers (e.g. reveal.js overview),
+          // except an open reveal.js slide menu, which Esc should close too.
+          // The menu handles keys only when its keyboard option is on.
+          const menuHandlesEsc = window.Reveal?.getPlugin?.('menu')?.isOpen() &&
+            window.Reveal.getConfig().menu?.keyboard !== false;
+          if (!menuHandlesEsc) {
+            event.stopPropagation();
+          }
+          if (instance.popper.contains(window.document.activeElement)) {
+            // Disabled while refocusing so the focus trigger does not reopen it
+            instance.disable();
+            instance.reference.focus();
+            instance.enable();
+          }
+          dismiss();
+        };
+        const onFocusOut = (event) => {
+          const target = event.relatedTarget;
+          if (target && !instance.reference.contains(target) &&
+              !instance.popper.contains(target)) {
+            dismiss();
+          }
+        };
+        // On the trigger too: a click trigger (code-annotations: select) has no
+        // blur handling. Attached for the instance's lifetime so leaving the
+        // trigger also cancels a show still pending on the trigger delay.
+        instance.reference.addEventListener('focusout', onFocusOut);
+        return {
+          onShow() {
+            window.document.addEventListener('keydown', onKeyDown, true);
+            instance.popper.addEventListener('focusout', onFocusOut);
+          },
+          onHide() {
+            window.document.removeEventListener('keydown', onKeyDown, true);
+            instance.popper.removeEventListener('focusout', onFocusOut);
+          },
+          onDestroy() {
+            instance.reference.removeEventListener('focusout', onFocusOut);
+          },
+        };
+      },
+    };
     function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
       const config = {
         allowHTML: true,
@@ -803,6 +936,7 @@ Jun 17, 2025
         interactiveBorder: 10,
         theme: 'quarto',
         placement: 'bottom-start',
+        plugins: [hideOnEscAndFocusOut],
       };
       if (contentFn) {
         config.content = contentFn;
@@ -965,44 +1099,54 @@ Jun 17, 2025
           const lineIds = lines.map((line) => {
             return targetCell + "-" + line;
           })
-          let top = null;
-          let height = null;
-          let parent = null;
+          // Each band is positioned against its own containing block, which is
+          // not the offsetParent of the lines, so place it from client rects.
+          const placeBand = (band, firstEl, lastEl, codeBlock) => {
+            const container = band.offsetParent;
+            if (container === null) {
+              return;
+            }
+            const containerRect = container.getBoundingClientRect();
+            // Reveal.js scales slides with a transform, so convert client
+            // pixels back to the CSS pixels of the container.
+            const scale = containerRect.height / container.offsetHeight || 1;
+            const firstRect = firstEl.getBoundingClientRect();
+            const lastRect = lastEl.getBoundingClientRect();
+            const top = (firstRect.top - containerRect.top) / scale - container.clientTop + container.scrollTop;
+            const height = (lastRect.bottom - firstRect.top) / scale;
+            band.style.top = top - 2 + "px";
+            band.style.height = height + 4 + "px";
+            if (codeBlock) {
+              // Without the copy button wrapper, the containing block is wider
+              // than the code block, so span the code block explicitly.
+              const blockRect = codeBlock.getBoundingClientRect();
+              band.style.left = (blockRect.left - containerRect.left) / scale - container.clientLeft + container.scrollLeft + "px";
+              band.style.width = blockRect.width / scale + "px";
+            }
+          };
           if (lineIds.length > 0) {
-              //compute the position of the single el (top and bottom and make a div)
-              const el = window.document.getElementById(lineIds[0]);
-              top = el.offsetTop;
-              height = el.offsetHeight;
-              parent = el.parentElement.parentElement;
-            if (lineIds.length > 1) {
-              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
-              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
-              height = bottom - top;
+            const el = window.document.getElementById(lineIds[0]);
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const parent = el.parentElement.parentElement;
+            // cook up a div (if necessary) and position it
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
             }
-            if (top !== null && height !== null && parent !== null) {
-              // cook up a div (if necessary) and position it 
-              let div = window.document.getElementById("code-annotation-line-highlight");
-              if (div === null) {
-                div = window.document.createElement("div");
-                div.setAttribute("id", "code-annotation-line-highlight");
-                div.style.position = 'absolute';
-                parent.appendChild(div);
-              }
-              div.style.top = top - 2 + "px";
-              div.style.height = height + 4 + "px";
-              div.style.left = 0;
-              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
-              if (gutterDiv === null) {
-                gutterDiv = window.document.createElement("div");
-                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
-                gutterDiv.style.position = 'absolute';
-                const codeCell = window.document.getElementById(targetCell);
-                const gutter = codeCell.querySelector('.code-annotation-gutter');
-                gutter.appendChild(gutterDiv);
-              }
-              gutterDiv.style.top = top - 2 + "px";
-              gutterDiv.style.height = height + 4 + "px";
+            placeBand(div, el, lastEl, parent.closest("div.sourceCode") || parent);
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
             }
+            placeBand(gutterDiv, el, lastEl);
             selectedAnnoteEl = annoteEl;
           }
         };
@@ -1100,6 +1244,9 @@ Jun 17, 2025
       }
     }
   });
+  </script>
+  <script type="application/javascript">
+  window.quartoScrollableRegionsLabels = {"code":"Scrollable code","output":"Scrollable output"};
   </script>
 </div> <!-- /content -->
 <footer class="footer">

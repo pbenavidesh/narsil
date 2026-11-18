@@ -2,7 +2,7 @@
 
 Modified
 
-September 18, 2026
+November 18, 2026
 
 Code
 
@@ -16,7 +16,7 @@ library(car)    #<2>
 
 # 1 From Univariate to Multivariate Models
 
-Every model we have built so far shares one fundamental characteristic: it is **univariate**. Whether it was STL decomposition, ETS, or ARIMA, we only looked inward — we used the history of y_t itself to forecast its future.
+Every model we have built so far shares one fundamental characteristic: it is **univariate**. Whether it was STL decomposition, ETS, or ARIMA, we only looked inward — we used the history of $y_t$ itself to forecast its future.
 
 That approach has taken us surprisingly far. But it ignores the **outside world** entirely.
 
@@ -28,7 +28,7 @@ That approach has taken us surprisingly far. But it ignores the **outside world*
 
 The question we are addressing now is: **what if we gave our model access to external information?**
 
-- In Modules 1–2, our model improved by getting smarter about the *structure* of y_t (trend, seasonality, autocorrelation).
+- In Modules 1–2, our model improved by getting smarter about the *structure* of $y_t$ (trend, seasonality, autocorrelation).
 - In Module 3, we improve by adding *context*: variables from outside the series that help explain its movement.
 - This is the transition from filtering to **causal modeling** — at least in the predictive, not necessarily structural, sense.
 
@@ -47,13 +47,13 @@ The question we are addressing now is: **what if we gave our model access to ext
 
 The simplest case is the **simple linear regression model**:
 
-y_t = \beta_0 + \beta_1 x_t + \varepsilon_t
+$$y_t = \beta_0 + \beta_1 x_t + \varepsilon_t$$
 
 where:
 
-- \beta_0 is the **intercept**: the predicted value of y when x = 0.
-- \beta_1 is the **slope**: the average change in y for a one-unit change in x.
-- \varepsilon_t is the **error term**: captures all other influences on y_t not explicitly modeled.
+- $\beta_0$ is the **intercept**: the predicted value of $y$ when $x = 0$.
+- $\beta_1$ is the **slope**: the average change in $y$ for a one-unit change in $x$.
+- $\varepsilon_t$ is the **error term**: captures all other influences on $y_t$ not explicitly modeled.
 
 [![(Hyndman, 2019)](linreg.PNG)](linreg.PNG "(Hyndman, 2019)")
 
@@ -61,40 +61,40 @@ where:
 
 > **TIP:**
 >
-> We cannot observe the \beta’s directly — we estimate them from data. The **Ordinary Least Squares (OLS)** method chooses the estimates \hat{\beta}\_0, \hat{\beta}\_1, \ldots, \hat{\beta}\_k that minimize the **sum of squared residuals**:
+> We cannot observe the $\beta$’s directly — we estimate them from data. The **Ordinary Least Squares (OLS)** method chooses the estimates $\hat{\beta}_0, \hat{\beta}_1, \ldots, \hat{\beta}_k$ that minimize the **sum of squared residuals**:
 >
-> \min\_{\hat{\boldsymbol{\beta}}} \sum\_{t=1}^{T} \hat{\varepsilon}\_t^2 = \sum\_{t=1}^{T} \left(y_t - \hat{\beta}\_0 - \hat{\beta}\_1 x\_{1t} - \cdots - \hat{\beta}\_k x\_{kt}\right)^2
+> $$\min_{\hat{\boldsymbol{\beta}}} \sum_{t=1}^{T} \hat{\varepsilon}_t^2 = \sum_{t=1}^{T} \left(y_t - \hat{\beta}_0 - \hat{\beta}_1 x_{1t} - \cdots - \hat{\beta}_k x_{kt}\right)^2$$
 >
-> For the simple case (k = 1), taking partial derivatives and setting them to zero yields closed-form solutions:
+> For the simple case ($k = 1$), taking partial derivatives and setting them to zero yields closed-form solutions:
 >
-> \hat{\beta}\_1 = \frac{\sum x_t y_t - T\bar{x}\bar{y}}{\sum x_t^2 - T\bar{x}^2}, \qquad \hat{\beta}\_0 = \bar{y} - \hat{\beta}\_1 \bar{x}
+> $$\hat{\beta}_1 = \frac{\sum x_t y_t - T\bar{x}\bar{y}}{\sum x_t^2 - T\bar{x}^2}, \qquad \hat{\beta}_0 = \bar{y} - \hat{\beta}_1 \bar{x}$$
 >
-> For the general case with k predictors, the solution extends naturally to matrix form:
+> For the general case with $k$ predictors, the solution extends naturally to matrix form:
 >
-> \hat{\boldsymbol{\beta}} = (\mathbf{X}^\top \mathbf{X})^{-1} \mathbf{X}^\top \mathbf{y}
+> $$\hat{\boldsymbol{\beta}} = (\mathbf{X}^\top \mathbf{X})^{-1} \mathbf{X}^\top \mathbf{y}$$
 >
-> where \mathbf{X} is the **design matrix** — a column of ones (for the intercept) plus one column per predictor — and \mathbf{y} is the vector of observed responses.
+> where $\mathbf{X}$ is the **design matrix** — a column of ones (for the intercept) plus one column per predictor — and $\mathbf{y}$ is the vector of observed responses.
 >
 > In practice, R handles all of this internally. But knowing the objective function matters: OLS penalizes **large** residuals more than small ones (because of the square), and under the classical assumptions the Gauss-Markov theorem guarantees the estimates are **BLUE** (Best Linear Unbiased Estimators) — regardless of whether we have one predictor or twenty.
 
 ## 2.1 Some motivating examples
 
-- **Ice cream sales** (y) and **daily temperature** (x).
-- **Nike revenue** (y) and **marketing spend** (x).
-- **US consumption growth** (y) and **income growth** (x).
-- **Mexico retail trade** (y) and **consumer confidence index** (x).
+- **Ice cream sales** ($y$) and **daily temperature** ($x$).
+- **Nike revenue** ($y$) and **marketing spend** ($x$).
+- **US consumption growth** ($y$) and **income growth** ($x$).
+- **Mexico retail trade** ($y$) and **consumer confidence index** ($x$).
 
 > **NOTE:**
 >
 > The same concept appears under different names depending on the discipline:
 >
-> | y (forecast variable) | x (predictor variables) |
-> |:---------------------:|:-----------------------:|
-> |       Dependent       |       Independent       |
-> |       Explained       |       Explanatory       |
-> |      Regressand       |        Regressor        |
-> |       Response        |  Stimulus / Covariate   |
-> |      Endogenous       |        Exogenous        |
+> | $y$ (forecast variable) | $x$ (predictor variables) |
+> |:-----------------------:|:-------------------------:|
+> |        Dependent        |        Independent        |
+> |        Explained        |        Explanatory        |
+> |       Regressand        |         Regressor         |
+> |        Response         |   Stimulus / Covariate    |
+> |       Endogenous        |         Exogenous         |
 >
 > In time series forecasting, FPP3 uses **forecast variable** and **predictor variables**.
 
@@ -116,7 +116,7 @@ where:
 >
 > — Kendall & Stuart (1961)
 
-\text{Regression} \neq \text{Causality} \qquad \text{Correlation} \neq \text{Causality}
+$$\text{Regression} \neq \text{Causality} \qquad \text{Correlation} \neq \text{Causality}$$
 
 This is not a technicality — it is one of the most practically important ideas in data science:
 
@@ -161,241 +161,309 @@ where each of these is an academic paper\
 
 ------------------------------------------------------------------------
 
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Number of public school students in 9th grade and the second variable is Bank of America's stock price (BAC). The chart goes from 2002 to 2022, and the two variables track closely in value over that time.](spurious/correlation/image/1828_number-of-public-school-students-in-9th-grade_correlates-with_bank-of-americas-stock-price.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Number of public school students in 9th grade and the second variable is Bank of America's stock price (BAC).  The chart goes from 2002 to 2022, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1828_number-of-public-school-students-in-9th-grade_correlates-with_bank-of-americas-stock-price_mobile.svg)\
-**View details about correlation \#1,828**](spurious/correlation/1828_number-of-public-school-students-in-9th-grade_correlates-with_bank-of-americas-stock-price)\
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The number of Breweries in the United States and the second variable is Solar power generated in Peru. The chart goes from 2000 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/3384_the-number-of-breweries-in-the-united-states_correlates-with_solar-power-generated-in-peru.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The number of Breweries in the United States and the second variable is Solar power generated in Peru.  The chart goes from 2000 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/3384_the-number-of-breweries-in-the-united-states_correlates-with_solar-power-generated-in-peru_mobile.svg)\
+**View details about correlation \#3,384**](spurious/correlation/3384_the-number-of-breweries-in-the-united-states_correlates-with_solar-power-generated-in-peru)\
 \
 
 ^(Show scatterplot)
 
-![](spurious/correlation/scatterplot/1828_number-of-public-school-students-in-9th-grade_correlates-with_bank-of-americas-stock-price_scatterplot.png)
+![](spurious/correlation/scatterplot/3384_the-number-of-breweries-in-the-united-states_correlates-with_solar-power-generated-in-peru_scatterplot.png)
 
 \
 \
 
 *What else correlates?*\
-[Number of public school students in 9th grade](spurious/variable?id=1307) · [all education](spurious/view-all-variables/education)\
-[Bank of America's stock price (BAC)](spurious/variable?id=1570) · [all stocks](spurious/view-all-variables/stocks)\
+[The number of Breweries in the United States](spurious/variable?id=34) · [all food](spurious/view-all-variables/farmingfood)\
+[Solar power generated in Peru](spurious/variable?id=23896) · [all energy](spurious/view-all-variables/energy)\
 
 ------------------------------------------------------------------------
 
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Searches for 'never gonna give you up' and the second variable is Google searches for 'who is elon musk'. The chart goes from 2006 to 2023, and the two variables track closely in value over that time.](spurious/correlation/image/4986_popularity-of-the-never-gonna-give-you-up-meme_correlates-with_google-searches-for-who-is-elon-musk.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Searches for 'never gonna give you up' and the second variable is Google searches for 'who is elon musk'.  The chart goes from 2006 to 2023, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/4986_popularity-of-the-never-gonna-give-you-up-meme_correlates-with_google-searches-for-who-is-elon-musk_mobile.svg)\
-**View details about correlation \#4,986**](spurious/correlation/4986_popularity-of-the-never-gonna-give-you-up-meme_correlates-with_google-searches-for-who-is-elon-musk)\
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Bachelor's degrees awarded in Library science and the second variable is Ticket sales for Oakland Athletics games. The chart goes from 2012 to 2019, and the two variables track closely in value over that time.](spurious/correlation/image/2724_bachelors-degrees-awarded-in-library-science_correlates-with_ticket-sales-for-oakland-athletics-games.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Bachelor's degrees awarded in Library science and the second variable is Ticket sales for Oakland Athletics games.  The chart goes from 2012 to 2019, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/2724_bachelors-degrees-awarded-in-library-science_correlates-with_ticket-sales-for-oakland-athletics-games_mobile.svg)\
+**View details about correlation \#2,724**](spurious/correlation/2724_bachelors-degrees-awarded-in-library-science_correlates-with_ticket-sales-for-oakland-athletics-games)\
 \
 
 ^(Show scatterplot)
 
-![](spurious/correlation/scatterplot/4986_popularity-of-the-never-gonna-give-you-up-meme_correlates-with_google-searches-for-who-is-elon-musk_scatterplot.png)
+![](spurious/correlation/scatterplot/2724_bachelors-degrees-awarded-in-library-science_correlates-with_ticket-sales-for-oakland-athletics-games_scatterplot.png)
 
 \
 \
 
 *What else correlates?*\
-[Searches for 'never gonna give you up'](spurious/variable?id=25160) · [all memes](spurious/view-all-variables/memes)\
-[Google searches for 'who is elon musk'](spurious/variable?id=1487) · [all google searches](spurious/view-all-variables/google)\
+[Bachelor's degrees awarded in Library science](spurious/variable?id=1282) · [all education](spurious/view-all-variables/education)\
+[Ticket sales for Oakland Athletics games](spurious/variable?id=4417) · [all sports](spurious/view-all-variables/sports)\
 
 ------------------------------------------------------------------------
 
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The number of physicists in California and the second variable is Michael Schumacher's Formula One Ranking. The chart goes from 2003 to 2012, and the two variables track closely in value over that time.](spurious/correlation/image/3705_the-number-of-physicists-in-california_correlates-with_michael-schumachers-formula-one-ranking.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The number of physicists in California and the second variable is Michael Schumacher's Formula One Ranking.  The chart goes from 2003 to 2012, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/3705_the-number-of-physicists-in-california_correlates-with_michael-schumachers-formula-one-ranking_mobile.svg)\
-**View details about correlation \#3,705**](spurious/correlation/3705_the-number-of-physicists-in-california_correlates-with_michael-schumachers-formula-one-ranking)\
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Dried manure used for fertilizer in the US and the second variable is Customer satisfaction with Target. The chart goes from 2004 to 2015, and the two variables track closely in value over that time.](spurious/correlation/image/1622_dried-manure-used-for-fertilizer-in-the-us_correlates-with_customer-satisfaction-with-target.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Dried manure used for fertilizer in the US and the second variable is Customer satisfaction with Target.  The chart goes from 2004 to 2015, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1622_dried-manure-used-for-fertilizer-in-the-us_correlates-with_customer-satisfaction-with-target_mobile.svg)\
+**View details about correlation \#1,622**](spurious/correlation/1622_dried-manure-used-for-fertilizer-in-the-us_correlates-with_customer-satisfaction-with-target)\
 \
 
 ^(Show scatterplot)
 
-![](spurious/correlation/scatterplot/3705_the-number-of-physicists-in-california_correlates-with_michael-schumachers-formula-one-ranking_scatterplot.png)
+![](spurious/correlation/scatterplot/1622_dried-manure-used-for-fertilizer-in-the-us_correlates-with_customer-satisfaction-with-target_scatterplot.png)
 
 \
 \
 
 *What else correlates?*\
-[The number of physicists in California](spurious/variable?id=5367) · [all cccupations](spurious/view-all-variables/occupations)\
-[Michael Schumacher's Formula One Ranking](spurious/variable?id=104) · [all weird & wacky](spurious/view-all-variables/weirdwacky)\
+[Dried manure used for fertilizer in the US](spurious/variable?id=1198) · [all weird & wacky](spurious/view-all-variables/weirdwacky)\
+[Customer satisfaction with Target](spurious/variable?id=19844) · [all weird & wacky](spurious/view-all-variables/weirdwacky)\
 
 ------------------------------------------------------------------------
 
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The distance between Uranus and the moon and the second variable is Electricity generation in Japan. The chart goes from 1980 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/2730_the-distance-between-uranus-and-the-moon_correlates-with_electricity-generation-in-japan.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The distance between Uranus and the moon and the second variable is Electricity generation in Japan.  The chart goes from 1980 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/2730_the-distance-between-uranus-and-the-moon_correlates-with_electricity-generation-in-japan_mobile.svg)\
-**View details about correlation \#2,730**](spurious/correlation/2730_the-distance-between-uranus-and-the-moon_correlates-with_electricity-generation-in-japan)\
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The number of transit police in Texas and the second variable is Google searches for 'how to do magic'. The chart goes from 2004 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/2285_the-number-of-transit-police-in-texas_correlates-with_google-searches-for-how-to-do-magic.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The number of transit police in Texas and the second variable is Google searches for 'how to do magic'.  The chart goes from 2004 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/2285_the-number-of-transit-police-in-texas_correlates-with_google-searches-for-how-to-do-magic_mobile.svg)\
+**View details about correlation \#2,285**](spurious/correlation/2285_the-number-of-transit-police-in-texas_correlates-with_google-searches-for-how-to-do-magic)\
 \
 
 ^(Show scatterplot)
 
-![](spurious/correlation/scatterplot/2730_the-distance-between-uranus-and-the-moon_correlates-with_electricity-generation-in-japan_scatterplot.png)
+![](spurious/correlation/scatterplot/2285_the-number-of-transit-police-in-texas_correlates-with_google-searches-for-how-to-do-magic_scatterplot.png)
 
 \
 \
 
 *What else correlates?*\
-[The distance between Uranus and the moon](spurious/variable?id=1963) · [all planets](spurious/view-all-variables/planets)\
-[Electricity generation in Japan](spurious/variable?id=23755) · [all energy](spurious/view-all-variables/energy)\
+[The number of transit police in Texas](spurious/variable?id=14803) · [all cccupations](spurious/view-all-variables/occupations)\
+[Google searches for 'how to do magic'](spurious/variable?id=1523) · [all google searches](spurious/view-all-variables/google)\
 
 ------------------------------------------------------------------------
 
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Associates degrees awarded in History and the second variable is Centene's stock price (CNC). The chart goes from 2011 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/2709_associates-degrees-awarded-in-history_correlates-with_centenes-stock-price.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Associates degrees awarded in History and the second variable is Centene's stock price (CNC).  The chart goes from 2011 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/2709_associates-degrees-awarded-in-history_correlates-with_centenes-stock-price_mobile.svg)\
-**View details about correlation \#2,709**](spurious/correlation/2709_associates-degrees-awarded-in-history_correlates-with_centenes-stock-price)\
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is GMO use in corn grown in Michigan and the second variable is Enbridge's stock price (ENB). The chart goes from 2002 to 2023, and the two variables track closely in value over that time.](spurious/correlation/image/2697_gmo-use-in-corn-grown-in-michigan_correlates-with_enbridges-stock-price.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is GMO use in corn grown in Michigan and the second variable is Enbridge's stock price (ENB).  The chart goes from 2002 to 2023, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/2697_gmo-use-in-corn-grown-in-michigan_correlates-with_enbridges-stock-price_mobile.svg)\
+**View details about correlation \#2,697**](spurious/correlation/2697_gmo-use-in-corn-grown-in-michigan_correlates-with_enbridges-stock-price)\
 \
 
 ^(Show scatterplot)
 
-![](spurious/correlation/scatterplot/2709_associates-degrees-awarded-in-history_correlates-with_centenes-stock-price_scatterplot.png)
+![](spurious/correlation/scatterplot/2697_gmo-use-in-corn-grown-in-michigan_correlates-with_enbridges-stock-price_scatterplot.png)
 
 \
 \
 
 *What else correlates?*\
-[Associates degrees awarded in History](spurious/variable?id=1257) · [all education](spurious/view-all-variables/education)\
-[Centene's stock price (CNC)](spurious/variable?id=1802) · [all stocks](spurious/view-all-variables/stocks)\
+[GMO use in corn grown in Michigan](spurious/variable?id=743) · [all food](spurious/view-all-variables/farmingfood)\
+[Enbridge's stock price (ENB)](spurious/variable?id=1668) · [all stocks](spurious/view-all-variables/stocks)\
 
 ------------------------------------------------------------------------
 
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The number of mobile heavy equipment mechanics in Maine and the second variable is Customer satisfaction with Verizon. The chart goes from 2004 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/1149_the-number-of-mobile-heavy-equipment-mechanics-in-maine_correlates-with_customer-satisfaction-with-verizon.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The number of mobile heavy equipment mechanics in Maine and the second variable is Customer satisfaction with Verizon.  The chart goes from 2004 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1149_the-number-of-mobile-heavy-equipment-mechanics-in-maine_correlates-with_customer-satisfaction-with-verizon_mobile.svg)\
-**View details about correlation \#1,149**](spurious/correlation/1149_the-number-of-mobile-heavy-equipment-mechanics-in-maine_correlates-with_customer-satisfaction-with-verizon)\
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Master's degrees awarded in journalism and the second variable is Solar power generated in Malta. The chart goes from 2012 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/1874_masters-degrees-awarded-in-communication-journalism-and-related-programs_correlates-with_solar-power-generated-in-malta.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Master's degrees awarded in journalism and the second variable is Solar power generated in Malta.  The chart goes from 2012 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1874_masters-degrees-awarded-in-communication-journalism-and-related-programs_correlates-with_solar-power-generated-in-malta_mobile.svg)\
+**View details about correlation \#1,874**](spurious/correlation/1874_masters-degrees-awarded-in-communication-journalism-and-related-programs_correlates-with_solar-power-generated-in-malta)\
 \
 
 ^(Show scatterplot)
 
-![](spurious/correlation/scatterplot/1149_the-number-of-mobile-heavy-equipment-mechanics-in-maine_correlates-with_customer-satisfaction-with-verizon_scatterplot.png)
+![](spurious/correlation/scatterplot/1874_masters-degrees-awarded-in-communication-journalism-and-related-programs_correlates-with_solar-power-generated-in-malta_scatterplot.png)
 
 \
 \
 
 *What else correlates?*\
-[The number of mobile heavy equipment mechanics in Maine](spurious/variable?id=9018) · [all cccupations](spurious/view-all-variables/occupations)\
-[Customer satisfaction with Verizon](spurious/variable?id=19882) · [all weird & wacky](spurious/view-all-variables/weirdwacky)\
+[Master's degrees awarded in journalism](spurious/variable?id=1316) · [all education](spurious/view-all-variables/education)\
+[Solar power generated in Malta](spurious/variable?id=23815) · [all energy](spurious/view-all-variables/energy)\
 
 ------------------------------------------------------------------------
 
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The number of movies Will Smith appeared in and the second variable is Electricity generation in Kosovo. The chart goes from 2008 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/5860_the-number-of-movies-will-smith-appeared-in_correlates-with_electricity-generation-in-kosovo.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The number of movies Will Smith appeared in and the second variable is Electricity generation in Kosovo.  The chart goes from 2008 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/5860_the-number-of-movies-will-smith-appeared-in_correlates-with_electricity-generation-in-kosovo_mobile.svg)\
-**View details about correlation \#5,860**](spurious/correlation/5860_the-number-of-movies-will-smith-appeared-in_correlates-with_electricity-generation-in-kosovo)\
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the first name Sarah and the second variable is Remaining Forest Cover in the Brazilian Amazon. The chart goes from 1987 to 2022, and the two variables track closely in value over that time.](spurious/correlation/image/4241_popularity-of-the-first-name-sarah_correlates-with_remaining-forest-cover-in-the-brazilian-amazon.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the first name Sarah and the second variable is Remaining Forest Cover in the Brazilian Amazon.  The chart goes from 1987 to 2022, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/4241_popularity-of-the-first-name-sarah_correlates-with_remaining-forest-cover-in-the-brazilian-amazon_mobile.svg)\
+**View details about correlation \#4,241**](spurious/correlation/4241_popularity-of-the-first-name-sarah_correlates-with_remaining-forest-cover-in-the-brazilian-amazon)\
 \
 
 ^(Show scatterplot)
 
-![](spurious/correlation/scatterplot/5860_the-number-of-movies-will-smith-appeared-in_correlates-with_electricity-generation-in-kosovo_scatterplot.png)
+![](spurious/correlation/scatterplot/4241_popularity-of-the-first-name-sarah_correlates-with_remaining-forest-cover-in-the-brazilian-amazon_scatterplot.png)
 
 \
 \
 
 *What else correlates?*\
-[The number of movies Will Smith appeared in](spurious/variable?id=26625) · [all films & actors](spurious/view-all-variables/films)\
-[Electricity generation in Kosovo](spurious/variable?id=23773) · [all energy](spurious/view-all-variables/energy)\
+[Popularity of the first name Sarah](spurious/variable?id=1994) · [all first names](spurious/view-all-variables/babynames)\
+[Remaining Forest Cover in the Brazilian Amazon](spurious/variable?id=372) · [all weird & wacky](spurious/view-all-variables/weirdwacky)\
 
 ------------------------------------------------------------------------
 
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is UFO sightings in Utah and the second variable is Patents granted in the US. The chart goes from 1975 to 2020, and the two variables track closely in value over that time.](spurious/correlation/image/1116_ufo-sightings-in-utah_correlates-with_patents-granted-in-the-us.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is UFO sightings in Utah and the second variable is Patents granted in the US.  The chart goes from 1975 to 2020, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1116_ufo-sightings-in-utah_correlates-with_patents-granted-in-the-us_mobile.svg)\
-**View details about correlation \#1,116**](spurious/correlation/1116_ufo-sightings-in-utah_correlates-with_patents-granted-in-the-us)\
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Google searches for 'matt levine' and the second variable is The number of college administrators in Ohio. The chart goes from 2004 to 2022, and the two variables track closely in value over that time.](spurious/correlation/image/5895_google-searches-for-matt-levine_correlates-with_the-number-of-college-administrators-in-ohio.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Google searches for 'matt levine' and the second variable is The number of college administrators in Ohio.  The chart goes from 2004 to 2022, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/5895_google-searches-for-matt-levine_correlates-with_the-number-of-college-administrators-in-ohio_mobile.svg)\
+**View details about correlation \#5,895**](spurious/correlation/5895_google-searches-for-matt-levine_correlates-with_the-number-of-college-administrators-in-ohio)\
 \
 
 ^(Show scatterplot)
 
-![](spurious/correlation/scatterplot/1116_ufo-sightings-in-utah_correlates-with_patents-granted-in-the-us_scatterplot.png)
+![](spurious/correlation/scatterplot/5895_google-searches-for-matt-levine_correlates-with_the-number-of-college-administrators-in-ohio_scatterplot.png)
 
 \
 \
 
 *What else correlates?*\
-[UFO sightings in Utah](spurious/variable?id=1176) · [all random state specific](spurious/view-all-variables/statespecific)\
-[Patents granted in the US](spurious/variable?id=848) · [all weird & wacky](spurious/view-all-variables/weirdwacky)\
+[Google searches for 'matt levine'](spurious/variable?id=1488) · [all google searches](spurious/view-all-variables/google)\
+[The number of college administrators in Ohio](spurious/variable?id=12734) · [all cccupations](spurious/view-all-variables/occupations)\
 
 ------------------------------------------------------------------------
 
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the first name Lane and the second variable is The number of merchandise displayers and window trimmers in Alaska. The chart goes from 2003 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/3239_popularity-of-the-first-name-lane_correlates-with_the-number-of-merchandise-displayers-and-window-trimmers-in-alaska.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the first name Lane and the second variable is The number of merchandise displayers and window trimmers in Alaska.  The chart goes from 2003 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/3239_popularity-of-the-first-name-lane_correlates-with_the-number-of-merchandise-displayers-and-window-trimmers-in-alaska_mobile.svg)\
-**View details about correlation \#3,239**](spurious/correlation/3239_popularity-of-the-first-name-lane_correlates-with_the-number-of-merchandise-displayers-and-window-trimmers-in-alaska)\
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Difference in score of Steinfeld Cup Final teams and the second variable is Tickets Sold for the Top Movie of the Year. The chart goes from 2001 to 2013, and the two variables track closely in value over that time.](spurious/correlation/image/2401_difference-in-score-of-steinfeld-cup-final-teams_correlates-with_tickets-sold-for-the-top-movie-of-the-year.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Difference in score of Steinfeld Cup Final teams and the second variable is Tickets Sold for the Top Movie of the Year.  The chart goes from 2001 to 2013, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/2401_difference-in-score-of-steinfeld-cup-final-teams_correlates-with_tickets-sold-for-the-top-movie-of-the-year_mobile.svg)\
+**View details about correlation \#2,401**](spurious/correlation/2401_difference-in-score-of-steinfeld-cup-final-teams_correlates-with_tickets-sold-for-the-top-movie-of-the-year)\
 \
 
 ^(Show scatterplot)
 
-![](spurious/correlation/scatterplot/3239_popularity-of-the-first-name-lane_correlates-with_the-number-of-merchandise-displayers-and-window-trimmers-in-alaska_scatterplot.png)
+![](spurious/correlation/scatterplot/2401_difference-in-score-of-steinfeld-cup-final-teams_correlates-with_tickets-sold-for-the-top-movie-of-the-year_scatterplot.png)
 
 \
 \
 
 *What else correlates?*\
-[Popularity of the first name Lane](spurious/variable?id=2478) · [all first names](spurious/view-all-variables/babynames)\
-[The number of merchandise displayers and window trimmers in Alaska](spurious/variable?id=4735) · [all cccupations](spurious/view-all-variables/occupations)\
+[Difference in score of Steinfeld Cup Final teams](spurious/variable?id=376) · [all sports](spurious/view-all-variables/sports)\
+[Tickets Sold for the Top Movie of the Year](spurious/variable?id=543) · [all films & actors](spurious/view-all-variables/films)\
 
 ------------------------------------------------------------------------
 
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the 'balloon boy' meme and the second variable is Wind power generated in Fiji. The chart goes from 2009 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/5125_popularity-of-the-balloon-boy-meme_correlates-with_wind-power-generated-in-fiji.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the 'balloon boy' meme and the second variable is Wind power generated in Fiji.  The chart goes from 2009 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/5125_popularity-of-the-balloon-boy-meme_correlates-with_wind-power-generated-in-fiji_mobile.svg)\
-**View details about correlation \#5,125**](spurious/correlation/5125_popularity-of-the-balloon-boy-meme_correlates-with_wind-power-generated-in-fiji)\
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Butter consumption and the second variable is Biomass power generated in Lithuania. The chart goes from 2001 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/1709_butter-consumption_correlates-with_biomass-power-generated-in-lithuania.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Butter consumption and the second variable is Biomass power generated in Lithuania.  The chart goes from 2001 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1709_butter-consumption_correlates-with_biomass-power-generated-in-lithuania_mobile.svg)\
+**View details about correlation \#1,709**](spurious/correlation/1709_butter-consumption_correlates-with_biomass-power-generated-in-lithuania)\
 \
 
 ^(Show scatterplot)
 
-![](spurious/correlation/scatterplot/5125_popularity-of-the-balloon-boy-meme_correlates-with_wind-power-generated-in-fiji_scatterplot.png)
+![](spurious/correlation/scatterplot/1709_butter-consumption_correlates-with_biomass-power-generated-in-lithuania_scatterplot.png)
 
 \
 \
 
 *What else correlates?*\
-[Popularity of the 'balloon boy' meme](spurious/variable?id=25110) · [all memes](spurious/view-all-variables/memes)\
-[Wind power generated in Fiji](spurious/variable?id=23667) · [all energy](spurious/view-all-variables/energy)\
+[Butter consumption](spurious/variable?id=557) · [all food](spurious/view-all-variables/farmingfood)\
+[Biomass power generated in Lithuania](spurious/variable?id=23796) · [all energy](spurious/view-all-variables/energy)\
 
 ------------------------------------------------------------------------
 
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The distance between Uranus and the Sun and the second variable is Global count of operating nuclear power plants. The chart goes from 1975 to 2022, and the two variables track closely in value over that time.](spurious/correlation/image/1185_the-distance-between-uranus-and-the-sun_correlates-with_global-count-of-operating-nuclear-power-plants.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is The distance between Uranus and the Sun and the second variable is Global count of operating nuclear power plants.  The chart goes from 1975 to 2022, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1185_the-distance-between-uranus-and-the-sun_correlates-with_global-count-of-operating-nuclear-power-plants_mobile.svg)\
-**View details about correlation \#1,185**](spurious/correlation/1185_the-distance-between-uranus-and-the-sun_correlates-with_global-count-of-operating-nuclear-power-plants)\
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the first name Tristen and the second variable is Asthma attacks in American children. The chart goes from 1997 to 2019, and the two variables track closely in value over that time.](spurious/correlation/image/2596_popularity-of-the-first-name-tristen_correlates-with_asthma-attacks-in-american-children.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the first name Tristen and the second variable is Asthma attacks in American children.  The chart goes from 1997 to 2019, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/2596_popularity-of-the-first-name-tristen_correlates-with_asthma-attacks-in-american-children_mobile.svg)\
+**View details about correlation \#2,596**](spurious/correlation/2596_popularity-of-the-first-name-tristen_correlates-with_asthma-attacks-in-american-children)\
 \
 
 ^(Show scatterplot)
 
-![](spurious/correlation/scatterplot/1185_the-distance-between-uranus-and-the-sun_correlates-with_global-count-of-operating-nuclear-power-plants_scatterplot.png)
+![](spurious/correlation/scatterplot/2596_popularity-of-the-first-name-tristen_correlates-with_asthma-attacks-in-american-children_scatterplot.png)
 
 \
 \
 
 *What else correlates?*\
-[The distance between Uranus and the Sun](spurious/variable?id=1934) · [all planets](spurious/view-all-variables/planets)\
-[Global count of operating nuclear power plants](spurious/variable?id=309) · [all weird & wacky](spurious/view-all-variables/weirdwacky)\
+[Popularity of the first name Tristen](spurious/variable?id=2388) · [all first names](spurious/view-all-variables/babynames)\
+[Asthma attacks in American children](spurious/variable?id=1141) · [all weird & wacky](spurious/view-all-variables/weirdwacky)\
 
 ------------------------------------------------------------------------
 
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the first name Stevie and the second variable is Lululemon's stock price (LULU). The chart goes from 2008 to 2022, and the two variables track closely in value over that time.](spurious/correlation/image/2277_popularity-of-the-first-name-stevie_correlates-with_lululemons-stock-price.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the first name Stevie and the second variable is Lululemon's stock price (LULU).  The chart goes from 2008 to 2022, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/2277_popularity-of-the-first-name-stevie_correlates-with_lululemons-stock-price_mobile.svg)\
-**View details about correlation \#2,277**](spurious/correlation/2277_popularity-of-the-first-name-stevie_correlates-with_lululemons-stock-price)\
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is How 'hip and with it' LockPickingLawyer YouTube video titles are and the second variable is Popularity of the 'y u no' meme. The chart goes from 2015 to 2023, and the two variables track closely in value over that time.](spurious/correlation/image/5142_how-hip-and-with-it-lockpickinglawyer-youtube-video-titles-are_correlates-with_popularity-of-the-y-u-no-meme.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is How 'hip and with it' LockPickingLawyer YouTube video titles are and the second variable is Popularity of the 'y u no' meme.  The chart goes from 2015 to 2023, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/5142_how-hip-and-with-it-lockpickinglawyer-youtube-video-titles-are_correlates-with_popularity-of-the-y-u-no-meme_mobile.svg)\
+**View details about correlation \#5,142**](spurious/correlation/5142_how-hip-and-with-it-lockpickinglawyer-youtube-video-titles-are_correlates-with_popularity-of-the-y-u-no-meme)\
 \
 
 ^(Show scatterplot)
 
-![](spurious/correlation/scatterplot/2277_popularity-of-the-first-name-stevie_correlates-with_lululemons-stock-price_scatterplot.png)
+![](spurious/correlation/scatterplot/5142_how-hip-and-with-it-lockpickinglawyer-youtube-video-titles-are_correlates-with_popularity-of-the-y-u-no-meme_scatterplot.png)
 
 \
 \
 
 *What else correlates?*\
-[Popularity of the first name Stevie](spurious/variable?id=3190) · [all first names](spurious/view-all-variables/babynames)\
-[Lululemon's stock price (LULU)](spurious/variable?id=1735) · [all stocks](spurious/view-all-variables/stocks)\
+[How 'hip and with it' LockPickingLawyer YouTube video titles are](spurious/variable?id=25761) · [all YouTube](spurious/view-all-variables/youtube)\
+[Popularity of the 'y u no' meme](spurious/variable?id=25164) · [all memes](spurious/view-all-variables/memes)\
 
 ------------------------------------------------------------------------
 
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Associates degrees awarded in Engineering technologies and the second variable is Google searches for 'daylight savings time'. The chart goes from 2011 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/3133_associates-degrees-awarded-in-engineering-technologies_correlates-with_google-searches-for-daylight-savings-time.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Associates degrees awarded in Engineering technologies and the second variable is Google searches for 'daylight savings time'.  The chart goes from 2011 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/3133_associates-degrees-awarded-in-engineering-technologies_correlates-with_google-searches-for-daylight-savings-time_mobile.svg)\
-**View details about correlation \#3,133**](spurious/correlation/3133_associates-degrees-awarded-in-engineering-technologies_correlates-with_google-searches-for-daylight-savings-time)\
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Associates degrees awarded in Legal professions and studies and the second variable is Cenovus Energy's stock price (CVE). The chart goes from 2011 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/2906_associates-degrees-awarded-in-legal-professions-and-studies_correlates-with_cenovus-energys-stock-price.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Associates degrees awarded in Legal professions and studies and the second variable is Cenovus Energy's stock price (CVE).  The chart goes from 2011 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/2906_associates-degrees-awarded-in-legal-professions-and-studies_correlates-with_cenovus-energys-stock-price_mobile.svg)\
+**View details about correlation \#2,906**](spurious/correlation/2906_associates-degrees-awarded-in-legal-professions-and-studies_correlates-with_cenovus-energys-stock-price)\
 \
 
 ^(Show scatterplot)
 
-![](spurious/correlation/scatterplot/3133_associates-degrees-awarded-in-engineering-technologies_correlates-with_google-searches-for-daylight-savings-time_scatterplot.png)
+![](spurious/correlation/scatterplot/2906_associates-degrees-awarded-in-legal-professions-and-studies_correlates-with_cenovus-energys-stock-price_scatterplot.png)
 
 \
 \
 
 *What else correlates?*\
-[Associates degrees awarded in Engineering technologies](spurious/variable?id=1225) · [all education](spurious/view-all-variables/education)\
-[Google searches for 'daylight savings time'](spurious/variable?id=1352) · [all google searches](spurious/view-all-variables/google)\
+[Associates degrees awarded in Legal professions and studies](spurious/variable?id=1241) · [all education](spurious/view-all-variables/education)\
+[Cenovus Energy's stock price (CVE)](spurious/variable?id=1781) · [all stocks](spurious/view-all-variables/stocks)\
 
 ------------------------------------------------------------------------
 
-[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the first name Camden and the second variable is UFO sightings in Florida. The chart goes from 1975 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/3011_popularity-of-the-first-name-camden_correlates-with_ufo-sightings-in-florida.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the first name Camden and the second variable is UFO sightings in Florida.  The chart goes from 1975 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/3011_popularity-of-the-first-name-camden_correlates-with_ufo-sightings-in-florida_mobile.svg)\
-**View details about correlation \#3,011**](spurious/correlation/3011_popularity-of-the-first-name-camden_correlates-with_ufo-sightings-in-florida)\
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the first name Franklin and the second variable is Season rating of Two and a Half Men. The chart goes from 2004 to 2015, and the two variables track closely in value over that time.](spurious/correlation/image/1403_popularity-of-the-first-name-franklin_correlates-with_season-rating-of-two-and-a-half-men.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the first name Franklin and the second variable is Season rating of Two and a Half Men.  The chart goes from 2004 to 2015, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1403_popularity-of-the-first-name-franklin_correlates-with_season-rating-of-two-and-a-half-men_mobile.svg)\
+**View details about correlation \#1,403**](spurious/correlation/1403_popularity-of-the-first-name-franklin_correlates-with_season-rating-of-two-and-a-half-men)\
 \
 
 ^(Show scatterplot)
 
-![](spurious/correlation/scatterplot/3011_popularity-of-the-first-name-camden_correlates-with_ufo-sightings-in-florida_scatterplot.png)
+![](spurious/correlation/scatterplot/1403_popularity-of-the-first-name-franklin_correlates-with_season-rating-of-two-and-a-half-men_scatterplot.png)
 
 \
 \
 
 *What else correlates?*\
-[Popularity of the first name Camden](spurious/variable?id=3330) · [all first names](spurious/view-all-variables/babynames)\
-[UFO sightings in Florida](spurious/variable?id=1149) · [all random state specific](spurious/view-all-variables/statespecific)\
+[Popularity of the first name Franklin](spurious/variable?id=2701) · [all first names](spurious/view-all-variables/babynames)\
+[Season rating of "Two and a Half Men"](spurious/variable?id=147) · [all films & actors](spurious/view-all-variables/films)\
+
+------------------------------------------------------------------------
+
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Annual US household spending on laundry and cleaning supplies and the second variable is Google searches for 'flights to Antarctica'. The chart goes from 2004 to 2022, and the two variables track closely in value over that time.](spurious/correlation/image/1045_annual-us-household-spending-on-laundry-and-cleaning-supplies_correlates-with_google-searches-for-flights-to-antarctica.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Annual US household spending on laundry and cleaning supplies and the second variable is Google searches for 'flights to Antarctica'.  The chart goes from 2004 to 2022, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1045_annual-us-household-spending-on-laundry-and-cleaning-supplies_correlates-with_google-searches-for-flights-to-antarctica_mobile.svg)\
+**View details about correlation \#1,045**](spurious/correlation/1045_annual-us-household-spending-on-laundry-and-cleaning-supplies_correlates-with_google-searches-for-flights-to-antarctica)\
+\
+
+^(Show scatterplot)
+
+![](spurious/correlation/scatterplot/1045_annual-us-household-spending-on-laundry-and-cleaning-supplies_correlates-with_google-searches-for-flights-to-antarctica_scatterplot.png)
+
+\
+\
+
+*What else correlates?*\
+[Annual US household spending on laundry and cleaning supplies](spurious/variable?id=19913) · [all weird & wacky](spurious/view-all-variables/weirdwacky)\
+[Google searches for 'flights to Antarctica'](spurious/variable?id=1373) · [all google searches](spurious/view-all-variables/google)\
+
+------------------------------------------------------------------------
+
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the 'surprised pikachu' meme and the second variable is The number of middle school teachers in Puerto Rico. The chart goes from 2010 to 2022, and the two variables track closely in value over that time.](spurious/correlation/image/5137_popularity-of-the-surprised-pikachu-meme_correlates-with_the-number-of-middle-school-teachers-in-puerto-rico.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the 'surprised pikachu' meme and the second variable is The number of middle school teachers in Puerto Rico.  The chart goes from 2010 to 2022, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/5137_popularity-of-the-surprised-pikachu-meme_correlates-with_the-number-of-middle-school-teachers-in-puerto-rico_mobile.svg)\
+**View details about correlation \#5,137**](spurious/correlation/5137_popularity-of-the-surprised-pikachu-meme_correlates-with_the-number-of-middle-school-teachers-in-puerto-rico)\
+\
+
+^(Show scatterplot)
+
+![](spurious/correlation/scatterplot/5137_popularity-of-the-surprised-pikachu-meme_correlates-with_the-number-of-middle-school-teachers-in-puerto-rico_scatterplot.png)
+
+\
+\
+
+*What else correlates?*\
+[Popularity of the 'surprised pikachu' meme](spurious/variable?id=25149) · [all memes](spurious/view-all-variables/memes)\
+[The number of middle school teachers in Puerto Rico](spurious/variable?id=18813) · [all cccupations](spurious/view-all-variables/occupations)\
+
+------------------------------------------------------------------------
+
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the first name Alanna and the second variable is The distance between Uranus and Venus. The chart goes from 1975 to 2022, and the two variables track closely in value over that time.](spurious/correlation/image/1528_popularity-of-the-first-name-alanna_correlates-with_the-distance-between-uranus-and-venus.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Popularity of the first name Alanna and the second variable is The distance between Uranus and Venus.  The chart goes from 1975 to 2022, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/1528_popularity-of-the-first-name-alanna_correlates-with_the-distance-between-uranus-and-venus_mobile.svg)\
+**View details about correlation \#1,528**](spurious/correlation/1528_popularity-of-the-first-name-alanna_correlates-with_the-distance-between-uranus-and-venus)\
+\
+
+^(Show scatterplot)
+
+![](spurious/correlation/scatterplot/1528_popularity-of-the-first-name-alanna_correlates-with_the-distance-between-uranus-and-venus_scatterplot.png)
+
+\
+\
+
+*What else correlates?*\
+[Popularity of the first name Alanna](spurious/variable?id=2845) · [all first names](spurious/view-all-variables/babynames)\
+[The distance between Uranus and Venus](spurious/variable?id=1972) · [all planets](spurious/view-all-variables/planets)\
+
+------------------------------------------------------------------------
+
+[![A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Google searches for 'smol' and the second variable is Customer satisfaction with American Airlines. The chart goes from 2004 to 2021, and the two variables track closely in value over that time.](spurious/correlation/image/5945_google-searches-for-smol_correlates-with_customer-satisfaction-with-american-airlines.svg "A linear line chart with years as the X-axis and two variables on the Y-axis. The first variable is Google searches for 'smol' and the second variable is Customer satisfaction with American Airlines.  The chart goes from 2004 to 2021, and the two variables track closely in value over that time.") ![Small Image](spurious/correlation/image/5945_google-searches-for-smol_correlates-with_customer-satisfaction-with-american-airlines_mobile.svg)\
+**View details about correlation \#5,945**](spurious/correlation/5945_google-searches-for-smol_correlates-with_customer-satisfaction-with-american-airlines)\
+\
+
+^(Show scatterplot)
+
+![](spurious/correlation/scatterplot/5945_google-searches-for-smol_correlates-with_customer-satisfaction-with-american-airlines_scatterplot.png)
+
+\
+\
+
+*What else correlates?*\
+[Google searches for 'smol'](spurious/variable?id=1370) · [all google searches](spurious/view-all-variables/google)\
+[Customer satisfaction with American Airlines](spurious/variable?id=19834) · [all weird & wacky](spurious/view-all-variables/weirdwacky)\
 
 ------------------------------------------------------------------------
 
@@ -479,11 +547,11 @@ CC BY 4.0](http://creativecommons.org/licenses/by/4.0/)
 
 Linearity can be defined in two senses:
 
-1.  **Linearity in the variables** — E(y \mid x) is a linear function of x. This is the restrictive sense: only straight lines.
+1.  **Linearity in the variables** — $E(y \mid x)$ is a linear function of $x$. This is the restrictive sense: only straight lines.
 
-2.  **Linearity in the parameters** — E(y \mid x) is linear in the \beta’s.
+2.  **Linearity in the parameters** — $E(y \mid x)$ is linear in the $\beta$’s.
 
-The three models above are all **nonlinear in x** but **linear in \beta**. A linear regression model can produce a straight line, a parabola, an exponential curve, or a piecewise function, depending on the **functional form** chosen.
+The three models above are all **nonlinear in** $x$ but **linear in** $\beta$. A linear regression model can produce a straight line, a parabola, an exponential curve, or a piecewise function, depending on the **functional form** chosen.
 
 # 3 Regression in R: `us_change`
 
@@ -523,7 +591,7 @@ us_change |>
 
 We start with the simplest possible model: **Consumption as a function of Income only**.
 
-y\_{t, \text{Consumption}} = \beta_0 + \beta_1 x\_{t, \text{Income}} + \varepsilon_t
+$$y_{t, \text{Consumption}} = \beta_0 + \beta_1 x_{t, \text{Income}} + \varepsilon_t$$
 
 In `fable`, time series linear models use `TSLM()`:
 
@@ -564,11 +632,11 @@ report(us_change_fit_simple)                           #<3>
 
 The output has two main parts:
 
-**Individual significance** — each coefficient has a t-test: H_0: \beta_i = 0 \qquad H_1: \beta_i \neq 0 The stars (`*`, `**`, `***`) indicate p \< 0.05, p \< 0.01, p \< 0.001. They rank how cleanly a coefficient separates from zero, not how large it is — see [Statistical Significance](../../../../docs/more/significance.llms.md).
+**Individual significance** — each coefficient has a $t$-test: $$H_0: \beta_i = 0 \qquad H_1: \beta_i \neq 0$$ The stars (`*`, `**`, `***`) indicate $p < 0.05$, $p < 0.01$, $p < 0.001$. They rank how cleanly a coefficient separates from zero, not how large it is — see [Statistical Significance](../../../../docs/more/significance.llms.md).
 
-**Joint significance** — the F-test asks whether *any* predictor is useful: H_0: \beta_1 = \beta_2 = \cdots = \beta_k = 0 A significant F-test does not mean all individual coefficients are significant.
+**Joint significance** — the F-test asks whether *any* predictor is useful: $$H_0: \beta_1 = \beta_2 = \cdots = \beta_k = 0$$ A significant F-test does not mean all individual coefficients are significant.
 
-The estimated model is: \hat{y}\_{t, \text{Consumption}} = 0.545 + 0.272 \cdot x\_{t, \text{Income}}
+The estimated model is: $$\hat{y}_{t, \text{Consumption}} = 0.545 + 0.272 \cdot x_{t, \text{Income}}$$
 
 For every 1 percentage point increase in income growth, consumption growth increases by 0.272 percentage points on average.
 
@@ -578,9 +646,9 @@ For every 1 percentage point increase in income growth, consumption growth incre
 
 OLS produces BLUE estimators only if the classical assumptions hold. The one most frequently violated in time series is **no autocorrelation in the errors**:
 
-\text{cov}(\varepsilon_t, \varepsilon_s) = 0 \quad \forall \\ t \neq s
+$$\text{cov}(\varepsilon_t, \varepsilon_s) = 0 \quad \forall \; t \neq s$$
 
-If residuals are autocorrelated, OLS estimates are still unbiased but **no longer efficient** — standard errors are wrong, p-values are wrong, and forecast intervals are wrong. This is why we always check the residuals.
+If residuals are autocorrelated, OLS estimates are still unbiased but **no longer efficient** — standard errors are wrong, $p$-values are wrong, and forecast intervals are wrong. This is why we always check the residuals.
 
 ## Time series vs. fitted
 
@@ -616,7 +684,7 @@ augment(us_change_fit_simple) |>
 ```
 
 1.  Extract the number of estimated parameters to use as degrees of freedom correction.
-2.  A significant p-value indicates autocorrelated residuals — a sign the model is missing structure.
+2.  A significant $p$-value indicates autocorrelated residuals — a sign the model is missing structure.
 
 ## Ljung-Box test
 
@@ -626,11 +694,11 @@ The residuals show clear autocorrelation. The simple model is not capturing all 
 
 In practice, one predictor is rarely sufficient. The **multiple linear regression model** is:
 
-y_t = \beta_0 + \beta_1 x\_{1t} + \beta_2 x\_{2t} + \cdots + \beta_k x\_{kt} + \varepsilon_t
+$$y_t = \beta_0 + \beta_1 x_{1t} + \beta_2 x_{2t} + \cdots + \beta_k x_{kt} + \varepsilon_t$$
 
 For `us_change`, a natural extension is:
 
-y\_{t, \text{Cons.}} = \beta_0 + \beta_1 x\_{t, \text{Inc.}} + \beta_2 x\_{t, \text{Prod.}} + \beta_3 x\_{t, \text{Sav.}} + \beta_4 x\_{t, \text{Unemp.}} + \varepsilon_t
+$$y_{t, \text{Cons.}} = \beta_0 + \beta_1 x_{t, \text{Inc.}} + \beta_2 x_{t, \text{Prod.}} + \beta_3 x_{t, \text{Sav.}} + \beta_4 x_{t, \text{Unemp.}} + \varepsilon_t$$
 
 Code
 
@@ -716,7 +784,7 @@ bind_rows(
   select(.model, lb_stat, lb_pvalue)
 ```
 
-The multiple model substantially improves fit (\bar{R}^2 goes from ~0.15 to ~0.75) and the residuals look much closer to white noise.
+The multiple model substantially improves fit ($\bar{R}^2$ goes from ~0.15 to ~0.75) and the residuals look much closer to white noise.
 
 > **TIP:**
 >
@@ -724,18 +792,18 @@ The multiple model substantially improves fit (\bar{R}^2 goes from ~0.15 to ~0.7
 
 # 5 Predictor Selection
 
-With k potential predictors, there are 2^k possible models. We need a principled way to choose among them.
+With $k$ potential predictors, there are $2^k$ possible models. We need a principled way to choose among them.
 
 > **IMPORTANT:**
 >
-> **Do not use in-sample R^2 for selection.** Adding any predictor, even a random one, increases R^2. We need measures that penalize model complexity.
+> **Do not use in-sample** $R^2$ for selection. Adding any predictor, even a random one, increases $R^2$. We need measures that penalize model complexity.
 
 The three standard criteria available from `glance()` in `fable`:
 
-- **Adjusted \bar{R}^2**: penalizes for additional parameters. Maximize it.
-- **AIC** (Akaike Information Criterion): -2\log L + 2k. Minimize it. Optimizes predictive performance.
+- **Adjusted** $\bar{R}^2$: penalizes for additional parameters. Maximize it.
+- **AIC** (Akaike Information Criterion): $-2\log L + 2k$. Minimize it. Optimizes predictive performance.
 - **AICc**: AIC corrected for small samples. **Prefer this over AIC** for time series.
-- **BIC** (Bayesian Information Criterion): -2\log L + k \log T. Minimize it. BIC penalizes complexity more heavily and tends to select smaller models than AICc.
+- **BIC** (Bayesian Information Criterion): $-2\log L + k \log T$. Minimize it. BIC penalizes complexity more heavily and tends to select smaller models than AICc.
 
 Code
 
@@ -746,7 +814,7 @@ glance(us_change_fit_mult) |>
 
 ### 5.0.1 Search strategies
 
-## All subsets (small k)
+## All subsets (small
 
 Fit all possible models and compare:
 
@@ -832,7 +900,7 @@ us_change |>
 > Both penalize model complexity, but differently:
 >
 > - **AICc** minimizes expected out-of-sample prediction error. It tends to select slightly larger models.
-> - **BIC** is consistent: as T \to \infty, it will select the true model (if it’s in the candidate set). It penalizes more heavily and selects smaller models.
+> - **BIC** is consistent: as $T \to \infty$, it will select the true model (if it’s in the candidate set). It penalizes more heavily and selects smaller models.
 >
 > In forecasting contexts, **AICc is generally preferred** because we care more about predictive accuracy than model parsimony per se. When they disagree, consider whether interpretability or predictive accuracy is the primary goal.
 
@@ -842,32 +910,32 @@ Predictor selection and multicollinearity are closely linked. Even after running
 
 When two or more predictors are highly correlated, we have **multicollinearity**. It does not bias the OLS estimates, but it inflates the variance of the coefficients, making them unstable and hard to interpret.
 
-- In the extreme case of **perfect collinearity** (x_1 = c \cdot x_2), the model is unidentified: infinitely many solutions minimize SSR.
+- In the extreme case of **perfect collinearity** ($x_1 = c \cdot x_2$), the model is unidentified: infinitely many solutions minimize SSR.
 - In practice, collinearity is a matter of degree, not a binary condition.
-- Warning signs: coefficients with unexpected signs, large standard errors, a significant F-test alongside non-significant individual t-tests.
+- Warning signs: coefficients with unexpected signs, large standard errors, a significant F-test alongside non-significant individual $t$-tests.
 
 ### 5.1.1 Detecting multicollinearity: VIF
 
-The **Variance Inflation Factor (VIF)** measures how much the variance of \hat{\beta}\_j is inflated by its correlation with the other predictors:
+The **Variance Inflation Factor (VIF)** measures how much the variance of $\hat{\beta}_j$ is inflated by its correlation with the other predictors:
 
-\text{VIF}\_j = \frac{1}{1 - R_j^2}
+$$\text{VIF}_j = \frac{1}{1 - R_j^2}$$
 
-where R_j^2 is the R^2 obtained by regressing x_j on all the *other* predictors — a measure of how well one predictor can be linearly predicted by the rest.
+where $R_j^2$ is the $R^2$ obtained by regressing $x_j$ on all the *other* predictors — a measure of how well one predictor can be linearly predicted by the rest.
 
-- \text{VIF} = 1: no collinearity with other predictors.
-- \text{VIF} \in (1, 5): moderate — generally acceptable.
-- \text{VIF} \> 5: concerning, examine carefully.
-- \text{VIF} \> 10: severe — take action.
+- $\text{VIF} = 1$: no collinearity with other predictors.
+- $\text{VIF} \in (1, 5)$: moderate — generally acceptable.
+- $\text{VIF} > 5$: concerning, examine carefully.
+- $\text{VIF} > 10$: severe — take action.
 
 > **TIP:**
 >
-> A quick visual check: if the `ggpairs` scatter matrix shows strong correlations *between predictors* (not between a predictor and y), multicollinearity is likely present. The VIF quantifies exactly how severe that problem is.
+> A quick visual check: if the `ggpairs` scatter matrix shows strong correlations *between predictors* (not between a predictor and $y$), multicollinearity is likely present. The VIF quantifies exactly how severe that problem is.
 
 ### 5.1.2 What to do about multicollinearity
 
 The answer depends critically on your goal.
 
-- **If your goal is forecasting** — which is ours — multicollinearity is largely harmless. The individual \hat{\beta}’s may be unstable, but their *joint contribution* to \hat{y}\_t is still well estimated. The model can produce excellent forecasts even when coefficients are hard to interpret individually.
+- **If your goal is forecasting** — which is ours — multicollinearity is largely harmless. The individual $\hat{\beta}$’s may be unstable, but their *joint contribution* to $\hat{y}_t$ is still well estimated. The model can produce excellent forecasts even when coefficients are hard to interpret individually.
 
 > **WARNING:**
 >
@@ -881,9 +949,9 @@ The answer depends critically on your goal.
 
 # 6 Forecasting with Regression
 
-Before we can forecast y_t with regression, we need to ask: *what do we do with the predictors?*
+Before we can forecast $y_t$ with regression, we need to ask: *what do we do with the predictors?*
 
-With univariate models, `forecast(h = n)` was sufficient — the model only needed its own history. Now the model needs **future values of x_t** to produce a forecast of y_t.
+With univariate models, `forecast(h = n)` was sufficient — the model only needed its own history. Now the model needs **future values of** $x_t$ to produce a forecast of $y_t$.
 
 What changes across the three forecasting types is precisely **what values we assign to the predictors**:
 
@@ -929,7 +997,7 @@ us_change_exante_p <- us_change_fit_mult |>
 
 ## Ex-post
 
-**Ex-post forecasts** use *actual* realized values of the predictors. The forecast variable y_t is still unknown, but we feed in the true future x_t values.
+**Ex-post forecasts** use *actual* realized values of the predictors. The forecast variable $y_t$ is still unknown, but we feed in the true future $x_t$ values.
 
 These are not “real” forecasts — they are used to **evaluate the regression model in isolation**, removing predictor forecast error from the evaluation.
 
@@ -1048,14 +1116,14 @@ beer |>
 
 > **WARNING:**
 >
-> **The dummy variable trap:** if you create dummies for all m seasons and include an intercept, you have perfect multicollinearity. Always use m - 1 dummies. `TSLM()` handles this automatically with `season()`.
+> **The dummy variable trap:** if you create dummies for all $m$ seasons and include an intercept, you have perfect multicollinearity. Always use $m - 1$ dummies. `TSLM()` handles this automatically with `season()`.
 
 ## 7.2 Trend and seasonal dummies in R
 
 `TSLM()` provides two built-in terms:
 
-- `trend()` — a deterministic linear trend: \beta_1 t where t = 1, 2, \ldots, T.
-- `season()` — m - 1 seasonal dummy variables, with the first season as baseline.
+- `trend()` — a deterministic linear trend: $\beta_1 t$ where $t = 1, 2, \ldots, T$.
+- `season()` — $m - 1$ seasonal dummy variables, with the first season as baseline.
 
 Code
 
@@ -1095,7 +1163,7 @@ report(beer_fit)
 >
 > For series with multiple seasonal periods or very long seasons (daily, hourly data), `season()` becomes impractical — the number of dummies grows too large. An alternative is **Fourier terms**: pairs of sine and cosine waves that approximate the seasonal pattern with far fewer parameters.
 >
-> `TSLM()` supports this via `fourier(K)`, where K controls how many Fourier pairs are included. We will cover this properly in Module 4 when we deal with complex seasonality.
+> `TSLM()` supports this via `fourier(K)`, where $K$ controls how many Fourier pairs are included. We will cover this properly in Module 4 when we deal with complex seasonality.
 
 ## Fitted vs. actual
 
@@ -1148,8 +1216,8 @@ beer_outliers |>
 ```
 
 1.  Full STL with both trend and season — for a strongly seasonal series like `beer`, this prevents normal seasonal variation from being flagged as anomalies.
-2.  Standard threshold (c = 1.5): flags moderate outliers.
-3.  Stricter threshold (c = 3): flags only extreme observations. Use this when you want to be conservative.
+2.  Standard threshold ($c = 1.5$): flags moderate outliers.
+3.  Stricter threshold ($c = 3$): flags only extreme observations. Use this when you want to be conservative.
 
 [![](regression_files/figure-html/beer-outlier-plot-render-1.png)](regression_files/figure-html/beer-outlier-plot-render-1.png)
 
@@ -1218,20 +1286,20 @@ We established earlier that **linear in the parameters** does not mean a straigh
 
 What changes relative to a standard linear regression is not the estimation method — it is the **interpretation of the coefficients**.
 
-| Model | Equation | Interpretation of \hat{\beta}\_1 |
+| Model | Equation | Interpretation of $\hat{\beta}_1$ |
 |----|----|----|
-| **Lin-lin** (standard) | y_t = \beta_0 + \beta_1 x_t + \varepsilon_t | 1-unit \uparrow x → \hat{\beta}\_1-unit change in y |
-| **Log-log** (elasticity) | \log y_t = \beta_0 + \beta_1 \log x_t + \varepsilon_t | 1% \uparrow x → \hat{\beta}\_1% change in y |
-| **Log-lin** (semi-elasticity) | \log y_t = \beta_0 + \beta_1 x_t + \varepsilon_t | 1-unit \uparrow x → 100\hat{\beta}\_1% change in y |
-| **Lin-log** | y_t = \beta_0 + \beta_1 \log x_t + \varepsilon_t | 1% \uparrow x → \hat{\beta}\_1/100-unit change in y |
+| **Lin-lin** (standard) | $y_t = \beta_0 + \beta_1 x_t + \varepsilon_t$ | 1-unit $\uparrow x$ → $\hat{\beta}_1$-unit change in $y$ |
+| **Log-log** (elasticity) | $\log y_t = \beta_0 + \beta_1 \log x_t + \varepsilon_t$ | 1% $\uparrow x$ → $\hat{\beta}_1$% change in $y$ |
+| **Log-lin** (semi-elasticity) | $\log y_t = \beta_0 + \beta_1 x_t + \varepsilon_t$ | 1-unit $\uparrow x$ → $100\hat{\beta}_1$% change in $y$ |
+| **Lin-log** | $y_t = \beta_0 + \beta_1 \log x_t + \varepsilon_t$ | 1% $\uparrow x$ → $\hat{\beta}_1/100$-unit change in $y$ |
 
 > **NOTE:**
 >
-> These interpretations hold cleanly **only for the natural logarithm** (\ln). Two common alternatives:
+> These interpretations hold cleanly **only for the natural logarithm** ($\ln$). Two common alternatives:
 >
-> - **Logarithm in a different base** (e.g., \log\_{10}): the coefficient is scaled by \ln(b) where b is the base. The elasticity interpretation is preserved in shape but the numeric value changes — an unnecessary complication. Stick with \ln.
+> - **Logarithm in a different base** (e.g., $\log_{10}$): the coefficient is scaled by $\ln(b)$ where $b$ is the base. The elasticity interpretation is preserved in shape but the numeric value changes — an unnecessary complication. Stick with $\ln$.
 >
-> - **Box-Cox** (\lambda \neq 0, 1): the response is on the scale \frac{y^\lambda - 1}{\lambda}, which has no clean verbal interpretation. Box-Cox is better used as a pre-processing transformation to stabilize variance before modeling (as in Module 1) than inside a regression model where you need to interpret the coefficients.
+> - **Box-Cox** ($\lambda \neq 0, 1$): the response is on the scale $\frac{y^\lambda - 1}{\lambda}$, which has no clean verbal interpretation. Box-Cox is better used as a pre-processing transformation to stabilize variance before modeling (as in Module 1) than inside a regression model where you need to interpret the coefficients.
 
 ## 8.2 Piecewise Linear Trends
 
@@ -1382,7 +1450,7 @@ boston_knots_p <- boston_men |>
 
 > **NOTE:**
 >
-> **Coming up in 3.3:** Dynamic regression — what happens when we let the error term \varepsilon_t follow an ARIMA process instead of assuming white noise. This directly addresses the residual autocorrelation we saw in the simple model.
+> **Coming up in 3.3:** Dynamic regression — what happens when we let the error term $\varepsilon_t$ follow an ARIMA process instead of assuming white noise. This directly addresses the residual autocorrelation we saw in the simple model.
 
 Back to top
 

@@ -24,7 +24,7 @@ April 20, 2026
 
 Modified
 
-September 18, 2026
+November 18, 2026
 
 Code
 
@@ -70,7 +70,7 @@ The review follows the progressive arc of the course:
 
 **a.2** Inspect the series for potential outliers using the STL remainder approach covered in class. Flag any anomalous quarters and decide whether they require treatment or whether the robust STL setting is sufficient.
 
-**a.3** Apply a Guerrero transformation to determine the optimal Box-Cox parameter \lambda. Based on the value you obtain and the plot from a.1, would you prefer a log transformation or the Guerrero \lambda? Justify your choice. Use this decision consistently throughout all remaining parts.
+**a.3** Apply a Guerrero transformation to determine the optimal Box-Cox parameter $\lambda$. Based on the value you obtain and the plot from a.1, would you prefer a log transformation or the Guerrero $\lambda$? Justify your choice. Use this decision consistently throughout all remaining parts.
 
 **a.4** Create a train/test split: use data up to and including 2014 Q4 as the training set and 2015 Q1 onward as the test set. How many quarters are in the test set?
 
@@ -137,7 +137,7 @@ The review follows the progressive arc of the course:
 >
 >     [1] 0.09607256
 >
-> The Guerrero \lambda will be close to 0, consistent with the multiplicative pattern observed in a.1. A **log transformation** (\lambda = 0) is the natural, interpretable choice: it stabilises the seasonal variance and yields percentage-change interpretable coefficients in regression. We use `log(Takings)` throughout.
+> The Guerrero $\lambda$ will be close to 0, consistent with the multiplicative pattern observed in a.1. A **log transformation** ($\lambda = 0$) is the natural, interpretable choice: it stabilises the seasonal variance and yields percentage-change interpretable coefficients in regression. We use `log(Takings)` throughout.
 >
 > **a.4 — Train/test split**
 >
@@ -268,7 +268,7 @@ Before adding any exogenous information, establish the best model you built in M
 > report(nsw_fit_tslm)
 > ```
 >
-> 1.  `trend()` adds a deterministic linear trend; `season()` adds m - 1 = 3 quarterly dummies; `CPI` is the exogenous predictor. All are specified jointly in a single formula — `TSLM()` handles the dummy variable construction internally.
+> 1.  `trend()` adds a deterministic linear trend; `season()` adds $m - 1 = 3$ quarterly dummies; `CPI` is the exogenous predictor. All are specified jointly in a single formula — `TSLM()` handles the dummy variable construction internally.
 >
 >     Series: Takings 
 >     Model: TSLM 
@@ -295,7 +295,7 @@ Before adding any exogenous information, establish the best model you built in M
 >
 > **c.2 — Coefficient interpretation**
 >
-> The CPI coefficient is on the log scale. Because \log(\text{Takings}) is the response, a one-unit increase in CPI is associated with a multiplicative change of e^{\hat{\beta}\_{\text{CPI}}} in takings — approximately a 100 \times \hat{\beta}\_{\text{CPI}} percent change for small values. The sign should be **positive**: higher prices (CPI) are associated with higher nominal revenue, consistent with inflation pushing up both costs and revenues simultaneously.
+> The CPI coefficient is on the log scale. Because $\log(\text{Takings})$ is the response, a one-unit increase in CPI is associated with a multiplicative change of $e^{\hat{\beta}_{\text{CPI}}}$ in takings — approximately a $100 \times \hat{\beta}_{\text{CPI}}$ percent change for small values. The sign should be **positive**: higher prices (CPI) are associated with higher nominal revenue, consistent with inflation pushing up both costs and revenues simultaneously.
 >
 > **c.3 — Residual diagnostics**
 >
@@ -317,7 +317,7 @@ Before adding any exogenous information, establish the best model you built in M
 >
 > 1.  `dof = 5`: three seasonal dummies + trend + CPI = 5 estimated parameters (excluding intercept).
 >
-> The ACF will almost certainly show significant autocorrelation at lags 1–2. The Ljung-Box p-value will be well below 0.05. This is the central pedagogical point of Part c: **TSLM assumes \varepsilon_t \sim \text{WN}, but economic time series virtually never satisfy this**. The correlated residuals invalidate standard errors, confidence intervals, and prediction intervals — motivating dynamic regression.
+> The ACF will almost certainly show significant autocorrelation at lags 1–2. The Ljung-Box p-value will be well below 0.05. This is the central pedagogical point of Part c: **TSLM assumes** $\varepsilon_t \sim \text{WN}$, but economic time series virtually never satisfy this. The correlated residuals invalidate standard errors, confidence intervals, and prediction intervals — motivating dynamic regression.
 >
 > **c.4 — Ex-post forecast**
 >
@@ -421,13 +421,13 @@ The residual diagnostics in Part c revealed autocorrelation that TSLM cannot acc
 >
 > **d.4 — Structural difference**
 >
-> In TSLM, the error term \varepsilon_t is assumed to be white noise — independent across time. In dynamic regression, \varepsilon_t is allowed to follow an ARIMA(p, d, q)(P, D, Q) process, capturing the autocorrelation structure that remains after accounting for the deterministic components. The regression coefficients therefore measure the effect of CPI *after* controlling for the serial dependence in the series, and the prediction intervals properly reflect the uncertainty from both the regression and the ARIMA error. In short: TSLM models the mean function; dynamic regression models both the mean *and* the covariance structure.
+> In TSLM, the error term $\varepsilon_t$ is assumed to be white noise — independent across time. In dynamic regression, $\varepsilon_t$ is allowed to follow an ARIMA($p$, $d$, $q$)($P$, $D$, $Q$) process, capturing the autocorrelation structure that remains after accounting for the deterministic components. The regression coefficients therefore measure the effect of CPI *after* controlling for the serial dependence in the series, and the prediction intervals properly reflect the uncertainty from both the regression and the ARIMA error. In short: TSLM models the mean function; dynamic regression models both the mean *and* the covariance structure.
 
 ------------------------------------------------------------------------
 
 ## 6 Part e — Harmonic Regression
 
-**e.1** Before fitting anything: with a quarterly series (m = 4), what is the maximum number of Fourier pairs K? Write out what the Fourier terms `fourier(K = 1)` and `fourier(K = 2)` produce for a quarterly series — how many columns does each generate?
+**e.1** Before fitting anything: with a quarterly series ($m = 4$), what is the maximum number of Fourier pairs $K$? Write out what the Fourier terms `fourier(K = 1)` and `fourier(K = 2)` produce for a quarterly series — how many columns does each generate?
 
 **e.2** Fit the following two models on `nsw_train`:
 
@@ -442,12 +442,12 @@ The residual diagnostics in Part c revealed autocorrelation that TSLM cannot acc
 >
 > **e.1 — Fourier terms for a quarterly series**
 >
-> For a quarterly series (m = 4), the maximum number of Fourier pairs is K\_{\max} = \lfloor m/2 \rfloor = 2.
+> For a quarterly series ($m = 4$), the maximum number of Fourier pairs is $K_{\max} = \lfloor m/2 \rfloor = 2$.
 >
-> - `fourier(K = 1)` generates **2 columns**: \sin(2\pi t / 4) and \cos(2\pi t / 4).
-> - `fourier(K = 2)` generates **4 columns**: the pair above plus \sin(4\pi t / 4) and \cos(4\pi t / 4).
+> - `fourier(K = 1)` generates **2 columns**: $\sin(2\pi t / 4)$ and $\cos(2\pi t / 4)$.
+> - `fourier(K = 2)` generates **4 columns**: the pair above plus $\sin(4\pi t / 4)$ and $\cos(4\pi t / 4)$.
 >
-> Here is the key insight: **4 Fourier columns for m = 4 span exactly the same space as 3 seasonal dummy variables** (which is what `season()` produces in `TSLM` — m - 1 = 3 dummies). Both representations can fit any seasonal pattern with period 4. They are mathematically equivalent. This means `harmonic_k2` should produce results *identical* to a model with `season()`.
+> Here is the key insight: **4 Fourier columns for** $m = 4$ span exactly the same space as 3 seasonal dummy variables (which is what `season()` produces in `TSLM` — $m - 1 = 3$ dummies). Both representations can fit any seasonal pattern with period 4. They are mathematically equivalent. This means `harmonic_k2` should produce results *identical* to a model with `season()`.
 >
 > **e.2 — Fit harmonic models**
 >
@@ -462,7 +462,7 @@ The residual diagnostics in Part c revealed autocorrelation that TSLM cannot acc
 > ```
 >
 > 1.  `PDQ(0, 0, 0)` suppresses the seasonal ARIMA component — seasonality is handled entirely by the Fourier terms. The non-seasonal AR/MA order is still selected automatically via `pdq()` (not constrained here).
-> 2.  With `K = 2` we include all possible Fourier pairs for m = 4. As derived in e.1, this fully represents any quarterly seasonal pattern.
+> 2.  With `K = 2` we include all possible Fourier pairs for $m = 4$. As derived in e.1, this fully represents any quarterly seasonal pattern.
 >
 > **e.3 — Compare harmonic_k2 with dynamic regression**
 >
@@ -515,7 +515,7 @@ The residual diagnostics in Part c revealed autocorrelation that TSLM cannot acc
 >   arrange(AICc)
 > ```
 >
-> The AICc values and fitted ARIMA orders for `harmonic_k2` and `dynamic` will be **identical or near-identical**, confirming the mathematical equivalence derived in e.1. The Fourier representation at K = K\_{\max} adds no new flexibility over `season()` for quarterly data — it simply uses a different basis for the same subspace.
+> The AICc values and fitted ARIMA orders for `harmonic_k2` and `dynamic` will be **identical or near-identical**, confirming the mathematical equivalence derived in e.1. The Fourier representation at $K = K_{\max}$ adds no new flexibility over `season()` for quarterly data — it simply uses a different basis for the same subspace.
 >
 > **e.4 — Forecast accuracy**
 >
@@ -530,9 +530,9 @@ The residual diagnostics in Part c revealed autocorrelation that TSLM cannot acc
 >   select(.model, RMSE, MAE, MAPE)
 > ```
 >
-> The accuracy of `harmonic_k2` is essentially the same as Part d’s dynamic regression — same model, different parameterisation. `harmonic_k1` will be worse because K = 1 (2 Fourier terms) cannot represent all four quarterly patterns; it forces a sinusoidal shape on the seasonality, which is a restriction the data may not satisfy.
+> The accuracy of `harmonic_k2` is essentially the same as Part d’s dynamic regression — same model, different parameterisation. `harmonic_k1` will be worse because $K = 1$ (2 Fourier terms) cannot represent all four quarterly patterns; it forces a sinusoidal shape on the seasonality, which is a restriction the data may not satisfy.
 >
-> **The pedagogical point:** Fourier regression becomes genuinely valuable when m is large (daily or weekly data, where m = 365 or m = 52), because then we can use a small K to approximate a smooth seasonal pattern with far fewer parameters than m - 1 dummies. For quarterly data with m = 4, the method does not add anything at K = K\_{\max} — and actually *removes* flexibility at K \< K\_{\max}.
+> **The pedagogical point:** Fourier regression becomes genuinely valuable when $m$ is large (daily or weekly data, where $m = 365$ or $m = 52$), because then we can use a small $K$ to approximate a smooth seasonal pattern with far fewer parameters than $m - 1$ dummies. For quarterly data with $m = 4$, the method does not add anything at $K = K_{\max}$ — and actually *removes* flexibility at $K < K_{\max}$.
 
 ------------------------------------------------------------------------
 
@@ -668,9 +668,9 @@ The residual diagnostics in Part c revealed autocorrelation that TSLM cannot acc
 >
 > **b. Dynamic regression vs. TSLM:** Dynamic regression almost always improves prediction intervals (which are invalid under TSLM’s white noise assumption) and often improves point forecast accuracy as well, because the ARIMA error term absorbs residual autocorrelation that TSLM leaves unexplained. The improvement in Part c’s Ljung-Box test directly motivated this upgrade.
 >
-> **c. `harmonic_k2` vs. dynamic regression:** They are the same model expressed in different bases — Fourier pairs at K = K\_{\max} = 2 for a quarterly series span exactly the same space as three seasonal dummies, so the fitted values, residuals, and forecasts are identical.
+> **c. `harmonic_k2` vs. dynamic regression:** They are the same model expressed in different bases — Fourier pairs at $K = K_{\max} = 2$ for a quarterly series span exactly the same space as three seasonal dummies, so the fitted values, residuals, and forecasts are identical.
 >
-> **d. When Fourier is preferable:** When m is large — for example, daily data with m = 365 or weekly data with m = 52. In those cases, fitting m - 1 seasonal dummies is infeasible (364 or 51 parameters just for seasonality), while a small K (e.g., K = 5 for daily data) captures the dominant seasonal shape with a fraction of the parameters, avoiding overfitting.
+> **d. When Fourier is preferable:** When $m$ is large — for example, daily data with $m = 365$ or weekly data with $m = 52$. In those cases, fitting $m - 1$ seasonal dummies is infeasible (364 or 51 parameters just for seasonality), while a small $K$ (e.g., $K = 5$ for daily data) captures the dominant seasonal shape with a fraction of the parameters, avoiding overfitting.
 >
 > **e. Production choice:** On this dataset, the dynamic regression model (`ARIMA(log(Takings) ~ CPI)`) is the strongest candidate: it has valid residuals, uses the available exogenous information, and provides honest prediction intervals. The caveat is that it requires a CPI forecast for the horizon — if CPI forecasts are unreliable or unavailable, `sarima` or `stl_arima` from Part b may be more robust in practice. Prophet is a reasonable alternative if deployment simplicity is the priority and slight accuracy loss is acceptable.
 

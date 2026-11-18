@@ -24,7 +24,7 @@ June 9, 2026
 
 Modified
 
-September 18, 2026
+November 18, 2026
 
 Code
 
@@ -106,7 +106,7 @@ The series shows a persistent upward trend with no discernible seasonal pattern.
 
 > **NOTE:**
 >
-> When there is no seasonal pattern, the seasonal component is set to `"N"` (none). The specification `error("A") + trend("A") + season("N")` — also known as **ETS(A,A,N)** or **Holt’s Linear Method** — models both a local level and a local trend that update with each new observation via smoothing parameters \alpha and \beta^\*.
+> When there is no seasonal pattern, the seasonal component is set to `"N"` (none). The specification `error("A") + trend("A") + season("N")` — also known as **ETS(A,A,N)** or **Holt’s Linear Method** — models both a local level and a local trend that update with each new observation via smoothing parameters $\alpha$ and $\beta^*$.
 
 Code
 
@@ -253,7 +253,7 @@ vm_train |>
 
 [![](ex_module2_ets_decomposition_files/figure-html/vm-log-1.png)](ex_module2_ets_decomposition_files/figure-html/vm-log-1.png)
 
-The log transformation partially stabilizes variance but does not fully equalize it. Box-Cox with an estimated \lambda offers more flexibility.
+The log transformation partially stabilizes variance but does not fully equalize it. Box-Cox with an estimated $\lambda$ offers more flexibility.
 
 Code
 
@@ -265,7 +265,7 @@ lambda <- vm_train |>
 lambda
 ```
 
-1.  The `guerrero` feature selects \lambda by minimizing the coefficient of variation across rolling subseries of the training data.
+1.  The `guerrero` feature selects $\lambda$ by minimizing the coefficient of variation across rolling subseries of the training data.
 2.  Extract the scalar value for use in model formulas.
 
     [1] 0.2178821

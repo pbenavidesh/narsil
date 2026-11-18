@@ -2,7 +2,7 @@
 
 Modified
 
-September 18, 2026
+November 18, 2026
 
 Code
 
@@ -15,8 +15,8 @@ library(plotly)    #<1>
 
 In the [previous topic](../../../../docs/modules/module_2/02_stationarity/stationarity.llms.md#ar-and-ma-models) we introduced the two basic building blocks for modeling the correlation structure of a stationary time series:
 
-- **AR(p):** forecast y_t using its own p past values.
-- **MA(q):** forecast y_t using q past forecast errors.
+- **AR(**$p$): forecast $y_t$ using its own $p$ past values.
+- **MA(**$q$): forecast $y_t$ using $q$ past forecast errors.
 
 In practice, neither model alone is usually sufficient. Real series often show patterns that require *both* autoregressive and moving average components simultaneously. And most real series are also **non-stationary** — they have trend, seasonality, or both.
 
@@ -28,39 +28,39 @@ In practice, neither model alone is usually sufficient. Real series often show p
 
 ## 0.1 The ARIMA Equation
 
-**ARIMA** stands for **A**uto**R**egressive **I**ntegrated **M**oving **A**verage. The “Integrated” part refers to the reverse operation of differencing: if we difference a series d times to make it stationary, the model is said to be integrated of order d.
+**ARIMA** stands for **A**uto**R**egressive **I**ntegrated **M**oving **A**verage. The “Integrated” part refers to the reverse operation of differencing: if we difference a series $d$ times to make it stationary, the model is said to be integrated of order $d$.
 
-A non-seasonal ARIMA model is written as **ARIMA(p, d, q)**, where:
+A non-seasonal ARIMA model is written as **ARIMA(**$p$, $d$, $q$), where:
 
-- p — order of the **autoregressive** component (how many past values)
-- d — order of **differencing** (how many times we difference to achieve stationarity)
-- q — order of the **moving average** component (how many past errors)
+- $p$ — order of the **autoregressive** component (how many past values)
+- $d$ — order of **differencing** (how many times we difference to achieve stationarity)
+- $q$ — order of the **moving average** component (how many past errors)
 
-The model equation, written on the **differenced series** y'\_t, is:
+The model equation, written on the **differenced series** $y'_t$, is:
 
-y'\_t = c + \phi_1 y'\_{t-1} + \cdots + \phi_p y'\_{t-p} + \theta_1 \varepsilon\_{t-1} + \cdots + \theta_q \varepsilon\_{t-q} + \varepsilon_t
+$$y'_t = c + \phi_1 y'_{t-1} + \cdots + \phi_p y'_{t-p} + \theta_1 \varepsilon_{t-1} + \cdots + \theta_q \varepsilon_{t-q} + \varepsilon_t$$
 
-where y'\_t denotes the d-times differenced series and \varepsilon_t is white noise.
+where $y'_t$ denotes the $d$-times differenced series and $\varepsilon_t$ is white noise.
 
 ## 0.2 Backshift Notation
 
-Recall from the [previous topic](../../../../docs/modules/module_2/02_stationarity/stationarity.llms.md#backshift-notation) that the backshift operator B satisfies By_t = y\_{t-1}, and that d-th order differencing can be written as (1-B)^d y_t.
+Recall from the [previous topic](../../../../docs/modules/module_2/02_stationarity/stationarity.llms.md#backshift-notation) that the backshift operator $B$ satisfies $By_t = y_{t-1}$, and that $d$-th order differencing can be written as $(1-B)^d y_t$.
 
 Using this notation, we can write the AR and MA components compactly as well:
 
-**AR component:** \phi_1 y\_{t-1} + \phi_2 y\_{t-2} + \cdots + \phi_p y\_{t-p} = \phi(B)\\y_t
+**AR component:** $$\phi_1 y_{t-1} + \phi_2 y_{t-2} + \cdots + \phi_p y_{t-p} = \phi(B)\,y_t$$
 
-where \phi(B) = \phi_1 B + \phi_2 B^2 + \cdots + \phi_p B^p.
+where $\phi(B) = \phi_1 B + \phi_2 B^2 + \cdots + \phi_p B^p$.
 
-**MA component:** \theta_1 \varepsilon\_{t-1} + \theta_2 \varepsilon\_{t-2} + \cdots + \theta_q \varepsilon\_{t-q} = \theta(B)\\\varepsilon_t
+**MA component:** $$\theta_1 \varepsilon_{t-1} + \theta_2 \varepsilon_{t-2} + \cdots + \theta_q \varepsilon_{t-q} = \theta(B)\,\varepsilon_t$$
 
-where \theta(B) = \theta_1 B + \theta_2 B^2 + \cdots + \theta_q B^q.
+where $\theta(B) = \theta_1 B + \theta_2 B^2 + \cdots + \theta_q B^q$.
 
-**Full ARIMA(p, d, q) in backshift notation:**
+**Full ARIMA(**$p$, $d$, $q$) in backshift notation:
 
-\underbrace{(1 - \phi_1 B - \cdots - \phi_p B^p)}\_{\text{AR}(p)} \underbrace{(1-B)^d}\_{\text{differencing}} y_t = c + \underbrace{(1 + \theta_1 B + \cdots + \theta_q B^q)}\_{\text{MA}(q)} \varepsilon_t
+$$\underbrace{(1 - \phi_1 B - \cdots - \phi_p B^p)}_{\text{AR}(p)} \underbrace{(1-B)^d}_{\text{differencing}} y_t = c + \underbrace{(1 + \theta_1 B + \cdots + \theta_q B^q)}_{\text{MA}(q)} \varepsilon_t$$
 
-This compact form shows clearly how the three components interact. The differencing operator (1-B)^d is applied first, and the AR and MA operators act on the resulting stationary series.
+This compact form shows clearly how the three components interact. The differencing operator $(1-B)^d$ is applied first, and the AR and MA operators act on the resulting stationary series.
 
 ## 0.3 Special Cases
 
@@ -71,20 +71,20 @@ Several models we have already encountered are special cases of the ARIMA family
 | White noise            | ARIMA(0, 0, 0) without constant |
 | Random walk            | ARIMA(0, 1, 0) without constant |
 | Random walk with drift | ARIMA(0, 1, 0) with constant    |
-| AR(p)                  | ARIMA(p, 0, 0)                  |
-| MA(q)                  | ARIMA(0, 0, q)                  |
+| AR($p$)                | ARIMA($p$, 0, 0)                |
+| MA($q$)                | ARIMA(0, 0, $q$)                |
 
 > **TIP:**
 >
-> The constant c and the differencing order d interact to determine the long-run behavior of ARIMA forecasts:
+> The constant $c$ and the differencing order $d$ interact to determine the long-run behavior of ARIMA forecasts:
 >
-> - d = 0, c = 0: forecasts go to zero.
-> - d = 0, c \neq 0: forecasts go to the mean of the series.
-> - d = 1, c = 0: forecasts approach a non-zero constant.
-> - d = 1, c \neq 0: forecasts follow a straight line.
-> - d = 2, c \neq 0: forecasts follow a quadratic trend.
+> - $d = 0$, $c = 0$: forecasts go to zero.
+> - $d = 0$, $c \neq 0$: forecasts go to the mean of the series.
+> - $d = 1$, $c = 0$: forecasts approach a non-zero constant.
+> - $d = 1$, $c \neq 0$: forecasts follow a straight line.
+> - $d = 2$, $c \neq 0$: forecasts follow a quadratic trend.
 >
-> Higher values of d also produce wider prediction intervals that grow faster.
+> Higher values of $d$ also produce wider prediction intervals that grow faster.
 
 # 1 ARIMA in R
 
@@ -92,21 +92,21 @@ Several models we have already encountered are special cases of the ARIMA family
 
 Selecting the right ARIMA order involves three decisions:
 
-1.  **Choose d** — determine how many differences are needed using the stationarity protocol from the [previous topic](../../../../docs/modules/module_2/02_stationarity/stationarity.llms.md#unit-root-tests): Box-Cox / log transformation to stabilize variance, `unitroot_nsdiffs()` for seasonal differencing (if any), then `unitroot_ndiffs()` on the differenced series.
+1.  **Choose** $d$ — determine how many differences are needed using the stationarity protocol from the [previous topic](../../../../docs/modules/module_2/02_stationarity/stationarity.llms.md#unit-root-tests): Box-Cox / log transformation to stabilize variance, `unitroot_nsdiffs()` for seasonal differencing (if any), then `unitroot_ndiffs()` on the differenced series.
 
-2.  **Choose p or q** — read the ACF and PACF of the (differenced, stationary) series:
+2.  **Choose** $p$ or $q$ — read the ACF and PACF of the (differenced, stationary) series:
 
-    - **PACF cuts off** after lag p → AR(p) component.
-    - **ACF cuts off** after lag q → MA(q) component.
+    - **PACF cuts off** after lag $p$ → AR($p$) component.
+    - **ACF cuts off** after lag $q$ → MA($q$) component.
     - Both decay gradually → mixed ARMA, try several combinations.
 
 3.  **Compare candidates** using information criteria (see [Model Selection](#sec-model-selection)).
 
 > **WARNING:**
 >
-> Real data rarely produces textbook-perfect ACF/PACF shapes. Use the plots to narrow down candidate models, then compare them formally with AIC\_c.
+> Real data rarely produces textbook-perfect ACF/PACF shapes. Use the plots to narrow down candidate models, then compare them formally with AIC$_c$.
 
-Before formalizing model selection, let’s fit a few manual AR candidates suggested by the PACF and compare them with AIC\_c:
+Before formalizing model selection, let’s fit a few manual AR candidates suggested by the PACF and compare them with AIC$_c$:
 
 Code
 
@@ -137,30 +137,30 @@ When comparing candidate ARIMA models, we use three related criteria:
 
 - **AIC** — Akaike Information Criterion
 
-\text{AIC} = -2\log(L) + 2(p + q + k + 1)
+$$\text{AIC} = -2\log(L) + 2(p + q + k + 1)$$
 
-- **AIC\_c** — AIC corrected for small sample sizes
+- **AIC**$_c$ — AIC corrected for small sample sizes
 
-\text{AIC}\_c = \text{AIC} + \frac{2(p + q + k + 1)(p + q + k + 2)}{T - p - q - k - 2}
+$$\text{AIC}_c = \text{AIC} + \frac{2(p + q + k + 1)(p + q + k + 2)}{T - p - q - k - 2}$$
 
 - **BIC** — Bayesian Information Criterion (also known as Schwarz criterion)
 
-\text{BIC} = \text{AIC} + \[\log(T) - 2\](p + q + k + 1)
+$$\text{BIC} = \text{AIC} + [\log(T) - 2](p + q + k + 1)$$
 
-where k = 1 if the model includes a constant, k = 0 otherwise. **Lower is better** for all three. The preferred criterion is AIC\_c — it converges to AIC as T grows, but is more conservative with small samples.
+where $k = 1$ if the model includes a constant, $k = 0$ otherwise. **Lower is better** for all three. The preferred criterion is AIC$_c$ — it converges to AIC as $T$ grows, but is more conservative with small samples.
 
 > **TIP:**
 >
-> Both penalize complexity, but BIC applies a heavier penalty (it grows with \log T rather than a fixed 2). In practice:
+> Both penalize complexity, but BIC applies a heavier penalty (it grows with $\log T$ rather than a fixed 2). In practice:
 >
-> - **AIC\_c** tends to select slightly richer models and is generally preferred for forecasting.
+> - **AIC**$_c$ tends to select slightly richer models and is generally preferred for forecasting.
 > - **BIC** tends to select more parsimonious models and is preferred when interpretability matters.
 >
-> For this course, use **AIC\_c** as the default.
+> For this course, use **AIC**$_c$ as the default.
 
 > **IMPORTANT:**
 >
-> Information criteria are only comparable across models fitted to **identical data** — same transformation, same differencing order. You cannot compare AIC\_c of an ARIMA fitted to \log(y_t) vs. one fitted to y_t, or ARIMA(1,1,1) vs. ARIMA(1,0,1). When models differ in d, use forecast accuracy on a test set instead.
+> Information criteria are only comparable across models fitted to **identical data** — same transformation, same differencing order. You cannot compare AIC$_c$ of an ARIMA fitted to $\log(y_t)$ vs. one fitted to $y_t$, or ARIMA(1,1,1) vs. ARIMA(1,0,1). When models differ in $d$, use forecast accuracy on a test set instead.
 
 ## 1.3 Box-Jenkins Methodology
 
@@ -168,10 +168,10 @@ ARIMA model building follows an iterative procedure known as the **Box-Jenkins m
 
 1.  **Plot the data.** Identify unusual observations, structural breaks, outliers.
 2.  **Stabilize the variance** if needed — apply a log or Box-Cox transformation.
-3.  **Determine d** — use `unitroot_nsdiffs()` and `unitroot_ndiffs()`.
-4.  **Examine ACF and PACF** of the stationary series to identify candidate orders p and q.
+3.  **Determine** $d$ — use `unitroot_nsdiffs()` and `unitroot_ndiffs()`.
+4.  **Examine ACF and PACF** of the stationary series to identify candidate orders $p$ and $q$.
 
-5.  **Fit candidate models** and compare using AIC\_c.
+5.  **Fit candidate models** and compare using AIC$_c$.
 6.  **Check residuals** — ACF of residuals and Ljung-Box test. If not white noise, refine.
 7.  **Forecast** once residuals pass diagnostic checks.
 
@@ -234,7 +234,7 @@ us_change_forecast_p <- us_change_fit |>
 
 > **NOTE:**
 >
-> ARIMA prediction intervals are derived analytically from the model’s MA representation. Their width grows with the forecast horizon, and **grows faster as d increases** — a direct consequence of accumulated uncertainty from differencing. For a random walk (d = 1), intervals widen at rate \sqrt{h}; for d = 2, they widen even faster.
+> ARIMA prediction intervals are derived analytically from the model’s MA representation. Their width grows with the forecast horizon, and **grows faster as** $d$ increases — a direct consequence of accumulated uncertainty from differencing. For a random walk ($d = 1$), intervals widen at rate $\sqrt{h}$; for $d = 2$, they widen even faster.
 
 ## 1.6 Manual and Automatic Specification
 
@@ -242,7 +242,7 @@ In `fable`, ARIMA models are specified inside `model()` using the `ARIMA()` func
 
 [![](arima_files/figure-html/us-change-tsdisplay-1.png)](arima_files/figure-html/us-change-tsdisplay-1.png)
 
-The series appears stationary (d = 0). The PACF shows significant spikes at lags 1–3, suggesting AR(3). We can fit this manually, compare it against automatic selection strategies, and let AIC\_c arbitrate — all within a single `mable`:
+The series appears stationary ($d = 0$). The PACF shows significant spikes at lags 1–3, suggesting AR(3). We can fit this manually, compare it against automatic selection strategies, and let AIC$_c$ arbitrate — all within a single `mable`:
 
 Code
 
@@ -273,9 +273,9 @@ glance(us_change_fit) |>
 >
 > `fable` implements a stepwise search algorithm (Hyndman & Khandakar, 2008) that:
 >
-> 1.  Determines d using unit root tests.
-> 2.  Starts from a simple model and navigates through the order space by comparing AIC\_c values.
-> 3.  Stops when no neighboring model improves AIC\_c.
+> 1.  Determines $d$ using unit root tests.
+> 2.  Starts from a simple model and navigates through the order space by comparing AIC$_c$ values.
+> 3.  Stops when no neighboring model improves AIC$_c$.
 >
 > **Important:** this is a heuristic search — it does *not* evaluate all possible combinations. It is fast and usually good, but not guaranteed to find the global optimum.
 
@@ -403,23 +403,23 @@ stl_arima_forecast_p <- mexretail_fit_stl_arima |>
 
 STL + ARIMA is a two-stage approach: decompose first, then model. An alternative is to handle seasonality **within a single ARIMA model** by adding seasonal AR and MA terms. This is a **Seasonal ARIMA** model, written as:
 
-\text{ARIMA}\underbrace{(p,\\d,\\q)}\_{\text{non-seasonal}}\underbrace{(P,\\D,\\Q)\_{m}}\_{\text{seasonal}}
+$$\text{ARIMA}\underbrace{(p,\,d,\,q)}_{\text{non-seasonal}}\underbrace{(P,\,D,\,Q)_{m}}_{\text{seasonal}}$$
 
-where m is the seasonal period (m = 12 for monthly data).
+where $m$ is the seasonal period ($m = 12$ for monthly data).
 
 The full model in backshift notation is:
 
-\underbrace{\Phi(B^m)}\_{\text{seasonal AR}} \underbrace{\phi(B)}\_{\text{non-seasonal AR}} \underbrace{(1-B^m)^D (1-B)^d}\_{\text{differencing}} y_t = c + \underbrace{\Theta(B^m)}\_{\text{seasonal MA}} \underbrace{\theta(B)}\_{\text{non-seasonal MA}} \varepsilon_t
+$$\underbrace{\Phi(B^m)}_{\text{seasonal AR}} \underbrace{\phi(B)}_{\text{non-seasonal AR}} \underbrace{(1-B^m)^D (1-B)^d}_{\text{differencing}} y_t = c + \underbrace{\Theta(B^m)}_{\text{seasonal MA}} \underbrace{\theta(B)}_{\text{non-seasonal MA}} \varepsilon_t$$
 
 ### 2.2.1 Reading ACF/PACF for Seasonal Orders
 
-The non-seasonal orders (p, q) are read from the first few lags of the ACF/PACF, as before. The seasonal orders (P, Q) are read from the **seasonal lags** (m, 2m, 3m, …):
+The non-seasonal orders ($p$, $q$) are read from the first few lags of the ACF/PACF, as before. The seasonal orders ($P$, $Q$) are read from the **seasonal lags** ($m$, $2m$, $3m$, …):
 
-| Pattern at seasonal lags         | Suggested component |
-|:---------------------------------|:--------------------|
-| PACF spikes cut off after lag Pm | Seasonal AR(P)      |
-| ACF spikes cut off after lag Qm  | Seasonal MA(Q)      |
-| Both decay gradually             | Mixed seasonal ARMA |
+| Pattern at seasonal lags           | Suggested component |
+|:-----------------------------------|:--------------------|
+| PACF spikes cut off after lag $Pm$ | Seasonal AR($P$)    |
+| ACF spikes cut off after lag $Qm$  | Seasonal MA($Q$)    |
+| Both decay gradually               | Mixed seasonal ARMA |
 
 > **TIP:**
 >
@@ -427,7 +427,7 @@ The non-seasonal orders (p, q) are read from the first few lags of the ACF/PACF,
 
 ### 2.2.2 SARIMA for `mexretail`
 
-The stationarity protocol for `mexretail` established that we need D = 1 and d = 1 applied to the Box-Cox-transformed series. Let’s inspect the ACF/PACF to choose p, q, P, Q:
+The stationarity protocol for `mexretail` established that we need $D = 1$ and $d = 1$ applied to the Box-Cox-transformed series. Let’s inspect the ACF/PACF to choose $p$, $q$, $P$, $Q$:
 
 Code
 
@@ -446,17 +446,17 @@ mexretail |>
 > **NOTE:**
 >
 > - **Non-seasonal lags (1–11):**
->   - ACF: spike at lag 1, and up to lag 4 → try q = 1 up to q = 4.
->   - PACF: spikes at lags 1 and 2, borderline at lag 3 → try p = 2 or p = 3.
+>   - ACF: spike at lag 1, and up to lag 4 → try $q = 1$ up to $q = 4$.
+>   - PACF: spikes at lags 1 and 2, borderline at lag 3 → try $p = 2$ or $p = 3$.
 > - **Seasonal lags (12, 24, 36, 48):**
->   - ACF: spike at lag 12, barely at lag 24 → try Q = 1 or Q = 2.
->   - PACF: spikes at lags 12, 24, and slightly at 36 and 48 → try P = 2, P = 3, or even P = 4.
+>   - ACF: spike at lag 12, barely at lag 24 → try $Q = 1$ or $Q = 2$.
+>   - PACF: spikes at lags 12, 24, and slightly at 36 and 48 → try $P = 2$, $P = 3$, or even $P = 4$.
 
 > **TIP:**
 >
 > A strict reading of the ACF/PACF above could justify orders as large as AR(3), MA(4), SAR(4), SMA(2) — a model with over a dozen parameters. In practice, this is rarely a good starting point: high-order models are harder to estimate, more prone to overfitting, and — if specified manually — can fail to converge or return non-invertible roots altogether.
 >
-> A better strategy: start with a parsimonious candidate like \text{ARIMA}(0,1,1)(0,1,1)\_{12} or \text{ARIMA}(1,1,1)(1,1,1)\_{12}, fit a few of the larger candidates suggested by the plots, and let AIC\_c arbitrate. You will often find that the simpler model performs comparably or better — and it will always be more stable.
+> A better strategy: start with a parsimonious candidate like $\text{ARIMA}(0,1,1)(0,1,1)_{12}$ or $\text{ARIMA}(1,1,1)(1,1,1)_{12}$, fit a few of the larger candidates suggested by the plots, and let AIC$_c$ arbitrate. You will often find that the simpler model performs comparably or better — and it will always be more stable.
 
 Code
 
@@ -527,7 +527,7 @@ mexretail_fit_sarima |>
                    nrow())
 ```
 
-1.  `dof` is computed dynamically as p + q + P + Q for the fitted model, so it always reflects the actual order selected by the exhaustive search.
+1.  `dof` is computed dynamically as $p + q + P + Q$ for the fitted model, so it always reflects the actual order selected by the exhaustive search.
 
 # 3 STL + ARIMA vs. SARIMA
 

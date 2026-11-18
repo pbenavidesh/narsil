@@ -10,7 +10,7 @@ Pablo Benavides-Herrera
 
 Modified
 
-September 18, 2026
+November 18, 2026
 
 This document is **optional**, but strongly recommended.
 
@@ -28,13 +28,13 @@ They appear everywhere in forecasting, whether explicitly or implicitly.
 
 The **expectation** (or expected value) of a random variable describes its *typical value* in the long run.
 
-For a discrete random variable X with probability mass function p(x),
+For a discrete random variable $X$ with probability mass function $p(x)$,
 
-\mathbb{E}\[X\] = \sum_x x \\ p(x).
+$$\mathbb{E}[X] = \sum_x x \, p(x).$$
 
-For a continuous random variable with density f(x),
+For a continuous random variable with density $f(x)$,
 
-\mathbb{E}\[X\] = \int\_{-\infty}^{\infty} x \\ f(x)\\ dx.
+$$\mathbb{E}[X] = \int_{-\infty}^{\infty} x \, f(x)\, dx.$$
 
 > **TIP:**
 >
@@ -52,15 +52,15 @@ In forecasting, expectation often corresponds to:
 
 One of the most important properties of expectation is **linearity**:
 
-\mathbb{E}\[aX + b\] = a\\\mathbb{E}\[X\] + b,
+$$\mathbb{E}[aX + b] = a\,\mathbb{E}[X] + b,$$
 
-for constants a and b.
+for constants $a$ and $b$.
 
 Even more importantly,
 
-\mathbb{E}\[X + Y\] = \mathbb{E}\[X\] + \mathbb{E}\[Y\],
+$$\mathbb{E}[X + Y] = \mathbb{E}[X] + \mathbb{E}[Y],$$
 
-**regardless of whether X and Y are independent**.
+**regardless of whether** $X$ and $Y$ are independent.
 
 > **IMPORTANT:**
 >
@@ -73,19 +73,20 @@ Even more importantly,
 Expectation alone is not enough.\
 Two random variables may have the same mean but very different levels of uncertainty.
 
-The **variance** of X measures how much values fluctuate around their expectation:
+The **variance** of $X$ measures how much values fluctuate around their expectation:
 
-\operatorname{Var}(X) = \mathbb{E}\big\[(X - \mu)^2\big\], \qquad \mu = \mathbb{E}\[X\].
+$$\operatorname{Var}(X) = \mathbb{E}\big[(X - \mu)^2\big],
+\qquad \mu = \mathbb{E}[X].$$
 
 An equivalent and often more convenient expression is:
 
-\operatorname{Var}(X) = \mathbb{E}\[X^2\] - \mu^2.
+$$\operatorname{Var}(X) = \mathbb{E}[X^2] - \mu^2.$$
 
 > **NOTE:**
 >
 > Variance is measured in **squared units**.
 >
-> The standard deviation \sigma = \sqrt{\operatorname{Var}(X)} restores the original scale.
+> The standard deviation $\sigma = \sqrt{\operatorname{Var}(X)}$ restores the original scale.
 
 In forecasting, variance captures:
 
@@ -97,9 +98,9 @@ In forecasting, variance captures:
 
 Variance behaves very differently from expectation under transformations.
 
-For constants a and b,
+For constants $a$ and $b$,
 
-\operatorname{Var}(aX + b) = a^2 \operatorname{Var}(X).
+$$\operatorname{Var}(aX + b) = a^2 \operatorname{Var}(X).$$
 
 Adding a constant does **nothing** to variance.\
 Scaling a variable scales variance **quadratically**.
@@ -115,18 +116,20 @@ Scaling a variable scales variance **quadratically**.
 Variance describes uncertainty of a single random variable.\
 **Covariance** describes how *two* random variables vary together.
 
-For random variables X and Y,
+For random variables $X$ and $Y$,
 
-\operatorname{Cov}(X, Y) = \mathbb{E}\big\[(X - \mu_X)(Y - \mu_Y)\big\] = \mathbb{E}\[XY\] - \mu_X \mu_Y.
+$$\operatorname{Cov}(X, Y)
+= \mathbb{E}\big[(X - \mu_X)(Y - \mu_Y)\big]
+= \mathbb{E}[XY] - \mu_X \mu_Y.$$
 
-- Positive covariance: large values of X tend to occur with large values of Y
-- Negative covariance: large values of X tend to occur with small values of Y
+- Positive covariance: large values of $X$ tend to occur with large values of $Y$
+- Negative covariance: large values of $X$ tend to occur with small values of $Y$
 
 > **NOTE:**
 >
-> If X and Y are independent, then
+> If $X$ and $Y$ are independent, then
 >
-> \operatorname{Cov}(X,Y) = 0.
+> $\operatorname{Cov}(X,Y) = 0$.
 >
 > The converse is **not** generally true.
 
@@ -134,9 +137,9 @@ For random variables X and Y,
 
 In time series analysis, covariance appears in a very specific form.
 
-Given a sequence \\Y_t\\, we define the **lag-h covariance** as:
+Given a sequence $\{Y_t\}$, we define the **lag-**$h$ covariance as:
 
-\operatorname{Cov}(Y_t, Y\_{t-h}).
+$$\operatorname{Cov}(Y_t, Y_{t-h}).$$
 
 This quantity measures how observations relate to their own past.
 
@@ -156,9 +159,11 @@ Covariance depends on scale, which makes comparisons difficult.
 
 The **correlation coefficient** rescales covariance:
 
-\rho(X,Y) = \frac{\operatorname{Cov}(X,Y)} {\sqrt{\operatorname{Var}(X)\operatorname{Var}(Y)}}.
+$$\rho(X,Y) =
+\frac{\operatorname{Cov}(X,Y)}
+{\sqrt{\operatorname{Var}(X)\operatorname{Var}(Y)}}.$$
 
-Correlation lies between -1 and 1, but:
+Correlation lies between $-1$ and $1$, but:
 
 > **WARNING:**
 >

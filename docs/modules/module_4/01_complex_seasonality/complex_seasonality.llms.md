@@ -2,7 +2,7 @@
 
 Modified
 
-September 18, 2026
+November 18, 2026
 
 Code
 
@@ -65,14 +65,14 @@ Key things to point out when exploring this plot:
 
 Use the slider to zoom in on a single week. Two patterns emerge immediately:
 
-- **Daily cycle** (m_1 = 24): demand falls overnight, ramps up in the morning, peaks in the evening, and repeats every 24 hours.
-- **Weekly cycle** (m_2 = 24 \times 7 = 168): weekdays and weekends follow systematically different profiles — the weekday morning ramp is sharper, the weekend midday plateau is flatter.
+- **Daily cycle** ($m_1 = 24$): demand falls overnight, ramps up in the morning, peaks in the evening, and repeats every 24 hours.
+- **Weekly cycle** ($m_2 = 24 \times 7 = 168$): weekdays and weekends follow systematically different profiles — the weekday morning ramp is sharper, the weekend midday plateau is flatter.
 
 > **IMPORTANT:**
 >
 > Every model we have built so far assumes **one** seasonal period. STL takes a single `season()` call. `ARIMA()` with `PDQ()` handles one seasonal lag. `season()` dummies work for one cycle.
 >
-> With m_1 = 24 and m_2 = 168, we need something different.
+> With $m_1 = 24$ and $m_2 = 168$, we need something different.
 
 # 2 Identifying Multiple Seasonality
 
@@ -108,7 +108,7 @@ vic_elec_test <- vic_elec_hourly |>
 ```
 
 1.  Training set: all data through November 30, 2014.
-2.  Test set: the first two weeks of December 2014 — 14 \times 24 = 336 hourly observations.
+2.  Test set: the first two weeks of December 2014 — $14 \times 24 = 336$ hourly observations.
 
 December in Victoria is early summer (Southern Hemisphere), meaning air conditioning load is ramping up — a genuinely challenging period to forecast and a more informative evaluation than a quiet shoulder season.
 
@@ -206,9 +206,9 @@ STL is a powerful univariate tool. But electricity demand has an obvious externa
 
 ## 4.2 Fourier terms for multiple periods
 
-Recall from [Module 3.3](../../../../docs/modules/module_3/03_dynamic/dynamic_regression.llms.md#harmonic-regression) that Fourier terms approximate a seasonal pattern with K pairs of sine and cosine waves. For **multiple seasonalities**, we add one set per period:
+Recall from [Module 3.3](../../../../docs/modules/module_3/03_dynamic/dynamic_regression.llms.md#harmonic-regression) that Fourier terms approximate a seasonal pattern with $K$ pairs of sine and cosine waves. For **multiple seasonalities**, we add one set per period:
 
-y_t = \underbrace{S\_{K_1}(t)}\_{\text{daily, } m=24} + \underbrace{S\_{K_2}(t)}\_{\text{weekly, } m=168} + \beta^\top \mathbf{x}\_t + \eta_t, \quad \eta_t \sim \text{ARIMA}
+$$y_t = \underbrace{S_{K_1}(t)}_{\text{daily, } m=24} + \underbrace{S_{K_2}(t)}_{\text{weekly, } m=168} + \beta^\top \mathbf{x}_t + \eta_t, \quad \eta_t \sim \text{ARIMA}$$
 
 In `fable`, `fourier()` accepts a `period` argument and can be called multiple times in the same formula:
 
@@ -223,11 +223,11 @@ ARIMA(Demand ~
 
 ### 4.2.1 Choosing K
 
-The key parameter for each Fourier term is K — the number of sine/cosine pairs. A larger K produces a more flexible seasonal shape but adds more parameters. The standard approach is to minimize AIC\_c.
+The key parameter for each Fourier term is $K$ — the number of sine/cosine pairs. A larger $K$ produces a more flexible seasonal shape but adds more parameters. The standard approach is to minimize AIC$_c$.
 
 > **NOTE:**
 >
-> The principled approach is to search over a grid of (K_1, K_2) combinations. This is computationally expensive for hourly data and is best run offline or with `freeze: auto` active. The code below illustrates the approach — it is not evaluated during render:
+> The principled approach is to search over a grid of ($K_1$, $K_2$) combinations. This is computationally expensive for hourly data and is best run offline or with `freeze: auto` active. The code below illustrates the approach — it is not evaluated during render:
 >
 > Code
 >
@@ -249,13 +249,13 @@ The key parameter for each Fourier term is K — the number of sine/cosine pairs
 >   arrange(aicc)
 > ```
 >
-> For `vic_elec` hourly data, K_1 = 10 and K_2 = 6 consistently perform well — they capture the main features of both seasonal patterns without overfitting. We use these values throughout.
+> For `vic_elec` hourly data, $K_1 = 10$ and $K_2 = 6$ consistently perform well — they capture the main features of both seasonal patterns without overfitting. We use these values throughout.
 
 ## 4.3 Adding temperature and WorkDay
 
 Following FPP3, we model temperature with a **piecewise linear** function: a linear term plus a hockey-stick that activates above 18°C:
 
-\text{Temp effect} = \beta_1 T_t + \beta_2 \max(T_t - 18,\\ 0)
+$$\text{Temp effect} = \beta_1 T_t + \beta_2 \max(T_t - 18,\; 0)$$
 
 The intuition: below 18°C, demand increases as temperature falls (heating load). Above 18°C, demand increases as temperature rises (cooling load). The slope changes at the **knot** at 18°C.
 
@@ -286,7 +286,7 @@ fourier_fit <- vic_elec_train |>
 
 1.  Baseline harmonic model — Fourier terms only, no external predictors.
 2.  Full model: Fourier terms + piecewise temperature + WorkDay indicator.
-3.  `pmax(Temperature - 18, 0)` equals zero below 18°C and T - 18 above — the hockey-stick knot. `I()` protects the arithmetic inside the formula.
+3.  `pmax(Temperature - 18, 0)` equals zero below 18°C and $T - 18$ above — the hockey-stick knot. `I()` protects the arithmetic inside the formula.
 4.  `WorkDay` captures the weekday demand premium beyond what the weekly Fourier terms already model.
 
 > **NOTE:**
@@ -430,7 +430,7 @@ bank_calls
 
 > **TIP:**
 >
-> At 5-minute intervals, one day has 12 \times 24 = 288 observations and one week has 288 \times 7 = 2{,}016 observations. Both should be visible in the ACF.
+> At 5-minute intervals, one day has $12 \times 24 = 288$ observations and one week has $288 \times 7 = 2{,}016$ observations. Both should be visible in the ACF.
 >
 > Note that the call centre is **closed overnight and on weekends** — this creates blocks of zeros that will dominate the decomposition if not handled carefully.
 
@@ -458,13 +458,13 @@ bank_calls
 >
 > **a)** An **STL-based model** with two `season()` calls for the daily and weekly periods. Use either ETS or ARIMA for the seasonally adjusted component.
 >
-> **b)** A **harmonic regression model** (Fourier terms + ARIMA errors) with both periods. Start with K_1 = 6 for the daily period and K_2 = 3 for the weekly period, adjusting by AIC\_c if you want to explore further.
+> **b)** A **harmonic regression model** (Fourier terms + ARIMA errors) with both periods. Start with $K_1 = 6$ for the daily period and $K_2 = 3$ for the weekly period, adjusting by AIC$_c$ if you want to explore further.
 >
 > **c)** Inspect residuals from both models using `gg_tsresiduals()`. Is there remaining autocorrelation? What does the ACF look like around lags 48 and 336?
 
 > **TIP:**
 >
-> For half-hourly data, the daily period is m_1 = 48 and the weekly period is m_2 = 336. Start with small K values and use `stepwise = TRUE, approximation = TRUE` inside `ARIMA()` — exact search over periods this large is very slow.
+> For half-hourly data, the daily period is $m_1 = 48$ and the weekly period is $m_2 = 336$. Start with small $K$ values and use `stepwise = TRUE, approximation = TRUE` inside `ARIMA()` — exact search over periods this large is very slow.
 
 ## 6.5 Exercise 4 — Forecast Evaluation
 
@@ -492,7 +492,7 @@ bank_calls
 
 - For electricity demand, temperature enters as a **piecewise linear** function with a knot at 18°C. Residuals may still carry temperature-linked structure near extremes — a known limitation of linear covariate approximations in demand modeling.
 
-- Choosing K for each Fourier period is done by **AIC\_c comparison**. For long seasonal periods, use `stepwise = TRUE, approximation = TRUE` inside `ARIMA()` to keep computation manageable.
+- Choosing $K$ for each Fourier period is done by **AIC**$_c$ comparison. For long seasonal periods, use `stepwise = TRUE, approximation = TRUE` inside `ARIMA()` to keep computation manageable.
 
 > **TIP:**
 >

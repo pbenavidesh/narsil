@@ -2,7 +2,7 @@
 
 Modified
 
-September 18, 2026
+November 18, 2026
 
 Code
 
@@ -37,15 +37,15 @@ library(plotly)    #<1>
 
 Module 2 has added two new model families to our toolkit. Together with `decomposition_model()`, they give us far more combinations than it might initially seem:
 
-| Approach              | Decomposition | Trend-cycle model | Seasonal model  |
-|:----------------------|:-------------:|:-----------------:|:---------------:|
-| **M1 baseline**       |      STL      |       Drift       |     SNAIVE      |
-| **STL + ETS**         |      STL      |        ETS        |     SNAIVE      |
-| **STL + ARIMA**       |      STL      |       ARIMA       |     SNAIVE      |
-| **STL + ETS + ARIMA** |      STL      |        ETS        |      ARIMA      |
-| **STL + ARIMA + ETS** |      STL      |       ARIMA       |       ETS       |
-| **ETS**               |       —       |        ETS        |       ETS       |
-| **SARIMA**            |       —       |       ARIMA       | ARIMA(P,D,Q)\_m |
+| Approach              | Decomposition | Trend-cycle model |  Seasonal model  |
+|:----------------------|:-------------:|:-----------------:|:----------------:|
+| **M1 baseline**       |      STL      |       Drift       |      SNAIVE      |
+| **STL + ETS**         |      STL      |        ETS        |      SNAIVE      |
+| **STL + ARIMA**       |      STL      |       ARIMA       |      SNAIVE      |
+| **STL + ETS + ARIMA** |      STL      |        ETS        |      ARIMA       |
+| **STL + ARIMA + ETS** |      STL      |       ARIMA       |       ETS        |
+| **ETS**               |       —       |        ETS        |       ETS        |
+| **SARIMA**            |       —       |       ARIMA       | ARIMA$(P,D,Q)_m$ |
 
 > **NOTE:**
 >

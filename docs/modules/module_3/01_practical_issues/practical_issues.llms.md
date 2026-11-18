@@ -2,7 +2,7 @@
 
 Modified
 
-September 18, 2026
+November 18, 2026
 
 Code
 
@@ -30,7 +30,7 @@ library(plotly) #<1>
 
 In cross-sectional data, outlier detection often works directly on the raw values:
 
-\text{outlier if } y \< Q_1 - 1.5 \cdot \text{IQR} \quad \text{or} \quad y \> Q_3 + 1.5 \cdot \text{IQR}
+$$\text{outlier if } y < Q_1 - 1.5 \cdot \text{IQR} \quad \text{or} \quad y > Q_3 + 1.5 \cdot \text{IQR}$$
 
 - In time series, this **does not work** — and the reason is **trend**.
 - A series with an upward trend has values that naturally increase over time. Later observations will always appear “large” relative to the overall distribution — not because they are anomalous, but because the series has grown.
@@ -46,9 +46,9 @@ In cross-sectional data, outlier detection often works directly on the raw value
 
 We decompose the series with STL using `season(period = 1)` to remove **only the trend** — keeping seasonality in the remainder so it is not mistaken for an anomaly[^1]. We then apply the IQR rule to the remainder:
 
-\text{outlier if } R_t \< Q_1 - c \cdot \text{IQR} \quad \text{or} \quad R_t \> Q_3 + c \cdot \text{IQR}
+$$\text{outlier if } R_t < Q_1 - c \cdot \text{IQR} \quad \text{or} \quad R_t > Q_3 + c \cdot \text{IQR}$$
 
-where c = 1.5 is the standard threshold and c = 3 flags only more extreme observations.
+where $c = 1.5$ is the standard threshold and $c = 3$ flags only more extreme observations.
 
 [![](practical_issues_files/figure-html/stl-decomp-render-1.png)](practical_issues_files/figure-html/stl-decomp-render-1.png)
 
@@ -86,7 +86,7 @@ ah_outliers
 
 > **NOTE:**
 >
-> The value c = 1.5 is the standard Tukey fence used in boxplots — it flags observations that are moderately unusual. A value of c = 3 (the “far fence”) is more conservative and only captures truly extreme values. In practice, start with `1.5`, inspect the flagged periods, and tighten the threshold if normal variation is being flagged.
+> The value $c = 1.5$ is the standard Tukey fence used in boxplots — it flags observations that are moderately unusual. A value of $c = 3$ (the “far fence”) is more conservative and only captures truly extreme values. In practice, start with `1.5`, inspect the flagged periods, and tighten the threshold if normal variation is being flagged.
 
 ### 1.3.2 What happens when we remove them?
 
@@ -128,9 +128,9 @@ The problem: **ETS cannot be estimated when the series contains `NA` values.**
 
 ETS is built on weighted averages of all past observations:
 
-\hat{y}\_{t} = \alpha y\_{t-1} + \alpha(1-\alpha) y\_{t-2} + \alpha(1-\alpha)^2 y\_{t-3} + \cdots
+$$\hat{y}_{t} = \alpha y_{t-1} + \alpha(1-\alpha) y_{t-2} + \alpha(1-\alpha)^2 y_{t-3} + \cdots$$
 
-If any y_t is `NA`, every weighted sum that includes it becomes `NA` — and the entire estimation collapses.
+If any $y_t$ is `NA`, every weighted sum that includes it becomes `NA` — and the entire estimation collapses.
 
 Code
 
@@ -208,9 +208,9 @@ ah |>
 
 ### 3.0.1 The log transformation
 
-- \log(y_t) is defined only for y_t \> 0, and \log(y_t) \to -\infty as y_t \to 0^+.
-- When we model \log(y_t) and back-transform with \exp(\cdot), the result is **always strictly positive** — regardless of how far the trend extrapolates downward.
-- We saw this in Module 1 with Box-Cox transformations (the \lambda = 0 case). Here we use it explicitly as a forecasting constraint.
+- $\log(y_t)$ is defined only for $y_t > 0$, and $\log(y_t) \to -\infty$ as $y_t \to 0^+$.
+- When we model $\log(y_t)$ and back-transform with $\exp(\cdot)$, the result is **always strictly positive** — regardless of how far the trend extrapolates downward.
+- We saw this in Module 1 with Box-Cox transformations (the $\lambda = 0$ case). Here we use it explicitly as a forecasting constraint.
 
 [![](practical_issues_files/figure-html/eggs-log-forecast-render-1.png)](practical_issues_files/figure-html/eggs-log-forecast-render-1.png)
 
@@ -238,7 +238,7 @@ eggs_log_forecast_p <- egg_prices |>
 
 # 4 Keeping Forecasts within Bounds
 
-The log transformation handles a lower bound of zero. But what if we need to **constrain forecasts between two finite values** \[a, b\]?
+The log transformation handles a lower bound of zero. But what if we need to **constrain forecasts between two finite values** $[a, b]$?
 
 > **TIP:**
 >
@@ -262,23 +262,23 @@ The log transformation handles a lower bound of zero. But what if we need to **c
 
 ### 4.0.1 The scaled logit transformation
 
-The **scaled logit** maps any value in (a, b) to the entire real line (-\infty, +\infty):
+The **scaled logit** maps any value in $(a, b)$ to the entire real line $(-\infty, +\infty)$:
 
-f(x) = \log\left(\frac{x - a}{b - x}\right)
+$$f(x) = \log\left(\frac{x - a}{b - x}\right)$$
 
 The inverse — used to back-transform forecasts to the original scale — is:
 
-f^{-1}(y) = \frac{(b - a)\\ e^y}{1 + e^y} + a
+$$f^{-1}(y) = \frac{(b - a)\, e^y}{1 + e^y} + a$$
 
-This guarantees that back-transformed forecasts always lie strictly within (a, b).
+This guarantees that back-transformed forecasts always lie strictly within $(a, b)$.
 
 > **NOTE:**
 >
-> The standard logistic (sigmoid) function maps \mathbb{R} \to (0, 1):
+> The standard logistic (sigmoid) function maps $\mathbb{R} \to (0, 1)$:
 >
-> \sigma(y) = \frac{e^y}{1 + e^y}
+> $$\sigma(y) = \frac{e^y}{1 + e^y}$$
 >
-> The scaled logit is a linear rescaling of this to the interval (a, b). The same structure appears in logistic regression, neural network activation functions, and ecological population models with a carrying capacity.
+> The scaled logit is a linear rescaling of this to the interval $(a, b)$. The same structure appears in logistic regression, neural network activation functions, and ecological population models with a carrying capacity.
 
 Code
 
@@ -297,8 +297,8 @@ my_scaled_logit <- new_transformation(                   #<3>
 )
 ```
 
-1.  Forward transformation: maps (a, b) \to \mathbb{R}. Applied to the data before model fitting.
-2.  Inverse transformation: maps \mathbb{R} \to (a, b). Applied automatically by `fable` when back-transforming forecasts and prediction intervals.
+1.  Forward transformation: maps $(a, b) \to \mathbb{R}$. Applied to the data before model fitting.
+2.  Inverse transformation: maps $\mathbb{R} \to (a, b)$. Applied automatically by `fable` when back-transforming forecasts and prediction intervals.
 3.  `new_transformation()` bundles both functions into a single transformation object that `fable` recognizes.
 
 ### 4.0.2 Applying the scaled logit
@@ -329,7 +329,7 @@ eggs_scaled_logit_p <- egg_prices |>
 
 > **WARNING:**
 >
-> The scaled logit requires that **all historical observations fall strictly within** (a, b). If any observation equals or exceeds the bounds, the transformation is undefined. Always verify your data range before applying it.
+> The scaled logit requires that **all historical observations fall strictly within** $(a, b)$. If any observation equals or exceeds the bounds, the transformation is undefined. Always verify your data range before applying it.
 
 # 5 Summary
 
@@ -337,7 +337,7 @@ eggs_scaled_logit_p <- egg_prices |>
 - **Removing an outlier** creates a missing value that must be addressed. Simply deleting the row leaves a gap that most time series models cannot handle.
 - **ARIMA interpolation** provides a principled, model-based imputation that respects the full structure of the series — trend, seasonality, and autocorrelation.
 - **Log transformations** prevent forecasts from going negative — appropriate for prices, counts, and volumes.
-- **Scaled logit transformations** constrain forecasts to any finite interval (a, b) — use them when domain knowledge or regulation defines hard bounds.
+- **Scaled logit transformations** constrain forecasts to any finite interval $(a, b)$ — use them when domain knowledge or regulation defines hard bounds.
 
 > **IMPORTANT:**
 >

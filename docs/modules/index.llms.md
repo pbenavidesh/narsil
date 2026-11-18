@@ -69,6 +69,16 @@ Handle complexity: multiple seasonal patterns, uncertainty quantification, and f
 
 ------------------------------------------------------------------------
 
+### Module 5: Beyond univariate and linear models
+
+Complementary material, not part of the core model-building arc. Every model so far forecasts **one** series with a **linear** structure; this module relaxes those two assumptions.
+
+- [5.1 Vector Autoregressions (VAR)](../../docs/modules/module_5/01_var/var.llms.md)
+
+*Builds on Modules 2–4: ARIMA, dynamic regression, and time series cross-validation.*
+
+------------------------------------------------------------------------
+
 ## Recommended study loop
 
 1.  **Read** the lesson — focus on *why* the method works and how it builds on what came before.

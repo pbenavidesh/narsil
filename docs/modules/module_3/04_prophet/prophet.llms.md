@@ -2,7 +2,7 @@
 
 Modified
 
-September 18, 2026
+November 18, 2026
 
 > **IMPORTANT:**
 >
@@ -54,12 +54,12 @@ Every previous model required us to make choices manually: how many AR terms? Wh
 
 At its core, Prophet fits a **decomposition model**:
 
-y(t) = g(t) + s(t) + h(t) + \varepsilon_t
+$$y(t) = g(t) + s(t) + h(t) + \varepsilon_t$$
 
-- g(t) — **trend**: piecewise linear or logistic growth, with changepoints detected automatically.
-- s(t) — **seasonality**: Fourier series approximating yearly, weekly, or daily patterns.
-- h(t) — **holidays / special events**: user-supplied dummy variables with windowed effects.
-- \varepsilon_t — **noise**: assumed i.i.d. normal.
+- $g(t)$ — **trend**: piecewise linear or logistic growth, with changepoints detected automatically.
+- $s(t)$ — **seasonality**: Fourier series approximating yearly, weekly, or daily patterns.
+- $h(t)$ — **holidays / special events**: user-supplied dummy variables with windowed effects.
+- $\varepsilon_t$ — **noise**: assumed i.i.d. normal.
 
 > **IMPORTANT:**
 >
@@ -166,7 +166,7 @@ prophet(y ~
 
 > **TIP:**
 >
-> The `order` argument in `season()` is the same K we used in harmonic regression (`fourier(K = ...)`). Higher K → more flexible seasonal shape, but more parameters. Start with the default and adjust if residuals show seasonal structure.
+> The `order` argument in `season()` is the same $K$ we used in harmonic regression (`fourier(K = ...)`). Higher $K$ → more flexible seasonal shape, but more parameters. Start with the default and adjust if residuals show seasonal structure.
 
 ## 4.3 Component summary
 
@@ -277,9 +277,9 @@ lax_fit |>
 
 The decomposition shows:
 
-- **Trend** (g(t)): captures the piecewise nature of growth, including the post-2001 and post-2009 recoveries — with no manual knot placement.
-- **Annual** (s(t)): the seasonal pattern for each series. Notice it’s being fitted as a proportion of the level (multiplicative).
-- **Residuals** (\varepsilon_t): should look like white noise if the model is well-specified.
+- **Trend** ($g(t)$): captures the piecewise nature of growth, including the post-2001 and post-2009 recoveries — with no manual knot placement.
+- **Annual** ($s(t)$): the seasonal pattern for each series. Notice it’s being fitted as a proportion of the level (multiplicative).
+- **Residuals** ($\varepsilon_t$): should look like white noise if the model is well-specified.
 
 ## 5.6 Seasonal pattern by month
 

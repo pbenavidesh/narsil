@@ -2,7 +2,7 @@
 
 Modified
 
-September 18, 2026
+November 18, 2026
 
 Code
 
@@ -52,11 +52,11 @@ The key condition is **diversity** — combining models that fail in the same wa
 
 > **NOTE:**
 >
-> If two unbiased forecasts f_1 and f_2 have errors with equal variance \sigma^2 and correlation \rho, the equal-weight combination has error variance:
+> If two unbiased forecasts $f_1$ and $f_2$ have errors with equal variance $\sigma^2$ and correlation $\rho$, the equal-weight combination has error variance:
 >
-> \text{Var}\left(\frac{e_1 + e_2}{2}\right) = \frac{\sigma^2(1 + \rho)}{2}
+> $$\text{Var}\left(\frac{e_1 + e_2}{2}\right) = \frac{\sigma^2(1 + \rho)}{2}$$
 >
-> When \rho \< 1, the combination **always beats the average individual model**. When \rho = 0, variance halves.
+> When $\rho < 1$, the combination **always beats the average individual model**. When $\rho = 0$, variance halves.
 
 ## 2.3 A First Example: Australian Cement Production
 
@@ -161,7 +161,7 @@ cement_fit2 <- cement_train |>
 ```
 
 1.  `combination_ensemble()` defines the combination inside `model()`. Every sub-model is re-fitted automatically.
-2.  `weights = "equal"` gives each model weight 1/K. Equivalent to the `mutate()` average.
+2.  `weights = "equal"` gives each model weight $1/K$. Equivalent to the `mutate()` average.
 3.  A second combination with data-driven weights.
 4.  `weights = "inv_var"` assigns weights inversely proportional to each model’s in-sample error variance.
 
@@ -206,9 +206,9 @@ Standard bootstrap (resample observations independently) breaks temporal depende
 1.  Decompose the series with STL → isolate the **remainder** component
 2.  Resample the remainder in **blocks** to preserve local autocorrelation
 3.  Reconstruct synthetic series: trend + seasonal + bootstrapped remainder
-4.  Repeat B times → B plausible alternative histories
+4.  Repeat $B$ times → $B$ plausible alternative histories
 
-**Bagging** (Bootstrap AGGregating) = fit a model to each bootstrapped series, then average the B forecasts.
+**Bagging** (Bootstrap AGGregating) = fit a model to each bootstrapped series, then average the $B$ forecasts.
 
 ## 3.3 Generating Bootstrap Series
 
@@ -246,7 +246,7 @@ cement_sim <- cement_stl |>
 
 > **TIP:**
 >
-> A rule of thumb: one or two seasonal periods. For quarterly data (m = 4), `bootstrap_block_size = 4` or `8` is typically appropriate.
+> A rule of thumb: one or two seasonal periods. For quarterly data ($m = 4$), `bootstrap_block_size = 4` or `8` is typically appropriate.
 
 ## 3.4 Visualizing the Bootstrap Series
 
